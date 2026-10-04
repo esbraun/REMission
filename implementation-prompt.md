@@ -6,6 +6,8 @@ Use this document to implement [plan.md](plan.md) with GPT-6.1-Sol as an orchest
 
 Research checked October 4, 2026. The repository currently contains only `plan.md`; there is no application, established directory layout, or repository `AGENTS.md` to inherit. Recheck that before implementation.
 
+The user supplied the full guide notebook in this conversation; use that supplied text as the prompting baseline. Its starter instructions are operational requirements below, adapted only for the actual harness and REMission's clinical workflow. The repository-specific orchestrator, subagent, and browser contracts remain required additions.
+
 The requested model name, “open gpt sol 6.1,” is interpreted here as **GPT-6.1-Sol**, exposed in this coding environment as `gpt-6.1-sol`. That environment selector is not evidence of a public API model identifier. Verify the exact model identifier, supported reasoning settings, context handling, and subagent capabilities in the actual runtime. Do not silently substitute another model.
 
 The supplied [OpenAI Codex prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) currently identifies `gpt-5.3-codex`, not GPT-6.1-Sol. Its [source notebook](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/codex_prompting_guide.ipynb), reviewed at blob `30b2eab0ba05235b8070c9838352cfdd2546d8b8`, supports the general practices below. Their application to GPT-6.1-Sol is an engineering recommendation to evaluate, not a claim of model-specific published research.
@@ -27,6 +29,43 @@ The guide's older starter text discourages prompted preambles, while its later s
 
 Multi-agent orchestration and the phase map below are REMission-specific workflow choices. Parallel tool calls alone do not provide subagents, isolated workspaces, or a task scheduler. The harness must expose actual delegation tools. Do not describe simulated role-playing as delegated work.
 
+## Codex guide rules applied to this implementation
+
+Apply these rules to both the orchestrator and every delegated worker. The supplied guide is reference material, not a replacement for higher-priority runtime instructions or the project's specification.
+
+### Exploration, tools, and editing
+
+- Plan the needed reads before calling tools; batch independent file searches and reads. Use the harness's native parallel facility. The guide names `multi_tool_use.parallel`; use that when available, but do not invent it in a harness with a different supported mechanism. Serialize dependent work and conflicting mutations.
+- Prefer dedicated tools for their supported actions; use `rg`/`rg --files` for text/file discovery. Use shell commands only where no suitable dedicated tool exists, pass a command string, and set the working-directory argument explicitly.
+- Use the native `apply_patch` implementation for manual file edits. Use generators/formatters for generated files. Treat tool-provided `L123:` prefixes as line metadata, never source text.
+- Search for reusable code before introducing helpers. Read sufficient context, then make coherent edits. Keep types explicit; avoid `as any` and double assertions. Surface errors with useful context rather than broad catches, silent returns, or successful-looking fallbacks.
+- Preserve unrelated changes. Do not amend commits or use destructive resets/checkouts without explicit authorization. In shared workspaces, distinguish announced worker edits from unexpected external edits; pause the affected work and clarify genuinely unexpected changes.
+- Default to ASCII in new source files unless established content or product needs justify Unicode. Comments should explain non-obvious reasoning rather than repeat the code.
+
+### Autonomy, plans, and closeout
+
+Start useful work promptly. Choose reasonable reversible defaults, implement through verification, and avoid repeated discovery without a new question to resolve. The orchestrator's useful work is delegation and integration; each worker's useful work is its assigned artifact. Neither a narration of intended work nor a task list counts as implementation.
+
+Use the native plan tool for substantial work, with multiple steps and at most one `in_progress` step when that is its schema. Update it after actual progress. Parallel worker state belongs in the ledger, not multiple conflicting active plan steps. Do not add broad refactors or tests to a promised scope unless they will be executed.
+
+At each closeout, reconcile every promised task as done, blocked with its reason and required input, or cancelled with its reason. Keep unfinished project tasks in the durable ledger for resumption, but never leave a session plan implying success while work is still pending. Where a plan tool lacks a blocked/cancelled status, record the reason in its explanation and in the ledger without marking blocked work completed.
+
+### Frontend quality adapted to the clinical workflow
+
+Choose intentional typography, spacing, color tokens, and responsive composition; avoid interchangeable KPI walls, arbitrary purple themes, and decorative treatment scores. Honor the NHS-informed accessible component foundation and the plan's stable shell, patient identity, visible uncertainty, and progressive disclosure. The guide's visual-design suggestions do not require adding gradients, unusual fonts, or animations that compromise readability or decision context.
+
+Frontend workers must deliver connected, runnable screens at desktop and narrow viewports. Use purposeful motion only when useful and respect reduced-motion preferences. Loading, missing-data, error, and hold states are part of completion. Have the browser worker inspect rendered screenshots as well as accessibility snapshots; text-only inspection cannot establish layout quality.
+
+### Long-running harness behavior
+
+Use supported native compaction before the context exceeds the model limit. In a custom Responses API harness, follow the guide's `/responses/compact` flow only for models/endpoints that support it: retain the returned compaction item including `encrypted_content` in subsequent input, alongside required conversation state. A hand-written checkpoint is useful durable state, but does not replace native compaction.
+
+For the guide's documented GPT-5.3-Codex integration, preserve assistant `phase` values (`null`, `commentary`, `final_answer`) when reconstructing history; never attach `phase` to user messages. Verify support for GPT-6.1-Sol instead of blindly copying that API field. For supported prompted updates, keep them brief and grounded in outcomes, then continue execution rather than terminating at a preamble.
+
+When building a custom harness, use clear tool names and semantic arguments, distinguish search-result formats, and document when/why/how to call each MCP tool. Enable supported parallel tool calls for independent operations and preserve call/result associations. The guide suggests about 10,000 tokens per tool response, retaining beginning and end when truncating. Record truncation explicitly and fetch omitted ranges needed for a decision; never claim to have read a whole specification from truncated output.
+
+Final reports should state the delivered behavior, executed checks, and material limitations concisely, with file/artifact references rather than a dump of the output. For reviews, lead with reproducible findings ordered by severity. Use targeted metaprompting and repeated evaluations when slow starts, repeated reading, or noisy updates occur; do not expand the prompt with untested instructions.
+
 ## How to launch
 
 1. Open a checkout of `esbraun/REMission` and inspect the current branch, working tree, `plan.md`, applicable `AGENTS.md` files, and available tools.
@@ -45,6 +84,9 @@ demonstration. Read implementation-prompt.md and the entire current plan.md
 before decomposition. Follow applicable repository instructions and the
 runtime's higher-priority instructions. Treat plan.md as the product and
 methods specification; this playbook supplies the execution workflow.
+Apply its "Codex guide rules applied to this implementation" to every worker.
+Use native tools, batch independent reads, preserve types and unrelated edits,
+surface errors, and carry each package through observed verification.
 
 You are the orchestrator. Delegate EVERY work package to a real subagent:
 discovery, contracts, scaffolding, simulator, ingestion, statistical models,
@@ -80,6 +122,10 @@ static screens or a mock recommendation engine. Use actual Bayesian fitting,
 randomization, WCLS analysis, and bounded policy logic for their respective
 gates. Cached outputs must originate from reproducible, versioned real runs.
 
+Require frontend workers to deliver intentional, accessible, responsive screens
+within the stable clinical shell, including all error and missing-data states.
+Inspect rendered screenshots before accepting visual quality.
+
 Preserve all hard invariants from plan.md. The demonstration uses synthetic
 patients, synthetic quantitative trials, fictional MED_A/MED_B, and replay
 adapters. No real orders, messages, device accounts, or patient data. Clinical
@@ -100,7 +146,10 @@ evidence. Send failures back to the owning worker, integrate fixes, and rerun
 the affected gates. Never accept a worker's unsupported "done" claim.
 
 Persist task state, commits, contracts, model/data versions, seeds, commands,
-results, and blockers before compaction or handoff. Give brief meaningful
+results, and blockers before compaction or handoff. Use supported native
+compaction; preserve required tool-call/result and assistant phase metadata.
+Reconcile session promises as done, blocked, or cancelled with reasons, and
+retain unfinished project task IDs for resumption. Give brief meaningful
 progress updates under the runtime's communication policy. Continue authorized
 work without repeated confirmation for routine implementation choices.
 
@@ -142,6 +191,9 @@ blocker: null
 
 ```text
 You own task <ID>: <concrete behavior>.
+Apply the playbook's Codex guide rules: act promptly, batch independent reads,
+use native tools and patching, reuse code, preserve type safety and unrelated
+edits, surface failures, and finish through verification. Set shell workdir.
 Read plan.md sections <sections>, implementation-prompt.md, applicable
 AGENTS.md, and contracts <paths/versions>. Base commit: <commit>.
 Dependencies already accepted: <IDs and evidence>. Write only <paths>.
