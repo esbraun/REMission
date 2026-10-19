@@ -178,6 +178,8 @@ A replay test must recover the exact displayed historical recommendation and dia
 
 ## 14. Application architecture and implementation contracts
 
+Apply [ENG-01, UI-SKILLS and TEST-QUALITY](../execution/engineering-guidelines.md) to implementation and review. Keep the service authoritative for domain rules and reuse contracts rather than duplicate eligibility logic in UI components. These standards add no public API redesign or hosting migration; deployment is outside Vercel.
+
 ### Suggested demonstration stack
 
 These are engineering choices, not findings from clinical studies.

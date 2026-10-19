@@ -15,7 +15,7 @@ G0 acceptance precedes detailed design and the thin service shell. Fixtures may 
 | Test ID | Scenario and expected result |
 |---|---|
 | UX-T01 | Two doctor panels: reject cross-owner URL/API, history, draft, aggregate and job-result access |
-| UX-T02 | Logout/expiry and delayed responses: no previous doctor's or patient's content becomes active |
+| UX-T02 | Logout/expiry, password reset and delayed responses: session revocation works; no stale content becomes active, including after same-doctor reauthentication |
 | UX-T03 | Multiple tasks, holds, overdue and unscheduled tasks: stable priority, accurate distinct-patient counts and complete task discoverability |
 | UX-T04 | Panel navigation: filters/page/scroll restored; safety changes visible without automatic row movement |
 | UX-T05 | Every workflow stage: only authorized actions, no navigation-driven state transition |
@@ -30,6 +30,23 @@ G0 acceptance precedes detailed design and the thin service shell. Fixtures may 
 | UX-T14 | Monitoring: aligned dated sources, treatment/phase lanes, coverage/device changes and source-event access |
 
 Automated browser checks complement manual accessibility testing and visual inspection. Inspect desktop and narrow-screen renders with realistic long names, multiline blockers and open help.
+
+## Verification layers
+
+Apply [TEST-QUALITY](../../execution/engineering-guidelines.md#test-quality--tests-that-detect-meaningful-failures). This assignment preserves every UX scenario and the complete integrated browser matrix; it is not permission to replace browser behavior with mocked service checks. Tests assert observable results and persisted effects, not implementation details.
+
+| Scenarios | Primary checks and complementary verification |
+|---|---|
+| UX-T01/02 | Real-route integration: cookies, CSRF, ownership across all resources, expiry/reset revocation; UI integration/browser: switch, logout, Back, same-doctor reauthentication and delayed responses; unit seam: context/auth-generation rejection |
+| UX-T03/04 | Unit seams: priority and distinct-patient counts; integration: panel aggregates; browser: discover all tasks, restore filters/page/scroll, show changed safety state without row movement |
+| UX-T05 | Unit seams: domain eligibility/readiness; service integration: unauthorized actions denied; browser: each workflow stage, consent blocking and navigation without transitions |
+| UX-T06/07 | Unit seams: availability/estimand/cutoff mapping; integration: saved-output contract; browser: distinct evidence states, exact labels, interruptions, gaps and no fabricated winner |
+| UX-T08/09 | Unit seam: draft base-version checks; service integration: atomic approval/follow-up, original-key idempotent recovery, stale hold/version rejection; browser: save/resume/discard/cancel and uncertain submission |
+| UX-T10 | Integration: immutable snapshots, late data excluded, writes denied; browser: historical deep links/reload remain read-only and later outcomes stay separate |
+| UX-T11/12 | Component integration: focus, guide context, draft retention; browser: keyboard/help flows and topic links; manual: screen reader, zoom/reflow, touch and visual inspection |
+| UX-T13/14 | Service/component integration: unavailable versus zero, source alignment/provenance; browser: empty/error/partial states, monitoring lanes, selected dates and chart-table agreement |
+
+Use isolated fixtures, controlled clocks and explicit deferred responses to reproduce races. Real API/storage workflows remain unmocked except for explicit fault injection. Each test identifies the regression it would catch. Keep manual and statistical gates separate; do not use snapshot counts, coverage percentages or retries as evidence of correctness.
 
 ## Human-factors work
 

@@ -10,7 +10,7 @@ Review [source records](../evidence/README.md) before claims are released. Metad
 
 ## Verification, prompt evaluation, and handoff
 
-Each task proposes checks that test its actual risk and acceptance contract. Do not require expensive MCMC for every CSS change, and do not treat UI screenshots as evidence of statistical calibration. Separate smoke plumbing, genuine saved-model demonstration, and repeated evaluation runs; the smoke preset is not evidence about borrowing performance.
+Each task proposes checks that test its actual risk and acceptance contract. Apply [TEST-QUALITY](engineering-guidelines.md#test-quality--tests-that-detect-meaningful-failures), map all required UX/browser scenarios to checks, and verify actual auth middleware and persistence at integration boundaries. Small suites must preserve required behavior coverage; passing trivial tests or coverage thresholds is not acceptance. Do not require expensive MCMC for every CSS change, and do not treat UI screenshots as evidence of statistical calibration. Separate smoke plumbing, genuine saved-model demonstration, and repeated evaluation runs; the smoke preset is not evidence about borrowing performance.
 
 Before marking a phase accepted, the orchestrator checks that all required tasks have owners, reviews, executed checks, versioned outputs, and no unacknowledged failures. Retain failures and abstention in the report. Model runs must record seeds, distinct observation IDs, priors/transport assumptions, data cutoff, fitting configuration, diagnostics, runtime, and output lineage. Evaluation summaries report Monte Carlo uncertainty and distinguish calibration under model-consistent simulations from robustness under misspecification.
 

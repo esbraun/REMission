@@ -8,7 +8,7 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 ## Gate context and acceptance
 
-All gates are **not executed** at this documentation revision. The index and shared scope are common context; read only the listed bundle and relevant linked evidence/scenario entries. Input contract changes invalidate dependent evidence, not immutable historical records.
+All gates are **not executed** at this documentation revision. The index, shared scope and [engineering guidelines](../execution/engineering-guidelines.md) are common context; read only the listed bundle and relevant linked evidence/scenario entries. Input contract changes invalidate dependent evidence, not immutable historical records.
 
 | Gate | Reading bundle | Required outputs and acceptance evidence |
 |---|---|---|

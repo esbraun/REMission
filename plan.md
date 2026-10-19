@@ -10,6 +10,10 @@ Start with [scope and invariants](docs/spec/00-scope-and-invariants.md), then th
 
 Start with [UX research and foundations](docs/plans/ux/00-research-and-foundations.md), which indexes the ordered plans for doctor accounts, panel dashboard, patient decisions, contextual guides, technical appendix and validation. The [adversarial review](docs/plans/ux/07-adversarial-review.md) records the completed plan review. These are application requirements, not implemented features or accepted human-factors results. The existing G0-G7 dependencies still apply.
 
+## Engineering and UI skills
+
+Use the [engineering guidelines](docs/execution/engineering-guidelines.md) for DRY, maintained open-source reuse, simple implementation and meaningful tests. The three pinned React/composition/web-design skills are installed; their portable guidance preserves the existing React/TypeScript and FastAPI architecture and deployment outside Vercel. See the [review dispositions](docs/plans/ux/07-adversarial-review.md#october-19-2026-engineering-and-skills-review).
+
 ## Validation claim boundary
 
 Synthetic DGPs permit checks of implementation, computation, causal recovery under stated assumptions, misspecification and policy behavior. They do not establish that those assumptions hold in patients or that treatment is safe or effective. Human-factors and clinical gates remain separate.

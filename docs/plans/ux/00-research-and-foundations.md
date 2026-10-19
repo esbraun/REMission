@@ -50,6 +50,10 @@ Use three information levels: essential facts/actions inline; explanations in co
 
 Use warm off-white backgrounds, white surfaces, dark slate text and restrained deep teal/navy accents. Start with 16px body text and an 8px spacing scale; use readable line lengths, clear headings and text-labeled statuses. Reserve strong colors for meaningful state, validate contrast, and respect reduced motion. Implement one component foundation rather than combining entire design systems.
 
+## UI engineering skills
+
+Apply [UI-SKILLS and engineering standards](../../execution/engineering-guidelines.md#ui-skills--portable-ui-guidance) throughout plans 01-06. Use the installed React best-practices, composition-patterns and web-design-guidelines skills selectively for the current runtime. Retain the existing NHS-informed design foundation, React/TypeScript and FastAPI; deployment is outside Vercel. Skill usage does not introduce Next.js or require a React upgrade. Source provenance and applicability limits are recorded in the [evidence register](../../evidence/ux-and-interfaces.md#ui-engineering-skills-2026-10-19).
+
 ## Acceptance
 
 - Every existing UI requirement has a destination in the new views.

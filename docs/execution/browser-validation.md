@@ -68,23 +68,25 @@ Send defects to the owning implementation worker and verify repairs. Return
 pass/fail/blocked for each case, artifact paths, versions, and untested scope.
 ```
 
+Apply [TEST-QUALITY](engineering-guidelines.md#test-quality--tests-that-detect-meaningful-failures) and the [UX verification layers](../plans/ux/06-validation-and-integration.md#verification-layers). Every matrix row below remains required; combine coherent workflows without omitting behavior. Use the installed web-design skill during UI review, recording the fetched rule revision/date and project-specific exceptions.
+
 ### Required integrated browser matrix
 
 | Cases | Required checks |
 | --- | --- |
 | Clinic and selected-patient dashboards | Patient identity, synthetic label, current/historical context, phase, task owner/due date, count denominators and timestamps, filters, missing reports, separate clinical/learning states |
 | Assessment and cold start | Required inputs block premature ranking; inspect compatible evidence, broad modifier uncertainty, prior-only labels, heterogeneity/no-borrowing sensitivity, and endpoint/horizon/direction/interval labels |
-| Treatment and all section 12 stages | Enumerate every stage row, including active treatment without a decision, eligibility/design, active block, interim/final review, escalation, support review, hold, and maintenance; stable navigation and five panel slots; appropriate controls and failure states |
+| Treatment and all section 12 stages | Enumerate every stage row, including active treatment without a decision, eligibility/design, active block, interim/final review, escalation, support review, hold, and maintenance; stable navigation and required content groups distributed across task-local views; appropriate controls and failure states |
 | Treatment choice and consent | No recommendation preselected; approval summary and follow-up persist; treatment choice distinct from randomization; missing, expired, and withdrawn consent block relevant assignments and expose the next review step |
 | Reversible and durable care | Carryover/rebound/washout/rescue/incomplete outcomes visible; frozen support-policy version; no manual winning-block choice presented as unchanged randomization; durable escalation not on/off CBT-I |
 | Support envelope | Permitted actions, probabilities/bounds, availability, burden, reward missingness, and proximal/distal distinction visible; no medication or oncology optimization control |
 | Holds, abstention, and failures | Interaction exclusion versus prescriber-review flags; acute concern hold with owner; sparse overlap suppresses superiority claims; no successful-looking substitute when fitting/ingestion fails |
 | Wearable/report discordance | Distinct sources and units, missing nights as gaps, version changes, accessible table alternatives, and explanation of quiet-wake bias; no readiness score used as diagnosis or acute-illness detector |
 | History and correction lineage | Navigate previous/next decision; old stage renders; banner and cutoff persist through deep-link refresh; as-known-then excludes late uploads/later outcomes; retrospective outcomes separate; no old approval controls; new fits/corrections leave original snapshot unchanged |
-| Context/concurrency | Switch patients with an open draft: clear it before re-enabling controls; inject a material clinical update during approval through the seeded test interface: server rejects stale version and UI requires specific refresh/review without silent approval |
+| Context/concurrency | Reject delayed responses after logout/expiry and same-doctor reauthentication; switch patients with an open draft: clear it before re-enabling controls; inject a material clinical update during approval through the seeded test interface: server rejects stale version and UI requires specific refresh/review without silent approval |
 | Accessibility and responsive layout | Keyboard completion, focus order/visibility, accessible tab semantics, labels, contrast, zoom/reflow, narrow/desktop viewports, non-color statuses, and chart tables; manual screen-reader/accessibility checks recorded separately |
 
-Map these checks to all thirteen human-factors tasks in `plan.md` section 16 and the eight section 17 stories. Also test the deliberately unsupported recommendation case in the synthetic test environment: the interface must permit the user to decline it and inspect its limitations. It must not be a production source of fabricated evidence.
+Map these checks to all thirteen human-factors tasks in the [validation protocol](../spec/07-validation-protocol.md) and the eight [demonstration stories](../spec/08-gates-and-release.md). Also test the deliberately unsupported recommendation case in the synthetic test environment: the interface must permit the user to decline it and inspect its limitations. It must not be a production source of fabricated evidence.
 
 Browser evidence should identify task/case, commit, browser and MCP versions, viewport, seed, data/model versions, replay time, steps, expected/observed behavior, outcome, screenshots/snapshots, console/network findings, and persisted-record references. Capture evidence after the last relevant repair. If backend, model, seed, or UI changes invalidate a result, rerun the affected checks on the final integrated commit.
 
