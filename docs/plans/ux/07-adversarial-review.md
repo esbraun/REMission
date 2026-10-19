@@ -24,3 +24,20 @@ Carbon fits supplementary table expansion, with essential blockers visible. GitH
 A second fresh gpt-6.1-sol/xhigh subagent inspected the saved Markdown package, canonical service requirements and traceability on October 19, 2026. It reported no remaining actionable findings after the panel information-inventory clarification, authenticated clinician scope, appointment filters and draft/session rules were reconciled. This was a documentation consistency review only.
 
 Re-review the implemented flows before G5 acceptance. Record evidence, severity, fix and retest for new findings. Do not use this completed plan review to claim application safety, clinical validity or human-factors acceptance.
+
+## October 19 2026 engineering and skills review
+
+Reviewer: fresh `gpt-6.1-sol`, **high** reasoning, without inherited conversation history. It inspected the proposed update and repository specifications; this is separate from the earlier xhigh UX reviews. Review scope was plan consistency, portable skill adoption and engineering/test requirements, not implemented UI or clinical validation.
+
+| Priority | Finding | Disposition |
+|---|---|---|
+| P1 | Principal-scoped caching alone allows pre-logout responses after same-doctor login | Account contract requires authentication-generation invalidation; UX-T02 and browser context/concurrency cover same-doctor reauthentication |
+| P1 | A smaller browser suite could silently drop scenarios | TEST-QUALITY, UX verification-layer map and browser instructions retain UX-T01-14 and every existing matrix row |
+| P2 | Pinning agent-skills does not pin fetched web rules | Source record includes separate web-rule revision/date; future reviews record fetched revision/hash and date |
+| P2 | Browser instructions still reference five slots and navigation-only root sections | Required content is distributed across task-local views; links point to canonical validation tasks and demonstration stories |
+| P2 | Injected principals bypass actual authentication behavior | Integration acceptance explicitly exercises cookies, CSRF, expiry and password-reset revocation through actual routes/middleware |
+| P2 | Runtime-specific React advice could force migration or abstractions | UI-SKILLS applies compatible guidance selectively; no required React upgrade, Next.js migration or provider framework |
+
+The reviewer judged the direction sound with these corrections. They are addressed in the written revision; runtime verification remains pending. Skill installation and documentation checks cannot substitute for G0-G7 or separate human/clinical acceptance.
+
+A second fresh `gpt-6.1-sol` reviewer at high reasoning effort inspected the saved revision and installed skill inventories. It reported no actionable findings and confirmed that all six corrections, UX-T01-14, the full browser matrix and G0-G7 dependencies remain represented. This was documentation consistency review only; application behavior remains unverified.

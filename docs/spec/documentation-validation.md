@@ -1,5 +1,13 @@
 # Documentation migration verification
 
+## Engineering and skill revision verification (October 19, 2026)
+
+- Installed React best-practices, composition-patterns and web-design-guidelines using the system skill-installer helper at upstream commit `063bee94c3f4df8453406c830b0a7df0f2860278`. Compared every installed file byte-for-byte by SHA-256 against the pinned archive: 76 React, 14 composition and 1 web-design files matched.
+- Added canonical engineering guidelines and linked them through the plan, worker entry point, runtime instructions, service requirements, UX plans and gates. Recorded separate web-rule provenance and all six fresh adversarial-review dispositions.
+- Checked all 44 Markdown files in the root plan/docs set for relative targets, heading fragments, balanced fences, trailing whitespace and the under-400-line convention: zero errors. Checked tracked whitespace with `git diff --check`; the new untracked guide is included in the Markdown checks.
+- A fresh GPT-6.1 Sol/high reviewer inspected the saved revision and reported no actionable findings. See the [review record](../plans/ux/07-adversarial-review.md#october-19-2026-engineering-and-skills-review).
+- No application tests, model runs, clinician studies or human-factors acceptance occurred. UX-T01-14 and G0-G7 remain planned requirements; skill installation and documentation checks are not application acceptance.
+
 ## UX package verification (October 19, 2026)
 
 - Created eight ordered documents under docs/plans/ux and integrated root navigation, canonical UI requirements, evidence, gate reading guidance, requirement mapping and revision dispositions.

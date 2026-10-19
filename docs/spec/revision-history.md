@@ -1,5 +1,13 @@
 # Revision history
 
+## October 19 2026 engineering and skills refinement
+
+Installed three pinned vercel-labs/agent-skills packages and added [canonical engineering standards](../execution/engineering-guidelines.md) for DRY, maintained open-source reuse, simplicity and meaningful tests. Portable React/composition/design guidance preserves the React/TypeScript + FastAPI stack and deployment outside Vercel. No application API migration or clinical validation is implied.
+
+Integrated the standards into worker launch instructions, UX foundations, service requirements and gates. Added verification-layer coverage for all UX-T01-14 scenarios while preserving the entire browser matrix. Strengthened account lifecycle requirements for same-doctor reauthentication and real authentication middleware checks. Corrected obsolete browser panel-layout and canonical task/story references.
+
+A fresh GPT-6.1 Sol/high adversarial review identified six corrections incorporated in this revision; see [dispositions](../plans/ux/07-adversarial-review.md#october-19-2026-engineering-and-skills-review). Earlier xhigh reviews remain separate. Application tests and human gates remain pending.
+
 ## October 19 2026 UX planning refinement
 
 Added eight sequenced UX documents: research, authenticated synthetic doctor panels, worklist, focused decisions, guides, appendix, validation, and a completed fresh GPT-6.1 Sol/xhigh plan review. Added concrete Carbon, GitHub, GOV.UK, NHS, Apple Health and Cloudscape precedents with source-to-feature mappings. Application work and human-factors validation remain pending.

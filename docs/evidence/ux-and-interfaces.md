@@ -185,3 +185,15 @@ The following official source passages were checked during the October 19 resear
 - **Locator:** original citation above; precise section/page and canonical URL require verification unless supplemented below.
 - **Verification:** carried forward from 2026-10-04 source list; not independently reverified during this migration.
 - **Maintenance:** recheck on claim/method change and before a release relying on this source.
+
+## UI engineering skills 2026-10-19
+
+These are engineering guidance sources, not clinical evidence. Reviewed 2026-10-19 and installed from agent-skills commit `063bee94c3f4df8453406c830b0a7df0f2860278`; [local provenance and applicability](../execution/engineering-guidelines.md#installation-and-provenance).
+
+| Source ID | Source and inspected material | Application and limits |
+|---|---|---|
+| ux-agent-react | [React best practices](https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/react-best-practices/SKILL.md); async-parallel, derived-state-no-effect and dynamic-import rules | Portable fetching/state/loading guidance; Next.js-specific APIs do not require adopting Next.js; no premature cache or optimization mandate |
+| ux-agent-composition | [Composition patterns](https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/composition-patterns/SKILL.md); avoid-boolean-props and explicit-variants rules | Simple composition and explicit variants; no mandatory provider framework or incompatible React API changes |
+| ux-agent-web | [Web design skill](https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md) and [fetched web rules](https://github.com/vercel-labs/web-interface-guidelines/blob/434b7f91364665f2f733b310ec54809bf8f37937/command.md) | Accessibility and interface review; domain holds, readable identity/blockers and appropriate URL state override generic recommendations |
+
+The web rules were fetched on 2026-10-19 at revision `434b7f91364665f2f733b310ec54809bf8f37937`. Fetch fresh rules before each later web review and record revision or content hash/date; the installed skill's pin does not freeze this separate source. Engineering standards on reuse/testing are project decisions, not claims of proven clinical effectiveness or blanket compliance with every upstream rule.

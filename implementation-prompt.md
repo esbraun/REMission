@@ -6,6 +6,8 @@ Revision: 2026-10-19. This instruction set governs future application implementa
 
 Read the [plan index](plan.md), [shared invariants](docs/spec/00-scope-and-invariants.md), and [gate bundles](docs/spec/08-gates-and-release.md#gate-context-and-acceptance). Load the assigned gate specification, consumed contracts and cited scenario/evidence entries. Do not load the entire package into every worker.
 
+All implementation workers also read the [engineering guidelines](docs/execution/engineering-guidelines.md); UI workers load the applicable installed skills and rule files identified there. Apply the risk-based test policy without reducing required scenario coverage.
+
 Requirements have one canonical home. Use stable requirement, estimand, scenario and source IDs from the [requirement map](docs/spec/requirement-map.md). Resolve conflicting requirements before dependent implementation.
 
 | Task | Additional reading |

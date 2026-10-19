@@ -10,6 +10,7 @@ Legacy section IDs retain all original requirements in the mapped canonical sect
 
 | IDs | Canonical owner | Gate / acceptance evidence | Source justification |
 |---|---|---|---|
+| ENG-01, UI-SKILLS, TEST-QUALITY | [Engineering guidelines](../execution/engineering-guidelines.md) | G0-G7: choices tied to requirements; G5: complete UX/browser scenario mapping, real middleware/persistence tests; G7: pinned dependencies and skill provenance | User engineering requirements; ux-agent-react, ux-agent-composition, ux-agent-web |
 | SYN-BOUNDARY, CLIN-UPDATE | [Scope](00-scope-and-invariants.md) | G0/G7: separate claim statuses and evidence scope | esmo, cochrane-cbti, zhang-leukemia, dimsdale-inpatient |
 | CONTRACT-01, TIME-01, EST-INT | [Contracts](01-estimands-and-contracts.md) | G0/G5: schema versions, temporal DAG, no scalarized interruption winner | iche9, gformula; vector is engineering choice |
 | DGP-01, DGP-02, DGP-03 | [DGP](02-synthetic-dgp.md) and [equations](dgp-reference.md) | G0/G1: parameter manifest, independent layers, locked namespaces | sim-check, recsim; numerical equations are invented |

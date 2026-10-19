@@ -88,6 +88,10 @@ before decomposition. Follow applicable repository instructions and the
 runtime's higher-priority instructions. Treat plan.md as the product and
 methods specification; this playbook supplies the execution workflow.
 Apply its "Codex guide rules applied to this implementation" to every worker.
+Read docs/execution/engineering-guidelines.md for DRY, maintained OSS reuse,
+simple design, selective UI skill usage and meaningful seam/integration tests.
+UI workers verify and read the applicable installed skills and rule files.
+Retain the existing architecture and deployment outside Vercel.
 Use native tools, batch independent reads, preserve types and unrelated edits,
 surface errors, and carry each package through observed verification.
 
