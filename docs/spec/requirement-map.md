@@ -27,6 +27,22 @@ Legacy section IDs retain all original requirements in the mapped canonical sect
 
 ## Legacy section homes
 
+### October 19 UX additions
+
+| IDs | Canonical owner / implementation plan | Acceptance | Sources |
+|---|---|---|---|
+| UX-FOUNDATION | [Research and foundations](../plans/ux/00-research-and-foundations.md); service/UI presentation refinement | G0 reviewed contracts; G5 view/requirement mapping | ux-nhs, ux-nist, ux-dashboard |
+| UX-ACCOUNT | [Accounts and shell](../plans/ux/01-doctor-accounts-and-shell.md) | UX-T01/02 | Engineering access-control requirements; ux-nist identity rationale |
+| UX-PANEL | [Panel dashboard](../plans/ux/02-panel-dashboard.md) | UX-T03/04/13 | ux-carbon, ux-github |
+| UX-WORKFLOW | [Patient workflow](../plans/ux/03-patient-decision-workflow.md) | UX-T05-10/14 | ux-govtasks, ux-apple; existing domain evidence |
+| UX-HELP | [View guides](../plans/ux/04-tooltips-and-view-guides.md) | UX-T11/12 | ux-cloudscape, ux-wcag-help, ux-dialog |
+| UX-APPENDIX | [Technical appendix](../plans/ux/05-technical-appendix.md) | UX-T12 | ux-cloudscape |
+| UX-ACCEPTANCE | [Validation](../plans/ux/06-validation-and-integration.md) | G5 plus separate human/clinical statuses | ux-nist, ux-nhs; existing human-review requirements |
+
+UX source records are in the [UX register supplement](../evidence/ux-and-interfaces.md#ux-pattern-research-2026-10-19). Tests remain planned, not passed.
+
+### Legacy mapping
+
 | ID | Original section | Canonical document | Disposition |
 |---|---|---|---|
 | LEG-01 | 1. Recommendation and intended demonstration | [00-scope-and-invariants.md](00-scope-and-invariants.md) | Preserved; targeted revisions listed in revision history |

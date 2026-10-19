@@ -1,5 +1,15 @@
 # Documentation migration verification
 
+## UX package verification (October 19, 2026)
+
+- Created eight ordered documents under docs/plans/ux and integrated root navigation, canonical UI requirements, evidence, gate reading guidance, requirement mapping and revision dispositions.
+- Checked all 42 Markdown files in the root plan/docs set for relative file targets, heading fragments, balanced fenced blocks and the existing under-400-line convention: zero errors.
+- Checked whitespace with git diff --check and inspected new untracked UX Markdown for trailing whitespace: zero errors.
+- A fresh gpt-6.1-sol/xhigh reviewer inspected the saved package and related specifications; no remaining actionable contradictions were reported. See the [review record](../plans/ux/07-adversarial-review.md).
+- No application tests, authentication implementation, model runs, clinician studies or human-factors acceptance occurred. UX-T01 through UX-T14 remain planned checks.
+
+## Earlier migration verification
+
 Date: 2026-10-19. This records documentation checks only. No application, DGP, model fit, SBC study, simulation evaluation or human review was executed.
 
 ## Checks performed
