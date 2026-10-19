@@ -1,0 +1,58 @@
+# Data science library decisions
+
+Revision: 2026-10-19. Status: researched implementation requirements; no packages installed, benchmarks run or statistical gates accepted by this revision. [Plan index](../../../plan.md).
+
+## Sequence and ownership
+
+1. This decision register: selected libraries, alternatives and reuse boundaries.
+2. [Bayesian implementation and borrowing](01-bayesian-and-borrowing.md): G2 plus shared G3/G4 inference.
+3. [Experiments and support](02-experiments-and-support.md): G3/G4 estimators and policy control.
+4. [Validation and selective benchmarking](03-validation-and-benchmarks.md): G1-G7 implementation checks and evidence-based benchmark selection.
+
+Canonical estimands and acceptance thresholds remain in the specifications. These documents prescribe implementation steps, not alternative scientific requirements. Sources live in the [software evidence register](../../evidence/software-libraries.md). Read only the assigned method sections and their cited evidence.
+
+## LIB-01 — Selection policy
+
+Use maintained libraries for distributions, inference, linear algebra, regression, diagnostics and evaluation. Project code owns the causal factorization, intervention rollout, study-to-target bridge, protocol bookkeeping, eligibility and audit behavior. A mature library does not establish that a proposed use is identified, calibrated or clinically valid.
+
+Keep Python/FastAPI for the application. Allow R in offline preparation and validation jobs for RBesT, SBC and MRTAnalysis; do not put an R interpreter inside request handling. Use one application Bayesian modeling backend, PyMC. CPU and 64-bit numerical computation are the initial baseline. Preserve deployment outside Vercel.
+
+Before installing, verify the selected release's license, maintenance/release history, security advisories, Python/R requirements, compiled-wheel/toolchain support and transitive compatibility on the intended execution platform. Record official URLs, exact releases/commits, source inspection date and limitations. Reject an unusable dependency explicitly; revise this decision record rather than silently substitute an estimator. Exact dependency pins belong to tested implementation lockfiles, not an untested claim in this research document.
+
+### Comparison and recommendations
+
+Speed statements below describe implementation mechanisms or upstream evidence, not REMission measurements. Accuracy means computational agreement, estimand recovery and uncertainty performance under stated assumptions; it is not a single package ranking.
+
+| Responsibility | Selected implementation | Speed and accuracy tradeoffs | Built-in evaluation and alternatives |
+|---|---|---|---|
+| Bayesian longitudinal, ordinal and N-of-1 models | PyMC; explicitly select native NUTS initially | Compilation and MCMC cost depend on model geometry; expressive shared models avoid multiple inference implementations. NUTS accuracy still requires diagnostics and sufficient draws | Prior/posterior predictive sampling and sampler statistics; ArviZ diagnostics. CmdStanPy/Stan is a mature compiled alternative with generated quantities, but adds a model language and toolchain. [sw-pymc](../../evidence/software-libraries.md#sw-pymc), [sw-stan](../../evidence/software-libraries.md#sw-stan) |
+| Bayesian acceleration | nutpie, conditional on the narrow promotion check | Compiled sampling can improve throughput; upstream reports an average approximately 2x over Stan on posteriordb, not this workload. Native PyMC is the reference, not an accuracy loser | Retains sampler diagnostics. External PyMC NUTS needs continuous sampled variables. NumPyro/JAX supports compiled CPU/GPU execution but adds precision, compilation and device considerations; defer it unless a concrete bottleneck remains. [sw-nutpie](../../evidence/software-libraries.md#sw-nutpie), [sw-numpyro](../../evidence/software-libraries.md#sw-numpyro) |
+| Bayesian diagnostics | Compatible pinned ArviZ ecosystem | Diagnostics measure numerical reliability, not causal identification. Avoid collecting enormous pointwise arrays when smaller declared summaries suffice | R-hat, ESS, MCSE, predictive plots and supported predictive model comparison. Current documentation includes ecosystem/API changes; inspect the selected version's actual APIs. [sw-arviz](../../evidence/software-libraries.md#sw-arviz) |
+| Robust MAP priors | Offline RBesT; Python imports normal-mixture artifacts | Fit external studies once per study/prior version; mixture evaluation is cheaper than refitting studies per patient. Mixture and bridge approximation error need separate checks | gMAP, automixfit, robustify, mixture summaries/effective information and operating-characteristic tools. Pure PyMC synthesis avoids R but duplicates specialist tooling. RBesT does not identify transported conditional effects. [sw-rbest](../../evidence/software-libraries.md#sw-rbest) |
+| Computational calibration | Offline R SBC with a backend for actual Python fits | Independent simulated fits dominate cost; parallelize replicates with bounded resources. Calibration depends on matching prior/generator and dependence-aware ranks | Rank histograms, ECDF differences, derived test quantities and custom backends. ArviZ convergence checks alone are not SBC. [sw-sbc](../../evidence/software-libraries.md#sw-sbc) |
+| WCLS and weighted design-based regression | statsmodels in Python; MRTAnalysis as offline WCLS reference | Small linear systems are a lower-cost analysis than MCMC. Correct centering/weights and cluster inference determine validity; speed does not rescue a wrong estimator | WLS and robust covariance in statsmodels; MRTAnalysis wcls has a hat-matrix small-sample correction. Generic cluster correction is not the same correction. [sw-statsmodels](../../evidence/software-libraries.md#sw-statsmodels), [sw-mrtanalysis](../../evidence/software-libraries.md#sw-mrtanalysis) |
+| Single-decision nonlinear BCF comparator | StochTree Python BCF | Compiled tree machinery targets flexible regression; flexibility is not guaranteed to improve sparse-data causal accuracy. Does not solve longitudinal treatment/confounder feedback | Posterior forest/effect samples and documented multichain workflow; use common diagnostics on declared summaries. R bcf is an alternative but adds R to the comparator execution path. [sw-stochtree](../../evidence/software-libraries.md#sw-stochtree) |
+| Predictive/nuisance models | scikit-learn regularized models, histogram boosting and pipelines | Regularized models are the transparent baseline; histogram boosting offers nonlinear flexibility and efficient fitting. Select complexity on held-out evidence | Grouped/time-aware splitting, scoring, tuning and calibration tools. Individual predictive calibration is not treatment-effect coverage. [sw-sklearn](../../evidence/software-libraries.md#sw-sklearn) |
+| Hierarchical contextual Thompson sampling | Shared PyMC inference plus explicit project controller | Batch posterior refreshes cost more than simple streaming linear bandits; cached draws support fast decisions. Retain required pooling/action centering | Vowpal Wabbit, MABWiser and contextualbandits offer existing online algorithms and useful benchmarks; none is accepted here as a drop-in for the complete hierarchical/frozen policy contract. Do not adopt all three. [sw-bandits](../../evidence/software-libraries.md#sw-bandits) |
+| Fixed-policy contextual OPE | COBA, offline evaluation adapter | Reuses IPS/DR evaluation and experiment machinery. IPS can have high variance; DR depends on nuisance modeling and overlap. Neither fixes unsupported actions or MNAR rewards | Logged-data evaluation and plots. OBP offers a broader specialist OPE collection, but adds another dependency stack; retain as an alternative, not a required second evaluator. Library intervals do not establish validity under pooled adaptation. [sw-ope](../../evidence/software-libraries.md#sw-ope) |
+| DGP and numerical evaluation | NumPy, SciPy, statsmodels | Vectorized draws/linear algebra avoid bespoke numerical kernels. Stable streams, numerical precision and independent truth matter more than generator microbenchmarks | SeedSequence/Generator, distributions, bootstrap and binomial interval routines. Optional rliable adds reporting for compatible repeated-run metrics. [sw-numerics](../../evidence/software-libraries.md#sw-numerics), [sw-rliable](../../evidence/software-libraries.md#sw-rliable) |
+
+### Deferred methods
+
+pygformula is an existing frequentist parametric longitudinal g-formula comparator, not a Bayesian borrowing engine. Add it only for a named unresolved longitudinal comparison with a supported matching endpoint and intervention. EconML DynamicDML remains optional: its panel structure and first-period effect-modifier restrictions must match the target. Neither warrants a broad tournament merely because it exists. Long-horizon offline RL, SCOPE-RL and additional policy libraries remain outside the initial implementation. [sw-longitudinal](../../evidence/software-libraries.md#sw-longitudinal)
+
+## LIB-02 — Evidence before benchmarks
+
+Use direct official documentation and applicable published evidence to settle capabilities, estimator assumptions, supported outputs and clear exclusions. Do not run synthetic experiments to rediscover that an API lacks longitudinal interventions or that a generic learner lacks the specified pooling model.
+
+Plan synthetic-DGP benchmarks only where a material choice remains uncertain: achievable precision per unit time, full-scale resource use, finite-sample inference, bridge approximation or a method's behavior under the project's stresses. Each comparison names a decision, matched estimand, selected cells and stopping rule. Existing clear evidence can close the choice without a new comparative benchmark; record why it applies.
+
+This exemption concerns library-selection comparisons, not the existing required analytic checks, SBC, recovery, null calibration, policy runs or reproduction gates. The existing 20-fit resource pilot remains required before expensive suites. No benchmarking is executed as part of this documentation revision.
+
+## LIB-03 — Minimal integration surface
+
+- Internal fit requests carry the existing estimand/data/prior versions, cutoff, seed key and explicit model/sampler configuration. Reject unsupported configurations before expensive fitting.
+- Fit results retain existing outcome contracts and add backend/sampler/package versions, diagnostics artifact references, numerical precision and explicit accepted/failed/abstained status. A numerical posterior mean is not by itself a permitted superiority claim.
+- Offline artifacts carry a schema version, source/input checksums, units, model/prior/transform versions, seed provenance and producer runtime. Validate them before import. Store large draws in artifact storage, with concise manifests in version control.
+- R jobs use explicit command-line file inputs/outputs; no live interpreter bridge is required. Mixture artifacts use JSON with component weights/means/standard deviations on the named marginal scale. SBC exchange preserves chain/draw/quantity coordinates in a documented tabular export. Reference WCLS fixtures use CSV plus a JSON analysis manifest.
+- Keep worker fitting separate from approval clicks. No new public HTTP endpoint or general plugin framework is required. Expose diagnostic/status metadata through the existing typed service contracts as needed by the UI.

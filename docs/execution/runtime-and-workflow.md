@@ -68,6 +68,10 @@ When building a custom harness, use clear tool names and semantic arguments, dis
 Final reports should state the delivered behavior, executed checks, and material limitations concisely, with file/artifact references rather than a dump of the output. For reviews, lead with reproducible findings ordered by severity. Use targeted metaprompting and repeated evaluations when slow starts, repeated reading, or noisy updates occur; do not expand the prompt with untested instructions.
 
 
+## Selected methods runtime
+
+Read the [methods library decisions](../plans/methods/00-library-decisions.md) for the selected stack: PyMC with explicit native NUTS initially and compatible ArviZ, NumPy/SciPy, statsmodels, scikit-learn, StochTree for the matched BCF comparator and COBA for offline contextual OPE. Offline R jobs supply RBesT prior preparation, SBC and MRTAnalysis reference checks through versioned artifacts. Do not add Stan as a second application backend by default. nutpie requires the documented targeted acceleration check. Follow [selective future benchmarking](../plans/methods/03-validation-and-benchmarks.md), retaining all required validation and the resource pilot.
+
 ## How to launch
 
 1. Open a checkout of `esbraun/REMission` and inspect the current branch, working tree, `plan.md`, applicable `AGENTS.md` files, and available tools.

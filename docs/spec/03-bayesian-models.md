@@ -6,6 +6,12 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
+## BAYES-LIB — Selected inference and evidence tools
+
+Follow the [Bayesian implementation sequence](../plans/methods/01-bayesian-and-borrowing.md): PyMC with explicitly selected native NUTS initially, compatible ArviZ diagnostics, offline RBesT MAP preparation and offline R SBC applied to actual Python fits. StochTree is the matched single-decision BCF comparator. Consider nutpie only through the targeted acceleration check; no additional application Bayesian backend is required. The [library comparison](../plans/methods/00-library-decisions.md) and [source records](../evidence/software-libraries.md) document alternatives, speed/accuracy limits and evaluation support.
+
+The versioned R-to-Python mixture artifact declares informative versus weak weights, means/standard deviations, marginal scale and provenance. The project owns the ordinal/marginal transport bridge. Existing software evidence does not validate that bridge, missingness assumptions or longitudinal interventions.
+
 ## BAYES-01 — Component validation contract
 
 | Input | Target and truth | Comparators and evidence |

@@ -6,6 +6,10 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
+## DGP-LIB — Numerical implementation and benchmark use
+
+Use NumPy Generator/SeedSequence and SciPy numerical distributions under the [library decisions](../plans/methods/00-library-decisions.md); preserve keyed streams, independent truth and evaluator access restrictions. The [validation plan](../plans/methods/03-validation-and-benchmarks.md) reuses these DGPs for targeted future library comparisons only where existing evidence does not resolve a material choice. No benchmark is executed by this revision, and selection evidence does not replace G1-G6 validation.
+
 ## DGP-01 — Three generator layers
 
 **Layer A:** independent normal–normal and beta–binomial posterior fixtures; randomized constant-effect treatment; a two-group effect modifier; an enumerable two-period treatment-confounder system; ordinal category/total expectations; a two-action contextual bandit; and an enumerable two-stage escalation tree. Check signs, units, updates, standardization and probabilities against analytic answers. [sim-check](../evidence/simulation.md#sim-check)

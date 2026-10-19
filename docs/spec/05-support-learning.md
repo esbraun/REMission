@@ -6,6 +6,12 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
+## SUPPORT-LIB — Estimation, policy and evaluation libraries
+
+Follow the [support implementation sequence](../plans/methods/02-experiments-and-support.md): statsmodels WLS with explicit participant-clustered small-sample/df-corrected inference, offline MRTAnalysis coefficient/reference comparisons, shared PyMC hierarchical bandit inference and COBA fixed-policy contextual IPS/DR evaluation. scikit-learn supplies declared nuisance models with leakage-safe training. [Library comparison](../plans/methods/00-library-decisions.md); [software sources](../evidence/software-libraries.md).
+
+Generic cluster correction differs from MRTAnalysis's hat-matrix correction; validate the locked Python procedure rather than assert identical SEs. COBA's defaults do not establish admissible nuisance splits or adaptive/cohort uncertainty. Project code retains final probability bounds/logging, frozen policies, observation assumptions and eligibility. Fast generic bandits are optional comparators, not silent replacements for required hierarchical pooling. No library benchmark has been executed.
+
 ## SUPPORT-01 — Initial validated action set and executable policy
 
 Start with binary prompt/no-prompt, one decision per daily outcome window. Preserve extensibility without describing multi-action or overlapping-window inference as validated. Follow S20–S26 and S29–S32.

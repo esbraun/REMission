@@ -4,6 +4,7 @@ Revision: 2026-10-19. This register records justification, not quantitative trai
 
 ## Domains
 
+- [Software libraries](software-libraries.md): selected data science tools, alternatives, source capabilities and compatibility/benchmark limitations.
 - [Simulation](simulation.md): ADEMP, simulation verification, SBC and computation.
 - [Causal](causal.md): estimands, g-computation, transport and borrowing.
 - [Experiments](experiments.md): N-of-1, SMART, MRT, bandits and policy evaluation.

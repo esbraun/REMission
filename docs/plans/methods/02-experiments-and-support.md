@@ -1,0 +1,50 @@
+# Individual experiments and support learning
+
+Revision: 2026-10-19. Planned implementation only. Read [library decisions](00-library-decisions.md), [experiments](../../spec/04-individual-experiments.md), [support contracts](../../spec/05-support-learning.md) and relevant scenarios.
+
+## EXP-LIB — N-of-1 and SMART
+
+1. Use NumPy Generator for block assignment from the accepted protocol, with keys separate from outcomes and fitting. Persist the allowed sequence/distribution and assignment before outcomes. Eligibility, consent, rescue, holds and stopping remain project domain rules.
+2. Reuse PyMC for patient effects, trends, treatment-specific carryover/rebound and serial correlation. The initial residual model is AR(1) on consecutive latent daily residuals with positive innovation scale and |rho|<1. Retain a daily latent grid across missing observations, or explicitly derive the elapsed-time transition; compressing observed nights falsely changes the lag. Extend only when prespecified diagnostics justify it.
+3. Keep assignment effects distinct from taken-treatment associations. Use statsmodels for a declared naive regression comparator, not an automatic causal or serial-dependence correction. Do not treat several nights in one block as several independent randomized blocks.
+4. Check the analytic/no-carryover case, then existing 2/4/8-block and correlation/carryover/rebound cells. Report early stopping, rescue, informative termination, interval width and inconclusive rates. Freeze the complete support-policy snapshot during block/washout.
+5. Enumerate SMART response branches and compatible strategies before fitting. Compute each randomized path's assignment-probability product from the actual logs; responders contribute to every compatible embedded strategy. Estimate second-stage effects separately from enrollment-to-endpoint strategy values.
+6. Implement the design-based weighted strategy estimator using NumPy/statsmodels linear algebra, with documented normalized strategy weights and participant-level estimating contributions. Preserve covariance across strategies for replicated compatible records; do not use default independent-row regression SEs. Validate against exact enumeration and compare with shared Bayesian g-computation on the same target. Participant bootstrap is a sensitivity check for the independently randomized fixture, not a remedy for hidden confounding or pooled adaptation.
+
+No dedicated general trial platform is needed for this narrow SMART fixture. Library reuse supplies the numerical/regression machinery; project code supplies strategy compatibility and assignment probabilities. Observational first-stage policies retain their confounding assumptions.
+
+## MRT-LIB — WCLS implementation and reference check
+
+1. Export long-form available-at records with participant ID, assigned binary action, final executed probability p(H), proximal outcome, availability, moderator/control variables and observation status. Log deterministic/unavailable decisions but exclude them from the two-action randomized contrast.
+2. Freeze q(S)=0.5 initially, moderator/control bases and missingness settings. Construct weights q(A|S)/p(A|H) and effect regressors (A-q(S))*f(S). Include the declared control basis; use statsmodels WLS with an independence working correlation.
+3. For the initial Python analysis, explicitly request participant-clustered sandwich covariance with small-sample and degrees-of-freedom correction and t-based inference. Record the actual correction version/options; statsmodels defaults are not the scientific contract. Detect singular designs, inadequate cluster degrees of freedom and extreme weights; return failure/inconclusive status rather than invented finite intervals.
+4. Run the offline MRTAnalysis wcls reference with identical rows, formulas, availability and probabilities. Compare coefficient estimates numerically. Compare SEs/intervals as distinct procedures: MRTAnalysis's hat-matrix correction is not identical to statsmodels's generic cluster adjustment. Do not assert SE parity unless the formulas actually match.
+5. Evaluate coverage for the locked Python correction at cohorts 60 and 240 using existing MRT scenarios. If it fails, version the analysis plan and adopt a justified corrected estimator; do not retain failed inference or silently call MRTAnalysis from the application. A correction replacement must receive fresh validation.
+6. For primary MAR analysis, fit the declared observation-probability model with scikit-learn on permitted history, check observation positivity, and include inverse observation probability in the analysis weight where justified by the prespecified estimating equation. Use participant-level cross-fitting and account for nuisance estimation in repeated-simulation coverage. Add MNAR sensitivities. Missing or pending rewards never become zeros.
+
+The R reference initially covers the matching complete-observation/MAR-neutral fixture. It does not automatically validate extra observation weights. Standard participant-clustered MRT inference remains unaccepted for pooled adaptive assignment; report those analyses as exploratory unless a separate adaptive-inference contract is justified and validated.
+
+## BANDIT-LIB — Hierarchical policy without a bespoke sampler
+
+1. Fit the shared PyMC working model with population and patient-level partially pooled action-centered effects. Keep outcome/observation ownership explicit so bandit and population fits do not recycle a posterior as independent evidence.
+2. Refresh in versioned batch jobs, reusing validated posterior draws between updates. Record the cutoff and fit age. Do not run a full chain during approval or assign from a failed/unready fit; use the existing declared fixed-support fallback or pause state.
+3. For binary actions, estimate posterior probability of each action being best from joint posterior draws. Declare tie handling, draw count and the probability approximation's MCSE, accounting for draw dependence. Increase draws when uncertainty can change the final bounded probability beyond the protocol tolerance; record unresolved approximation as unready.
+4. Apply constraints, eligible set, [0.1,0.9] bounds, normalization/feasibility checks, then persist the final distribution and draw with NumPy. Log that executed distribution, not the raw Thompson fraction. Single-action and unavailable cases follow SUPPORT-01.
+5. Freeze parameters, posterior version, feature mapping, probabilities/action versions and burden logic during patient blocks/washout. Global learning cannot modify that snapshot. Clinical hold overrides remain explicit deviations.
+6. Check empirical sampling frequencies against persisted probabilities and exercise infeasible bounds, action exclusions, missing observations, concurrent updates and snapshot replay.
+
+Vowpal Wabbit is the preferred optional fast online comparator if the hierarchical learner's resource use creates a material decision. MABWiser/contextualbandits remain alternatives in the research table. Do not replace hierarchical pooling with an independent-arm or ordinary linear learner to win a speed comparison. Evaluate policy value and burden separately from update speed.
+
+## OPE-LIB — Fixed-policy contextual evaluation
+
+Use COBA's logged-feedback IPS/DR evaluation offline. The adapter must preserve context/action identity, eligible action sets, final logging propensity, observed reward and target-policy distribution. Target policies are fixed before evaluation; disable learning in evaluation. Implement required stochastic-policy scoring through the library's documented interface and check the two-action enumeration before use.
+
+For DR, train nuisance reward models outside each evaluation fold using patient/cohort boundaries and forward-time restrictions appropriate to the target. Inspect the selected COBA implementation: its default reward-model training does not establish these project splits. If needed, supply supported precomputed reward estimates through a narrow adapter; never train on held-out future rewards or manufacture unobserved truth fields.
+
+Validate IPS/DR against exact two-action values and independently computed per-record contributions, then on-policy simulator truth. Test correct logging with misspecified rewards, propensity corruption, missing support and heavy weights. Report weight dispersion/effective sample size and clipping bias separately. Do not use self-normalized IPS while labeling it ordinary IPS.
+
+Standard library row-level confidence bands are not accepted evidence for pooled adaptive cohorts. Use independent complete-cohort evaluation runs and the validation protocol's paired/cohort uncertainty; missing rewards require the separately declared observation assumptions. COBA reward predictions are OPE nuisance estimates, not observed or delivered rewards and never enter the clinical event record.
+
+If a selected COBA release cannot express the required fixed stochastic target and held-out nuisance estimates, record that specific incompatibility and revise LIB-01 before implementation; do not quietly downgrade to deterministic targets. OBP is the documented specialist alternative, not a reason to install two competing frameworks initially.
+
+Long-horizon policy value, learning-algorithm value and contextual OPE remain separate targets. Delayed harms/habituation are evaluated in independent simulator cohorts; stock contextual DR does not establish distal causal value.

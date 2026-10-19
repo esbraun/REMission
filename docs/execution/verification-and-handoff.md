@@ -2,6 +2,10 @@
 
 Read [execution entry point](../../implementation-prompt.md) and your assigned gate bundle first. This document governs future application implementation, not the documentation migration.
 
+## Methods library evidence
+
+Methods handoff includes the [selected library decisions](../plans/methods/00-library-decisions.md), applicable implementation sequences and [selective benchmark dispositions](../plans/methods/03-validation-and-benchmarks.md). Record exact tested Python/R dependencies, sampler configuration, offline artifact schemas and source limitations. Existing clear evidence can settle library selection without a new comparison; it cannot replace the required project validation, resource pilot or clean-checkout reproduction. These documents contain no executed benchmark results.
+
 ## Statistical evidence contract
 
 Use [VAL-01–03](../spec/07-validation-protocol.md) and [RELEASE-01](../spec/08-gates-and-release.md#release-01--separate-evidence-statuses). A smoke run never satisfies recovery or SBC. Record unsuccessful attempts and truth uncertainty. Keep development and confirmation seeds separate; changing an estimator or threshold after inspecting confirmation requires a new protocol/version and fresh runs.

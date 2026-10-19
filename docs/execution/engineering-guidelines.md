@@ -12,6 +12,10 @@ Revision: 2026-10-19. These requirements govern future implementation across G0-
 - Preserve required ownership, consent, holds, temporal cutoffs, immutable history, optimistic concurrency, idempotency and rollback-safe transactions. These are established requirements, not optional edge cases.
 - Explain meaningful abstractions, dependencies and tests through the requirement or failure they address. Optimize measured bottlenecks; avoid speculative memoization or virtualization.
 
+## Methods library reuse
+
+Methods work follows the [library decisions](../plans/methods/00-library-decisions.md), assigned implementation steps and [software evidence register](../evidence/software-libraries.md). Reuse established inference/regression/diagnostic/numerical implementations; retain project-specific estimands, interventions, transport, protocols and constraints. Qualify actual release/license/maintenance/runtime compatibility before pinning. Use applicable existing evidence where clear; add selective future DGP benchmarks only for material unresolved choices, preserving all required project validation.
+
 ## UI-SKILLS — Portable UI guidance
 
 Retain React/TypeScript, FastAPI and deployment outside Vercel. Skill adoption does not require Next.js, a React upgrade, a hosting change or new public APIs. Keep the existing NHS-informed visual foundation and G0-before-detailed-design dependency.

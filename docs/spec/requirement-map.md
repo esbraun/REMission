@@ -26,6 +26,16 @@ Legacy section IDs retain all original requirements in the mapped canonical sect
 | RELEASE-01 | [Gates](08-gates-and-release.md) | G7: clean reproduction and separate human/clinical statuses | Existing clinical and UX evidence boundaries |
 | S01–S32 | [Catalog](scenario-catalog.md) | Applicable gates and tiers are specified per row | Sources in consuming component contracts |
 
+## Methods library implementation requirements
+
+| IDs | Canonical owner / implementation steps | Gate / acceptance | Sources |
+|---|---|---|---|
+| LIB-01, LIB-02, LIB-03 | [Library decisions](../plans/methods/00-library-decisions.md) | G0 qualification, evidence-led selection, versioned artifacts; G5 metadata; G7 tested pins | [Software register](../evidence/software-libraries.md); user Python/offline-R preference |
+| DGP-LIB | [DGP](02-synthetic-dgp.md); methods validation steps | G1 keyed numerical streams, independent truth and replay | sw-numerics |
+| BAYES-LIB, BORROW-LIB, SBC-LIB, BCF-LIB | [Bayesian steps](../plans/methods/01-bayesian-and-borrowing.md); canonical Bayesian specification | G2 actual-backend calibration, bridge/import checks and matched BCF; no duplicated studies | sw-pymc, sw-arviz, sw-rbest, sw-sbc, sw-stochtree, sw-nutpie |
+| EXP-LIB, SUPPORT-LIB, MRT-LIB, BANDIT-LIB, OPE-LIB | [Experiments/support steps](../plans/methods/02-experiments-and-support.md); canonical component specifications | G3/G4 schedule/strategy/covariance checks, WCLS reference and correction coverage, executed-policy and OPE validation | sw-numerics, sw-statsmodels, sw-mrtanalysis, sw-sklearn, sw-bandits, sw-ope |
+| LIB-BENCH | [Validation steps](../plans/methods/03-validation-and-benchmarks.md); canonical validation protocol | G0 selection dispositions; G6/G7 targeted future comparisons only where consequential uncertainty remains, unchanged mandatory gates | Software register; user instruction to defer benchmarks and reuse clear evidence |
+
 ## Legacy section homes
 
 ### October 19 UX additions

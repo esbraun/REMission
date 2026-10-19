@@ -23,6 +23,12 @@ All gates are **not executed** at this documentation revision. The index, shared
 
 G0 precedes G1 and detailed UI design. G2 depends on accepted G1. G3 depends on shared G0/G1 and accepted G2 interfaces. G4 depends on G1 and G3 coordination contracts. A thin service shell can be built independently after G0; G5 acceptance requires the actual G2–G4 engines. G6 depends on the locked integrated version; G7 follows G6. Unresolved statistical failures cannot be relabeled as UX acceptance.
 
+### Methods library reading and acceptance
+
+G0 qualifies the [library decisions](../plans/methods/00-library-decisions.md), licenses/runtime support and offline artifact contracts. G1 consumes the numerical implementation guidance. G2 reads [Bayesian/borrowing steps](../plans/methods/01-bayesian-and-borrowing.md); G3/G4 read [experiments/support steps](../plans/methods/02-experiments-and-support.md). G5 consumes LIB-03 result metadata. G6/G7 read [validation and selective benchmarks](../plans/methods/03-validation-and-benchmarks.md), applicable source records and accepted runtime/artifact manifests.
+
+Library selection may rely on clear applicable existing evidence without a redundant benchmark. Require a targeted future DGP comparison only for a material unresolved choice; preserve the required 20-fit resource pilot and all statistical acceptance gates. No library-selection evidence or documentation check counts as accepted model/policy validation.
+
 ### RELEASE-01 — Separate evidence statuses
 
 G5 also consumes the [UX plan sequence](../plans/ux/00-research-and-foundations.md) and [UX-T01 through UX-T14](../plans/ux/06-validation-and-integration.md). These add account isolation, panel/task navigation, contextual documentation and draft-recovery acceptance; they do not replace existing statistical, clinical or human-review gates.

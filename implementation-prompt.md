@@ -23,6 +23,8 @@ Implement the full synthetic hybrid through G0–G7. Start with G0 contracts and
 
 Use actual Bayesian fitting, randomization, WCLS and bounded policy logic. Cached outputs must come from reproducible runs. Keep real literature separate from synthetic quantitative studies. No real patient systems, messages, orders or wearable accounts are in scope.
 
+Methods workers read the [library decisions](docs/plans/methods/00-library-decisions.md), assigned method implementation steps and applicable [software evidence](docs/evidence/software-libraries.md). Use PyMC as the single application Bayesian backend, with explicit native NUTS initially; RBesT/SBC/MRTAnalysis are offline preparation/reference tools. Follow the [selective benchmark policy](docs/plans/methods/03-validation-and-benchmarks.md): reuse clear applicable evidence, benchmark only unresolved material choices, and retain all required project validation. No benchmark results are supplied by these plans.
+
 Every methods worker and reviewer receives:
 
 - Canonical requirement and estimand IDs/versions.
