@@ -25,6 +25,8 @@ G0 precedes G1 and detailed UI design. G2 depends on accepted G1. G3 depends on 
 
 ### RELEASE-01 — Separate evidence statuses
 
+G5 also consumes the [UX plan sequence](../plans/ux/00-research-and-foundations.md) and [UX-T01 through UX-T14](../plans/ux/06-validation-and-integration.md). These add account isolation, panel/task navigation, contextual documentation and draft-recovery acceptance; they do not replace existing statistical, clinical or human-review gates.
+
 Track `synthetic-engineering`, `human-factors`, `clinical-review`, and `clinical-validation` separately with not-started/running/failed/blocked/accepted and evidence links. Synthetic-engineering acceptance requires G0–G7 statistical/software evidence. Human-factors requires real intended users and manual accessibility evidence as specified; clinical validation is a separate future project. A full app completion claim still requires the original human-review gates, not only synthetic-engineering acceptance.
 
 A reproducibility manifest includes protocol hash, scenario/DGP/model/prior versions, source code commit, package/runtime versions, seed derivation, attempted/completed counts, failures, saved estimates/intervals, truth SEs, policy lineage, commands, runtime/memory and artifact checksums. Bulk data/fits remain in documented artifact storage; commit concise manifests and reports. Resume from recorded replicate keys without regenerating completed independent runs.

@@ -6,6 +6,10 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
+## UX presentation refinement (October 19, 2026)
+
+The [sequenced UX plans](../plans/ux/00-research-and-foundations.md) define the refined presentation: authenticated doctor-owned synthetic panels; My panel; patient Overview, Current decision, Monitoring and History; task-local Assess, Compare options, Decide and follow up views; contextual guides; and a dashboard technical appendix. These names and view boundaries supersede the older tab/combined-panel layout. Domain content, stage actions, uncertainty, history and safety requirements below remain mandatory. Use [validation scenarios](../plans/ux/06-validation-and-integration.md) alongside UI-VALIDATION; no implementation or human acceptance is asserted.
+
 ## UI-VALIDATION — Rendering verified research evidence
 
 Expose the exact estimand, units, horizon, event strategy, cutoff, evidence status, model/policy version and interval type from accepted backend outputs. Distinguish numeric sorting from a permitted superiority claim. Present missing, pending, undefined and failed estimates differently. Death/hospitalization scenarios show separate outcomes and conditional-population labels under [EST-INT](01-estimands-and-contracts.md#est-int--interruptions-and-denominators); do not synthesize an overall winner.
@@ -33,7 +37,7 @@ FDA transparency guidance informs this design; the prototype does not claim a no
 
 ### Interaction principles to implement and test
 
-- **Keep the shell stable.** Dashboard, Next treatment assignment, Timeline & history, and Evidence & diagnostics stay in the same locations. Stage changes replace relevant panel content, not the entire navigation.
+- **Keep the shell stable.** My panel leads to patient Overview, Current decision, Monitoring and History. Current decision has task-local Assess, Compare options, and Decide and follow up views. Stage changes replace relevant content, not the entire navigation; detailed diagnostics are available through Inspect basis.
 - **Show the decision first.** A short clinical context, readiness status, and eligible choices precede technical model diagnostics.
 - **Reveal detail progressively.** Provide an immediately visible uncertainty/support summary, with deeper prior, overlap, fit, and protocol detail available on demand.
 - **Keep urgent clinical information visible.** Holds and action-blocking reasons are inline, specific, and actionable; routine model updates do not create repeated interruptive alerts.
@@ -56,6 +60,8 @@ The demonstration has a persistent "Synthetic demonstration — simulated patien
 
 An actionable worklist is the main view. Small summary counts link to the same filtered list; avoid a wall of unrelated KPIs.
 
+The table below is the required information inventory, not the refined default column layout. The [panel plan](../plans/ux/02-panel-dashboard.md) places supplementary appointment, report and assignment detail in expansion while retaining identity, next task, holds and readiness inline. The authenticated doctor scope replaces a cross-clinician filter in this single-doctor version; appointment-date filtering remains available.
+
 | Column | Purpose |
 |---|---|
 | Patient identifiers and appointment | Keep identity and outpatient timing clear |
@@ -73,7 +79,7 @@ Counts use denominators and timestamps: for example, "3 of 12 scheduled patients
 
 ### 11.2 Selected-patient dashboard
 
-Use a consistent top-to-bottom hierarchy:
+Preserve the following content hierarchy across the patient workspace. Overview shows identity, current plan and next task with a relevant recent summary; Assess owns readiness/contributors; Compare options owns evidence; Monitoring owns the full aligned trends, treatment/phase lanes and data-follow-up detail. Context and relevant excerpts remain visible during decisions. Do not render all seven groups as a single default dashboard:
 
 1. **Patient/context banner:** identity, care team, chemotherapy phase, current/historical mode, selected decision, and last update.
 2. **Current plan and next task:** approved intervention, clinical/learning stage, next appointment, and the single main next action.
@@ -89,11 +95,11 @@ Use signed treatment-effect dot-and-interval plots with a clearly labeled compar
 
 For sparse ISI visits, show assessment points and recall windows; a connected line must not imply continuous daily measurement. Table and text summaries must reflect the currently selected date range and historical cutoff.
 
-## 12. "Next treatment assignment" tab
+## 12. Current decision workspace
 
 This is a decision workspace, not a generic analytics page. Its title remains stable; its task header changes, for example: "Initial plan," "Review block 2," or "Reassessment after brief behavioral treatment."
 
-Use five consistent panel slots:
+Preserve five content groups distributed across the task-local views: decision context throughout; clinical assessment in Assess; evidence/diagnostics and eligible options in Compare options; clinician decision in Decide and follow up. These are not five simultaneously expanded panels:
 
 1. **Decision context:** selected step, clinical question, approved background care, outcome/horizon, and current versus historical date.
 2. **Clinical assessment and readiness:** relevant symptoms/contributors, medication reconciliation, patient goals, stability, and exclusions.
@@ -150,7 +156,7 @@ The clinician must be able to change the selected view back to any previous deci
 - An explicitly separate **retrospective outcomes** section reveals what happened later. Later outcomes do not appear inside the original recommendation card.
 - A comparison view can show "then" versus "now" using matched outcomes/comparators and clear labels when estimates are not directly comparable.
 
-In historical mode, the Next treatment assignment tab renders the component for the historical stage. For example, selecting an initial visit shows the initial cold-start panel; selecting a completed trial block shows block-specific review.
+In historical mode, the decision workspace renders read-only task views for the historical stage. For example, selecting an initial visit shows the initial cold-start view; selecting a completed trial block shows block-specific review. Historical mode persists through deep links and refresh.
 
 ### Immutable snapshots
 

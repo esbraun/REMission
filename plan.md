@@ -6,6 +6,10 @@ This file is the authoritative navigation index. Requirements live in the linked
 
 Start with [scope and invariants](docs/spec/00-scope-and-invariants.md), then the [gate reading bundles](docs/spec/08-gates-and-release.md). See [scenario catalog](docs/spec/scenario-catalog.md), [requirement map](docs/spec/requirement-map.md), [evidence rules](docs/evidence/README.md), and [revision history](docs/spec/revision-history.md).
 
+## UX implementation planning sequence
+
+Start with [UX research and foundations](docs/plans/ux/00-research-and-foundations.md), which indexes the ordered plans for doctor accounts, panel dashboard, patient decisions, contextual guides, technical appendix and validation. The [adversarial review](docs/plans/ux/07-adversarial-review.md) records the completed plan review. These are application requirements, not implemented features or accepted human-factors results. The existing G0-G7 dependencies still apply.
+
 ## Validation claim boundary
 
 Synthetic DGPs permit checks of implementation, computation, causal recovery under stated assumptions, misspecification and policy behavior. They do not establish that those assumptions hold in patients or that treatment is safe or effective. Human-factors and clinical gates remain separate.

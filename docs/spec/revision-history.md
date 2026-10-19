@@ -1,5 +1,15 @@
 # Revision history
 
+## October 19 2026 UX planning refinement
+
+Added eight sequenced UX documents: research, authenticated synthetic doctor panels, worklist, focused decisions, guides, appendix, validation, and a completed fresh GPT-6.1 Sol/xhigh plan review. Added concrete Carbon, GitHub, GOV.UK, NHS, Apple Health and Cloudscape precedents with source-to-feature mappings. Application work and human-factors validation remain pending.
+
+Changed presentation requirements: LEG-10-015 uses the new stable navigation; LEG-11-017 distributes the patient dashboard hierarchy across focused views; LEG-12-002 distributes the five decision content groups across task-local views; LEG-13-009 uses historical read-only task views. All required content remains represented, including monitoring, uncertainty, concurrent tasks and source provenance. The section 12 heading is now Current decision workspace. The baseline migration counts below describe the earlier migration, not this subsequent revision.
+
+The accepted review corrections specify exact evidence semantics, concurrent task discoverability, retained longitudinal content, draft/idempotency recovery and the original broader human-review gates. See [review dispositions](../plans/ux/07-adversarial-review.md).
+
+LEG-11-005 is now an information inventory rather than a mandatory default-column layout; supplementary content remains in expansion. LEG-11-014 retains appointment and state filters, while authenticated ownership fixes clinician scope instead of a cross-doctor filter.
+
 ## October 19 2026 synthetic validation revision
 
 Modularized the specification and execution context; added layered known-truth validation and a maintained evidence register. Added explicit reference equations, 32 scenario families, three distinct validation tracks, replication budgets, null-decision calibration and gate reading bundles. No model runs or human reviews were conducted by this documentation revision.
