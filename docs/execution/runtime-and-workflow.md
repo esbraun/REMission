@@ -1,0 +1,163 @@
+# Runtime And Workflow
+
+Read [execution entry point](../../implementation-prompt.md) and your assigned gate bundle first. This document governs future application implementation, not the documentation migration.
+
+## Research basis and model configuration
+
+Research checked October 4, 2026. The 2026-10-19 checkout contains planning documents and local infrastructure configuration, but no application source. Inspect current state and applicable repository instructions before implementation.
+
+The historical prompting rationale is recorded below with its public guide and reviewed source revision. Do not depend on an unavailable conversation attachment. These are execution guidelines for a future app implementation; the current runtime instructions take precedence.
+
+The requested model name, “open gpt sol 6.1,” is interpreted here as **GPT-6.1-Sol**, exposed in this coding environment as `gpt-6.1-sol`. That environment selector is not evidence of a public API model identifier. Verify the exact model identifier, supported reasoning settings, context handling, and subagent capabilities in the actual runtime. Do not silently substitute another model.
+
+The supplied [OpenAI Codex prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) currently identifies `gpt-5.3-codex`, not GPT-6.1-Sol. Its [source notebook](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/codex_prompting_guide.ipynb), reviewed at blob `30b2eab0ba05235b8070c9838352cfdd2546d8b8`, supports the general practices below. Their application to GPT-6.1-Sol is an engineering recommendation to evaluate, not a claim of model-specific published research.
+
+| Practice from the guide | Application to REMission |
+| --- | --- |
+| Start from the coding harness's standard instructions and make targeted additions | Supply this project's scope, contracts, delegation rules, and gates; avoid copying the entire starter system prompt into every task |
+| Autonomy and persistence through implementation and verification | Require runnable artifacts and observed evidence at each gate; a plan or agent's assertion is insufficient |
+| Gather context before editing; batch independent reads | Read the relevant plan sections and interfaces together; sequence dependent work and shared-file writes |
+| Prefer native tools and `apply_patch` | Use tools actually exposed by the harness; `rg` for discovery and native patching for edits; do not invent tool names |
+| Explicit custom-tool instructions | Explain when to use Playwright MCP, what state to inspect, and what evidence to return |
+| Preserve conventions, types, errors, and unrelated edits | Establish typed contracts first; surface failures instead of returning fabricated successful estimates |
+| Native compaction for long runs | Use supported compaction and durable task records; resume from commits, contracts, and evidence instead of restarting |
+| Evaluate prompt changes against observed failures | Use seeded REMission tasks to measure constraint violations, completion, rework, and time to a useful artifact |
+
+The guide suggests medium reasoning as a general starting point and high/xhigh for demanding work on its documented model. For GPT-6.1-Sol, choose only supported settings and evaluate them: routine scaffolding and UI tasks can start at medium; causal modeling, protocol design, and invariant review may warrant high. These are initial hypotheses, not benchmark results. Do not configure unavailable settings.
+
+The guide's older starter text discourages prompted preambles, while its later sections allow them for GPT-5.3-Codex and subsequent versions. Follow the current harness's communication instructions. Give concise progress updates without ending a working turn at a preamble. In a custom API harness, preserve tool results and supported assistant phase metadata; the guide specifically requires `phase` preservation for GPT-5.3-Codex. Verify applicability before using that field with another model.
+
+Multi-agent orchestration and the phase map below are REMission-specific workflow choices. Parallel tool calls alone do not provide subagents, isolated workspaces, or a task scheduler. The harness must expose actual delegation tools. Do not describe simulated role-playing as delegated work.
+
+
+## Codex guide rules applied to this implementation
+
+Apply these rules to both the orchestrator and every delegated worker. The supplied guide is reference material, not a replacement for higher-priority runtime instructions or the project's specification.
+
+### Exploration, tools, and editing
+
+- Plan the needed reads before calling tools; batch independent file searches and reads. Use the harness's native parallel facility. The guide names `multi_tool_use.parallel`; use that when available, but do not invent it in a harness with a different supported mechanism. Serialize dependent work and conflicting mutations.
+- Prefer dedicated tools for their supported actions; use `rg`/`rg --files` for text/file discovery. Use shell commands only where no suitable dedicated tool exists, pass a command string, and set the working-directory argument explicitly.
+- Use the native `apply_patch` implementation for manual file edits. Use generators/formatters for generated files. Treat tool-provided `L123:` prefixes as line metadata, never source text.
+- Search for reusable code before introducing helpers. Read sufficient context, then make coherent edits. Keep types explicit; avoid `as any` and double assertions. Surface errors with useful context rather than broad catches, silent returns, or successful-looking fallbacks.
+- Preserve unrelated changes. Do not amend commits or use destructive resets/checkouts without explicit authorization. In shared workspaces, distinguish announced worker edits from unexpected external edits; pause the affected work and clarify genuinely unexpected changes.
+- Default to ASCII in new source files unless established content or product needs justify Unicode. Comments should explain non-obvious reasoning rather than repeat the code.
+
+### Autonomy, plans, and closeout
+
+Start useful work promptly. Choose reasonable reversible defaults, implement through verification, and avoid repeated discovery without a new question to resolve. The orchestrator's useful work is delegation and integration; each worker's useful work is its assigned artifact. Neither a narration of intended work nor a task list counts as implementation.
+
+Use the native plan tool for substantial work, with multiple steps and at most one `in_progress` step when that is its schema. Update it after actual progress. Parallel worker state belongs in the ledger, not multiple conflicting active plan steps. Do not add broad refactors or tests to a promised scope unless they will be executed.
+
+At each closeout, reconcile every promised task as done, blocked with its reason and required input, or cancelled with its reason. Keep unfinished project tasks in the durable ledger for resumption, but never leave a session plan implying success while work is still pending. Where a plan tool lacks a blocked/cancelled status, record the reason in its explanation and in the ledger without marking blocked work completed.
+
+### Frontend quality adapted to the clinical workflow
+
+Choose intentional typography, spacing, color tokens, and responsive composition; avoid interchangeable KPI walls, arbitrary purple themes, and decorative treatment scores. Honor the NHS-informed accessible component foundation and the plan's stable shell, patient identity, visible uncertainty, and progressive disclosure. The guide's visual-design suggestions do not require adding gradients, unusual fonts, or animations that compromise readability or decision context.
+
+Frontend workers must deliver connected, runnable screens at desktop and narrow viewports. Use purposeful motion only when useful and respect reduced-motion preferences. Loading, missing-data, error, and hold states are part of completion. Have the browser worker inspect rendered screenshots as well as accessibility snapshots; text-only inspection cannot establish layout quality.
+
+### Long-running harness behavior
+
+Use supported native compaction before the context exceeds the model limit. In a custom Responses API harness, follow the guide's `/responses/compact` flow only for models/endpoints that support it: retain the returned compaction item including `encrypted_content` in subsequent input, alongside required conversation state. A hand-written checkpoint is useful durable state, but does not replace native compaction.
+
+For the guide's documented GPT-5.3-Codex integration, preserve assistant `phase` values (`null`, `commentary`, `final_answer`) when reconstructing history; never attach `phase` to user messages. Verify support for GPT-6.1-Sol instead of blindly copying that API field. For supported prompted updates, keep them brief and grounded in outcomes, then continue execution rather than terminating at a preamble.
+
+When building a custom harness, use clear tool names and semantic arguments, distinguish search-result formats, and document when/why/how to call each MCP tool. Enable supported parallel tool calls for independent operations and preserve call/result associations. The guide suggests about 10,000 tokens per tool response, retaining beginning and end when truncating. Record truncation explicitly and fetch omitted ranges needed for a decision; never claim to have read a whole specification from truncated output.
+
+Final reports should state the delivered behavior, executed checks, and material limitations concisely, with file/artifact references rather than a dump of the output. For reviews, lead with reproducible findings ordered by severity. Use targeted metaprompting and repeated evaluations when slow starts, repeated reading, or noisy updates occur; do not expand the prompt with untested instructions.
+
+
+## How to launch
+
+1. Open a checkout of `esbraun/REMission` and inspect the current branch, working tree, `plan.md`, applicable `AGENTS.md` files, and available tools.
+2. Select the verified GPT-6.1-Sol runtime configuration. Confirm that the orchestrator can spawn, message, wait for, and resume subagents, and that delegated agents can access the required files and tools.
+3. Connect Playwright MCP as described below and verify browser availability. Record tool or environment blockers before depending on them.
+4. Give the orchestrator the launch prompt in the next section. Use the task template for each delegated package; use the browser template for UI checks.
+5. Continue through phases 0–7 with persisted gates. If the run is interrupted, resume unfinished task IDs from the ledger. A bounded session can end with a precise checkpoint but must not label the complete app done.
+
+The implementation run should create `docs/implementation/` for the task ledger, requirement mapping, contracts, decisions, validation manifests, and handoff. These paths are proposed outputs, not existing files. Keep bulky fits, screenshots, traces, and generated datasets in documented artifact storage rather than committing all of them by default.
+
+
+## Ready-to-use orchestrator launch prompt
+
+```text
+Implement esbraun/REMission's plan.md as a runnable, reproducible synthetic
+demonstration. Read implementation-prompt.md, the plan.md index, shared invariants, and the assigned gate bundle
+before decomposition. Follow applicable repository instructions and the
+runtime's higher-priority instructions. Treat plan.md as the product and
+methods specification; this playbook supplies the execution workflow.
+Apply its "Codex guide rules applied to this implementation" to every worker.
+Use native tools, batch independent reads, preserve types and unrelated edits,
+surface errors, and carry each package through observed verification.
+
+You are the orchestrator. Delegate EVERY work package to a real subagent:
+discovery, contracts, scaffolding, simulator, ingestion, statistical models,
+protocols, support policy, services, UI, tests, evaluation, documentation,
+integration repairs, and independent review. You own decomposition, dependency
+ordering, file ownership, integration decisions, evidence reconciliation, and
+the final delivery. Use an integration subagent for source edits and repairs;
+do not become the untracked implementer when a worker is blocked.
+
+Inspect the actual tool inventory, repository state, and concurrency limits.
+If delegation is unavailable, report that blocker rather than replacing the
+requested workflow with solo implementation. If Playwright MCP is unavailable,
+continue independent backend work but keep the UI acceptance gate blocked.
+
+Create a requirement-to-task-to-test map for all mandatory plan requirements.
+Create a durable task ledger under docs/implementation/. Each task has a stable
+ID, plan references, input contracts, output paths, exclusive write ownership,
+dependencies, acceptance checks, evidence paths, and status. Separate required
+work from optional extensions. Every required task must have a subagent owner.
+
+Use the suggested React/TypeScript, Python/FastAPI, local immutable storage,
+DuckDB/Parquet, and one Bayesian backend unless inspection establishes a sound
+reason to change them. Pin dependencies and record actual run commands after
+scaffolding. Choose routine reversible engineering defaults and record them.
+Do not invent completed clinician review, participant testing, ethics approval,
+clinical evidence, or model results. Implement provisional synthetic settings
+and keep real stakeholder review explicitly outstanding where unavailable.
+
+Follow phases 0–7 and the dependency gates in this playbook. Parallelize only
+independent tasks with disjoint writes. Start with contracts and a minimal
+vertical replay; expand to the full hybrid workflow rather than stopping at
+static screens or a mock recommendation engine. Use actual Bayesian fitting,
+randomization, WCLS analysis, and bounded policy logic for their respective
+gates. Cached outputs must originate from reproducible, versioned real runs.
+
+Require frontend workers to deliver intentional, accessible, responsive screens
+within the stable clinical shell, including all error and missing-data states.
+Inspect rendered screenshots before accepting visual quality.
+
+Preserve all hard invariants from plan.md. The demonstration uses synthetic
+patients, synthetic quantitative trials, fictional MED_A/MED_B, and replay
+adapters. No real orders, messages, device accounts, or patient data. Clinical
+eligibility, consent, and coordination rules constrain the learner. Wearables
+are supportive measurements and do not diagnose, prescribe, or detect acute
+illness. No truth or future-available records reach learner inputs.
+
+Require Playwright MCP validation by a browser subagent for every user-visible
+work package, then a complete workflow pass on the integrated commit. Inspect
+accessibility snapshots, use visible controls, verify service persistence,
+capture screenshots, and check console/network failures. Convert critical
+browser discoveries into repeatable Playwright Test regressions. Browser checks
+do not replace statistical tests, manual accessibility review, or clinician
+task sessions.
+
+Have independent review subagents examine methods, software invariants, and UI
+evidence. Send failures back to the owning worker, integrate fixes, and rerun
+the affected gates. Never accept a worker's unsupported "done" claim.
+
+Persist task state, commits, contracts, model/data versions, seeds, commands,
+results, and blockers before compaction or handoff. Use supported native
+compaction; preserve required tool-call/result and assistant phase metadata.
+Reconcile session promises as done, blocked, or cancelled with reasons, and
+retain unfinished project task IDs for resumption. Give brief meaningful
+progress updates under the runtime's communication policy. Continue authorized
+work without repeated confirmation for routine implementation choices.
+
+Deliver a clean-checkout runnable demo, seeded cases from plan.md section 17,
+reproducible evaluation outputs, source-to-requirement traceability, and an
+honest report of unresolved gates. Open implementation PRs when authorized by
+the user; do not infer authorization to merge, deploy, or contact clinicians.
+```
