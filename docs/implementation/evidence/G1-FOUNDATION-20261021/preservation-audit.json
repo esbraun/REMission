@@ -54,7 +54,11 @@
     "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\repair\\foundation-sol-20261021-repair-history-narrow.png",
     "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\repair\\foundation-sol-20261021-repair-console.log",
     "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\repair\\foundation-sol-20261021-repair-history.yml",
-    "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\repair\\page-2026-10-21T16-54-48-475Z.yml"
+    "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\repair\\page-2026-10-21T16-54-48-475Z.yml",
+    "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\p3\\foundation-sol-20261021-p3-authenticated.png",
+    "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\p3\\foundation-sol-20261021-p3-console.log",
+    "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\p3\\foundation-sol-20261021-p3-authenticated.yml",
+    "docs\\implementation\\evidence\\G1-FOUNDATION-20261021\\p3\\page-2026-10-21T17-08-36-564Z.yml"
   ],
   "coverage_rows_unchanged": true,
   "task_ids_dependencies_test_requirement_mappings_unchanged": {
@@ -83,10 +87,32 @@
     "G0-TIME-R1": true
   },
   "images": {
-    "runtime": "sha256:279c6885e29bd3edbdfb690585ec16dad5e00b28c54308219fd0338386ec3c31",
-    "service": "sha256:a50c4f7dec7b0c9bf1040d4e2331ea2a4e4dadf477edec320de370323ff05f57",
-    "tests": "sha256:b8f26856b298dc02959c702084e78b317b266f22bf63cd58cd576b27b59641df",
-    "learner": "sha256:9defa060ee600fbd7c279b22b0fe718f39e45d7f45b2ddac14f792108c7e4ce5",
-    "evaluator": "sha256:75b4a9ff620328f85d05477035923a0d1e310f0c516953d455b8331f922dc887"
-  }
+    "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "service": "sha256:aa6505dfb0ad5ee2f2fcb7d70e69c1eb5b7b1e64bd5b96229899b29182627eca",
+    "tests": "sha256:4786def3f3fdf7e09f6d3bd6e61eb29c187b82d0fb705a06af7d4cf58265ac14",
+    "learner": "sha256:c49cb8fdba1d9aaeaf296eacf6240784bba49a141f28b1214394e08ba189a0c6",
+    "evaluator": "sha256:2fc155c6929fc2da9a19e10faa9a72943c1f300c4fd2a2690d653e44572b6a5d"
+  },
+  "prior_full_ready_head": "4d480c88c4311541776cb673fcef7d9b2c3a2478",
+  "prior_ready_raw_blobs": {
+    "independent-ready-review-4d480c8.md": "f937b612485b3a1e622a021d64247e115b5fb229",
+    "independent-evidence-manifest-4d480c8.json": "81781ebaecf952a58525766e87a4e68fe8d63b11"
+  },
+  "backend_boundaries_tooling_locks_unchanged_from4d": [
+    "git",
+    "diff",
+    "--quiet",
+    "4d480c88c4311541776cb673fcef7d9b2c3a2478",
+    "--",
+    "services",
+    "tests/integration/replay",
+    "contracts",
+    "methods",
+    "tooling",
+    "tests/contracts",
+    "tests/library",
+    "web/package.json",
+    "web/package-lock.json",
+    "requirements-contracts.txt"
+  ]
 }

@@ -125,7 +125,7 @@ function App() {
     history.pushState({}, '', next); setPath(next);
   }
   async function signIn(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault(); const form = new FormData(event.currentTarget); clearIdentity(); setError(''); setLoading(true);
+    event.preventDefault(); const form = new FormData(event.currentTarget); clearIdentity(); setError(''); setNotice(''); setLoading(true);
     try {
       const bootstrap = await request<Session>('/api/session');
       const value = await request<Session>('/api/login', { method: 'POST', body: JSON.stringify({ username: form.get('username'), password: form.get('password') }) }, bootstrap);
@@ -135,8 +135,9 @@ function App() {
   }
   async function signOut() {
     const prior = session; clearIdentity(); setSession(null); setError('');
-    try { await request('/api/logout', { method: 'POST' }, prior); setNotice('Signed out. Patient content and unsaved input were cleared.'); }
-    catch (e) { setError(String(e)); }
+    await gate.current.notifyAfter(() => request('/api/logout', { method: 'POST' }, prior),
+      () => setNotice('Signed out. Patient content and unsaved input were cleared.'),
+      e => setError(String(e)));
   }
   async function saveDraft(leave = false) {
     if (!draft || !workspace) return;

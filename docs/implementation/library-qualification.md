@@ -1,3 +1,9 @@
+# Current bounded P3 notification cleanup (2026-10-21)
+
+Full independent foundation review is ready_to_ship for `4d480c88c4311541776cb673fcef7d9b2c3a2478` / base `8ca67682505d78accc855e92cbfbb6692edf8316`; the [raw report](evidence/G1-FOUNDATION-20261021/p3/independent-ready-review-4d480c8.md) and manifest are preserved unchanged. Root requested its sole nonblocking P3 notification cleanup before merge. Old logout success/failure now cannot update a newly authenticated generation's notice/error. Controlled client and actual MCP delayed-completion tests pass, including new auth generation/owned patient context and subsequent owned backend200 response after each completion.
+
+[Current P3 verification](evidence/G1-FOUNDATION-20261021/p3/verification.md) records full build14/14 (3client groups/21backend), integration12/12, source/image/preservation and boundary evidence. Refreshed exact-head review remains required; prior4d ready disposition does not accept this new candidate. No backend/boundary/lock changes; all635 coverage rows/dependencies preserved. G0 accepted, foundation needs review, G1/synthetic engineering running, later scientific/human/clinical gates deferred. Historical checkpoints follow.
+
 # Current foundation safety repair checkpoint (2026-10-21)
 
 Independent review rejected candidate `54adde3d7588c3aee3baa29b5370a2317bfd34a9` for equal-time death clearance/approval and resurrection of superseded safety facts. The [complete raw report](evidence/G1-FOUNDATION-20261021/repair/independent-review-54adde3.md) and raw evidence manifest are preserved unchanged. Both service safety compositions are repaired using canonical inclusive current visibility and lineage-head resolution; strict learner/history cutoffs are unchanged. Atomic state-clear and fresh approval deny known death without a new bundle/task.

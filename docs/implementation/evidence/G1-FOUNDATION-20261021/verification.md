@@ -1,3 +1,7 @@
+# Current P3 notification cleanup
+
+The complete independent ready review applies4d only. Root requested its bounded P3 cleanup before merge; see [current P3 evidence](p3/verification.md). Current manifests describe the new candidate, pending refreshed exact-head review. Checkpoints below are historical.
+
 # Current safety repair checkpoint
 
 Candidate54 was rejected by independent review. Both findings are repaired; see [current repair evidence and limits](repair/verification.md). Current build/source/stack/integration manifests describe the repaired source. All text below is the historical rejected54 author checkpoint; its passing checks did not establish safety composition coverage or independent acceptance. Refreshed independent final review is pending.
