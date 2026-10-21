@@ -1,0 +1,117 @@
+{
+  "scope": "finite source/analytic checks, no production or stochastic engine",
+  "enumeration": {
+    "microstates": 125,
+    "q": "2/5",
+    "r_3": "16/21",
+    "undefined_probability": "27/125",
+    "moments": {
+      "category4": {
+        "mean": "1/2",
+        "variance": "4/21",
+        "formula_variance": "4/21"
+      },
+      "score": {
+        "mean": "2",
+        "variance": "64/21",
+        "formula_variance": "64/21"
+      }
+    }
+  },
+  "deterministic_1000_row_table": {
+    "J": 1000,
+    "Jplus": 784,
+    "undefined": 216,
+    "defined_but_category4_empty_trials": 296,
+    "q_CP_box": [
+      0.37641891764376834,
+      0.4239156412691464
+    ],
+    "theta_CP_box": [
+      0.46156816040538784,
+      0.5384318395946122
+    ],
+    "components": {
+      "category4": {
+        "conditional_mean": 0.5,
+        "conditional_sample_SD": 0.4367143861693489,
+        "empirical_SD_MCSE": 0.004282881541134185,
+        "empirical_lower": 0.42966904603418316,
+        "analytic_SD": 0.4364357804719848,
+        "analytic_SD_MCSE": 0.0017737979642240556,
+        "analytic_variance_lower": 0.18520296213083912,
+        "positive_binding_arithmetic": 0.42966904603418316,
+        "undefined_rows_retained": 216,
+        "claim": "finite table arithmetic only; not an independent stochastic pilot or accepted binding"
+      },
+      "score": {
+        "conditional_mean": 2.0,
+        "conditional_sample_SD": 1.7468575446773955,
+        "empirical_SD_MCSE": 0.01713152616453674,
+        "empirical_lower": 1.7186761841367326,
+        "analytic_SD": 1.7457431218879391,
+        "analytic_SD_MCSE": 0.007095191856896222,
+        "analytic_variance_lower": 2.5402298822958542,
+        "positive_binding_arithmetic": 1.5938098639096994,
+        "undefined_rows_retained": 216,
+        "claim": "finite table arithmetic only; not an independent stochastic pilot or accepted binding"
+      }
+    }
+  },
+  "sampled_zero_control": {
+    "count": 0,
+    "n": 3,
+    "CP_interval": [
+      0.0,
+      0.8390851025657284
+    ],
+    "status": "not_structural_zero"
+  },
+  "inverse_denominator_fault": {
+    "exact_r": "16/21",
+    "wrong_inverse_mean": "5/6"
+  },
+  "gradient_checks": [
+    {
+      "component": "category4",
+      "analytic_gradient": [
+        0.0,
+        -0.30077253933066556,
+        -0.30077253933066556,
+        -0.30077253933066556,
+        -0.30077253933066556,
+        0.663001006168799
+      ],
+      "central_difference_max_tolerance": 1e-07,
+      "passed": true
+    },
+    {
+      "component": "score",
+      "analytic_gradient": [
+        0.0,
+        0.19979074947827963,
+        -0.8412036572495902,
+        -1.1882017928255468,
+        -0.8412036572495902,
+        0.19979074947827963
+      ],
+      "central_difference_max_tolerance": 1e-07,
+      "passed": true
+    }
+  ],
+  "availability": {
+    "normalizer": "1/2",
+    "correct_mean": "2",
+    "omitted_gate_mean": "3",
+    "structural_zero_rule": "no mass on eligible state => undefined; no sampled mass alone => unresolved"
+  },
+  "batch_ratio_fault": {
+    "correct": "1/4",
+    "fault_average_ratios": "1/2"
+  },
+  "cell_count": 82,
+  "variant_count": 73,
+  "family_count": 32,
+  "preserved_objects": 21,
+  "verified_sources": 39
+}
