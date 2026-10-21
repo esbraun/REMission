@@ -11,3 +11,10 @@ def main():
 
 
 if __name__=="__main__":main()
+
+
+def read_run_export(root: Path, authority):
+    """Return strict cutoff projections only; no private run/seeds/truth import."""
+    from contracts.runs.admission import read_admitted
+    manifest,partitions=read_admitted(root,authority)
+    return manifest,[projection for _,_,_,projection,_,_ in partitions]

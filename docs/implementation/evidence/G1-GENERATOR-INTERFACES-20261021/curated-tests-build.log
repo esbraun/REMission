@@ -1,0 +1,75 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 1.32kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 178B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 232.04kB 0.1s done
+#5 DONE 0.1s
+
+#6 [service 1/7] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#6 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#6 DONE 0.0s
+
+#7 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#7 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#7 DONE 0.0s
+
+#8 [service 2/7] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#8 CACHED
+
+#9 [client 4/6] RUN npm ci --ignore-scripts
+#9 CACHED
+
+#10 [client 3/6] COPY web/package.json web/package-lock.json ./
+#10 CACHED
+
+#11 [client 2/6] WORKDIR /client
+#11 CACHED
+
+#12 [client 5/6] COPY web/ ./
+#12 CACHED
+
+#13 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#13 CACHED
+
+#14 [service 3/7] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+#14 DONE 0.0s
+
+#15 [service 4/7] COPY services/foundation/ /app/services/foundation/
+#15 DONE 0.0s
+
+#16 [service 5/7] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#16 DONE 0.0s
+
+#17 [service 6/7] COPY --from=client /client/dist/ /app/web/dist/
+#17 DONE 0.0s
+
+#18 [service 7/7] RUN mkdir /data && chown 10001:10001 /data
+#18 DONE 0.2s
+
+#19 [integration-tests 1/1] COPY tests/integration/replay/ /app/tests/integration/replay/
+#19 DONE 0.0s
+
+#20 exporting to image
+#20 exporting layers 0.1s done
+#20 exporting manifest sha256:f5856da72eaa33bfc065cdcde52a62042185e4099f38477e025d827d24bd2aaa done
+#20 exporting config sha256:14bb9bcce03b87f5b8ea335c67e807ea1b446a1092aa1e94d3cab5bc6edbe50f done
+#20 exporting attestation manifest sha256:ebfecb4415ab26c9814c1d54d741f6c6505d21145295297a09e4c2ac40933f28 0.0s done
+#20 exporting manifest list sha256:428371b5756876b7cf23b19e41414592b1cb9ef56b63e26ccac7cdd8d2478e54 done
+#20 naming to docker.io/library/remission-interfaces-tests:candidate done
+#20 unpacking to docker.io/library/remission-interfaces-tests:candidate 0.1s done
+#20 DONE 0.3s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/y6wxtfd61uub0hooe0dyf818z

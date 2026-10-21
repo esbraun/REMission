@@ -1,3 +1,9 @@
+# Current G1 shared-interface checkpoint (2026-10-21)
+
+Root accepted foundation PR16: reviewed head3179f3d2fcc7c9f285129b0272e868d413ced089, base8ca67682505d78accc855e92cbfbb6692edf8316, merge69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e. The exact final ready report and manifest are preserved under [interface evidence](evidence/G1-GENERATOR-INTERFACES-20261021/verification.md), alongside the complete accepted R1 probability plan/critique chain. Earlier rejected54 and ready4d checkpoints below remain historical.
+
+The current candidate provides shared run/export/evaluator contracts, observed-only admission/replay and pure ESTINT-PRECISION-01/1.0.0-r1 qualification. It awaits independent exact-head code review. No producer, filter, calibration/truth jobs or throughput/statistical acceptance is claimed. G0 and bounded foundation engineering are accepted; G1/synthetic engineering remain running; G2-G7/human/clinical deferred. All635 requirement rows/dependencies/mappings remain intact. See [contract boundary](../../contracts/runs/README.md).
+
 # Current bounded P3 notification cleanup (2026-10-21)
 
 Full independent foundation review is ready_to_ship for `4d480c88c4311541776cb673fcef7d9b2c3a2478` / base `8ca67682505d78accc855e92cbfbb6692edf8316`; the [raw report](evidence/G1-FOUNDATION-20261021/p3/independent-ready-review-4d480c8.md) and manifest are preserved unchanged. Root requested its sole nonblocking P3 notification cleanup before merge. Old logout success/failure now cannot update a newly authenticated generation's notice/error. Controlled client and actual MCP delayed-completion tests pass, including new auth generation/owned patient context and subsequent owned backend200 response after each completion.

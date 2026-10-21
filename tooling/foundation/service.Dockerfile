@@ -8,6 +8,7 @@ RUN npm run typecheck && npm run test && npm run build
 # build.py verifies this tag's exact qualified ID before invoking this build.
 FROM remission-foundation-runtime:candidate AS service
 COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
 COPY services/foundation/ /app/services/foundation/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY --from=client /client/dist/ /app/web/dist/

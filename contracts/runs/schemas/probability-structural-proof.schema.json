@@ -1,0 +1,104 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:probability-structural-proof",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "component": {
+      "enum": [
+        "intervention.survival_day42",
+        "intervention.admission_by_day42",
+        "intervention.alive_outpatient_day42",
+        "comparator.survival_day42",
+        "comparator.admission_by_day42",
+        "comparator.alive_outpatient_day42"
+      ],
+      "title": "Component",
+      "type": "string"
+    },
+    "derivation": {
+      "minLength": 20,
+      "title": "Derivation",
+      "type": "string"
+    },
+    "implementation": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "method": {
+      "enum": [
+        "analytic",
+        "enumerated"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "no_hidden_numerical_integration": {
+      "const": true,
+      "title": "No Hidden Numerical Integration",
+      "type": "boolean"
+    },
+    "proof_kind": {
+      "enum": [
+        "known_death",
+        "independent_analytic",
+        "independent_enumeration"
+      ],
+      "title": "Proof Kind",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "value": {
+      "enum": [
+        0,
+        1
+      ],
+      "title": "Value",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "request_sha256",
+    "component",
+    "value",
+    "method",
+    "implementation",
+    "proof_kind",
+    "no_hidden_numerical_integration",
+    "derivation"
+  ],
+  "title": "StructuralDerivation",
+  "type": "object"
+}
