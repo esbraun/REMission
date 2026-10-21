@@ -280,6 +280,106 @@ class LiveWorkflowTests(unittest.TestCase):
         result=self.enter('crash-entry')
         self.assertEqual(result['live_received_at'],'2026-10-21T12:00:00+00:00')
 
+    def test_missing_archive_then_same_key_succeeds_after_exact_dependencies_commit(self):
+        fixture,archive_authority,addition,command=live_fixture(self.root/'pending',run_name='pending-live-run')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority)
+        self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'pending':(fixture['raw'],self.root/'pending/staging',archive_authority)})
+        self.restart_client();before=self.safety_state();headers=self.headers('exact-after-rejection')
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=command,headers=headers)
+        self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],'hold_dependencies_unavailable')
+        self.assertEqual(before,self.safety_state())
+        response=self.client.post('/api/observed-archives/pending',json={'mode':'archive_only'},headers=self.headers())
+        self.assertEqual(response.status_code,200,response.text)
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=command,headers=headers)
+        self.assertEqual(response.status_code,200,response.text)
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM live_hold_keys WHERE key='exact-after-rejection'").fetchone()[0],1)
+
+    def allow_event_review(self):
+        installed=self.settings.installed;authority=installed.authority.model_copy(deep=True);rules=installed.review_rules.model_copy(deep=True)
+        for requirement in [*authority.grants[0].required_reviews,*rules.rules[0].requirements]:
+            requirement.evidence_kinds.append('daily_report');requirement.source_ids.append('foundation-synthetic')
+        self.install_next(authority,rules);self.restart_client()
+
+    def test_review_missing_stale_future_and_equal_committed_event_proofs(self):
+        from test_foundation import observed
+        from services.foundation.replay import append_event,parse_observed
+        from services.foundation.store import canonical,digest
+        self.allow_event_review();entry=self.enter();episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        url='/api/patients/SYN-02/live-holds/'+entry['episode_id']+'/reviews'
+        for name,reference,code in [('missing',dict(store='event',namespace_id='SYN-02',partition_id=None,record_id='missing-record',payload_sha256='f'*64),'hold_dependencies_unavailable'),
+                ('stale',{**episode['trigger_refs'][0],'payload_sha256':'f'*64},'hold_evidence_stale')]:
+            request=self.review_input(episode);request['items'][0]['evidence_refs']=[reference]
+            response=self.client.post(url,json=request,headers=self.headers(name))
+            self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],code)
+        future='2026-10-21T12:00:00.000001+00:00'
+        item=observed(identifier='future-review-evidence',available=future)
+        record=parse_observed(canonical(item['record']).encode())
+        self.store.clock=lambda:NOW
+        with self.store.transaction(write=True) as db:append_event(db,record,item['raw_source'].encode(),received_at=NOW)
+        reference=dict(store='event',namespace_id='SYN-02',partition_id=None,record_id=record.record_id,payload_sha256=digest(canonical(record.model_dump(mode='json'))))
+        request=self.review_input(episode);request['items'][0]['evidence_refs']=[reference]
+        headers=self.headers('future-then-equal')
+        response=self.client.post(url,json=request,headers=headers)
+        self.assertEqual(response.status_code,422,response.text);self.assertEqual(response.json()['code'],'future_hold_evidence')
+        self.settings=replace(self.settings,clock=lambda:datetime.fromisoformat(future));self.restart_client()
+        response=self.client.post(url,json=request,headers=self.headers('future-then-equal'))
+        self.assertEqual(response.status_code,200,response.text)
+        with self.store.transaction() as db:
+            saved=__import__('json').loads(db.execute('SELECT payload FROM live_hold_reviews WHERE id=?',(response.json()['review_id'],)).fetchone()[0])
+            self.assertEqual(saved['current_review_at'],future);self.assertEqual(saved['proofs'][0]['verified_visible_at'],future)
+
+    def test_uncommitted_event_is_not_review_evidence_then_same_key_can_retry(self):
+        from test_foundation import observed
+        from services.foundation.replay import append_event,parse_observed
+        from services.foundation.store import canonical,digest
+        self.allow_event_review();entry=self.enter();episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        item=observed(identifier='uncommitted-review-evidence',available=NOW.isoformat());record=parse_observed(canonical(item['record']).encode())
+        reference=dict(store='event',namespace_id='SYN-02',partition_id=None,record_id=record.record_id,payload_sha256=digest(canonical(record.model_dump(mode='json'))))
+        request=self.review_input(episode);request['items'][0]['evidence_refs']=[reference]
+        headers=self.headers('uncommitted-then-committed');url='/api/patients/SYN-02/live-holds/'+entry['episode_id']+'/reviews'
+        writer=self.store.connect();writer.execute('BEGIN IMMEDIATE')
+        try:
+            append_event(writer,record,item['raw_source'].encode(),received_at=NOW)
+            response=self.client.post(url,json=request,headers=headers)
+            self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],'hold_dependencies_unavailable')
+        finally:writer.rollback();writer.close()
+        self.store.clock=lambda:NOW
+        with self.store.transaction(write=True) as db:append_event(db,record,item['raw_source'].encode(),received_at=NOW)
+        response=self.client.post(url,json=request,headers=headers)
+        self.assertEqual(response.status_code,200,response.text)
+
+    def test_reverse_equal_clock_two_process_approval_commits_then_hold_preserves_history(self):
+        import httpx
+        approval_inside=CONTEXT.Event();allow_approval=CONTEXT.Event();hold_received=CONTEXT.Event()
+        def approval_barrier(point):
+            if point=='after_follow_up':
+                approval_inside.set()
+                if not allow_approval.wait(10):raise RuntimeError('approval release barrier missing')
+        def hold_barrier(point):
+            if point=='before_hold_gate':hold_received.set()
+        approval=self.approval_request()
+        with service_process(replace(self.settings,fault=approval_barrier)) as (url_a,_),service_process(replace(self.settings,fault=hold_barrier)) as (url_b,_),httpx.Client(base_url=url_a,timeout=20) as a,httpx.Client(base_url=url_b,timeout=20) as b:
+            ha=self.http_login(a);hb=self.http_login(b);ha['Idempotency-Key']='approval-first';hb['Idempotency-Key']='hold-second'
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                fa=executor.submit(a.post,'/api/patients/SYN-02/approve',json=approval,headers=ha)
+                self.assertTrue(approval_inside.wait(10))
+                fb=executor.submit(b.post,'/api/patients/SYN-02/live-holds',json=self.command,headers=hb)
+                self.assertTrue(hold_received.wait(10));allow_approval.set()
+                approved=fa.result(20);held=fb.result(20)
+            self.assertEqual(approved.status_code,200,approved.text);self.assertEqual(held.status_code,200,held.text)
+            before=self.safety_state()
+            retry=a.post('/api/patients/SYN-02/approve',json=approval,headers=ha)
+            self.assertEqual(retry.status_code,200,retry.text);self.assertEqual(retry.json(),approved.json())
+            self.assertEqual(before,self.safety_state())
+            current=b.get('/api/patients/SYN-02').json();self.assertEqual(current['stage'],'ASSIGN-09');self.assertFalse(current['permissions']['approve_ordinary'])
+        with self.store.transaction() as db:
+            row=db.execute('SELECT * FROM bundles').fetchone()
+            self.assertEqual(row['approved_at'],held.json()['live_received_at'])
+            self.assertEqual(row['display_sha256'],approved.json()['display_sha256'])
+            self.assertEqual(db.execute('SELECT count(*) FROM bundles').fetchone()[0],1)
+
     def install_next(self,authority=None,rules=None,*,fault=None):
         current=self.settings.installed
         bundle=bundle_for(authority or current.authority,rules or current.review_rules,

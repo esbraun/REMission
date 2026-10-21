@@ -1,0 +1,35 @@
+/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_actual_consumer_admit_worker_cli_and_dispatcher (test_live_safety_product.LiveSafetyProductTests.test_actual_consumer_admit_worker_cli_and_dispatcher) ... ok
+test_before_baseline_is_unknown_and_receipt_equality_is_strict (test_live_safety_product.LiveSafetyProductTests.test_before_baseline_is_unknown_and_receipt_equality_is_strict) ... ok
+test_export_commit_faults_and_response_loss_recover_original_three_files (test_live_safety_product.LiveSafetyProductTests.test_export_commit_faults_and_response_loss_recover_original_three_files) ... ok
+test_fold_rejects_authority_jump_while_active_and_weakened_reasons (test_live_safety_product.LiveSafetyProductTests.test_fold_rejects_authority_jump_while_active_and_weakened_reasons) ... FAIL
+test_nested_and_authority_bindings_and_observed_only_paths_reject_live_product (test_live_safety_product.LiveSafetyProductTests.test_nested_and_authority_bindings_and_observed_only_paths_reject_live_product) ... ERROR
+test_strict_structure_rejects_gap_duplicate_future_foreign_and_wrong_fold (test_live_safety_product.LiveSafetyProductTests.test_strict_structure_rejects_gap_duplicate_future_foreign_and_wrong_fold) ... ok
+test_whole_manifest_hash_and_exact_three_file_roster_fail_closed (test_live_safety_product.LiveSafetyProductTests.test_whole_manifest_hash_and_exact_three_file_roster_fail_closed) ... ok
+
+======================================================================
+ERROR: test_nested_and_authority_bindings_and_observed_only_paths_reject_live_product (test_live_safety_product.LiveSafetyProductTests.test_nested_and_authority_bindings_and_observed_only_paths_reject_live_product)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/integration/replay/test_live_safety_product.py", line 110, in test_nested_and_authority_bindings_and_observed_only_paths_reject_live_product
+    with self.assertRaises(ValueError):admit(root/'live-hold-facts.json',self.root/'forbidden-facts.json')
+                                       ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/services/learner/export_observed.py", line 10, in admit
+    if json.loads(raw).get('schema_version') == '2.0.0':
+       ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+FAIL: test_fold_rejects_authority_jump_while_active_and_weakened_reasons (test_live_safety_product.LiveSafetyProductTests.test_fold_rejects_authority_jump_while_active_and_weakened_reasons)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/integration/replay/test_live_safety_product.py", line 121, in test_fold_rejects_authority_jump_while_active_and_weakened_reasons
+    with self.assertRaisesRegex(ValueError,'authority'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 7.963s
+
+FAILED (failures=1, errors=1)

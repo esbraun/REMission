@@ -24,21 +24,23 @@ def obligation_hash(obligations):
 
 
 def fold(facts):
-    active={};closed={};baseline=None
+    active={};closed={};baseline=None;current_config=None
     for fact in facts:
         op=fact.operation
         config=(fact.authority_generation,fact.authority_sha256,fact.review_rules_sha256)
         if op.type=='baseline':
             if fact.patient_sequence!=1 or baseline is not None or op.active_episodes:
                 raise ValueError('invalid independent baseline')
-            baseline=fact.operation_id
+            baseline=fact.operation_id;current_config=config
             continue
         if baseline is None:
             raise ValueError('missing independent baseline')
         if op.type=='authority_changed':
-            if (op.new_generation<=op.old_generation or op.new_generation!=fact.authority_generation
+            if ((op.old_generation,op.old_authority_sha256,op.old_review_rules_sha256)!=current_config
+                    or op.new_generation<=op.old_generation or op.new_generation!=fact.authority_generation
                     or op.new_authority_sha256!=fact.authority_sha256 or op.new_review_rules_sha256!=fact.review_rules_sha256
-                    or op.prior_journal_id!=fact.journal_id or {x.episode_id for x in op.active_episodes}!=set(active)):
+                    or op.prior_journal_id!=fact.journal_id or len(op.active_episodes)!=len(active)
+                    or {x.episode_id for x in op.active_episodes}!=set(active)):
                 raise ValueError('invalid authority change')
             for item in op.active_episodes:
                 current=active[item.episode_id]
@@ -49,7 +51,15 @@ def fold(facts):
                 if any(resulting.get(k)!=v for k,v in previous.items()):
                     raise ValueError('authority weakened obligation')
                 current.update(obligations=list(resulting.values()),obligation_set_sha256=item.obligation_set_sha256,review=None)
+            current_config=config
             continue
+        if config!=current_config:
+            # Cutovers append patient authority facts only for active episodes.
+            # An inactive journal may next open under a later generation, but
+            # an existing latch/review cannot cross authority without its fact.
+            if active or op.type!='invalidate' or op.action!='open' or config[0]<=current_config[0]:
+                raise ValueError('missing active authority change')
+            current_config=config
         key=op.episode_id
         if op.type=='invalidate':
             triggers=[x.model_dump(mode='json') for x in op.active_trigger_refs]
@@ -68,11 +78,14 @@ def fold(facts):
                 old=active[key]
                 if any(x not in triggers for x in old['triggers']):
                     raise ValueError('removed active trigger')
+                if not set(old['reason_codes']).issubset(op.reason_codes):
+                    raise ValueError('removed active reason')
                 resulting={x.requirement_id:x.model_dump(mode='json') for x in op.obligations}
                 if any(resulting.get(x['requirement_id'])!=x for x in old['obligations']):
                     raise ValueError('weakened active obligation')
             active[key]=dict(episode_id=key,generation=op.generation,triggers=triggers,trigger_set_sha256=op.trigger_set_sha256,
-                obligations=[x.model_dump(mode='json') for x in op.obligations],obligation_set_sha256=op.obligation_set_sha256,review=None)
+                obligations=[x.model_dump(mode='json') for x in op.obligations],obligation_set_sha256=op.obligation_set_sha256,
+                reason_codes=list(op.reason_codes),review=None)
             continue
         if key not in active or op.generation!=active[key]['generation']:
             raise ValueError('operation targets inactive generation')
@@ -159,6 +172,9 @@ def verify_live_safety(raw_manifest: bytes, root: Path, authority: TrustedLiveSa
     if len(facts)!=manifest.facts.count or len(facts)!=authority.prefix_count or manifest.through_patient_sequence!=len(facts):
         raise ValueError('incomplete trusted patient prefix')
     roster={(r.generation,r.authority_sha256,r.review_rules_sha256) for r in authority.generations}
+    generations=[r.generation for r in authority.generations]
+    if generations!=sorted(set(generations)) or any(g>manifest.authority_generation for g in generations):
+        raise ValueError('invalid trusted authority roster')
     previous=None;last_time=None;operations=set()
     for sequence,fact in enumerate(facts,1):
         if (fact.patient_id!=manifest.patient_id or fact.journal_id!=manifest.journal_id or fact.patient_sequence!=sequence

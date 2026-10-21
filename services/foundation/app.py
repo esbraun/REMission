@@ -222,6 +222,8 @@ def create_app(settings: Settings) -> FastAPI:
                 raise LiveError('service_clock_regression')
             if settings.fault:
                 settings.fault('after_hold_admission')
+        if settings.fault:
+            settings.fault('before_hold_gate')
         with store.transaction(write=True,prepare=prepare,authorize=authorize) as db:
             owner=prepared['owner'];at=prepared['at']
             if family=='invalidate':

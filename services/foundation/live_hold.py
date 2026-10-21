@@ -21,6 +21,38 @@ def object_hash(value):
     return digest(canonical(value))
 
 
+def current_reference(history,reference,at,kinds=None):
+    candidate=next((r for r in history.records if r.record_id==reference.record_id),None)
+    if candidate is not None and any(getattr(candidate,k)>at for k in ('event_at','recorded_at','available_at')):
+        raise LiveError('future_hold_evidence',422)
+    try:
+        return resolve(history,reference,kinds,cutoff=at,inclusive=True)
+    except ValueError as error:
+        raise LiveError('hold_dependencies_unavailable' if 'missing' in str(error) else 'hold_evidence_stale') from error
+
+
+def current_closure(history,record,at):
+    """Every nested exact dependency retains its current committed head."""
+    from contracts.domain.observed_v2 import ExactRef
+    pending=[record];seen=set();result=[]
+    def nested(value):
+        if isinstance(value,list):
+            for item in value:yield from nested(item)
+        elif isinstance(value,dict):
+            if set(value)=={'record_id','payload_sha256'}:
+                yield ExactRef.model_validate(value)
+            else:
+                for item in value.values():yield from nested(item)
+    while pending:
+        item=pending.pop()
+        identity=(item.record_id,exact_ref(item).payload_sha256)
+        if identity in seen:continue
+        seen.add(identity);result.append(item)
+        for reference in nested(item.model_dump(mode='json')):
+            pending.append(current_reference(history,reference,at))
+    return result
+
+
 def refs(values):
     values=[v.model_dump(mode='json') if hasattr(v,'model_dump') else v for v in values]
     encoded=[canonical(v) for v in values]
@@ -102,8 +134,12 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
             or archive_authority.allow_contract_fixture or archive_authority.producer_qualification is None):
         raise LiveError('actual_live_producer_qualification_required')
     try:
-        bundle=resolve(history,data.bundle_ref,{'hold_transition_bundle'},cutoff=at,inclusive=True)
-        validate_hold(history,bundle,cutoff=at)
+        bundle=current_reference(history,data.bundle_ref,at,{'hold_transition_bundle'})
+        # The archive chain's own publication is inclusive. Current service
+        # access also permits equal receipt time, checked separately below.
+        validate_hold(history,bundle)
+    except LiveError:
+        raise
     except ValueError as error:
         code='hold_dependencies_unavailable' if 'missing' in str(error) else 'hold_evidence_stale'
         raise LiveError(code) from error
@@ -121,7 +157,7 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
     if grant.ownership_ref!=bundle.ownership_ref or grant.follow_up_owner_id!=owner:
         raise LiveError('live_source_grant_unavailable')
     for follow in bundle.follow_up_refs:
-        task=resolve(history,follow,{'follow_up'},cutoff=at,inclusive=True)
+        task=current_reference(history,follow,at,{'follow_up'})
         if task.owner!=owner or task.due_at!=grant.due_at or task.escalation_destination!=grant.escalation_destination:
             raise LiveError('hold_follow_up_mismatch')
     requirements={r.requirement_id:r for r in grant.required_reviews}
@@ -133,14 +169,13 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
             raise LiveError('hold_requirement_mismatch')
     triggers=[]
     for ref in bundle.trigger_refs:
-        trigger=resolve(history,ref,{'hold_review_evidence'},cutoff=at,inclusive=True)
+        trigger=current_reference(history,ref,at,{'hold_review_evidence'})
         if (trigger.review_result!='requires_hold' or trigger.evidence_type!='trigger_observation'
                 or trigger.rule not in grant.trigger_rules
                 or trigger.source.id!=grant.source_id or trigger.source.version!=grant.source_version):
             raise LiveError('positive_hold_trigger_required')
         triggers.append(trigger)
-    closure=[bundle,*[resolve(history,e.ref,cutoff=at,inclusive=True) for e in bundle.evidence_roles],
-             *[resolve(history,r,cutoff=at,inclusive=True) for r in [bundle.snapshot_ref,bundle.ownership_ref,*bundle.follow_up_refs]]]
+    closure=current_closure(history,bundle,at)
     if any(max(r.event_at,r.recorded_at,r.available_at)>at for r in closure):
         raise LiveError('future_hold_evidence',422)
     source_key=[grant.episode_namespace,bundle.run_id,data.partition_id,bundle.hold_episode_id]
@@ -289,12 +324,12 @@ def installed_rules(settings,e):
     return selected,complete
 
 
-def evidence_access(db, settings, patient_id, owner, episode_id, ref, at):
+def evidence_access(db, settings, patient_id, owner, episode_id, ref, at,requirement=None):
     if ref.store=='archive':
         stored,_,_,_=configured_archive(settings,db,ref.namespace_id,owner)
         h=current_archive_history(settings,db,ref.namespace_id,ref.partition_id,patient_id)
         from contracts.domain.observed_v2 import ExactRef
-        value=resolve(h,ExactRef(record_id=ref.record_id,payload_sha256=ref.payload_sha256),cutoff=at,inclusive=True)
+        value=current_reference(h,ExactRef(record_id=ref.record_id,payload_sha256=ref.payload_sha256),at)
         receipt_id=ref.namespace_id;receipt_sha256=digest(stored['receipt'])
         grant=next((g for g in settings.installed.authority.grants if g.archive_id==ref.namespace_id and g.partition_id==ref.partition_id and g.service_patient_id==patient_id and g.account_id==owner and g.package_sha256==stored['export_sha256']),None)
         if grant is None:
@@ -305,7 +340,7 @@ def evidence_access(db, settings, patient_id, owner, episode_id, ref, at):
             raise LiveError('not_found',404)
         from .workflow import history
         from contracts.domain.observed_v2 import ExactRef
-        value=resolve(history(db,patient_id),ExactRef(record_id=ref.record_id,payload_sha256=ref.payload_sha256),cutoff=at,inclusive=True)
+        value=current_reference(history(db,patient_id),ExactRef(record_id=ref.record_id,payload_sha256=ref.payload_sha256),at)
         source=value.model_dump(mode='json');receipt_id=ref.record_id;receipt_sha256=ref.payload_sha256
     else:
         if ref.namespace_id!=patient_id:
@@ -315,6 +350,9 @@ def evidence_access(db, settings, patient_id, owner, episode_id, ref, at):
             raise LiveError('hold_evidence_stale')
         value=json.loads(review['payload']);source=dict(kind='live_review',source=dict(id='authenticated-owning-doctor'),
             event_at=value['current_review_at'],recorded_at=value['current_review_at'],available_at=value['current_review_at'])
+        if (value['actor_id']!=owner or requirement is not None and not any(
+                i['requirement_id']==requirement['requirement_id'] and i['definition']==requirement['definition'] for i in value['items'])):
+            raise LiveError('hold_requirement_evidence_mismatch')
         receipt=db.execute('SELECT sequence,id FROM live_hold_operations WHERE id=?',(review['operation_id'],)).fetchone()
         if receipt is None:
             raise LiveError('hold_dependencies_unavailable')
@@ -348,9 +386,10 @@ def prepare_review(db, settings, owner, patient_id, episode_id, data, at):
             raise LiveError('clearance_rule_unavailable')
         all_satisfied &= item.result=='satisfied' and supported
         for reference in refs(item.evidence_refs):
-            proof=evidence_access(db,settings,patient_id,owner,episode_id,EvidenceRef.model_validate(reference),at)
+            proof=evidence_access(db,settings,patient_id,owner,episode_id,EvidenceRef.model_validate(reference),at,requirement)
             if proof['kind'] not in requirement['evidence_kinds'] or proof['source_id'] not in requirement['source_ids']:
                 raise LiveError('hold_requirement_evidence_mismatch')
+            proof['requirement_id']=item.requirement_id;proof['definition']=requirement['definition']
             proofs.append(proof)
     return dict(proofs=proofs,result='satisfied' if all_satisfied else 'pending',rules=[r.ref.model_dump(mode='json') for r in rules],
         evidence_head_sha256=object_hash(proofs),input_versions=versions(patient))
@@ -412,7 +451,8 @@ def clear_episode(db,settings,owner,patient_id,episode_id,data,key,at):
         raise LiveError('service_clock_regression')
     for proof in review['proofs']:
         # Exact heads must still resolve; present access time does not backdate review.
-        evidence_access(db,settings,patient_id,owner,episode_id,EvidenceRef.model_validate(proof['reference']),at)
+        evidence_access(db,settings,patient_id,owner,episode_id,EvidenceRef.model_validate(proof['reference']),at,
+            dict(requirement_id=proof['requirement_id'],definition=proof['definition']))
     operation_id='clear-'+uuid.uuid4().hex
     db.execute("UPDATE live_hold_episodes SET status='closed',last_operation=? WHERE id=? AND generation=?",(operation_id,episode_id,row['generation']))
     db.execute('INSERT INTO live_hold_task_events VALUES(?,?,?,?)',('task-event-'+uuid.uuid4().hex,e['task_id'],operation_id,canonical(dict(status='closed',review_id=data.review_id))))

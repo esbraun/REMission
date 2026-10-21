@@ -7,7 +7,10 @@ from contracts.domain.boundaries import ObservedHistory
 
 def admit(source: Path, destination: Path):
     raw=source.read_bytes()
-    if json.loads(raw).get('schema_version') == '2.0.0':
+    wrapper=json.loads(raw)
+    if not isinstance(wrapper,dict):
+        raise ValueError('observed history wrapper required')
+    if wrapper.get('schema_version') == '2.0.0':
         from contracts.domain.observed_v2 import ObservedHistoryV2
         observed=ObservedHistoryV2.model_validate_json(raw)
     else:

@@ -22,6 +22,21 @@ copied-source byte checks. The browser/ record preserves 105 official MCP entrie
 These are implementer observations; independent exact-source acceptance is pending.
 The bounded current test checkpoint is 13 focused tests, with an earlier 36 affected
 service tests; final expanded and broad verification remains incomplete.
+Later evidence: product run 0b9ccb retained one authority-fold failure and one
+legacy malformed-list error. The verifier now rejects unrecorded active authority
+changes and weakened reasons; the observed adapter reports a typed wrapper error.
+Focused product run b670298 passed 7/7 and full affected run 280ffe passed 45/45.
+Subsequent focused run 958847 passed 17/17 with recursive current dependency-head
+checks, future/stale/missing typed evidence denials, actual equal-time committed
+event proofs, rejection then identical-key retry after archive/event publication,
+uncommitted evidence exclusion, and the reverse actual two-process equal-clock
+approval-before-hold barrier schedule. That later source is not relabeled as the
+earlier 45-test run. Raw per-command source maps retain their exact tested bytes.
+The old fixed-resource run_stack.py now refuses before any Docker call; actual
+--resume refusal is captured in 7f07b8. The copied role probe was adapted to explicit
+activation but awaits final rebuilt-image role execution. The proposed per-trigger
+and plural-task amendment remains unaccepted; no dependent shared-shape code is
+installed. Its complete initial critique and standalone R1 chain are preserved.
 Threshold clearance remains blocked by T-OBS2-CLEARANCE-POLICY. Only an explicitly
 installed structural synthetic concern rule can support the positive manual fixture.
 Actual scientific producer qualification, scientific clearance/burden laws, human and
