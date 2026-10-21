@@ -1,0 +1,9 @@
+matching-hold PASS
+foreign-chain EXPECTED REJECT embedded record run/partition differs from containing archive
+standalone-review-False PASS
+standalone-closure-False PASS
+standalone-review-True EXPECTED REJECT embedded record run/partition differs from containing archive
+standalone-closure-True EXPECTED REJECT embedded record run/partition differs from containing archive
+report-day-14 PASS
+report-day84 PASS
+report-day85 EXPECTED REJECT generated event outside accepted local horizon -14..84

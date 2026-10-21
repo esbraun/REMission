@@ -1,0 +1,30 @@
+from pathlib import Path
+from datetime import timedelta
+import json
+from contracts.runs.admission_v2 import verify_export_v2
+from contracts.runs.observed_v2 import ExportAuthorityV2
+from contracts.runs.common import canonical
+SOURCE=Path('.review-repair/original_fixture.py').read_text();OUT=Path('/out')
+NEEDLE='    cutoff = cutoff or ORIGIN + timedelta(days=1, hours=10)'
+
+def check(name,source,reason=None,**kwargs):
+ ns={};exec(compile(source,name,'exec'),ns);root=OUT/name;f=ns['build'](root,**kwargs)
+ try: verify_export_v2(f['raw'],root,ExportAuthorityV2.model_validate_json(canonical(f['authority'])))
+ except ValueError as e:
+  assert reason and reason in str(e),(name,reason,str(e));print(name,'EXPECTED REJECT',str(e),flush=True)
+ else:
+  assert reason is None,name+' unexpectedly accepted';print(name,'PASS',flush=True)
+ return f
+check('matching-hold',SOURCE,hold=True)
+n='run_id=run_id, partition_id=partition_id, hold_episode_id='
+check('foreign-chain',SOURCE.replace(n,"run_id='foreign-run', partition_id='foreign-partition', hold_episode_id="),'embedded record run/partition',hold=True)
+origin_ns={};exec(SOURCE,origin_ns);cutoff=origin_ns['ORIGIN']+timedelta(days=90)
+# Review record is deliberately not referenced by any bundle.
+for foreign in [False,True]:
+ extra="    add('hold_review_evidence', ORIGIN+timedelta(days=86), version='2.0.0', process='hold_review', substream='standalone', run_id="+("'foreign-run'" if foreign else 'run_id')+", partition_id=partition_id, hold_episode_id='episode', evidence_type='review', rule=ref('rule'), requirement=ref('review'), actor_id='sim-owner', actor_role='simulated_clinician', origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=(ORIGIN+timedelta(days=86)).isoformat(), facts_refs=[], finding='fixture later review', review_result='pending', follow_up_refs=[])\n"
+ check('standalone-review-'+str(foreign),SOURCE.replace(NEEDLE,extra+NEEDLE),'embedded record run/partition' if foreign else None,cutoff=cutoff)
+ extra="    from contracts.domain.common import Record\n    fields = closures[-1].model_dump(mode='json',exclude=set(Record.model_fields)|{'kind'})\n    fields['partition_id'] = "+("'foreign-partition'" if foreign else 'partition_id')+"\n    add('support_stage_closure', closures[-1].event_at, version='2.0.0', process='support_stage_closure', substream='unreferenced', **fields)\n"
+ check('standalone-closure-'+str(foreign),SOURCE.replace(NEEDLE,extra+NEEDLE),'embedded record run/partition' if foreign else None,cutoff=cutoff)
+for day in [-14,84,85]:
+ extra="    add('daily_report', ORIGIN+timedelta(days="+str(day)+",hours=7), version='2.0.0', process='diary_report', substream='extra', recorded_at=(ORIGIN+timedelta(days="+str(day)+",hours=8,minutes=1)).isoformat(), available_at=(ORIGIN+timedelta(days=87,hours=8,minutes=1)).isoformat(), sleep_quality=6.0, function=5.0, adverse_symptoms=[], diary_sleep_minutes=400.0, goals=[], burden=None, missingness='observed')\n"
+ check('report-day'+str(day),SOURCE.replace(NEEDLE,extra+NEEDLE),'generated event outside' if day==85 else None,cutoff=cutoff)

@@ -1,0 +1,9 @@
+import pathlib,json,hashlib,subprocess
+root=pathlib.Path.cwd();out=root/'.review-repair';files={};commands=[]
+for p in sorted(out.rglob('*')):
+ if not p.is_file() or 'https-clone' in p.parts or '__pycache__' in p.parts or p.name=='artifact-manifest.json':continue
+ raw=p.read_bytes();blob=subprocess.check_output(['git','hash-object','-w','--no-filters',str(p)],cwd=root).decode().strip()
+ files[p.relative_to(out).as_posix()]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'git_blob':blob}
+ if p.name=='command.json':commands.append({'path':p.relative_to(out).as_posix(),**json.loads(raw)})
+p=out/'artifact-manifest.json';p.write_text(json.dumps({'head':'3763f7571a47d8ab421a2f8ad4e36e49fe1cc478','base':'6bc8bd998e8a0baaef9884998e740665fb5fd7b1','disposition':'ready_to_ship','scope':'bounded OBS-REP-02 archive/contracts/current-import rejection guard only','commands':commands,'files':files},indent=2)+'\n',encoding='utf8')
+print('REPORT',files['final-review.md']);print('MANIFEST',subprocess.check_output(['git','hash-object','-w','--no-filters',str(p)],cwd=root).decode().strip(),'SHA256',hashlib.sha256(p.read_bytes()).hexdigest(),'FILES',len(files),'COMMANDS',len(commands))

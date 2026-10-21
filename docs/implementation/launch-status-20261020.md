@@ -117,3 +117,7 @@ Accepted scientific/interface base is PR17 merge `6bc8bd998e8a0baaef9884998e7406
 # OBS-REP-02 repair 01 current review state
 
 Candidate ceb5 received independent changes_requested for two P2 admission defects. Repair source `124ab096120bf28a055f6413b4f813c83095ada7` and its evidence-only successor await fresh exact-head/base review; see [repair checkpoint](evidence/G1-OBS-REP/repair-01/README.md). Historical source/image manifests remain historical. B-OBS2-LIVE-HOLD remains open; affected consumers and full G1/statistical/human/clinical acceptance remain HELD/pending.
+
+# Current OBS-REP-02 integrated state
+
+[PR18](https://github.com/esbraun/REMission/pull/18) merged reviewed `3763f7571a47d8ab421a2f8ad4e36e49fe1cc478` / base `6bc8bd998e8a0baaef9884998e740665fb5fd7b1` as `ec18cb4020ba239710a3fd615e365d5cd72b4d80`; delegated [integrated verification](evidence/G1-OBS-REP/integrated/README.md) passed. This current status supersedes earlier pending-candidate checkpoints. Acceptance is bounded contracts/archive/rejection-guard engineering only. B-OBS2-LIVE-HOLD remains mandatory next engineering; affected consumers remain HELD for root explicit dispatch and full G1/statistical/human/clinical gates remain open.

@@ -1,0 +1,5 @@
+import capture,sys
+clone=capture.OUT/'https-clone'
+assert capture.run('clone-full-byte-audit',[sys.executable,'-c',(capture.OUT/'audit.py').read_text(encoding='utf-8-sig')],clone).returncode==0
+capture.run('tracked-source-clean',['git','diff','--exit-code','HEAD','--','contracts','services','tests','tooling','web','.gitattributes'])
+capture.run('review-head-base',['git','merge-base','HEAD','6bc8bd998e8a0baaef9884998e740665fb5fd7b1'])

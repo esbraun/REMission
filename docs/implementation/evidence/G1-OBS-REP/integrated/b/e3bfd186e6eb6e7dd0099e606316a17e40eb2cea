@@ -1,0 +1,3 @@
+import capture
+out=capture.OUT/'independent-private-wire';out.mkdir()
+cmd=capture.docker(capture.ROOT,['.review-repair/independent_private.py']);i=cmd.index('--workdir');cmd[i:i]=['--mount',f'type=bind,source={out.as_posix()},target=/out'];capture.run('independent-private',cmd)

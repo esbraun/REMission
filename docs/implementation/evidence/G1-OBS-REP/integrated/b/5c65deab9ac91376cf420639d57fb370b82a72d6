@@ -1,0 +1,14 @@
+import capture,json,hashlib
+from pathlib import Path
+assert capture.run('diff-check',['git','diff','--check','6bc8bd998e8a0baaef9884998e740665fb5fd7b1','HEAD']).returncode==0
+p=capture.ROOT/'docs/implementation/evidence/G1-OBS-REP/repair-01'
+m=json.loads((p/'reviewer/full-horizon-manifest.json').read_bytes());count=0
+for name,item in m['files'].items():
+ if name.startswith('complete-attempt-002/'):
+  raw=(p/'reviewer-surviving/full-horizon-addendum'/name).read_bytes()
+  assert hashlib.sha256(raw).hexdigest()==item['sha256'];count+=1
+print('UNCHANGED original independent submitted bytes and calendar',count)
+(capture.OUT/'independent-input-identity.json').write_text(json.dumps({'original_manifest_blob':'7c8db98ea52dbe89f83a026d40bea4bd7e938df8','matched_files':count,'status':'PASS'},indent=2))
+for f in capture.OUT.glob('*/command.json'):
+ d=json.loads(f.read_text());assert hashlib.sha256((f.parent/'stdout').read_bytes()).hexdigest()==d['stdout_sha256'];assert hashlib.sha256((f.parent/'stderr').read_bytes()).hexdigest()==d['stderr_sha256'];assert hashlib.sha256((f.parent/'sources.json').read_bytes()).hexdigest()==d['sources_sha256']
+print('ALL fresh UUID capture hashes consistent; no collisions')
