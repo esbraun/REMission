@@ -1,7 +1,7 @@
 """Foundation presentation composes the accepted domain, without an estimator."""
 from datetime import datetime
 import json
-from contracts.domain.boundaries import ObservedHistory
+from contracts.domain.boundaries import ObservedHistory, lineage_heads, visible_records
 from contracts.domain.entities import DecisionSnapshot, Workflow
 from .store import canonical, digest, timestamp
 
@@ -45,6 +45,17 @@ def record_header(record_id: str, patient_id: str, at: datetime) -> dict:
 def history(db, patient_id: str) -> ObservedHistory:
     records = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id", (patient_id,))]
     return ObservedHistory.model_validate_json(canonical(dict(schema_version="1.0.0", synthetic=True, kind="observed_history", patient_id=patient_id, records=records)))
+
+
+def current_safety(db, patient_id: str, at: datetime):
+    """Current safety admission is inclusive; learner/history projections stay strict.
+
+    Resolve visible lineage before selecting safety values so a correction,
+    retraction or duplicate cannot revive an older clinical fact. Call inside
+    the same transaction as the state transition or approval being admitted.
+    """
+    heads = lineage_heads(visible_records(history(db, patient_id).records, at, inclusive=True))
+    return [r for r in heads if r.record_status != "retracted" and r.kind in ("consent", "intercurrent_event")]
 
 
 def create_decision(db, patient_id: str, at: datetime) -> str:

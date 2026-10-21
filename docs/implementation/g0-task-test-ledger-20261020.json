@@ -773,7 +773,22 @@
         "docs/implementation/evidence/G1-FOUNDATION-20261021"
       ],
       "claim_limit": "Bounded ordinary-care persistence/auth/shell/access foundation only; generator and statistical engines unavailable",
-      "blocker": "Independent exact-head review pending; generator/statistical/human acceptance deferred"
+      "blocker": "Safety compositions repaired; refreshed independent exact-head review pending",
+      "prior_reviews": [
+        {
+          "reviewed_head": "54adde3d7588c3aee3baa29b5370a2317bfd34a9",
+          "reviewed_base": "8ca67682505d78accc855e92cbfbb6692edf8316",
+          "disposition": "changes_requested",
+          "path": "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-review-54adde3.md",
+          "git_blob": "baa0e939d797435449915a02b6d9caba95a3f295",
+          "manifest_path": "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-evidence-manifest-54adde3.json",
+          "manifest_git_blob": "164fc736dc17a6c03b25d4fac822026fe96f347a",
+          "findings": [
+            "P1 equal-time death clearance/approval",
+            "P2 superseded/retracted safety resurrection"
+          ]
+        }
+      ]
     },
     {
       "id": "G1-GENERATOR",
@@ -16691,6 +16706,17 @@
       "build_results": "docs/implementation/evidence/G1-FOUNDATION-20261021/build-check-results.json",
       "browser_results": "docs/implementation/evidence/G1-FOUNDATION-20261021/browser-interactions-raw.json",
       "claim_limit": "Observed bounded engineering foundation only; G1 overall running, generator and all statistical/human/clinical acceptance deferred"
+    },
+    {
+      "task_id": "G1-FOUNDATION",
+      "status": "needs_review_after_safety_repair",
+      "rejected_head": "54adde3d7588c3aee3baa29b5370a2317bfd34a9",
+      "independent_review": "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-review-54adde3.md",
+      "backend_groups": 21,
+      "client_context_groups": 2,
+      "original_independent_probes": "both reproduced corrected behavior unchanged",
+      "evidence": "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/verification.md",
+      "claim_limit": "Author checks only; refreshed independent final browser/review acceptance required. G1 overall running; generator/statistical/human/clinical deferred"
     }
   ],
   "runtime": {
@@ -16806,9 +16832,25 @@
     "review_disposition": "pending",
     "candidate_commit": null,
     "evidence": [
-      "docs/implementation/evidence/G1-FOUNDATION-20261021"
+      "docs/implementation/evidence/G1-FOUNDATION-20261021",
+      "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/verification.md"
     ],
-    "claim_limit": "Bounded ordinary-care persistence/auth/shell/access foundation only; generator and statistical engines unavailable"
+    "claim_limit": "Bounded ordinary-care persistence/auth/shell/access foundation only; generator and statistical engines unavailable",
+    "prior_reviews": [
+      {
+        "reviewed_head": "54adde3d7588c3aee3baa29b5370a2317bfd34a9",
+        "reviewed_base": "8ca67682505d78accc855e92cbfbb6692edf8316",
+        "disposition": "changes_requested",
+        "path": "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-review-54adde3.md",
+        "git_blob": "baa0e939d797435449915a02b6d9caba95a3f295",
+        "manifest_path": "docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-evidence-manifest-54adde3.json",
+        "manifest_git_blob": "164fc736dc17a6c03b25d4fac822026fe96f347a",
+        "findings": [
+          "P1 equal-time death clearance/approval",
+          "P2 superseded/retracted safety resurrection"
+        ]
+      }
+    ]
   },
   "accepted_contract_assignment": {
     "id": "G0-CONTRACT",

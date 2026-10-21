@@ -1,3 +1,9 @@
+# Current foundation safety repair checkpoint (2026-10-21)
+
+Independent review rejected candidate `54adde3d7588c3aee3baa29b5370a2317bfd34a9` for equal-time death clearance/approval and resurrection of superseded safety facts. The [complete raw report](evidence/G1-FOUNDATION-20261021/repair/independent-review-54adde3.md) and raw evidence manifest are preserved unchanged. Both service safety compositions are repaired using canonical inclusive current visibility and lineage-head resolution; strict learner/history cutoffs are unchanged. Atomic state-clear and fresh approval deny known death without a new bundle/task.
+
+The refreshed candidate is ready for independent review: full build14/14 including21 backend groups, unchanged original independent probes showing corrected behavior, positive evaluator/negative consumer boundary probes, and serial author MCP sign-in/hold/history persistence checks pass. [Repair verification](evidence/G1-FOUNDATION-20261021/repair/verification.md) distinguishes current evidence from rejected54 history; refreshed independent final browser review remains required. Accepted base stays PR15 merge `8ca67682505d78accc855e92cbfbb6692edf8316`; G0 contract/library acceptance stands. G1/synthetic engineering remain running, G2-G7 and human/clinical deferred. Historical sections below remain.
+
 # Current G1 foundation checkpoint (2026-10-21)
 
 Root accepted PR15 combined G0 contract/library qualification at merge `8ca67682505d78accc855e92cbfbb6692edf8316`, parents `fa3fca61b5b5c886064d2429d785b8de9e6fd146` + `236ebfb84952a63c58a4cc885d17a9754e93051b`, exact [Astra ready report](evidence/G1-FOUNDATION-20261021/accepted-g0-closure-review.md) blob `51cf9d0c2692bbf5ed18ac269cc00e8893fd047f`. The unchanged approved G1 plan is accepted. G0 is accepted in that scope.

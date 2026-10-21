@@ -1,3 +1,7 @@
+# Current safety repair checkpoint
+
+Candidate54 was rejected by independent review. Both findings are repaired; see [current repair evidence and limits](repair/verification.md). Current build/source/stack/integration manifests describe the repaired source. All text below is the historical rejected54 author checkpoint; its passing checks did not establish safety composition coverage or independent acceptance. Refreshed independent final review is pending.
+
 # Foundation candidate — ready for independent review
 
 Accepted base is PR15 merge `8ca67682505d78accc855e92cbfbb6692edf8316`, with parents `fa3fca61b5b5c886064d2429d785b8de9e6fd146` and `236ebfb84952a63c58a4cc885d17a9754e93051b`. Root accepted the unchanged G1 plan and the exact [G0 review](accepted-g0-closure-review.md), blob `51cf9d0c2692bbf5ed18ac269cc00e8893fd047f`. The final commit is supplied in the handoff rather than embedded in its own contents. Intermediate backend checkpoint `370c14d498414c207311354b77bb5ad7ab78edfc` remains historical.

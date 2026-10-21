@@ -263,6 +263,78 @@ class FoundationTests(unittest.TestCase):
             self.assertEqual(db.execute("SELECT cursor FROM replay_runs WHERE id='failed-replay'").fetchone()[0],0)
             self.assertEqual(db.execute("SELECT status FROM ingestion_receipts WHERE run_id='failed-replay'").fetchone()[0],"rejected")
 
+    def test_current_death_before_equal_after_and_strict_learner_boundary(self):
+        boundary=instant("2026-10-21T12:00:00+00:00")
+        for offset in (-1,0,1):
+            with self.subTest(offset=offset):
+                probe=FoundationTests();probe.setUp()
+                try:
+                    probe.clock.at=boundary-timedelta(seconds=1)
+                    report=observed("boundary-report",event="2026-10-21T10:00:00+00:00",available=boundary.isoformat(),recorded_at=probe.clock().isoformat())
+                    death=observed("boundary-death",kind="intercurrent_event",event="2026-10-21T11:00:00+00:00",available=boundary.isoformat(),recorded_at=probe.clock().isoformat(),event_type="death")
+                    for key,payload in [("report",report),("death",death)]:
+                        result=probe.client.post("/api/patients/SYN-02/events",json=payload,headers=probe.headers(key=key))
+                        self.assertEqual(result.status_code,200,result.text)
+                    probe.clock.at=boundary+timedelta(seconds=offset)
+                    workspace=probe.client.get("/api/patients/SYN-02").json()
+                    clear=probe.client.post("/api/patients/SYN-02/state",json={"expected_version":workspace["snapshot"]["patient_version"],"stage":"ASSIGN-02","reason":"Boundary composition review"},headers=probe.headers(key="clear"))
+                    approval=probe.client.post("/api/patients/SYN-02/approve",json=probe.approval(),headers=probe.headers(key="fresh-approval"))
+                    self.assertEqual(clear.status_code,200 if offset<0 else 409,clear.text)
+                    self.assertEqual(approval.status_code,200 if offset<0 else 409,approval.text)
+                    with probe.store.transaction() as db:
+                        self.assertEqual(db.execute("SELECT count(*) FROM bundles").fetchone()[0],1 if offset<0 else 0)
+                        self.assertEqual(db.execute("SELECT count(*) FROM tasks").fetchone()[0],1 if offset<0 else 0)
+                        h=history(db,"SYN-02")
+                        self.assertEqual(h.project(boundary).records,[])
+                        self.assertEqual({r.record_id for r in h.project(boundary+timedelta(microseconds=1)).records},{"boundary-report","boundary-death"})
+                        self.assertEqual(len(h.records),2)
+                finally:probe.tearDown()
+
+    def test_live_equal_time_death_cannot_clear_or_persist_fresh_approval(self):
+        death=observed("live-death",kind="intercurrent_event",event="2026-10-21T11:00:00+00:00",available="2026-10-21T11:00:00+00:00",event_type="death")
+        admitted=self.client.post("/api/patients/SYN-02/events",json=death,headers=self.headers(key="death"))
+        self.assertEqual(admitted.status_code,200,admitted.text)
+        workspace=self.client.get("/api/patients/SYN-02").json()
+        self.assertFalse(workspace["permissions"]["approve_ordinary"])
+        for offset in (0,1):
+            self.clock.at+=timedelta(microseconds=offset)
+            clear=self.client.post("/api/patients/SYN-02/state",json={"expected_version":workspace["snapshot"]["patient_version"],"stage":"ASSIGN-02","reason":"Attempt terminal exclusion clearance"},headers=self.headers(key=f"clear-{offset}"))
+            approval=self.client.post("/api/patients/SYN-02/approve",json=self.approval(),headers=self.headers(key=f"approve-{offset}"))
+            self.assertEqual(clear.status_code,409,clear.text);self.assertEqual(approval.status_code,409,approval.text)
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM bundles").fetchone()[0],0)
+            self.assertEqual(db.execute("SELECT count(*) FROM tasks").fetchone()[0],0)
+            self.assertEqual(history(db,"SYN-02").project(instant("2026-10-21T12:00:00+00:00")).records,[])
+
+    def test_safety_lineage_retraction_correction_duplicates_and_active_control(self):
+        for mode in ("retracted","changed-type","still-active"):
+            with self.subTest(mode=mode):
+                probe=FoundationTests();probe.setUp()
+                try:
+                    original=observed("safety-original",kind="intercurrent_event")
+                    def ingest(payload,key):
+                        response=probe.client.post("/api/patients/SYN-02/events",json=payload,headers=probe.headers(key=key))
+                        self.assertEqual(response.status_code,200,response.text)
+                    ingest(original,"original");probe.clock.at+=timedelta(seconds=1)
+                    correction=observed("safety-head",kind="intercurrent_event",lineage_id="safety-original",revision=2,supersedes="safety-original",record_status="retracted" if mode=="retracted" else "corrected",event_type="discharge" if mode=="changed-type" else "fall")
+                    ingest(correction,"correction")
+                    workspace=probe.client.get("/api/patients/SYN-02").json()
+                    clear=probe.client.post("/api/patients/SYN-02/state",json={"expected_version":workspace["snapshot"]["patient_version"],"stage":"ASSIGN-02","reason":"Clinician reviewed source correction"},headers=probe.headers(key="clear"))
+                    self.assertEqual(clear.status_code,200,clear.text)
+                    probe.clock.at+=timedelta(seconds=1)
+                    duplicate=json.loads(canonical(original));duplicate["record"].update(record_id="safety-duplicate",lineage_id="safety-duplicate",duplicate_of="safety-original")
+                    ingest(duplicate,"duplicate")
+                    ingest(observed("unrelated-report"),"unrelated")
+                    current=probe.client.get("/api/patients/SYN-02").json()
+                    self.assertEqual(current["permissions"]["approve_ordinary"],mode!="still-active")
+                    self.assertEqual(current["stage"],"ASSIGN-09" if mode=="still-active" else "ASSIGN-02")
+                    with probe.store.transaction() as db:
+                        h=history(db,"SYN-02");self.assertEqual(len(h.records),4)
+                        heads={r.record_id for r in h.as_known_at(probe.clock()+timedelta(microseconds=1))}
+                        self.assertNotIn("safety-original",heads);self.assertNotIn("safety-duplicate",heads)
+                        self.assertEqual("safety-head" in heads,mode!="retracted")
+                finally:probe.tearDown()
+
     def test_equal_arrival_lineage_and_batch_partition_have_identical_final_display(self):
         original=observed("zzz-original",available="2026-10-21T10:00:00+00:00")
         correction=observed("aaa-correction",available="2026-10-21T10:00:00+00:00",lineage_id="zzz-original",revision=2,supersedes="zzz-original",record_status="corrected",sleep_quality=8.0)

@@ -6,7 +6,7 @@ from pydantic import TypeAdapter
 from contracts.domain.entities import ObservedRecord
 from contracts.domain.boundaries import ObservedHistory
 from .store import Store, canonical, digest, instant, timestamp
-from .workflow import create_decision, history, state_for
+from .workflow import create_decision, current_safety, history, state_for
 
 ADAPTER = TypeAdapter(ObservedRecord)
 INGESTIBLE = {"patient", "consent", "encounter", "medication_order", "medication_exposure", "observation", "intercurrent_event", "oura_like", "daily_report", "isi"}
@@ -76,10 +76,9 @@ def append_event(db, record, raw: bytes, *, received_at: datetime | None = None)
 
 def apply_current_state(db, patient_id: str, at: datetime, *, advance_by: int = 1):
     row = db.execute("SELECT * FROM patients WHERE id=?", (patient_id,)).fetchone()
-    records = history(db, patient_id).as_known_at(at)
     # Known safety/consent arrivals also invalidate immediately at equal time;
     # symptom/learner projections retain strict-before availability.
-    known_safety = [r for r in history(db, patient_id).records if r.kind in ("consent", "intercurrent_event") and r.event_at <= at and r.available_at <= at]
+    known_safety = current_safety(db, patient_id, at)
     held = any(r.kind == "intercurrent_event" and r.event_type in ("death", "admission", "regimen_change", "steroid_change", "fever_suspected_infection", "confusion", "fall") and r.record_status != "retracted" for r in known_safety)
     state = state_for("ASSIGN-09", "Known safety event requires clinical review") if held else json.loads(row["state_json"])
     consent_version=1+db.execute("SELECT count(*) FROM events WHERE patient_id=? AND kind='consent'",(patient_id,)).fetchone()[0]

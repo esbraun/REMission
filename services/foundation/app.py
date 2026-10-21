@@ -19,7 +19,7 @@ from contracts.domain.common import Action, StrictModel
 from contracts.domain.entities import Approval, DecisionSnapshot, ViewContext
 from contracts.domain.boundaries import ContractViolation, validate_approval
 from .store import Store, canonical, digest, instant, timestamp
-from .workflow import create_decision, history, record_header, state_for
+from .workflow import create_decision, current_safety, history, record_header, state_for
 from .replay import append_event, apply_current_state, parse_observed
 
 COOKIE = "remission_session"
@@ -264,16 +264,19 @@ def create_app(settings: Settings) -> FastAPI:
 
     @app.post("/api/patients/{patient_id}/approve")
     async def approve(patient_id: str,request: Request):
-        data=await body(request,ApprovalInput);now=settings.clock()
+        data=await body(request,ApprovalInput)
         if not request.headers.get("idempotency-key") or len(request.headers["idempotency-key"])>128:
             raise APIError(422,"idempotency_required","Supply a bounded stable idempotency key")
         encoded=canonical(data.model_dump());key=request.headers["idempotency-key"]
         with store.transaction(write=True) as db:
+            now=settings.clock()
             current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
             prior=db.execute("SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?",(current["account_id"],current["token_hash"],key)).fetchone()
             if prior:
                 if prior["scope"]!=patient_id or prior["payload_sha256"]!=digest(encoded):raise APIError(409,"idempotency_conflict","This key already identifies different content")
                 return json.loads(prior["response"])
+            if any(r.kind=="intercurrent_event" and r.event_type=="death" for r in current_safety(db,patient_id,now)):
+                raise APIError(409,"outside_scope","A deceased patient cannot receive a new ordinary approval")
             decision=read_decision(db,patient);snapshot=DecisionSnapshot.model_validate_json(decision["snapshot"])
             workspace=json.loads(decision["display"])
             approval=Approval.model_validate_json(canonical(dict(**record_header("approval-"+uuid.uuid4().hex,patient_id,now),
@@ -311,18 +314,19 @@ def create_app(settings: Settings) -> FastAPI:
     async def state_change(patient_id: str,request: Request):
         data=await body(request,StateInput)
         with store.transaction(write=True) as db:
+            now=settings.clock()
             current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
             if data.expected_version!=patient["version"] and data.stage!="ASSIGN-09":raise APIError(409,"stale_state","Refresh before recording a state change")
             # Foundation allows hold, assessment and ordinary review transitions.
             # Statistical/protocol engines cannot be activated by changing stage.
             if data.stage not in ("ASSIGN-01","ASSIGN-02","ASSIGN-09","ASSIGN-10"):
                 raise APIError(409,"engine_unavailable","Protocol engines remain unavailable")
-            if data.stage!="ASSIGN-09" and any(r.kind=="intercurrent_event" and r.event_type=="death" for r in history(db,patient_id).as_known_at(settings.clock())):
+            if data.stage!="ASSIGN-09" and any(r.kind=="intercurrent_event" and r.event_type=="death" for r in current_safety(db,patient_id,now)):
                 raise APIError(409,"outside_scope","A deceased patient cannot reenter ordinary approval")
             state=state_for(data.stage,data.reason);state["plan"]=json.loads(patient["state_json"])["plan"]
             db.execute("UPDATE patients SET version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,state_json=? WHERE id=?",(canonical(state),patient_id))
-            db.execute("INSERT INTO state_changes VALUES(?,?,?,?,?)",("state-"+uuid.uuid4().hex,patient_id,current["account_id"],timestamp(settings.clock()),canonical(data.model_dump())))
-            create_decision(db,patient_id,settings.clock())
+            db.execute("INSERT INTO state_changes VALUES(?,?,?,?,?)",("state-"+uuid.uuid4().hex,patient_id,current["account_id"],timestamp(now),canonical(data.model_dump())))
+            create_decision(db,patient_id,now)
             return {"status":"recorded"}
 
     @app.post("/api/patients/{patient_id}/events")
