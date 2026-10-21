@@ -13,7 +13,7 @@ from .common import Authority, Artifact, canonical, read_artifact, sha256, uniqu
 from .private import RunManifest, RunResult, SeedLedger, StreamKey, TruthRequest, TruthResponse
 from .observed_v2 import BindingsV2, ExportAuthorityV2, ObservedExportV2, TrustedPartitionV2
 from .coverage_v2 import ScheduleInputV2, derive_slots
-from .admission_v2 import verify_export_v2
+from .admission_v2 import validate_partition_record, verify_export_v2
 
 
 class RunManifestV2(RunManifest):
@@ -143,7 +143,7 @@ def validate_record_keys(run, partition, history, ledger, schedule):
             raise ValueError('record source/transformation registry mismatch')
         if record.source.model_dump(exclude={'raw_sha256'}) not in run.sources:
             raise ValueError('undeclared generated source')
-        expected_day = (record.event_at.astimezone(__import__('zoneinfo').ZoneInfo(schedule.timezone)).date() - schedule.time_zero_local_date).days
+        expected_day = validate_partition_record(record, schedule, run.run_id, partition.id)
         if record.kind == 'support_outcome_link':
             expected_day -= 1
         if record.kind == 'support_stage_closure':

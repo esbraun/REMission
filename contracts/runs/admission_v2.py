@@ -1,6 +1,7 @@
 """Validate the entire archive before any publication or clinical mutation."""
 from datetime import timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from contracts.domain.boundaries import lineage_heads, visible_records
 from contracts.domain.evidence_v2 import exact_ref, payload_hash, reconstruct_hold, resolve, validate_hold, validate_outcome_link, validate_support_decision
@@ -8,6 +9,24 @@ from contracts.domain.observed_v2 import ObservedHistoryV2
 from .common import canonical, read_artifact, sha256
 from .coverage_v2 import CompletionReceiptV2, StageLedgerV2, SupportCoverageV2, SupportMechanismV2, derive_slots
 from .observed_v2 import CLINICAL_KINDS, ExportAuthorityV2, ObservedExportV2, ReplayBatchV2
+
+
+def validate_partition_record(record, schedule, run_id, partition_id):
+    """Bind generated facts to their enclosing archive and accepted local grid.
+
+    Receipt/correction clocks may extend beyond generation. Reviews, closure,
+    follow-up and audit bookkeeping do not manufacture a new clinical state.
+    This gate is scoped to generated v2 exports, never global live ingestion.
+    """
+    if record.kind in ('hold_review_evidence', 'hold_transition_bundle', 'support_stage_closure'):
+        if (record.run_id, record.partition_id) != (run_id, partition_id):
+            raise ValueError('embedded record run/partition differs from containing archive')
+    generated_facts = CLINICAL_KINDS | {'consent', 'decision_snapshot', 'recommendation', 'approval', 'assignment',
+                                       'delivery', 'support_decision', 'hold_transition_bundle'}
+    day = (record.event_at.astimezone(ZoneInfo(schedule.timezone)).date() - schedule.time_zero_local_date).days
+    if record.kind in generated_facts and not -14 <= day <= schedule.planned_horizon:
+        raise ValueError('generated event outside accepted local horizon -14..84')
+    return day
 
 
 def deterministic_record_id(identity, kind, revision):
@@ -107,6 +126,7 @@ def verify_export_v2(raw: bytes, root: Path, authority: ExportAuthorityV2):
                 raise ValueError('archive/history disagreement')
         for binding in partition.records:
             record = by_id[binding.record_id]
+            validate_partition_record(record, schedule, manifest.run_id, partition.id)
             if binding.payload_sha256 != payload_hash(record) or binding.source != record.source:
                 raise ValueError('record payload/source provenance mismatch')
             if record.event_at > manifest.cutoff or record.recorded_at > manifest.cutoff or record.available_at > manifest.cutoff:

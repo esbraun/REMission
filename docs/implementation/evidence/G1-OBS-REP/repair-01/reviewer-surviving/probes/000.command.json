@@ -1,0 +1,27 @@
+{
+  "args": [
+    "docker",
+    "run",
+    "--rm",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--network",
+    "none",
+    "--read-only",
+    "--tmpfs",
+    "/tmp:rw,size=128m",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-obs2-code-review-astra-20261021,target=/app,readonly",
+    "--workdir",
+    "/app",
+    "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+    "python",
+    ".review-artifacts/hold_identity_probe.py"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-code-review-astra-20261021",
+  "exit": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "53867694a61e2de116ac747de7ccc2739facce79531a16377c196fb68cf65bad"
+}

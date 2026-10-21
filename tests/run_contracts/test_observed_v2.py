@@ -190,7 +190,7 @@ class RunObservedV2Tests(unittest.TestCase):
                 keys.append(key)
         ledger = SeedLedgerV2(schema_version='2.0.0', synthetic=True, kind='seed_ledger', contract_version='2.0.0', run_id=manifest.run_id, keys=keys)
         identity = partition.records[0].identity
-        run = SimpleNamespace(bindings=manifest.bindings, phase='fixture', source_registry=identity.source_registry, transformation_registry=identity.transformation,
+        run = SimpleNamespace(run_id=manifest.run_id, bindings=manifest.bindings, phase='fixture', source_registry=identity.source_registry, transformation_registry=identity.transformation,
                               sources=[r.source.model_dump(exclude={'raw_sha256'}) for r in self.f['history'].records])
         self.assertTrue(validate_record_keys(run, partition, self.f['history'], ledger, self.f['schedule']))
         for field, value in [('process', 'wrong-process'), ('time_index', 85), ('namespace', 'truth'), ('protocol', 'wrong-protocol')]:

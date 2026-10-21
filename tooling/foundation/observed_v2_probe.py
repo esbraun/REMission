@@ -17,6 +17,22 @@ def main():
     manifest, partitions = verify_export((root / 'manifest.json').read_bytes(), root, authority)
     assert len(partitions) == 1
     assert any(r.kind == 'daily_report' and r.diary_sleep_minutes == -25.0 for r in partitions[0][1].records)
+    for folder, reason in [('foreign-hold', 'embedded record run/partition'), ('day85-report', 'generated event outside')]:
+        case = root / folder
+        expected = ExportAuthorityV2.model_validate_json((case / 'authority.json').read_bytes())
+        try:
+            verify_export((case / 'manifest.json').read_bytes(), case, expected)
+        except ValueError as error:
+            assert reason in str(error), str(error)
+        else:
+            raise AssertionError('curated role admitted forbidden ' + folder)
+    complete_root = root / 'complete-horizon'
+    complete_authority = ExportAuthorityV2.model_validate_json((complete_root / 'authority.json').read_bytes())
+    complete, full = verify_export((complete_root / 'manifest.json').read_bytes(), complete_root, complete_authority)
+    assert complete.status == 'complete'
+    assert sorted(r.decision_index for r in full[0][1].records if r.kind == 'support_decision') == list(range(85))
+    final = next(r for r in full[0][1].records if r.kind == 'support_outcome_link' and r.reward.reason == 'outside_generated_horizon')
+    assert final.reward.status == 'undefined' and final.reward.report_ref is None
     assert all(not name.startswith('numpy') for name in sys.modules), 'public modules imported private numerical logic'
     if os.getuid() == 10001:
         from datetime import timedelta
@@ -70,6 +86,7 @@ def main():
     assert not Path('/var/run/docker.sock').exists()
     print(json.dumps(dict(status='passed', uid=os.getuid(), gid=os.getgid(), fixture_export=manifest.id,
                           fixture_records=len(partitions[0][1].records), positive_v2_admission=True, denied=denied,
+                          complete85_endpoint=True, foreign_hold_rejected=True, day85_report_rejected=True,
                           no_private_numpy_import=True, limitation='Wire fixture only; no producer or likelihood qualification'), indent=2))
 
 

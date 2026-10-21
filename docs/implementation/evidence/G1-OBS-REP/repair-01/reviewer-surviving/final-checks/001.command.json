@@ -1,0 +1,25 @@
+{
+  "args": [
+    "docker",
+    "run",
+    "--rm",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges:true",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=128m",
+    "remission-obs2-astra-review-20261021-tests:candidate"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-code-review-astra-20261021",
+  "exit": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "37c5edc43b52de6976f08659ced8f653b0992a5c2c883db4c18b84a71bbafe8f"
+}
