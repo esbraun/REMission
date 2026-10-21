@@ -1,0 +1,131 @@
+{
+  "death": [
+    200,
+    {
+      "status": "accepted",
+      "record_id": "review-death"
+    }
+  ],
+  "held": {
+    "approve_ordinary": false,
+    "estimate": false,
+    "randomize": false,
+    "request_review": true
+  },
+  "snapshot": {
+    "available_at": "2026-10-21T12:00:00Z",
+    "consent_version": 1,
+    "cutoff": "2026-10-21T12:00:00Z",
+    "duplicate_of": null,
+    "eligibility": [
+      {
+        "action": "MED_A",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "MED_B",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "behavioral_continue",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "behavioral_escalate",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "usual_care",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      }
+    ],
+    "eligibility_version": 2,
+    "estimand": {
+      "id": "EST-VISIT",
+      "sha256": "7cb083146962e9cd07b404d0cd24f2b251977a4c99bc0b83e71a9b743224a63c",
+      "version": "1.0.0"
+    },
+    "event_at": "2026-10-21T12:00:00Z",
+    "evidence": [],
+    "horizon_days": 42,
+    "kind": "decision_snapshot",
+    "lineage_id": "decision-ba3b3f9316a032d37add74d372682d4d",
+    "model": {
+      "id": "foundation-no-estimator",
+      "sha256": "dc45e5812ab508cd9e18593554b3f3f2999974046fe6645e79cdd1f9f5c6dc8e",
+      "version": "1.0.0"
+    },
+    "outcome": "Ordinary synthetic care; statistical estimates unavailable",
+    "patient_id": "SYN-02",
+    "patient_version": 2,
+    "policy": {
+      "id": "fixed-approved-support",
+      "sha256": "096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639",
+      "version": "1.0.0"
+    },
+    "posterior": null,
+    "record_id": "decision-ba3b3f9316a032d37add74d372682d4d",
+    "record_status": "active",
+    "recorded_at": "2026-10-21T12:00:00Z",
+    "revision": 1,
+    "schema_version": "1.0.0",
+    "source": {
+      "adapter": "research_configuration",
+      "id": "foundation-synthetic",
+      "raw_sha256": "c0337d976394b551616f8da3ffadbf480a468ddab92b646e758209f0feaac889",
+      "version": "1.0.0"
+    },
+    "state_version": 2,
+    "supersedes": null,
+    "synthetic": true,
+    "view": {
+      "mode": "current",
+      "patient_id": "SYN-02",
+      "snapshot_id": null
+    },
+    "workflow": {
+      "clinical": "clinical_hold",
+      "data_readiness": "ready",
+      "hold_reasons": [
+        "Known safety event requires clinical review"
+      ],
+      "learning": "none",
+      "support_mode": "paused",
+      "support_policy": {
+        "id": "fixed-approved-support",
+        "sha256": "096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639",
+        "version": "1.0.0"
+      }
+    }
+  },
+  "clear": [
+    200,
+    {
+      "status": "recorded"
+    }
+  ],
+  "approve": [
+    200,
+    {
+      "status": "approved",
+      "bundle_id": "approval-24de8324153541a3930d267bb73b0a88",
+      "task_id": "follow-up-c556d8cceb794705bb003fdd3464aea3",
+      "display_sha256": "e1afc451caa286135477b5870197a4ae12f14decde39850e740a1bf9d0637765"
+    }
+  ]
+}

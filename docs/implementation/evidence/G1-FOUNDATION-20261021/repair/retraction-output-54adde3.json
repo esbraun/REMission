@@ -1,0 +1,451 @@
+{
+  "fall": [
+    200,
+    {
+      "status": "accepted",
+      "record_id": "review-fall"
+    }
+  ],
+  "retract": [
+    200,
+    {
+      "status": "accepted",
+      "record_id": "review-retraction"
+    }
+  ],
+  "clear": [
+    200,
+    {
+      "status": "recorded"
+    }
+  ],
+  "after_clear": {
+    "engines": {
+      "bayesian": "unavailable",
+      "escalation": "unavailable",
+      "nof1": "unavailable",
+      "support": "unavailable"
+    },
+    "estimates": {
+      "reason": "Statistical engines are not implemented; no treatment ranking is available",
+      "status": "pending"
+    },
+    "labels": [
+      "Synthetic demonstration",
+      "No acute clinical monitoring"
+    ],
+    "name": "Synthetic patient 02",
+    "options": [
+      {
+        "action": "MED_A",
+        "reasons": [],
+        "status": "eligible"
+      },
+      {
+        "action": "MED_B",
+        "reasons": [],
+        "status": "eligible"
+      },
+      {
+        "action": "behavioral_continue",
+        "reasons": [],
+        "status": "eligible"
+      },
+      {
+        "action": "behavioral_escalate",
+        "reasons": [],
+        "status": "eligible"
+      },
+      {
+        "action": "usual_care",
+        "reasons": [],
+        "status": "eligible"
+      }
+    ],
+    "patient_id": "SYN-02",
+    "permissions": {
+      "approve_ordinary": true,
+      "estimate": false,
+      "randomize": false,
+      "request_review": true
+    },
+    "plan": null,
+    "projection": {
+      "cutoff": "2026-10-21T12:00:02Z",
+      "kind": "learner_history",
+      "patient_id": "SYN-02",
+      "provenance": [
+        {
+          "available_at": "2026-10-21T12:00:00Z",
+          "duplicate_of": null,
+          "event_at": "2026-10-21T07:00:00Z",
+          "kind": "intercurrent_event",
+          "lineage_id": "review-fall",
+          "patient_id": "SYN-02",
+          "record_id": "review-fall",
+          "record_status": "active",
+          "recorded_at": "2026-10-21T08:01:00Z",
+          "revision": 1,
+          "schema_version": "1.0.0",
+          "source": {
+            "adapter": "patient_report",
+            "id": "foundation-synthetic",
+            "raw_sha256": "7faccd5632c8896762ae41cd052fb263f00d2ecb59f4684312992c3441f1ec7d",
+            "version": "1.0.0"
+          },
+          "supersedes": null,
+          "synthetic": true
+        },
+        {
+          "available_at": "2026-10-21T12:00:01Z",
+          "duplicate_of": null,
+          "event_at": "2026-10-21T07:00:00Z",
+          "kind": "intercurrent_event",
+          "lineage_id": "review-fall",
+          "patient_id": "SYN-02",
+          "record_id": "review-retraction",
+          "record_status": "retracted",
+          "recorded_at": "2026-10-21T08:01:00Z",
+          "revision": 2,
+          "schema_version": "1.0.0",
+          "source": {
+            "adapter": "patient_report",
+            "id": "foundation-synthetic",
+            "raw_sha256": "43667554b3fd8bd93bd814177660eda59d82f53e90ab02a91e2fc6bb0df9a9e9",
+            "version": "1.0.0"
+          },
+          "supersedes": "review-fall",
+          "synthetic": true
+        }
+      ],
+      "records": [],
+      "schema_version": "1.0.0",
+      "synthetic": true
+    },
+    "snapshot": {
+      "available_at": "2026-10-21T12:00:02Z",
+      "consent_version": 1,
+      "cutoff": "2026-10-21T12:00:02Z",
+      "duplicate_of": null,
+      "eligibility": [
+        {
+          "action": "MED_A",
+          "reasons": [],
+          "status": "eligible"
+        },
+        {
+          "action": "MED_B",
+          "reasons": [],
+          "status": "eligible"
+        },
+        {
+          "action": "behavioral_continue",
+          "reasons": [],
+          "status": "eligible"
+        },
+        {
+          "action": "behavioral_escalate",
+          "reasons": [],
+          "status": "eligible"
+        },
+        {
+          "action": "usual_care",
+          "reasons": [],
+          "status": "eligible"
+        }
+      ],
+      "eligibility_version": 4,
+      "estimand": {
+        "id": "EST-VISIT",
+        "sha256": "7cb083146962e9cd07b404d0cd24f2b251977a4c99bc0b83e71a9b743224a63c",
+        "version": "1.0.0"
+      },
+      "event_at": "2026-10-21T12:00:02Z",
+      "evidence": [],
+      "horizon_days": 42,
+      "kind": "decision_snapshot",
+      "lineage_id": "decision-51a3f434204930b3353b699ed68d689b",
+      "model": {
+        "id": "foundation-no-estimator",
+        "sha256": "dc45e5812ab508cd9e18593554b3f3f2999974046fe6645e79cdd1f9f5c6dc8e",
+        "version": "1.0.0"
+      },
+      "outcome": "Ordinary synthetic care; statistical estimates unavailable",
+      "patient_id": "SYN-02",
+      "patient_version": 4,
+      "policy": {
+        "id": "fixed-approved-support",
+        "sha256": "096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639",
+        "version": "1.0.0"
+      },
+      "posterior": null,
+      "record_id": "decision-51a3f434204930b3353b699ed68d689b",
+      "record_status": "active",
+      "recorded_at": "2026-10-21T12:00:02Z",
+      "revision": 1,
+      "schema_version": "1.0.0",
+      "source": {
+        "adapter": "research_configuration",
+        "id": "foundation-synthetic",
+        "raw_sha256": "d0b9d4047af96735522b7b031e8a247048e087a7c070ce505309836d1641fde9",
+        "version": "1.0.0"
+      },
+      "state_version": 4,
+      "supersedes": null,
+      "synthetic": true,
+      "view": {
+        "mode": "current",
+        "patient_id": "SYN-02",
+        "snapshot_id": null
+      },
+      "workflow": {
+        "clinical": "initial_assignment",
+        "data_readiness": "ready",
+        "hold_reasons": [],
+        "learning": "none",
+        "support_mode": "fixed",
+        "support_policy": {
+          "id": "fixed-approved-support",
+          "sha256": "096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639",
+          "version": "1.0.0"
+        }
+      }
+    },
+    "stage": "ASSIGN-02",
+    "stage_label": "Initial ordinary choice",
+    "version_status": "Foundation contract consumer; downstream G2-G5 engines pending",
+    "tasks": [],
+    "history": [],
+    "mode": "current",
+    "auth_generation": "ec9479b917bc875e8fbb7a5536b4444cb6fca1b595db5353303b06c27db1aad3"
+  },
+  "unrelated_report": [
+    200,
+    {
+      "status": "accepted",
+      "record_id": "review-unrelated"
+    }
+  ],
+  "after_unrelated": {
+    "engines": {
+      "bayesian": "unavailable",
+      "escalation": "unavailable",
+      "nof1": "unavailable",
+      "support": "unavailable"
+    },
+    "estimates": {
+      "reason": "Statistical engines are not implemented; no treatment ranking is available",
+      "status": "pending"
+    },
+    "labels": [
+      "Synthetic demonstration",
+      "No acute clinical monitoring"
+    ],
+    "name": "Synthetic patient 02",
+    "options": [
+      {
+        "action": "MED_A",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "MED_B",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "behavioral_continue",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "behavioral_escalate",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      },
+      {
+        "action": "usual_care",
+        "reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "status": "excluded"
+      }
+    ],
+    "patient_id": "SYN-02",
+    "permissions": {
+      "approve_ordinary": false,
+      "estimate": false,
+      "randomize": false,
+      "request_review": true
+    },
+    "plan": null,
+    "projection": {
+      "cutoff": "2026-10-21T12:00:03Z",
+      "kind": "learner_history",
+      "patient_id": "SYN-02",
+      "provenance": [
+        {
+          "available_at": "2026-10-21T12:00:00Z",
+          "duplicate_of": null,
+          "event_at": "2026-10-21T07:00:00Z",
+          "kind": "intercurrent_event",
+          "lineage_id": "review-fall",
+          "patient_id": "SYN-02",
+          "record_id": "review-fall",
+          "record_status": "active",
+          "recorded_at": "2026-10-21T08:01:00Z",
+          "revision": 1,
+          "schema_version": "1.0.0",
+          "source": {
+            "adapter": "patient_report",
+            "id": "foundation-synthetic",
+            "raw_sha256": "7faccd5632c8896762ae41cd052fb263f00d2ecb59f4684312992c3441f1ec7d",
+            "version": "1.0.0"
+          },
+          "supersedes": null,
+          "synthetic": true
+        },
+        {
+          "available_at": "2026-10-21T12:00:01Z",
+          "duplicate_of": null,
+          "event_at": "2026-10-21T07:00:00Z",
+          "kind": "intercurrent_event",
+          "lineage_id": "review-fall",
+          "patient_id": "SYN-02",
+          "record_id": "review-retraction",
+          "record_status": "retracted",
+          "recorded_at": "2026-10-21T08:01:00Z",
+          "revision": 2,
+          "schema_version": "1.0.0",
+          "source": {
+            "adapter": "patient_report",
+            "id": "foundation-synthetic",
+            "raw_sha256": "43667554b3fd8bd93bd814177660eda59d82f53e90ab02a91e2fc6bb0df9a9e9",
+            "version": "1.0.0"
+          },
+          "supersedes": "review-fall",
+          "synthetic": true
+        }
+      ],
+      "records": [],
+      "schema_version": "1.0.0",
+      "synthetic": true
+    },
+    "snapshot": {
+      "available_at": "2026-10-21T12:00:03Z",
+      "consent_version": 1,
+      "cutoff": "2026-10-21T12:00:03Z",
+      "duplicate_of": null,
+      "eligibility": [
+        {
+          "action": "MED_A",
+          "reasons": [
+            "Known safety event requires clinical review"
+          ],
+          "status": "excluded"
+        },
+        {
+          "action": "MED_B",
+          "reasons": [
+            "Known safety event requires clinical review"
+          ],
+          "status": "excluded"
+        },
+        {
+          "action": "behavioral_continue",
+          "reasons": [
+            "Known safety event requires clinical review"
+          ],
+          "status": "excluded"
+        },
+        {
+          "action": "behavioral_escalate",
+          "reasons": [
+            "Known safety event requires clinical review"
+          ],
+          "status": "excluded"
+        },
+        {
+          "action": "usual_care",
+          "reasons": [
+            "Known safety event requires clinical review"
+          ],
+          "status": "excluded"
+        }
+      ],
+      "eligibility_version": 5,
+      "estimand": {
+        "id": "EST-VISIT",
+        "sha256": "7cb083146962e9cd07b404d0cd24f2b251977a4c99bc0b83e71a9b743224a63c",
+        "version": "1.0.0"
+      },
+      "event_at": "2026-10-21T12:00:03Z",
+      "evidence": [],
+      "horizon_days": 42,
+      "kind": "decision_snapshot",
+      "lineage_id": "decision-7ad7a624852712f92084817ca9745b7d",
+      "model": {
+        "id": "foundation-no-estimator",
+        "sha256": "dc45e5812ab508cd9e18593554b3f3f2999974046fe6645e79cdd1f9f5c6dc8e",
+        "version": "1.0.0"
+      },
+      "outcome": "Ordinary synthetic care; statistical estimates unavailable",
+      "patient_id": "SYN-02",
+      "patient_version": 5,
+      "policy": {
+        "id": "fixed-approved-support",
+        "sha256": "096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639",
+        "version": "1.0.0"
+      },
+      "posterior": null,
+      "record_id": "decision-7ad7a624852712f92084817ca9745b7d",
+      "record_status": "active",
+      "recorded_at": "2026-10-21T12:00:03Z",
+      "revision": 1,
+      "schema_version": "1.0.0",
+      "source": {
+        "adapter": "research_configuration",
+        "id": "foundation-synthetic",
+        "raw_sha256": "bf227efe43dc2398bf879503047a06e9c4f2c080a56ac3967d6c61d56d18eebc",
+        "version": "1.0.0"
+      },
+      "state_version": 5,
+      "supersedes": null,
+      "synthetic": true,
+      "view": {
+        "mode": "current",
+        "patient_id": "SYN-02",
+        "snapshot_id": null
+      },
+      "workflow": {
+        "clinical": "clinical_hold",
+        "data_readiness": "ready",
+        "hold_reasons": [
+          "Known safety event requires clinical review"
+        ],
+        "learning": "none",
+        "support_mode": "paused",
+        "support_policy": {
+          "id": "fixed-approved-support",
+          "sha256": "096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639",
+          "version": "1.0.0"
+        }
+      }
+    },
+    "stage": "ASSIGN-09",
+    "stage_label": "Clinical hold or major phase change",
+    "version_status": "Foundation contract consumer; downstream G2-G5 engines pending",
+    "tasks": [],
+    "history": [],
+    "mode": "current",
+    "auth_generation": "ec9479b917bc875e8fbb7a5536b4444cb6fca1b595db5353303b06c27db1aad3"
+  }
+}

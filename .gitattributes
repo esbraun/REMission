@@ -18,3 +18,33 @@ docs/implementation/evidence/G0-CLOSURE-20261021/repair/failed-https-transport-8
 docs/implementation/evidence/G0-CLOSURE-20261021/repair/reviewer-check-results-87b389d.json -text whitespace=cr-at-eol
 docs/implementation/evidence/G0-CLOSURE-20261021/repair/reviewer-https-check-results-87b389d.json -text whitespace=cr-at-eol
 docs/implementation/evidence/G0-CLOSURE-20261021/repair/reviewer-preservation-audit-87b389d.json -text whitespace=cr-at-eol
+# Raw foundation build/process captures retain original control sequences.
+docs/implementation/evidence/G1-FOUNDATION-20261021/*.log binary
+docs/implementation/evidence/G1-FOUNDATION-20261021/accepted-g0-closure-review.md -text whitespace=cr-at-eol
+# Foundation source hashes/build context use identical bytes on Windows/Linux.
+services/** text eol=lf
+tooling/foundation/** text eol=lf
+tests/integration/replay/** text eol=lf
+web/** text eol=lf
+web/src/style.css text eol=crlf
+tooling/foundation/requirements.lock text eol=crlf
+# Exact newly generated MCP snapshots copied from the authorized tool cache.
+docs/implementation/evidence/G1-FOUNDATION-20261021/foundation-sol-20261021-current-narrow.yml -text
+docs/implementation/evidence/G1-FOUNDATION-20261021/page-2026-10-21T16-16-01-563Z.yml -text
+docs/implementation/evidence/G1-FOUNDATION-20261021/page-2026-10-21T16-29-20-681Z.yml -text
+docs/implementation/evidence/G1-FOUNDATION-20261021/page-2026-10-21T16-32-07-689Z.yml -text
+# Independent rejected-head reports/probes stay byte-exact, including CRLF.
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-review-54adde3.md -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/independent-evidence-manifest-54adde3.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/death_probe.py -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/death-output-54adde3.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/retraction_probe.py -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/retraction-output-54adde3.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/*.log binary
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/foundation-sol-20261021-repair-history.yml -text
+docs/implementation/evidence/G1-FOUNDATION-20261021/repair/page-2026-10-21T16-54-48-475Z.yml -text
+docs/implementation/evidence/G1-FOUNDATION-20261021/p3/independent-ready-review-4d480c8.md -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/p3/independent-evidence-manifest-4d480c8.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-FOUNDATION-20261021/p3/*.log binary
+docs/implementation/evidence/G1-FOUNDATION-20261021/p3/foundation-sol-20261021-p3-authenticated.yml -text
+docs/implementation/evidence/G1-FOUNDATION-20261021/p3/page-2026-10-21T17-08-36-564Z.yml -text

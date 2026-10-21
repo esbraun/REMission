@@ -1,0 +1,111 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from runtime.Dockerfile
+#1 transferring dockerfile: 1.76kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-python-locked:20261020
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 117B 0.0s done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 5.35kB done
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/remission-python-locked:20261020@sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7
+#5 resolve docker.io/library/remission-python-locked:20261020@sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 0.0s done
+#5 DONE 0.1s
+
+#6 [2/7] COPY tooling/foundation/requirements.in /opt/foundation/requirements.in
+#6 DONE 0.0s
+
+#7 [3/7] COPY tooling/library/requirements.lock /opt/foundation/numerical.lock
+#7 DONE 0.0s
+
+#8 [4/7] RUN python -c "from pathlib import Path;p=Path('/opt/foundation');p.joinpath('constraints.txt').write_text(''.join(line.split(' --hash=')[0]+'\n' for line in p.joinpath('numerical.lock').read_text().splitlines() if line and not line.startswith('#')))"  && python -m pip install --no-cache-dir --report /opt/foundation/install-report.json -c /opt/foundation/constraints.txt -r /opt/foundation/requirements.in  && python -m pip check
+#8 1.394 Collecting fastapi==0.157.0 (from -r /opt/foundation/requirements.in (line 2))
+#8 1.545   Downloading fastapi-0.157.0-py3-none-any.whl.metadata (26 kB)
+#8 1.611 Collecting uvicorn==0.54.0 (from -r /opt/foundation/requirements.in (line 3))
+#8 1.633   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#8 1.666 Collecting argon2-cffi==25.1.0 (from -r /opt/foundation/requirements.in (line 4))
+#8 1.692   Downloading argon2_cffi-25.1.0-py3-none-any.whl.metadata (4.1 kB)
+#8 1.720 Collecting httpx==0.28.1 (from -r /opt/foundation/requirements.in (line 5))
+#8 1.736   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#8 1.785 Collecting starlette>=0.46.0 (from fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2))
+#8 1.802   Downloading starlette-1.9.0-py3-none-any.whl.metadata (6.6 kB)
+#8 1.804 Requirement already satisfied: pydantic>=2.9.0 in /usr/local/lib/python3.13/site-packages (from fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2)) (2.14.1)
+#8 1.804 Requirement already satisfied: typing-extensions>=4.8.0 in /usr/local/lib/python3.13/site-packages (from fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2)) (4.16.0)
+#8 1.805 Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.13/site-packages (from fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2)) (0.4.4)
+#8 1.825 Collecting annotated-doc>=0.0.2 (from fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2))
+#8 1.845   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#8 1.878 Collecting opentelemetry-api>=1.44.0 (from fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2))
+#8 1.897   Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+#8 1.928 Collecting click>=7.0 (from uvicorn==0.54.0->-r /opt/foundation/requirements.in (line 3))
+#8 1.945   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#8 1.978 Collecting h11>=0.8 (from uvicorn==0.54.0->-r /opt/foundation/requirements.in (line 3))
+#8 2.003   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#8 2.032 Collecting argon2-cffi-bindings (from argon2-cffi==25.1.0->-r /opt/foundation/requirements.in (line 4))
+#8 2.049   Downloading argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (7.5 kB)
+#8 2.080 Collecting anyio (from httpx==0.28.1->-r /opt/foundation/requirements.in (line 5))
+#8 2.112   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#8 2.114 Requirement already satisfied: certifi in /usr/local/lib/python3.13/site-packages (from httpx==0.28.1->-r /opt/foundation/requirements.in (line 5)) (2026.10.19)
+#8 2.139 Collecting httpcore==1.* (from httpx==0.28.1->-r /opt/foundation/requirements.in (line 5))
+#8 2.158   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#8 2.189 Collecting idna (from httpx==0.28.1->-r /opt/foundation/requirements.in (line 5))
+#8 2.208   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#8 2.225 Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.13/site-packages (from pydantic>=2.9.0->fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2)) (0.8.0)
+#8 2.225 Requirement already satisfied: pydantic-core==2.50.1 in /usr/local/lib/python3.13/site-packages (from pydantic>=2.9.0->fastapi==0.157.0->-r /opt/foundation/requirements.in (line 2)) (2.50.1)
+#8 2.386 Collecting cffi>=1.0.1 (from argon2-cffi-bindings->argon2-cffi==25.1.0->-r /opt/foundation/requirements.in (line 4))
+#8 2.405   Downloading cffi-2.1.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+#8 2.428 Collecting pycparser (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi==25.1.0->-r /opt/foundation/requirements.in (line 4))
+#8 2.447   Downloading pycparser-3.11-py3-none-any.whl.metadata (8.2 kB)
+#8 2.484 Downloading fastapi-0.157.0-py3-none-any.whl (147 kB)
+#8 2.539 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#8 2.564 Downloading argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+#8 2.590 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#8 2.617 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#8 2.643 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#8 2.667 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#8 2.691 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#8 2.717 Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+#8 2.739 Downloading starlette-1.9.0-py3-none-any.whl (80 kB)
+#8 2.767 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#8 2.794 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#8 2.819 Downloading argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+#8 2.841 Downloading cffi-2.1.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+#8 2.872 Downloading pycparser-3.11-py3-none-any.whl (51 kB)
+#8 3.009 Installing collected packages: pycparser, opentelemetry-api, idna, h11, click, annotated-doc, uvicorn, httpcore, cffi, anyio, starlette, httpx, argon2-cffi-bindings, fastapi, argon2-cffi
+#8 3.596 
+#8 3.601 Successfully installed annotated-doc-0.0.5 anyio-4.15.1 argon2-cffi-25.1.0 argon2-cffi-bindings-26.1.0 cffi-2.1.1 click-8.5.0 fastapi-0.157.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 opentelemetry-api-1.45.1 pycparser-3.11 starlette-1.9.0 uvicorn-0.54.0
+#8 3.601 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 3.716 
+#8 3.716 [notice] A new release of pip is available: 25.2 -> 26.2.2
+#8 3.716 [notice] To update, run: pip install --upgrade pip
+#8 4.437 No broken requirements found.
+#8 DONE 4.5s
+
+#9 [5/7] RUN python -c "import urllib.request,hashlib,zipfile,io;raw=urllib.request.urlopen('https://www.sqlite.org/2026/sqlite-amalgamation-3540100.zip').read();assert hashlib.sha3_256(raw).hexdigest()=='92281c86e2957f9b9305890f9ac04204caa7b677cc868dc326d942689df28e30';zipfile.ZipFile(io.BytesIO(raw)).extractall('/tmp/sqlite-source')"  && mkdir -p /opt/foundation/sqlite  && gcc -shared -fPIC -O2 -DSQLITE_THREADSAFE=1 -DSQLITE_ENABLE_FTS5 -DSQLITE_ENABLE_RTREE /tmp/sqlite-source/sqlite-amalgamation-3540100/sqlite3.c -o /opt/foundation/sqlite/libsqlite3.so.0 -ldl -lpthread -lm  && rm -rf /tmp/sqlite-source
+#9 DONE 21.5s
+
+#10 [6/7] WORKDIR /app
+#10 DONE 0.0s
+
+#11 [7/7] RUN python -c "import sqlite3;assert sqlite3.sqlite_version=='3.54.1'"
+#11 DONE 0.3s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 0.3s done
+#12 exporting manifest sha256:ff75a9c1337ae071497143c751da369d1ef294d0028fd7231dc47cdc68a31ccb done
+#12 exporting config sha256:261c47dcb630fec8e1c0e234d0c3d2fd26dae428671ccc15c30a0582ba12fd01 done
+#12 exporting attestation manifest sha256:c25d76e293f98a10bc908f14739181453cb23235b4725516803dbafc4bbdb194 done
+#12 exporting manifest list sha256:f10e4232b3ddf3677e9daad4cf4363dcff4cdfbe7b4da999e6e372f70645ddd9 done
+#12 naming to docker.io/library/remission-foundation-runtime:candidate done
+#12 unpacking to docker.io/library/remission-foundation-runtime:candidate
+#12 unpacking to docker.io/library/remission-foundation-runtime:candidate 0.2s done
+#12 DONE 0.6s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/pbui3irzsvsp01cayzkww3a2m

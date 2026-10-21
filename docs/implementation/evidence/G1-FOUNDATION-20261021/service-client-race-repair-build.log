@@ -1,0 +1,104 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 1.16kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 108B done
+#4 DONE 0.0s
+
+#5 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#5 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#5 DONE 0.0s
+
+#6 [service 1/6] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:fba65474949a5987d40e076bbc039faca67bf964c1934ba503306192348beadf
+#6 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:fba65474949a5987d40e076bbc039faca67bf964c1934ba503306192348beadf 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 176.11kB 0.0s done
+#7 DONE 0.0s
+
+#8 [client 2/6] WORKDIR /client
+#8 CACHED
+
+#9 [client 3/6] COPY web/package.json web/package-lock.json ./
+#9 CACHED
+
+#10 [client 4/6] RUN npm ci --ignore-scripts
+#10 CACHED
+
+#11 [client 5/6] COPY web/ ./
+#11 DONE 0.0s
+
+#12 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#12 0.316 
+#12 0.316 > remission-foundation-shell@0.1.0 typecheck
+#12 0.316 > tsc --noEmit
+#12 0.316 
+#12 0.519 
+#12 0.519 > remission-foundation-shell@0.1.0 test
+#12 0.519 > node --test tests/*.test.mjs
+#12 0.519 
+#12 0.575 ✔ a late response cannot cross patient, task, decision or historical context (0.516206ms)
+#12 0.575 ✔ logout and same-doctor login invalidate every pre-logout response (0.104531ms)
+#12 0.580 ℹ tests 2
+#12 0.580 ℹ suites 0
+#12 0.580 ℹ pass 2
+#12 0.580 ℹ fail 0
+#12 0.580 ℹ cancelled 0
+#12 0.580 ℹ skipped 0
+#12 0.580 ℹ todo 0
+#12 0.580 ℹ duration_ms 37.011989
+#12 0.648 
+#12 0.648 > remission-foundation-shell@0.1.0 build
+#12 0.648 > vite build
+#12 0.648 
+#12 0.808 vite v8.3.5 building client environment for production...
+#12 0.822 transforming...
+#12 0.881 ✓ 16 modules transformed.
+#12 0.915 rendering chunks...
+#12 0.941 computing gzip size...
+#12 0.945 dist/index.html                   0.68 kB │ gzip:  0.46 kB
+#12 0.945 dist/assets/index-DAMJjhnq.css    5.07 kB │ gzip:  1.80 kB
+#12 0.945 dist/assets/index-DZY4E2m6.js   243.49 kB │ gzip: 75.44 kB
+#12 0.945 
+#12 0.945 ✓ built in 136ms
+#12 DONE 1.0s
+
+#13 [service 2/6] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#13 CACHED
+
+#14 [service 3/6] COPY services/foundation/ /app/services/foundation/
+#14 CACHED
+
+#15 [service 4/6] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#15 CACHED
+
+#16 [service 5/6] COPY --from=client /client/dist/ /app/web/dist/
+#16 DONE 0.0s
+
+#17 [service 6/6] RUN mkdir /data && chown 10001:10001 /data
+#17 DONE 0.2s
+
+#18 exporting to image
+#18 exporting layers 0.1s done
+#18 exporting manifest sha256:8b31135e8bed06e2f32a2ecb42e4af78fb71af8ab40b921764530978f8a1bab6 done
+#18 exporting config sha256:9960288473fe3355737dbe1e5844781cc7d4324aabfc66a7cbe3c49848b6193c done
+#18 exporting attestation manifest sha256:84c5046d140b6fa6d50503752f8268a29fc65de139159cce59e20331523b70fe done
+#18 exporting manifest list sha256:9c7094cc711606291fab4d7ff105dbb67d86facb302dc4c6c277101fc522c0a7 done
+#18 naming to docker.io/library/remission-foundation-service:candidate done
+#18 unpacking to docker.io/library/remission-foundation-service:candidate 0.0s done
+#18 DONE 0.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/o99exrdl3r8fzb6h8vhvfoog2

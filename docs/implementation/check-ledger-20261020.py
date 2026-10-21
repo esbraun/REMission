@@ -132,10 +132,11 @@ def main():
     # Exact combined closure record governs the current review checkpoint.
     # Package qualification cannot accept the combined gate by itself.
     closure = data["g0_closure"]
-    assert closure["status"] == "ready-for-independent-closure-review"
-    assert closure["gate_status"] == data["gate_status"]["G0"] == "running"
-    assert closure["independent_combined_review"] == closure["root_gate_acceptance"] == "pending"
-    assert all(state == "not-started" for gate, state in data["gate_status"].items() if gate != "G0")
+    assert closure["status"] == "accepted_contract_library_qualification"
+    assert closure["gate_status"] == data["gate_status"]["G0"] == "accepted"
+    assert closure["independent_combined_review"] == "ready_to_ship" and closure["root_gate_acceptance"] == "accepted"
+    assert data["gate_status"]["G1"] == "running"
+    assert all(state == "not-started" for gate, state in data["gate_status"].items() if gate not in ("G0", "G1"))
     prior = data["repair_assignment"]
     assert prior["review_disposition"] == "ready_to_ship"
     assert prior["reviewed_head"] == "3af3553cb6aec3a762ce883d968bec621244409b"
@@ -185,9 +186,15 @@ def main():
     assert lib_review["disposition"] == "ready_to_ship"
     assert "not G0 overall" in read(lib_review["path"])
     assignment = data["current_assignment"]
-    assert assignment["id"] == "G0-CLOSURE"
-    assert assignment["status"] == closure["status"]
-    assert assignment["base_commit"] == assignment["review_target_base"] == closure["base_commit"] == lib_merge
+    foundation_base = "8ca67682505d78accc855e92cbfbb6692edf8316"
+    closure_head = "236ebfb84952a63c58a4cc885d17a9754e93051b"
+    assert closure["reviewed_head"] == closure_head and closure["reviewed_base"] == closure["base_commit"] == lib_merge
+    assert closure["merge_commit"] == foundation_base and closure["pr_url"] == "https://github.com/esbraun/REMission/pull/15"
+    assert git("show", "-s", "--format=%P", foundation_base).split() == [lib_merge, closure_head]
+    closure_report = closure["accepted_review"]["path"]
+    assert git("hash-object", "--no-filters", closure_report).strip() == "51cf9d0c2692bbf5ed18ac269cc00e8893fd047f"
+    assert assignment["id"] == "G1-FOUNDATION" and assignment["status"] in ("running", "needs_review")
+    assert assignment["base_commit"] == assignment["review_target_base"] == foundation_base
     assert closure["required_packages"] == ["G0-PLAN", "G0-CONTRACT", "G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB"]
     assert closure["accepted_merge_chain"] == [PUBLISHED_MERGE, accepted_merge, main_base, dgp_merge, lib_merge]
     subprocess.check_call(["git", "merge-base", "--is-ancestor", lib_merge, "HEAD"], cwd=ROOT)
@@ -236,7 +243,7 @@ def main():
     assert prior_contract["reviewed_head"] == "939dd29254bc4a6f2c4f6c92330bd1c3fc11c9d4"
     assert prior_contract["reviewed_base"] == merge and prior_contract["disposition"] == "changes_requested"
     assert git("hash-object", "--path", prior_contract["path"], prior_contract["path"]).strip() == "9b81514185ab38ed7550b8c3719cb30e85b7edc9"
-    print("PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; gates unaccepted.")
+    print("PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; G0 accepted in contract/library scope; G1 running and later gates unaccepted.")
 
 
 if __name__ == "__main__":
