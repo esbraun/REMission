@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "PilotConfiguration": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "trial_size": {
+          "enum": [
+            60,
+            240
+          ],
+          "title": "Trial Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "trial_size"
+      ],
+      "title": "PilotConfiguration",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:probability-pilot-plan",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Frozen required configurations in the authenticated request pilot file.",
+  "properties": {
+    "conditional": {
+      "title": "Conditional",
+      "type": "boolean"
+    },
+    "configurations": {
+      "items": {
+        "$ref": "#/$defs/PilotConfiguration"
+      },
+      "minItems": 1,
+      "title": "Configurations",
+      "type": "array"
+    },
+    "kind": {
+      "const": "probability_pilot_plan",
+      "title": "Kind",
+      "type": "string"
+    },
+    "rule": {
+      "$ref": "#/$defs/VersionRef"
+    }
+  },
+  "required": [
+    "kind",
+    "rule",
+    "conditional",
+    "configurations"
+  ],
+  "title": "ProbabilityPilotPlan",
+  "type": "object"
+}

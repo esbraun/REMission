@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/workspace/docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/independent-probes-2a.py", line 13, in <module>
+    t=truth_statistics(counts,conditional=False,epsilon=np.repeat(.0001,6))
+  File "/workspace/contracts/runs/probability.py", line 366, in truth_statistics
+    if (stats['mcse']>epsilon).any() or (stats['boundary_error']>epsilon).any() or (not conditional and (stats['pooled_iid_mcse']>epsilon).any()):raise ValueError('truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended')
+                                                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended

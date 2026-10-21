@@ -193,8 +193,44 @@ def main():
     assert git("show", "-s", "--format=%P", foundation_base).split() == [lib_merge, closure_head]
     closure_report = closure["accepted_review"]["path"]
     assert git("hash-object", "--no-filters", closure_report).strip() == "51cf9d0c2692bbf5ed18ac269cc00e8893fd047f"
-    assert assignment["id"] == "G1-FOUNDATION" and assignment["status"] in ("running", "needs_review")
-    assert assignment["base_commit"] == assignment["review_target_base"] == foundation_base
+    foundation = data["accepted_foundation_assignment"]
+    foundation_head = "3179f3d2fcc7c9f285129b0272e868d413ced089"
+    generator_base = "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e"
+    assert foundation["status"] == "accepted_engineering_scope_only" and foundation["review_disposition"] == "ready_to_ship"
+    assert foundation["reviewed_head"] == foundation["candidate_commit"] == foundation_head
+    assert foundation["reviewed_base"] == foundation["base_commit"] == foundation_base
+    assert foundation["merge_commit"] == generator_base and foundation["pr_url"] == "https://github.com/esbraun/REMission/pull/16"
+    assert git("show", "-s", "--format=%P", generator_base).split() == [foundation_base, foundation_head]
+    assert git("hash-object", "--no-filters", foundation["accepted_review"]["path"]).strip() == "fbbf95f62dd5d2a2d016caabcd5c22f58bf94268"
+    assert git("hash-object", "--no-filters", foundation["accepted_review"]["evidence_manifest_path"]).strip() == "369c9fc71a32117c161dbf4423e4bac193d45a84"
+    assert assignment["id"] == "G1-GENERATOR" and assignment["package_id"] == "G1-GENERATOR-INTERFACES" and assignment["status"] == "needs_review"
+    assert assignment["base_commit"] == assignment["review_target_base"] == generator_base
+    assert tasks["G1-FOUNDATION"]["status"] == foundation["status"] and tasks["G1-GENERATOR"]["status"] == "running"
+    merged = json.loads(git("show", f"{generator_base}:{ledger_path}"))
+    assert data["coverage"] == merged["coverage"] and data["coverage_counts"] == merged["coverage_counts"]
+    for task in data["tasks"]:
+        before = next(t for t in merged["tasks"] if t["id"] == task["id"])
+        assert all(task[key] == before[key] for key in ("id", "depends_on", "test_ids", "requirement_ids"))
+    probability = data["accepted_probability_plan"]
+    assert probability["status"] == "root_accepted_plan_only" and probability["root_accepted"] is True
+    assert (probability["contract_id"], probability["contract_version"]) == ("ESTINT-PRECISION-01", "1.0.0-r1")
+    assert probability["reviewed_head"] == "99fbcc31267284481fe8e4820530635eaecc7ce5" and probability["reviewed_base"] == generator_base
+    for record in [probability, probability["accepted_critique"], probability["original_proposal"], probability["original_critique"]]:
+        assert git("hash-object", "--no-filters", record["path"]).strip() == record["blob"]
+    assert probability["accepted_critique"]["disposition"] == "ready_to_proceed"
+    rejected = assignment["prior_reviews"][0]
+    assert rejected["reviewed_head"] == "2a7726be23864cf9c933295f1d33da3d6fbedd1b" and rejected["reviewed_base"] == generator_base
+    assert rejected["disposition"] == "changes_requested"
+    assert git("hash-object", "--no-filters", rejected["path"]).strip() == "bb708c7e9bffea3ff997fd0eafba05303b6f94fd"
+    assert git("hash-object", "--no-filters", rejected["evidence_manifest_path"]).strip() == "a732313d5a0b1957ca5c724691728db3d709a489"
+    rejected95 = assignment["prior_reviews"][1]
+    assert rejected95["reviewed_head"] == "95a48144b936c690aa86e5743a5330a594403521" and rejected95["reviewed_base"] == generator_base
+    assert rejected95["disposition"] == "changes_requested"
+    assert git("hash-object", "--no-filters", rejected95["path"]).strip() == "4401db3d1c68a34d2bf604a4289bfcb5a8c2917d"
+    assert git("hash-object", "--no-filters", rejected95["evidence_manifest_path"]).strip() == "508141b5654038cebbd9599a9a5266b5971a831c"
+    interpretation = probability["iid_admission_interpretation"]
+    assert interpretation["status"] == "root_accepted_conservative_engineering_interpretation"
+    assert git("hash-object", "--no-filters", interpretation["path"]).strip() == "aede75810ca4ff2178b5f4126d0f80f050366618"
     assert closure["required_packages"] == ["G0-PLAN", "G0-CONTRACT", "G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB"]
     assert closure["accepted_merge_chain"] == [PUBLISHED_MERGE, accepted_merge, main_base, dgp_merge, lib_merge]
     subprocess.check_call(["git", "merge-base", "--is-ancestor", lib_merge, "HEAD"], cwd=ROOT)
@@ -206,7 +242,7 @@ def main():
     assert all(row["status"] == "planned" for row in rows), "package review cannot close shared requirement rows"
     assert data["claim_status"] == {"synthetic-engineering": "running", "human-factors": "not-started", "clinical-review": "not-started", "clinical-validation": "not-started"}
     current_evidence = {item["task_id"]: item for item in data["execution_evidence"] if item.get("record_kind") == "current_accepted_package"}
-    assert set(current_evidence) == {"G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB"}
+    assert set(current_evidence) == {"G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB", "G1-FOUNDATION"}
     for item in current_evidence.values():
         assert item["review_disposition"] == "ready_to_ship" and (ROOT / item["evidence"]).is_file()
     workflow = read("docs/implementation/workflow-contract.md")

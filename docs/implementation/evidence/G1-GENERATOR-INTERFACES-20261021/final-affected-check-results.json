@@ -1,0 +1,103 @@
+{
+  "base": "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e",
+  "reason": "Final typed diagnostic filter hashes/full keys/final particle level and pilot producer run, plus pending/undefined vector component admission bypass guards",
+  "prior_full_run": "current-interface-check-results.json",
+  "checks": [
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "-m",
+        "contracts.runs.export",
+        "--check"
+      ],
+      "started_utc": "2026-10-21T18:13:30.992938+00:00",
+      "finished_utc": "2026-10-21T18:13:32.788803+00:00",
+      "exit_code": 0,
+      "stdout": "Run interface schemas/dictionary and exact accepted source references match v1.0.0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/run_contracts",
+        "-v"
+      ],
+      "started_utc": "2026-10-21T18:13:32.788841+00:00",
+      "finished_utc": "2026-10-21T18:13:55.194495+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_calibration_cannot_lower_sample_or_substitute_target_and_fixture_cannot_authorize_engine (test_evaluator.EvaluatorContracts.test_calibration_cannot_lower_sample_or_substitute_target_and_fixture_cannot_authorize_engine) ... ok\ntest_catalog_fixture_system_and_standalone_native_quantities_remain_distinct (test_evaluator.EvaluatorContracts.test_catalog_fixture_system_and_standalone_native_quantities_remain_distinct) ... ok\ntest_conditional_history_is_strict_and_particle_refinement_not_just_rollout_mcse (test_evaluator.EvaluatorContracts.test_conditional_history_is_strict_and_particle_refinement_not_just_rollout_mcse) ... ok\ntest_conditioning_file_must_be_strict_projected_history_not_future_lineage (test_evaluator.EvaluatorContracts.test_conditioning_file_must_be_strict_projected_history_not_future_lineage) ... ok\ntest_estint_retains_per_arm_vector_and_unresolved_probability_precision (test_evaluator.EvaluatorContracts.test_estint_retains_per_arm_vector_and_unresolved_probability_precision) ... ok\ntest_numeric_scalar_bound_to_target_seed_pilot_runtime_and_both_precision_limits (test_evaluator.EvaluatorContracts.test_numeric_scalar_bound_to_target_seed_pilot_runtime_and_both_precision_limits) ... ok\ntest_pending_failed_undefined_capped_are_explicit_not_success (test_evaluator.EvaluatorContracts.test_pending_failed_undefined_capped_are_explicit_not_success) ... ok\ntest_complete_roster_requires_all_sixty_patients (test_interfaces.Interfaces.test_complete_roster_requires_all_sixty_patients) ... ok\ntest_evaluation_roster_configuration_and_calibration_barriers_before_export (test_interfaces.Interfaces.test_evaluation_roster_configuration_and_calibration_barriers_before_export) ... ok\ntest_exact_catalog_presets_smoke_and_workload_sizes (test_interfaces.Interfaces.test_exact_catalog_presets_smoke_and_workload_sizes) ... ok\ntest_exact_full_seed_key_and_namespace_admission (test_interfaces.Interfaces.test_exact_full_seed_key_and_namespace_admission) ... ok\ntest_immutable_published_observed_exports_and_safe_consumer_imports (test_interfaces.Interfaces.test_immutable_published_observed_exports_and_safe_consumer_imports) ... ok\ntest_mapping_cannot_cross_cell_preset_cohort_replicate_source_seed (test_interfaces.Interfaces.test_mapping_cannot_cross_cell_preset_cohort_replicate_source_seed) ... ok\ntest_path_role_hash_size_symlink_and_privileged_export_reject (test_interfaces.Interfaces.test_path_role_hash_size_symlink_and_privileged_export_reject) ... ok\ntest_real_sqlite_multi_patient_atomic_replay_resume_and_snapshot_cutoff (test_interfaces.Interfaces.test_real_sqlite_multi_patient_atomic_replay_resume_and_snapshot_cutoff) ... ok\ntest_replay_raw_privilege_and_patient_provenance_mismatch_reject (test_interfaces.Interfaces.test_replay_raw_privilege_and_patient_provenance_mismatch_reject) ... ok\ntest_schema_and_dictionary_are_generated_from_current_types (test_interfaces.Interfaces.test_schema_and_dictionary_are_generated_from_current_types) ... ok\ntest_trusted_run_export_roundtrip_and_strict_equality_cutoff (test_interfaces.Interfaces.test_trusted_run_export_roundtrip_and_strict_equality_cutoff) ... ok\ntest_versions_hashes_runtime_and_self_declared_producer_reject (test_interfaces.Interfaces.test_versions_hashes_runtime_and_self_declared_producer_reject) ... ok\ntest_analytic_bernoulli_variance_mixture_and_zero_trials_are_distinct (test_probability.ProbabilityContracts.test_analytic_bernoulli_variance_mixture_and_zero_trials_are_distinct) ... ok\ntest_complete_death_admission_outpatient_and_paired_covariance (test_probability.ProbabilityContracts.test_complete_death_admission_outpatient_and_paired_covariance) ... ok\ntest_correct_environment_unit_shared_filter_and_relabelled_realization_faults (test_probability.ProbabilityContracts.test_correct_environment_unit_shared_filter_and_relabelled_realization_faults) ... ok\ntest_empirical_lower_binding_retains_zero_trials_and_cp_not_wilson_acceptance (test_probability.ProbabilityContracts.test_empirical_lower_binding_retains_zero_trials_and_cp_not_wilson_acceptance) ... ok\ntest_final_epsilon_and_paired_variance_binding_refinement (test_probability.ProbabilityContracts.test_final_epsilon_and_paired_variance_binding_refinement) ... ok\ntest_iid_and_conditional_zero_boundary_caps_structural_proof_scope (test_probability.ProbabilityContracts.test_iid_and_conditional_zero_boundary_caps_structural_proof_scope) ... ok\ntest_structural_zero_is_distinct_from_zero_sample_pilot (test_probability.ProbabilityContracts.test_structural_zero_is_distinct_from_zero_sample_pilot) ... ok\ntest_truth_diagnostic_receipts_bind_actual_run_target_batch_and_final_level (test_probability.ProbabilityContracts.test_truth_diagnostic_receipts_bind_actual_run_target_batch_and_final_level) ... ok\ntest_authenticated_complete_paired_fixture_roundtrip_and_binding_faults (test_probability_admission.ProbabilityAdmission.test_authenticated_complete_paired_fixture_roundtrip_and_binding_faults) ... ok\n\n----------------------------------------------------------------------\nRan 28 tests in 20.175s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\docs\\implementation\\evidence\\G1-GENERATOR-INTERFACES-20261021\\preservation.py"
+      ],
+      "started_utc": "2026-10-21T18:13:55.194535+00:00",
+      "finished_utc": "2026-10-21T18:13:55.516727+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: accepted numerical/domain/DGP/UI/backend tests/locks/raw history unchanged; only bounded shared-contract/admission/evidence paths; all635 rows/task/dependency/test mappings preserved\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e"
+      ],
+      "started_utc": "2026-10-21T18:13:55.516761+00:00",
+      "finished_utc": "2026-10-21T18:13:55.582161+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "limits": [
+    "Contract/IO fixtures only; no production generator/filter/calibration/truth execution or statistical acceptance",
+    "Unchanged costly fits and full browser flows not repeated; accepted foundation retained",
+    "Actual producer independence and 60000-filter-per-level throughput/memory/storage preflight remain mandatory later"
+  ]
+}

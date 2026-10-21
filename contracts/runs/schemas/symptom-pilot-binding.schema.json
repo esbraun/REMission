@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:symptom-pilot-binding",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "comparison": {
+      "const": "own_arm_alive_outpatient_ISI_mean",
+      "title": "Comparison",
+      "type": "string"
+    },
+    "component": {
+      "enum": [
+        "intervention.conditional_isi",
+        "comparator.conditional_isi"
+      ],
+      "title": "Component",
+      "type": "string"
+    },
+    "kind": {
+      "const": "interruption_symptom_pilot_binding",
+      "title": "Kind",
+      "type": "string"
+    },
+    "probability_evidence": {
+      "$ref": "#/$defs/Artifact"
+    },
+    "request_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "trial_refs_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Trial Refs Sha256",
+      "type": "string"
+    },
+    "unit": {
+      "const": "ISI_points",
+      "title": "Unit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "request_sha256",
+    "component",
+    "comparison",
+    "unit",
+    "probability_evidence",
+    "trial_refs_sha256"
+  ],
+  "title": "SymptomPilotBinding",
+  "type": "object"
+}

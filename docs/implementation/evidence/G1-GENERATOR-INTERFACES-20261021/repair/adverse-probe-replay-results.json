@@ -1,0 +1,65 @@
+{
+  "original_script_is_unchanged": true,
+  "observations": [
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/independent-probes-2a.py"
+      ],
+      "started_utc": "2026-10-21T18:37:03.822629+00:00",
+      "finished_utc": "2026-10-21T18:37:05.990340+00:00",
+      "exit_code": 1,
+      "stdout": "ORACLE {\"mean\": [0.0009999999999999998, 0.0009999999999999998, 0.0009999999999999998, 0.0009999999999999998, 0.0009999999999999998, 0.0009999999999999998], \"sd\": [0.005689085957547723, 0.005689085957547723, 0.005689085957547723, 0.005689085957547723, 0.005689085957547723, 0.005689085957547723], \"sd_mcse\": [0.0004954235000930186, 0.0004954235000930186, 0.0004954235000930186, 0.0004954235000930186, 0.0004954235000930186, 0.0004954235000930186], \"lower\": [0.004874114299894708, 0.004874114299894708, 0.004874114299894708, 0.004874114299894708, 0.004874114299894708, 0.004874114299894708], \"analytic_lower\": [0.00474109334894243, 0.00474109334894243, 0.00474109334894243, 0.00474109334894243, 0.00474109334894243, 0.00474109334894243]}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/workspace/docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/independent-probes-2a.py\", line 13, in <module>\n    t=truth_statistics(counts,conditional=False,epsilon=np.repeat(.0001,6))\n  File \"/workspace/contracts/runs/probability.py\", line 366, in truth_statistics\n    if (stats['mcse']>epsilon).any() or (stats['boundary_error']>epsilon).any() or (not conditional and (stats['pooled_iid_mcse']>epsilon).any()):raise ValueError('truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended')\n                                                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended\n"
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/probe_all_mutations.py"
+      ],
+      "started_utc": "2026-10-21T18:37:05.991113+00:00",
+      "finished_utc": "2026-10-21T18:38:13.591157+00:00",
+      "exit_code": 0,
+      "stdout": "{\n  \"kind\": \"supplemental_adapter_not_original_probe\",\n  \"original_script_blob\": \"7b16ef9cfb52cfd9304c6802eb2c8a8e8463ff3f\",\n  \"pure_wire_fixture\": true,\n  \"observations\": [\n    {\n      \"probe\": \"original_iid_counts\",\n      \"epsilon\": 0.0001,\n      \"admitted\": false,\n      \"error\": \"ValueError('truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended')\"\n    },\n    {\n      \"probe\": \"original_iid_counts\",\n      \"epsilon\": 0.001,\n      \"admitted\": false,\n      \"error\": \"ValueError('every IID admission needs a separately trusted resolved investigation')\"\n    },\n    {\n      \"probe\": \"missing_symptom_pilot\",\n      \"admitted\": false,\n      \"error\": \"FileNotFoundError(2, 'No such file or directory')\"\n    },\n    {\n      \"probe\": \"unbound_symptom_se\",\n      \"admitted\": false,\n      \"error\": \"ValueError('claimed symptom SE differs from its authenticated raw pilot and actual tighter comparison')\"\n    },\n    {\n      \"probe\": \"wrong_event_times\",\n      \"admitted\": false,\n      \"error\": \"ValueError('reported event-time multiset differs from all qualified day42 paths')\"\n    },\n    {\n      \"probe\": \"wrong_symptom_reported_se\",\n      \"admitted\": false,\n      \"error\": \"ValueError('nested symptom uncertainty conflicts with qualified MCSE')\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  ]
+}

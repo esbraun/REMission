@@ -1,0 +1,363 @@
+{
+  "base": "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e",
+  "rejected_head": "95a48144b936c690aa86e5743a5330a594403521",
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:16.917159+00:00",
+      "finished_utc": "2026-10-21T18:57:17.445389+00:00",
+      "exit_code": 0,
+      "stdout": "No broken requirements found.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-m",
+        "contracts.domain.export",
+        "--check"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:17.445440+00:00",
+      "finished_utc": "2026-10-21T18:57:17.810620+00:00",
+      "exit_code": 0,
+      "stdout": "Contract JSON Schema/dictionary match typed source\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-m",
+        "contracts.dgp.export",
+        "--check"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:17.810656+00:00",
+      "finished_utc": "2026-10-21T18:57:18.059054+00:00",
+      "exit_code": 0,
+      "stdout": "DGP parameter/scenario artifacts match v1.2.0; independent fixtures remain v1.0.0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-m",
+        "contracts.artifacts.ope_export",
+        "--check"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:18.059089+00:00",
+      "finished_utc": "2026-10-21T18:57:18.302541+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: ten OPE schemas match typed source\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\tests\\contracts",
+        "-v"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:18.302574+00:00",
+      "finished_utc": "2026-10-21T18:57:18.962655+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_both_precision_constraints_zero_se_and_cap (test_dgp_contracts.IndependentTruthFixtures.test_both_precision_constraints_zero_se_and_cap) ... ok\ntest_calibration_binding_rejects_missing_derived_values_and_wrong_target (test_dgp_contracts.IndependentTruthFixtures.test_calibration_binding_rejects_missing_derived_values_and_wrong_target) ... ok\ntest_calibration_solver_rejects_infeasible_and_cap_not_pass (test_dgp_contracts.IndependentTruthFixtures.test_calibration_solver_rejects_infeasible_and_cap_not_pass) ... ok\ntest_external_target_is_derived_and_bound_to_independent_upstream_identities (test_dgp_contracts.IndependentTruthFixtures.test_external_target_is_derived_and_bound_to_independent_upstream_identities) ... ok\ntest_keyed_streams_do_not_depend_on_prior_draw_counts (test_dgp_contracts.IndependentTruthFixtures.test_keyed_streams_do_not_depend_on_prior_draw_counts) ... ok\ntest_normal_beta_analytic_answers (test_dgp_contracts.IndependentTruthFixtures.test_normal_beta_analytic_answers) ... ok\ntest_ordinal_tail_sum_and_exact_policy_tree_values (test_dgp_contracts.IndependentTruthFixtures.test_ordinal_tail_sum_and_exact_policy_tree_values) ... ok\ntest_two_period_descendants_and_continuation_are_recomputed (test_dgp_contracts.IndependentTruthFixtures.test_two_period_descendants_and_continuation_are_recomputed) ... ok\ntest_exact_family_variant_counts_no_implicit_products (test_dgp_contracts.ParameterAndCellContracts.test_exact_family_variant_counts_no_implicit_products) ... ok\ntest_generated_artifacts_are_valid_complete_inputs (test_dgp_contracts.ParameterAndCellContracts.test_generated_artifacts_are_valid_complete_inputs) ... ok\ntest_missing_required_coefficient_is_rejected_before_resolution (test_dgp_contracts.ParameterAndCellContracts.test_missing_required_coefficient_is_rejected_before_resolution) ... ok\ntest_null_paths_and_modifier_target_do_not_conflate_medication (test_dgp_contracts.ParameterAndCellContracts.test_null_paths_and_modifier_target_do_not_conflate_medication) ... ok\ntest_omitted_source_modifier_actually_modifies_the_behavioral_target (test_dgp_contracts.ParameterAndCellContracts.test_omitted_source_modifier_actually_modifies_the_behavioral_target) ... ok\ntest_reference_numeric_units_and_covariance_preserve_canonical_defaults (test_dgp_contracts.ParameterAndCellContracts.test_reference_numeric_units_and_covariance_preserve_canonical_defaults) ... ok\ntest_resolution_is_isolated_and_never_unknown_cell_fallback (test_dgp_contracts.ParameterAndCellContracts.test_resolution_is_isolated_and_never_unknown_cell_fallback) ... ok\ntest_s02_threshold_crossing_changes_availability_but_not_outcome_law (test_dgp_contracts.ParameterAndCellContracts.test_s02_threshold_crossing_changes_availability_but_not_outcome_law) ... ok\ntest_target_version_override_and_order_are_frozen (test_dgp_contracts.ParameterAndCellContracts.test_target_version_override_and_order_are_frozen) ... ok\ntest_unknown_and_malformed_parameter_records_are_not_defaults (test_dgp_contracts.ParameterAndCellContracts.test_unknown_and_malformed_parameter_records_are_not_defaults) ... ok\ntest_accepted_identity_and_all_generated_consumers_bound (test_dgp_timing.DGPTimingComposition.test_accepted_identity_and_all_generated_consumers_bound) ... ok\ntest_initial_history_and_delayed_previous_report_equal_cutoff (test_dgp_timing.DGPTimingComposition.test_initial_history_and_delayed_previous_report_equal_cutoff) ... ok\ntest_mar_uses_actual_separate_observation_with_canonical_coefficients (test_dgp_timing.DGPTimingComposition.test_mar_uses_actual_separate_observation_with_canonical_coefficients) ... ok\ntest_reporting_families_preserve_parents_targets_and_null_paths (test_dgp_timing.DGPTimingComposition.test_reporting_families_preserve_parents_targets_and_null_paths) ... ok\ntest_separate_keyed_measurement_observation_and_upload_identities (test_dgp_timing.DGPTimingComposition.test_separate_keyed_measurement_observation_and_upload_identities) ... ok\ntest_source_time_and_self_conditioning_faults_fail_closed (test_dgp_timing.DGPTimingComposition.test_source_time_and_self_conditioning_faults_fail_closed) ... ok\ntest_three_clocks_cutoffs_and_independent_wearable_delays (test_dgp_timing.DGPTimingComposition.test_three_clocks_cutoffs_and_independent_wearable_delays) ... ok\ntest_all_entity_fixtures_and_registered_estimands_are_serializable (test_domain.ContractTests.test_all_entity_fixtures_and_registered_estimands_are_serializable) ... ok\ntest_all_estimand_semantics_roundtrip (test_domain.ContractTests.test_all_estimand_semantics_roundtrip) ... ok\ntest_all_registered_endpoints_bind_units_direction_and_policy_reward (test_domain.ContractTests.test_all_registered_endpoints_bind_units_direction_and_policy_reward) ... ok\ntest_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal (test_domain.ContractTests.test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal) ... ok\ntest_corrected_history_projects_into_valid_learner_without_double_likelihood (test_domain.ContractTests.test_corrected_history_projects_into_valid_learner_without_double_likelihood) ... ok\ntest_cutoff_excludes_equal_time_late_and_future_records (test_domain.ContractTests.test_cutoff_excludes_equal_time_late_and_future_records) ... ok\ntest_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts (test_domain.ContractTests.test_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts) ... ok\ntest_est_int_zero_denominator_and_tradeoffs_remain_separate (test_domain.ContractTests.test_est_int_zero_denominator_and_tradeoffs_remain_separate) ... ok\ntest_evaluation_accounting_failure_and_confirmation_contracts (test_domain.ContractTests.test_evaluation_accounting_failure_and_confirmation_contracts) ... ok\ntest_evaluation_minimums_truth_precision_and_source_boundary (test_domain.ContractTests.test_evaluation_minimums_truth_precision_and_source_boundary) ... ok\ntest_external_study_ipd_summary_double_count_denied (test_domain.ContractTests.test_external_study_ipd_summary_double_count_denied) ... ok\ntest_fit_versions_and_hashes_rejected_before_dispatch (test_domain.ContractTests.test_fit_versions_and_hashes_rejected_before_dispatch) ... ok\ntest_invalid_estimand_units_recall_and_event_strategy (test_domain.ContractTests.test_invalid_estimand_units_recall_and_event_strategy) ... ok\ntest_isi_items_recall_trending_and_no_postdeath_isi (test_domain.ContractTests.test_isi_items_recall_trending_and_no_postdeath_isi) ... ok\ntest_late_correction_does_not_rewrite_old_history_and_duplicates_drop (test_domain.ContractTests.test_late_correction_does_not_rewrite_old_history_and_duplicates_drop) ... ok\ntest_missing_reward_is_not_zero (test_domain.ContractTests.test_missing_reward_is_not_zero) ... ok\ntest_named_threshold_is_provisional_and_no_unit_substitution (test_domain.ContractTests.test_named_threshold_is_provisional_and_no_unit_substitution) ... ok\ntest_no_latent_or_truth_payload_can_enter_learner_schema (test_domain.ContractTests.test_no_latent_or_truth_payload_can_enter_learner_schema) ... ok\ntest_protocol_approval_does_not_preselect_randomized_winner (test_domain.ContractTests.test_protocol_approval_does_not_preselect_randomized_winner) ... ok\ntest_record_clock_naive_timezone_and_future_nested_covariate_rejected (test_domain.ContractTests.test_record_clock_naive_timezone_and_future_nested_covariate_rejected) ... ok\ntest_retracted_active_consent_never_authorizes_or_revives_predecessor (test_domain.ContractTests.test_retracted_active_consent_never_authorizes_or_revives_predecessor) ... ok\ntest_schema_exports_match_and_contain_no_evaluator_types_in_learner (test_domain.ContractTests.test_schema_exports_match_and_contain_no_evaluator_types_in_learner) ... ok\ntest_stale_patient_history_hold_permissions_and_exclusions_block_approval (test_domain.ContractTests.test_stale_patient_history_hold_permissions_and_exclusions_block_approval) ... ok\ntest_support_freeze_cannot_drift_during_block_or_washout (test_domain.ContractTests.test_support_freeze_cannot_drift_during_block_or_washout) ... ok\ntest_temporal_parent_graph_and_seeded_future_cycle_faults (test_domain.ContractTests.test_temporal_parent_graph_and_seeded_future_cycle_faults) ... ok\ntest_typed_fit_metadata_roundtrip_and_failure (test_domain.ContractTests.test_typed_fit_metadata_roundtrip_and_failure) ... ok\ntest_version_and_strict_types_reject_without_coercion (test_domain.ContractTests.test_version_and_strict_types_reject_without_coercion) ... ok\ntest_delayed_previous_quality_equal_time_and_deterministic_ties (test_temporal_r1.TemporalR1Tests.test_delayed_previous_quality_equal_time_and_deterministic_ties) ... ok\ntest_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling (test_temporal_r1.TemporalR1Tests.test_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling) ... ok\ntest_no_reporting_assessment_after_known_death (test_temporal_r1.TemporalR1Tests.test_no_reporting_assessment_after_known_death) ... ok\ntest_observed_only_predictors_roundtrip_and_missing_history (test_temporal_r1.TemporalR1Tests.test_observed_only_predictors_roundtrip_and_missing_history) ... ok\ntest_pain_after_or_equal_report_decision_and_missing_report_source_rejected (test_temporal_r1.TemporalR1Tests.test_pain_after_or_equal_report_decision_and_missing_report_source_rejected) ... ok\ntest_three_clock_upload_delays_and_strict_cutoffs (test_temporal_r1.TemporalR1Tests.test_three_clock_upload_delays_and_strict_cutoffs) ... ok\ntest_v1_preserved_and_v2_validates (test_temporal_r1.TemporalR1Tests.test_v1_preserved_and_v2_validates) ... ok\ntest_wearable_available_independently_before_pain_or_report (test_temporal_r1.TemporalR1Tests.test_wearable_available_independently_before_pain_or_report) ... ok\n\n----------------------------------------------------------------------\nRan 60 tests in 0.358s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\tests\\library",
+        "-v"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:18.962688+00:00",
+      "finished_utc": "2026-10-21T18:57:19.685394+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_draw_coordinates_and_nonfinite (test_artifacts.ArtifactTests.test_draw_coordinates_and_nonfinite) ... ok\ntest_failure_context_and_path_before_worker (test_artifacts.ArtifactTests.test_failure_context_and_path_before_worker) ... ok\ntest_input_and_payload_tampering_before_worker (test_artifacts.ArtifactTests.test_input_and_payload_tampering_before_worker) ... ok\ntest_positive_roundtrip_and_dispatch (test_artifacts.ArtifactTests.test_positive_roundtrip_and_dispatch) ... ok\ntest_review_extra_short_rows_and_patient_identity_reject_before_worker (test_artifacts.ArtifactTests.test_review_extra_short_rows_and_patient_identity_reject_before_worker) ... ok\ntest_units_schema_weights_and_shape (test_artifacts.ArtifactTests.test_units_schema_weights_and_shape) ... ok\ntest_versions_and_malformed_request_before_worker (test_artifacts.ArtifactTests.test_versions_and_malformed_request_before_worker) ... ok\ntest_wcls_manifest_and_probability (test_artifacts.ArtifactTests.test_wcls_manifest_and_probability) ... ok\ntest_R_result_wrong_input_hash_or_unit_rejected_before_worker (test_lineage.LineageTests.test_R_result_wrong_input_hash_or_unit_rejected_before_worker) ... ok\ntest_artifact_specific_producers_and_direct_inputs (test_lineage.LineageTests.test_artifact_specific_producers_and_direct_inputs) ... ok\ntest_generator_definition_mutation_changes_lineage_and_stale_source_rejected (test_lineage.LineageTests.test_generator_definition_mutation_changes_lineage_and_stale_source_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.416s\n\nOK\n"
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\tests\\library\\dr",
+        "-v"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:19.685429+00:00",
+      "finished_utc": "2026-10-21T18:57:20.262266+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.13/unittest/__main__.py\", line 18, in <module>\n    main(module=None)\n    ~~~~^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 103, in __init__\n    self.parseArgs(argv)\n    ~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 119, in parseArgs\n    self._do_discovery(argv[2:])\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 242, in _do_discovery\n    self.createTests(from_discovery=True, Loader=Loader)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 149, in createTests\n    self.test = loader.discover(self.start, self.pattern, self.top)\n                ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/loader.py\", line 308, in discover\n    raise ImportError('Start directory is not importable: %r' % start_dir)\nImportError: Start directory is not importable: 'C:\\\\Users\\\\erics\\\\Documents\\\\Projects\\\\REMission-worktrees\\\\g1-generator-interfaces-sol-20261021\\\\tests\\\\library\\\\dr'\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\docs\\implementation\\check-ledger-20261020.py"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:20.262301+00:00",
+      "finished_utc": "2026-10-21T18:57:22.235021+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; G0 accepted in contract/library scope; G1 running and later gates unaccepted.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-c",
+        "import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:22.235055+00:00",
+      "finished_utc": "2026-10-21T18:57:25.281685+00:00",
+      "exit_code": 0,
+      "stdout": "No broken requirements found.\nPASS: exact runtime inventory; historical six manifests byte/shape only (original provenance claims superseded); seven R1 artifact-specific manifests and deterministic schemas\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-m",
+        "tooling.library.verify_dr"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:25.281803+00:00",
+      "finished_utc": "2026-10-21T18:57:26.998209+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: all actual raw input/model/source hashes,60-window pooled sums/counts and2000 paired fixed-seed replicates replay exactly\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "-m",
+        "contracts.runs.export",
+        "--check"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:26.998244+00:00",
+      "finished_utc": "2026-10-21T18:57:28.741351+00:00",
+      "exit_code": 0,
+      "stdout": "Run interface schemas/dictionary and exact accepted source references match v1.0.0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\tests\\run_contracts",
+        "-v"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:28.741385+00:00",
+      "finished_utc": "2026-10-21T18:57:29.346095+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.13/unittest/__main__.py\", line 18, in <module>\n    main(module=None)\n    ~~~~^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 103, in __init__\n    self.parseArgs(argv)\n    ~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 119, in parseArgs\n    self._do_discovery(argv[2:])\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 242, in _do_discovery\n    self.createTests(from_discovery=True, Loader=Loader)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 149, in createTests\n    self.test = loader.discover(self.start, self.pattern, self.top)\n                ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/loader.py\", line 308, in discover\n    raise ImportError('Start directory is not importable: %r' % start_dir)\nImportError: Start directory is not importable: 'C:\\\\Users\\\\erics\\\\Documents\\\\Projects\\\\REMission-worktrees\\\\g1-generator-interfaces-sol-20261021\\\\tests\\\\run_contracts'\n"
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=512m",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--env",
+        "PYTHONPATH=/workspace",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\tests\\integration\\replay",
+        "-v"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:29.346224+00:00",
+      "finished_utc": "2026-10-21T18:57:29.948281+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/usr/local/lib/python3.13/unittest/__main__.py\", line 18, in <module>\n    main(module=None)\n    ~~~~^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 103, in __init__\n    self.parseArgs(argv)\n    ~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 119, in parseArgs\n    self._do_discovery(argv[2:])\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 242, in _do_discovery\n    self.createTests(from_discovery=True, Loader=Loader)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/main.py\", line 149, in createTests\n    self.test = loader.discover(self.start, self.pattern, self.top)\n                ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/unittest/loader.py\", line 308, in discover\n    raise ImportError('Start directory is not importable: %r' % start_dir)\nImportError: Start directory is not importable: 'C:\\\\Users\\\\erics\\\\Documents\\\\Projects\\\\REMission-worktrees\\\\g1-generator-interfaces-sol-20261021\\\\tests\\\\integration\\\\replay'\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\docs\\implementation\\evidence\\G1-GENERATOR-INTERFACES-20261021\\preservation.py"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:29.948321+00:00",
+      "finished_utc": "2026-10-21T18:57:30.263662+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\docs\\implementation\\evidence\\G1-GENERATOR-INTERFACES-20261021\\preservation.py\", line 34, in <module>\n    if __name__=='__main__':main()\n                            ~~~~^^\n  File \"C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-sol-20261021\\docs\\implementation\\evidence\\G1-GENERATOR-INTERFACES-20261021\\preservation.py\", line 26, in main\n    current=json.loads((ROOT/'docs/implementation/g0-task-test-ledger-20261020.json').read_text())\n                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"C:\\Python313\\Lib\\pathlib\\_local.py\", line 546, in read_text\n    return PathBase.read_text(self, encoding, errors, newline)\n           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\pathlib\\_abc.py\", line 633, in read_text\n    return f.read()\n           ~~~~~~^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 23, in decode\n    return codecs.charmap_decode(input,self.errors,decoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 365867: character maps to <undefined>\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:30.263729+00:00",
+      "finished_utc": "2026-10-21T18:57:30.332562+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=64m",
+        "remission-interfaces-levels-repair-tests:candidate"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:30.332601+00:00",
+      "finished_utc": "2026-10-21T18:57:38.112408+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\ntest_approval_atomic_history_idempotency_and_immutability (test_foundation.FoundationTests.test_approval_atomic_history_idempotency_and_immutability) ... ok\ntest_current_death_before_equal_after_and_strict_learner_boundary (test_foundation.FoundationTests.test_current_death_before_equal_after_and_strict_learner_boundary) ... ok\ntest_drafts_require_current_identity_version_and_explicit_resume (test_foundation.FoundationTests.test_drafts_require_current_identity_version_and_explicit_resume) ... ok\ntest_equal_arrival_lineage_and_batch_partition_have_identical_final_display (test_foundation.FoundationTests.test_equal_arrival_lineage_and_batch_partition_have_identical_final_display) ... ok\ntest_expiry_reset_revocation_and_rate_limit (test_foundation.FoundationTests.test_expiry_reset_revocation_and_rate_limit) ... ok\ntest_failed_replay_retains_rejected_receipt_after_batch_rollback (test_foundation.FoundationTests.test_failed_replay_retains_rejected_receipt_after_batch_rollback) ... ok\ntest_history_write_denial_even_forged_current_and_stage_statuses (test_foundation.FoundationTests.test_history_write_denial_even_forged_current_and_stage_statuses) ... ok\ntest_hold_and_consent_invalidate_an_old_approval (test_foundation.FoundationTests.test_hold_and_consent_invalidate_an_old_approval) ... ok\ntest_hold_arriving_during_approval_is_not_lost_to_stale_version (test_foundation.FoundationTests.test_hold_arriving_during_approval_is_not_lost_to_stale_version) ... ok\ntest_ingestion_lineage_raw_source_and_rejected_receipt (test_foundation.FoundationTests.test_ingestion_lineage_raw_source_and_rejected_receipt) ... ok\ntest_injected_rollback_persists_nothing (test_foundation.FoundationTests.test_injected_rollback_persists_nothing) ... ok\ntest_live_equal_time_death_cannot_clear_or_persist_fresh_approval (test_foundation.FoundationTests.test_live_equal_time_death_cannot_clear_or_persist_fresh_approval) ... ok\ntest_naive_nested_future_and_dst_overnight_records (test_foundation.FoundationTests.test_naive_nested_future_and_dst_overnight_records) ... ok\ntest_owner_scoped_panel_direct_nested_history_task_job (test_foundation.FoundationTests.test_owner_scoped_panel_direct_nested_history_task_job) ... ok\ntest_raw_source_privileged_payload_rejects_even_with_resealed_hash (test_foundation.FoundationTests.test_raw_source_privileged_payload_rejects_even_with_resealed_hash) ... ok\ntest_real_cookie_csrf_and_generic_auth (test_foundation.FoundationTests.test_real_cookie_csrf_and_generic_auth) ... ok\ntest_replay_cutoffs_corrections_retractions_and_duplicate_headers (test_foundation.FoundationTests.test_replay_cutoffs_corrections_retractions_and_duplicate_headers) ... ok\ntest_replay_restart_cursor_and_order_invariance (test_foundation.FoundationTests.test_replay_restart_cursor_and_order_invariance) ... ok\ntest_report_route_idempotency_and_post_death_rejection (test_foundation.FoundationTests.test_report_route_idempotency_and_post_death_rejection) ... ok\ntest_safety_lineage_retraction_correction_duplicates_and_active_control (test_foundation.FoundationTests.test_safety_lineage_retraction_correction_duplicates_and_active_control) ... ok\ntest_same_version_concurrent_approval_has_one_commit (test_foundation.FoundationTests.test_same_version_concurrent_approval_has_one_commit) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 6.749s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "-c",
+        "import importlib.util,os,pathlib; p=pathlib.Path('docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/verify_consumers.py'); s=importlib.util.spec_from_file_location('owned_consumer_probe',p); m=importlib.util.module_from_spec(s);s.loader.exec_module(m);m.OUT=pathlib.Path('docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels');m.IMAGE_PREFIX='remission-interfaces-levels-repair';m.main()"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:38.112456+00:00",
+      "finished_utc": "2026-10-21T18:57:43.347727+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: real service/learner identities admit observed artifacts, deny private source imports and observed writes; actual service SQLite replay\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--quiet",
+        "95a48144b936c690aa86e5743a5330a594403521",
+        "--",
+        "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021",
+        ":!docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/**",
+        ":!docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/verify_repair.py",
+        ":!docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/verify_affected.py",
+        ":!docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/command_paths.py"
+      ],
+      "cwd": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
+      "started_utc": "2026-10-21T18:57:43.347801+00:00",
+      "finished_utc": "2026-10-21T18:57:43.386619+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "claim": "Pure interface/IO repair only; actual producer/statistical qualification remains pending"
+}

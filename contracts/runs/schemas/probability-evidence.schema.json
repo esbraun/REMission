@@ -1,0 +1,566 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "ConditionalAccuracy": {
+      "additionalProperties": false,
+      "properties": {
+        "between_filter_mcse": {
+          "minimum": 0,
+          "title": "Between Filter Mcse",
+          "type": "number"
+        },
+        "filters_per_level": {
+          "const": 32,
+          "title": "Filters Per Level",
+          "type": "integer"
+        },
+        "independent_reduced_checks": {
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          },
+          "minItems": 1,
+          "title": "Independent Reduced Checks",
+          "type": "array"
+        },
+        "paired_standard_errors": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Paired Standard Errors",
+          "type": "array"
+        },
+        "particle_levels": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Particle Levels",
+          "type": "array"
+        },
+        "quadrature_change": {
+          "minimum": 0,
+          "title": "Quadrature Change",
+          "type": "number"
+        },
+        "successive_differences": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Successive Differences",
+          "type": "array"
+        },
+        "within_filter_mcse": {
+          "minimum": 0,
+          "title": "Within Filter Mcse",
+          "type": "number"
+        }
+      },
+      "required": [
+        "particle_levels",
+        "filters_per_level",
+        "successive_differences",
+        "paired_standard_errors",
+        "quadrature_change",
+        "within_filter_mcse",
+        "between_filter_mcse",
+        "independent_reduced_checks"
+      ],
+      "title": "ConditionalAccuracy",
+      "type": "object"
+    },
+    "PilotLevel": {
+      "additionalProperties": false,
+      "properties": {
+        "particles": {
+          "enum": [
+            0,
+            1024,
+            4096,
+            16384,
+            65536
+          ],
+          "title": "Particles",
+          "type": "integer"
+        },
+        "trials": {
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          },
+          "maxItems": 1000,
+          "minItems": 1000,
+          "title": "Trials",
+          "type": "array"
+        }
+      },
+      "required": [
+        "particles",
+        "trials"
+      ],
+      "title": "PilotLevel",
+      "type": "object"
+    },
+    "ProbabilityPilot": {
+      "additionalProperties": false,
+      "properties": {
+        "conditional": {
+          "title": "Conditional",
+          "type": "boolean"
+        },
+        "configuration": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Configuration",
+          "type": "string"
+        },
+        "dispersion_review": {
+          "enum": [
+            "consistent",
+            "unresolved"
+          ],
+          "title": "Dispersion Review",
+          "type": "string"
+        },
+        "history_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "History Sha256"
+        },
+        "independent_iid_check": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "levels": {
+          "items": {
+            "$ref": "#/$defs/PilotLevel"
+          },
+          "title": "Levels",
+          "type": "array"
+        },
+        "n_arm": {
+          "exclusiveMinimum": 0,
+          "title": "N Arm",
+          "type": "integer"
+        },
+        "producer_execution_qualification": {
+          "$ref": "#/$defs/Artifact"
+        }
+      },
+      "required": [
+        "configuration",
+        "conditional",
+        "n_arm",
+        "history_sha256",
+        "levels",
+        "dispersion_review",
+        "independent_iid_check",
+        "producer_execution_qualification"
+      ],
+      "title": "ProbabilityPilot",
+      "type": "object"
+    },
+    "StreamKey": {
+      "additionalProperties": false,
+      "description": "Complete accepted key material; words and digest are verified, not trusted.",
+      "properties": {
+        "key_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Key Sha256",
+          "type": "string"
+        },
+        "namespace": {
+          "enum": [
+            "generation",
+            "assignment",
+            "measurement",
+            "missingness",
+            "fitting",
+            "posterior_rollout",
+            "truth"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "fixture",
+            "calibration",
+            "pilot",
+            "smoke",
+            "development",
+            "confirmation"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "root_seed": {
+          "const": 20261020,
+          "title": "Root Seed",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "stream": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Stream",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        },
+        "words": {
+          "items": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 8,
+          "minItems": 8,
+          "title": "Words",
+          "type": "array"
+        }
+      },
+      "required": [
+        "root_seed",
+        "protocol",
+        "phase",
+        "namespace",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process",
+        "stream",
+        "words",
+        "key_sha256"
+      ],
+      "title": "StreamKey",
+      "type": "object"
+    },
+    "StructuralProof": {
+      "additionalProperties": false,
+      "properties": {
+        "component": {
+          "enum": [
+            "intervention.survival_day42",
+            "intervention.admission_by_day42",
+            "intervention.alive_outpatient_day42",
+            "comparator.survival_day42",
+            "comparator.admission_by_day42",
+            "comparator.alive_outpatient_day42"
+          ],
+          "title": "Component",
+          "type": "string"
+        },
+        "independent_derivation": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "method": {
+          "enum": [
+            "analytic",
+            "enumerated"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "no_hidden_numerical_integration": {
+          "const": true,
+          "title": "No Hidden Numerical Integration",
+          "type": "boolean"
+        },
+        "value": {
+          "enum": [
+            0,
+            1
+          ],
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "component",
+        "value",
+        "method",
+        "no_hidden_numerical_integration",
+        "independent_derivation"
+      ],
+      "title": "StructuralProof",
+      "type": "object"
+    },
+    "TruthBatch": {
+      "additionalProperties": false,
+      "properties": {
+        "conditional_filter_receipts": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Artifact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "independent_outer_key": {
+          "$ref": "#/$defs/StreamKey"
+        },
+        "paths": {
+          "$ref": "#/$defs/Artifact"
+        }
+      },
+      "required": [
+        "id",
+        "independent_outer_key",
+        "paths",
+        "conditional_filter_receipts"
+      ],
+      "title": "TruthBatch",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:probability-evidence",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Evaluator-owned evidence for all six probabilities, never observed export.",
+  "properties": {
+    "actual_matched_estimator_se": {
+      "anyOf": [
+        {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "maxItems": 6,
+          "minItems": 6,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Actual Matched Estimator Se"
+    },
+    "batches": {
+      "items": {
+        "$ref": "#/$defs/TruthBatch"
+      },
+      "maxItems": 1000,
+      "minItems": 32,
+      "title": "Batches",
+      "type": "array"
+    },
+    "component_order": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Component Order",
+      "type": "array"
+    },
+    "conditional": {
+      "title": "Conditional",
+      "type": "boolean"
+    },
+    "conditional_accuracy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ConditionalAccuracy"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "diagnostic_filters_per_level": {
+      "const": 32,
+      "title": "Diagnostic Filters Per Level",
+      "type": "integer"
+    },
+    "iid_investigation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "pilots": {
+      "items": {
+        "$ref": "#/$defs/ProbabilityPilot"
+      },
+      "minItems": 1,
+      "title": "Pilots",
+      "type": "array"
+    },
+    "request_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "required_configurations": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Required Configurations",
+      "type": "array"
+    },
+    "rule": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "structural_proofs": {
+      "items": {
+        "$ref": "#/$defs/StructuralProof"
+      },
+      "title": "Structural Proofs",
+      "type": "array"
+    },
+    "unit": {
+      "const": "probability",
+      "title": "Unit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "rule",
+    "request_sha256",
+    "unit",
+    "component_order",
+    "conditional",
+    "required_configurations",
+    "pilots",
+    "batches",
+    "structural_proofs",
+    "actual_matched_estimator_se",
+    "conditional_accuracy",
+    "diagnostic_filters_per_level"
+  ],
+  "title": "ProbabilityEvidence",
+  "type": "object"
+}

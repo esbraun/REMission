@@ -132,3 +132,20 @@ def replay(store: Store, run_id: str, entries: list[dict], cutoff: str, *, batch
                     db.execute("INSERT OR IGNORE INTO ingestion_receipts VALUES(?,?,?,?,?)",(run_id,record.record_id,digest(raw),"rejected",str(error)))
             raise
     return {"run_id":run_id,"source_sha256":source_hash,"records":len(prepared),"status":"completed"}
+
+
+def replay_export(store: Store, manifest: bytes, artifact_root, authority, *, batch_size: int = 100, fault=None):
+    """Import an externally authorized observed export, never an arbitrary path.
+
+    Administrative simulation channels remain in the observed history export;
+    they cannot fabricate a clinician approval/assignment in the live store.
+    Every patient must already have an administratively assigned owner.
+    """
+    from contracts.runs.admission import verify_export
+    public,partitions=verify_export(manifest,artifact_root,authority)
+    with store.transaction() as db:
+        for partition,*_ in partitions:
+            if db.execute('SELECT 1 FROM patients WHERE id=?',(partition.patient_id,)).fetchone() is None:
+                raise ValueError('replay patient requires preexisting administrative ownership')
+    entries=[entry.model_dump(mode='json') for _,_,batch,_,_,_ in partitions for entry in batch.entries]
+    return replay(store,f'{public.run_id}:{public.id}',entries,timestamp(public.cutoff),batch_size=batch_size,fault=fault)

@@ -1,0 +1,31 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges:true",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=64m",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021,target=/workspace,readonly",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021/artifacts/interfaces-consumer-probe-f654d84728d0433bbe6f5c4351121a41,target=/probe",
+    "--workdir",
+    "/workspace",
+    "--env",
+    "PYTHONPATH=/workspace",
+    "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "python",
+    "-c",
+    "import sys\nfrom pathlib import Path\nsys.path.insert(0,'/workspace/tests/run_contracts')\nfrom fixtures import setup\nfrom contracts.runs.admission import admit_export\nfrom contracts.runs.common import canonical\ntask=Path('/probe');staging=task/'staging';staging.mkdir();destination=task/'observed';destination.mkdir()\nfixture=setup(staging);admit_export(fixture['export_raw'],staging,destination,fixture['export_authority'])\n(task/'authority.json').write_bytes(canonical(fixture['export_authority'].model_dump(mode='json')))\nprint('Prepared hand-authored public-only contract fixture; no generator executed')\n"
+  ],
+  "exit_code": 0,
+  "stdout": "Prepared hand-authored public-only contract fixture; no generator executed\n",
+  "stderr": ""
+}

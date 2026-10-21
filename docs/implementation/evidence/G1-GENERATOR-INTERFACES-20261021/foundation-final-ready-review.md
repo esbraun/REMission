@@ -1,0 +1,31 @@
+# Independent final G1-FOUNDATION exact-head refresh
+
+**ready_to_ship** for the full bounded FOUNDATION package at frozen/published `3179f3d2fcc7c9f285129b0272e868d413ced089`, against accepted base `8ca67682505d78accc855e92cbfbb6692edf8316`. All previously reported findings are resolved. No new finding. Root retains PR/merge authority; this disposition does not accept G1 overall, generator/scientific engines, G2–G7 or human/clinical gates.
+
+Requested model/effort: gpt-6-astra / medium; effective-model introspection is unavailable. Own exclusive detached checkout: `C:/Users/erics/Documents/Projects/REMission-worktrees/g1-foundation-p3-review-20261021`. Verified root/head/base and initially clean tree. No source edits, staging, commit, merge, helper or author checkout access. Prior rejected54/ready4d reports, resources and databases remain preserved.
+
+## Scope and finding resolution
+
+This refreshed full-package disposition carries forward the COMPLETE independently successful4d qualification in raw report `f937b612485b3a1e622a021d64247e115b5fb229` and manifest `81781ebaecf952a58525766e87a4e68fe8d63b11`. That report remains byte-exact in `p3/independent-ready-review-4d480c8.md` and remains historically4d-specific. The rejected54 report and its safety failures also remain historical. The prior safety repairs and full service/SQLite/security/replay/browser/visual acceptance are not inferred from only this notification test.
+
+Inspected the full corrective source diff and p3 verification/evidence. Independent diff confirms the only executable source/test changes since4d are `web/src/context.mjs`, `web/src/main.tsx`, and `web/tests/context.test.mjs`. Backend, safety/learner/history/auth contracts, tooling and dependency locks are unchanged. All635 coverage rows and task IDs/dependency arrays remain identical; status reconciliation does not inflate downstream acceptance.
+
+The prior P3 is resolved. `ContextGate.notifyAfter` captures the actual context generation before awaiting logout and admits either success or failure notification only while that ticket remains current. `signOut` uses this helper for both callbacks; `signIn` clears already displayed prior notice. The change does not bypass authentication or weaken request identity guards. Three client test groups pass, including controlled delayed success/failure and positive current-generation callbacks.
+
+## Independent observed execution
+
+- Own source-derived build passed14/14, including strict TypeScript, three client groups, production build, runtime qualification and21 backend groups through the existing bounded build runner. No expensive scientific fits were repeated.
+- Own integration passed12/12, including existing contract/artifact/DR/schema/dictionary/ledger/runtime/preservation and whitespace checks. Full prior qualification is carried forward for unchanged scope, not claimed as newly repeated browser coverage.
+- New isolated resources prefix `remission-g1-foundation-review3179`, image tags `review3179`, own database and loopback8768. Positive evaluator controls and actual API/learner private file/list/import, evaluator DNS/direct-IP and observed-write denials passed. Prior8766/8767 and author8765 resources were untouched.
+- Current28-entry author raw source manifest equals independently captured reviewer manifest exactly. Own service image is `sha256:9227c66bc6f801a7ea4c56bef1e503113b2b35c15047a571a70988fd78864765`; tests `sha256:0107dfba6b6eb4e34b7fbb48eea56d4e866706b93b7d90e5798216e8252803dc`. Own recipe copies change only outputs/tags/Dockerfile FROM tags/resource prefix/labels and host port/origin/health URL, retaining candidate app source and container service port.
+- Genuine HTTPS single-branch --no-local clone with core.autocrlf=false is exact3179, clean and has no alternates. Built its client target from clone source, then explicitly executed typecheck, all three client groups and production build inside that source-derived client image (not merely a cached-layer claim). No unpublished/local Git overlay was used.
+
+Official Playwright MCP independently ran both delayed-logout outcomes against our8768 service. The test delays JavaScript body completion only after the genuine logout response, revocation and cookie processing, leaving login and backend authentication real. After visible same-doctor sign-out/sign-in and selecting SYN-03, releasing the old success or raising the controlled old body failure changes neither notice/error nor auth generation. A subsequent actual owned request returns200 and its generation matches the new session. Both outcomes passed explicit assertions. Positive actual current-generation logout displays the expected sign-out notice; a new successful sign-in clears it. Current-generation failure callbacks are also exercised by the passing controlled client test.
+
+No forged principal, application-state mutation, cookie suppression or author service was used. Browser observed HeadlessChrome155 Windows; exact MCP server/package version remains unavailable. Narrow affected browser scope is appropriate because layout and all other client behaviors are unchanged and the full prior review already qualified them. Sole MCP tab closed and session released. Exact newly generated login snapshot copied from authorized tool cache with original preserved and path/mtime/SHA256 recorded; no primary source/config or unrelated artifact access.
+
+## Raw evidence and limits
+
+Own ignored evidence: `artifacts/review-p3/`. Full raw evidence-manifest Git blob: **`369c9fc71a32117c161dbf4423e4bac193d45a84`**. It binds raw SHA256/Git blobs for own build/integration/source manifests, isolated stack, exact HTTPS affected build/execution, preservation audit and actual browser scripts/results/transfer. Raw objects use `git hash-object -w --no-filters`; only this standalone report is untracked outside ignored outputs.
+
+No unresolved finding remains for this exact FOUNDATION package. Full scientific, generator, intended-user accessibility/human-factors and clinical acceptance remain separate pending work. Root must verify exact merge identity, checks and protections; a substantive further source/base change requires refreshed review.

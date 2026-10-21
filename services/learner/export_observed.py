@@ -16,3 +16,9 @@ def admit(source: Path, destination: Path):
 
 
 if __name__=="__main__":print(admit(Path("/staging/history.json"),Path("/observed/history.json")))
+
+
+def admit_run_export(manifest: bytes, staging: Path, destination: Path, authority):
+    """Versioned multi-patient admission with trusted out-of-band producer binding."""
+    from contracts.runs.admission import admit_export
+    return admit_export(manifest,staging,destination,authority)
