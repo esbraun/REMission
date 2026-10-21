@@ -1,0 +1,275 @@
+{
+  "$defs": {
+    "ParameterSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "distribution": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Distribution",
+          "type": "string"
+        },
+        "provenance": {
+          "const": "synthetic_engineering",
+          "title": "Provenance",
+          "type": "string"
+        },
+        "rationale": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "symbol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "unit": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "symbol",
+        "unit",
+        "value",
+        "distribution",
+        "provenance",
+        "rationale"
+      ],
+      "title": "ParameterSpec",
+      "type": "object"
+    },
+    "SeedKey": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "enum": [
+            "fixture",
+            "development",
+            "confirmation",
+            "truth",
+            "fit",
+            "assignment"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "namespace",
+        "protocol",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process"
+      ],
+      "title": "SeedKey",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:dgp-config",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "clinical_interpretation": {
+      "const": "synthetic_not_clinically_calibrated",
+      "title": "Clinical Interpretation",
+      "type": "string"
+    },
+    "dgp": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "end_day": {
+      "title": "End Day",
+      "type": "integer"
+    },
+    "equations": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "external_study_sizes": {
+      "items": {
+        "exclusiveMinimum": 0,
+        "type": "integer"
+      },
+      "title": "External Study Sizes",
+      "type": "array"
+    },
+    "initial_distribution": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "initialized_day": {
+      "title": "Initialized Day",
+      "type": "integer"
+    },
+    "irregular_visit_process": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "kind": {
+      "const": "dgp_config",
+      "title": "Kind",
+      "type": "string"
+    },
+    "layer": {
+      "enum": [
+        "analytic",
+        "reference",
+        "adversarial"
+      ],
+      "title": "Layer",
+      "type": "string"
+    },
+    "learner_export_schema": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "observation_rules": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "parameter_table": {
+      "items": {
+        "$ref": "#/$defs/ParameterSpec"
+      },
+      "minItems": 1,
+      "title": "Parameter Table",
+      "type": "array"
+    },
+    "patients": {
+      "exclusiveMinimum": 0,
+      "title": "Patients",
+      "type": "integer"
+    },
+    "scenario": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seed_namespaces": {
+      "items": {
+        "$ref": "#/$defs/SeedKey"
+      },
+      "minItems": 1,
+      "title": "Seed Namespaces",
+      "type": "array"
+    },
+    "start_day": {
+      "title": "Start Day",
+      "type": "integer"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "temporal_contract": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "time_grid_unit": {
+      "const": "days",
+      "title": "Time Grid Unit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "dgp",
+    "layer",
+    "scenario",
+    "patients",
+    "external_study_sizes",
+    "start_day",
+    "end_day",
+    "initialized_day",
+    "time_grid_unit",
+    "temporal_contract",
+    "equations",
+    "parameter_table",
+    "initial_distribution",
+    "irregular_visit_process",
+    "observation_rules",
+    "learner_export_schema",
+    "seed_namespaces",
+    "clinical_interpretation"
+  ],
+  "title": "DGPConfig",
+  "type": "object"
+}

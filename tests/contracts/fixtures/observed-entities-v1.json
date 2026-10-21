@@ -1,0 +1,584 @@
+{
+  "purpose": "Hand-authored contract fixtures; no empirical runs/clinical approval",
+  "records": [
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "patient",
+      "record_id": "P-record",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "P-record",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "covariates": [
+        {
+          "concept": "X",
+          "value": 0.0,
+          "unit": "dimensionless",
+          "observed_at": "2026-10-01T07:00:00Z",
+          "available_at": "2026-10-01T07:00:00Z"
+        }
+      ],
+      "diagnosis_context": "synthetic leukemia context",
+      "clinical_context": "fictional demonstration",
+      "preferences": [
+        "behavioral care"
+      ],
+      "goals": [
+        "rest"
+      ],
+      "baseline_eligibility": [
+        "review_required"
+      ],
+      "care_team": [
+        "DOC1"
+      ],
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "consent",
+      "record_id": "C1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "C1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "component": "nof1",
+      "consent_version": "1.0.0",
+      "oversight_version": "synthetic-protocol-1",
+      "consent_status": "active",
+      "oversight_status": "approved_synthetic",
+      "effective_at": "2026-10-01T07:00:00Z",
+      "expires_at": "2026-11-01T00:00:00Z",
+      "withdrawn_at": null
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "encounter",
+      "record_id": "ENC1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "ENC1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "scheduled_at": "2026-10-01T08:00:00Z",
+      "actual_at": null,
+      "care_setting": "outpatient",
+      "chemotherapy_phase": "synthetic-phase",
+      "cycle": 1,
+      "review_status": "pending"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "medication_order",
+      "record_id": "ORD1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "ORD1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "drug": "MED_A",
+      "intended_schedule": "fictional protocol schedule, no real dose",
+      "starts_at": "2026-10-01T20:00:00Z",
+      "changed_at": null,
+      "stopped_at": null,
+      "ordering_clinician": "DOC1"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "medication_exposure",
+      "record_id": "EXP1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "EXP1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "drug": "MED_A",
+      "order_ref": "ORD1",
+      "administration_at": "2026-10-01T06:00:00Z",
+      "report_status": "uncertain",
+      "adherence": null,
+      "rescue": false,
+      "uncertainty": "patient report pending"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "observation",
+      "record_id": "OBS1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "OBS1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "measure": {
+        "concept": "pain",
+        "value": 0.2,
+        "unit": "dimensionless",
+        "observed_at": "2026-10-01T07:00:00Z",
+        "available_at": "2026-10-01T07:00:00Z"
+      },
+      "lab_reference_context": null
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "intercurrent_event",
+      "record_id": "EVENT1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "EVENT1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "event_type": "regimen_change",
+      "detail": "synthetic fixture, no clinical efficacy assumption"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "oura_like",
+      "record_id": "OURA1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "OURA1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "record_type": "sleep_episode",
+      "local_date": "2026-10-01",
+      "timezone": "America/Los_Angeles",
+      "episode_start": "2026-09-30T22:00:00-07:00",
+      "episode_end": "2026-10-01T00:00:00-07:00",
+      "sync_at": "2026-10-01T07:00:00Z",
+      "estimated_sleep_minutes": 90.0,
+      "estimated_wake_minutes": 30.0,
+      "device_version": "mock-only-v1",
+      "quality_flags": [],
+      "missingness": "observed"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "daily_report",
+      "record_id": "R1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "R1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "sleep_quality": 7.0,
+      "function": 6.0,
+      "adverse_symptoms": [],
+      "diary_sleep_minutes": 400.0,
+      "goals": [
+        "rest"
+      ],
+      "burden": 0.0,
+      "missingness": "observed"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "isi",
+      "record_id": "I1",
+      "patient_id": "P1",
+      "event_at": "2026-10-15T07:00:00Z",
+      "recorded_at": "2026-10-15T07:00:00Z",
+      "available_at": "2026-10-15T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "I1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "instrument_version": "ISI-two-week-v1",
+      "recall_days": 14,
+      "recall_start": "2026-10-01T07:00:00Z",
+      "recall_end": "2026-10-15T07:00:00Z",
+      "items": [
+        1,
+        2,
+        3,
+        4,
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "decision_snapshot",
+      "record_id": "D1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "D1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "cutoff": "2026-10-01T06:59:59Z",
+      "patient_version": 2,
+      "state_version": 3,
+      "consent_version": 4,
+      "eligibility_version": 5,
+      "workflow": {
+        "clinical": "initial_assignment",
+        "learning": "nof1_design",
+        "data_readiness": "ready",
+        "hold_reasons": [],
+        "support_policy": {
+          "id": "support-fixed",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "support_mode": "fixed"
+      },
+      "view": {
+        "patient_id": "P1",
+        "mode": "current",
+        "snapshot_id": null
+      },
+      "eligibility": [
+        {
+          "action": "MED_A",
+          "status": "eligible",
+          "reasons": []
+        },
+        {
+          "action": "MED_B",
+          "status": "eligible",
+          "reasons": []
+        }
+      ],
+      "outcome": "daily_sleep_quality",
+      "horizon_days": 7,
+      "estimand": {
+        "id": "EST-N1",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "model": {
+        "id": "model",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "posterior": null,
+      "evidence": [],
+      "policy": {
+        "id": "policy",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "recommendation",
+      "record_id": "REC1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "REC1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "decision_id": "D1",
+      "option": null,
+      "reason": "inconclusive fixture; no automatic selection"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "approval",
+      "record_id": "APP1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T08:00:00Z",
+      "recorded_at": "2026-10-01T08:00:00Z",
+      "available_at": "2026-10-01T08:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "APP1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "decision_id": "D1",
+      "option": null,
+      "permitted_options": [
+        "MED_A",
+        "MED_B"
+      ],
+      "clinician_id": "DOC1",
+      "purpose": "randomization_protocol",
+      "expected_patient_version": 2,
+      "expected_state_version": 3,
+      "expected_consent_version": 4,
+      "expected_eligibility_version": 5
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "assignment",
+      "record_id": "A1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "A1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "decision_id": "D1",
+      "approval_id": "APP1",
+      "option": "MED_B",
+      "experimental": true,
+      "component": "nof1",
+      "probability": 0.5,
+      "seed": {
+        "namespace": "fixture",
+        "protocol": "fixture",
+        "scenario": "fixture",
+        "replicate": 0,
+        "patient": "P1",
+        "time_index": 0,
+        "process": "contract_test"
+      },
+      "support_policy": {
+        "id": "support-fixed",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "clinician_override": null,
+      "override_reason": null
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "delivery",
+      "record_id": "DEL1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "DEL1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "assignment_id": "A1",
+      "option": "MED_B",
+      "stage": "not_taken",
+      "adherence": 0.0,
+      "rescue": false,
+      "protocol_deviations": [
+        "retained assignment despite nonadherence"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "follow_up",
+      "record_id": "TASK1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "TASK1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "owner": "NURSE1",
+      "due_at": "2026-10-02T07:00:00Z",
+      "trigger": "review",
+      "status": "pending",
+      "escalation_destination": "DOC1"
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "audit_run",
+      "record_id": "RUN1",
+      "patient_id": "P1",
+      "event_at": "2026-10-01T07:00:00Z",
+      "recorded_at": "2026-10-01T07:00:00Z",
+      "available_at": "2026-10-01T07:00:00Z",
+      "source": {
+        "id": "fixture",
+        "version": "1.0.0",
+        "adapter": "simulation",
+        "raw_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "lineage_id": "RUN1",
+      "revision": 1,
+      "supersedes": null,
+      "duplicate_of": null,
+      "record_status": "active",
+      "actor": "DOC1",
+      "change": "contract fixture only",
+      "input_versions": [
+        {
+          "id": "fixture-version",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "seed": {
+        "namespace": "fixture",
+        "protocol": "fixture",
+        "scenario": "fixture",
+        "replicate": 0,
+        "patient": "P1",
+        "time_index": 0,
+        "process": "contract_test"
+      },
+      "fit": null,
+      "execution_seconds": 0.0,
+      "lineage_refs": [
+        "R1"
+      ]
+    }
+  ]
+}

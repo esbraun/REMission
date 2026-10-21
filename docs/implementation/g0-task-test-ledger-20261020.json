@@ -3,7 +3,7 @@
   "created": "2026-10-20",
   "accepted_specification_base": "50403963d11cc51e6109a635f9a2b6b1031b8cf4",
   "gate_status": {
-    "G0": "not-started",
+    "G0": "running",
     "G1": "not-started",
     "G2": "not-started",
     "G3": "not-started",
@@ -13,7 +13,7 @@
     "G7": "not-started"
   },
   "claim_status": {
-    "synthetic-engineering": "not-started",
+    "synthetic-engineering": "running",
     "human-factors": "not-started",
     "clinical-review": "not-started",
     "clinical-validation": "not-started"
@@ -45,7 +45,7 @@
     "pr_url": null,
     "merge_commit": null,
     "blocker": "Dependencies unaccepted; lifecycle path verified available, dispatch still requires root inventory and exclusive accepted-base worktree",
-    "review_target_base": "c7cdf4a8415073d0b275064a0b0aca188fc022fe"
+    "review_target_base": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d"
   },
   "method_profiles": {
     "contracts": {
@@ -157,7 +157,9 @@
       ],
       "write_paths": [
         "contracts/domain/",
-        "docs/implementation/contracts.md"
+        "docs/implementation/contracts.md",
+        "tests/contracts/",
+        "requirements-contracts.txt"
       ],
       "outputs": "Versioned dictionary, estimands, temporal factorization, outcome/event/failure contracts; `contracts/domain/`, `docs/implementation/contracts.md`",
       "inputs": "Independently accepted G0-PLAN; Sol lifecycle available",
@@ -243,7 +245,44 @@
       "canonical_docs": [
         "docs/spec/00-scope-and-invariants.md",
         "docs/spec/01-estimands-and-contracts.md"
-      ]
+      ],
+      "owner_thread": "/root/integration_sol",
+      "agent_model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "effective_model": "Explicit assignment observed; independent introspection unavailable",
+      "effort_escalation_reason": null,
+      "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+      "task_branch": "launch/g0-contracts-20261020",
+      "base_commit": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+      "review_target_base": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+      "integration_target": "main",
+      "status": "needs_review",
+      "candidate_commit": null,
+      "reviewer_thread": "/root/g0_critic_astra",
+      "reviewer_model": "gpt-6-astra",
+      "reviewer_reasoning_effort": "medium",
+      "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-contract-review-20261020",
+      "review_disposition": "pending",
+      "evidence": [
+        "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md"
+      ],
+      "helper_requests": [
+        {
+          "id": "G0-CONTRACT-TIME-INPUTS",
+          "owner": "existing readiness Luna/high via root",
+          "state": "done",
+          "input_commit": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+          "result": "Canonical temporal parent/order checklist and five explicit engineering timing decisions; read-only, no code/tests/numerical defaults"
+        }
+      ],
+      "blocker": "Independent exact-head/base implementation review pending; other G0 packages unexecuted",
+      "contract_version": "1.0.0 proposed; requires independent acceptance before downstream use",
+      "fixture_result": {
+        "tests": 24,
+        "status": "passed",
+        "kind": "hand_authored_contract_fixtures_not_empirical_fits",
+        "command": ".venv-contracts/Scripts/python.exe -m unittest discover -s tests/contracts -v"
+      }
     },
     {
       "id": "G0-DGP",
@@ -2157,13 +2196,22 @@
       "test_ids": [
         "T-G0-PLAN"
       ],
-      "status": "changes_requested",
-      "blocker": "Original c239dca independent critique changes_requested; repaired planning candidate pending exact-head/base Astra review under G0-LAUNCH-FIX-01",
+      "status": "complete",
+      "blocker": null,
       "requirement_ids": [],
       "canonical_docs": [
         "implementation-prompt.md",
         "docs/execution/delegation.md"
-      ]
+      ],
+      "review_disposition": "ready_to_ship",
+      "reviewed_head": "3af3553cb6aec3a762ce883d968bec621244409b",
+      "reviewed_base": "c7cdf4a8415073d0b275064a0b0aca188fc022fe",
+      "pr_url": "https://github.com/esbraun/REMission/pull/10",
+      "merge_commit": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+      "evidence": [
+        "docs/implementation/evidence/G0-LAUNCH-FIX-01/independent-review-20261020.md"
+      ],
+      "acceptance_scope": "Original c239 changes_requested preserved; integrated repaired planning accepted at exact 3af/c7 under PR10, not gate acceptance"
     }
   ],
   "coverage": [
@@ -2947,7 +2995,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-001.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-002",
@@ -2969,7 +3030,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-002.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-003",
@@ -2991,7 +3065,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-003.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-004",
@@ -3013,7 +3100,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-004.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-005",
@@ -3035,7 +3135,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-005.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-006",
@@ -3057,7 +3170,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-006.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-007",
@@ -3079,7 +3205,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-007.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-008",
@@ -3101,7 +3240,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-008.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-009",
@@ -3123,7 +3275,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-009.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-010",
@@ -3145,7 +3310,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-010.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-011",
@@ -3167,7 +3345,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-011.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-012",
@@ -3189,7 +3380,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-012.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-013",
@@ -3211,7 +3415,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-013.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-014",
@@ -3233,7 +3450,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-014.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-015",
@@ -3255,7 +3485,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-015.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-016",
@@ -3277,7 +3520,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-016.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-017",
@@ -3299,7 +3555,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-017.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-018",
@@ -3321,7 +3590,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-018.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-019",
@@ -3343,7 +3625,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-019.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-020",
@@ -3365,7 +3660,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-020.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-021",
@@ -3387,7 +3695,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-021.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-022",
@@ -3409,7 +3730,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-022.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-023",
@@ -3431,7 +3765,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-023.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-024",
@@ -3453,7 +3800,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-024.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-03-025",
@@ -3475,7 +3835,20 @@
         "docs/implementation/evidence/G5-SERVICE/LEG-03-025.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
+            "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
+            "test_protocol_approval_does_not_preselect_randomized_winner",
+            "test_support_freeze_cannot_drift_during_block_or_washout"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-001",
@@ -3493,7 +3866,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-001.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-002",
@@ -3511,7 +3897,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-002.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-003",
@@ -3529,7 +3928,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-003.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-004",
@@ -3547,7 +3959,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-004.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-005",
@@ -3565,7 +3990,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-005.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-006",
@@ -3583,7 +4021,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-006.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-007",
@@ -3601,7 +4052,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-007.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-008",
@@ -3619,7 +4083,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-008.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-009",
@@ -3637,7 +4114,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-009.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-010",
@@ -3655,7 +4145,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-010.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-011",
@@ -3673,7 +4176,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-011.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-012",
@@ -3691,7 +4207,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-012.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-013",
@@ -3709,7 +4238,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-013.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-014",
@@ -3727,7 +4269,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-014.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-015",
@@ -3745,7 +4300,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-015.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-016",
@@ -3763,7 +4331,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-016.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-017",
@@ -3781,7 +4362,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-017.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-018",
@@ -3799,7 +4393,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-018.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-019",
@@ -3817,7 +4424,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-019.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-04-020",
@@ -3835,7 +4455,20 @@
         "docs/implementation/evidence/G0-CONTRACT/LEG-04-020.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-001",
@@ -3855,7 +4488,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-001.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-002",
@@ -3875,7 +4522,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-002.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-003",
@@ -3895,7 +4556,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-003.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-004",
@@ -3915,7 +4590,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-004.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-005",
@@ -3935,7 +4624,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-005.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-006",
@@ -3955,7 +4658,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-006.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-007",
@@ -3975,7 +4692,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-007.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-008",
@@ -3995,7 +4726,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-008.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-009",
@@ -4015,7 +4760,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-009.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-010",
@@ -4035,7 +4794,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-010.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-011",
@@ -4055,7 +4828,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-011.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-012",
@@ -4075,7 +4862,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-012.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-013",
@@ -4095,7 +4896,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-013.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-014",
@@ -4115,7 +4930,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-014.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-015",
@@ -4135,7 +4964,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-015.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-016",
@@ -4155,7 +4998,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-016.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-017",
@@ -4175,7 +5032,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-017.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-018",
@@ -4195,7 +5066,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-018.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-019",
@@ -4215,7 +5100,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-019.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-020",
@@ -4235,7 +5134,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-020.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-05-021",
@@ -4255,7 +5168,21 @@
         "docs/implementation/evidence/G1-FOUNDATION/LEG-05-021.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "LEG-06-001",
@@ -11893,7 +12820,20 @@
         "docs/implementation/evidence/G0-CONTRACT/CONTRACT-01.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "TIME-01",
@@ -11913,7 +12853,21 @@
         "docs/implementation/evidence/G0-CONTRACT/TIME-01.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_entity_fixtures_and_registered_estimands_are_serializable",
+            "test_cutoff_excludes_equal_time_late_and_future_records",
+            "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
+            "test_no_latent_or_truth_payload_can_enter_learner_schema",
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "EST-INT",
@@ -11933,7 +12887,20 @@
         "docs/implementation/evidence/G0-CONTRACT/EST-INT.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-CONTRACT": {
+          "status": "fixtures_pass_pending_independent_review",
+          "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
+          "checks": [
+            "test_all_estimand_semantics_roundtrip",
+            "test_invalid_estimand_units_recall_and_event_strategy",
+            "test_isi_items_recall_trending_and_no_postdeath_isi",
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+          ],
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+        }
+      }
     },
     {
       "requirement_id": "DGP-01",
@@ -15110,7 +16077,15 @@
     "software_invariant": 13,
     "ux_test": 14
   },
-  "execution_evidence": [],
+  "execution_evidence": [
+    {
+      "task_id": "G0-CONTRACT",
+      "status": "contract_fixtures_pass_pending_independent_review",
+      "test_count": 24,
+      "evidence": "docs/implementation/evidence/G0-CONTRACT/check-results-20261020.json",
+      "claim_limit": "No app/statistical/gate/human acceptance"
+    }
+  ],
   "runtime": {
     "total_slots_including_root": 4,
     "spawned_capacity": 3,
@@ -15128,12 +16103,12 @@
       "direct app-server input for multi-agent v2 children (observed rejected)"
     ],
     "queued": [
-      "independent Astra exact-head/base review of G0-LAUNCH-FIX-01",
-      "root reviewed PR to main at exact reviewed target base when accepted",
-      "G0-CONTRACT",
-      "G0-DGP",
-      "G0-LIB",
-      "G0-WORKFLOW"
+      "independent Astra G0-CONTRACT exact-head/base review",
+      "root reviewed PR/merge when ready_to_ship then integrated verification",
+      "G0-DGP after accepted G0-CONTRACT",
+      "G0-LIB after accepted G0-CONTRACT",
+      "G0-WORKFLOW after accepted G0-CONTRACT",
+      "G1-G7 actual hybrid implementation/validation/reproduction"
     ],
     "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted",
     "lifecycle_status": "RESOLVED: root verified existing planner app identity with read_thread, archived exact existing child with set_thread_archived, then native list_agents confirmed removal before Sol spawn",
@@ -15163,21 +16138,74 @@
     "write_paths": [
       "docs/implementation/**"
     ],
-    "status": "needs_review",
-    "review_disposition": "pending",
-    "candidate_commit": null,
+    "status": "complete",
+    "review_disposition": "ready_to_ship",
+    "candidate_commit": "3af3553cb6aec3a762ce883d968bec621244409b",
     "candidate_locator": "Exact commit returned in handoff; no self-referential SHA",
     "reviewer_thread": "/root/g0_critic_astra",
     "reviewer_model": "gpt-6-astra",
     "reviewer_reasoning_effort": "medium",
     "helper_requests": [],
-    "pr_url": null,
-    "merge_commit": null,
+    "pr_url": "https://github.com/esbraun/REMission/pull/10",
+    "merge_commit": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
     "identity_verification": "Root app read_thread matched active commands in this exclusive checkout including named environment lookup",
     "review_target_base": "c7cdf4a8415073d0b275064a0b0aca188fc022fe",
     "historical_integration_target": "launch/implementation-20261020 (unused local target; superseded before review)",
     "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-launch-fix-review-20261020",
     "reviewer_app_thread_id": "01a15ccb-d23c-7e10-a1c8-6a55a6719daf",
-    "reviewer_checkout_status": "Root will provision exclusive detached checkout at exact committed candidate; existing critic thread reused, old review checkout preserved"
+    "reviewer_checkout_status": "Root will provision exclusive detached checkout at exact committed candidate; existing critic thread reused, old review checkout preserved",
+    "reviewed_head": "3af3553cb6aec3a762ce883d968bec621244409b",
+    "reviewed_base": "c7cdf4a8415073d0b275064a0b0aca188fc022fe",
+    "independent_review_blob": "c7036122a5db0f40cbc3ea962741a306c7ecead7",
+    "evidence": [
+      "docs/implementation/evidence/G0-LAUNCH-FIX-01/independent-review-20261020.md",
+      "docs/implementation/evidence/G0-LAUNCH-FIX-01/verification-20261020.md"
+    ],
+    "accepted_scope": "Repaired launch/readiness/planning package only; not executable G0 contracts or a gate"
+  },
+  "human_review_schedule": "Explicitly deferred by user; not an engineering blocker and no acceptance invented",
+  "current_assignment": {
+    "id": "G0-CONTRACT",
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "task_branch": "launch/g0-contracts-20261020",
+    "base_commit": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+    "review_target_base": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+    "integration_target": "main",
+    "status": "needs_review",
+    "candidate_commit": null,
+    "candidate_locator": "Exact candidate returned after commit, avoiding self-referential SHA",
+    "reviewer_thread": "/root/g0_critic_astra",
+    "reviewer_app_thread_id": "01a15ccb-d23c-7e10-a1c8-6a55a6719daf",
+    "reviewer_model": "gpt-6-astra",
+    "reviewer_reasoning_effort": "medium",
+    "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-contract-review-20261020",
+    "review_disposition": "pending",
+    "evidence": [
+      "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md"
+    ],
+    "helper_requests": [
+      {
+        "id": "G0-CONTRACT-TIME-INPUTS",
+        "owner": "existing readiness Luna/high via root",
+        "state": "done",
+        "input_commit": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+        "result": "Canonical temporal parent/order checklist and five explicit engineering timing decisions; read-only, no code/tests/numerical defaults"
+      }
+    ],
+    "write_paths": [
+      "contracts/domain/**",
+      "tests/contracts/**",
+      "docs/implementation/contracts.md",
+      "docs/implementation/ledger/status/evidence",
+      "requirements-contracts.txt"
+    ],
+    "pr_url": null,
+    "merge_commit": null
   }
 }

@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "ObservedCovariate": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "concept": {
+          "enum": [
+            "pain",
+            "nausea",
+            "distress",
+            "fatigue",
+            "sleep_quality",
+            "function",
+            "adverse_symptom",
+            "sleep_minutes",
+            "wake_minutes",
+            "age_years",
+            "X",
+            "M",
+            "U",
+            "site",
+            "phase",
+            "steroid_indicator"
+          ],
+          "title": "Concept",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "dimensionless",
+            "quality_points",
+            "function_points",
+            "minutes",
+            "years",
+            "indicator"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "concept",
+        "value",
+        "unit",
+        "observed_at",
+        "available_at"
+      ],
+      "title": "ObservedCovariate",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:external-study",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bias_transport_notes": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Bias Transport Notes",
+      "type": "array"
+    },
+    "blinding": {
+      "enum": [
+        "open_label",
+        "patient_blinded",
+        "double_blinded"
+      ],
+      "title": "Blinding",
+      "type": "string"
+    },
+    "comparator": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Comparator",
+      "type": "string"
+    },
+    "covariate_distribution": {
+      "items": {
+        "$ref": "#/$defs/ObservedCovariate"
+      },
+      "title": "Covariate Distribution",
+      "type": "array"
+    },
+    "effect": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Effect"
+    },
+    "follow_up_days": {
+      "exclusiveMinimum": 0,
+      "title": "Follow Up Days",
+      "type": "integer"
+    },
+    "intervention": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Intervention",
+      "type": "string"
+    },
+    "ipd": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "kind": {
+      "const": "external_study",
+      "title": "Kind",
+      "type": "string"
+    },
+    "likelihood_input": {
+      "enum": [
+        "summary",
+        "ipd"
+      ],
+      "title": "Likelihood Input",
+      "type": "string"
+    },
+    "outcome": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Outcome",
+      "type": "string"
+    },
+    "population": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Population",
+      "type": "string"
+    },
+    "rationale_source_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "title": "Rationale Source Ids",
+      "type": "array"
+    },
+    "scale": {
+      "const": "ISI_points",
+      "title": "Scale",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "standard_error": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Standard Error"
+    },
+    "study": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "study",
+    "population",
+    "intervention",
+    "comparator",
+    "outcome",
+    "scale",
+    "follow_up_days",
+    "likelihood_input",
+    "effect",
+    "standard_error",
+    "ipd",
+    "covariate_distribution",
+    "blinding",
+    "bias_transport_notes",
+    "rationale_source_ids"
+  ],
+  "title": "ExternalStudy",
+  "type": "object"
+}

@@ -1,0 +1,742 @@
+{
+  "purpose": "Hand-authored semantic contract fixtures; protocol blocks/stages require separately accepted G0-DGP protocol versions before use",
+  "contracts": [
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-VISIT",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "behavioral_escalate",
+      "comparator": "behavioral_continue",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "direction": "lower_is_better",
+      "horizon": {
+        "amount": 42,
+        "unit": "days",
+        "endpoint_rule": "day42",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": null,
+      "comparator_strategy": null,
+      "intervention_policy": null,
+      "comparator_policy": null,
+      "policy_value_target": null,
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": "ISI-two-week-v1",
+      "isi_recall_days": 14,
+      "earliest_isi_days_after_assignment": 14,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-N1",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "direction": "higher_is_better",
+      "horizon": {
+        "amount": 1,
+        "unit": "protocol_blocks",
+        "endpoint_rule": "fixture-only versioned protocol endpoint",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": null,
+      "comparator_strategy": null,
+      "intervention_policy": null,
+      "comparator_policy": null,
+      "policy_value_target": null,
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": null,
+      "isi_recall_days": null,
+      "earliest_isi_days_after_assignment": null,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-ESC-STAGE",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "behavioral_escalate",
+      "comparator": "behavioral_continue",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "direction": "lower_is_better",
+      "horizon": {
+        "amount": 1,
+        "unit": "protocol_stages",
+        "endpoint_rule": "fixture-only versioned protocol endpoint",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": null,
+      "comparator_strategy": null,
+      "intervention_policy": null,
+      "comparator_policy": null,
+      "policy_value_target": null,
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": "ISI-two-week-v1",
+      "isi_recall_days": 14,
+      "earliest_isi_days_after_assignment": 14,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-ESC-STRATEGY",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "behavioral_escalate",
+      "comparator": "behavioral_continue",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "direction": "lower_is_better",
+      "horizon": {
+        "amount": 1,
+        "unit": "protocol_stages",
+        "endpoint_rule": "fixture-only versioned protocol endpoint",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": {
+        "id": "fixture-strategy-A",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "comparator_strategy": {
+        "id": "fixture-strategy-B",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_policy": null,
+      "comparator_policy": null,
+      "policy_value_target": null,
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": "ISI-two-week-v1",
+      "isi_recall_days": 14,
+      "earliest_isi_days_after_assignment": 14,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-MRT",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "direction": "higher_is_better",
+      "horizon": {
+        "amount": 1,
+        "unit": "days",
+        "endpoint_rule": "fixture-only versioned protocol endpoint",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": null,
+      "comparator_strategy": null,
+      "intervention_policy": null,
+      "comparator_policy": null,
+      "policy_value_target": null,
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": null,
+      "isi_recall_days": null,
+      "earliest_isi_days_after_assignment": null,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-POLICY",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "policy_value",
+      "unit": "quality_points",
+      "direction": "higher_is_better",
+      "horizon": {
+        "amount": 1,
+        "unit": "cohorts",
+        "endpoint_rule": "fixture-only versioned protocol endpoint",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": null,
+      "comparator_strategy": null,
+      "intervention_policy": {
+        "id": "fixture-target-policy-A",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "comparator_policy": {
+        "id": "fixture-target-policy-B",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "policy_value_target": "fixed_contextual",
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": null,
+      "isi_recall_days": null,
+      "earliest_isi_days_after_assignment": null,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "synthetic": true,
+      "kind": "estimand",
+      "estimand_id": "EST-INT",
+      "estimand_version": "1.0.0",
+      "population": "synthetic eligible fixture only",
+      "eligibility_rule": {
+        "id": "eligibility",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "history": "available_observed_preassignment_only",
+      "observation_cutoff": "2026-10-01T07:59:59Z",
+      "time_zero": "2026-10-01T08:00:00Z",
+      "intervention": "behavioral_escalate",
+      "comparator": "behavioral_continue",
+      "contrast": "assignment",
+      "patient_blinded": false,
+      "clinician_blinded": false,
+      "outcome": "interruption_vector",
+      "unit": "probability_vector",
+      "direction": "no_overall_order",
+      "horizon": {
+        "amount": 42,
+        "unit": "days",
+        "endpoint_rule": "day42",
+        "protocol": {
+          "id": "fixture-protocol-not-an-accepted-run",
+          "version": "1.0.0",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "continuation_policy": {
+        "id": "common-continuation",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "support_policy": {
+        "id": "fixed-support",
+        "version": "1.0.0",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "intervention_strategy": null,
+      "comparator_strategy": null,
+      "intervention_policy": null,
+      "comparator_policy": null,
+      "policy_value_target": null,
+      "event_strategies": [
+        {
+          "event": "death",
+          "strategy": "separate_survival_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "admission",
+          "strategy": "separate_admission_and_conditional_symptoms",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "regimen_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "steroid_change",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "rescue",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "discontinuation",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        },
+        {
+          "event": "override",
+          "strategy": "treatment_policy",
+          "explanation": "Canonical synthetic default; no common survivor or adherer restriction"
+        }
+      ],
+      "missing_data_assumptions": [
+        "explicit protocol sensitivity required"
+      ],
+      "identification_assumptions": [
+        "consistency, exchangeability and adequate support are assumptions"
+      ],
+      "comparator_information": "same_permitted_history",
+      "source_ids": [
+        "iche9",
+        "gformula"
+      ],
+      "isi_instrument_version": "ISI-two-week-v1",
+      "isi_recall_days": 14,
+      "earliest_isi_days_after_assignment": 14,
+      "limitations": [
+        "Contract fixture, no clinical or causal validation"
+      ]
+    }
+  ]
+}

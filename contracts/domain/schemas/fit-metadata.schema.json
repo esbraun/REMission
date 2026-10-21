@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:fit-metadata",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "backend": {
+      "const": "pymc",
+      "title": "Backend",
+      "type": "string"
+    },
+    "backend_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Backend Version",
+      "type": "string"
+    },
+    "diagnostics_artifacts": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "title": "Diagnostics Artifacts",
+      "type": "array"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Failure Reason"
+    },
+    "packages": {
+      "patternProperties": {
+        "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "title": "Packages",
+      "type": "object"
+    },
+    "precision": {
+      "const": "float64",
+      "title": "Precision",
+      "type": "string"
+    },
+    "sampler": {
+      "const": "native_nuts",
+      "title": "Sampler",
+      "type": "string"
+    },
+    "sampler_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Sampler Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "accepted",
+        "failed",
+        "abstained",
+        "pending"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "backend",
+    "backend_version",
+    "sampler",
+    "sampler_version",
+    "packages",
+    "precision",
+    "status",
+    "diagnostics_artifacts",
+    "failure_reason"
+  ],
+  "title": "FitMetadata",
+  "type": "object"
+}

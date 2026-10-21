@@ -1,0 +1,105 @@
+{
+  "purpose": "Fresh remote main clone plus candidate file patch, without candidate/unpublished object imports",
+  "clone_url": "https://github.com/esbraun/REMission.git",
+  "clone_command": "git clone --no-local --branch main https://github.com/esbraun/REMission.git .contract-repro/fresh",
+  "clone_head": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+  "isolated_object_database": true,
+  "alternates_file_exists": false,
+  "candidate_overlay": "git apply --whitespace=error-all ../candidate.patch; patch contains files only, no object imports",
+  "environment": "fresh .venv-contracts created inside clone, installed exact requirements-contracts.txt",
+  "packages": [
+    "annotated-types==0.8.0",
+    "pydantic==2.14.1",
+    "pydantic_core==2.50.1",
+    "typing-inspection==0.4.4",
+    "typing_extensions==4.16.0"
+  ],
+  "checks": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d\n",
+      "stderr": "",
+      "seconds": 0.033169399946928024
+    },
+    {
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "f986495522fad161adc80222bcad23d41a03e9f3",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.038268500007689
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-e",
+        "c239dca3503c32b5e20fbd630d69f1720f9b12ce"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.03399580006953329
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-e",
+        "8315ee9d2062f04a53cd777a4891080d7c604b7d"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.03457329992670566
+    },
+    {
+      "command": [
+        ".venv-contracts/Scripts/python.exe",
+        "tests/contracts/run_checks.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS -m pip check\nPASS -m contracts.domain.export --check\nPASS -m unittest discover -s tests/contracts -v\nPASS docs/implementation/check-ledger-20261020.py\n",
+      "stderr": "",
+      "seconds": 3.2815664000809193
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "e7965b998fa70df82e63a89ef720a6c8ad46ce6d"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.05012849997729063
+    }
+  ],
+  "claim_limit": "24 contract fixtures and structural checks only; no app/fit/simulation/browser/clinical acceptance",
+  "candidate_sources_match_recorded_hashes": true,
+  "direct_unit_check": {
+    "command": [
+      ".venv-contracts/Scripts/python.exe",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/contracts",
+      "-v"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "test_all_entity_fixtures_and_registered_estimands_are_serializable (test_domain.ContractTests.test_all_entity_fixtures_and_registered_estimands_are_serializable) ... ok\ntest_all_estimand_semantics_roundtrip (test_domain.ContractTests.test_all_estimand_semantics_roundtrip) ... ok\ntest_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal (test_domain.ContractTests.test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal) ... ok\ntest_cutoff_excludes_equal_time_late_and_future_records (test_domain.ContractTests.test_cutoff_excludes_equal_time_late_and_future_records) ... ok\ntest_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts (test_domain.ContractTests.test_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts) ... ok\ntest_est_int_zero_denominator_and_tradeoffs_remain_separate (test_domain.ContractTests.test_est_int_zero_denominator_and_tradeoffs_remain_separate) ... ok\ntest_evaluation_accounting_failure_and_confirmation_contracts (test_domain.ContractTests.test_evaluation_accounting_failure_and_confirmation_contracts) ... ok\ntest_evaluation_minimums_truth_precision_and_source_boundary (test_domain.ContractTests.test_evaluation_minimums_truth_precision_and_source_boundary) ... ok\ntest_external_study_ipd_summary_double_count_denied (test_domain.ContractTests.test_external_study_ipd_summary_double_count_denied) ... ok\ntest_fit_versions_and_hashes_rejected_before_dispatch (test_domain.ContractTests.test_fit_versions_and_hashes_rejected_before_dispatch) ... ok\ntest_invalid_estimand_units_recall_and_event_strategy (test_domain.ContractTests.test_invalid_estimand_units_recall_and_event_strategy) ... ok\ntest_isi_items_recall_trending_and_no_postdeath_isi (test_domain.ContractTests.test_isi_items_recall_trending_and_no_postdeath_isi) ... ok\ntest_late_correction_does_not_rewrite_old_history_and_duplicates_drop (test_domain.ContractTests.test_late_correction_does_not_rewrite_old_history_and_duplicates_drop) ... ok\ntest_missing_reward_is_not_zero (test_domain.ContractTests.test_missing_reward_is_not_zero) ... ok\ntest_named_threshold_is_provisional_and_no_unit_substitution (test_domain.ContractTests.test_named_threshold_is_provisional_and_no_unit_substitution) ... ok\ntest_no_latent_or_truth_payload_can_enter_learner_schema (test_domain.ContractTests.test_no_latent_or_truth_payload_can_enter_learner_schema) ... ok\ntest_protocol_approval_does_not_preselect_randomized_winner (test_domain.ContractTests.test_protocol_approval_does_not_preselect_randomized_winner) ... ok\ntest_record_clock_naive_timezone_and_future_nested_covariate_rejected (test_domain.ContractTests.test_record_clock_naive_timezone_and_future_nested_covariate_rejected) ... ok\ntest_schema_exports_match_and_contain_no_evaluator_types_in_learner (test_domain.ContractTests.test_schema_exports_match_and_contain_no_evaluator_types_in_learner) ... ok\ntest_stale_patient_history_hold_permissions_and_exclusions_block_approval (test_domain.ContractTests.test_stale_patient_history_hold_permissions_and_exclusions_block_approval) ... ok\ntest_support_freeze_cannot_drift_during_block_or_washout (test_domain.ContractTests.test_support_freeze_cannot_drift_during_block_or_washout) ... ok\ntest_temporal_parent_graph_and_seeded_future_cycle_faults (test_domain.ContractTests.test_temporal_parent_graph_and_seeded_future_cycle_faults) ... ok\ntest_typed_fit_metadata_roundtrip_and_failure (test_domain.ContractTests.test_typed_fit_metadata_roundtrip_and_failure) ... ok\ntest_version_and_strict_types_reject_without_coercion (test_domain.ContractTests.test_version_and_strict_types_reject_without_coercion) ... ok\n\n----------------------------------------------------------------------\nRan 24 tests in 0.120s\n\nOK\n"
+  }
+}

@@ -1,0 +1,6926 @@
+{
+  "models": {
+    "Approval": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "clinician_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Clinician Id",
+            "type": "string"
+          }
+        },
+        "decision_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Decision Id",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "expected_consent_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Expected Consent Version",
+            "type": "integer"
+          }
+        },
+        "expected_eligibility_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Expected Eligibility Version",
+            "type": "integer"
+          }
+        },
+        "expected_patient_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Expected Patient Version",
+            "type": "integer"
+          }
+        },
+        "expected_state_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Expected State Version",
+            "type": "integer"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "approval",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "option": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MED_A",
+                  "MED_B",
+                  "behavioral_continue",
+                  "behavioral_escalate",
+                  "support_prompt",
+                  "no_prompt",
+                  "usual_care"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Option"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "permitted_options": {
+          "required": true,
+          "schema": {
+            "items": {
+              "enum": [
+                "MED_A",
+                "MED_B",
+                "behavioral_continue",
+                "behavioral_escalate",
+                "support_prompt",
+                "no_prompt",
+                "usual_care"
+              ],
+              "type": "string"
+            },
+            "title": "Permitted Options",
+            "type": "array"
+          }
+        },
+        "purpose": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "ordinary_treatment",
+              "randomization_protocol"
+            ],
+            "title": "Purpose",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "Assignment": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "approval_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Approval Id",
+            "type": "string"
+          }
+        },
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "clinician_blinded": {
+          "required": true,
+          "schema": {
+            "title": "Clinician Blinded",
+            "type": "boolean"
+          }
+        },
+        "clinician_override": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MED_A",
+                  "MED_B",
+                  "behavioral_continue",
+                  "behavioral_escalate",
+                  "support_prompt",
+                  "no_prompt",
+                  "usual_care"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinician Override"
+          }
+        },
+        "component": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "enum": [
+                  "nof1",
+                  "escalation",
+                  "mrt_bandit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Component"
+          }
+        },
+        "decision_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Decision Id",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "experimental": {
+          "required": true,
+          "schema": {
+            "title": "Experimental",
+            "type": "boolean"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "assignment",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "option": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "title": "Option",
+            "type": "string"
+          }
+        },
+        "override_reason": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Reason"
+          }
+        },
+        "patient_blinded": {
+          "required": true,
+          "schema": {
+            "title": "Patient Blinded",
+            "type": "boolean"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "probability": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "maximum": 1,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Probability"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "seed": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SeedKey"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "support_policy": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "AuditRun": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "actor": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Actor",
+            "type": "string"
+          }
+        },
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "change": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Change",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "execution_seconds": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Execution Seconds",
+            "type": "number"
+          }
+        },
+        "fit": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FitMetadata"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "input_versions": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "title": "Input Versions",
+            "type": "array"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "audit_run",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "lineage_refs": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "title": "Lineage Refs",
+            "type": "array"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "seed": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/SeedKey"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ConditionalSymptom": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "conditioning_probability": {
+          "required": true,
+          "schema": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Conditioning Probability",
+            "type": "number"
+          }
+        },
+        "denominator_count": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Denominator Count",
+            "type": "integer"
+          }
+        },
+        "isi": {
+          "required": true,
+          "schema": {
+            "discriminator": {
+              "mapping": {
+                "abstained": "#/$defs/Unavailable",
+                "estimated": "#/$defs/Estimated",
+                "failed": "#/$defs/Unavailable",
+                "inconclusive": "#/$defs/Unavailable",
+                "pending": "#/$defs/Unavailable",
+                "prior_only": "#/$defs/Unavailable",
+                "undefined": "#/$defs/Unavailable"
+              },
+              "propertyName": "status"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Estimated"
+              },
+              {
+                "$ref": "#/$defs/Unavailable"
+              }
+            ],
+            "title": "Isi"
+          }
+        },
+        "numerator_count": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Numerator Count",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "Consent": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "component": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "nof1",
+              "escalation",
+              "mrt_bandit"
+            ],
+            "title": "Component",
+            "type": "string"
+          }
+        },
+        "consent_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "missing",
+              "expired",
+              "withdrawn"
+            ],
+            "title": "Consent Status",
+            "type": "string"
+          }
+        },
+        "consent_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Consent Version",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "effective_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Effective At",
+            "type": "string"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "expires_at": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "consent",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "oversight_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "approved_synthetic",
+              "pending",
+              "expired",
+              "withdrawn"
+            ],
+            "title": "Oversight Status",
+            "type": "string"
+          }
+        },
+        "oversight_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Oversight Version",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "withdrawn_at": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Withdrawn At"
+          }
+        }
+      }
+    },
+    "DGPConfig": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "clinical_interpretation": {
+          "required": true,
+          "schema": {
+            "const": "synthetic_not_clinically_calibrated",
+            "title": "Clinical Interpretation",
+            "type": "string"
+          }
+        },
+        "dgp": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "end_day": {
+          "required": true,
+          "schema": {
+            "title": "End Day",
+            "type": "integer"
+          }
+        },
+        "equations": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "external_study_sizes": {
+          "required": true,
+          "schema": {
+            "items": {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            "title": "External Study Sizes",
+            "type": "array"
+          }
+        },
+        "initial_distribution": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "initialized_day": {
+          "required": true,
+          "schema": {
+            "title": "Initialized Day",
+            "type": "integer"
+          }
+        },
+        "irregular_visit_process": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "dgp_config",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "layer": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "analytic",
+              "reference",
+              "adversarial"
+            ],
+            "title": "Layer",
+            "type": "string"
+          }
+        },
+        "learner_export_schema": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "observation_rules": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "parameter_table": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/ParameterSpec"
+            },
+            "minItems": 1,
+            "title": "Parameter Table",
+            "type": "array"
+          }
+        },
+        "patients": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Patients",
+            "type": "integer"
+          }
+        },
+        "scenario": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "seed_namespaces": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/SeedKey"
+            },
+            "minItems": 1,
+            "title": "Seed Namespaces",
+            "type": "array"
+          }
+        },
+        "start_day": {
+          "required": true,
+          "schema": {
+            "title": "Start Day",
+            "type": "integer"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "temporal_contract": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "time_grid_unit": {
+          "required": true,
+          "schema": {
+            "const": "days",
+            "title": "Time Grid Unit",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DailyReport": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "adverse_symptoms": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Adverse Symptoms",
+            "type": "array"
+          }
+        },
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "burden": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Burden"
+          }
+        },
+        "diary_sleep_minutes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diary Sleep Minutes"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "function": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maximum": 10,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Function"
+          }
+        },
+        "goals": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Goals",
+            "type": "array"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "daily_report",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "missingness": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "observed",
+              "missing",
+              "pending"
+            ],
+            "title": "Missingness",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "sleep_quality": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maximum": 10,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sleep Quality"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "DecisionSnapshot": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "consent_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Consent Version",
+            "type": "integer"
+          }
+        },
+        "cutoff": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Cutoff",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "eligibility": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/Eligibility"
+            },
+            "title": "Eligibility",
+            "type": "array"
+          }
+        },
+        "eligibility_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Eligibility Version",
+            "type": "integer"
+          }
+        },
+        "estimand": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "title": "Evidence",
+            "type": "array"
+          }
+        },
+        "horizon_days": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Horizon Days",
+            "type": "integer"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "decision_snapshot",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "model": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "outcome": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Outcome",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "patient_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Patient Version",
+            "type": "integer"
+          }
+        },
+        "policy": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "posterior": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "state_version": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "State Version",
+            "type": "integer"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "view": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/ViewContext"
+          }
+        },
+        "workflow": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Workflow"
+          }
+        }
+      }
+    },
+    "Delivery": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "adherence": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adherence"
+          }
+        },
+        "assignment_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Assignment Id",
+            "type": "string"
+          }
+        },
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "delivery",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "option": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "title": "Option",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "protocol_deviations": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Protocol Deviations",
+            "type": "array"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "rescue": {
+          "required": true,
+          "schema": {
+            "title": "Rescue",
+            "type": "boolean"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "stage": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "offered",
+              "delivered",
+              "taken",
+              "not_taken",
+              "unknown"
+            ],
+            "title": "Stage",
+            "type": "string"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "Eligibility": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "action": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "reasons": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          }
+        },
+        "status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "eligible",
+              "excluded",
+              "requires_prescriber_review"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Encounter": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "actual_at": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual At"
+          }
+        },
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "care_setting": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "outpatient",
+              "inpatient",
+              "remote"
+            ],
+            "title": "Care Setting",
+            "type": "string"
+          }
+        },
+        "chemotherapy_phase": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Chemotherapy Phase",
+            "type": "string"
+          }
+        },
+        "cycle": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Cycle",
+            "type": "integer"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "encounter",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "review_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "pending",
+              "reviewed",
+              "hold"
+            ],
+            "title": "Review Status",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "scheduled_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Scheduled At",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "EstimandContract": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "clinician_blinded": {
+          "required": true,
+          "schema": {
+            "title": "Clinician Blinded",
+            "type": "boolean"
+          }
+        },
+        "comparator": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "title": "Comparator",
+            "type": "string"
+          }
+        },
+        "comparator_information": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "same_permitted_history",
+              "privileged_oracle_report_only"
+            ],
+            "title": "Comparator Information",
+            "type": "string"
+          }
+        },
+        "comparator_policy": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "comparator_strategy": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "continuation_policy": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "contrast": {
+          "required": true,
+          "schema": {
+            "const": "assignment",
+            "title": "Contrast",
+            "type": "string"
+          }
+        },
+        "direction": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "lower_is_better",
+              "higher_is_better",
+              "no_overall_order"
+            ],
+            "title": "Direction",
+            "type": "string"
+          }
+        },
+        "earliest_isi_days_after_assignment": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Earliest Isi Days After Assignment"
+          }
+        },
+        "eligibility_rule": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "estimand_id": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "EST-VISIT",
+              "EST-N1",
+              "EST-ESC-STAGE",
+              "EST-ESC-STRATEGY",
+              "EST-MRT",
+              "EST-POLICY",
+              "EST-INT"
+            ],
+            "title": "Estimand Id",
+            "type": "string"
+          }
+        },
+        "estimand_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Estimand Version",
+            "type": "string"
+          }
+        },
+        "event_strategies": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/EventStrategy"
+            },
+            "maxItems": 7,
+            "minItems": 7,
+            "title": "Event Strategies",
+            "type": "array"
+          }
+        },
+        "history": {
+          "required": true,
+          "schema": {
+            "const": "available_observed_preassignment_only",
+            "title": "History",
+            "type": "string"
+          }
+        },
+        "horizon": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Horizon"
+          }
+        },
+        "identification_assumptions": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Identification Assumptions",
+            "type": "array"
+          }
+        },
+        "intervention": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "title": "Intervention",
+            "type": "string"
+          }
+        },
+        "intervention_policy": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "intervention_strategy": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "isi_instrument_version": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isi Instrument Version"
+          }
+        },
+        "isi_recall_days": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "enum": [
+                  14,
+                  30
+                ],
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Isi Recall Days"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "estimand",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Limitations",
+            "type": "array"
+          }
+        },
+        "missing_data_assumptions": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Missing Data Assumptions",
+            "type": "array"
+          }
+        },
+        "observation_cutoff": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Observation Cutoff",
+            "type": "string"
+          }
+        },
+        "outcome": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "ISI",
+              "daily_sleep_quality",
+              "function",
+              "proximal_support_reward",
+              "policy_value",
+              "interruption_vector"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          }
+        },
+        "patient_blinded": {
+          "required": true,
+          "schema": {
+            "title": "Patient Blinded",
+            "type": "boolean"
+          }
+        },
+        "policy_value_target": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "enum": [
+                  "fixed_contextual",
+                  "complete_cohort_algorithm"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Value Target"
+          }
+        },
+        "population": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Population",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source_ids": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Source Ids",
+            "type": "array"
+          }
+        },
+        "support_policy": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "time_zero": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Time Zero",
+            "type": "string"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "ISI_points",
+              "quality_points",
+              "function_points",
+              "probability_vector"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Estimated": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "interval": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Interval"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "standard_error": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standard Error"
+          }
+        },
+        "status": {
+          "required": true,
+          "schema": {
+            "const": "estimated",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "ISI_points",
+              "quality_points",
+              "function_points",
+              "probability",
+              "minutes",
+              "count"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "value": {
+          "required": true,
+          "schema": {
+            "title": "Value",
+            "type": "number"
+          }
+        }
+      }
+    },
+    "EvaluationCell": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "estimand": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "patients": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Patients",
+            "type": "integer"
+          }
+        },
+        "repetitions": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Repetitions",
+            "type": "integer"
+          }
+        },
+        "scenario": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "tier": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "deterministic",
+              "smoke",
+              "development",
+              "sbc",
+              "recovery",
+              "decision_null",
+              "integrated_policy"
+            ],
+            "title": "Tier",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "EvaluationProtocol": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "cells": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/EvaluationCell"
+            },
+            "minItems": 1,
+            "title": "Cells",
+            "type": "array"
+          }
+        },
+        "checkpoint_commands": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Checkpoint Commands",
+            "type": "array"
+          }
+        },
+        "confirmation_namespace": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Confirmation Namespace",
+            "type": "string"
+          }
+        },
+        "decision": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "development_namespace": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Development Namespace",
+            "type": "string"
+          }
+        },
+        "failure_handling": {
+          "required": true,
+          "schema": {
+            "const": "retain_all_attempted_completed_failed_abstained_undefined_pending_counts",
+            "title": "Failure Handling",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "evaluation_protocol",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "locked_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Locked At",
+            "type": "string"
+          }
+        },
+        "metrics": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Metrics",
+            "type": "array"
+          }
+        },
+        "model": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "prior": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "protocol": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "thresholds": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "minItems": 1,
+            "title": "Thresholds",
+            "type": "array"
+          }
+        }
+      }
+    },
+    "EventStrategy": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "event": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "death",
+              "admission",
+              "regimen_change",
+              "steroid_change",
+              "rescue",
+              "discontinuation",
+              "override"
+            ],
+            "title": "Event",
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Explanation",
+            "type": "string"
+          }
+        },
+        "strategy": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "separate_survival_and_conditional_symptoms",
+              "separate_admission_and_conditional_symptoms",
+              "treatment_policy"
+            ],
+            "title": "Strategy",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "EvidenceRecord": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "bibliography": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Bibliography",
+            "type": "string"
+          }
+        },
+        "consuming_requirements": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Consuming Requirements",
+            "type": "array"
+          }
+        },
+        "doi": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doi"
+          }
+        },
+        "evidence_type": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "real_literature_rationale",
+              "synthetic_quantitative_study",
+              "software_documentation"
+            ],
+            "title": "Evidence Type",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "evidence_record",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Limitations",
+            "type": "array"
+          }
+        },
+        "locator": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Locator",
+            "type": "string"
+          }
+        },
+        "role": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "rationale_only",
+              "synthetic_likelihood",
+              "software_api"
+            ],
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "source_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Source Version",
+            "type": "string"
+          }
+        },
+        "supported_claim": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Supported Claim",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "url": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "verification_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "unverified",
+              "verified",
+              "unavailable"
+            ],
+            "title": "Verification Status",
+            "type": "string"
+          }
+        },
+        "verified_at": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          }
+        },
+        "year": {
+          "required": true,
+          "schema": {
+            "maximum": 2200,
+            "minimum": 1800,
+            "title": "Year",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "ExternalStudy": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "bias_transport_notes": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Bias Transport Notes",
+            "type": "array"
+          }
+        },
+        "blinding": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "open_label",
+              "patient_blinded",
+              "double_blinded"
+            ],
+            "title": "Blinding",
+            "type": "string"
+          }
+        },
+        "comparator": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Comparator",
+            "type": "string"
+          }
+        },
+        "covariate_distribution": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/ObservedCovariate"
+            },
+            "title": "Covariate Distribution",
+            "type": "array"
+          }
+        },
+        "effect": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect"
+          }
+        },
+        "follow_up_days": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Follow Up Days",
+            "type": "integer"
+          }
+        },
+        "intervention": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Intervention",
+            "type": "string"
+          }
+        },
+        "ipd": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "external_study",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "likelihood_input": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "summary",
+              "ipd"
+            ],
+            "title": "Likelihood Input",
+            "type": "string"
+          }
+        },
+        "outcome": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Outcome",
+            "type": "string"
+          }
+        },
+        "population": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Population",
+            "type": "string"
+          }
+        },
+        "rationale_source_ids": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "title": "Rationale Source Ids",
+            "type": "array"
+          }
+        },
+        "scale": {
+          "required": true,
+          "schema": {
+            "const": "ISI_points",
+            "title": "Scale",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "standard_error": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standard Error"
+          }
+        },
+        "study": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "FitMetadata": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "backend": {
+          "required": true,
+          "schema": {
+            "const": "pymc",
+            "title": "Backend",
+            "type": "string"
+          }
+        },
+        "backend_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Backend Version",
+            "type": "string"
+          }
+        },
+        "diagnostics_artifacts": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "title": "Diagnostics Artifacts",
+            "type": "array"
+          }
+        },
+        "failure_reason": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Reason"
+          }
+        },
+        "packages": {
+          "required": true,
+          "schema": {
+            "patternProperties": {
+              "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$": {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "title": "Packages",
+            "type": "object"
+          }
+        },
+        "precision": {
+          "required": true,
+          "schema": {
+            "const": "float64",
+            "title": "Precision",
+            "type": "string"
+          }
+        },
+        "sampler": {
+          "required": true,
+          "schema": {
+            "const": "native_nuts",
+            "title": "Sampler",
+            "type": "string"
+          }
+        },
+        "sampler_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Sampler Version",
+            "type": "string"
+          }
+        },
+        "status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "accepted",
+              "failed",
+              "abstained",
+              "pending"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FitRequest": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "backend": {
+          "required": true,
+          "schema": {
+            "const": "pymc",
+            "title": "Backend",
+            "type": "string"
+          }
+        },
+        "configuration": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "context": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/MethodContext"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "fit_request",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "precision": {
+          "required": true,
+          "schema": {
+            "const": "float64",
+            "title": "Precision",
+            "type": "string"
+          }
+        },
+        "sampler": {
+          "required": true,
+          "schema": {
+            "const": "native_nuts",
+            "title": "Sampler",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "FollowUpTask": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "due_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Due At",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "escalation_destination": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Escalation Destination",
+            "type": "string"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "follow_up",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "owner": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Owner",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "pending",
+              "active",
+              "completed",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "trigger": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Trigger",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GateEvidence": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "abstained": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Abstained",
+            "type": "integer"
+          }
+        },
+        "attempted": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Attempted",
+            "type": "integer"
+          }
+        },
+        "claim_limits": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Claim Limits",
+            "type": "array"
+          }
+        },
+        "commands": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Commands",
+            "type": "array"
+          }
+        },
+        "completed": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Completed",
+            "type": "integer"
+          }
+        },
+        "executed_checks": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Executed Checks",
+            "type": "array"
+          }
+        },
+        "failed": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Failed",
+            "type": "integer"
+          }
+        },
+        "failures": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Failures",
+            "type": "array"
+          }
+        },
+        "input_versions": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "minItems": 1,
+            "title": "Input Versions",
+            "type": "array"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "gate_evidence",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "manifests": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "minItems": 1,
+            "title": "Manifests",
+            "type": "array"
+          }
+        },
+        "pending": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Pending",
+            "type": "integer"
+          }
+        },
+        "requirement_ids": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Requirement Ids",
+            "type": "array"
+          }
+        },
+        "reviewer_disposition": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "pending",
+              "changes_requested",
+              "ready_to_ship"
+            ],
+            "title": "Reviewer Disposition",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "undefined": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Undefined",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "Horizon": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "amount": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Amount",
+            "type": "integer"
+          }
+        },
+        "endpoint_rule": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Endpoint Rule",
+            "type": "string"
+          }
+        },
+        "protocol": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "days",
+              "protocol_blocks",
+              "protocol_stages",
+              "cohorts"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ISIAssessment": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "instrument_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Instrument Version",
+            "type": "string"
+          }
+        },
+        "items": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maximum": 4,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "maxItems": 7,
+            "minItems": 7,
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "isi",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "recall_days": {
+          "required": true,
+          "schema": {
+            "enum": [
+              14,
+              30
+            ],
+            "title": "Recall Days",
+            "type": "integer"
+          }
+        },
+        "recall_end": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recall End",
+            "type": "string"
+          }
+        },
+        "recall_start": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recall Start",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "IntercurrentEvent": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "detail": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "event_type": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "death",
+              "admission",
+              "discharge",
+              "regimen_change",
+              "steroid_change",
+              "discontinuation",
+              "override",
+              "rescue",
+              "fever_suspected_infection",
+              "confusion",
+              "fall"
+            ],
+            "title": "Event Type",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "intercurrent_event",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "InterruptionResult": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "comparator": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/InterventionOutcomes"
+          }
+        },
+        "estimand_id": {
+          "required": true,
+          "schema": {
+            "const": "EST-INT",
+            "title": "Estimand Id",
+            "type": "string"
+          }
+        },
+        "estimand_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Estimand Version",
+            "type": "string"
+          }
+        },
+        "horizon_days": {
+          "required": true,
+          "schema": {
+            "const": 42,
+            "title": "Horizon Days",
+            "type": "integer"
+          }
+        },
+        "interpretation": {
+          "required": true,
+          "schema": {
+            "const": "intervention_specific_conditional_populations_not_common_survivors",
+            "title": "Interpretation",
+            "type": "string"
+          }
+        },
+        "intervention": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/InterventionOutcomes"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "interruption_result",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "overall_ranking": {
+          "required": true,
+          "schema": {
+            "const": "suppressed",
+            "title": "Overall Ranking",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "Interval": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "interval_type": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "credible",
+              "confidence",
+              "prediction",
+              "monte_carlo"
+            ],
+            "title": "Interval Type",
+            "type": "string"
+          }
+        },
+        "level": {
+          "required": true,
+          "schema": {
+            "exclusiveMaximum": 1,
+            "exclusiveMinimum": 0,
+            "title": "Level",
+            "type": "number"
+          }
+        },
+        "lower": {
+          "required": true,
+          "schema": {
+            "title": "Lower",
+            "type": "number"
+          }
+        },
+        "upper": {
+          "required": true,
+          "schema": {
+            "title": "Upper",
+            "type": "number"
+          }
+        }
+      }
+    },
+    "InterventionOutcomes": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "action": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "admission_by_day42": {
+          "required": true,
+          "schema": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Admission By Day42",
+            "type": "number"
+          }
+        },
+        "admission_times_days": {
+          "required": true,
+          "schema": {
+            "items": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "title": "Admission Times Days",
+            "type": "array"
+          }
+        },
+        "alive_outpatient_day42": {
+          "required": true,
+          "schema": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Alive Outpatient Day42",
+            "type": "number"
+          }
+        },
+        "conditional_isi": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/ConditionalSymptom"
+          }
+        },
+        "death_times_days": {
+          "required": true,
+          "schema": {
+            "items": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "title": "Death Times Days",
+            "type": "array"
+          }
+        },
+        "survival_day42": {
+          "required": true,
+          "schema": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Survival Day42",
+            "type": "number"
+          }
+        }
+      }
+    },
+    "LearnerInput": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "history": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/ObservedHistory"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "learner_input",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "request": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/FitRequest"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "MedicationExposure": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "adherence": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adherence"
+          }
+        },
+        "administration_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Administration At",
+            "type": "string"
+          }
+        },
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "drug": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B"
+            ],
+            "title": "Drug",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "medication_exposure",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "order_ref": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Ref"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "report_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "taken",
+              "not_taken",
+              "uncertain"
+            ],
+            "title": "Report Status",
+            "type": "string"
+          }
+        },
+        "rescue": {
+          "required": true,
+          "schema": {
+            "title": "Rescue",
+            "type": "boolean"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "uncertainty": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Uncertainty",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "MedicationOrder": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "changed_at": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Changed At"
+          }
+        },
+        "drug": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "MED_A",
+              "MED_B"
+            ],
+            "title": "Drug",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "intended_schedule": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Intended Schedule",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "medication_order",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "ordering_clinician": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Ordering Clinician",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "starts_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          }
+        },
+        "stopped_at": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stopped At"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "MethodContext": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "allowed_information": {
+          "required": true,
+          "schema": {
+            "const": "available_observed_history_only",
+            "title": "Allowed Information",
+            "type": "string"
+          }
+        },
+        "comparator_estimand": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "comparator_information": {
+          "required": true,
+          "schema": {
+            "const": "same_permitted_history",
+            "title": "Comparator Information",
+            "type": "string"
+          }
+        },
+        "dgp": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "estimand": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "failure_policy": {
+          "required": true,
+          "schema": {
+            "const": "retain_all_attempts_fail_or_abstain_never_fabricate",
+            "title": "Failure Policy",
+            "type": "string"
+          }
+        },
+        "input_data": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "model": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "observation_cutoff": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Observation Cutoff",
+            "type": "string"
+          }
+        },
+        "prior": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "protocol": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "scenario": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "seed": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/SeedKey"
+          }
+        },
+        "source_ids": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Source Ids",
+            "type": "array"
+          }
+        },
+        "truth_access": {
+          "required": true,
+          "schema": {
+            "const": "denied",
+            "title": "Truth Access",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "NamedThreshold": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "clinical_review": {
+          "required": true,
+          "schema": {
+            "const": "deferred",
+            "title": "Clinical Review",
+            "type": "string"
+          }
+        },
+        "id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "threshold",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "parameter_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Parameter Version",
+            "type": "string"
+          }
+        },
+        "provenance": {
+          "required": true,
+          "schema": {
+            "const": "provisional_synthetic_engineering",
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "rationale": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "ISI_points",
+              "quality_points",
+              "probability",
+              "dimensionless"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "value": {
+          "required": true,
+          "schema": {
+            "title": "Value",
+            "type": "number"
+          }
+        }
+      }
+    },
+    "Observation": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "observation",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lab_reference_context": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lab Reference Context"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "measure": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/ObservedCovariate"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ObservedCovariate": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "concept": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "pain",
+              "nausea",
+              "distress",
+              "fatigue",
+              "sleep_quality",
+              "function",
+              "adverse_symptom",
+              "sleep_minutes",
+              "wake_minutes",
+              "age_years",
+              "X",
+              "M",
+              "U",
+              "site",
+              "phase",
+              "steroid_indicator"
+            ],
+            "title": "Concept",
+            "type": "string"
+          }
+        },
+        "observed_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "dimensionless",
+              "quality_points",
+              "function_points",
+              "minutes",
+              "years",
+              "indicator"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "value": {
+          "required": true,
+          "schema": {
+            "title": "Value",
+            "type": "number"
+          }
+        }
+      }
+    },
+    "ObservedHistory": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "observed_history",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "records": {
+          "required": true,
+          "schema": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "approval": "#/$defs/Approval",
+                  "assignment": "#/$defs/Assignment",
+                  "audit_run": "#/$defs/AuditRun",
+                  "consent": "#/$defs/Consent",
+                  "daily_report": "#/$defs/DailyReport",
+                  "decision_snapshot": "#/$defs/DecisionSnapshot",
+                  "delivery": "#/$defs/Delivery",
+                  "encounter": "#/$defs/Encounter",
+                  "follow_up": "#/$defs/FollowUpTask",
+                  "intercurrent_event": "#/$defs/IntercurrentEvent",
+                  "isi": "#/$defs/ISIAssessment",
+                  "medication_exposure": "#/$defs/MedicationExposure",
+                  "medication_order": "#/$defs/MedicationOrder",
+                  "observation": "#/$defs/Observation",
+                  "oura_like": "#/$defs/WearableObservation",
+                  "patient": "#/$defs/Patient",
+                  "recommendation": "#/$defs/Recommendation"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Patient"
+                },
+                {
+                  "$ref": "#/$defs/Consent"
+                },
+                {
+                  "$ref": "#/$defs/Encounter"
+                },
+                {
+                  "$ref": "#/$defs/MedicationOrder"
+                },
+                {
+                  "$ref": "#/$defs/MedicationExposure"
+                },
+                {
+                  "$ref": "#/$defs/Observation"
+                },
+                {
+                  "$ref": "#/$defs/IntercurrentEvent"
+                },
+                {
+                  "$ref": "#/$defs/WearableObservation"
+                },
+                {
+                  "$ref": "#/$defs/DailyReport"
+                },
+                {
+                  "$ref": "#/$defs/ISIAssessment"
+                },
+                {
+                  "$ref": "#/$defs/DecisionSnapshot"
+                },
+                {
+                  "$ref": "#/$defs/Recommendation"
+                },
+                {
+                  "$ref": "#/$defs/Approval"
+                },
+                {
+                  "$ref": "#/$defs/Assignment"
+                },
+                {
+                  "$ref": "#/$defs/Delivery"
+                },
+                {
+                  "$ref": "#/$defs/FollowUpTask"
+                },
+                {
+                  "$ref": "#/$defs/AuditRun"
+                }
+              ]
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ParameterSpec": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "distribution": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Distribution",
+            "type": "string"
+          }
+        },
+        "provenance": {
+          "required": true,
+          "schema": {
+            "const": "synthetic_engineering",
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "rationale": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "symbol": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "value": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Value"
+          }
+        }
+      }
+    },
+    "Parent": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "day_offset": {
+          "required": true,
+          "schema": {
+            "maximum": 0,
+            "title": "Day Offset",
+            "type": "integer"
+          }
+        },
+        "variable": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Variable",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Patient": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "baseline_eligibility": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Baseline Eligibility",
+            "type": "array"
+          }
+        },
+        "care_team": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "title": "Care Team",
+            "type": "array"
+          }
+        },
+        "clinical_context": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Clinical Context",
+            "type": "string"
+          }
+        },
+        "covariates": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/ObservedCovariate"
+            },
+            "title": "Covariates",
+            "type": "array"
+          }
+        },
+        "diagnosis_context": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Diagnosis Context",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "goals": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Goals",
+            "type": "array"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "patient",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "preferences": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Preferences",
+            "type": "array"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "timezone": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Recommendation": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "decision_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Decision Id",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "recommendation",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "option": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MED_A",
+                  "MED_B",
+                  "behavioral_continue",
+                  "behavioral_escalate",
+                  "support_prompt",
+                  "no_prompt",
+                  "usual_care"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Option"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "reason": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ReplicateResult": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "assignment_refs": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "title": "Assignment Refs",
+            "type": "array"
+          }
+        },
+        "attempted_fit": {
+          "required": true,
+          "schema": {
+            "title": "Attempted Fit",
+            "type": "boolean"
+          }
+        },
+        "estimate": {
+          "required": true,
+          "schema": {
+            "discriminator": {
+              "mapping": {
+                "abstained": "#/$defs/Unavailable",
+                "estimated": "#/$defs/Estimated",
+                "failed": "#/$defs/Unavailable",
+                "inconclusive": "#/$defs/Unavailable",
+                "pending": "#/$defs/Unavailable",
+                "prior_only": "#/$defs/Unavailable",
+                "undefined": "#/$defs/Unavailable"
+              },
+              "propertyName": "status"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Estimated"
+              },
+              {
+                "$ref": "#/$defs/Unavailable"
+              }
+            ],
+            "title": "Estimate"
+          }
+        },
+        "executed_propensities": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "title": "Executed Propensities",
+            "type": "array"
+          }
+        },
+        "execution_seconds": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Execution Seconds",
+            "type": "number"
+          }
+        },
+        "failure_reason": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Reason"
+          }
+        },
+        "fit": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FitMetadata"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "input_versions": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "minItems": 1,
+            "title": "Input Versions",
+            "type": "array"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "replicate_result",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "outcome_refs": {
+          "required": true,
+          "schema": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "title": "Outcome Refs",
+            "type": "array"
+          }
+        },
+        "peak_memory_bytes": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Peak Memory Bytes",
+            "type": "integer"
+          }
+        },
+        "replicate_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Replicate Id",
+            "type": "string"
+          }
+        },
+        "run_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "seeds": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/SeedKey"
+            },
+            "minItems": 1,
+            "title": "Seeds",
+            "type": "array"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "truth_ref": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "violations": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Violations",
+            "type": "array"
+          }
+        }
+      }
+    },
+    "SeedKey": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "namespace": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "fixture",
+              "development",
+              "confirmation",
+              "truth",
+              "fit",
+              "assignment"
+            ],
+            "title": "Namespace",
+            "type": "string"
+          }
+        },
+        "patient": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient",
+            "type": "string"
+          }
+        },
+        "process": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Process",
+            "type": "string"
+          }
+        },
+        "protocol": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Protocol",
+            "type": "string"
+          }
+        },
+        "replicate": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Replicate",
+            "type": "integer"
+          }
+        },
+        "scenario": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Scenario",
+            "type": "string"
+          }
+        },
+        "time_index": {
+          "required": true,
+          "schema": {
+            "title": "Time Index",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "SimulatorTruth": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "access": {
+          "required": true,
+          "schema": {
+            "const": "evaluator_only",
+            "title": "Access",
+            "type": "string"
+          }
+        },
+        "counterfactuals": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/TruthResult"
+            },
+            "title": "Counterfactuals",
+            "type": "array"
+          }
+        },
+        "day": {
+          "required": true,
+          "schema": {
+            "title": "Day",
+            "type": "integer"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "simulator_truth",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "latent_states": {
+          "required": true,
+          "schema": {
+            "patternProperties": {
+              "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$": {
+                "type": "number"
+              }
+            },
+            "title": "Latent States",
+            "type": "object"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "structural_parameters": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/ParameterSpec"
+            },
+            "title": "Structural Parameters",
+            "type": "array"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "Source": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "adapter": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "synthetic_fhir_shaped",
+              "synthetic_oura_like",
+              "patient_report",
+              "synthetic_trial",
+              "simulation",
+              "research_configuration"
+            ],
+            "title": "Adapter",
+            "type": "string"
+          }
+        },
+        "id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "raw_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Raw Sha256",
+            "type": "string"
+          }
+        },
+        "version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TemporalContract": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "daily_factorization": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Daily Factorization",
+            "type": "array"
+          }
+        },
+        "id": {
+          "required": true,
+          "schema": {
+            "const": "TIME-01",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "initial_distribution": {
+          "required": true,
+          "schema": {
+            "const": "must_be_versioned_by_G0_DGP_before_generation",
+            "title": "Initial Distribution",
+            "type": "string"
+          }
+        },
+        "irregular_visit_process": {
+          "required": true,
+          "schema": {
+            "const": "must_be_versioned_by_G0_DGP_before_generation",
+            "title": "Irregular Visit Process",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "temporal_contract",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "learner_cutoff_rule": {
+          "required": true,
+          "schema": {
+            "const": "event_at_lte_cutoff_recorded_and_available_strictly_before",
+            "title": "Learner Cutoff Rule",
+            "type": "string"
+          }
+        },
+        "pending_numerical_decisions": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Pending Numerical Decisions",
+            "type": "array"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "tie_rule": {
+          "required": true,
+          "schema": {
+            "const": "phase_then_stable_record_id_known_holds_and_withdrawals_before_draw",
+            "title": "Tie Rule",
+            "type": "string"
+          }
+        },
+        "timestamp_rule": {
+          "required": true,
+          "schema": {
+            "const": "timezone_aware_utc_order_local_calendar_preserved",
+            "title": "Timestamp Rule",
+            "type": "string"
+          }
+        },
+        "variables": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/Variable"
+            },
+            "minItems": 1,
+            "title": "Variables",
+            "type": "array"
+          }
+        },
+        "version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Version",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TruthResult": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "dgp": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "draws": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Draws",
+            "type": "integer"
+          }
+        },
+        "estimand": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "estimate": {
+          "required": true,
+          "schema": {
+            "discriminator": {
+              "mapping": {
+                "abstained": "#/$defs/Unavailable",
+                "estimated": "#/$defs/Estimated",
+                "failed": "#/$defs/Unavailable",
+                "inconclusive": "#/$defs/Unavailable",
+                "pending": "#/$defs/Unavailable",
+                "prior_only": "#/$defs/Unavailable",
+                "undefined": "#/$defs/Unavailable"
+              },
+              "propertyName": "status"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Estimated"
+              },
+              {
+                "$ref": "#/$defs/Unavailable"
+              }
+            ],
+            "title": "Estimate"
+          }
+        },
+        "independent_implementation": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "information_set": {
+          "required": true,
+          "schema": {
+            "const": "evaluator_only_structural_system",
+            "title": "Information Set",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "truth_result",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "method": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "analytic",
+              "enumerated",
+              "numerical"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "numerical_standard_error": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Numerical Standard Error",
+            "type": "number"
+          }
+        },
+        "privileged_information": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Privileged Information",
+            "type": "boolean"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "seed": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/SeedKey"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "Unavailable": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "reason": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "undefined",
+              "failed",
+              "abstained",
+              "pending",
+              "inconclusive",
+              "prior_only"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Variable": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "parents": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/Parent"
+            },
+            "title": "Parents",
+            "type": "array"
+          }
+        },
+        "phase": {
+          "required": true,
+          "schema": {
+            "minimum": 0,
+            "title": "Phase",
+            "type": "integer"
+          }
+        },
+        "postassignment_role_by_estimand": {
+          "required": true,
+          "schema": {
+            "additionalProperties": {
+              "enum": [
+                "covariate",
+                "treatment",
+                "mediator",
+                "outcome",
+                "observation_indicator",
+                "intercurrent_event",
+                "administrative"
+              ],
+              "type": "string"
+            },
+            "propertyNames": {
+              "enum": [
+                "EST-VISIT",
+                "EST-N1",
+                "EST-ESC-STAGE",
+                "EST-ESC-STRATEGY",
+                "EST-MRT",
+                "EST-POLICY",
+                "EST-INT"
+              ]
+            },
+            "title": "Postassignment Role By Estimand",
+            "type": "object"
+          }
+        },
+        "role_by_estimand": {
+          "required": true,
+          "schema": {
+            "additionalProperties": {
+              "enum": [
+                "covariate",
+                "treatment",
+                "mediator",
+                "outcome",
+                "observation_indicator",
+                "intercurrent_event",
+                "administrative"
+              ],
+              "type": "string"
+            },
+            "propertyNames": {
+              "enum": [
+                "EST-VISIT",
+                "EST-N1",
+                "EST-ESC-STAGE",
+                "EST-ESC-STRATEGY",
+                "EST-MRT",
+                "EST-POLICY",
+                "EST-INT"
+              ]
+            },
+            "title": "Role By Estimand",
+            "type": "object"
+          }
+        },
+        "source_locator": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Source Locator",
+            "type": "string"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "visibility": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "observed",
+              "evaluator_only",
+              "administrative"
+            ],
+            "title": "Visibility",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "VersionRef": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ViewContext": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "mode": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "current",
+              "historical",
+              "retrospective_evaluation"
+            ],
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "snapshot_id": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Snapshot Id"
+          }
+        }
+      }
+    },
+    "WearableObservation": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "device_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Device Version",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "episode_end": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Episode End",
+            "type": "string"
+          }
+        },
+        "episode_start": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Episode Start",
+            "type": "string"
+          }
+        },
+        "estimated_sleep_minutes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Sleep Minutes"
+          }
+        },
+        "estimated_wake_minutes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Wake Minutes"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "oura_like",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "local_date": {
+          "required": true,
+          "schema": {
+            "format": "date",
+            "title": "Local Date",
+            "type": "string"
+          }
+        },
+        "missingness": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "observed",
+              "missing",
+              "quality_rejected"
+            ],
+            "title": "Missingness",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "quality_flags": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Quality Flags",
+            "type": "array"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "record_type": {
+          "required": true,
+          "schema": {
+            "const": "sleep_episode",
+            "title": "Record Type",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "sync_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Sync At",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "timezone": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Workflow": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "clinical": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "assessment",
+              "initial_assignment",
+              "treatment_active",
+              "scheduled_reassessment",
+              "maintenance_closeout",
+              "clinical_hold"
+            ],
+            "title": "Clinical",
+            "type": "string"
+          }
+        },
+        "data_readiness": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "ready",
+              "incomplete",
+              "stale",
+              "failed"
+            ],
+            "title": "Data Readiness",
+            "type": "string"
+          }
+        },
+        "hold_reasons": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Hold Reasons",
+            "type": "array"
+          }
+        },
+        "learning": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "none",
+              "nof1_design",
+              "nof1_block",
+              "nof1_washout",
+              "nof1_review",
+              "escalation_decision",
+              "support_active",
+              "support_frozen",
+              "support_unavailable"
+            ],
+            "title": "Learning",
+            "type": "string"
+          }
+        },
+        "support_mode": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "fixed",
+              "mrt",
+              "adaptive",
+              "frozen",
+              "paused"
+            ],
+            "title": "Support Mode",
+            "type": "string"
+          }
+        },
+        "support_policy": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        }
+      }
+    }
+  },
+  "schema_version": "1.0.0",
+  "status": "proposal_for_independent_review"
+}

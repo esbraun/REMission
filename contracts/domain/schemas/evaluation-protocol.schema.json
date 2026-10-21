@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "EvaluationCell": {
+      "additionalProperties": false,
+      "properties": {
+        "estimand": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "patients": {
+          "exclusiveMinimum": 0,
+          "title": "Patients",
+          "type": "integer"
+        },
+        "repetitions": {
+          "exclusiveMinimum": 0,
+          "title": "Repetitions",
+          "type": "integer"
+        },
+        "scenario": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "tier": {
+          "enum": [
+            "deterministic",
+            "smoke",
+            "development",
+            "sbc",
+            "recovery",
+            "decision_null",
+            "integrated_policy"
+          ],
+          "title": "Tier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "scenario",
+        "estimand",
+        "patients",
+        "tier",
+        "repetitions"
+      ],
+      "title": "EvaluationCell",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:evaluation-protocol",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cells": {
+      "items": {
+        "$ref": "#/$defs/EvaluationCell"
+      },
+      "minItems": 1,
+      "title": "Cells",
+      "type": "array"
+    },
+    "checkpoint_commands": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Checkpoint Commands",
+      "type": "array"
+    },
+    "confirmation_namespace": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Confirmation Namespace",
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "development_namespace": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Development Namespace",
+      "type": "string"
+    },
+    "failure_handling": {
+      "const": "retain_all_attempted_completed_failed_abstained_undefined_pending_counts",
+      "title": "Failure Handling",
+      "type": "string"
+    },
+    "kind": {
+      "const": "evaluation_protocol",
+      "title": "Kind",
+      "type": "string"
+    },
+    "locked_at": {
+      "format": "date-time",
+      "title": "Locked At",
+      "type": "string"
+    },
+    "metrics": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Metrics",
+      "type": "array"
+    },
+    "model": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "prior": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "protocol": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "thresholds": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Thresholds",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "protocol",
+    "locked_at",
+    "cells",
+    "metrics",
+    "thresholds",
+    "development_namespace",
+    "confirmation_namespace",
+    "model",
+    "prior",
+    "decision",
+    "failure_handling",
+    "checkpoint_commands"
+  ],
+  "title": "EvaluationProtocol",
+  "type": "object"
+}

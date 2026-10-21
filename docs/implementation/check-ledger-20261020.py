@@ -7,8 +7,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = "50403963d11cc51e6109a635f9a2b6b1031b8cf4"
-ORIGINAL = "c239dca3503c32b5e20fbd630d69f1720f9b12ce"
+# Identical original planning blob imported by this reachable, published commit.
+# The author commit c239dca is historical provenance, not a clone prerequisite.
+ORIGINAL = "f986495522fad161adc80222bcad23d41a03e9f3"
 REVIEW_BASE = "c7cdf4a8415073d0b275064a0b0aca188fc022fe"
+PUBLISHED_MERGE = "e7965b998fa70df82e63a89ef720a6c8ad46ce6d"
 
 
 def git(*args):
@@ -27,6 +30,8 @@ def main():
     ledger_path = "docs/implementation/g0-task-test-ledger-20261020.json"
     data = json.loads(read(ledger_path))
     original = json.loads(git("show", f"{ORIGINAL}:{ledger_path}"))
+    assert git("rev-parse", f"{ORIGINAL}:{ledger_path}").strip() == "ed6985be48731e1b88fda569fed27f5a1047a371"
+    subprocess.check_call(["git", "merge-base", "--is-ancestor", ORIGINAL, PUBLISHED_MERGE], cwd=ROOT)
     rows = data["coverage"]
     unique([r["requirement_id"] for r in rows])
     unique([test for r in rows for test in r["test_ids"]])
@@ -114,14 +119,28 @@ def main():
     for report in ["ready-review-01.md", "g0-critique-20261020.md"]:
         path = "docs/implementation/reviews/" + report
         # Compare Git-cleaned blobs: Windows checkout may expand LF to CRLF.
-        expected = git("rev-parse", f"8315ee9d2062f04a53cd777a4891080d7c604b7d:{path}").strip()
+        expected = {"ready-review-01.md": "aa8df5b95e3a5c44fc10dc4b2d1a1365775e3a0d",
+                    "g0-critique-20261020.md": "f727e620ad38c9c66d7b51d344745c4185323ca0"}[report]
+        assert git("rev-parse", f"{PUBLISHED_MERGE}:{path}").strip() == expected
         assert git("hash-object", "--path", path, path).strip() == expected, "raw review changed"
     assert data["accepted_specification_base"] == BASE
     assert data["repair_assignment"]["review_target_base"] == REVIEW_BASE
     assert data["task_defaults"]["integration_target"] == "main"
     assert git("rev-parse", BASE + "^{tree}") == git("rev-parse", REVIEW_BASE + "^{tree}")
     subprocess.check_call(["git", "merge-base", "--is-ancestor", BASE, REVIEW_BASE], cwd=ROOT)
-    assert all(state == "not-started" for state in data["gate_status"].values())
+    # G0 contract implementation is now active; this package cannot accept a gate.
+    assert data["gate_status"]["G0"] == "running"
+    assert all(state == "not-started" for gate, state in data["gate_status"].items() if gate != "G0")
+    prior = data["repair_assignment"]
+    assert prior["review_disposition"] == "ready_to_ship"
+    assert prior["reviewed_head"] == "3af3553cb6aec3a762ce883d968bec621244409b"
+    assert prior["reviewed_base"] == REVIEW_BASE
+    merge = PUBLISHED_MERGE
+    assert git("show", "-s", "--format=%P", merge).split() == [REVIEW_BASE, prior["reviewed_head"]]
+    report = "docs/implementation/evidence/G0-LAUNCH-FIX-01/independent-review-20261020.md"
+    assert git("hash-object", "--path", report, report).strip() == "c7036122a5db0f40cbc3ea962741a306c7ecead7"
+    current = data["current_assignment"]
+    assert current["id"] == "G0-CONTRACT" and current["base_commit"] == merge
     print("PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; gates unaccepted.")
 
 

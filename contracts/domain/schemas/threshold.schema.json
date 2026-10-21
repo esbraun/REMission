@@ -1,0 +1,77 @@
+{
+  "$id": "urn:remission:domain:1.0.0:threshold",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "clinical_review": {
+      "const": "deferred",
+      "title": "Clinical Review",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "threshold",
+      "title": "Kind",
+      "type": "string"
+    },
+    "parameter_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Parameter Version",
+      "type": "string"
+    },
+    "provenance": {
+      "const": "provisional_synthetic_engineering",
+      "title": "Provenance",
+      "type": "string"
+    },
+    "rationale": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "unit": {
+      "enum": [
+        "ISI_points",
+        "quality_points",
+        "probability",
+        "dimensionless"
+      ],
+      "title": "Unit",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value",
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "id",
+    "parameter_version",
+    "value",
+    "unit",
+    "provenance",
+    "clinical_review",
+    "rationale"
+  ],
+  "title": "NamedThreshold",
+  "type": "object"
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "proposal_status": "pending_independent_G0_CONTRACT_review",
+  "meaning": "Semantic interface versions. Concrete run bindings require accepted protocol/data/DGP manifests and validate_fit_request catalog checks. No fixture protocol is accepted for generation or fitting.",
+  "contracts": [
+    {
+      "id": "EST-VISIT",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "assignment_contrast",
+      "horizon_rule": "day42 uninterrupted ISI, first wholly postassignment recall"
+    },
+    {
+      "id": "EST-N1",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "individual_randomized_assignment_contrast",
+      "horizon_rule": "versioned block endpoint; no numeric block duration introduced"
+    },
+    {
+      "id": "EST-ESC-STAGE",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "randomized_nonresponder_stage_contrast",
+      "horizon_rule": "versioned later ISI endpoint"
+    },
+    {
+      "id": "EST-ESC-STRATEGY",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "embedded_strategy_value_contrast",
+      "horizon_rule": "versioned strategy horizon, separate from stage effect"
+    },
+    {
+      "id": "EST-MRT",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "causal_excursion",
+      "horizon_rule": "next-morning reward under generating history policy"
+    },
+    {
+      "id": "EST-POLICY",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "fixed_contextual_or_complete_cohort_policy_value",
+      "horizon_rule": "explicit versioned target policy/horizon; no algorithm value conflation"
+    },
+    {
+      "id": "EST-INT",
+      "version": "1.0.0",
+      "definition_fixture": "tests/contracts/fixtures/estimands-v1.json",
+      "canonical_source": "docs/spec/01-estimands-and-contracts.md",
+      "estimand_kind": "unordered_interruption_vector",
+      "horizon_rule": "day42 intervention-specific survival/admission/alive-outpatient/conditional ISI"
+    }
+  ]
+}
