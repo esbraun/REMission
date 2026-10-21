@@ -157,7 +157,15 @@ def main():
     assert git("hash-object", "--path", temporal_report, temporal_report).strip() == "80f39d8512ef631249374a1378a80aeda2f74561"
     current = data["current_assignment"]
     assert current["id"] == "G0-LIB" and current["package_id"] == "G0-LIB-R1"
-    assert current["base_commit"] == current["review_target_base"] == main_base
+    dgp_merge = "f11e90536b635a7db08cfed640445bec197a415c"
+    assert git("show", "-s", "--format=%P", dgp_merge).split() == [main_base, "985ce540f0cc6ae1e57a6268651971acb546929d"]
+    for task_id in ["G0-DGP", "G0-WORKFLOW"]:
+        package = data["accepted_dgp_workflow_assignment"][task_id]
+        assert package["status"] == "accepted_contract_scope_only" and package["review_disposition"] == "ready_to_ship"
+        assert package["merge_commit"] == dgp_merge and package["reviewed_base"] == main_base
+        package_report = package["accepted_review"]["path"]
+        assert git("hash-object", "--path", package_report, package_report).strip() == "78e75133364b6babc2d3ce75d10f76b22e40105e"
+    assert current["base_commit"] == current["review_target_base"] == dgp_merge
     assert current["status"] == "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification"
     for review in current["prior_reviews"]:
         assert git("hash-object", "--path", review["path"], review["path"]).strip() == review["blob"]

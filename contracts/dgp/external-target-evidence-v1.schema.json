@@ -1,0 +1,71 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Independently frozen inputs, verified against their artifacts by G1.\n\nThe consumer supplies these trusted artifacts, never the binding's own\ncopies. Targets are derived here from the registered scenario operation.",
+  "properties": {
+    "source_reference": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "source_pilot": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "reference_contrast": {
+      "title": "Reference Contrast",
+      "type": "number"
+    },
+    "source_se": {
+      "exclusiveMinimum": 0,
+      "title": "Source Se",
+      "type": "number"
+    },
+    "source_se_mcse": {
+      "minimum": 0,
+      "title": "Source Se Mcse",
+      "type": "number"
+    },
+    "smallest_estimator_se": {
+      "exclusiveMinimum": 0,
+      "title": "Smallest Estimator Se",
+      "type": "number"
+    }
+  },
+  "required": [
+    "source_reference",
+    "source_pilot",
+    "reference_contrast",
+    "source_se",
+    "source_se_mcse",
+    "smallest_estimator_se"
+  ],
+  "title": "ExternalTargetEvidence",
+  "type": "object"
+}

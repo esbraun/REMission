@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[5]
-BASE="b24c3c0fb78bf19928750eae29e852141bd649a7"
+BASE="f11e90536b635a7db08cfed640445bec197a415c"
 ORIGINAL="d9ad54e899b2f38b286bd100aff037625edf160b"
 IMAGE="sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7"
 
@@ -18,13 +18,14 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument("--record",action="store_true");args=parser.parse_args()
     commands=[[sys.executable,"-m","pip","check"],
         [sys.executable,"-m","contracts.domain.export","--check"],
+        [sys.executable,"-m","contracts.dgp.export","--check"],
         [sys.executable,"-m","unittest","discover","-s","tests/contracts","-v"],
         [sys.executable,"-m","unittest","discover","-s","tests/library","-v"],
         [sys.executable,"docs/implementation/check-ledger-20261020.py"],
         ["docker","run","--rm","--mount",f"type=bind,source={ROOT.as_posix()},target=/workspace,readonly",IMAGE,
          "python","-c","import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])"],
         ["git","diff","--quiet",ORIGINAL,"--","docs/implementation/evidence/G0-LIB",":!docs/implementation/evidence/G0-LIB/R1/**"],
-        ["git","diff","--quiet",BASE,"--","contracts/domain","docs/spec/01-estimands-and-contracts.md","docs/spec/dgp-reference.md"],
+        ["git","diff","--quiet",BASE,"--","contracts/domain","contracts/dgp","tests/contracts","docs/implementation/dgp-decisions.md","docs/implementation/workflow-contract.md","docs/implementation/workflow-sketches.md","docs/spec/01-estimands-and-contracts.md","docs/spec/dgp-reference.md"],
         ["git","diff","--check",BASE]]
     results=[]
     for command in commands:
