@@ -2,9 +2,10 @@
 # be4bbf...; a Docker image config ID is not a registry manifest reference.
 FROM remission-python-locked:20261020
 COPY tooling/foundation/requirements.in /opt/foundation/requirements.in
+COPY tooling/foundation/requirements.lock /opt/foundation/requirements.lock
 COPY tooling/library/requirements.lock /opt/foundation/numerical.lock
 RUN python -c "from pathlib import Path;p=Path('/opt/foundation');p.joinpath('constraints.txt').write_text(''.join(line.split(' --hash=')[0]+'\n' for line in p.joinpath('numerical.lock').read_text().splitlines() if line and not line.startswith('#')))" \
- && python -m pip install --no-cache-dir --report /opt/foundation/install-report.json -c /opt/foundation/constraints.txt -r /opt/foundation/requirements.in \
+ && python -m pip install --no-cache-dir --require-hashes --report /opt/foundation/install-report.json -c /opt/foundation/constraints.txt -r /opt/foundation/requirements.lock \
  && python -m pip check
 # Use the standard Python sqlite3 driver with an independently pinned current
 # upstream library. The original numerical image/locks are never modified.

@@ -1,0 +1,86 @@
+"""Start only task-labelled named-volume containers and capture actual denials.
+
+No host/repository/socket mounts are granted to application identities. The
+canary is a hand-authored fixture; no generator or statistical engine runs.
+"""
+from datetime import datetime,timezone
+import argparse
+import json
+from pathlib import Path
+import subprocess
+import time
+import urllib.request
+
+ROOT=Path(__file__).resolve().parents[2]
+EVIDENCE=ROOT/"docs/implementation/evidence/G1-FOUNDATION-20261021"
+PREFIX="remission-g1-foundation-20261021"
+LABEL="remission.task=g1-foundation-20261021"
+COMMON=["--read-only","--cap-drop","ALL","--security-opt","no-new-privileges:true","--tmpfs","/tmp:rw,noexec,nosuid,size=64m"]
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument("--resume",action="store_true");parser.add_argument("--skip-build",action="store_true");args=parser.parse_args()
+    records=[]
+    def run(command,check=True):
+        started=datetime.now(timezone.utc).isoformat();result=subprocess.run(command,cwd=ROOT,capture_output=True,text=True,encoding="utf-8")
+        records.append(dict(command=command,started_utc=started,finished_utc=datetime.now(timezone.utc).isoformat(),exit_code=result.returncode,stdout=result.stdout,stderr=result.stderr))
+        (EVIDENCE/"stack-commands.json").write_text(json.dumps(records,indent=2)+"\n",encoding="utf-8")
+        if check and result.returncode:raise RuntimeError(result.stderr+result.stdout)
+        return result
+    service="remission-foundation-service:candidate";learner="remission-foundation-learner:candidate";evaluator="remission-foundation-evaluator:candidate";runtime="remission-foundation-runtime:candidate"
+    for role in ([] if args.skip_build else ["learner","evaluator"]):
+        run(["docker","build","--file",f"tooling/foundation/{role}.Dockerfile","--tag",f"remission-foundation-{role}:candidate","."])
+    networks={role:PREFIX+"-"+role for role in ["app","private"]}
+    volumes={role:PREFIX+"-"+role for role in ["database","truth","staging","observed","reports"]}
+    service_name=PREFIX+"-service";evaluator_name=PREFIX+"-evaluator"
+    if args.resume:
+        existing=json.loads(run(["docker","inspect",service_name]).stdout)[0]
+        assert existing["Config"]["Labels"]["remission.task"]=="g1-foundation-20261021"
+        run(["docker","rm","--force",service_name])
+        network=json.loads(run(["docker","network","inspect",networks["app"]]).stdout)[0]
+        assert network["Labels"]["remission.task"]=="g1-foundation-20261021"
+        run(["docker","network","rm",networks["app"]])
+    for role,network in networks.items():
+        if role=="private" and args.resume:continue
+        # The private evaluator bridge is internal. A separate service bridge
+        # permits the loopback-published browser port; it has no evaluator peer.
+        run(["docker","network","create",*(["--internal"] if role=="private" else []),"--label",LABEL,network])
+    for role,volume in ([] if args.resume else volumes.items()):
+        run(["docker","volume","create","--label",LABEL,volume])
+        uid=10001 if role=="database" else 20000
+        mode="0o755" if role=="observed" else "0o700"
+        run(["docker","run","--rm","--network","none","--user","0:0","--mount",f"type=volume,source={volume},target=/data",runtime,"python","-c",f"import os;os.chown('/data',{uid},{uid});os.chmod('/data',{mode})"])
+    mount=lambda role,target,ro=False:f"type=volume,source={volumes[role]},target={target}"+(",readonly" if ro else "")
+    if not args.resume:run(["docker","run","--rm","--network","none",*COMMON,"--mount",mount("truth","/truth"),"--mount",mount("staging","/staging"),evaluator,"python","/app/evaluator_canary.py","prepare"])
+    run(["docker","run","--rm","--network","none",*COMMON,"--mount",mount("truth","/truth",True),evaluator,"python","/app/evaluator_canary.py","read"])
+    if not args.resume:run(["docker","run","--rm","--network","none","--user","20000:20000",*COMMON,"--mount",mount("staging","/staging",True),"--mount",mount("observed","/observed"),learner,"python","-m","services.learner.export_observed"])
+    run(["docker","run","--rm","--network","none",*COMMON,"--mount",mount("observed","/observed",True),learner])
+    if not args.resume:
+        run(["docker","run","--rm","--network","none",*COMMON,"--mount",mount("database","/data"),service,"python","-m","services.foundation.cli","seed","--database","/data/remission.sqlite"])
+        run(["docker","run","--detach","--name",evaluator_name,"--label",LABEL,"--network",networks["private"],"--network-alias","foundation-evaluator",*COMMON,"--mount",mount("truth","/truth",True),"--mount",mount("reports","/reports"),evaluator])
+    run(["docker","run","--rm","--network",networks["private"],*COMMON,evaluator,"python","-c","import urllib.request;assert urllib.request.urlopen('http://foundation-evaluator:8766',timeout=5).status==200;print('positive evaluator-network canary')"])
+    run(["docker","run","--detach","--name",service_name,"--label",LABEL,"--network",networks["app"],"--publish","127.0.0.1:8765:8765",*COMMON,"--mount",mount("database","/data"),"--mount",mount("observed","/observed",True),"--env","REMISSION_ORIGIN=http://127.0.0.1:8765",service])
+    healthy=False
+    for _ in range(30):
+        try:
+            with urllib.request.urlopen("http://127.0.0.1:8765/health",timeout=2) as response:
+                if json.load(response)["status"]=="ok":healthy=True;break
+        except OSError:time.sleep(.2)
+    assert healthy,"actual service did not become healthy"
+    private_ip=json.loads(run(["docker","inspect",evaluator_name]).stdout)[0]["NetworkSettings"]["Networks"][networks["private"]]["IPAddress"]
+    assert private_ip
+    run(["docker","exec","--env",f"EVALUATOR_TEST_IP={private_ip}",service_name,"python","/app/boundary_probe.py"])
+    run(["docker","run","--rm","--network",networks["app"],"--env",f"EVALUATOR_TEST_IP={private_ip}",*COMMON,"--mount",mount("observed","/observed",True),learner,"python","/app/boundary_probe.py"])
+    for image in [service,learner]:
+        run(["docker","run","--rm","--network","none",*COMMON,"--mount",mount("observed","/observed",True),image,"python","-c","from pathlib import Path;import errno;exec(\"try:\\n Path('/observed/injected.json').write_text('forged')\\n raise AssertionError('observed volume writable')\\nexcept OSError as e:\\n assert e.errno in (errno.EROFS,errno.EACCES)\\n print('observed volume write denied')\")"])
+    inventory={}
+    for name in [service_name,evaluator_name]:
+        raw=json.loads(run(["docker","inspect",name]).stdout)[0]
+        inventory[name]={"image":raw["Image"],"user":raw["Config"]["User"],"readonly_rootfs":raw["HostConfig"]["ReadonlyRootfs"],"cap_drop":raw["HostConfig"]["CapDrop"],"security_opt":raw["HostConfig"]["SecurityOpt"],"privileged":raw["HostConfig"]["Privileged"],"pid_mode":raw["HostConfig"]["PidMode"],"mounts":[{k:m[k] for k in ["Type","Name","Destination","RW"]} for m in raw["Mounts"]],"networks":list(raw["NetworkSettings"]["Networks"])}
+        assert all(m["Type"]=="volume" for m in raw["Mounts"])
+        assert not raw["HostConfig"]["Privileged"] and not raw["HostConfig"]["PidMode"]
+    (EVIDENCE/"stack-inventory.json").write_text(json.dumps(dict(url="http://127.0.0.1:8765",health="ok",seed="foundation-fixture-20261021-v1",cutoff="2026-10-21T09:00:00+00:00",containers=inventory,limits=["Hand-authored private canary; longitudinal generator/truth evaluator not implemented","Foundation observed reader has no statistical engine"]),indent=2)+"\n",encoding="utf-8")
+    print("PASS: healthy actual service; positive private evaluator; actual API/learner file/import/network/storage denial")
+
+
+if __name__=="__main__":main()

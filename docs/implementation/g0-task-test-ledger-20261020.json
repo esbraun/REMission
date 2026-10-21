@@ -3,8 +3,8 @@
   "created": "2026-10-20",
   "accepted_specification_base": "50403963d11cc51e6109a635f9a2b6b1031b8cf4",
   "gate_status": {
-    "G0": "running",
-    "G1": "not-started",
+    "G0": "accepted",
+    "G1": "running",
     "G2": "not-started",
     "G3": "not-started",
     "G4": "not-started",
@@ -754,7 +754,26 @@
       "canonical_docs": [
         "docs/spec/01-estimands-and-contracts.md",
         "docs/spec/06-service-and-ui.md"
-      ]
+      ],
+      "owner_thread": "/root/g0_closure_sol",
+      "app_thread_id": "01a15f0f-b7cd-73f3-86cb-af5f08360615",
+      "agent_model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "effective_model": "Explicit assignment observed; independent introspection unavailable",
+      "effort_escalation_reason": null,
+      "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-foundation-sol-20261021",
+      "task_branch": "launch/g1-foundation-20261021",
+      "base_commit": "8ca67682505d78accc855e92cbfbb6692edf8316",
+      "review_target_base": "8ca67682505d78accc855e92cbfbb6692edf8316",
+      "integration_target": "main",
+      "status": "needs_review",
+      "review_disposition": "pending",
+      "candidate_commit": null,
+      "evidence": [
+        "docs/implementation/evidence/G1-FOUNDATION-20261021"
+      ],
+      "claim_limit": "Bounded ordinary-care persistence/auth/shell/access foundation only; generator and statistical engines unavailable",
+      "blocker": "Independent exact-head review pending; generator/statistical/human acceptance deferred"
     },
     {
       "id": "G1-GENERATOR",
@@ -16644,6 +16663,34 @@
       "review_disposition": "ready_to_ship",
       "evidence": "docs/implementation/evidence/G0-LIB/DR/verification.md",
       "claim_limit": "Bounded package only; downstream implementation/statistics and human/clinical gates remain"
+    },
+    {
+      "task_id": "G0-CLOSURE",
+      "status": "accepted_contract_library_qualification_PR15",
+      "reviewed_head": "236ebfb84952a63c58a4cc885d17a9754e93051b",
+      "reviewed_base": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+      "merge_commit": "8ca67682505d78accc855e92cbfbb6692edf8316",
+      "review_disposition": "ready_to_ship",
+      "evidence": "docs/implementation/evidence/G1-FOUNDATION-20261021/accepted-g0-closure-review.md",
+      "claim_limit": "No G1/G2-G7 statistical/application/human acceptance"
+    },
+    {
+      "task_id": "G1-FOUNDATION",
+      "status": "running",
+      "checkpoint_commit": "370c14d498414c207311354b77bb5ad7ab78edfc",
+      "backend_groups": 12,
+      "evidence": "docs/implementation/evidence/G1-FOUNDATION-20261021/backend-checkpoint-tests.log",
+      "claim_limit": "Intermediate real route/cookie/SQLite tests; final isolation/client/browser evidence and review pending"
+    },
+    {
+      "task_id": "G1-FOUNDATION",
+      "status": "needs_review",
+      "backend_groups": 18,
+      "client_context_groups": 2,
+      "evidence": "docs/implementation/evidence/G1-FOUNDATION-20261021/verification.md",
+      "build_results": "docs/implementation/evidence/G1-FOUNDATION-20261021/build-check-results.json",
+      "browser_results": "docs/implementation/evidence/G1-FOUNDATION-20261021/browser-interactions-raw.json",
+      "claim_limit": "Observed bounded engineering foundation only; G1 overall running, generator and all statistical/human/clinical acceptance deferred"
     }
   ],
   "runtime": {
@@ -16653,9 +16700,9 @@
     "observed_spawned": 3,
     "inventory": [
       "root orchestrator01a15cc8-bab2-73f3-bc3b-c2861965b8eb",
-      "G0 closure Sol/high 01a15f0f-b7cd-73f3-86cb-af5f08360615 /root/g0_closure_sol",
-      "retained independent Astra/medium reviewer01a15ec2-f67d-7522-9ade-45b236fd41bc; no closure inferred",
-      "G1 source-only Luna/high01a15ecb-0e17-7ad2-9199-a7cbb696da85 idle/open per root; own checkout preserved"
+      "G1 foundation Sol/high 01a15f0f-b7cd-73f3-86cb-af5f08360615 /root/g0_closure_sol",
+      "retained independent Astra/medium reviewer01a15ec2-f67d-7522-9ade-45b236fd41bc",
+      "source-only Luna/high01a15ecb-0e17-7ad2-9199-a7cbb696da85 retained/open per root; own checkout"
     ],
     "unsupported_controls": [
       "native collaboration close/release",
@@ -16663,11 +16710,11 @@
       "direct app-server input for multi-agent v2 children (observed rejected)"
     ],
     "queued": [
-      "Independent combined G0 closure/accepted G1 plan exact-head/fa3f review and HTTPS reproduction",
-      "Root G0 acceptance after closure evidence/review; no G1 source before acceptance",
-      "G1-G7 real hybrid implementation/validation/reproduction; human/clinical separate"
+      "Complete bounded G1-FOUNDATION tests/build/isolation/serial MCP and independent exact-head review",
+      "G1-GENERATOR starts only after independently accepted foundation",
+      "G2-G7 method/statistical/full integration/reproduction; human/clinical separate"
     ],
-    "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted",
+    "browser": "Official Microsoft Playwright MCP actual service-backed flows passed; UA HeadlessChrome/155.0.0.0 Windows; exact MCP package/server version unavailable through supported metadata. See G1-FOUNDATION-20261021 raw interactions and artifact transfer.",
     "lifecycle_status": "RESOLVED: root verified existing planner app identity with read_thread, archived exact existing child with set_thread_archived, then native list_agents confirmed removal before Sol spawn",
     "closed_planner": {
       "canonical_name": "/root/g0_planner_astra",
@@ -16743,24 +16790,25 @@
   },
   "human_review_schedule": "Explicitly deferred by user; not an engineering blocker and no acceptance invented",
   "current_assignment": {
-    "id": "G0-CLOSURE",
+    "id": "G1-FOUNDATION",
     "owner_thread": "/root/g0_closure_sol",
     "app_thread_id": "01a15f0f-b7cd-73f3-86cb-af5f08360615",
     "agent_model": "gpt-6.1-sol",
     "reasoning_effort": "high",
     "effective_model": "Explicit assignment observed; independent introspection unavailable",
-    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-sol-20261021",
-    "task_branch": "launch/g0-closure-20261021",
-    "base_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
-    "review_target_base": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
-    "status": "ready-for-independent-closure-review",
+    "effort_escalation_reason": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-foundation-sol-20261021",
+    "task_branch": "launch/g1-foundation-20261021",
+    "base_commit": "8ca67682505d78accc855e92cbfbb6692edf8316",
+    "review_target_base": "8ca67682505d78accc855e92cbfbb6692edf8316",
+    "integration_target": "main",
+    "status": "needs_review",
     "review_disposition": "pending",
     "candidate_commit": null,
-    "integration_target": "main",
-    "claim_limit": "Combined G0 verification and accepted G1 plan integration; no premature G0 acceptance or G1 source",
     "evidence": [
-      "docs/implementation/evidence/G0-CLOSURE-20261021/verification.md"
-    ]
+      "docs/implementation/evidence/G1-FOUNDATION-20261021"
+    ],
+    "claim_limit": "Bounded ordinary-care persistence/auth/shell/access foundation only; generator and statistical engines unavailable"
   },
   "accepted_contract_assignment": {
     "id": "G0-CONTRACT",
@@ -17367,8 +17415,8 @@
     }
   },
   "g0_closure": {
-    "status": "ready-for-independent-closure-review",
-    "gate_status": "running",
+    "status": "accepted_contract_library_qualification",
+    "gate_status": "accepted",
     "base_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
     "required_packages": [
       "G0-PLAN",
@@ -17387,9 +17435,18 @@
     ],
     "evidence_directory": "docs/implementation/evidence/G0-CLOSURE-20261021",
     "verification_record": "docs/implementation/evidence/G0-CLOSURE-20261021/integrated-check-results.json",
-    "independent_combined_review": "pending",
-    "root_gate_acceptance": "pending",
-    "downstream_guards": "All 635 rows remain planned at requirement level; shared LIB-03 G2/G5 and DGP/scenario G1-G6 obligations remain mapped"
+    "independent_combined_review": "ready_to_ship",
+    "root_gate_acceptance": "accepted",
+    "downstream_guards": "All 635 rows remain planned at requirement level; shared LIB-03 G2/G5 and DGP/scenario G1-G6 obligations remain mapped",
+    "reviewed_head": "236ebfb84952a63c58a4cc885d17a9754e93051b",
+    "reviewed_base": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "merge_commit": "8ca67682505d78accc855e92cbfbb6692edf8316",
+    "pr_url": "https://github.com/esbraun/REMission/pull/15",
+    "accepted_review": {
+      "path": "docs/implementation/evidence/G1-FOUNDATION-20261021/accepted-g0-closure-review.md",
+      "blob": "51cf9d0c2692bbf5ed18ac269cc00e8893fd047f"
+    },
+    "claim_limit": "G0 contract/library engineering qualification; no G1 or downstream statistical/app/human acceptance"
   },
   "accepted_g1_plan": {
     "status": "root_accepted_plan_only",
@@ -17415,5 +17472,50 @@
       "disposition": "ready_to_proceed"
     },
     "source_dispatch": "Waits for accepted combined G0 closure and qualified service runtime; no source implementation"
+  },
+  "prior_g0_closure_assignment": {
+    "id": "G0-CLOSURE",
+    "owner_thread": "/root/g0_closure_sol",
+    "app_thread_id": "01a15f0f-b7cd-73f3-86cb-af5f08360615",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-sol-20261021",
+    "task_branch": "launch/g0-closure-20261021",
+    "base_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "review_target_base": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "status": "ready-for-independent-closure-review",
+    "review_disposition": "pending",
+    "candidate_commit": null,
+    "integration_target": "main",
+    "claim_limit": "Combined G0 verification and accepted G1 plan integration; no premature G0 acceptance or G1 source",
+    "evidence": [
+      "docs/implementation/evidence/G0-CLOSURE-20261021/verification.md"
+    ]
+  },
+  "prior_g0_closure_checkpoint": {
+    "status": "ready-for-independent-closure-review",
+    "gate_status": "running",
+    "base_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "required_packages": [
+      "G0-PLAN",
+      "G0-CONTRACT",
+      "G0-TIME-R1",
+      "G0-DGP",
+      "G0-WORKFLOW",
+      "G0-LIB"
+    ],
+    "accepted_merge_chain": [
+      "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+      "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "f11e90536b635a7db08cfed640445bec197a415c",
+      "fa3fca61b5b5c886064d2429d785b8de9e6fd146"
+    ],
+    "evidence_directory": "docs/implementation/evidence/G0-CLOSURE-20261021",
+    "verification_record": "docs/implementation/evidence/G0-CLOSURE-20261021/integrated-check-results.json",
+    "independent_combined_review": "pending",
+    "root_gate_acceptance": "pending",
+    "downstream_guards": "All 635 rows remain planned at requirement level; shared LIB-03 G2/G5 and DGP/scenario G1-G6 obligations remain mapped"
   }
 }

@@ -1,0 +1,104 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 1.16kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 108B done
+#4 DONE 0.0s
+
+#5 [service 1/6] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:fba65474949a5987d40e076bbc039faca67bf964c1934ba503306192348beadf
+#5 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:fba65474949a5987d40e076bbc039faca67bf964c1934ba503306192348beadf 0.0s done
+#5 DONE 0.0s
+
+#6 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#6 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 197.03kB 0.0s done
+#7 DONE 0.0s
+
+#8 [client 2/6] WORKDIR /client
+#8 CACHED
+
+#9 [client 3/6] COPY web/package.json web/package-lock.json ./
+#9 CACHED
+
+#10 [service 2/6] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#10 CACHED
+
+#11 [client 4/6] RUN npm ci --ignore-scripts
+#11 CACHED
+
+#12 [client 5/6] COPY web/ ./
+#12 DONE 0.0s
+
+#13 [service 3/6] COPY services/foundation/ /app/services/foundation/
+#13 DONE 0.0s
+
+#14 [service 4/6] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#14 DONE 0.0s
+
+#15 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#15 0.325 
+#15 0.325 > remission-foundation-shell@0.1.0 typecheck
+#15 0.325 > tsc --noEmit
+#15 0.325 
+#15 0.536 
+#15 0.536 > remission-foundation-shell@0.1.0 test
+#15 0.536 > node --test tests/*.test.mjs
+#15 0.536 
+#15 0.590 ✔ a late response cannot cross patient, task, decision or historical context (0.533731ms)
+#15 0.590 ✔ logout and same-doctor login invalidate every pre-logout response (0.10502ms)
+#15 0.595 ℹ tests 2
+#15 0.595 ℹ suites 0
+#15 0.595 ℹ pass 2
+#15 0.595 ℹ fail 0
+#15 0.595 ℹ cancelled 0
+#15 0.595 ℹ skipped 0
+#15 0.595 ℹ todo 0
+#15 0.595 ℹ duration_ms 37.746839
+#15 0.659 
+#15 0.659 > remission-foundation-shell@0.1.0 build
+#15 0.659 > vite build
+#15 0.659 
+#15 0.814 vite v8.3.5 building client environment for production...
+#15 0.827 transforming...
+#15 0.885 ✓ 16 modules transformed.
+#15 0.921 rendering chunks...
+#15 0.949 computing gzip size...
+#15 0.953 dist/index.html                   0.42 kB │ gzip:  0.30 kB
+#15 0.953 dist/assets/index-DAMJjhnq.css    5.07 kB │ gzip:  1.80 kB
+#15 0.953 dist/assets/index-CFH9SzX4.js   243.25 kB │ gzip: 75.34 kB
+#15 0.953 
+#15 0.953 ✓ built in 139ms
+#15 DONE 1.0s
+
+#16 [service 5/6] COPY --from=client /client/dist/ /app/web/dist/
+#16 DONE 0.0s
+
+#17 [service 6/6] RUN mkdir /data && chown 10001:10001 /data
+#17 DONE 0.1s
+
+#18 [integration-tests 1/1] COPY tests/integration/replay/ /app/tests/integration/replay/
+#18 DONE 0.0s
+
+#19 exporting to image
+#19 exporting layers 0.1s done
+#19 exporting manifest sha256:649d8a5045d2b4d43f560523995e9b97eb88fd4aa39c6941a8514b184d9c61e8 done
+#19 exporting config sha256:f69a64dbba13063028c2171d388e34ef5a516e6cf155e8964ee18d437d1d1e7d done
+#19 exporting attestation manifest sha256:86c4dc42709f0d7a350308a35b66469b1dba3956793c583b09cd36a074ddd376 done
+#19 exporting manifest list sha256:1e9ff3f804e89f8ee4d1871b08b4a016e99244c77d72a415fc61d56f48eed1fc done
+#19 naming to docker.io/library/remission-foundation-tests:candidate done
+#19 unpacking to docker.io/library/remission-foundation-tests:candidate 0.1s done
+#19 DONE 0.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/sf3g9pj4q7shq6b58hp58d7yj

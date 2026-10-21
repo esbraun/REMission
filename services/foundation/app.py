@@ -86,6 +86,14 @@ class IngestionInput(StrictModel):
     raw_source: str = Field(max_length=32768)
 
 
+class ReportInput(StrictModel):
+    event_at: str
+    sleep_quality: float = Field(ge=0,le=10)
+    function: float = Field(ge=0,le=10)
+    diary_sleep_minutes: float = Field(ge=0,le=1440)
+    note: str = Field(max_length=256)
+
+
 def create_app(settings: Settings) -> FastAPI:
     store = Store(settings.database)
     app = FastAPI(title="REMission synthetic foundation", docs_url=None, redoc_url=None, openapi_url=None)
@@ -304,7 +312,7 @@ def create_app(settings: Settings) -> FastAPI:
         data=await body(request,StateInput)
         with store.transaction(write=True) as db:
             current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
-            if data.expected_version!=patient["version"]:raise APIError(409,"stale_state","Refresh before recording a state change")
+            if data.expected_version!=patient["version"] and data.stage!="ASSIGN-09":raise APIError(409,"stale_state","Refresh before recording a state change")
             # Foundation allows hold, assessment and ordinary review transitions.
             # Statistical/protocol engines cannot be activated by changing stage.
             if data.stage not in ("ASSIGN-01","ASSIGN-02","ASSIGN-09","ASSIGN-10"):
@@ -360,6 +368,34 @@ def create_app(settings: Settings) -> FastAPI:
             row=db.execute("SELECT * FROM drafts WHERE owner_id=? AND patient_id=? AND decision_id=?",(current["account_id"],patient_id,patient["current_decision"])).fetchone()
             return {"draft":json.loads(row["payload"]) if row else None,"requires_explicit_resume":bool(row),"base_valid":bool(row and row["base_version"]==patient["version"]),"auth_generation_changed":bool(row and row["auth_generation"]!=current["token_hash"])}
 
+    @app.post("/api/patients/{patient_id}/reports")
+    async def report(patient_id: str,request: Request):
+        data=await body(request,ReportInput);now=settings.clock()
+        try:event_at=instant(data.event_at)
+        except ValueError:raise APIError(422,"timezone_required","Report event requires a valid explicit UTC offset")
+        if event_at>now:raise APIError(422,"future_observation","Report event cannot be in the future")
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True);own(db,patient_id,current["account_id"])
+            key=request.headers.get("idempotency-key","")
+            if not key:raise APIError(422,"idempotency_required","Supply the original report key")
+            run_id="report:"+current["account_id"]+":"+patient_id;payload_hash=digest(canonical(data.model_dump()))
+            prior=db.execute("SELECT * FROM ingestion_receipts WHERE run_id=? AND transport_key=?",(run_id,key)).fetchone()
+            if prior:
+                if prior["payload_sha256"]!=payload_hash:raise APIError(409,"idempotency_conflict","Report key content changed")
+                return {"status":prior["status"],"detail":prior["detail"]}
+            record=record_header("report-"+uuid.uuid4().hex,patient_id,event_at)
+            record.update(kind="daily_report",recorded_at=timestamp(now),available_at=timestamp(now),sleep_quality=data.sleep_quality,function=data.function,
+                          adverse_symptoms=[data.note] if data.note else [],diary_sleep_minutes=data.diary_sleep_minutes,goals=[],burden=None,missingness="observed")
+            record["source"]["adapter"]="patient_report"
+            raw=canonical({k:v for k,v in record.items() if k!="source"}).encode();record["source"]["raw_sha256"]=digest(raw)
+            try:append_event(db,parse_observed(canonical(record).encode()),raw,received_at=now)
+            except ValueError as error:
+                db.execute("INSERT INTO ingestion_receipts VALUES(?,?,?,?,?)",(run_id,key,payload_hash,"rejected",str(error)))
+                return JSONResponse({"status":"rejected","detail":str(error)},status_code=422)
+            apply_current_state(db,patient_id,settings.clock())
+            db.execute("INSERT INTO ingestion_receipts VALUES(?,?,?,?,?)",(run_id,key,payload_hash,"accepted",record["record_id"]))
+            return {"status":"accepted","record_id":record["record_id"]}
+
     @app.post("/api/patients/{patient_id}/randomize")
     def unavailable(patient_id: str,request: Request):
         with store.transaction(write=True) as db:
@@ -371,7 +407,7 @@ def create_app(settings: Settings) -> FastAPI:
 
         @app.get("/{route:path}")
         def shell(route: str):
-            if route.startswith(("api/","truth","debug","evaluation","simulation")) or ".." in route:
+            if (route and not route.startswith("patients/")) or ".." in route:
                 raise APIError(404,"not_found","Resource not found")
             return FileResponse(settings.web_root/"index.html")
 

@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 from services.foundation.app import Settings, create_app
 from services.foundation.cli import DEMO_PASSWORDS, reset_password, seed
 from services.foundation.replay import replay
+from services.foundation.replay import parse_observed
 from services.foundation.store import Store, canonical, digest, instant
 from services.foundation.workflow import history, record_header
 
@@ -24,12 +25,13 @@ class Clock:
 
 
 def observed(identifier="report-1",kind="daily_report",patient="SYN-02",event="2026-10-21T07:00:00+00:00",available="2026-10-21T08:01:00+00:00",**updates):
-    raw=canonical(["source",identifier,updates]);base=record_header(identifier,patient,instant(event));base.update(kind=kind,recorded_at=available,available_at=available)
-    base["source"]["adapter"]="patient_report";base["source"]["raw_sha256"]=digest(raw)
+    base=record_header(identifier,patient,instant(event));base.update(kind=kind,recorded_at=available,available_at=available)
+    base["source"]["adapter"]="patient_report"
     if kind=="daily_report":base.update(sleep_quality=6.0,function=5.0,adverse_symptoms=[],diary_sleep_minutes=360.0,goals=[],burden=1.0,missingness="observed")
     elif kind=="intercurrent_event":base.update(event_type="fall",detail="Synthetic fall requires review")
     elif kind=="consent":base.update(component="nof1",consent_version="1.0.0",oversight_version="1.0.0",consent_status="withdrawn",oversight_status="withdrawn",effective_at=event,expires_at=None,withdrawn_at=event)
     base.update(updates)
+    raw=canonical({k:v for k,v in base.items() if k!="source"});base["source"]["raw_sha256"]=digest(raw)
     return {"record":base,"raw_source":raw}
 
 
@@ -205,6 +207,73 @@ class FoundationTests(unittest.TestCase):
         with self.store.transaction() as first,other.transaction() as second:
             a=first.execute("SELECT display_sha256 FROM decisions WHERE id=(SELECT current_decision FROM patients WHERE id='SYN-02')").fetchone()[0]
             b=second.execute("SELECT display_sha256 FROM decisions WHERE id=(SELECT current_decision FROM patients WHERE id='SYN-02')").fetchone()[0];self.assertEqual(a,b)
+
+    def test_hold_arriving_during_approval_is_not_lost_to_stale_version(self):
+        entered=threading.Event();release=threading.Event()
+        def pause(where):
+            if where=="after_follow_up":entered.set();self.assertTrue(release.wait(5))
+        app=create_app(Settings(self.path,clock=self.clock,fault=pause))
+        first=TestClient(app,base_url=ORIGIN);second=TestClient(app,base_url=ORIGIN);self.login(first);self.login(second)
+        approval=self.approval(client=first);approval_headers=self.headers(first,key="race-before-hold");hold_headers=self.headers(second)
+        with ThreadPoolExecutor(2) as pool:
+            a=pool.submit(first.post,"/api/patients/SYN-02/approve",json=approval,headers=approval_headers)
+            self.assertTrue(entered.wait(5))
+            hold=pool.submit(second.post,"/api/patients/SYN-02/state",json={"expected_version":1,"stage":"ASSIGN-09","reason":"Concurrent new safety concern"},headers=hold_headers)
+            release.set();self.assertEqual(a.result().status_code,200);self.assertEqual(hold.result().status_code,200)
+        current=second.get("/api/patients/SYN-02").json()
+        self.assertEqual(current["snapshot"]["workflow"]["clinical"],"clinical_hold");self.assertFalse(current["permissions"]["approve_ordinary"])
+        first.close();second.close()
+
+    def test_report_route_idempotency_and_post_death_rejection(self):
+        payload={"event_at":"2026-10-21T07:00:00+00:00","sleep_quality":6.0,"function":5.0,"diary_sleep_minutes":360.0,"note":"Synthetic note"}
+        headers=self.headers(key="observed-report")
+        first=self.client.post("/api/patients/SYN-02/reports",json=payload,headers=headers)
+        self.assertEqual(first.status_code,200,first.text)
+        self.assertEqual(self.client.post("/api/patients/SYN-02/reports",json=payload,headers=headers).json()["status"],"accepted")
+        self.assertEqual(self.client.post("/api/patients/SYN-02/reports",json={**payload,"sleep_quality":3.0},headers=headers).status_code,409)
+        death=observed("death",kind="intercurrent_event",event="2026-10-21T11:00:00+00:00",available="2026-10-21T11:00:00+00:00",event_type="death")
+        self.assertEqual(self.client.post("/api/patients/SYN-02/events",json=death,headers=self.headers(key="death")).status_code,200)
+        after={**payload,"event_at":"2026-10-21T11:30:00+00:00"}
+        self.assertEqual(self.client.post("/api/patients/SYN-02/reports",json=after,headers=self.headers(key="invalid-post-death")).status_code,422)
+
+    def test_raw_source_privileged_payload_rejects_even_with_resealed_hash(self):
+        forged=observed("forged-raw")
+        raw=json.loads(forged["raw_source"]);raw["structural_parameters"]={"latent_truth":7.0}
+        forged["raw_source"]=canonical(raw);forged["record"]["source"]["raw_sha256"]=digest(forged["raw_source"])
+        result=self.client.post("/api/patients/SYN-02/events",json=forged,headers=self.headers(key="forged-raw"))
+        self.assertEqual(result.status_code,422,result.text)
+        with self.store.transaction() as db:self.assertEqual(db.execute("SELECT count(*) FROM events").fetchone()[0],0)
+
+    def test_naive_nested_future_and_dst_overnight_records(self):
+        naive=observed("naive",event="2026-10-21T07:00:00+00:00");naive["record"]["event_at"]="2026-10-21T07:00:00"
+        with self.assertRaises(ValueError):parse_observed(canonical(naive["record"]).encode())
+        base=record_header("overnight","SYN-02",instant("2026-11-01T09:30:00+00:00"))
+        base.update(kind="oura_like",record_type="sleep_episode",local_date="2026-11-01",timezone="America/Los_Angeles",episode_start="2026-10-31T23:00:00-07:00",episode_end="2026-11-01T01:30:00-08:00",sync_at="2026-11-01T10:00:00+00:00",available_at="2026-11-01T10:01:00+00:00",estimated_sleep_minutes=210.0,estimated_wake_minutes=0.0,device_version="synthetic-fixture-1",quality_flags=[],missingness="observed")
+        record=parse_observed(canonical(base).encode())
+        self.assertEqual((record.episode_end-record.episode_start).total_seconds(),12600)
+        self.assertEqual(str(record.local_date),"2026-11-01")
+        observed_pain=record_header("nested","SYN-02",instant("2026-10-21T07:00:00+00:00"));observed_pain.update(kind="observation",lab_reference_context=None,measure={"concept":"pain","value":1.0,"unit":"dimensionless","observed_at":"2026-10-21T07:00:00+00:00","available_at":"2026-10-22T07:00:00+00:00"})
+        with self.assertRaises(ValueError):parse_observed(canonical(observed_pain).encode())
+
+    def test_failed_replay_retains_rejected_receipt_after_batch_rollback(self):
+        bad=observed("bad-replay",lineage_id="unavailable-original",revision=2,supersedes="unavailable-original")
+        with self.assertRaises(ValueError):replay(self.store,"failed-replay",[bad],"2026-10-21T12:00:00+00:00")
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM events").fetchone()[0],0)
+            self.assertEqual(db.execute("SELECT cursor FROM replay_runs WHERE id='failed-replay'").fetchone()[0],0)
+            self.assertEqual(db.execute("SELECT status FROM ingestion_receipts WHERE run_id='failed-replay'").fetchone()[0],"rejected")
+
+    def test_equal_arrival_lineage_and_batch_partition_have_identical_final_display(self):
+        original=observed("zzz-original",available="2026-10-21T10:00:00+00:00")
+        correction=observed("aaa-correction",available="2026-10-21T10:00:00+00:00",lineage_id="zzz-original",revision=2,supersedes="zzz-original",record_status="corrected",sleep_quality=8.0)
+        third=observed("separate-arrival",event="2026-10-20T07:00:00+00:00",available="2026-10-20T08:00:00+00:00")
+        entries=[correction,third,original]
+        replay(self.store,"partitioned",entries,"2026-10-21T12:00:00+00:00",batch_size=1)
+        second=Store(Path(self.directory.name)/"single-batch.sqlite");seed(second)
+        replay(second,"partitioned",list(reversed(entries)),"2026-10-21T12:00:00+00:00",batch_size=100)
+        with self.store.transaction() as a,second.transaction() as b:
+            query="SELECT display_sha256 FROM decisions WHERE id=(SELECT current_decision FROM patients WHERE id='SYN-02')"
+            self.assertEqual(a.execute(query).fetchone()[0],b.execute(query).fetchone()[0])
 
 
 if __name__=="__main__":unittest.main()
