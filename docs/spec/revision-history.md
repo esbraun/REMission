@@ -1,5 +1,11 @@
 # Revision history
 
+## October 20 2026 worktree isolation and reviewed integration
+
+Required a separate Git worktree for every subagent, including planning, exploration, Luna helpers, browser verification, and independent Astra review. Worker assignments and ledger entries now identify absolute checkout paths, branches, accepted bases, and exact review candidates; shared-checkout fallback is removed. The existing two-subagent limit and role-specific model/effort policy remain unchanged.
+
+Per user direction, the orchestrator may open PRs and merge accepted worktree branches into assigned integration targets without repeated confirmation once independent review deems the exact head/base ready to ship, required checks pass, findings are resolved, and dependencies are accepted. Source conflicts and repairs remain with Sol workers; changed heads/bases require refreshed review and affected checks. Updated the entry point, launch/delegation/handoff/browser guidance, plan index, and gate instructions. No application implementation, executed acceptance gate, or clinical/human-factors result is claimed.
+
 ## October 19 2026 data science library planning
 
 Added the [methods implementation sequence](../plans/methods/00-library-decisions.md) and [software evidence register](../evidence/software-libraries.md), comparing speed mechanisms, statistical accuracy limits, built-in evaluation and alternatives. Selected PyMC/native NUTS with compatible ArviZ, NumPy/SciPy, statsmodels, scikit-learn, StochTree and offline COBA; RBesT, SBC and MRTAnalysis run offline. nutpie is a gated accelerator. Narrowed the formerly open PyMC-or-Stan application choice to PyMC; no public API migration or dependency installation occurred.

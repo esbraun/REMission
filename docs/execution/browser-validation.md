@@ -35,6 +35,8 @@ The version placeholder must be resolved before running. Install the selected br
 
 Delegate setup and the browser smoke check to a tooling/browser worker. If subagents inherit one shared MCP session, serialize browser tasks through a single browser worker. `--isolated` alone does not give two workers independent tabs when they share the same session. True parallel browser tasks need distinct MCP sessions plus isolated contexts or distinct profiles, separate artifact paths, and preferably separate seeded backend instances. Record that ownership in the ledger.
 
+The browser worker also uses its own Git worktree pinned to the candidate/integration commit. Start validation services from that checkout and keep generated evidence in its assigned artifact paths. A separate worktree does not isolate MCP sessions, ports, or backend state; retain the session ownership and fixture coordination rules above. Return defects through the orchestrator for assignment to a Sol worker's separate worktree.
+
 Start the actual app and service from their documented commands. Record URLs, health-check results, integration commit, fixture seed, replay cutoff, and relevant data/model/policy versions. Validate the integrated app against its real local service, not a detached static prototype. Seed/reset data through a documented synthetic-test interface and verify important UI actions in persistent service records.
 
 ### Browser worker prompt
@@ -44,7 +46,8 @@ Validate UI task <ID> at <URL> using the connected Playwright MCP tools.
 Read docs/spec/06-service-and-ui.md, the human-factors portion of
 docs/spec/07-validation-protocol.md, and the assigned story in
 docs/spec/08-gates-and-release.md plus exact task acceptance criteria.
-Use integration commit <commit>, seed <seed>, and cases <IDs>. Own browser
+Use your own Git worktree <absolute path> at integration commit <commit>,
+seed <seed>, and cases <IDs>. Verify checkout root and HEAD. Own browser
 session <session>; do not race another worker's navigation or mutate shared
 fixtures without coordination.
 
@@ -64,7 +67,7 @@ Use state-based waits and recorded expectations rather than arbitrary sleeps.
 Exercise normal, empty, loading, missing-data, error, clinical-hold, historical,
 and stale-version paths. Record unexpected console/network failures, screenshots,
 accessible-tree evidence, expected/observed results, and reproduction steps.
-Send defects to the owning implementation worker and verify repairs. Return
+Send defects through the orchestrator to the implementation worker and verify repairs. Return
 pass/fail/blocked for each case, artifact paths, versions, and untested scope.
 ```
 

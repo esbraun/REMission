@@ -39,7 +39,7 @@ enabled = true
 max_concurrent_threads_per_session = 2
 ```
 
-This documentation update does not change local configuration. Verify the effective setting at launch; prompt instructions also enforce the cap. Only the orchestrator spawns agents, including Luna helpers requested by workers. Do not create separate top-level tasks or nested agents to bypass the cap. Keep an inventory of open thread IDs, task ownership, model/effort, and queued requests in the task ledger.
+This documentation update does not change local configuration. Verify the effective setting at launch; prompt instructions also enforce the cap. Only the orchestrator spawns agents, including Luna helpers requested by workers. Do not create separate top-level tasks or nested agents to bypass the cap. Keep an inventory of open thread IDs, task ownership, model/effort, assigned Git worktrees/branches/base commits, and queued requests in the task ledger.
 
 Confirm supported spawn, message, wait, resume/reuse, and close/release controls. A completed or interrupted turn may still occupy an open thread. Release completed threads before replacements, or reuse compatible existing threads if closing is unavailable. If the model/effort cannot be selected, the cap cannot be honored, or required threads cannot be released or reused, report the specific blocker and keep affected work queued; do not fall back to solo implementation.
 
@@ -47,10 +47,12 @@ Set the model and reasoning effort explicitly on every assignment so parent inhe
 
 Schedule work in waves: Luna exploration, Astra planning and independent critique, Sol implementation, a separate Astra review, Sol repairs, and Astra re-review as needed. Independent work may occupy both slots, but helper requests and reviewers use those same slots. Follow the [delegation contract](delegation.md#delegation-and-integration-contract) to queue helpers and checkpoint waiting workers without deadlocking the workflow.
 
+Provision a separate Git worktree for every subagent before it starts, including read-only roles and helpers. Supply the absolute checkout path and verify that commands and edits use it; native subagent spawning does not itself satisfy this requirement. Writing workers own task branches from accepted commits; reviewers use separate worktrees pinned to the exact candidate. Use supported managed-worktree tools or native Git, preserve unrelated changes, and report unavailable isolation without a shared-checkout fallback. Follow [worktree isolation and reviewed merges](delegation.md#worktree-isolation-and-reviewed-merges) for lifecycle, review, and integration.
+
 
 ## Codex guide rules applied to this implementation
 
-Apply these rules within each role's responsibilities: the orchestrator communicates with the user, manages progress, and distributes tasks; subagents execute the technical rules below. The supplied guide is reference material, not a replacement for higher-priority runtime instructions or the project's specification.
+Apply these rules within each role's responsibilities: the orchestrator communicates with the user, manages progress, distributes tasks, provisions isolated worktrees, and opens/merges reviewed PRs; subagents execute technical work below in their assigned worktrees. The supplied guide is reference material, not a replacement for higher-priority runtime instructions or the project's specification.
 
 ### Exploration, tools, and editing
 
@@ -58,12 +60,12 @@ Apply these rules within each role's responsibilities: the orchestrator communic
 - Prefer dedicated tools for their supported actions; use `rg`/`rg --files` for text/file discovery. Use shell commands only where no suitable dedicated tool exists, pass a command string, and set the working-directory argument explicitly.
 - Use the native `apply_patch` implementation for manual file edits. Use generators/formatters for generated files. Treat tool-provided `L123:` prefixes as line metadata, never source text.
 - Search for reusable code before introducing helpers. Read sufficient context, then make coherent edits. Keep types explicit; avoid `as any` and double assertions. Surface errors with useful context rather than broad catches, silent returns, or successful-looking fallbacks.
-- Preserve unrelated changes. Do not amend commits or use destructive resets/checkouts without explicit authorization. In shared workspaces, distinguish announced worker edits from unexpected external edits; pause the affected work and clarify genuinely unexpected changes.
+- Preserve unrelated changes. Do not amend commits or use destructive resets/checkouts without explicit authorization. Verify assigned worktree ownership and pause affected work if unexpected external edits appear; do not move work into another agent's checkout.
 - Default to ASCII in new source files unless established content or product needs justify Unicode. Comments should explain non-obvious reasoning rather than repeat the code.
 
 ### Autonomy, plans, and closeout
 
-Start useful work promptly. Choose reasonable reversible defaults, implement through verification, and avoid repeated discovery without a new question to resolve. The orchestrator's work is user communication and feedback, plan and gate progress, task distribution, dependency scheduling, and consolidated reporting. It delegates technical planning, exploration, integration, evidence inspection, and all other substantive work. Each worker delivers its assigned artifact and returns questions through the orchestrator. Neither a narration of intended work nor a task list counts as implementation.
+Start useful work promptly. Choose reasonable reversible defaults, implement through verification, and avoid repeated discovery without a new question to resolve. The orchestrator's work is user communication and feedback, plan and gate progress, task distribution, dependency scheduling, worktree provisioning, consolidated reporting, and reviewed PR integration. It delegates technical planning, exploration, source integration/conflict resolution, evidence inspection, and all other substantive technical work. Each worker delivers its assigned artifact and returns questions through the orchestrator. Neither a narration of intended work nor a task list counts as implementation.
 
 Use the native plan tool for substantial work, with multiple steps and at most one `in_progress` step when that is its schema. Update it after actual progress. Parallel worker state belongs in the ledger, not multiple conflicting active plan steps. Do not add broad refactors or tests to a promised scope unless they will be executed.
 
@@ -93,7 +95,7 @@ Read the [methods library decisions](../plans/methods/00-library-decisions.md) f
 ## How to launch
 
 1. Open a checkout of `esbraun/REMission` and inspect the current branch, working tree, `plan.md`, applicable `AGENTS.md` files, and available tools.
-2. Verify the role-specific model/effort settings and the two-subagent cap under [subagent runtime configuration](#subagent-runtime-configuration). Confirm delegation, thread lifecycle controls, and worker access to required files and tools. Use the existing primary thread as the sole orchestrator; no additional orchestrator thread is needed.
+2. Verify the role-specific model/effort settings and the two-subagent cap under [subagent runtime configuration](#subagent-runtime-configuration). Confirm delegation, thread lifecycle controls, separate Git worktree provisioning, and worker access to required files and tools. Use the existing primary thread as the sole orchestrator; no additional orchestrator thread is needed.
 3. Delegate Playwright MCP setup and browser availability checks using [browser validation](browser-validation.md). Record tool or environment blockers before depending on them.
 4. Give the orchestrator the launch prompt in the next section. Use the task template for each delegated package; use the browser template for UI checks.
 5. Continue through phases 0–7 with persisted gates. If the run is interrupted, resume unfinished task IDs from the ledger. A bounded session can end with a precise checkpoint but must not label the complete app done.
@@ -121,9 +123,10 @@ You are the orchestrator. Delegate EVERY work package to a real subagent:
 discovery, contracts, scaffolding, simulator, ingestion, statistical models,
 protocols, support policy, services, UI, tests, evaluation, documentation,
 integration repairs, technical planning, critique, and independent review.
-Your role is limited to user communication and feedback, plan/gate progress,
-task distribution, dependency scheduling, and consolidated reporting. Have an
-Astra planner propose decomposition and contracts; schedule integration and
+Your role covers user communication and feedback, plan/gate progress, task
+distribution, dependency scheduling, worktree provisioning, consolidated
+reporting, and opening/merging reviewed PRs. Have an Astra planner propose
+decomposition and contracts; schedule integration and
 evidence checks through subagents and use their reports to update gate status.
 Use an integration subagent for source edits and repairs; do not become the
 implementer, explorer, planner, tester, or reviewer when a worker is blocked.
@@ -144,6 +147,13 @@ completed threads before replacements. A finished turn may still occupy a slot.
 If both workers need queued helpers, checkpoint and release a waiting worker
 to make progress. Do not spawn nested agents or separate top-level tasks.
 
+Give EVERY subagent its own Git worktree, including explorers, planners,
+reviewers, browser workers, and Luna helpers. Assign absolute checkout paths,
+task branches, and accepted base commits; verify the worker uses that path for
+commands and edits. Reviewers inspect the exact candidate in their own detached
+worktrees. Never use a shared checkout as a fallback. Record worktree ownership
+in the ledger and preserve unfinished commits/artifacts when freeing a slot.
+
 Delegate tool/repository exploration and consume its capability report; check
 the orchestration controls and open-thread inventory before dispatching work.
 If delegation is unavailable, report that blocker rather than replacing the
@@ -155,7 +165,8 @@ continue independent backend work but keep the UI acceptance gate blocked.
 Assign creation of a requirement-to-task-to-test map for all mandatory plan
 requirements and a durable task ledger under docs/implementation/. Maintain
 plan progress and task status from subagent reports. Each task has a stable
-ID, plan references, input contracts, output paths, exclusive write ownership,
+ID, plan references, input contracts, output paths, worktree/branch/base and
+candidate commit, integration target, exclusive write ownership,
 model/effort, escalation reason, helper requests, dependencies, acceptance checks,
 evidence paths, status, and separate reviewer identity. Separate required
 work from optional extensions. Every required task must have a subagent owner.
@@ -169,8 +180,8 @@ clinical evidence, or model results. Implement provisional synthetic settings
 and keep real stakeholder review explicitly outstanding where unavailable.
 
 Follow phases 0–7 and the dependency gates in this playbook. Parallelize only
-independent tasks with disjoint writes. Start with contracts and a minimal
-vertical replay; expand to the full hybrid workflow rather than stopping at
+independent tasks in separate worktrees with bounded writes. Start with contracts
+and a minimal vertical replay; expand to the full hybrid workflow rather than stopping at
 static screens or a mock recommendation engine. Use actual Bayesian fitting,
 randomization, WCLS analysis, and bounded policy logic for their respective
 gates. Cached outputs must originate from reproducible, versioned real runs.
@@ -211,6 +222,14 @@ work without repeated confirmation for routine implementation choices.
 
 Deliver a clean-checkout runnable demo, seeded cases from plan.md section 17,
 reproducible evaluation outputs, source-to-requirement traceability, and an
-honest report of unresolved gates. Open implementation PRs when authorized by
-the user; do not infer authorization to merge, deploy, or contact clinicians.
+honest report of unresolved gates. You are authorized to open PRs and merge
+worktree branches into assigned integration targets without repeated user
+confirmation once independent Astra review explicitly deems the exact head/base
+ready to ship, required task/gate and repository checks pass, findings are
+resolved, and dependencies are accepted. Respect branch protections. Refresh
+review and affected checks whenever the head or target base changes. Assign
+conflicts and source repairs to Sol, then re-review; do not resolve them yourself.
+Record PR URL, reviewed head/base, evidence, and merge commit, and have a worker
+verify the integrated result. Merging code does not complete outstanding human
+or clinical gates. Deployment and clinician contact retain their own authorization.
 ```
