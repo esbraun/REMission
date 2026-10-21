@@ -1,0 +1,112 @@
+{
+  "task": "G0-TIME-R1",
+  "base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+  "candidate": "Exact commit in independent review/handoff; no self-referential SHA",
+  "created_utc": "2026-10-21T13:40:32.393243+00:00",
+  "python": "3.13.7",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "packages": [
+    "annotated-types==0.8.0",
+    "pydantic==2.14.1",
+    "pydantic_core==2.50.1",
+    "typing-inspection==0.4.4",
+    "typing_extensions==4.16.0"
+  ],
+  "source_sha256_LF_normalized": {
+    "contracts/domain/dictionary-v1.json": "3ef0512b6c4c83c972d0c42843cde260eba91ca7468bffa513842020a26412d5",
+    "contracts/domain/export.py": "e33d1fae5543f89c4287ab7e0068292846995206ef175bc88118434bfecfab0f",
+    "contracts/domain/schemas/reporting-decision.schema.json": "3070db119c9b5f07ee1640fb8e8292a0a26a0a2c558461304db07b31e4c31b36",
+    "contracts/domain/schemas/temporal.schema.json": "61425e6683b44b1609161775266ffbfa8cb04f9fccdb37f4e8e54a42b9abac0d",
+    "contracts/domain/temporal-v1.json": "094276bcab0434f716ede3002d597571b5b755a66b9fd5e7fd252dcf7097dc27",
+    "contracts/domain/temporal-v2.json": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275",
+    "contracts/domain/temporal.py": "e0904268a6280fd80c46abf5e4210c887f3359d730d87b99cce8844ff99b5cc3",
+    "docs/implementation/check-ledger-20261020.py": "5a15b1c26920d941900c48e276dac51de3d63bfe6b1ac3917aa0f2dc949cb8da",
+    "docs/implementation/contracts.md": "64a97142f9fed83bb69940056001001e11535789c6b2ab76fcb724c1bbb1f53a",
+    "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md": "eccc83cb2ea989599c94db25514c17e9f815965a6fdba34fb52d7fb697f4adb3",
+    "docs/implementation/evidence/G0-TIME-R1/consumer-version.json": "edc3f30d402288dda79352c5124c101f6579f800dd688eb2c63fe7b8d6d5872e",
+    "docs/implementation/evidence/G0-TIME-R1/dgp-review-changes-requested.md": "f83cece89c15ed8bb6e53a235afb3621092c35d8c00d11621850e31b478a42e6",
+    "docs/implementation/evidence/G0-TIME-R1/handoff.md": "69ded94b3eb0dba52d18e6b6280abf3b9fdedd1cd39024e17d84961ad83b9618",
+    "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md": "d1f9c4b23a33735fc767deffd6baa326e156372413e47dc4491202a599cb9a4f",
+    "docs/implementation/evidence/G0-TIME-R1/run_checks.py": "320889fae065751428e14551c29136e4d57e65a8a885cef9c808e7dd32481779",
+    "docs/implementation/evidence/G0-TIME-R1/verification.md": "002c8a264e4712d8ac63d96c0ee81eb4c0edb1f95771c60e99e143495c31a6fe",
+    "docs/implementation/g0-task-test-ledger-20261020.json": "9537cb383de3279f6cf256a059635d5fa8cf125c2d7e5fcf4bfe321a2c00c64c",
+    "docs/implementation/launch-status-20261020.md": "ec92869e44533241624a01f86b9b92857c853e61b028c9ba2462e436019d6aed",
+    "docs/implementation/orchestration-checkpoint-20261020.md": "5d0f2de1dc8ef00056f769011b40703fdee933b91c25166656c4eee41fdfebbb",
+    "docs/spec/01-estimands-and-contracts.md": "15e50428c66c9c87865815145d9d0e330d93901998edffc18ceef804d71d1e12",
+    "docs/spec/dgp-reference.md": "16b61de53f7b9fb6e837db63d89ccbc0efc105300d8bbd80ceec6cfbbf216b84",
+    "tests/contracts/test_temporal_r1.py": "c1ed4ce70f1cfd6f38d4dfe2d894c3f6e05695bd2d20011e5aea85e6eeada965"
+  },
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-temporal-r1-20261021\\contracts\\domain\\__pycache__\\time-venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "started_utc": "2026-10-21T13:40:30.066234+00:00",
+      "finished_utc": "2026-10-21T13:40:30.711553+00:00",
+      "exit_code": 0,
+      "stdout": "No broken requirements found.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-temporal-r1-20261021\\contracts\\domain\\__pycache__\\time-venv\\Scripts\\python.exe",
+        "-m",
+        "contracts.domain.export",
+        "--check"
+      ],
+      "started_utc": "2026-10-21T13:40:30.711575+00:00",
+      "finished_utc": "2026-10-21T13:40:31.075354+00:00",
+      "exit_code": 0,
+      "stdout": "Contract JSON Schema/dictionary match typed source\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-temporal-r1-20261021\\contracts\\domain\\__pycache__\\time-venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/contracts",
+        "-v"
+      ],
+      "started_utc": "2026-10-21T13:40:31.075373+00:00",
+      "finished_utc": "2026-10-21T13:40:31.545516+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_all_entity_fixtures_and_registered_estimands_are_serializable (test_domain.ContractTests.test_all_entity_fixtures_and_registered_estimands_are_serializable) ... ok\ntest_all_estimand_semantics_roundtrip (test_domain.ContractTests.test_all_estimand_semantics_roundtrip) ... ok\ntest_all_registered_endpoints_bind_units_direction_and_policy_reward (test_domain.ContractTests.test_all_registered_endpoints_bind_units_direction_and_policy_reward) ... ok\ntest_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal (test_domain.ContractTests.test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal) ... ok\ntest_corrected_history_projects_into_valid_learner_without_double_likelihood (test_domain.ContractTests.test_corrected_history_projects_into_valid_learner_without_double_likelihood) ... ok\ntest_cutoff_excludes_equal_time_late_and_future_records (test_domain.ContractTests.test_cutoff_excludes_equal_time_late_and_future_records) ... ok\ntest_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts (test_domain.ContractTests.test_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts) ... ok\ntest_est_int_zero_denominator_and_tradeoffs_remain_separate (test_domain.ContractTests.test_est_int_zero_denominator_and_tradeoffs_remain_separate) ... ok\ntest_evaluation_accounting_failure_and_confirmation_contracts (test_domain.ContractTests.test_evaluation_accounting_failure_and_confirmation_contracts) ... ok\ntest_evaluation_minimums_truth_precision_and_source_boundary (test_domain.ContractTests.test_evaluation_minimums_truth_precision_and_source_boundary) ... ok\ntest_external_study_ipd_summary_double_count_denied (test_domain.ContractTests.test_external_study_ipd_summary_double_count_denied) ... ok\ntest_fit_versions_and_hashes_rejected_before_dispatch (test_domain.ContractTests.test_fit_versions_and_hashes_rejected_before_dispatch) ... ok\ntest_invalid_estimand_units_recall_and_event_strategy (test_domain.ContractTests.test_invalid_estimand_units_recall_and_event_strategy) ... ok\ntest_isi_items_recall_trending_and_no_postdeath_isi (test_domain.ContractTests.test_isi_items_recall_trending_and_no_postdeath_isi) ... ok\ntest_late_correction_does_not_rewrite_old_history_and_duplicates_drop (test_domain.ContractTests.test_late_correction_does_not_rewrite_old_history_and_duplicates_drop) ... ok\ntest_missing_reward_is_not_zero (test_domain.ContractTests.test_missing_reward_is_not_zero) ... ok\ntest_named_threshold_is_provisional_and_no_unit_substitution (test_domain.ContractTests.test_named_threshold_is_provisional_and_no_unit_substitution) ... ok\ntest_no_latent_or_truth_payload_can_enter_learner_schema (test_domain.ContractTests.test_no_latent_or_truth_payload_can_enter_learner_schema) ... ok\ntest_protocol_approval_does_not_preselect_randomized_winner (test_domain.ContractTests.test_protocol_approval_does_not_preselect_randomized_winner) ... ok\ntest_record_clock_naive_timezone_and_future_nested_covariate_rejected (test_domain.ContractTests.test_record_clock_naive_timezone_and_future_nested_covariate_rejected) ... ok\ntest_retracted_active_consent_never_authorizes_or_revives_predecessor (test_domain.ContractTests.test_retracted_active_consent_never_authorizes_or_revives_predecessor) ... ok\ntest_schema_exports_match_and_contain_no_evaluator_types_in_learner (test_domain.ContractTests.test_schema_exports_match_and_contain_no_evaluator_types_in_learner) ... ok\ntest_stale_patient_history_hold_permissions_and_exclusions_block_approval (test_domain.ContractTests.test_stale_patient_history_hold_permissions_and_exclusions_block_approval) ... ok\ntest_support_freeze_cannot_drift_during_block_or_washout (test_domain.ContractTests.test_support_freeze_cannot_drift_during_block_or_washout) ... ok\ntest_temporal_parent_graph_and_seeded_future_cycle_faults (test_domain.ContractTests.test_temporal_parent_graph_and_seeded_future_cycle_faults) ... ok\ntest_typed_fit_metadata_roundtrip_and_failure (test_domain.ContractTests.test_typed_fit_metadata_roundtrip_and_failure) ... ok\ntest_version_and_strict_types_reject_without_coercion (test_domain.ContractTests.test_version_and_strict_types_reject_without_coercion) ... ok\ntest_delayed_previous_quality_equal_time_and_deterministic_ties (test_temporal_r1.TemporalR1Tests.test_delayed_previous_quality_equal_time_and_deterministic_ties) ... ok\ntest_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling (test_temporal_r1.TemporalR1Tests.test_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling) ... ok\ntest_no_reporting_assessment_after_known_death (test_temporal_r1.TemporalR1Tests.test_no_reporting_assessment_after_known_death) ... ok\ntest_observed_only_predictors_roundtrip_and_missing_history (test_temporal_r1.TemporalR1Tests.test_observed_only_predictors_roundtrip_and_missing_history) ... ok\ntest_pain_after_or_equal_report_decision_and_missing_report_source_rejected (test_temporal_r1.TemporalR1Tests.test_pain_after_or_equal_report_decision_and_missing_report_source_rejected) ... ok\ntest_three_clock_upload_delays_and_strict_cutoffs (test_temporal_r1.TemporalR1Tests.test_three_clock_upload_delays_and_strict_cutoffs) ... ok\ntest_v1_preserved_and_v2_validates (test_temporal_r1.TemporalR1Tests.test_v1_preserved_and_v2_validates) ... ok\ntest_wearable_available_independently_before_pain_or_report (test_temporal_r1.TemporalR1Tests.test_wearable_available_independently_before_pain_or_report) ... ok\n\n----------------------------------------------------------------------\nRan 35 tests in 0.173s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-temporal-r1-20261021\\contracts\\domain\\__pycache__\\time-venv\\Scripts\\python.exe",
+        "docs/implementation/check-ledger-20261020.py"
+      ],
+      "started_utc": "2026-10-21T13:40:31.545535+00:00",
+      "finished_utc": "2026-10-21T13:40:32.277148+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; gates unaccepted.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "6c3fb070d36bfefbd070f2a2c33ccba7631734be"
+      ],
+      "started_utc": "2026-10-21T13:40:32.277173+00:00",
+      "finished_utc": "2026-10-21T13:40:32.331375+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "claim_limits": [
+    "Temporal schema/pure guard fixtures only; no generator, fit, pilot, statistical or clinical acceptance",
+    "Independent exact-head/base acceptance required before DGP timing consumes v2",
+    "Source hashes normalize CRLF to LF; offline artifact payload checksums remain exact bytes"
+  ]
+}

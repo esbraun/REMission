@@ -1,5 +1,6 @@
 """Reproduce planning preservation/dependency checks; this runs no app or fits."""
 import json
+import hashlib
 import re
 import subprocess
 from collections import Counter
@@ -128,7 +129,7 @@ def main():
     assert data["task_defaults"]["integration_target"] == "main"
     assert git("rev-parse", BASE + "^{tree}") == git("rev-parse", REVIEW_BASE + "^{tree}")
     subprocess.check_call(["git", "merge-base", "--is-ancestor", BASE, REVIEW_BASE], cwd=ROOT)
-    # G0 contract implementation is now active; this package cannot accept a gate.
+    # Bounded contract scope accepted; this amendment cannot accept a gate.
     assert data["gate_status"]["G0"] == "running"
     assert all(state == "not-started" for gate, state in data["gate_status"].items() if gate != "G0")
     prior = data["repair_assignment"]
@@ -139,9 +140,31 @@ def main():
     assert git("show", "-s", "--format=%P", merge).split() == [REVIEW_BASE, prior["reviewed_head"]]
     report = "docs/implementation/evidence/G0-LAUNCH-FIX-01/independent-review-20261020.md"
     assert git("hash-object", "--path", report, report).strip() == "c7036122a5db0f40cbc3ea962741a306c7ecead7"
+    accepted = data["accepted_contract_assignment"]
+    assert accepted["status"] == "accepted" and accepted["base_commit"] == merge
+    accepted_head = "abd511c5870d41269980f4554be89407b31749d6"
+    accepted_merge = "6c3fb070d36bfefbd070f2a2c33ccba7631734be"
+    assert git("show", "-s", "--format=%P", accepted_merge).split() == [merge, accepted_head]
+    assert accepted["reviewed_head"] == accepted_head and accepted["merge_commit"] == accepted_merge
+    accepted_report = accepted["accepted_review"]["path"]
+    assert git("hash-object", "--path", accepted_report, accepted_report).strip() == "78c63b418994faac455ccecf25020c6fb63c88e1"
     current = data["current_assignment"]
-    assert current["id"] == "G0-CONTRACT" and current["base_commit"] == merge
-    prior_contract = current["prior_reviews"][0]
+    assert current["id"] == "G0-TIME-R1" and current["base_commit"] == accepted_merge
+    assert current["status"] == "needs_review"
+    assert tasks["G0-TIME-R1"]["depends_on"] == ["G0-CONTRACT"]
+    assert "G0-TIME-R1" in tasks["G0-DGP"]["depends_on"]
+    assert "G0-TIME-R1" in ancestors["G7-REPRO"]
+    v1 = "contracts/domain/temporal-v1.json"
+    assert git("hash-object", "--path", v1, v1).strip() == git("rev-parse", f"{accepted_merge}:{v1}").strip() == "2a197d76b938dbda3279a26a6645cada78a89508"
+    version = json.loads(read("docs/implementation/evidence/G0-TIME-R1/consumer-version.json"))
+    assert version["id"] == "TIME-01" and version["version"] == "2.0.0" and version["schema_version"] == "1.0.0"
+    normalized = (ROOT / version["path"]).read_bytes().replace(b"\r\n", b"\n")
+    assert hashlib.sha256(normalized).hexdigest() == version["sha256"] == tasks["G0-TIME-R1"]["consumer_version"]["sha256"]
+    for name, blob in [("dgp-review-changes-requested.md", "94b100b39558fce4c6c17f9f79a6acad0c159b04"),
+                       ("ope-plan-review-changes-requested.md", "052677a20145fb14f5e1d2f509592a4de4942ef4")]:
+        report_path = "docs/implementation/evidence/G0-TIME-R1/" + name
+        assert git("hash-object", "--path", report_path, report_path).strip() == blob
+    prior_contract = accepted["prior_reviews"][0]
     assert prior_contract["reviewed_head"] == "939dd29254bc4a6f2c4f6c92330bd1c3fc11c9d4"
     assert prior_contract["reviewed_base"] == merge and prior_contract["disposition"] == "changes_requested"
     assert git("hash-object", "--path", prior_contract["path"], prior_contract["path"]).strip() == "9b81514185ab38ed7550b8c3719cb30e85b7edc9"

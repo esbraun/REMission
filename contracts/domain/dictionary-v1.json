@@ -6218,6 +6218,186 @@
         }
       }
     },
+    "ReportingDecision": {
+      "description": "Observed MAR inputs only; MNAR truth stays outside this contract.",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "decision_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Decision At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "reporting_decision",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "pain_record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Pain Record Id",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "pre_report_history": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/LearnerHistory"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "report_event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Report Event At",
+            "type": "string"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "temporal_version": {
+          "required": true,
+          "schema": {
+            "const": "2.0.0",
+            "title": "Temporal Version",
+            "type": "string"
+          }
+        },
+        "upload_delay_days": {
+          "required": true,
+          "schema": {
+            "enum": [
+              0,
+              1,
+              3
+            ],
+            "title": "Upload Delay Days",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "ReportingRules": {
+      "description": "See typed class and canonical source map in contracts.md",
+      "fields": {
+        "absent_quality": {
+          "required": true,
+          "schema": {
+            "const": "baseline_7_with_missing_history_indicator",
+            "title": "Absent Quality",
+            "type": "string"
+          }
+        },
+        "equal_time": {
+          "required": true,
+          "schema": {
+            "const": "strict_before_excludes_all_equal_time_arrivals_phase_then_record_id_for_replay",
+            "title": "Equal Time",
+            "type": "string"
+          }
+        },
+        "mar_predictors": {
+          "required": true,
+          "schema": {
+            "const": "previous_observed_quality_missing_indicator_and_current_observed_pain_only",
+            "title": "Mar Predictors",
+            "type": "string"
+          }
+        },
+        "pain_source": {
+          "required": true,
+          "schema": {
+            "const": "independent_observed_clinical_record_before_report_decision",
+            "title": "Pain Source",
+            "type": "string"
+          }
+        },
+        "pre_report_history": {
+          "required": true,
+          "schema": {
+            "const": "strictly_available_before_decision_excluding_current_report",
+            "title": "Pre Report History",
+            "type": "string"
+          }
+        },
+        "previous_quality": {
+          "required": true,
+          "schema": {
+            "const": "latest_active_observed_report_event_before_current_event",
+            "title": "Previous Quality",
+            "type": "string"
+          }
+        },
+        "recording": {
+          "required": true,
+          "schema": {
+            "const": "report_decision_time_not_morning_outcome_event_time",
+            "title": "Recording",
+            "type": "string"
+          }
+        },
+        "upload": {
+          "required": true,
+          "schema": {
+            "const": "recording_plus_independently_keyed_0_1_3_day_delay",
+            "title": "Upload",
+            "type": "string"
+          }
+        },
+        "wearable": {
+          "required": true,
+          "schema": {
+            "const": "separate_stream_no_report_or_current_pain_parent",
+            "title": "Wearable",
+            "type": "string"
+          }
+        }
+      }
+    },
     "SeedKey": {
       "description": "See typed class and canonical source map in contracts.md",
       "fields": {
@@ -6483,6 +6663,20 @@
             "type": "array"
           }
         },
+        "reporting": {
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ReportingRules"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
         "schema_version": {
           "required": true,
           "schema": {
@@ -6529,7 +6723,10 @@
         "version": {
           "required": true,
           "schema": {
-            "const": "1.0.0",
+            "enum": [
+              "1.0.0",
+              "2.0.0"
+            ],
             "title": "Version",
             "type": "string"
           }

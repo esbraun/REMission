@@ -21,6 +21,69 @@
       "title": "Parent",
       "type": "object"
     },
+    "ReportingRules": {
+      "additionalProperties": false,
+      "properties": {
+        "absent_quality": {
+          "const": "baseline_7_with_missing_history_indicator",
+          "title": "Absent Quality",
+          "type": "string"
+        },
+        "equal_time": {
+          "const": "strict_before_excludes_all_equal_time_arrivals_phase_then_record_id_for_replay",
+          "title": "Equal Time",
+          "type": "string"
+        },
+        "mar_predictors": {
+          "const": "previous_observed_quality_missing_indicator_and_current_observed_pain_only",
+          "title": "Mar Predictors",
+          "type": "string"
+        },
+        "pain_source": {
+          "const": "independent_observed_clinical_record_before_report_decision",
+          "title": "Pain Source",
+          "type": "string"
+        },
+        "pre_report_history": {
+          "const": "strictly_available_before_decision_excluding_current_report",
+          "title": "Pre Report History",
+          "type": "string"
+        },
+        "previous_quality": {
+          "const": "latest_active_observed_report_event_before_current_event",
+          "title": "Previous Quality",
+          "type": "string"
+        },
+        "recording": {
+          "const": "report_decision_time_not_morning_outcome_event_time",
+          "title": "Recording",
+          "type": "string"
+        },
+        "upload": {
+          "const": "recording_plus_independently_keyed_0_1_3_day_delay",
+          "title": "Upload",
+          "type": "string"
+        },
+        "wearable": {
+          "const": "separate_stream_no_report_or_current_pain_parent",
+          "title": "Wearable",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pain_source",
+        "pre_report_history",
+        "previous_quality",
+        "absent_quality",
+        "mar_predictors",
+        "recording",
+        "upload",
+        "wearable",
+        "equal_time"
+      ],
+      "title": "ReportingRules",
+      "type": "object"
+    },
     "Variable": {
       "additionalProperties": false,
       "properties": {
@@ -180,6 +243,17 @@
       "title": "Pending Numerical Decisions",
       "type": "array"
     },
+    "reporting": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReportingRules"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "schema_version": {
       "const": "1.0.0",
       "title": "Schema Version",
@@ -209,7 +283,10 @@
       "type": "array"
     },
     "version": {
-      "const": "1.0.0",
+      "enum": [
+        "1.0.0",
+        "2.0.0"
+      ],
       "title": "Version",
       "type": "string"
     }
