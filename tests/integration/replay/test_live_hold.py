@@ -14,6 +14,7 @@ from services.foundation.cli import seed, DEMO_PASSWORDS
 from services.foundation.store import Store
 from services.foundation.admission import AdmissionError
 from live_helpers import fresh_store,live_fixture,ref
+from services.foundation.cutover import bundle_for,change_generation
 from live_process_helpers import CONTEXT,service_process
 
 NOW=datetime(2026,10,21,12,tzinfo=timezone.utc)
@@ -278,6 +279,74 @@ class LiveWorkflowTests(unittest.TestCase):
                 self.assertEqual(db.execute('SELECT count(*) FROM live_hold_tasks').fetchone()[0],expected)
         result=self.enter('crash-entry')
         self.assertEqual(result['live_received_at'],'2026-10-21T12:00:00+00:00')
+
+    def install_next(self,authority=None,rules=None,*,fault=None):
+        current=self.settings.installed
+        bundle=bundle_for(authority or current.authority,rules or current.review_rules,
+            generation=current.control.authority_generation+1,instance=current.control.database_instance_id)
+        self.store.clock=lambda:NOW
+        store=change_generation(self.store,bundle,NOW,fault=fault)
+        self.store=store;self.settings=replace(self.settings,installed=bundle)
+        return bundle
+
+    def restart_client(self):
+        self.client.close();self.client=TestClient(create_app(self.settings),base_url=ORIGIN);self.login()
+
+    def test_generation_cutover_revocation_disable_rollback_to_old_bytes_and_stale_worker(self):
+        original=self.settings.installed;receipt=self.enter();old_client=self.client
+        before=self.safety_state()
+        def fail(point):
+            if point=='before_generation_commit':raise RuntimeError('cutover beforecommit')
+        with self.assertRaises(RuntimeError):self.install_next(fault=fail)
+        self.assertEqual(before,self.safety_state())
+        bundle=self.install_next()
+        self.assertEqual(old_client.get('/api/patients/SYN-02').status_code,503)
+        self.assertEqual(old_client.get('/health').status_code,503)
+        self.restart_client()
+        held=self.client.get('/api/patients/SYN-02/live-holds').json()
+        self.assertEqual(len(held['episodes']),1)
+        self.assertEqual(held['summary']['authority_generation'],2)
+        # Reverting exact old bytes still increments generation, so G1 never returns.
+        self.install_next(original.authority,original.review_rules);self.restart_client()
+        self.assertEqual(self.client.get('/api/patients/SYN-02/live-holds').json()['summary']['authority_generation'],3)
+        revoked=self.settings.installed.authority.model_copy(update={'grants':[]})
+        self.install_next(revoked);self.restart_client()
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=self.command,headers=self.headers('entry'))
+        self.assertEqual(response.status_code,409,response.text)
+        self.assertEqual(response.json()['code'],'live_source_grant_unavailable')
+        held=self.client.get('/api/patients/SYN-02/live-holds').json()
+        self.assertEqual(len(held['episodes']),1);self.assertFalse(held['episodes'][0]['clearance_supported'])
+        disabled=revoked.model_copy(update={'enabled':False})
+        self.install_next(disabled);self.restart_client()
+        self.assertEqual(self.client.get('/api/patients/SYN-02').json()['stage'],'ASSIGN-09')
+        self.assertFalse(self.client.get('/api/patients/SYN-02').json()['permissions']['approve_ordinary'])
+
+    def test_two_independent_episodes_clear_one_and_threshold_rule_remains_named_blocked(self):
+        fixture,archive_authority,addition,command=live_fixture(self.root/'second',run_name='second-threshold-run',threshold=True)
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority)
+        self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'second':(fixture['raw'],self.root/'second/staging',archive_authority)})
+        self.restart_client()
+        response=self.client.post('/api/observed-archives/second',json={'mode':'archive_only'},headers=self.headers())
+        self.assertEqual(response.status_code,200,response.text)
+        first=self.enter()
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=command,headers=self.headers('second-entry'))
+        self.assertEqual(response.status_code,200,response.text)
+        episodes=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes']
+        self.assertEqual(len(episodes),2)
+        concern=next(e for e in episodes if e['episode_id']==first['episode_id'])
+        threshold=next(e for e in episodes if e['episode_id']!=first['episode_id'])
+        self.assertFalse(threshold['clearance_supported']);self.assertEqual(threshold['blocker'],'T-OBS2-CLEARANCE-POLICY')
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+concern['episode_id']+'/reviews',json=self.review_input(concern),headers=self.headers('review'))
+        self.assertEqual(response.status_code,200,response.text);review=response.json()
+        clear=self.review_input(concern)
+        for k in ['rationale','items','current_assessment_attested']:clear.pop(k)
+        clear.update(review_id=review['review_id'],review_sha256=review['review_sha256'])
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+concern['episode_id']+'/clearance',json=clear,headers=self.headers('clear'))
+        self.assertEqual(response.status_code,200,response.text)
+        left=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes']
+        self.assertEqual([e['episode_id'] for e in left],[threshold['episode_id']])
+        self.assertEqual(self.client.get('/api/patients/SYN-02').json()['stage'],'ASSIGN-09')
 
 
 if __name__=='__main__':

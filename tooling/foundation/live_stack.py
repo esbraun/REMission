@@ -35,14 +35,15 @@ def main():
     mount=lambda role,path,ro=False:['--mount',f'type=volume,source={volumes[role]},target={path}'+(',readonly' if ro else '')]
     for role,name in volumes.items():
         command(['docker','volume','create','--label',label,name])
-        command(['docker','run','--rm','--network','none',*COMMON,'--user','0:0',*mount(role,'/owned'),RUNTIME,
-            'python','-c',"import os;os.chown('/owned',10001,10001);os.chmod('/owned',0o700)"])
+        command(['docker','run','--rm','--network','none',*COMMON,'--cap-add','CHOWN','--user','0:0',*mount(role,'/owned'),RUNTIME,
+            'python','-c',"import os;os.chmod('/owned',0o700);os.chown('/owned',10001,10001)"])
     command(['docker','run','--rm','--network','none',*COMMON,*mount('historical','/data'),OLD,
         'python','-m','services.foundation.cli','seed','--database','/data/remission.sqlite'])
     old_name=prefix+'-old';service_name=prefix+'-service'
     url='http://127.0.0.1:'+str(args.port)
     command(['docker','run','--detach','--name',old_name,'--label',label,'--network',network,
-        '--publish',f'127.0.0.1:{args.port}:8765',*COMMON,*mount('historical','/data'),'--env','REMISSION_ORIGIN='+url,OLD])
+        '--publish',f'127.0.0.1:{args.port}:8765',*COMMON,*mount('historical','/data'),'--env','REMISSION_ORIGIN='+url,OLD,
+        'python','-m','uvicorn','services.foundation.server:app','--host','0.0.0.0','--port','8765','--no-access-log'])
     def health(expected):
         deadline=time.monotonic()+20
         while True:
@@ -63,7 +64,7 @@ def main():
         raise RuntimeError('old database volume still has an active process')
     # The only source mount belongs to this offline provisioning/audit process.
     command(['docker','run','--rm','--network','none',*COMMON,'--user','10001:10001','-e','PYTHONDONTWRITEBYTECODE=1','-e','PYTHONPATH=/source',
-        '--mount',f'type=bind,source={ROOT},target=/source,readonly','-w','/source',*mount('historical','/historical',True),
+        '--mount',f'type=bind,source={ROOT},target=/source,readonly','-w','/source',*mount('historical','/historical'),
         *mount('database','/data'),*mount('fixtures','/fixtures'),RUNTIME,'python','tooling/foundation/prepare_live_demo.py',
         '--fixture-root','/fixtures','--database','/data/remission.sqlite','--historical-source','/historical/remission.sqlite','--source-commit',head])
     # Exact copied source audit without a source mount in the runtime image.

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/source/tooling/foundation/prepare_live_demo.py", line 49, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/source/tooling/foundation/prepare_live_demo.py", line 31, in main
+    store=activate_new(args.database,bundle,datetime.now(timezone.utc),source=args.historical_source)
+  File "/source/services/foundation/cutover.py", line 75, in activate_new
+    old.backup(new)
+    ~~~~~~~~~~^^^^^
+sqlite3.OperationalError: unable to open database file

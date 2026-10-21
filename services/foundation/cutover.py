@@ -71,7 +71,13 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
     if source is not None:
         source = source.resolve(strict=True)
         assert_quiescent(source)
-        with closing(sqlite3.connect(f'file:{source}?mode=ro', uri=True)) as old, closing(sqlite3.connect(target)) as new:
+        # This offline administrator briefly opens the quiesced original RW:
+        # SQLite WAL readers may need a shared-memory file even for a backup.
+        # Checkpoint all committed WAL frames, then take SQLite's consistent backup.
+        with closing(sqlite3.connect(source)) as old, closing(sqlite3.connect(target)) as new:
+            checkpoint=old.execute('PRAGMA wal_checkpoint(TRUNCATE)').fetchone()
+            if checkpoint[0]!=0:
+                raise AdmissionError('cutover_old_database_not_quiescent')
             old.backup(new)
     else:
         target.touch(mode=0o600)
