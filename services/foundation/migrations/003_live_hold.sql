@@ -3,12 +3,15 @@ CREATE TABLE service_control (
  capability TEXT NOT NULL, minimum_reader_writer_capability TEXT NOT NULL,
  authority_generation INTEGER NOT NULL CHECK(authority_generation>0), authority_sha256 TEXT NOT NULL,
  review_rules_sha256 TEXT NOT NULL, enabled INTEGER NOT NULL, activation_id TEXT NOT NULL,
- activated_at TEXT NOT NULL, last_receipt_at TEXT NOT NULL
+ activated_at TEXT NOT NULL, last_receipt_at TEXT NOT NULL,
+ database_device INTEGER NOT NULL, database_inode INTEGER NOT NULL,
+ lock_device INTEGER NOT NULL, lock_inode INTEGER NOT NULL
 );
 CREATE TABLE live_authority_history (
  generation INTEGER PRIMARY KEY, authority_sha256 TEXT NOT NULL, review_rules_sha256 TEXT NOT NULL,
  authority TEXT NOT NULL, review_rules TEXT NOT NULL, activation_id TEXT NOT NULL, activated_at TEXT NOT NULL
 );
+CREATE TABLE live_activation_receipts (id TEXT PRIMARY KEY, payload TEXT NOT NULL, payload_sha256 TEXT NOT NULL);
 CREATE TABLE live_hold_operations (
  sequence INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT UNIQUE NOT NULL,
  patient_id TEXT NOT NULL REFERENCES patients(id), family TEXT NOT NULL,

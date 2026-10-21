@@ -47,10 +47,15 @@ class Store:
         except sqlite3.Error as error:
             raise AdmissionError('service_generation_mismatch') from error
         expected = self.installed.control.model_dump()
+        database_stat=self.path.stat();lock_stat=self.gate.path.stat()
+        accepted_observed=json.loads(Path(__file__).resolve().parents[2].joinpath('contracts/runs/bindings-v2.json').read_bytes())['observed_representation']
         if (row is None or any(row[k] != v for k, v in expected.items())
+                or (row['database_device'],row['database_inode'],row['lock_device'],row['lock_inode'])!=
+                   (database_stat.st_dev,database_stat.st_ino,lock_stat.st_dev,lock_stat.st_ino)
                 or row['capability'] != CAPABILITY
                 or digest(canonical(self.installed.authority.model_dump(mode='json'))) != row['authority_sha256']
-                or digest(canonical(self.installed.review_rules.model_dump(mode='json'))) != row['review_rules_sha256']):
+                or digest(canonical(self.installed.review_rules.model_dump(mode='json'))) != row['review_rules_sha256']
+                or self.installed.authority.observed_binding.model_dump()!=accepted_observed):
             raise AdmissionError('service_generation_mismatch')
         return row
 
@@ -82,7 +87,7 @@ class Store:
                 yield db
                 if write:
                     from .live_journal import receive
-                    receive(db,operation_time)
+                    receive(db,self.clock())
                 db.commit()
             except sqlite3.OperationalError as error:
                 db.rollback()

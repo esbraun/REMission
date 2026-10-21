@@ -14,6 +14,20 @@ IMMUTABLE = ['events', 'decisions', 'bundles', 'tasks', 'receipts', 'ingestion_r
              'live_authority_history', 'live_hold_operations', 'live_hold_reviews', 'live_hold_tasks',
              'live_hold_task_events', 'live_hold_keys', 'live_patient_journals', 'live_safety_facts',
              'live_projection_receipts', 'live_export_receipts']
+IMMUTABLE.append('live_activation_receipts')
+
+
+def protected_snapshot(db):
+    """Exact SQL values, including original raw/display bytes; hashes expose no credentials."""
+    tables=['accounts','patients','events','decisions','bundles','tasks','receipts','ingestion_receipts',
+            'state_changes','observed_archives','observed_archive_entries','observed_archive_artifacts']
+    result={}
+    for table in tables:
+        if db.execute('SELECT 1 FROM sqlite_master WHERE type=? AND name=?',('table',table)).fetchone():
+            rows=[[dict(bytes=bytes(value).hex()) if isinstance(value,bytes) else value for value in tuple(row)]
+                  for row in db.execute('SELECT * FROM '+table+' ORDER BY rowid')]
+            result[table]=dict(rows=len(rows),sha256=digest(canonical(rows)))
+    return result
 
 
 def bundle_for(authority: LiveHoldAuthority, rules: ReviewRules, *, generation=1, instance=None):
@@ -73,15 +87,18 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
         db.execute('PRAGMA journal_mode=WAL')
         db.execute('PRAGMA foreign_keys=ON')
         db.execute('PRAGMA synchronous=FULL')
+        preserved=protected_snapshot(db)
         scripts = Path(__file__).with_name('migrations')
         # One explicit offline transaction, including all schema/bootstrap facts.
         sql = '\n'.join((scripts/name).read_text(encoding='utf-8') for name in ['001_foundation.sql','002_observed_archive.sql','003_live_hold.sql'])
         db.executescript('BEGIN IMMEDIATE;\n'+sql)
         try:
             c = installed.control
-            db.execute('INSERT INTO service_control VALUES(1,?,?,?,?,?,?,?,?,?,?)',
+            database_stat=target.stat();lock_stat=lock.stat()
+            db.execute('INSERT INTO service_control VALUES(1,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 (c.database_instance_id,c.capability,c.minimum_reader_writer_capability,c.authority_generation,
-                 c.authority_sha256,c.review_rules_sha256,int(c.enabled),c.activation_id,clock,clock))
+                 c.authority_sha256,c.review_rules_sha256,int(c.enabled),c.activation_id,clock,clock,
+                 database_stat.st_dev,database_stat.st_ino,lock_stat.st_dev,lock_stat.st_ino))
             db.execute('INSERT INTO live_authority_history VALUES(?,?,?,?,?,?,?)',
                 (c.authority_generation,c.authority_sha256,c.review_rules_sha256,
                  canonical(installed.authority.model_dump(mode='json')),canonical(installed.review_rules.model_dump(mode='json')),c.activation_id,clock))
@@ -91,6 +108,13 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
             for table in IMMUTABLE:
                 for operation in ['UPDATE','DELETE']:
                     db.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT,'immutable_record'); END")
+            after=protected_snapshot(db)
+            if any(after.get(table)!=value for table,value in preserved.items()):
+                raise ValueError('cutover_original_bytes_changed')
+            receipt=canonical(dict(status='activated_unrouted',activation_id=c.activation_id,source_backup=bool(source),
+                control=c.model_dump(mode='json'),activated_at=clock,preserved_tables=preserved,
+                deployment_assumption='External supervisor stopped all old workers/restarts and routing; new private volume only'))
+            db.execute('INSERT INTO live_activation_receipts VALUES(?,?,?)',(c.activation_id,receipt,digest(receipt)))
             if fault:
                 fault('before_cutover_commit')
             db.commit()

@@ -45,6 +45,7 @@ class Settings:
     live_export_root: Path | None = None
     source_commit: str | None = None
     runtime_ref: dict | None = None
+    admission_timeout: float = 5
 
     @property
     def secure_cookie(self):
@@ -108,6 +109,7 @@ class ArchiveInput(StrictModel):
 
 def create_app(settings: Settings) -> FastAPI:
     store = Store(settings.database,settings.installed,clock=settings.clock)
+    store.gate.timeout=settings.admission_timeout
     app = FastAPI(title="REMission synthetic foundation", docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store, app.state.settings = store, settings
     dummy_hash = HASHER.hash("non-account-timing-control")
@@ -218,6 +220,8 @@ def create_app(settings: Settings) -> FastAPI:
             prepared['value']=initial
             if prepared['at']<instant(store.validate_control(db)['last_receipt_at']):
                 raise LiveError('service_clock_regression')
+            if settings.fault:
+                settings.fault('after_hold_admission')
         with store.transaction(write=True,prepare=prepare,authorize=authorize) as db:
             owner=prepared['owner'];at=prepared['at']
             if family=='invalidate':
@@ -250,18 +254,30 @@ def create_app(settings: Settings) -> FastAPI:
             episodes=[]
             for row in active_episodes(db,patient_id):
                 e=row['data'];rules,complete=installed_rules(settings,e)
+                grants_valid=all(g in [x.model_dump(mode='json') for x in settings.installed.authority.grants] for g in e['grants'])
                 review=db.execute('SELECT payload,payload_sha256 FROM live_hold_reviews WHERE id=?',(e.get('current_review_id'),)).fetchone()
                 episodes.append(dict(episode_id=row['id'],generation=row['generation'],opened_at=row['opened_at'],
                     trigger_set_sha256=e['trigger_set_sha256'],obligation_set_sha256=e['obligation_set_sha256'],
                     trigger_refs=e['trigger_refs'],reason_codes=e['reason_codes'],obligations=e['obligations'],task_id=e['task_id'],
-                    review_rules=[r.ref.model_dump(mode='json') for r in rules],clearance_supported=complete,
-                    blocker=None if complete else 'T-OBS2-CLEARANCE-POLICY',
+                    review_rules=[r.ref.model_dump(mode='json') for r in rules],clearance_supported=complete and grants_valid,
+                    blocker='live_source_grant_unavailable' if not grants_valid else None if complete else 'T-OBS2-CLEARANCE-POLICY',
                     current_review=dict(payload=json.loads(review[0]),payload_sha256=review[1]) if review else None))
             tasks=[dict(r) for r in db.execute('SELECT * FROM live_hold_tasks WHERE patient_id=?',(patient_id,))]
             for task in tasks:
                 task['payload']=json.loads(task['payload'])
                 task['events']=[json.loads(r[0]) for r in db.execute('SELECT payload FROM live_hold_task_events WHERE task_id=? ORDER BY rowid',(task['id'],))]
-            return dict(summary=summary(db,patient_id),episodes=episodes,tasks=tasks)
+            available=[]
+            for grant in settings.installed.authority.grants:
+                if grant.account_id!=current['account_id'] or grant.service_patient_id!=patient_id:
+                    continue
+                archive=db.execute('SELECT export_sha256 FROM observed_archives WHERE id=? AND owner_id=?',(grant.archive_id,current['account_id'])).fetchone()
+                if archive is None or archive[0]!=grant.package_sha256:continue
+                for record in db.execute("SELECT payload,payload_sha256 FROM observed_archive_entries WHERE archive_id=? AND partition_id=? AND patient_id=? AND kind='hold_transition_bundle'",(grant.archive_id,grant.partition_id,patient_id)):
+                    value=json.loads(record['payload'])
+                    if value['transition_type'] in ('enter','change_reason') and value['record_status']!='retracted':
+                        available.append(dict(label='Synthetic '+', '.join(value['reason_codes']),command=dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,
+                            archive_id=grant.archive_id,partition_id=grant.partition_id,bundle_ref=dict(record_id=value['record_id'],payload_sha256=record['payload_sha256']),trigger_refs=value['trigger_refs'])))
+            return dict(summary=summary(db,patient_id),episodes=episodes,tasks=tasks,available_triggers=available)
 
     @app.post('/api/patients/{patient_id}/live-holds/{episode_id}/reviews')
     async def live_review(patient_id: str,episode_id: str,request: Request):
@@ -425,6 +441,8 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction() as db:
             current=session(db,request);patient=own(db,patient_id,current["account_id"])
             result=json.loads(read_decision(db,patient)["display"])
+            from .live_journal import summary
+            result['live_safety_summary']=summary(db,patient_id)
             result["tasks"]=[dict(id=r["id"],due_at=r["due_at"],owner_id=r["owner_id"],payload=json.loads(r["payload"])) for r in db.execute("SELECT * FROM tasks WHERE patient_id=?",(patient_id,))]
             result["history"]=[dict(id=r["id"],approved_at=r["approved_at"],display_sha256=r["display_sha256"]) for r in db.execute("SELECT id,approved_at,display_sha256 FROM bundles WHERE patient_id=? ORDER BY approved_at,id",(patient_id,))]
             result["mode"]="current";result["auth_generation"]=current["token_hash"]

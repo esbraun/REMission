@@ -19,7 +19,8 @@ def ref(identifier, version='2.0.0', digest=ZERO):
     return dict(id=identifier, version=version, sha256=digest)
 
 
-def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None, complete=False, service_owner=None):
+def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None, complete=False, service_owner=None,
+          run_name='obs2-fixture-run',threshold_concern=False):
     root.mkdir(parents=True, exist_ok=True)
     owner=service_owner or 'sim-owner'
     owner_role='doctor' if service_owner else 'simulated_clinician'
@@ -28,7 +29,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
     runtime = dict(image_sha256=ZERO, numerical_lock=ref('numerical'), service_lock=ref('service'), python_version='3.13.7',
                    numpy_version='2.5.4', prng='PCG64DXSM', seed_derivation='remission-seed-v1', precision='float64')
     producer = dict(id='obs2-wire-fixture', version='2.0.0', role='contract_fixture')
-    run_id, partition_id, patient_id = 'obs2-fixture-run', 'obs2-partition', 'SYN-02'
+    run_id, partition_id, patient_id = run_name, 'obs2-partition', 'SYN-02'
     records, entries, identities, typed_records = [], [], {}, []
     policy = ref('complete-fixed-no-prompt-mechanism')
     model = ref('explicit-no-estimator')
@@ -70,10 +71,10 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
     slots = derive_slots(schedule)
     schedule_ref = ref(schedule.id, digest=sha256(canonical(schedule.model_dump(mode='json'))))
 
-    def snapshot(identifier, at, *, held=False, version=1):
+    def snapshot(identifier, at, *, held=False, version=1, reason_code='clinician_concern'):
         elig = [dict(action=a, status='excluded' if held else 'eligible' if a == ('support_prompt' if prompt else 'no_prompt') else 'excluded', reasons=['hold' if held else 'fixed mechanism']) for a in ['support_prompt', 'no_prompt']]
         return add('decision_snapshot', at, identifier=identifier, cutoff=at.isoformat(), patient_version=version, state_version=version, consent_version=1, eligibility_version=version,
-                   workflow=dict(clinical='clinical_hold' if held else 'assessment', learning='none', data_readiness='ready', hold_reasons=['clinician_concern'] if held else [], support_policy=policy, support_mode='paused' if held else 'fixed'),
+                   workflow=dict(clinical='clinical_hold' if held else 'assessment', learning='none', data_readiness='ready', hold_reasons=[reason_code] if held else [], support_policy=policy, support_mode='paused' if held else 'fixed'),
                    view=dict(patient_id=patient_id, mode='current', snapshot_id=None), eligibility=elig, outcome='sleep_quality', horizon_days=1, estimand=ref('EST-MRT'), model=model, posterior=None, evidence=[], policy=policy)
 
     hold_records = []
@@ -82,13 +83,16 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
         predecessor = hold_records[-1] if hold_records else None
         predecessor_snap = next((r for r in history().records if predecessor and r.record_id == predecessor.snapshot_ref.record_id), None)
         held = seq == 1
-        hold_snap = snapshot('hold-snapshot-' + str(seq), at, held=held, version=seq + 2)
+        reason_code='experimental_stability_review' if threshold_concern else 'clinician_concern'
+        hold_snap = snapshot('hold-snapshot-' + str(seq), at, held=held, version=seq + 2,reason_code=reason_code)
         task = add('follow_up', at, identifier='hold-task-' + str(seq), owner=owner, due_at=(at + timedelta(days=1)).isoformat(), trigger='synthetic review required', status='pending', escalation_destination='sim-care-team')
         trigger = None
+        rule_id='accepted-observed-threshold' if threshold_concern else 'accepted-script-concern'
+        requirement_id='review-threshold' if threshold_concern else 'review-concern'
         if held:
-            trigger = add('hold_review_evidence', at, version='2.0.0', process='hold_review', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', evidence_type='trigger_observation', rule=ref('accepted-script-concern'), requirement=ref('review-concern'), actor_id=owner, actor_role=owner_role, origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=at.isoformat(), facts_refs=[], finding='simulated clinician concern, no hidden numeric coordinates', review_result='requires_hold', follow_up_refs=[exact_ref(task).model_dump()])
+            trigger = add('hold_review_evidence', at, version='2.0.0', process='hold_review', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', evidence_type='trigger_observation', rule=ref(rule_id), requirement=ref(requirement_id), actor_id=owner, actor_role=owner_role, origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=at.isoformat(), facts_refs=[], finding='simulated observed concern, no hidden numeric coordinates; threshold clearance law unspecified' if threshold_concern else 'simulated clinician concern, no hidden numeric coordinates', review_result='requires_hold', follow_up_refs=[exact_ref(task).model_dump()])
         bundle = add('hold_transition_bundle', at, version='2.0.0', process='hold_transition', substream='baseline' if not held else 'enter', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', transition_sequence=seq, transition_type='enter' if held else 'baseline', effective_at=at.isoformat(), snapshot_ref=exact_ref(hold_snap).model_dump(), predecessor_bundle_ref=exact_ref(predecessor).model_dump() if predecessor else None, predecessor_snapshot_ref=exact_ref(predecessor_snap).model_dump() if predecessor_snap else None,
-                     reason_codes=['clinician_concern'] if held else [], reason='simulated hold' if held else 'initial baseline', trigger_refs=[exact_ref(trigger).model_dump()] if trigger else [], changed_fact_refs=[], blocked_actions=['MED_A', 'MED_B', 'support_prompt', 'no_prompt'] if held else [], context_cutoff=at.isoformat(), causal_context_refs=[], context_projection_sha256=projection_hash(history(), at), policy=policy, model=model, eligibility_configuration=ref('paused-experiment-eligibility'), owner_id=owner, owner_role=owner_role, ownership_ref=exact_ref(patient).model_dump(), follow_up_refs=[exact_ref(task).model_dump()], required_reviews=[dict(requirement_id='review-concern',definition=ref('review-concern'),responsible_role='doctor',status='pending',evidence_refs=[])] if service_owner and held else [], review_refs=[], clearance=dict(status='pending' if held else 'not_applicable', rule=None, evidence_refs=[], assessment_snapshot_ref=None), evidence_roles=[dict(ref=exact_ref(trigger).model_dump(), role='transition_trigger')] if trigger else [])
+                     reason_codes=[reason_code] if held else [], reason='simulated hold' if held else 'initial baseline', trigger_refs=[exact_ref(trigger).model_dump()] if trigger else [], changed_fact_refs=[], blocked_actions=['MED_A', 'MED_B', 'support_prompt', 'no_prompt'] if held else [], context_cutoff=at.isoformat(), causal_context_refs=[], context_projection_sha256=projection_hash(history(), at), policy=policy, model=model, eligibility_configuration=ref('paused-experiment-eligibility'), owner_id=owner, owner_role=owner_role, ownership_ref=exact_ref(patient).model_dump(), follow_up_refs=[exact_ref(task).model_dump()], required_reviews=[dict(requirement_id=requirement_id,definition=ref(requirement_id),responsible_role='doctor',status='pending',evidence_refs=[])] if service_owner and held else [], review_refs=[], clearance=dict(status='pending' if held else 'not_applicable', rule=None, evidence_refs=[], assessment_snapshot_ref=None), evidence_roles=[dict(ref=exact_ref(trigger).model_dump(), role='transition_trigger')] if trigger else [])
         hold_records.append(bundle)
 
     if hold:

@@ -4,6 +4,9 @@ import copy
 from datetime import datetime, timezone
 from pathlib import Path
 import tempfile
+import os
+import sqlite3
+from concurrent.futures import ThreadPoolExecutor
 import unittest
 from fastapi.testclient import TestClient
 from services.foundation.app import Settings, create_app
@@ -11,6 +14,7 @@ from services.foundation.cli import seed, DEMO_PASSWORDS
 from services.foundation.store import Store
 from services.foundation.admission import AdmissionError
 from live_helpers import fresh_store,live_fixture,ref
+from live_process_helpers import CONTEXT,service_process
 
 NOW=datetime(2026,10,21,12,tzinfo=timezone.utc)
 ORIGIN='http://127.0.0.1:8765'
@@ -216,6 +220,64 @@ class LiveWorkflowTests(unittest.TestCase):
         state=self.safety_state()
         retry=self.client.post('/api/observed-archives/fixture-export',json={'mode':'clinical_observation_import'},headers=self.headers('project'))
         self.assertEqual(retry.status_code,200,retry.text);self.assertEqual(receipt,retry.json());self.assertEqual(state,self.safety_state())
+
+    def http_login(self,client):
+        response=client.get('/api/session');self.assertEqual(response.status_code,200,response.text)
+        response=client.post('/api/login',json=dict(username='alice',password=DEMO_PASSWORDS['alice']),headers={'Origin':ORIGIN,'X-CSRF-Token':response.json()['csrf']})
+        self.assertEqual(response.status_code,200,response.text)
+        return {'Origin':ORIGIN,'X-CSRF-Token':response.json()['csrf']}
+
+    def approval_request(self):
+        s=self.client.get('/api/patients/SYN-02').json()['snapshot']
+        return dict(decision_id=s['record_id'],expected_patient_version=s['patient_version'],expected_state_version=s['state_version'],
+            expected_consent_version=s['consent_version'],expected_eligibility_version=s['eligibility_version'],mode='current',option='usual_care',
+            rationale='Explicit ordinary synthetic choice',follow_up_at='2026-10-22T12:00:00+00:00',purpose='ordinary_treatment')
+
+    def test_LH13_real_two_process_received_writer_blocked_gate_prevents_ready_or_approval(self):
+        import httpx
+        admitted=CONTEXT.Event()
+        def boundary(point):
+            if point=='after_hold_admission':admitted.set()
+        first=replace(self.settings,fault=boundary);second=replace(self.settings,admission_timeout=.25)
+        approval=self.approval_request()
+        with service_process(first) as (url_a,_),service_process(second) as (url_b,_),httpx.Client(base_url=url_a,timeout=15) as a,httpx.Client(base_url=url_b,timeout=15) as b:
+            headers_a=self.http_login(a);headers_b=self.http_login(b)
+            headers_a['Idempotency-Key']='process-entry';headers_b['Idempotency-Key']='process-approval'
+            writer=sqlite3.connect(self.store.path,isolation_level=None);writer.execute('BEGIN IMMEDIATE')
+            try:
+                with ThreadPoolExecutor(max_workers=1) as executor:
+                    future=executor.submit(a.post,'/api/patients/SYN-02/live-holds',json=self.command,headers=headers_a)
+                    self.assertTrue(admitted.wait(10),'hold never crossed authenticated R barrier')
+                    current=b.get('/api/patients/SYN-02');self.assertEqual(current.status_code,503,current.text)
+                    self.assertEqual(current.json()['code'],'safety_admission_busy')
+                    response=b.post('/api/patients/SYN-02/approve',json=approval,headers=headers_b)
+                    self.assertEqual(response.status_code,503,response.text)
+                    self.assertEqual(writer.execute('SELECT count(*) FROM live_hold_operations').fetchone()[0],0)
+                    writer.rollback()
+                    held=future.result(15);self.assertEqual(held.status_code,200,held.text)
+                    response=b.post('/api/patients/SYN-02/approve',json=approval,headers=headers_b)
+                    self.assertEqual(response.status_code,409,response.text)
+            finally:
+                writer.rollback();writer.close()
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM bundles').fetchone()[0],0)
+            self.assertEqual(db.execute('SELECT count(*) FROM live_hold_operations').fetchone()[0],1)
+
+    def test_actual_process_death_precommit_and_aftercommit_release_os_gate(self):
+        import httpx
+        for point,expected in [('after_hold_episode',0),('after_hold_commit',1)]:
+            def crash(name):
+                if name==point:os._exit(77)
+            with service_process(replace(self.settings,fault=crash)) as (url,process),httpx.Client(base_url=url,timeout=15) as client:
+                headers=self.http_login(client);headers['Idempotency-Key']='crash-entry'
+                with self.assertRaises(httpx.RemoteProtocolError):
+                    client.post('/api/patients/SYN-02/live-holds',json=self.command,headers=headers)
+                process.join(10);self.assertEqual(process.exitcode,77)
+            with self.store.transaction() as db:
+                self.assertEqual(db.execute('SELECT count(*) FROM live_hold_operations').fetchone()[0],expected)
+                self.assertEqual(db.execute('SELECT count(*) FROM live_hold_tasks').fetchone()[0],expected)
+        result=self.enter('crash-entry')
+        self.assertEqual(result['live_received_at'],'2026-10-21T12:00:00+00:00')
 
 
 if __name__=='__main__':

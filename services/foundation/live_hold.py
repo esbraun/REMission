@@ -49,6 +49,25 @@ def archive_history(db, archive_id, partition_id, patient_id):
         kind='observed_history',patient_id=patient_id,records=[json.loads(r[0]) for r in rows])))
 
 
+def current_archive_history(settings,db,archive_id,partition_id,patient_id):
+    """Resolve exact heads across only installed, stored package revisions."""
+    selected=[g for g in settings.installed.authority.grants if g.archive_id==archive_id and g.partition_id==partition_id and g.service_patient_id==patient_id]
+    if not selected:return archive_history(db,archive_id,partition_id,patient_id)
+    origins={(g.run_id,g.partition_id,g.source_id,g.source_version,g.account_id) for g in selected}
+    records={}
+    for grant in settings.installed.authority.grants:
+        if (grant.run_id,grant.partition_id,grant.source_id,grant.source_version,grant.account_id) not in origins or grant.service_patient_id!=patient_id:
+            continue
+        stored=db.execute('SELECT export_sha256 FROM observed_archives WHERE id=? AND owner_id=?',(grant.archive_id,grant.account_id)).fetchone()
+        if stored is None or stored[0]!=grant.package_sha256:continue
+        for row in db.execute('SELECT record_id,payload FROM observed_archive_entries WHERE archive_id=? AND partition_id=? AND patient_id=? ORDER BY ordinal',(grant.archive_id,partition_id,patient_id)):
+            value=json.loads(row['payload'])
+            if row['record_id'] in records and records[row['record_id']]!=value:
+                raise LiveError('hold_evidence_stale')
+            records[row['record_id']]=value
+    return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0',synthetic=True,kind='observed_history',patient_id=patient_id,records=list(records.values()))))
+
+
 def configured_archive(settings, db, archive_id, owner):
     stored=db.execute('SELECT * FROM observed_archives WHERE id=? AND owner_id=?',(archive_id,owner)).fetchone()
     if stored is None:
@@ -70,7 +89,7 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
         raise LiveError('independent_hold_live_integration_required')
     if _verified_package is None:
         stored,manifest,partitions,archive_authority=configured_archive(settings,db,data.archive_id,owner)
-        history=archive_history(db,data.archive_id,data.partition_id,patient_id)
+        history=current_archive_history(settings,db,data.archive_id,data.partition_id,patient_id)
     else:
         stored=dict(export_sha256=digest(_verified_package.raw))
         manifest,partitions,archive_authority=_verified_package.manifest,_verified_package.partitions,_verified_package.authority
@@ -79,6 +98,9 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
             raise LiveError('hold_dependencies_unavailable')
     if manifest.cutoff>at:
         raise LiveError('future_hold_evidence',422)
+    if installed.authority.execution!='contract_fixture' and (manifest.execution=='contract_fixture'
+            or archive_authority.allow_contract_fixture or archive_authority.producer_qualification is None):
+        raise LiveError('actual_live_producer_qualification_required')
     try:
         bundle=resolve(history,data.bundle_ref,{'hold_transition_bundle'},cutoff=at,inclusive=True)
         validate_hold(history,bundle,cutoff=at)
@@ -262,13 +284,15 @@ def current_input(db, patient_id, owner, episode_id, data):
 def installed_rules(settings,e):
     selected=[r for r in settings.installed.review_rules.rules if r.trigger_rule.model_dump(mode='json') in e['trigger_rules']]
     complete=all(any(r.trigger_rule.model_dump(mode='json')==t for r in selected) for t in e['trigger_rules'])
+    complete &= all(any(r.requirement_id==o['requirement_id'] and r.definition.model_dump(mode='json')==o['definition']
+        for rule in selected for r in rule.requirements) for o in e['obligations'])
     return selected,complete
 
 
 def evidence_access(db, settings, patient_id, owner, episode_id, ref, at):
     if ref.store=='archive':
         stored,_,_,_=configured_archive(settings,db,ref.namespace_id,owner)
-        h=archive_history(db,ref.namespace_id,ref.partition_id,patient_id)
+        h=current_archive_history(settings,db,ref.namespace_id,ref.partition_id,patient_id)
         from contracts.domain.observed_v2 import ExactRef
         value=resolve(h,ExactRef(record_id=ref.record_id,payload_sha256=ref.payload_sha256),cutoff=at,inclusive=True)
         receipt_id=ref.namespace_id;receipt_sha256=digest(stored['receipt'])
