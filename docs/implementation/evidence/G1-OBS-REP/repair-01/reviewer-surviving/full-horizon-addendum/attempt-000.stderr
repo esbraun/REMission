@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/app/.review-artifacts/complete-horizon-addendum/probe.py", line 42, in <module>
+    f=ns['build'](OUT/'wire',cutoff=END)
+  File "own-fixture-complete-day-1", line 65, in build
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ScheduleInputV2
+  Value error, time-zero local/UTC mapping mismatch [type=value_error, input_value={'catalog': {'id': 'DGP-C....0'}, 'unit_id': 'unit'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error

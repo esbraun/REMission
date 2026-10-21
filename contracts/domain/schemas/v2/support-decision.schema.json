@@ -1,0 +1,433 @@
+{
+  "$defs": {
+    "Eligibility": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "eligible",
+            "excluded",
+            "requires_prescriber_review"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "status",
+        "reasons"
+      ],
+      "title": "Eligibility",
+      "type": "object"
+    },
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "OutcomeWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "assessment_at": {
+          "format": "date-time",
+          "title": "Assessment At",
+          "type": "string"
+        },
+        "endpoint_definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "ends_at": {
+          "format": "date-time",
+          "title": "Ends At",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "local_date": {
+          "format": "date",
+          "title": "Local Date",
+          "type": "string"
+        },
+        "starts_at": {
+          "format": "date-time",
+          "title": "Starts At",
+          "type": "string"
+        },
+        "timezone": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "starts_at",
+        "ends_at",
+        "assessment_at",
+        "timezone",
+        "local_date",
+        "endpoint_definition"
+      ],
+      "title": "OutcomeWindow",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:2.0.0:support-decision",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assignment_id": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Assignment Id"
+    },
+    "availability": {
+      "enum": [
+        "unavailable",
+        "deterministic",
+        "randomized"
+      ],
+      "title": "Availability",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "context": {
+      "items": {
+        "$ref": "#/$defs/ExactRef"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "context_mapping": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "context_projection_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Context Projection Sha256",
+      "type": "string"
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "decision_index": {
+      "minimum": 0,
+      "title": "Decision Index",
+      "type": "integer"
+    },
+    "decision_snapshot": {
+      "$ref": "#/$defs/ExactRef"
+    },
+    "distribution_persisted_at": {
+      "format": "date-time",
+      "title": "Distribution Persisted At",
+      "type": "string"
+    },
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Duplicate Of"
+    },
+    "eligibility": {
+      "items": {
+        "$ref": "#/$defs/Eligibility"
+      },
+      "title": "Eligibility",
+      "type": "array"
+    },
+    "event_at": {
+      "format": "date-time",
+      "title": "Event At",
+      "type": "string"
+    },
+    "execution_receipt": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "kind": {
+      "const": "support_decision",
+      "title": "Kind",
+      "type": "string"
+    },
+    "lineage_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Lineage Id",
+      "type": "string"
+    },
+    "mechanism": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "mode": {
+      "enum": [
+        "fixed",
+        "mrt",
+        "adaptive",
+        "frozen",
+        "paused"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "outcome_link_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Outcome Link Id",
+      "type": "string"
+    },
+    "outcome_window": {
+      "$ref": "#/$defs/OutcomeWindow"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "probabilities": {
+      "additionalProperties": {
+        "maximum": 1,
+        "minimum": 0,
+        "type": "number"
+      },
+      "propertyNames": {
+        "enum": [
+          "support_prompt",
+          "no_prompt"
+        ]
+      },
+      "title": "Probabilities",
+      "type": "object"
+    },
+    "probability_tolerance": {
+      "const": 1e-12,
+      "title": "Probability Tolerance",
+      "type": "number"
+    },
+    "record_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_status": {
+      "enum": [
+        "active",
+        "corrected",
+        "retracted"
+      ],
+      "title": "Record Status",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "revision": {
+      "exclusiveMinimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Supersedes"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "unavailable_reasons": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Unavailable Reasons",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "record_id",
+    "patient_id",
+    "event_at",
+    "recorded_at",
+    "available_at",
+    "source",
+    "lineage_id",
+    "revision",
+    "supersedes",
+    "duplicate_of",
+    "record_status",
+    "kind",
+    "decision_snapshot",
+    "decision_index",
+    "cutoff",
+    "context",
+    "context_projection_sha256",
+    "context_mapping",
+    "policy",
+    "mechanism",
+    "mode",
+    "eligibility",
+    "availability",
+    "unavailable_reasons",
+    "probabilities",
+    "probability_tolerance",
+    "assignment_id",
+    "distribution_persisted_at",
+    "execution_receipt",
+    "outcome_window",
+    "outcome_link_id"
+  ],
+  "title": "SupportDecision",
+  "type": "object"
+}

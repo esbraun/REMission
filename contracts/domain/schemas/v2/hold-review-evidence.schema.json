@@ -1,0 +1,301 @@
+{
+  "$defs": {
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:2.0.0:hold-review-evidence",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actor_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Actor Id",
+      "type": "string"
+    },
+    "actor_role": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Actor Role",
+      "type": "string"
+    },
+    "assessed_at": {
+      "format": "date-time",
+      "title": "Assessed At",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Duplicate Of"
+    },
+    "event_at": {
+      "format": "date-time",
+      "title": "Event At",
+      "type": "string"
+    },
+    "evidence_type": {
+      "enum": [
+        "trigger_observation",
+        "review",
+        "clearance"
+      ],
+      "title": "Evidence Type",
+      "type": "string"
+    },
+    "facts_refs": {
+      "items": {
+        "$ref": "#/$defs/ExactRef"
+      },
+      "title": "Facts Refs",
+      "type": "array"
+    },
+    "finding": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Finding",
+      "type": "string"
+    },
+    "follow_up_refs": {
+      "items": {
+        "$ref": "#/$defs/ExactRef"
+      },
+      "title": "Follow Up Refs",
+      "type": "array"
+    },
+    "hold_episode_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Hold Episode Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "hold_review_evidence",
+      "title": "Kind",
+      "type": "string"
+    },
+    "lineage_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Lineage Id",
+      "type": "string"
+    },
+    "origin": {
+      "const": "simulation",
+      "title": "Origin",
+      "type": "string"
+    },
+    "ownership_ref": {
+      "$ref": "#/$defs/ExactRef"
+    },
+    "partition_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Partition Id",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "record_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_status": {
+      "enum": [
+        "active",
+        "corrected",
+        "retracted"
+      ],
+      "title": "Record Status",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "requirement": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "review_result": {
+      "enum": [
+        "pending",
+        "requires_hold",
+        "requirements_satisfied"
+      ],
+      "title": "Review Result",
+      "type": "string"
+    },
+    "revision": {
+      "exclusiveMinimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "rule": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Supersedes"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "record_id",
+    "patient_id",
+    "event_at",
+    "recorded_at",
+    "available_at",
+    "source",
+    "lineage_id",
+    "revision",
+    "supersedes",
+    "duplicate_of",
+    "record_status",
+    "kind",
+    "run_id",
+    "partition_id",
+    "hold_episode_id",
+    "evidence_type",
+    "rule",
+    "requirement",
+    "actor_id",
+    "actor_role",
+    "origin",
+    "ownership_ref",
+    "assessed_at",
+    "facts_refs",
+    "finding",
+    "review_result",
+    "follow_up_refs"
+  ],
+  "title": "HoldReviewEvidenceV2",
+  "type": "object"
+}

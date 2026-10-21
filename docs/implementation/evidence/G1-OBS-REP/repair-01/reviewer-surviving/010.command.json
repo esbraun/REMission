@@ -1,0 +1,31 @@
+{
+  "args": [
+    "docker",
+    "run",
+    "--rm",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges:true",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=128m",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-obs2-code-review-astra-20261021/.review-artifacts/https-clone,target=/app,readonly",
+    "--workdir",
+    "/app",
+    "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+    "python",
+    "docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-code-review-astra-20261021\\.review-artifacts\\https-clone",
+  "exit": 1,
+  "stdout_sha256": "02723b61c9d9836a8f83be58a7811b8866f02e484011b9769056e963097c39a3",
+  "stderr_sha256": "089c3ded87d14ab564cb4ca9b918d8cea4593595dd965ecd6cc00d9a1045973d"
+}

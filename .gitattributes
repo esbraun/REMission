@@ -92,3 +92,39 @@ docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/runn
 docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-wrong-author-path-95a.json -text whitespace=cr-at-eol
 docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-review-95a.md -text whitespace=cr-at-eol
 docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-evidence-manifest-95a.json -text whitespace=cr-at-eol
+
+# OBS-REP-02 new source uses reproducible bytes; raw evidence is preserved.
+contracts/domain/*_v2.py text eol=lf
+contracts/domain/schemas/v2/** text eol=lf
+contracts/domain/dictionary-v2.json text eol=lf
+tests/contracts/test_observed_v2.py text eol=lf
+docs/implementation/evidence/G1-OBS-REP/implementation/*.py text eol=lf
+docs/implementation/evidence/G1-OBS-REP/implementation/checks/*.log binary
+docs/implementation/evidence/G1-OBS-REP/implementation/checks/*.json -text
+docs/implementation/evidence/G1-OBS-REP/implementation/*-raw.md -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-OBS-REP/implementation/*-raw.json -text whitespace=cr-at-eol
+docs/implementation/g1-observed-representation-proposal-r1-20261021.md -text whitespace=cr-at-eol
+docs/implementation/g1-observed-representation-proposal-20261021.md -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-OBS-REP/R1/source-evidence.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-OBS-REP/implementation/curated-attempts/**/*.log binary
+docs/implementation/evidence/G1-OBS-REP/implementation/curated-attempts/**/*.json -text
+docs/implementation/evidence/G1-OBS-REP/implementation/clone-attempts/**/*.log binary
+docs/implementation/evidence/G1-OBS-REP/implementation/clone-attempts/**/*.json -text
+docs/implementation/evidence/G1-OBS-REP/implementation/accepted-source-manifest.json text eol=lf
+# Final evidence metadata has declared reproducible bytes on every checkout.
+docs/implementation/evidence/G1-OBS-REP/implementation/README.md text eol=lf
+docs/implementation/evidence/G1-OBS-REP/implementation/checkpoint.md text eol=lf
+docs/implementation/evidence/G1-OBS-REP/implementation/raw-manifest.json text eol=lf
+# OBS2 repair checks are distinct from the frozen first candidate evidence.
+docs/implementation/evidence/G1-OBS-REP/repair-01/*.py text eol=lf
+docs/implementation/evidence/G1-OBS-REP/repair-01/*.md text eol=lf
+docs/implementation/evidence/G1-OBS-REP/repair-01/*.json text eol=lf
+docs/implementation/evidence/G1-OBS-REP/repair-01/checks/*.log binary
+docs/implementation/evidence/G1-OBS-REP/repair-01/checks/*.json -text
+docs/implementation/evidence/G1-OBS-REP/repair-01/reviewer/* -text whitespace=cr-at-eol
+docs/implementation/evidence/G1-OBS-REP/repair-01/reviewer/*.log binary
+docs/implementation/evidence/G1-OBS-REP/repair-01/reviewer-surviving/** binary
+docs/implementation/evidence/G1-OBS-REP/repair-01/curated-attempts/**/*.log binary
+docs/implementation/evidence/G1-OBS-REP/repair-01/curated-attempts/**/*.json -text
+docs/implementation/evidence/G1-OBS-REP/repair-01/clone-attempts/**/*.log binary
+docs/implementation/evidence/G1-OBS-REP/repair-01/clone-attempts/**/*.json -text

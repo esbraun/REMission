@@ -1,0 +1,120 @@
+"""Own isolated images/volumes; actual UID probes without host/source mounts."""
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = Path(__file__).resolve().parent
+PREFIX = 'remission-obs2-astra-review-20261021'
+LABEL = 'remission.task=obs2-astra-review-20261021'
+
+
+def main():
+    attempts = OUT / 'curated-attempts'
+    attempts.mkdir(exist_ok=True)
+    directory = attempts / f'{len(list(attempts.iterdir())):03d}'
+    directory.mkdir(exist_ok=False)
+    commands = []
+    containers, volumes, networks = [], [], []
+
+    def run(command, *, check=True):
+        number = len(commands)
+        start = datetime.now(timezone.utc).isoformat()
+        result = subprocess.run(command, cwd=ROOT, capture_output=True)
+        (directory / f'{number:03d}.stdout.log').write_bytes(result.stdout)
+        (directory / f'{number:03d}.stderr.log').write_bytes(result.stderr)
+        commands.append(dict(command=command, cwd=str(ROOT), started_at=start, finished_at=datetime.now(timezone.utc).isoformat(), exit_code=result.returncode,
+                             stdout_sha256=hashlib.sha256(result.stdout).hexdigest(), stderr_sha256=hashlib.sha256(result.stderr).hexdigest()))
+        (directory / 'commands.json').write_bytes((json.dumps(commands, indent=2) + '\n').encode())
+        if check and result.returncode:
+            raise RuntimeError(f'curated command {number} failed: ' + result.stderr.decode(errors='replace'))
+        return result.stdout.decode().strip()
+
+    limits = ['--cpus', '2', '--memory', '2g', '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges:true', '--tmpfs', '/tmp:rw,noexec,nosuid,size=128m']
+    stem = PREFIX + '-' + directory.name
+    images = {role: PREFIX + '-' + role + ':candidate' for role in ['service', 'learner', 'evaluator', 'tests', 'client']}
+    try:
+        lock = ROOT / 'web/package-lock.json'
+        original_lock = subprocess.check_output(['git', 'show', '6bc8bd998e8a0baaef9884998e740665fb5fd7b1:web/package-lock.json'], cwd=ROOT)
+        assert lock.read_bytes() == original_lock, 'pinned package lock changed'
+        from urllib.parse import urlparse
+        assert {urlparse(p['resolved']).hostname for p in json.loads(original_lock)['packages'].values() if 'resolved' in p} == {'registry.npmjs.org'}
+        for role in ['service', 'tests', 'learner', 'evaluator']:
+            file = 'service' if role == 'tests' else role
+            target = ['--target', 'integration-tests'] if role == 'tests' else []
+            # Root explicitly authorized pinned npm tarball acquisition after
+            # attempt000 failed offline. Consumer execution remains network none.
+            run(['docker', 'build', '--network', 'default' if role in ('service', 'tests') else 'none', '--file', f'tooling/foundation/{file}.Dockerfile', *target, '--tag', images[role], '.'])
+        run(['docker', 'build', '--network', 'default', '--file', 'tooling/foundation/service.Dockerfile', '--target', 'client', '--tag', images['client'], '.'])
+        run(['docker', 'run', '--rm', '--name', stem + '-node-lock', '--label', LABEL, '--network', 'none', *limits, images['client'], 'node', '-e',
+             "const fs=require('fs'),crypto=require('crypto');const b=fs.readFileSync('/client/package-lock.json');if(crypto.createHash('sha256').update(b).digest('hex')!=='" + hashlib.sha256(original_lock).hexdigest() + "')process.exit(1);console.log(process.version);console.log(JSON.stringify(require('/client/package.json')))"])
+        run(['docker', 'run', '--rm', '--name', stem + '-node-packages', '--label', LABEL, '--network', 'none', *limits, images['client'], 'npm', 'ls', '--all', '--json'])
+        fixture = directory / 'public-v2'
+        sys.path.insert(0, str(ROOT / 'tests/run_contracts'))
+        # Host lacks Pydantic; generate fixtures inside the qualified numerical
+        # runtime, writing only our new public wire-fixture evidence directory.
+        run(['docker', 'run', '--rm', '--name', stem + '-prepare', '--label', LABEL, '--network', 'none', '--cpus', '2', '--memory', '2g',
+             '--mount', f'type=bind,source={ROOT.as_posix()},target=/app,readonly', '--mount', f'type=bind,source={directory.as_posix()},target=/out',
+             '--workdir', '/app', 'sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa', 'python', '-c',
+             "import sys;sys.path.insert(0,'tests/run_contracts');from observed_v2_fixtures import build;from pathlib import Path;build(Path('/out/public-v2'),hold=True);print('public contract fixture prepared; no producer qualification')"])
+        truth, public = stem + '-truth', stem + '-public'
+        for volume in [truth, public]:
+            run(['docker', 'volume', 'create', '--label', LABEL, volume]); volumes.append(volume)
+        # Trusted setup copies hand-authored public bytes; consumers get volumes
+        # only. The canary truth directory is owned exclusively by UID20000.
+        seed_name = stem + '-seed'
+        run(['docker', 'create', '--name', seed_name, '--label', LABEL, '--network', 'none', '--cpus', '2', '--memory', '2g', '--user', '0:0',
+             '--mount', f'type=volume,source={truth},target=/truth', '--mount', f'type=volume,source={public},target=/public-v2',
+             'sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa', 'python', '-c',
+             "import os;from pathlib import Path;p=Path('/truth');os.chown(p,20000,20000);os.chmod(p,0o700);p.joinpath('canary.json').write_text('{\"kind\":\"private_foundation_canary\"}');os.chown(p/'canary.json',20000,20000);os.chmod(p/'canary.json',0o600)"])
+        containers.append(seed_name)
+        run(['docker', 'cp', str(fixture) + '/.', seed_name + ':/public-v2/'])
+        run(['docker', 'start', '--attach', seed_name])
+        network = stem + '-private'
+        run(['docker', 'network', 'create', '--internal', '--label', LABEL, network]); networks.append(network)
+        evaluator = stem + '-evaluator'
+        run(['docker', 'run', '--detach', '--name', evaluator, '--label', LABEL, '--network', network, *limits,
+             '--mount', f'type=volume,source={truth},target=/truth,readonly', images['evaluator']]); containers.append(evaluator)
+        private_ip = json.loads(run(['docker', 'inspect', evaluator]))[0]['NetworkSettings']['Networks'][network]['IPAddress']
+        run(['docker', 'exec', evaluator, 'python', '/app/evaluator_canary.py', 'read'])
+        run(['docker', 'exec', evaluator, 'python', '-c', "import urllib.request;assert urllib.request.urlopen('http://127.0.0.1:8766').status==200;print('positive private evaluator network control')"])
+        inventory = {}
+        for role in ['service', 'learner']:
+            name = stem + '-' + role
+            run(['docker', 'create', '--name', name, '--label', LABEL, '--network', 'none', *limits, '--env', 'OBS2_EVALUATOR_IP=' + private_ip,
+                 '--mount', f'type=volume,source={truth},target=/truth,readonly', '--mount', f'type=volume,source={public},target=/public-v2,readonly',
+                 images[role], 'python', '/app/observed_v2_probe.py']); containers.append(name)
+            state = json.loads(run(['docker', 'inspect', name]))[0]
+            assert state['Config']['User'] == ('10001:10001' if role == 'service' else '10002:10002')
+            assert all(m['Type'] == 'volume' and not m['RW'] for m in state['Mounts'])
+            assert state['HostConfig']['NetworkMode'] == 'none' and state['HostConfig']['ReadonlyRootfs']
+            inventory[role] = dict(image=state['Image'], user=state['Config']['User'], mounts=state['Mounts'], network='none', source_mount=False)
+            run(['docker', 'start', '--attach', name])
+            assert run(['docker', 'inspect', '--format', '{{.State.ExitCode}}', name]) == '0'
+            # Check actual copied bytes from this image, without source mounts.
+            paths = ['contracts/domain/' + f for f in ['__init__.py', 'common.py', 'entities.py', 'boundaries.py', 'estimands.py', 'observed_v2.py', 'evidence_v2.py']]
+            paths += ['contracts/runs/' + f for f in ['__init__.py', 'common.py', 'observed.py', 'admission.py', 'bindings-v1.json', 'observed_v2.py', 'coverage_v2.py', 'admission_v2.py', 'bindings-v2.json']]
+            paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / ('services/foundation' if role == 'service' else 'services/learner')).rglob('*.py') if '__pycache__' not in p.parts]
+            if role == 'service':
+                paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'services/foundation/migrations').glob('*.sql')]
+            expected = {'/app/' + p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}
+            script = 'import hashlib,json;from pathlib import Path;expected=' + repr(expected) + ';actual={p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in expected};assert actual==expected;print(json.dumps(actual,sort_keys=True))'
+            run(['docker', 'run', '--rm', '--name', stem + '-' + role + '-audit', '--label', LABEL, '--network', 'none', *limits, images[role], 'python', '-c', script])
+            inventory[role]['exact_source_sha256'] = expected
+        (directory / 'inventory.json').write_bytes((json.dumps(dict(head=run(['git', 'rev-parse', 'HEAD']), dirty=run(['git', 'status', '--porcelain']), roles=inventory,
+                                                                  limitation='Wire fixtures only; no production/statistical qualification'), indent=2) + '\n').encode())
+        print('PASS: curated service UID10001 actual cookie route and learner UID10002 v2 admission; no-source-mount exact-image byte audit; private file/import/network/write denial; positive evaluator controls')
+    finally:
+        for name in reversed(containers):
+            run(['docker', 'rm', '--force', name], check=False)
+        for name in reversed(networks):
+            run(['docker', 'network', 'rm', name], check=False)
+        for name in reversed(volumes):
+            run(['docker', 'volume', 'rm', name], check=False)
+
+
+if __name__ == '__main__':
+    main()

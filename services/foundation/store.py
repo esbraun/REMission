@@ -37,7 +37,8 @@ class Store:
             db.execute("PRAGMA journal_mode=WAL")
             migration = Path(__file__).with_name("migrations") / "001_foundation.sql"
             db.executescript(migration.read_text(encoding="utf-8"))
-            for table in ["events", "decisions", "bundles", "tasks", "receipts", "ingestion_receipts", "state_changes"]:
+            db.executescript((migration.parent / "002_observed_archive.sql").read_text(encoding="utf-8"))
+            for table in ["events", "decisions", "bundles", "tasks", "receipts", "ingestion_receipts", "state_changes", "observed_archives", "observed_archive_entries", "observed_archive_artifacts"]:
                 for operation in ["UPDATE", "DELETE"]:
                     db.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT,'immutable_record'); END")
 

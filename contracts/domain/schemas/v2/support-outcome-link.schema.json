@@ -1,0 +1,402 @@
+{
+  "$defs": {
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "OperationalBurden": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "pending",
+            "missing"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "offered_prompt_count",
+            "delivered_prompt_count"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "unit": {
+          "const": "count",
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "definition",
+        "type",
+        "unit",
+        "status",
+        "value",
+        "source_refs"
+      ],
+      "title": "OperationalBurden",
+      "type": "object"
+    },
+    "Reward": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_refs": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Definition Refs",
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "field": {
+          "const": "sleep_quality",
+          "title": "Field",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        },
+        "report_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "pending",
+            "missing",
+            "undefined"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "unit": {
+          "const": "quality_points",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "report_ref",
+        "field",
+        "unit",
+        "reason",
+        "evidence_refs",
+        "definition_refs"
+      ],
+      "title": "Reward",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:2.0.0:support-outcome-link",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assessment_at": {
+      "format": "date-time",
+      "title": "Assessment At",
+      "type": "string"
+    },
+    "assignment_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExactRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "burden": {
+      "items": {
+        "$ref": "#/$defs/OperationalBurden"
+      },
+      "title": "Burden",
+      "type": "array"
+    },
+    "delivered_closure_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExactRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Duplicate Of"
+    },
+    "evaluated_as_of": {
+      "format": "date-time",
+      "title": "Evaluated As Of",
+      "type": "string"
+    },
+    "event_at": {
+      "format": "date-time",
+      "title": "Event At",
+      "type": "string"
+    },
+    "kind": {
+      "const": "support_outcome_link",
+      "title": "Kind",
+      "type": "string"
+    },
+    "lineage_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Lineage Id",
+      "type": "string"
+    },
+    "offered_closure_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExactRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "record_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_status": {
+      "enum": [
+        "active",
+        "corrected",
+        "retracted"
+      ],
+      "title": "Record Status",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "revision": {
+      "exclusiveMinimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "reward": {
+      "$ref": "#/$defs/Reward"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Supersedes"
+    },
+    "support_decision": {
+      "$ref": "#/$defs/ExactRef"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "window_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Window Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "record_id",
+    "patient_id",
+    "event_at",
+    "recorded_at",
+    "available_at",
+    "source",
+    "lineage_id",
+    "revision",
+    "supersedes",
+    "duplicate_of",
+    "record_status",
+    "kind",
+    "support_decision",
+    "assignment_ref",
+    "window_id",
+    "assessment_at",
+    "evaluated_as_of",
+    "reward",
+    "burden",
+    "offered_closure_ref",
+    "delivered_closure_ref"
+  ],
+  "title": "SupportOutcomeLink",
+  "type": "object"
+}

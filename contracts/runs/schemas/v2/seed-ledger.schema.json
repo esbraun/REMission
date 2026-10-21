@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "StreamKey": {
+      "additionalProperties": false,
+      "description": "Complete accepted key material; words and digest are verified, not trusted.",
+      "properties": {
+        "key_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Key Sha256",
+          "type": "string"
+        },
+        "namespace": {
+          "enum": [
+            "generation",
+            "assignment",
+            "measurement",
+            "missingness",
+            "fitting",
+            "posterior_rollout",
+            "truth"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "fixture",
+            "calibration",
+            "pilot",
+            "smoke",
+            "development",
+            "confirmation"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "root_seed": {
+          "const": 20261020,
+          "title": "Root Seed",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "stream": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Stream",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        },
+        "words": {
+          "items": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 8,
+          "minItems": 8,
+          "title": "Words",
+          "type": "array"
+        }
+      },
+      "required": [
+        "root_seed",
+        "protocol",
+        "phase",
+        "namespace",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process",
+        "stream",
+        "words",
+        "key_sha256"
+      ],
+      "title": "StreamKey",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:seed-ledger",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": "2.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "keys": {
+      "items": {
+        "$ref": "#/$defs/StreamKey"
+      },
+      "minItems": 1,
+      "title": "Keys",
+      "type": "array"
+    },
+    "kind": {
+      "const": "seed_ledger",
+      "title": "Kind",
+      "type": "string"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "contract_version",
+    "run_id",
+    "keys"
+  ],
+  "title": "SeedLedgerV2",
+  "type": "object"
+}

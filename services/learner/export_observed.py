@@ -1,12 +1,17 @@
 """Typed admission of synthetic observed exports; no opaque source blobs."""
 import hashlib
+import json
 from pathlib import Path
 from contracts.domain.boundaries import ObservedHistory
 
 
 def admit(source: Path, destination: Path):
     raw=source.read_bytes()
-    observed=ObservedHistory.model_validate_json(raw)
+    if json.loads(raw).get('schema_version') == '2.0.0':
+        from contracts.domain.observed_v2 import ObservedHistoryV2
+        observed=ObservedHistoryV2.model_validate_json(raw)
+    else:
+        observed=ObservedHistory.model_validate_json(raw)
     # The export consists only of the accepted schema. Extra fields in either
     # the wrapper or any record fail before an observed artifact is written.
     payload=observed.model_dump_json().encode()

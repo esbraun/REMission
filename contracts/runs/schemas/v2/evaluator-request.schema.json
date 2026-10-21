@@ -1,0 +1,1225 @@
+{
+  "$defs": {
+    "AnalyticTarget": {
+      "additionalProperties": false,
+      "description": "Native standalone Layer A quantities; not catalog n60/n240 or clinical ISI.",
+      "properties": {
+        "fixture": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Fixture",
+          "type": "string"
+        },
+        "fixture_manifest": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "kind": {
+          "const": "analytic_fixture",
+          "title": "Kind",
+          "type": "string"
+        },
+        "quantity": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Quantity",
+          "type": "string"
+        },
+        "unit": {
+          "const": "fixture_native_units",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "fixture",
+        "quantity",
+        "unit",
+        "fixture_manifest"
+      ],
+      "title": "AnalyticTarget",
+      "type": "object"
+    },
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "BindingsV2": {
+      "additionalProperties": false,
+      "properties": {
+        "analytic_fixtures": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "calibration_schema": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "catalog": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "dgp": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "domain_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "equations": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "observed_representation": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "parameters": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "probability_precision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "run_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "scenarios": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "temporal": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "timing": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "protocol",
+        "dgp",
+        "parameters",
+        "equations",
+        "scenarios",
+        "catalog",
+        "timing",
+        "temporal",
+        "calibration_schema",
+        "analytic_fixtures",
+        "probability_precision",
+        "observed_representation",
+        "domain_schema_set",
+        "run_schema_set"
+      ],
+      "title": "BindingsV2",
+      "type": "object"
+    },
+    "ClinicalTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "estimand": {
+          "$ref": "#/$defs/EstimandContract"
+        },
+        "kind": {
+          "const": "clinical",
+          "title": "Kind",
+          "type": "string"
+        },
+        "truth_kind": {
+          "enum": [
+            "structural_parameter",
+            "marginal_contrast",
+            "observed_history_conditional_average",
+            "simulator_specific_individual_contrast",
+            "excursion_effect",
+            "fixed_policy_value",
+            "learning_algorithm_performance"
+          ],
+          "title": "Truth Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "truth_kind",
+        "estimand"
+      ],
+      "title": "ClinicalTarget",
+      "type": "object"
+    },
+    "EstimandContract": {
+      "additionalProperties": false,
+      "properties": {
+        "clinician_blinded": {
+          "title": "Clinician Blinded",
+          "type": "boolean"
+        },
+        "comparator": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Comparator",
+          "type": "string"
+        },
+        "comparator_information": {
+          "enum": [
+            "same_permitted_history",
+            "privileged_oracle_report_only"
+          ],
+          "title": "Comparator Information",
+          "type": "string"
+        },
+        "comparator_policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "comparator_strategy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "continuation_policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "contrast": {
+          "const": "assignment",
+          "title": "Contrast",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "lower_is_better",
+            "higher_is_better",
+            "no_overall_order"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "earliest_isi_days_after_assignment": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Earliest Isi Days After Assignment"
+        },
+        "eligibility_rule": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "estimand_id": {
+          "enum": [
+            "EST-VISIT",
+            "EST-N1",
+            "EST-ESC-STAGE",
+            "EST-ESC-STRATEGY",
+            "EST-MRT",
+            "EST-POLICY",
+            "EST-INT"
+          ],
+          "title": "Estimand Id",
+          "type": "string"
+        },
+        "estimand_version": {
+          "const": "1.0.0",
+          "title": "Estimand Version",
+          "type": "string"
+        },
+        "event_strategies": {
+          "items": {
+            "$ref": "#/$defs/EventStrategy"
+          },
+          "maxItems": 7,
+          "minItems": 7,
+          "title": "Event Strategies",
+          "type": "array"
+        },
+        "history": {
+          "const": "available_observed_preassignment_only",
+          "title": "History",
+          "type": "string"
+        },
+        "horizon": {
+          "$ref": "#/$defs/Horizon"
+        },
+        "identification_assumptions": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Identification Assumptions",
+          "type": "array"
+        },
+        "intervention": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Intervention",
+          "type": "string"
+        },
+        "intervention_policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "intervention_strategy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "isi_instrument_version": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Isi Instrument Version"
+        },
+        "isi_recall_days": {
+          "anyOf": [
+            {
+              "enum": [
+                14,
+                30
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Isi Recall Days"
+        },
+        "kind": {
+          "const": "estimand",
+          "title": "Kind",
+          "type": "string"
+        },
+        "limitations": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "missing_data_assumptions": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Missing Data Assumptions",
+          "type": "array"
+        },
+        "observation_cutoff": {
+          "format": "date-time",
+          "title": "Observation Cutoff",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "ISI",
+            "daily_sleep_quality",
+            "function",
+            "proximal_support_reward",
+            "policy_value",
+            "interruption_vector"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "patient_blinded": {
+          "title": "Patient Blinded",
+          "type": "boolean"
+        },
+        "policy_reward": {
+          "anyOf": [
+            {
+              "const": "daily_sleep_quality",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Policy Reward"
+        },
+        "policy_value_target": {
+          "anyOf": [
+            {
+              "enum": [
+                "fixed_contextual",
+                "complete_cohort_algorithm"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Policy Value Target"
+        },
+        "population": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Population",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "support_policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "time_zero": {
+          "format": "date-time",
+          "title": "Time Zero",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "ISI_points",
+            "quality_points",
+            "function_points",
+            "probability_vector"
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "kind",
+        "estimand_id",
+        "estimand_version",
+        "population",
+        "eligibility_rule",
+        "history",
+        "observation_cutoff",
+        "time_zero",
+        "intervention",
+        "comparator",
+        "contrast",
+        "patient_blinded",
+        "clinician_blinded",
+        "outcome",
+        "unit",
+        "direction",
+        "horizon",
+        "continuation_policy",
+        "support_policy",
+        "intervention_strategy",
+        "comparator_strategy",
+        "intervention_policy",
+        "comparator_policy",
+        "policy_value_target",
+        "policy_reward",
+        "event_strategies",
+        "missing_data_assumptions",
+        "identification_assumptions",
+        "comparator_information",
+        "source_ids",
+        "isi_instrument_version",
+        "isi_recall_days",
+        "earliest_isi_days_after_assignment",
+        "limitations"
+      ],
+      "title": "EstimandContract",
+      "type": "object"
+    },
+    "EventStrategy": {
+      "additionalProperties": false,
+      "properties": {
+        "event": {
+          "enum": [
+            "death",
+            "admission",
+            "regimen_change",
+            "steroid_change",
+            "rescue",
+            "discontinuation",
+            "override"
+          ],
+          "title": "Event",
+          "type": "string"
+        },
+        "explanation": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        },
+        "strategy": {
+          "enum": [
+            "separate_survival_and_conditional_symptoms",
+            "separate_admission_and_conditional_symptoms",
+            "treatment_policy"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event",
+        "strategy",
+        "explanation"
+      ],
+      "title": "EventStrategy",
+      "type": "object"
+    },
+    "FixtureTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "comparator": {
+          "enum": [
+            "A0",
+            "regime_00"
+          ],
+          "title": "Comparator",
+          "type": "string"
+        },
+        "estimand": {
+          "enum": [
+            "FIX-CONSTANT",
+            "FIX-ESC-RANDOMIZED",
+            "FIX-ESC-OBSERVATIONAL"
+          ],
+          "title": "Estimand",
+          "type": "string"
+        },
+        "fixture_manifest": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "intervention": {
+          "enum": [
+            "A1",
+            "regime_11"
+          ],
+          "title": "Intervention",
+          "type": "string"
+        },
+        "kind": {
+          "const": "fixture",
+          "title": "Kind",
+          "type": "string"
+        },
+        "outcome": {
+          "const": "linear_Y",
+          "title": "Outcome",
+          "type": "string"
+        },
+        "truth_kind": {
+          "const": "marginal_contrast",
+          "title": "Truth Kind",
+          "type": "string"
+        },
+        "unit": {
+          "const": "fixture_points",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "truth_kind",
+        "estimand",
+        "outcome",
+        "unit",
+        "intervention",
+        "comparator",
+        "fixture_manifest"
+      ],
+      "title": "FixtureTarget",
+      "type": "object"
+    },
+    "Horizon": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "exclusiveMinimum": 0,
+          "title": "Amount",
+          "type": "integer"
+        },
+        "endpoint_rule": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Endpoint Rule",
+          "type": "string"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "unit": {
+          "enum": [
+            "days",
+            "protocol_blocks",
+            "protocol_stages",
+            "cohorts"
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "unit",
+        "endpoint_rule",
+        "protocol"
+      ],
+      "title": "Horizon",
+      "type": "object"
+    },
+    "ParameterTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "parameter",
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "symbol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "truth_kind": {
+          "const": "structural_parameter",
+          "title": "Truth Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "truth_kind",
+        "symbol",
+        "parameters"
+      ],
+      "title": "ParameterTarget",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "StreamKey": {
+      "additionalProperties": false,
+      "description": "Complete accepted key material; words and digest are verified, not trusted.",
+      "properties": {
+        "key_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Key Sha256",
+          "type": "string"
+        },
+        "namespace": {
+          "enum": [
+            "generation",
+            "assignment",
+            "measurement",
+            "missingness",
+            "fitting",
+            "posterior_rollout",
+            "truth"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "fixture",
+            "calibration",
+            "pilot",
+            "smoke",
+            "development",
+            "confirmation"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "root_seed": {
+          "const": 20261020,
+          "title": "Root Seed",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "stream": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Stream",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        },
+        "words": {
+          "items": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 8,
+          "minItems": 8,
+          "title": "Words",
+          "type": "array"
+        }
+      },
+      "required": [
+        "root_seed",
+        "protocol",
+        "phase",
+        "namespace",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process",
+        "stream",
+        "words",
+        "key_sha256"
+      ],
+      "title": "StreamKey",
+      "type": "object"
+    },
+    "SystemTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "estimand": {
+          "enum": [
+            "SYSTEM-LINEAGE",
+            "SYSTEM-BOUNDARY"
+          ],
+          "title": "Estimand",
+          "type": "string"
+        },
+        "expected_fault": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Expected Fault",
+          "type": "string"
+        },
+        "kind": {
+          "const": "system",
+          "title": "Kind",
+          "type": "string"
+        },
+        "outcome": {
+          "const": "rejection",
+          "title": "Outcome",
+          "type": "string"
+        },
+        "unit": {
+          "const": "none",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "estimand",
+        "outcome",
+        "unit",
+        "expected_fault"
+      ],
+      "title": "SystemTarget",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:evaluator-request",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "batch_cap": {
+      "const": 1000,
+      "title": "Batch Cap",
+      "type": "integer"
+    },
+    "batch_size": {
+      "const": 10000,
+      "title": "Batch Size",
+      "type": "integer"
+    },
+    "bindings": {
+      "$ref": "#/$defs/BindingsV2"
+    },
+    "cell_id": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Cell Id"
+    },
+    "comparator_pilot": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "contract_version": {
+      "const": "2.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "coupling": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "execution": {
+      "enum": [
+        "contract_fixture",
+        "engine_run"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "generating_policy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "information_set": {
+      "enum": [
+        "structural_population",
+        "available_observed_history",
+        "realized_latent_oracle",
+        "deterministic_fixture"
+      ],
+      "title": "Information Set",
+      "type": "string"
+    },
+    "kind": {
+      "const": "evaluator_request",
+      "title": "Kind",
+      "type": "string"
+    },
+    "method": {
+      "enum": [
+        "analytic",
+        "enumerated",
+        "numerical",
+        "deterministic_check"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "observed_history": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "patient_id": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Patient Id"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "run_manifest": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seeds": {
+      "items": {
+        "$ref": "#/$defs/StreamKey"
+      },
+      "minItems": 1,
+      "title": "Seeds",
+      "type": "array"
+    },
+    "smallest_estimator_se": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Smallest Estimator Se"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "target": {
+      "discriminator": {
+        "mapping": {
+          "analytic_fixture": "#/$defs/AnalyticTarget",
+          "clinical": "#/$defs/ClinicalTarget",
+          "fixture": "#/$defs/FixtureTarget",
+          "parameter": "#/$defs/ParameterTarget",
+          "system": "#/$defs/SystemTarget"
+        },
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ClinicalTarget"
+        },
+        {
+          "$ref": "#/$defs/FixtureTarget"
+        },
+        {
+          "$ref": "#/$defs/SystemTarget"
+        },
+        {
+          "$ref": "#/$defs/ParameterTarget"
+        },
+        {
+          "$ref": "#/$defs/AnalyticTarget"
+        }
+      ],
+      "title": "Target"
+    },
+    "unit_id": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Unit Id"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "contract_version",
+    "id",
+    "run_id",
+    "run_manifest",
+    "producer",
+    "execution",
+    "source_commit",
+    "runtime",
+    "bindings",
+    "unit_id",
+    "cell_id",
+    "target",
+    "information_set",
+    "method",
+    "cutoff",
+    "patient_id",
+    "observed_history",
+    "generating_policy",
+    "coupling",
+    "seeds",
+    "batch_size",
+    "batch_cap",
+    "comparator_pilot",
+    "smallest_estimator_se"
+  ],
+  "title": "TruthRequestV2",
+  "type": "object"
+}

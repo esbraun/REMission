@@ -1,0 +1,91 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 1.71kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 178B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 2.52kB done
+#5 DONE 0.0s
+
+#6 [service  1/10] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#6 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#6 DONE 0.0s
+
+#7 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#7 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#7 DONE 0.0s
+
+#8 [service  4/10] COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
+#8 CACHED
+
+#9 [service  8/10] COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
+#9 CACHED
+
+#10 [service  7/10] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#10 CACHED
+
+#11 [service  2/10] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#11 CACHED
+
+#12 [service  5/10] COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
+#12 CACHED
+
+#13 [service  6/10] COPY services/foundation/ /app/services/foundation/
+#13 CACHED
+
+#14 [client 3/6] COPY web/package.json web/package-lock.json ./
+#14 CACHED
+
+#15 [integration-tests 1/2] COPY tests/integration/replay/ /app/tests/integration/replay/
+#15 CACHED
+
+#16 [service  9/10] COPY --from=client /client/dist/ /app/web/dist/
+#16 CACHED
+
+#17 [service  3/10] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+#17 CACHED
+
+#18 [client 4/6] RUN npm ci --ignore-scripts
+#18 CACHED
+
+#19 [client 5/6] COPY web/ ./
+#19 CACHED
+
+#20 [service 10/10] RUN mkdir /data && chown 10001:10001 /data
+#20 CACHED
+
+#21 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#21 CACHED
+
+#22 [client 2/6] WORKDIR /client
+#22 CACHED
+
+#23 [integration-tests 2/2] COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
+#23 CACHED
+
+#24 exporting to image
+#24 exporting layers done
+#24 exporting manifest sha256:4f92ac7fd4fbc8faa4da3c12ec483bc59792b50834311b7f208cd671fe0cb8a4 done
+#24 exporting config sha256:14e29ee6aafc8128c64c1cb70b7fd4da91242b1573b1f3d5233a7f07f4bfe7d9
+#24 exporting config sha256:14e29ee6aafc8128c64c1cb70b7fd4da91242b1573b1f3d5233a7f07f4bfe7d9 done
+#24 exporting attestation manifest sha256:e4409a6a571a49b7a248294beae5c69e6bce73f609c8688612a3072d9db558f4 done
+#24 exporting manifest list sha256:c72295756a8b02cdcd9ae6fe7a74e2408100d1d506c17d5dbca60cee755c3420 done
+#24 naming to docker.io/library/remission-obs2-sol-20261021-tests:candidate done
+#24 unpacking to docker.io/library/remission-obs2-sol-20261021-tests:candidate 0.0s done
+#24 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/rvlnthkoxqapth8wrl1674z6o

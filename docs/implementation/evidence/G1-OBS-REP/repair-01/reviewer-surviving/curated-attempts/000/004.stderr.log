@@ -1,0 +1,50 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 1.71kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 178B done
+#3 DONE 0.0s
+
+#4 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#4 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 80.35kB 0.0s done
+#5 DONE 0.0s
+
+#6 [client 5/6] COPY web/ ./
+#6 CACHED
+
+#7 [client 3/6] COPY web/package.json web/package-lock.json ./
+#7 CACHED
+
+#8 [client 2/6] WORKDIR /client
+#8 CACHED
+
+#9 [client 4/6] RUN npm ci --ignore-scripts
+#9 CACHED
+
+#10 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 exporting manifest sha256:e801c6615b485dd8719b92832a99f6e0140a82eeac053f578cf940d1ad4c061c done
+#11 exporting config sha256:6545f21b7389b2b4f7c6002b0665bcbd5ce5e1f08a4393d4d435a78c48d80091 done
+#11 exporting attestation manifest sha256:a948aa3826a3afc01455b5e548765633e551b232dda925ae801e17d2229f5fc6 0.0s done
+#11 exporting manifest list sha256:1a4c9da81d523f0b4e7d57621be331fae5d258d41771daee336ee795bb1cac14 0.0s done
+#11 naming to docker.io/library/remission-obs2-astra-review-20261021-client:candidate done
+#11 unpacking to docker.io/library/remission-obs2-astra-review-20261021-client:candidate 0.0s done
+#11 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/2tvozwbkoixatrirvcyxe2go1

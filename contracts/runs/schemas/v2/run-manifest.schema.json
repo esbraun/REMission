@@ -1,0 +1,616 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "BindingsV2": {
+      "additionalProperties": false,
+      "properties": {
+        "analytic_fixtures": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "calibration_schema": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "catalog": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "dgp": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "domain_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "equations": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "observed_representation": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "parameters": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "probability_precision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "run_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "scenarios": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "temporal": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "timing": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "protocol",
+        "dgp",
+        "parameters",
+        "equations",
+        "scenarios",
+        "catalog",
+        "timing",
+        "temporal",
+        "calibration_schema",
+        "analytic_fixtures",
+        "probability_precision",
+        "observed_representation",
+        "domain_schema_set",
+        "run_schema_set"
+      ],
+      "title": "BindingsV2",
+      "type": "object"
+    },
+    "Cohort": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "patients": {
+          "items": {
+            "$ref": "#/$defs/PatientSlot"
+          },
+          "minItems": 1,
+          "title": "Patients",
+          "type": "array"
+        },
+        "role": {
+          "enum": [
+            "historical",
+            "external",
+            "prospective"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "patients"
+      ],
+      "title": "Cohort",
+      "type": "object"
+    },
+    "PatientSlot": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "replicate"
+      ],
+      "title": "PatientSlot",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "RequiredWorkloads": {
+      "additionalProperties": false,
+      "description": "Required future workloads, never a count of computations executed here.",
+      "properties": {
+        "calibration_patients": {
+          "const": 200000,
+          "title": "Calibration Patients",
+          "type": "integer"
+        },
+        "catalog_cells": {
+          "const": 82,
+          "title": "Catalog Cells",
+          "type": "integer"
+        },
+        "comparator_pilot_trials": {
+          "const": 1000,
+          "title": "Comparator Pilot Trials",
+          "type": "integer"
+        },
+        "conditional_filters_per_level": {
+          "const": 32,
+          "title": "Conditional Filters Per Level",
+          "type": "integer"
+        },
+        "conditional_particle_levels": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Conditional Particle Levels",
+          "type": "array"
+        },
+        "distribution_patients": {
+          "minimum": 10000,
+          "title": "Distribution Patients",
+          "type": "integer"
+        },
+        "smoke_repetitions_per_cell": {
+          "const": 5,
+          "title": "Smoke Repetitions Per Cell",
+          "type": "integer"
+        },
+        "source_comparator_sizes": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Source Comparator Sizes",
+          "type": "array"
+        },
+        "source_shift_pilot_trials": {
+          "const": 1000,
+          "title": "Source Shift Pilot Trials",
+          "type": "integer"
+        },
+        "source_shift_trial_size": {
+          "const": 200,
+          "title": "Source Shift Trial Size",
+          "type": "integer"
+        },
+        "truth_batch_cap": {
+          "const": 1000,
+          "title": "Truth Batch Cap",
+          "type": "integer"
+        },
+        "truth_batch_size": {
+          "const": 10000,
+          "title": "Truth Batch Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "calibration_patients",
+        "source_shift_pilot_trials",
+        "source_shift_trial_size",
+        "comparator_pilot_trials",
+        "source_comparator_sizes",
+        "truth_batch_size",
+        "truth_batch_cap",
+        "smoke_repetitions_per_cell",
+        "catalog_cells",
+        "conditional_particle_levels",
+        "conditional_filters_per_level",
+        "distribution_patients"
+      ],
+      "title": "RequiredWorkloads",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "Unit": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_patients": {
+          "exclusiveMinimum": 0,
+          "title": "Catalog Patients",
+          "type": "integer"
+        },
+        "cell_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Cell Id",
+          "type": "string"
+        },
+        "cohorts": {
+          "items": {
+            "$ref": "#/$defs/Cohort"
+          },
+          "minItems": 1,
+          "title": "Cohorts",
+          "type": "array"
+        },
+        "evaluation_configuration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "preset": {
+          "enum": [
+            "catalog_cell",
+            "smoke",
+            "demonstration",
+            "evaluation"
+          ],
+          "title": "Preset",
+          "type": "string"
+        },
+        "repetitions": {
+          "minimum": 1,
+          "title": "Repetitions",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "cell_id",
+        "catalog_patients",
+        "preset",
+        "evaluation_configuration",
+        "repetitions",
+        "cohorts"
+      ],
+      "title": "Unit",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:run-manifest",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bindings": {
+      "$ref": "#/$defs/BindingsV2"
+    },
+    "contract_version": {
+      "const": "2.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "execution": {
+      "enum": [
+        "contract_fixture",
+        "engine_run"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "input_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Input Sha256",
+      "type": "string"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Inputs",
+      "type": "array"
+    },
+    "kind": {
+      "const": "generator_run_manifest",
+      "title": "Kind",
+      "type": "string"
+    },
+    "phase": {
+      "enum": [
+        "fixture",
+        "calibration",
+        "pilot",
+        "smoke",
+        "development",
+        "confirmation"
+      ],
+      "title": "Phase",
+      "type": "string"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "required_workloads": {
+      "$ref": "#/$defs/RequiredWorkloads"
+    },
+    "root_seed": {
+      "const": 20261020,
+      "title": "Root Seed",
+      "type": "integer"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "schedule_inputs": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Schedule Inputs",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope": {
+      "enum": [
+        "cell_batch",
+        "catalog_smoke",
+        "preset"
+      ],
+      "title": "Scope",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "source_registry": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "sources": {
+      "items": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "propertyNames": {
+          "enum": [
+            "id",
+            "version",
+            "adapter"
+          ]
+        },
+        "type": "object"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "transformation_registry": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "units": {
+      "items": {
+        "$ref": "#/$defs/Unit"
+      },
+      "minItems": 1,
+      "title": "Units",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "contract_version",
+    "run_id",
+    "producer",
+    "execution",
+    "source_commit",
+    "runtime",
+    "bindings",
+    "input_sha256",
+    "inputs",
+    "root_seed",
+    "phase",
+    "scope",
+    "cutoff",
+    "created_at",
+    "units",
+    "required_workloads",
+    "sources",
+    "schedule_inputs",
+    "source_registry",
+    "transformation_registry"
+  ],
+  "title": "RunManifestV2",
+  "type": "object"
+}

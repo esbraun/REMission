@@ -1,0 +1,29 @@
+{
+  "args": [
+    "docker",
+    "run",
+    "--rm",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--network",
+    "none",
+    "--read-only",
+    "--tmpfs",
+    "/tmp:rw,size=128m",
+    "--env",
+    "PYTHONPATH=/app",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-obs2-code-review-astra-20261021,target=/app,readonly",
+    "--workdir",
+    "/app",
+    "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+    "python",
+    ".review-artifacts/day85_probe.py"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-code-review-astra-20261021",
+  "exit": 0,
+  "stdout_sha256": "165a2c4c2fb94aacf27de2d7ad72ba878adc26fdc8a60328ac21d1e5d36b4bdc",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

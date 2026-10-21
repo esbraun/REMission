@@ -1,0 +1,30 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--network",
+    "none",
+    "--read-only",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-observed-contracts-sol-20261021,target=/app,readonly",
+    "--workdir",
+    "/app",
+    "remission-foundation-runtime:candidate",
+    "python",
+    "-c",
+    "import contracts.domain.observed_v2 as v; print(len(v.RECORD_ADAPTER_V2.json_schema().get(\"oneOf\",[])))"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-observed-contracts-sol-20261021",
+  "started_at": "2026-10-21T20:11:49.589359+00:00",
+  "ended_at": "2026-10-21T20:11:50.757294+00:00",
+  "exit_code": 0,
+  "head": "437f06399d2f21366a352c5910f28e08188fa601",
+  "dirty_status": " M .gitattributes\n M docs/implementation/evidence/G1-OBS-REP/R1/source-evidence.json\n M docs/implementation/g1-observed-representation-proposal-20261021.md\n M docs/implementation/g1-observed-representation-proposal-r1-20261021.md\n?? contracts/domain/evidence_v2.py\n?? contracts/domain/observed_v2.py\n?? contracts/runs/admission_v2.py\n?? contracts/runs/coverage_v2.py\n?? contracts/runs/observed_v2.py\n?? docs/implementation/evidence/G1-OBS-REP/implementation/\n",
+  "stdout_sha256": "076320a2a08267b4c026d06573bba408ea68841e73cdc20e62cce59de165ece3",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

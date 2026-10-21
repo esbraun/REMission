@@ -1,0 +1,32 @@
+/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_authenticated_owned_read_only_archive_preserves_every_raw_byte (test_observed_v2_archive.ArchiveTests.test_authenticated_owned_read_only_archive_preserves_every_raw_byte) ... ok
+test_clinical_subset_imports_signed_report_but_never_admin_authority (test_observed_v2_archive.ArchiveTests.test_clinical_subset_imports_signed_report_but_never_admin_authority) ... ERROR
+test_entire_hold_partition_rejected_before_any_current_publication_including_v1 (test_observed_v2_archive.ArchiveTests.test_entire_hold_partition_rejected_before_any_current_publication_including_v1) ... ok
+test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict (test_observed_v2_archive.ArchiveTests.test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict) ... ERROR
+
+======================================================================
+ERROR: test_clinical_subset_imports_signed_report_but_never_admin_authority (test_observed_v2_archive.ArchiveTests.test_clinical_subset_imports_signed_report_but_never_admin_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/tests/integration/replay/test_observed_v2_archive.py", line 130, in test_clinical_subset_imports_signed_report_but_never_admin_authority
+    result = archive_export(self.store, plain['raw'], self.root / 'plain', authority, owner_id='doctor-alice', received_at=NOW, mode='clinical_observation_import')
+  File "/app/services/foundation/archive.py", line 21, in archive_export
+    raise ValueError('archive_patient_ownership_required')
+ValueError: archive_patient_ownership_required
+
+======================================================================
+ERROR: test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict (test_observed_v2_archive.ArchiveTests.test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/tests/integration/replay/test_observed_v2_archive.py", line 114, in test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict
+    archive_export(self.store, self.fixture['raw'], self.root / 'staging', self.authority, owner_id='doctor-alice', received_at=NOW, fault=crash)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/services/foundation/archive.py", line 21, in archive_export
+    raise ValueError('archive_patient_ownership_required')
+ValueError: archive_patient_ownership_required
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.349s
+
+FAILED (errors=2)

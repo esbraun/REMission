@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/app/tooling/foundation/qualify.py", line 7, in <module>
+    from argon2 import PasswordHasher
+ModuleNotFoundError: No module named 'argon2'
+Traceback (most recent call last):
+  File "/app/docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py", line 18, in <module>
+    main()
+    ~~~~^^
+  File "/app/docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py", line 14, in main
+    subprocess.run([sys.executable, *arguments], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/usr/local/bin/python', 'tooling/foundation/qualify.py']' returned non-zero exit status 1.

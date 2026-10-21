@@ -1,0 +1,32 @@
+test_delete_delivery_or_ledger_never_creates_zero (test_observed_v2.RunObservedV2Tests.test_delete_delivery_or_ledger_never_creates_zero) ... ok
+test_full_archive_and_verified_offered_one_delivered_zero (test_observed_v2.RunObservedV2Tests.test_full_archive_and_verified_offered_one_delivered_zero) ... ok
+test_full_private_key_process_day_namespace_registry_and_draw_flag (test_observed_v2.RunObservedV2Tests.test_full_private_key_process_day_namespace_registry_and_draw_flag) ... ok
+test_missing_middle_shortened_roster_timezone_and_origin (test_observed_v2.RunObservedV2Tests.test_missing_middle_shortened_roster_timezone_and_origin) ... ok
+test_raw_admin_and_delivery_duplicates_corrections_and_retraction (test_observed_v2.RunObservedV2Tests.test_raw_admin_and_delivery_duplicates_corrections_and_retraction) ... ERROR
+test_report_and_delivery_correction_make_link_stale_without_redirection (test_observed_v2.RunObservedV2Tests.test_report_and_delivery_correction_make_link_stale_without_redirection) ... ok
+test_terminal_phase_and_late_death_need_qualified_exact_evidence (test_observed_v2.RunObservedV2Tests.test_terminal_phase_and_late_death_need_qualified_exact_evidence) ... ok
+test_v2_scientific_validation_preserves_frozen_v1_body (test_observed_v2.RunObservedV2Tests.test_v2_scientific_validation_preserves_frozen_v1_body) ... ok
+test_wrong_report_window_patient_hash_and_preassessment_link (test_observed_v2.RunObservedV2Tests.test_wrong_report_window_patient_hash_and_preassessment_link) ... ok
+test_zero_before_closure_equal_time_and_missing_stage_are_denied (test_observed_v2.RunObservedV2Tests.test_zero_before_closure_equal_time_and_missing_stage_are_denied) ... ok
+
+======================================================================
+ERROR: test_raw_admin_and_delivery_duplicates_corrections_and_retraction (test_observed_v2.RunObservedV2Tests.test_raw_admin_and_delivery_duplicates_corrections_and_retraction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/tests/run_contracts/test_observed_v2.py", line 62, in test_raw_admin_and_delivery_duplicates_corrections_and_retraction
+    batch = ReplayBatchV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_replay_batch', contract_version='2.0.0', run_id='obs2-fixture-run', partition_id='obs2-partition', patient_id='SYN-02', entries=list(reversed(entries)))))
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ReplayBatchV2
+  Value error, raw_source_hash_mismatch [type=value_error, input_value={'contract_version': '2.0...0.0', 'synthetic': True}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.418s
+
+FAILED (errors=1)

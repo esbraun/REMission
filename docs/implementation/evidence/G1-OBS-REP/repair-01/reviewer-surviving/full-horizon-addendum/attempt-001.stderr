@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/app/.review-artifacts/complete-horizon-addendum/probe.py", line 81, in <module>
+    admitted,partitions=verify_export_v2(raw,OUT/'wire',ExportAuthorityV2.model_validate_json(canonical(auth)))
+                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/contracts/runs/admission_v2.py", line 73, in verify_export_v2
+    coverage = SupportCoverageV2.model_validate_json(coverage_raw)
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for SupportCoverageV2
+  Value error, first/last canonical schedule mismatch [type=value_error, input_value={'completion_receipt': {'...l_reconciliation': None}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
