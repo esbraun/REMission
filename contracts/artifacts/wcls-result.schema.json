@@ -1,0 +1,79 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "analysis_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Analysis Sha256",
+      "type": "string"
+    },
+    "coefficient_names": {
+      "const": "intercept,x,action_minus_numerator_probability",
+      "title": "Coefficient Names",
+      "type": "string"
+    },
+    "coefficients": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Coefficients",
+      "type": "array"
+    },
+    "independent_unit": {
+      "const": "patient",
+      "title": "Independent Unit",
+      "type": "string"
+    },
+    "input_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Input Sha256",
+      "type": "string"
+    },
+    "kind": {
+      "const": "wcls_reference_result",
+      "title": "Kind",
+      "type": "string"
+    },
+    "n_rows": {
+      "exclusiveMinimum": 0,
+      "title": "N Rows",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "unit": {
+      "const": "quality_points",
+      "title": "Unit",
+      "type": "string"
+    },
+    "variance": {
+      "const": "MRTAnalysis_hat_matrix_small_sample_not_Python_SE_parity",
+      "title": "Variance",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "unit",
+    "input_sha256",
+    "analysis_sha256",
+    "coefficient_names",
+    "coefficients",
+    "variance",
+    "n_rows",
+    "independent_unit"
+  ],
+  "title": "WCLSResult",
+  "type": "object"
+}

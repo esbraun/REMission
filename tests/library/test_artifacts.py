@@ -126,5 +126,29 @@ class ArtifactTests(unittest.TestCase):
                 with self.assertRaises(ContractViolation): self.dispatch(raw)
         self.assertEqual(self.calls, [])
 
+    def test_review_extra_short_rows_and_patient_identity_reject_before_worker(self):
+        path = self.root / "review.csv"
+        raw = copy.deepcopy(self.raw)
+        raw["shape"] = {"kind": "mcmc_draws", "chains": [0], "draws": 1, "quantities": ["mu"]}
+        for body in ["0,0,mu,1.2,uncontracted\n", "0,0,mu\n"]:
+            path.write_text("chain,draw,quantity,value\n"+body, encoding="utf-8")
+            raw["payload"] = self.file(path)
+            with self.assertRaises(ContractViolation): self.dispatch(raw)
+        analysis = self.root / "analysis.json"
+        analysis.write_text(json.dumps({"schema_version": "1.0.0", "unit": "quality_points", "centering": .5,
+            "independent_unit": "patient", "r_se": "hat_matrix_small_sample", "python_se": "cluster_correction_not_identical"}), encoding="utf-8")
+        raw["unit"] = "quality_points"
+        raw["shape"] = {"kind": "wcls_fixture", "rows": 1, "analysis": self.file(analysis), "independent_unit": "patient"}
+        header="id,time,y,action,logging_probability,numerator_probability,availability,x\n"
+        for body in ["P1,0,3,1,0.5,0.5,1,2,uncontracted\n", "P1,0,3,1,0.5,0.5,1\n",
+                     ",0,3,1,0.5,0.5,1,2\n", "   ,0,3,1,0.5,0.5,1,2\n", "bad id,0,3,1,0.5,0.5,1,2\n"]:
+            path.write_text(header+body, encoding="utf-8");raw["payload"]=self.file(path)
+            with self.assertRaises(ContractViolation): self.dispatch(raw)
+        self.assertEqual(self.calls, [])
+        for identity in ["00017", "patient/site:17-A", "P_1.2"]:
+            path.write_text(header+identity+",0,3,1,0.5,0.5,1,2\n",encoding="utf-8");raw["payload"]=self.file(path)
+            rows=validate_artifact(self.root,parse(ArtifactManifest,raw))
+            self.assertEqual(rows[0]["id"],identity)
+
 
 if __name__ == "__main__": unittest.main()

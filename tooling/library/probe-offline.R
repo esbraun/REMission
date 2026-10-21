@@ -52,7 +52,10 @@ backend <- SBC_backend_function(function(generated) {
 fit <- SBC_fit(backend, list(draw_file = draw_path), cores = 1)
 matrix <- SBC_fit_to_draws_matrix(fit)
 stopifnot(nrow(matrix) == 800, ncol(matrix) == 1, all(is.finite(matrix)))
-write.csv(d, file.path(output, "sbc-return.csv"), row.names = FALSE)
+expected <- d[order(d$chain,d$draw),]
+stopifnot(max(abs(matrix[,1]-expected$value)) < 1e-12)
+returned <- data.frame(chain=expected$chain, draw=expected$draw, quantity=expected$quantity, value=as.numeric(matrix[,1]))
+write.csv(returned, file.path(output, "sbc-return.csv"), row.names = FALSE)
 summary$sbc <- list(custom_backend = class(backend), shape = dim(matrix), actual_backend = "PyMC native NUTS file import",
                     input_coordinates = "chain 0:3, draw 0:199, quantity mu",
                     posterior_internal_coordinates = "1-based chain/iteration; file labels retained on exchange",
@@ -67,5 +70,12 @@ w <- wcls(wcls_input, id = "id", outcome = "y", treatment = "action", rand_prob 
           numerator_prob = "numerator_probability", verbose = FALSE)
 summary$wcls <- list(coefficients = unname(coef(w)), names = names(coef(w)),
                      printed = capture.output(print(w)), variance = "MRTAnalysis hat-matrix small-sample correction")
+sha256 <- function(path) strsplit(system2("sha256sum",shQuote(path),stdout=TRUE)," ")[[1]][1]
+write_json(list(schema_version="1.0.0",synthetic=TRUE,kind="wcls_reference_result",unit="quality_points",
+                input_sha256=sha256(file.path(input,"wcls-input.csv")),
+                analysis_sha256=sha256(file.path(output,"wcls-analysis.json")),
+                coefficient_names="intercept,x,action_minus_numerator_probability",coefficients=unname(coef(w)),
+                variance="MRTAnalysis_hat_matrix_small_sample_not_Python_SE_parity",n_rows=nrow(wcls_input),independent_unit="patient"),
+           file.path(output,"wcls-result.json"),digits=16,auto_unbox=TRUE,pretty=TRUE)
 write_json(summary, file.path(output, "r-probes.json"), digits = 16, auto_unbox = TRUE, pretty = TRUE)
 print(summary)

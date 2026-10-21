@@ -1,0 +1,11 @@
+{
+  "started_utc": "2026-10-21T13:57:56.491064+00:00",
+  "finished_utc": "2026-10-21T13:57:56.790347+00:00",
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020",
+  "command": [
+    ".venv-contracts/Scripts/python.exe",
+    "-c",
+    "import hashlib,pathlib,urllib.request;u='https://files.pythonhosted.org/packages/5c/c8/3b511884a171091638d00a4255f11a635f33e0600094c255ec820f7a052f/obp-0.5.7.tar.gz';b=urllib.request.urlopen(u,timeout=30).read();h=hashlib.sha256(b).hexdigest();assert h=='3060d67fedfcfadf1e7a6f2608987f74412b5eb74d2c567edeb147595c68f2a0';p=pathlib.Path('docs/implementation/evidence/G0-LIB/R1/reference');p.mkdir(exist_ok=True);(p/'obp-0.5.7.tar.gz').write_bytes(b);print('Archived historical source only; no extraction, import, install or runtime execution. SHA256',h,'bytes',len(b))"
+  ],
+  "exit_code": 0
+}

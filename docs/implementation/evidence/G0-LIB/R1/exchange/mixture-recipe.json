@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "synthetic": true,
+  "recipe": "fixed_normal_prior_no_PyMC_input_no_gMAP_fit",
+  "prior": {
+    "mean": -2,
+    "sd": 1,
+    "sigma": 1
+  },
+  "informative_weights": [
+    0,
+    0.5,
+    0.9,
+    1
+  ],
+  "weak_mean": 0,
+  "weak_sd": 5,
+  "weak_n": 0.04,
+  "marginal_scale": "ISI_points",
+  "transform": "RBesT_weak_weight_equals_1_minus_informative_weight",
+  "source_sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d",
+  "rng": "not_used_deterministic_recipe"
+}

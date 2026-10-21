@@ -305,7 +305,7 @@
       "merge_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
       "accepted_review": {
         "blob": "78c63b418994faac455ccecf25020c6fb63c88e1",
-        "path": "docs/implementation/evidence/G0-CONTRACT/independent-review-02-20261020.md",
+        "path": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md",
         "disposition": "ready_to_ship"
       }
     },
@@ -313,7 +313,8 @@
       "id": "G0-DGP",
       "owner_role": "integration owner",
       "depends_on": [
-        "G0-CONTRACT"
+        "G0-CONTRACT",
+        "G0-TIME-R1"
       ],
       "write_paths": [
         "contracts/dgp/",
@@ -414,14 +415,33 @@
       "agent_model": "gpt-6.1-sol",
       "reasoning_effort": "high",
       "status": "needs_review",
-      "candidate_commit": "6195f9b745b672f087c9fdbd670497f80b7864ba",
-      "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "candidate_commit": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "base_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
       "integration_target": "main",
-      "review_disposition": "pending",
+      "review_disposition": "pending_R2_review",
       "task_branch": "launch/g0-dgp-workflow-20261020",
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-20261020",
       "app_thread_id": "01a15d2f-f24b-7491-8257-3c634801dcf3",
-      "claim_limit": "Root-reported frozen author candidate, not yet independently accepted; author archived and native removal verified"
+      "claim_limit": "No final exact-head/base review or G0-DGP acceptance yet",
+      "reviewed_head": "6195f9b745b672f087c9fdbd670497f80b7864ba",
+      "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "repair_checkpoint": "2c76f4c34bc1536714f3e1988fc68da7372eb807",
+      "repair_owner_thread": "/root/dgp_resume_sol",
+      "repair_owner_app_thread_id": "01a15eb8-0f9a-7cb2-b796-608d4ce5864b",
+      "repair_model": "gpt-6.1-sol",
+      "repair_effort": "high",
+      "repair_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r2-20261021",
+      "repair_branch": "launch/g0-dgp-workflow-r2-20261021",
+      "repair_author_lifecycle": "archived after clean freeze; native removal verified by root",
+      "partial_tests": 18,
+      "repair_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "repair_status": "Root reports frozen/published R2, all60 tests/seven checks pass, independent exact-head/base review running; not accepted",
+      "review_target_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "reviewer_thread": "/root/dgp_r2_critic_astra",
+      "reviewer_app_thread_id": "01a15ec2-f67d-7522-9ade-45b236fd41bc",
+      "reviewer_model": "gpt-6-astra",
+      "reviewer_reasoning_effort": "medium",
+      "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r2-review-20261021"
     },
     {
       "id": "G0-LIB",
@@ -467,18 +487,46 @@
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
       "integration_target": "main",
       "task_branch": "launch/g0-library-20261020",
-      "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-      "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-      "status": "needs_review_with_unresolved_OPE_decision",
+      "base_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "review_target_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "status": "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification",
       "candidate_commit": null,
       "review_disposition": "pending",
       "pr_url": null,
       "merge_commit": null,
       "evidence": [
-        "docs/implementation/library-qualification.md",
-        "docs/implementation/evidence/G0-LIB/verification-20261020.md"
+        "docs/implementation/evidence/G0-LIB/R1/verification.md"
       ],
-      "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance"
+      "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance",
+      "frozen": true,
+      "plan_review": {
+        "disposition": "changes_requested",
+        "scope": "OPE selection proposal only; no ship/qualification acceptance",
+        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+        "path": "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md"
+      },
+      "shipping_review": "not_yet_reviewed",
+      "evidence_commit": "d9ad54e899b2f38b286bd100aff037625edf160b",
+      "package_id": "G0-LIB-R1",
+      "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "candidate_locator": "Exact new candidate supplied after commit",
+      "prior_candidate": "d9ad54e899b2f38b286bd100aff037625edf160b",
+      "prior_reviews": [
+        {
+          "scope": "plan_only",
+          "disposition": "changes_requested",
+          "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+          "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+        },
+        {
+          "scope": "implementation_evidence",
+          "disposition": "changes_requested",
+          "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+          "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+        }
+      ],
+      "proposal": "DR-EXCEPTION-R1 unaccepted/unimplemented; independent re-critique precedes implementation",
+      "blocker": "Repaired implementation/evidence needs exact-head/base re-review; revised DR exception needs independent re-critique before actual qualification; mandatory DR remains unimplemented"
     },
     {
       "id": "G0-WORKFLOW",
@@ -560,15 +608,17 @@
       "owner_thread": "/root/dgp_workflow_sol",
       "agent_model": "gpt-6.1-sol",
       "reasoning_effort": "high",
-      "status": "needs_review",
-      "candidate_commit": "6195f9b745b672f087c9fdbd670497f80b7864ba",
+      "status": "needs_review_combined_R2",
+      "candidate_commit": "985ce540f0cc6ae1e57a6268651971acb546929d",
       "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
       "integration_target": "main",
-      "review_disposition": "pending",
+      "review_disposition": "pending_R2_Inputs_identity_only_update_prior_low_fidelity_ready",
       "task_branch": "launch/g0-dgp-workflow-20261020",
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-20261020",
       "app_thread_id": "01a15d2f-f24b-7491-8257-3c634801dcf3",
-      "claim_limit": "Root-reported frozen author candidate, not yet independently accepted; author archived and native removal verified"
+      "claim_limit": "Root-reported frozen author candidate, not yet independently accepted; author archived and native removal verified",
+      "combined_candidate_disposition": "not_accepted",
+      "review_blob": "94b100b39558fce4c6c17f9f79a6acad0c159b04"
     },
     {
       "id": "G1-FOUNDATION",
@@ -2286,6 +2336,88 @@
         "docs/implementation/evidence/G0-LAUNCH-FIX-01/independent-review-20261020.md"
       ],
       "acceptance_scope": "Original c239 changes_requested preserved; integrated repaired planning accepted at exact 3af/c7 under PR10, not gate acceptance"
+    },
+    {
+      "owner_thread": "/root/integration_sol",
+      "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+      "agent_model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "effective_model": "Explicit assignment observed; independent introspection unavailable",
+      "effort_escalation_reason": null,
+      "integration_target": "main",
+      "id": "G0-TIME-R1",
+      "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-temporal-r1-20261021",
+      "task_branch": "launch/g0-temporal-r1-20261021",
+      "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "status": "accepted",
+      "candidate_commit": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+      "candidate_locator": "Exact candidate supplied after commit, avoiding self-reference",
+      "review_disposition": "ready_to_ship",
+      "evidence": [
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
+      ],
+      "pr_url": "https://github.com/esbraun/REMission/pull/12",
+      "merge_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "owner_role": "sole shared-domain integration owner",
+      "depends_on": [
+        "G0-CONTRACT"
+      ],
+      "write_paths": [
+        "contracts/domain/temporal.py",
+        "contracts/domain/temporal-v2.json",
+        "contracts/domain/export.py",
+        "contracts/domain/schemas/temporal.schema.json",
+        "contracts/domain/schemas/reporting-decision.schema.json",
+        "contracts/domain/dictionary-v1.json",
+        "tests/contracts/test_temporal_r1.py",
+        "docs/implementation/contracts.md",
+        "docs/spec/01-estimands-and-contracts.md",
+        "docs/spec/dgp-reference.md",
+        "docs/implementation/ledger/status/checkpoint/evidence"
+      ],
+      "outputs": "Preserved temporal-v1, explicit v2 DAG/reporting rules, observed-only MAR decision boundary and consumer schemas",
+      "inputs": "Accepted G0-CONTRACT PR11; DGP timing review finding and root-approved bounded amendment",
+      "acceptance": [
+        "T-G0-TIME-R1: valid v2 DAG; independent observed pain; strict report/availability clocks and cutoff/ties; separate wearable stream; no hidden/current-outcome MAR inputs; original 27 contracts and immutable v1 preserved; independent exact-head/base acceptance before DGP consumption"
+      ],
+      "methods_profile": "contracts",
+      "test_ids": [
+        "T-G0-TIME-R1"
+      ],
+      "requirement_ids": [
+        "TIME-01",
+        "LEG-04-009",
+        "LEG-05-001",
+        "LEG-05-008",
+        "LEG-05-010",
+        "LEG-05-011",
+        "LEG-05-018",
+        "LEG-05-020"
+      ],
+      "canonical_docs": [
+        "docs/spec/01-estimands-and-contracts.md",
+        "docs/spec/dgp-reference.md"
+      ],
+      "nonmethods_fields": null,
+      "consumer_version": {
+        "id": "TIME-01",
+        "version": "2.0.0",
+        "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275",
+        "encoding": "source UTF-8 with LF-normalized line endings"
+      },
+      "fixture_result": {
+        "original_tests": 27,
+        "new_temporal_regression_groups": 8,
+        "status": "targeted_pass_full_checks_recorded_separately"
+      },
+      "clinical_review": "deferred_no_clinical_acceptance",
+      "reviewed_head": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+      "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "accepted_review": {
+        "blob": "80f39d8512ef631249374a1378a80aeda2f74561",
+        "path": "docs/implementation/evidence/G0-LIB/R1/time-ready-review.md"
+      }
     }
   ],
   "coverage": [
@@ -3072,7 +3204,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3081,7 +3213,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3108,7 +3241,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3117,7 +3250,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3144,7 +3278,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3153,7 +3287,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3180,7 +3315,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3189,7 +3324,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3216,7 +3352,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3225,7 +3361,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3252,7 +3389,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3261,7 +3398,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3288,7 +3426,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3297,7 +3435,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3324,7 +3463,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3333,7 +3472,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3360,7 +3500,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3369,7 +3509,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3396,7 +3537,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3405,7 +3546,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3432,7 +3574,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3441,7 +3583,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3468,7 +3611,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3477,7 +3620,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3504,7 +3648,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3513,7 +3657,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3540,7 +3685,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3549,7 +3694,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3576,7 +3722,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3585,7 +3731,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3612,7 +3759,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3621,7 +3768,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3648,7 +3796,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3657,7 +3805,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3684,7 +3833,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3693,7 +3842,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3720,7 +3870,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3729,7 +3879,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3756,7 +3907,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3765,7 +3916,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3792,7 +3944,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3801,7 +3953,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3828,7 +3981,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3837,7 +3990,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3864,7 +4018,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3873,7 +4027,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3900,7 +4055,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3909,7 +4064,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3936,7 +4092,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
@@ -3945,7 +4101,8 @@
             "test_support_freeze_cannot_drift_during_block_or_washout",
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -3968,7 +4125,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -3977,7 +4134,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4000,7 +4158,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4009,7 +4167,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4032,7 +4191,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4041,7 +4200,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4064,7 +4224,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4073,7 +4233,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4096,7 +4257,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4105,7 +4266,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4128,7 +4290,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4137,7 +4299,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4160,7 +4323,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4169,7 +4332,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4192,7 +4356,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4201,7 +4365,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4211,20 +4376,22 @@
       "canonical_doc": "docs/spec/01-estimands-and-contracts.md",
       "canonical_locator": "Here $H_t$ contains only information available before assignment. The same continuation policy mapping $\\pi$ applie",
       "task_ids": [
-        "G0-CONTRACT"
+        "G0-CONTRACT",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-04-009"
       ],
       "expected_acceptance": "Observe canonical unit LEG-04-009 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
-        "docs/implementation/evidence/G0-CONTRACT/LEG-04-009.json"
+        "docs/implementation/evidence/G0-CONTRACT/LEG-04-009.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4233,7 +4400,13 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -4256,7 +4429,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4265,7 +4438,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4288,7 +4462,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4297,7 +4471,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4320,7 +4495,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4329,7 +4504,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4352,7 +4528,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4361,7 +4537,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4384,7 +4561,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4393,7 +4570,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4416,7 +4594,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4425,7 +4603,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4448,7 +4627,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4457,7 +4636,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4480,7 +4660,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4489,7 +4669,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4512,7 +4693,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4521,7 +4702,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4544,7 +4726,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4553,7 +4735,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4576,7 +4759,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -4585,7 +4768,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4596,7 +4780,8 @@
       "canonical_locator": "Use versioned contracts and a replay clock. Every clinical or wearable record needs an event time and an availabili",
       "task_ids": [
         "G0-CONTRACT",
-        "G1-FOUNDATION"
+        "G1-FOUNDATION",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-05-001"
@@ -4604,13 +4789,14 @@
       "expected_acceptance": "Observe canonical unit LEG-05-001 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
         "docs/implementation/evidence/G0-CONTRACT/LEG-05-001.json",
-        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-001.json"
+        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-001.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4620,7 +4806,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -4645,7 +4837,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4655,7 +4847,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4680,7 +4873,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4690,7 +4883,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4715,7 +4909,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4725,7 +4919,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4750,7 +4945,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4760,7 +4955,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4785,7 +4981,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4795,7 +4991,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4820,7 +5017,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4830,7 +5027,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4841,7 +5039,8 @@
       "canonical_locator": "/  Clinical observation  /  Concept, value, unit, event time, available-at time, source, corrected/superseded stat",
       "task_ids": [
         "G0-CONTRACT",
-        "G1-FOUNDATION"
+        "G1-FOUNDATION",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-05-008"
@@ -4849,13 +5048,14 @@
       "expected_acceptance": "Observe canonical unit LEG-05-008 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
         "docs/implementation/evidence/G0-CONTRACT/LEG-05-008.json",
-        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-008.json"
+        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-008.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4865,7 +5065,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -4890,7 +5096,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4900,7 +5106,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -4911,7 +5118,8 @@
       "canonical_locator": "/  Oura-like observation  /  Record type, sleep episode/date, estimated sleep/wake measures, source/device version",
       "task_ids": [
         "G0-CONTRACT",
-        "G1-FOUNDATION"
+        "G1-FOUNDATION",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-05-010"
@@ -4919,13 +5127,14 @@
       "expected_acceptance": "Observe canonical unit LEG-05-010 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
         "docs/implementation/evidence/G0-CONTRACT/LEG-05-010.json",
-        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-010.json"
+        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-010.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4935,7 +5144,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -4946,7 +5161,8 @@
       "canonical_locator": "/  Patient report  /  Daily diary/function/adverse symptoms; ISI items, instrument version, and recall interval; p",
       "task_ids": [
         "G0-CONTRACT",
-        "G1-FOUNDATION"
+        "G1-FOUNDATION",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-05-011"
@@ -4954,13 +5170,14 @@
       "expected_acceptance": "Observe canonical unit LEG-05-011 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
         "docs/implementation/evidence/G0-CONTRACT/LEG-05-011.json",
-        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-011.json"
+        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-011.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -4970,7 +5187,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -4995,7 +5218,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5005,7 +5228,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5030,7 +5254,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5040,7 +5264,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5065,7 +5290,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5075,7 +5300,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5100,7 +5326,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5110,7 +5336,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5135,7 +5362,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5145,7 +5372,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5170,7 +5398,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5180,7 +5408,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5191,7 +5420,8 @@
       "canonical_locator": "/  Simulator truth  /  Latent states, structural parameters, counterfactual outcomes; accessible only to evaluatio",
       "task_ids": [
         "G0-CONTRACT",
-        "G1-FOUNDATION"
+        "G1-FOUNDATION",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-05-018"
@@ -5199,13 +5429,14 @@
       "expected_acceptance": "Observe canonical unit LEG-05-018 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
         "docs/implementation/evidence/G0-CONTRACT/LEG-05-018.json",
-        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-018.json"
+        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-018.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5215,7 +5446,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -5240,7 +5477,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5250,7 +5487,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -5261,7 +5499,8 @@
       "canonical_locator": "Keep units, timezone, overnight episodes crossing midnight, local calendar dates, lab reference context, duplicates",
       "task_ids": [
         "G0-CONTRACT",
-        "G1-FOUNDATION"
+        "G1-FOUNDATION",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-LEG-05-020"
@@ -5269,13 +5508,14 @@
       "expected_acceptance": "Observe canonical unit LEG-05-020 under package acceptance; preserve stated limits and failure behavior",
       "evidence_targets": [
         "docs/implementation/evidence/G0-CONTRACT/LEG-05-020.json",
-        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-020.json"
+        "docs/implementation/evidence/G1-FOUNDATION/LEG-05-020.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5285,7 +5525,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -5310,7 +5556,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -5320,7 +5566,8 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -12963,7 +13210,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -12974,7 +13221,8 @@
             "test_retracted_active_consent_never_authorizes_or_revives_predecessor",
             "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -12986,20 +13234,22 @@
       ],
       "canonical_locator": "TIME-01",
       "task_ids": [
-        "G0-CONTRACT"
+        "G0-CONTRACT",
+        "G0-TIME-R1"
       ],
       "test_ids": [
         "T-TIME-01"
       ],
       "expected_acceptance": "Canonical requirement TIME-01 and associated gate evidence; see package acceptance and method profile",
       "evidence_targets": [
-        "docs/implementation/evidence/G0-CONTRACT/TIME-01.json"
+        "docs/implementation/evidence/G0-CONTRACT/TIME-01.json",
+        "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
       "status": "planned",
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_entity_fixtures_and_registered_estimands_are_serializable",
@@ -13009,7 +13259,13 @@
             "test_temporal_parent_graph_and_seeded_future_cycle_faults",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
+        },
+        "G0-TIME-R1": {
+          "status": "accepted_temporal_contract_scope_only_PR12",
+          "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+          "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
       }
     },
@@ -13034,7 +13290,7 @@
       "observed_result": null,
       "task_evidence": {
         "G0-CONTRACT": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_contract_scope_only_PR11",
           "evidence": "docs/implementation/evidence/G0-CONTRACT/verification-20261020.md",
           "checks": [
             "test_all_estimand_semantics_roundtrip",
@@ -13043,7 +13299,8 @@
             "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
             "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
-          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
+          "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending",
+          "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         }
       }
     },
@@ -13125,7 +13382,14 @@
         "docs/implementation/evidence/G0-LIB/LIB-01.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "LIB-02",
@@ -13145,7 +13409,14 @@
         "docs/implementation/evidence/G0-LIB/LIB-02.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "LIB-03",
@@ -13175,7 +13446,14 @@
         "docs/implementation/evidence/G5-SERVICE/LIB-03.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "LIB-BENCH",
@@ -13196,7 +13474,14 @@
         "docs/implementation/evidence/G0-LIB/LIB-BENCH.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "TRUTH-01",
@@ -16238,18 +16523,30 @@
       "artifact_regression_groups": 7,
       "evidence": "docs/implementation/evidence/G0-LIB/verification-20261020.md",
       "claim_limit": "Actual tiny API fits/file probes; short-run diagnostics fail final criteria; no pilot/calibration/recovery/policy/human/gate acceptance"
+    },
+    {
+      "task_id": "G0-TIME-R1",
+      "status": "pending_independent_review",
+      "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+      "claim_limit": "Observed contract fixtures only; no app/generation/fit/pilot/clinical/G0 acceptance"
+    },
+    {
+      "task_id": "G0-LIB",
+      "package_id": "G0-LIB-R1",
+      "status": "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification",
+      "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+      "claim_limit": "No DR implementation, estimator qualification, G0 or clinical/statistical acceptance"
     }
   ],
   "runtime": {
     "total_slots_including_root": 4,
     "spawned_capacity": 3,
     "observed_open_non_luna": 2,
-    "observed_spawned": 3,
+    "observed_spawned": 2,
     "inventory": [
-      "root orchestrator 01a15cc8-bab2-73f3-bc3b-c2861965b8eb",
-      "integration Sol/high /root/integration_sol 01a15cf4-3065-7063-b11e-3967008fe9a1",
-      "READY Luna/high 01a15cc9-7f45-79e1-90a9-40f4ef0bc5b9",
-      "/root/dgp_workflow_critic_astra Astra/medium app01a15d45-e5ee-7693-ac4b-91d75c46b1bf, root-verified own detached review checkout6195f9b"
+      "root orchestrator01a15cc8-bab2-73f3-bc3b-c2861965b8eb",
+      "integration Sol/high01a15cf4-3065-7063-b11e-3967008fe9a1 G0-LIB-R1",
+      "DGP reviewer /root/dgp_r2_critic_astra Astra/medium01a15ec2-f67d-7522-9ade-45b236fd41bc, own detached985ce540/baseb24 verified by root"
     ],
     "unsupported_controls": [
       "native collaboration close/release",
@@ -16257,9 +16554,9 @@
       "direct app-server input for multi-agent v2 children (observed rejected)"
     ],
     "queued": [
-      "independent exact-head/base G0-LIB review and explicit OPE library-decision resolution",
-      "G0-DGP/G0-WORKFLOW independent review6195f9b in progress; integrate only after root acceptance",
-      "root reviewed PR/merge and affected integrated checks",
+      "independent G0-LIB-R1 plan re-critique and implementation re-review at new exact head/baseb24",
+      "separately authorized DR implementation/actual qualification only after proposal acceptance",
+      "DGP continuation final exact-head/base review; G0 overall unaccepted",
       "G1-G7 full real hybrid implementation/validation/reproduction"
     ],
     "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted",
@@ -16275,7 +16572,22 @@
         "thread_id": "01a15ccb-d23c-7e10-a1c8-6a55a6719daf",
         "evidence": "Root archived after PR11 review; native removal verified, reports/checkouts preserved"
       }
-    ]
+    ],
+    "inactive_luna": {
+      "thread_id": "01a15cc9-7f45-79e1-90a9-40f4ef0bc5b9",
+      "evidence": "Root native inventory omitted Luna; read_thread notLoaded/completed; source commits/worktree preserved"
+    },
+    "observed_total_including_root": 3,
+    "model_capacity_observation": "Root reported prior selected-model capacity failure; same Sol/high retry observed running, no model substitution/escalation",
+    "closed_ope_critic": {
+      "thread_id": "01a15d56-cc14-7a43-8e66-9da3e290da2e",
+      "evidence": "Root archived after three reports; native removal verified; worktrees/reports preserved"
+    },
+    "DGP_capacity_observation": "First selected Sol/high turn at capacity; root same-model retry observed running, no substitution",
+    "closed_DGP_resume": {
+      "thread_id": "01a15eb8-0f9a-7cb2-b796-608d4ce5864b",
+      "evidence": "Root archived after clean published985ce540 freeze; native removal verified"
+    }
   },
   "repair_assignment": {
     "id": "G0-LAUNCH-FIX-01",
@@ -16329,30 +16641,39 @@
     "reasoning_effort": "high",
     "effective_model": "Explicit assignment observed; independent introspection unavailable",
     "effort_escalation_reason": null,
-    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
     "integration_target": "main",
-    "id": "G0-LIB",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
     "task_branch": "launch/g0-library-20261020",
-    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-    "status": "needs_review_with_unresolved_OPE_decision",
+    "id": "G0-LIB",
+    "package_id": "G0-LIB-R1",
+    "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "base_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+    "review_target_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+    "status": "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification",
     "candidate_commit": null,
     "review_disposition": "pending",
+    "candidate_locator": "Exact new candidate supplied after commit",
+    "evidence": [
+      "docs/implementation/evidence/G0-LIB/R1/verification.md"
+    ],
+    "prior_candidate": "d9ad54e899b2f38b286bd100aff037625edf160b",
+    "prior_reviews": [
+      {
+        "scope": "plan_only",
+        "disposition": "changes_requested",
+        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+        "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+      },
+      {
+        "scope": "implementation_evidence",
+        "disposition": "changes_requested",
+        "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+        "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+      }
+    ],
     "pr_url": null,
     "merge_commit": null,
-    "evidence": [
-      "docs/implementation/library-qualification.md",
-      "docs/implementation/evidence/G0-LIB/verification-20261020.md"
-    ],
-    "write_paths": [
-      "contracts/artifacts/**",
-      "tests/library/**",
-      "tooling/library/**",
-      "root locks/config",
-      "docs/implementation/library-qualification.md",
-      "docs/implementation/ledger/status/evidence"
-    ],
-    "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance"
+    "proposal": "DR-EXCEPTION-R1 unaccepted/unimplemented; independent re-critique precedes implementation"
   },
   "accepted_contract_assignment": {
     "id": "G0-CONTRACT",
@@ -16422,8 +16743,119 @@
     "reviewed_base": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
     "accepted_review": {
       "blob": "78c63b418994faac455ccecf25020c6fb63c88e1",
-      "path": "docs/implementation/evidence/G0-CONTRACT/independent-review-02-20261020.md",
+      "path": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md",
       "disposition": "ready_to_ship"
     }
+  },
+  "frozen_library_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "integration_target": "main",
+    "id": "G0-LIB",
+    "task_branch": "launch/g0-library-20261020",
+    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "status": "needs_review_with_unresolved_OPE_decision",
+    "candidate_commit": "d9ad54e899b2f38b286bd100aff037625edf160b",
+    "review_disposition": "pending",
+    "pr_url": null,
+    "merge_commit": null,
+    "evidence": [
+      "docs/implementation/library-qualification.md",
+      "docs/implementation/evidence/G0-LIB/verification-20261020.md"
+    ],
+    "write_paths": [
+      "contracts/artifacts/**",
+      "tests/library/**",
+      "tooling/library/**",
+      "root locks/config",
+      "docs/implementation/library-qualification.md",
+      "docs/implementation/ledger/status/evidence"
+    ],
+    "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance",
+    "frozen": true,
+    "shipping_review": "not_yet_reviewed",
+    "plan_review": {
+      "disposition": "changes_requested",
+      "scope": "OPE selection proposal only; no ship/qualification acceptance",
+      "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+      "path": "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md"
+    },
+    "implementation_review": "running independently at frozen d9ad54e/base6c; full acceptance still blocked by OPE"
+  },
+  "accepted_temporal_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "integration_target": "main",
+    "id": "G0-TIME-R1",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-temporal-r1-20261021",
+    "task_branch": "launch/g0-temporal-r1-20261021",
+    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "status": "accepted",
+    "candidate_commit": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+    "candidate_locator": "Exact candidate supplied after commit, avoiding self-reference",
+    "review_disposition": "ready_to_ship",
+    "evidence": [
+      "docs/implementation/evidence/G0-TIME-R1/verification.md"
+    ],
+    "pr_url": "https://github.com/esbraun/REMission/pull/12",
+    "merge_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+    "reviewed_head": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+    "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "accepted_review": {
+      "blob": "80f39d8512ef631249374a1378a80aeda2f74561",
+      "path": "docs/implementation/evidence/G0-LIB/R1/time-ready-review.md"
+    }
+  },
+  "prior_library_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "integration_target": "main",
+    "id": "G0-LIB",
+    "task_branch": "launch/g0-library-20261020",
+    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "status": "needs_review_with_unresolved_OPE_decision",
+    "candidate_commit": "d9ad54e899b2f38b286bd100aff037625edf160b",
+    "review_disposition": "pending",
+    "pr_url": null,
+    "merge_commit": null,
+    "evidence": [
+      "docs/implementation/library-qualification.md",
+      "docs/implementation/evidence/G0-LIB/verification-20261020.md"
+    ],
+    "write_paths": [
+      "contracts/artifacts/**",
+      "tests/library/**",
+      "tooling/library/**",
+      "root locks/config",
+      "docs/implementation/library-qualification.md",
+      "docs/implementation/ledger/status/evidence"
+    ],
+    "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance",
+    "frozen": true,
+    "shipping_review": "not_yet_reviewed",
+    "plan_review": {
+      "disposition": "changes_requested",
+      "scope": "OPE selection proposal only; no ship/qualification acceptance",
+      "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+      "path": "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md"
+    },
+    "implementation_review": "running independently at frozen d9ad54e/base6c; full acceptance still blocked by OPE"
   }
 }

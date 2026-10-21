@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "synthetic": true,
+  "id": "wcls-fixture-v1",
+  "patients": 12,
+  "times_per_patient": 6,
+  "prior": "not_applicable_frequentist_fixture",
+  "action": "(patient+time)%2",
+  "x": "(patient-5.5)/6+time/20",
+  "y": "1+0.2*x+2*(action-0.5)+0.1*sin(patient+2*time)",
+  "logging_probability": 0.5,
+  "numerator_probability": 0.5,
+  "availability": 1,
+  "unit": "quality_points",
+  "transform": "identity_CSV_columns",
+  "provenance": "synthetic_engineering_fixture_not_clinical_data",
+  "source_sha256": "cc00293fec411b7ddccc74fb3fc8458d110c39de1c7056c6ac81e3faefd681ec"
+}

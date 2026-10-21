@@ -227,6 +227,29 @@
       "title": "VersionRef",
       "type": "object"
     },
+    "WCLSResultShape": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis": {
+          "$ref": "#/$defs/FileRef"
+        },
+        "input": {
+          "$ref": "#/$defs/FileRef"
+        },
+        "kind": {
+          "const": "wcls_result",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "input",
+        "analysis"
+      ],
+      "title": "WCLSResultShape",
+      "type": "object"
+    },
     "WCLSShape": {
       "additionalProperties": false,
       "properties": {
@@ -331,7 +354,8 @@
         "mapping": {
           "mcmc_draws": "#/$defs/DrawShape",
           "normal_mixture": "#/$defs/MixtureShape",
-          "wcls_fixture": "#/$defs/WCLSShape"
+          "wcls_fixture": "#/$defs/WCLSShape",
+          "wcls_result": "#/$defs/WCLSResultShape"
         },
         "propertyName": "kind"
       },
@@ -344,6 +368,9 @@
         },
         {
           "$ref": "#/$defs/WCLSShape"
+        },
+        {
+          "$ref": "#/$defs/WCLSResultShape"
         }
       ],
       "title": "Shape"

@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 from typing import Annotated, Callable, Literal, TypeVar
 
-from pydantic import AwareDatetime, Field, model_validator
+from pydantic import AwareDatetime, Field, TypeAdapter, model_validator
 
 from contracts.domain.boundaries import ContractViolation, validate_fit_request
 from contracts.domain.common import (Identifier, Name, PositiveInt, Probability,
@@ -54,7 +54,26 @@ class WCLSShape(StrictModel):
     independent_unit: Literal["patient"]
 
 
-Shape = Annotated[MixtureShape | DrawShape | WCLSShape, Field(discriminator="kind")]
+class WCLSResultShape(StrictModel):
+    kind: Literal["wcls_result"]
+    input: FileRef
+    analysis: FileRef
+
+
+class WCLSResult(Versioned):
+    kind: Literal["wcls_reference_result"]
+    unit: Literal["quality_points"]
+    input_sha256: Sha256
+    analysis_sha256: Sha256
+    coefficient_names: Literal["intercept,x,action_minus_numerator_probability"]
+    coefficients: Annotated[list[float], Field(min_length=3, max_length=3)]
+    variance: Literal["MRTAnalysis_hat_matrix_small_sample_not_Python_SE_parity"]
+    n_rows: PositiveInt
+    independent_unit: Literal["patient"]
+
+
+Shape = Annotated[MixtureShape | DrawShape | WCLSShape | WCLSResultShape, Field(discriminator="kind")]
+PATIENT_ID = TypeAdapter(Identifier)
 
 
 class ArtifactManifest(Versioned):
@@ -82,7 +101,7 @@ class ArtifactManifest(Versioned):
             raise ValueError("completed production cannot hide a failure")
         if self.shape.kind == "normal_mixture" and self.unit != self.shape.marginal_scale:
             raise ValueError("mixture named marginal scale must match manifest units")
-        if self.shape.kind == "wcls_fixture" and self.unit != "quality_points":
+        if self.shape.kind in ("wcls_fixture", "wcls_result") and self.unit != "quality_points":
             raise ValueError("reference WCLS reward uses quality points")
         return self
 
@@ -127,7 +146,7 @@ def checked_file(root: Path, reference: FileRef) -> Path:
     return path
 
 
-def _validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture | list[dict[str, str]]:
+def _validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture | WCLSResult | list[dict[str, str]]:
     if manifest.producer_status != "completed":
         raise ContractViolation("artifact_failed", "Failed/abstained production is not a usable prior or reference")
     for source in manifest.inputs:
@@ -139,10 +158,19 @@ def _validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture 
         if len(mixture.components) != shape.components or mixture.marginal_scale != manifest.unit:
             raise ContractViolation("artifact_shape", "Mixture component count/scale mismatch")
         return mixture
+    if shape.kind == "wcls_result":
+        input_path = checked_file(root, shape.input)
+        analysis_path = checked_file(root, shape.analysis)
+        result = WCLSResult.model_validate_json(path.read_bytes())
+        if result.input_sha256 != digest(input_path) or result.analysis_sha256 != digest(analysis_path):
+            raise ContractViolation("artifact_lineage", "WCLS result must retain exact input and analysis checksums")
+        return result
     with path.open(newline="", encoding="utf-8") as stream:
         reader = csv.DictReader(stream)
         columns = reader.fieldnames
         rows = list(reader)
+    if any(set(row) != set(columns or []) or any(value is None for value in row.values()) for row in rows):
+        raise ContractViolation("artifact_shape", "CSV rows must have exactly the declared fields; extra/missing values are rejected")
     if shape.kind == "mcmc_draws":
         if columns != ["chain", "draw", "quantity", "value"]:
             raise ContractViolation("artifact_shape", "SBC exchange must preserve named chain/draw/quantity/value columns")
@@ -162,6 +190,7 @@ def _validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture 
             raise ContractViolation("artifact_shape", "WCLS column/row mismatch")
         seen = set()
         for row in rows:
+            PATIENT_ID.validate_python(row["id"])
             key = (row["id"], int(row["time"]))
             if key in seen or int(row["action"]) not in (0, 1) or int(row["availability"]) not in (0, 1) or not 0 < float(row["logging_probability"]) < 1 or float(row["numerator_probability"]) != 0.5 or not all(math.isfinite(float(row[f])) for f in ["y", "x"]):
                 raise ContractViolation("artifact_shape", "Invalid WCLS row/probability or duplicated decision")
@@ -169,7 +198,7 @@ def _validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture 
     return rows
 
 
-def validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture | list[dict[str, str]]:
+def validate_artifact(root: Path, manifest: ArtifactManifest) -> NormalMixture | WCLSResult | list[dict[str, str]]:
     try:
         return _validate_artifact(root, manifest)
     except ContractViolation:
