@@ -128,7 +128,7 @@ def main():
     assert data["task_defaults"]["integration_target"] == "main"
     assert git("rev-parse", BASE + "^{tree}") == git("rev-parse", REVIEW_BASE + "^{tree}")
     subprocess.check_call(["git", "merge-base", "--is-ancestor", BASE, REVIEW_BASE], cwd=ROOT)
-    # G0 contract implementation is now active; this package cannot accept a gate.
+    # Contract scope accepted in PR11; qualification still cannot accept a gate.
     assert data["gate_status"]["G0"] == "running"
     assert all(state == "not-started" for gate, state in data["gate_status"].items() if gate != "G0")
     prior = data["repair_assignment"]
@@ -139,9 +139,19 @@ def main():
     assert git("show", "-s", "--format=%P", merge).split() == [REVIEW_BASE, prior["reviewed_head"]]
     report = "docs/implementation/evidence/G0-LAUNCH-FIX-01/independent-review-20261020.md"
     assert git("hash-object", "--path", report, report).strip() == "c7036122a5db0f40cbc3ea962741a306c7ecead7"
+    accepted_contract = data["accepted_contract_assignment"]
+    assert accepted_contract["id"] == "G0-CONTRACT" and accepted_contract["base_commit"] == merge
+    assert accepted_contract["review_disposition"] == "ready_to_ship" and accepted_contract["status"] == "accepted"
+    accepted_head = "abd511c5870d41269980f4554be89407b31749d6"
+    accepted_merge = "6c3fb070d36bfefbd070f2a2c33ccba7631734be"
+    assert git("show", "-s", "--format=%P", accepted_merge).split() == [merge, accepted_head]
+    assert accepted_contract["reviewed_head"] == accepted_head and accepted_contract["merge_commit"] == accepted_merge
+    accepted_report = accepted_contract["accepted_review"]
+    assert git("hash-object", "--path", accepted_report["path"], accepted_report["path"]).strip() == "78c63b418994faac455ccecf25020c6fb63c88e1"
     current = data["current_assignment"]
-    assert current["id"] == "G0-CONTRACT" and current["base_commit"] == merge
-    prior_contract = current["prior_reviews"][0]
+    assert current["id"] == "G0-LIB" and current["base_commit"] == accepted_merge
+    assert current["status"] == "needs_review_with_unresolved_OPE_decision"
+    prior_contract = accepted_contract["prior_reviews"][0]
     assert prior_contract["reviewed_head"] == "939dd29254bc4a6f2c4f6c92330bd1c3fc11c9d4"
     assert prior_contract["reviewed_base"] == merge and prior_contract["disposition"] == "changes_requested"
     assert git("hash-object", "--path", prior_contract["path"], prior_contract["path"]).strip() == "9b81514185ab38ed7550b8c3719cb30e85b7edc9"

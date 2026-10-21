@@ -1,0 +1,16 @@
+Sampling: [mu, y]
+Initializing NUTS using jitter+adapt_diag...
+Sequential sampling (4 chains in 1 job)
+NUTS: [mu]
+Sampling 4 chains for 200 tune and 200 draw iterations (800 + 800 draws total) took 0 seconds.
+The rhat statistic is larger than 1.01 for some parameters. This indicates problems during sampling. See https://arxiv.org/abs/1903.08008 for details
+The effective sample size per chain is smaller than 100 for some parameters.  A higher number is needed for reliable rhat and ess computation. See https://arxiv.org/abs/1903.08008 for details
+Sampling: [y]
+Traceback (most recent call last):
+  File "/workspace/tooling/library/probe-python.py", line 102, in <module>
+    assert all(np.isfinite(v).all() for v in prediction.values())
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/tooling/library/probe-python.py", line 102, in <genexpr>
+    assert all(np.isfinite(v).all() for v in prediction.values())
+               ~~~~~~~~~~~^^^
+TypeError: ufunc 'isfinite' not supported for the input types, and the inputs could not be safely coerced to any supported types according to the casting rule ''safe''

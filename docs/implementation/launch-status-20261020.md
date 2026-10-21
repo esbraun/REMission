@@ -1,4 +1,14 @@
-# Launch status — G0-CONTRACT candidate
+# Launch status — G0-LIB checkpoint (2026-10-21)
+
+**Current state supersedes the historical contract-candidate record below. G0 remains running/unaccepted; G1–G7 unexecuted.** G0-CONTRACT was accepted in [PR11](https://github.com/esbraun/REMission/pull/11), reviewed headabd511c5870d41269980f4554be89407b31749d6/basee7965b998fa70df82e63a89ef720a6c8ad46ce6d, merged6c3fb070d36bfefbd070f2a2c33ccba7631734be. Raw ready report78c63b418994faac455ccecf25020c6fb63c88e1 is preserved unchanged under G0-CONTRACT evidence. Original rejected reports remain historical.
+
+Current `/root/integration_sol`, explicit Sol/high, app01a15cf4-3065-7063-b11e-3967008fe9a1, owns the same exclusive integration checkout on `launch/g0-library-20261020`, exact creation/review base6c3fb070d36bfefbd070f2a2c33ccba7631734be, targetmain. No escalation. [G0-LIB](library-qualification.md) has actual CPU float64 native-NUTS/current-ArviZ/compiled-BCF/numerical/ML/WCLS APIs, offline RBesT gMAP/mixture/SBC draw/WCLS file probes, exact locks/inventories, strict artifact schemas and seven rejection regression groups. Short NUTS/gMAP diagnostics fail final criteria and remain preserved. No pilot/calibration/recovery acceptance. COBA fixed stochastic IPS works; mandatory held-out DR cannot use its stock API. Status is **needs_review with unresolved OPE selection**, not complete. The concrete revision/probe criteria require independent acceptance.
+
+Root reports DGP/workflow candidate6195f9b745b672f087c9fdbd670497f80b7864ba/base6c is frozen, not accepted. Author Sol/high app01a15d2f-f24b-7491-8257-3c634801dcf3 was archived and native removal verified, own worktree/branch preserved. New `/root/dgp_workflow_critic_astra`, explicit Astra/medium app01a15d45-e5ee-7693-ac4b-91d75c46b1bf, owns detached review checkout `C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-review-20261021`. Root reports findings being finalized; no unscheduled source changes or accepted integration. Prior critic01a15ccb-d23c-7e10-a1c8-6a55a6719daf was archived after PR11 with native removal verified. Current root + integration Sol + DGP/workflow Astra + existing Luna = four total, two non-Luna children.
+
+Next: independent exact-head/base critique of this frozen checkpoint, accepted and qualified OPE revision, DGP/workflow repairs/review, accepted-main integration with affected checks/refreshed review, then complete G0 before G1. Root owns PR/merge/lifecycle; shared manifests/locks remain integration-owned. All635 mappings and final gates retained. Human/clinical review remains explicitly deferred; provisional synthetic engineering continues. Full real hybrid app remains unfinished. Session filename identifiers stay20261020; actual new run timestamps are UTC command metadata.
+
+# Historical G0-CONTRACT candidate status (superseded)
 
 2026-10-20. **G0 is running and unaccepted. G0-CONTRACT needs independent implementation review.** G1-G7 remain unexecuted. The active goal remains the complete real-algorithm synthetic hybrid app, including loading/testing and reproduction; this contract package is an engineering prerequisite.
 

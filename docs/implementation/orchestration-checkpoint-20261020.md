@@ -1,4 +1,12 @@
-# Orchestration checkpoint — G0-CONTRACT
+# Orchestration checkpoint — G0-LIB (2026-10-21)
+
+**Current record supersedes the historical contract checkpoint below.** PR11 accepted headabd511c5870d41269980f4554be89407b31749d6/basee796, merge6c3fb070d36bfefbd070f2a2c33ccba7631734be; immutable full ready review78c63b418994faac455ccecf25020c6fb63c88e1 preserved under G0-CONTRACT evidence. Contract scope alone accepted; G0 running, G1–G7 unexecuted, human review deferred.
+
+Current G0-LIB: `/root/integration_sol`, Sol/high app01a15cf4-3065-7063-b11e-3967008fe9a1, no escalation/effective-settings introspection. Same exclusive integration checkout, branch `launch/g0-library-20261020`, exact creation/review base6c3fb070d36bfefbd070f2a2c33ccba7631734be, targetmain. Actual bounded API/file/lock/security and artifact-rejection evidence in [qualification](library-qualification.md); short-fit diagnostics fail final thresholds. COBA stock held-out DR unsupported: concrete selection revision/qualification remains a G0 dependency. Package is needs_review, not complete. Stop candidate writes after commit. Root schedules critique/next bounded qualification and owns PR/merge; any accepted-main change requires integrated affected checks and refreshed review base.
+
+DGP/workflow6195f9b/base6c remains unaccepted, author archived/native removal verified, worktree preserved. New independent Astra/medium `/root/dgp_workflow_critic_astra` app01a15d45-e5ee-7693-ac4b-91d75c46b1bf owns `C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-review-20261021`; findings pending final report. Prior contract critic archived/native removal verified. Inventory root + Sol + current Astra + Luna =four, no nested delegation. Master ledger records both packages' actual separate states. Full635 mappings/final acceptance retained; no app or human success implied.
+
+# Historical G0-CONTRACT checkpoint (superseded)
 
 2026-10-20. Current package `G0-CONTRACT`, explicit owner `/root/integration_sol`, Sol/high, no escalation. Exclusive `C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020`; branch `launch/g0-contracts-20261020`; creation/review target base `e7965b998fa70df82e63a89ef720a6c8ad46ce6d`; target `main`. Verified worker ID `01a15cf4-3065-7063-b11e-3967008fe9a1`. Effective settings are not independently introspectable.
 

@@ -1,0 +1,147 @@
+{
+  "scope": "bounded API qualification, not calibration/recovery/20-fit pilot",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.13.7",
+  "packages": {
+    "pip": "25.2",
+    "patsy": "1.0.3",
+    "scipy": "1.18.1",
+    "formulaic": "1.2.2",
+    "scikit-learn": "1.9.1",
+    "coba": "8.1.0",
+    "annotated-types": "0.8.0",
+    "lazy-loader": "0.6",
+    "filelock": "4.2.4",
+    "statsmodels": "0.15.0",
+    "xarray-einstats": "0.11.0",
+    "pymc": "6.3.2",
+    "netCDF4": "1.7.5",
+    "markdown-it-py": "4.2.0",
+    "matplotlib": "3.11.2",
+    "certifi": "2026.10.19",
+    "pytensor": "3.3.4",
+    "joblib": "1.6.0",
+    "pillow": "13.0.0",
+    "setuptools": "84.2.1",
+    "arviz": "1.3.0",
+    "threadpoolctl": "3.7.0",
+    "fonttools": "4.67.0",
+    "interface_meta": "2.0.1",
+    "rich": "15.0.0",
+    "numpy": "2.5.4",
+    "Pygments": "2.21.0",
+    "contourpy": "1.4.0",
+    "arviz-stats": "1.3.3",
+    "numba": "0.68.0",
+    "cloudpickle": "3.1.2",
+    "narwhals": "2.27.1",
+    "six": "1.17.0",
+    "kiwisolver": "1.5.1",
+    "pydantic_core": "2.50.1",
+    "cycler": "0.12.1",
+    "cftime": "1.6.6.1",
+    "arviz-plots": "1.3.2",
+    "pandas": "3.0.6",
+    "typing_extensions": "4.16.0",
+    "python-dateutil": "2.9.0.post0",
+    "arviz-base": "1.3.1",
+    "packaging": "26.3",
+    "llvmlite": "0.50.0",
+    "cachetools": "6.2.6",
+    "mdurl": "0.1.2",
+    "xarray": "2026.9.0",
+    "stochtree": "0.4.5",
+    "pydantic": "2.14.1",
+    "wrapt": "2.5.1",
+    "pyparsing": "3.3.3",
+    "typing-inspection": "0.4.4"
+  },
+  "runtime": {
+    "buffer": "ndarray",
+    "dtype": "float64",
+    "cxx": "/usr/bin/g++",
+    "cpu": true,
+    "threads": "1 1 1"
+  },
+  "native_nuts": {
+    "sampler": "native_pymc_nuts",
+    "seed": 73142,
+    "chains": 4,
+    "draws": 200,
+    "tune": 200,
+    "container": "DataTree",
+    "shape": [
+      4,
+      200
+    ],
+    "dtype": "float64",
+    "mean": 0.30095438364333776,
+    "analytic_mean": 0.2962962962962962,
+    "analytic_variance": 0.04938271604938271,
+    "diagnostics": {
+      "rhat": 1.0277159130972902,
+      "ess_bulk": 183.69102282080675,
+      "ess_tail": 241.87426247123406,
+      "mcse": 0.015537145505585088
+    },
+    "divergences": 0,
+    "roundtrip_exact": true,
+    "prior_predictive": "DataTree",
+    "posterior_predictive": "DataTree",
+    "claim_limit": "Short qualification run; these are actual diagnostics, not G2 final acceptance"
+  },
+  "arviz": {
+    "api": "arviz_stats.rhat/ess/mcse on PyMC6 DataTree; arviz.plot_trace",
+    "plot_saved": true
+  },
+  "wcls_python": {
+    "coefficients": [
+      0.9999581419991859,
+      0.19844325809964497,
+      1.999597647990695
+    ],
+    "se": [
+      0.0012220641792400045,
+      0.0027629074352625714,
+      0.0037792541605386654
+    ],
+    "variance": "statsmodels cluster correction, not R hat-matrix correction",
+    "n": 72
+  },
+  "numerical_ml": {
+    "normal_cdf": 0.5,
+    "ridge_grouped_split": true,
+    "seedsequence": [
+      3459401165,
+      1544729967
+    ]
+  },
+  "bcf": {
+    "fixture": "matched single decision; no longitudinal claim",
+    "prediction_shapes": {
+      "y_hat": [
+        4,
+        4
+      ],
+      "mu_hat": [
+        4,
+        4
+      ],
+      "tau_hat": [
+        4,
+        4
+      ],
+      "prognostic_function": [
+        4,
+        4
+      ],
+      "cate": [
+        4,
+        4
+      ],
+      "rfx_predictions": null,
+      "variance_forest_predictions": null
+    }
+  },
+  "seconds": 3.8089687570463866
+}
