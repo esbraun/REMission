@@ -1,6 +1,6 @@
 # REMission implementation entry point
 
-Revision: 2026-10-19. This instruction set governs future application implementation. Documentation acceptance does not mean application, statistical or human validation is complete.
+Revision: 2026-10-20. This instruction set governs future application implementation. Documentation acceptance does not mean application, statistical or human validation is complete.
 
 ## Load bounded gate context
 
@@ -19,7 +19,18 @@ Requirements have one canonical home. Use stable requirement, estimand, scenario
 
 ## Launch contract
 
-Implement the full synthetic hybrid through G0–G7. Start with G0 contracts and a requirement-to-task-to-test ledger under `docs/implementation/`. Preserve the established future implementation workflow: real subagents own packages, an orchestrator integrates in dependency order, independent reviewers inspect evidence, and a release worker reproduces the result. Actual runtime instructions and tool availability take precedence. These roles cannot substitute for clinicians or human-factors participants.
+Implement the full synthetic hybrid through G0–G7. Start with G0 contracts and a requirement-to-task-to-test ledger under `docs/implementation/`. Use one orchestrator thread for user communication and feedback, plan and gate progress, task distribution, dependency scheduling, and consolidated reporting. Delegate all substantive work to real subagents: exploration, technical planning, critique, contracts, implementation, integration edits, testing, evidence inspection, independent review, documentation, and release reproduction. The orchestrator schedules integration in dependency order; an integration subagent performs it. Actual runtime instructions and tool availability take precedence. These roles cannot substitute for clinicians or human-factors participants.
+
+Follow the [official subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents?surface=app) and the [delegation contract](docs/execution/delegation.md#delegation-and-integration-contract). Keep at most two subagent threads concurrently open across the entire workflow, excluding the orchestrator; use a lower runtime limit when required. Only the orchestrator spawns or assigns agents. Workers may freely request Luna helpers through it; queue requests when both slots are occupied. Reuse suitable workers and release completed threads before replacements. Do not replace unavailable delegation with solo implementation.
+
+| Work | Subagent model | Reasoning effort |
+|---|---|---|
+| Technical planning, review, and critique | `gpt-6-astra` | `medium` |
+| Implementation, integration, repairs, and verification | `gpt-6.1-sol` | `high` |
+| Difficult implementation | `gpt-6.1-sol` | `xhigh` |
+| Exploration, summaries, and lightweight helpers | `gpt-6-luna` | `high` |
+
+Use explicit model and effort settings for every assignment. Sol implementation may increase to `xhigh` without user confirmation; record the reason in the task handoff. Independent review belongs to a separate Astra reviewer, with findings returned to Sol for fixes and then reviewed again. Verify actual model availability and settings; report unsupported choices without silently substituting models. The [runtime instructions](docs/execution/runtime-and-workflow.md#subagent-runtime-configuration) describe the required concurrency setting and capability checks.
 
 Use actual Bayesian fitting, randomization, WCLS and bounded policy logic. Cached outputs must come from reproducible runs. Keep real literature separate from synthetic quantitative studies. No real patient systems, messages, orders or wearable accounts are in scope.
 
