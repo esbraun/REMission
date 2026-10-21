@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:service:live-hold-command:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "archive_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Archive Id",
+      "type": "string"
+    },
+    "bundle_ref": {
+      "$ref": "#/$defs/ExactRef"
+    },
+    "contract": {
+      "const": "LIVE-HOLD-01",
+      "title": "Contract",
+      "type": "string"
+    },
+    "partition_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Partition Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "trigger_refs": {
+      "items": {
+        "$ref": "#/$defs/ExactRef"
+      },
+      "minItems": 1,
+      "title": "Trigger Refs",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "contract",
+    "synthetic",
+    "archive_id",
+    "partition_id",
+    "bundle_ref",
+    "trigger_refs"
+  ],
+  "title": "InvalidationInput",
+  "type": "object"
+}

@@ -7,7 +7,7 @@ import sqlite3
 import uuid
 from contracts.service.live_hold import CAPABILITY, ControlBinding, InstalledBundle, LiveHoldAuthority, ReviewRules
 from .admission import AdmissionError, AdmissionGate
-from .store import Store, canonical, digest, timestamp
+from .store import Store, canonical, digest, instant, timestamp
 
 IMMUTABLE = ['events', 'decisions', 'bundles', 'tasks', 'receipts', 'ingestion_receipts',
              'state_changes', 'observed_archives', 'observed_archive_entries', 'observed_archive_artifacts',
@@ -100,3 +100,55 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
     if fault:
         fault('after_cutover_commit')
     return Store(target, installed)
+
+
+def change_generation(store,new_bundle,at,*,fault=None):
+    """Offline stopped-worker administrative cutover; never an HTTP operation."""
+    from .live_journal import active_episodes,append_fact,receive
+    from .live_hold import object_hash,advance
+    from .workflow import create_decision
+    with store.transaction(write=True) as db:
+        old=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone();new=new_bundle.control
+        if (new.database_instance_id!=old['database_instance_id'] or new.authority_generation!=old['authority_generation']+1
+                or digest(canonical(new_bundle.authority.model_dump(mode='json')))!=new.authority_sha256
+                or digest(canonical(new_bundle.review_rules.model_dump(mode='json')))!=new.review_rules_sha256):
+            raise ValueError('invalid_generation_cutover')
+        if at<instant(old['last_receipt_at']):
+            raise ValueError('service_clock_regression')
+        db.execute('UPDATE service_control SET authority_generation=?,authority_sha256=?,review_rules_sha256=?,enabled=?,activation_id=?,activated_at=? WHERE singleton=1',
+            (new.authority_generation,new.authority_sha256,new.review_rules_sha256,int(new.enabled),new.activation_id,timestamp(at)))
+        db.execute('INSERT INTO live_authority_history VALUES(?,?,?,?,?,?,?)',(new.authority_generation,new.authority_sha256,new.review_rules_sha256,
+            canonical(new_bundle.authority.model_dump(mode='json')),canonical(new_bundle.review_rules.model_dump(mode='json')),new.activation_id,timestamp(at)))
+        for patient in db.execute('SELECT id FROM patients').fetchall():
+            pid=patient['id'];episodes=active_episodes(db,pid)
+            if not episodes:continue
+            operation_id='authority-'+uuid.uuid4().hex;resulting=[]
+            for row in episodes:
+                e=row['data'];obligations={r['requirement_id']:r for r in e['obligations']}
+                for grant in new_bundle.authority.grants:
+                    if grant.service_patient_id==pid and grant.episode_namespace in json.loads(row['source_key']):
+                        for r in grant.required_reviews:
+                            value=r.model_dump(mode='json')
+                            if r.requirement_id in obligations and obligations[r.requirement_id]!=value:
+                                raise ValueError('obligation_substitution_requires_reviewed_policy')
+                            obligations[r.requirement_id]=value
+                e['obligations']=sorted(obligations.values(),key=lambda r:r['requirement_id'])
+                public=[{k:r[k] for k in ['requirement_id','definition']} for r in e['obligations']]
+                e['obligation_set_sha256']=object_hash(public);e['current_review_id']=None
+                db.execute('UPDATE live_hold_episodes SET payload=?,last_operation=? WHERE id=? AND generation=?',(canonical(e),operation_id,row['id'],row['generation']))
+                resulting.append(dict(episode_id=row['id'],generation=row['generation'],obligations=public,obligation_set_sha256=e['obligation_set_sha256']))
+                db.execute('INSERT INTO live_hold_task_events VALUES(?,?,?,?)',('task-event-'+uuid.uuid4().hex,e['task_id'],operation_id,canonical(dict(status='pending',reason='authority_changed',obligations=e['obligations']))))
+            journal=db.execute('SELECT journal_id FROM live_patient_journals WHERE patient_id=?',(pid,)).fetchone()[0]
+            append_fact(db,pid,operation_id,at,dict(type='authority_changed',old_generation=old['authority_generation'],new_generation=new.authority_generation,
+                old_authority_sha256=old['authority_sha256'],new_authority_sha256=new.authority_sha256,old_review_rules_sha256=old['review_rules_sha256'],
+                new_review_rules_sha256=new.review_rules_sha256,prior_journal_id=journal,active_episodes=resulting))
+            advance(db,pid);decision_id=create_decision(db,pid,at)
+            response=dict(status='committed',operation_id=operation_id,decision_id=decision_id,authority_generation=new.authority_generation)
+            db.execute('INSERT INTO live_hold_operations(id,patient_id,family,semantic_sha256,received_at,payload,response) VALUES(?,?,?,?,?,?,?)',
+                (operation_id,pid,'authority_changed',object_hash([operation_id,new.authority_generation]),timestamp(at),canonical(response),canonical(response)))
+            db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)',('audit-'+uuid.uuid4().hex,pid,'offline-administrator',timestamp(at),canonical(response)))
+            db.execute('DELETE FROM drafts WHERE patient_id=?',(pid,))
+        receive(db,at)
+        if fault:fault('before_generation_commit')
+    if fault:fault('after_generation_commit')
+    return Store(store.path,new_bundle,clock=store.clock)

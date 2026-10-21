@@ -63,15 +63,22 @@ def configured_archive(settings, db, archive_id, owner):
     raise LiveError('live_source_grant_unavailable')
 
 
-def prepare_invalidation(settings, db, owner, patient_id, data, at):
+def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified_package=None):
     patient_row(db,patient_id,owner)
     installed=settings.installed
     if not installed.control.enabled or not installed.authority.enabled:
         raise LiveError('independent_hold_live_integration_required')
-    stored,manifest,partitions,archive_authority=configured_archive(settings,db,data.archive_id,owner)
+    if _verified_package is None:
+        stored,manifest,partitions,archive_authority=configured_archive(settings,db,data.archive_id,owner)
+        history=archive_history(db,data.archive_id,data.partition_id,patient_id)
+    else:
+        stored=dict(export_sha256=digest(_verified_package.raw))
+        manifest,partitions,archive_authority=_verified_package.manifest,_verified_package.partitions,_verified_package.authority
+        history=next((h for p,h,*_ in partitions if p.id==data.partition_id and p.patient_id==patient_id),None)
+        if history is None or manifest.run_id+':'+manifest.id!=data.archive_id:
+            raise LiveError('hold_dependencies_unavailable')
     if manifest.cutoff>at:
         raise LiveError('future_hold_evidence',422)
-    history=archive_history(db,data.archive_id,data.partition_id,patient_id)
     try:
         bundle=resolve(history,data.bundle_ref,{'hold_transition_bundle'},cutoff=at,inclusive=True)
         validate_hold(history,bundle,cutoff=at)
@@ -140,7 +147,7 @@ def semantic_retry(db, semantic, owner, patient_id, family, key, request_sha256)
         return json.loads(row[1])
 
 
-def finish(db, settings, owner, patient_id, family, key, request_sha256, semantic, at, before, payload, operation, *, event_at=None, decision=True):
+def finish(db, settings, owner, patient_id, family, key, request_sha256, semantic, at, before, payload, operation, *, event_at=None, final_decision_id=None):
     from .workflow import create_decision
     receive(db,at)
     operation_id=payload['operation_id']
@@ -150,7 +157,7 @@ def finish(db, settings, owner, patient_id, family, key, request_sha256, semanti
     db.execute('DELETE FROM drafts WHERE patient_id=?',(patient_id,))
     if settings.fault:
         settings.fault('after_hold_task_audit')
-    decision_id=create_decision(db,patient_id,at) if decision else None
+    decision_id=final_decision_id or create_decision(db,patient_id,at)
     after=patient_row(db,patient_id,owner)
     c=control(db)
     next_sequence=db.execute('SELECT COALESCE(max(sequence),0)+1 FROM live_hold_operations').fetchone()[0]
@@ -176,7 +183,7 @@ def advance(db, patient_id, state=None):
         db.execute('UPDATE patients SET version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,state_json=? WHERE id=?',(canonical(state),patient_id))
 
 
-def invalidate(db, settings, owner, patient_id, data, key, at, prepared):
+def invalidate(db, settings, owner, patient_id, data, key, at, prepared, *, _final_decision_id=None):
     family='invalidate';request_sha256=object_hash(data.model_dump(mode='json'))
     prior=committed_key(db,owner,patient_id,family,key,request_sha256)
     if prior:
@@ -232,7 +239,7 @@ def invalidate(db, settings, owner, patient_id, data, key, at, prepared):
         dict(operation_id=operation_id,episode_id=episode_id,episode_generation=generation,task_ids=[e['task_id']],
             source_key=prepared['source_key'],bundle_lineage=bundle.lineage_id,bundle_revision=bundle.revision,
             package_sha256=grant.package_sha256,archive_id=data.archive_id,partition_id=data.partition_id,
-            bundle_ref=data.bundle_ref.model_dump(mode='json'),trigger_refs=trigger_refs),operation,event_at=bundle.event_at)
+            bundle_ref=data.bundle_ref.model_dump(mode='json'),trigger_refs=trigger_refs),operation,event_at=bundle.event_at,final_decision_id=_final_decision_id)
 
 
 def episode(db, patient_id, episode_id):

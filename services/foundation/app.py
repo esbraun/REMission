@@ -107,7 +107,7 @@ class ArchiveInput(StrictModel):
 
 
 def create_app(settings: Settings) -> FastAPI:
-    store = Store(settings.database,settings.installed)
+    store = Store(settings.database,settings.installed,clock=settings.clock)
     app = FastAPI(title="REMission synthetic foundation", docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store, app.state.settings = store, settings
     dummy_hash = HASHER.hash("non-account-timing-control")
@@ -211,6 +211,10 @@ def create_app(settings: Settings) -> FastAPI:
             else:
                 initial=None
             prepared['at']=settings.clock()
+            if family=='review' and initial is not None:
+                for proof in initial['proofs']:
+                    proof['verified_visible_at']=timestamp(prepared['at'])
+                initial['evidence_head_sha256']=live.object_hash(initial['proofs'])
             prepared['value']=initial
             if prepared['at']<instant(store.validate_control(db)['last_receipt_at']):
                 raise LiveError('service_clock_regression')
@@ -279,6 +283,35 @@ def create_app(settings: Settings) -> FastAPI:
                 raise APIError(404,'not_found','Committed operation not found')
             return json.loads(row[0])
 
+    @app.post('/api/patients/{patient_id}/live-safety-exports')
+    async def live_export(patient_id: str,request: Request):
+        data=await body(request,ExportInput);key=live_key(request)
+        if settings.live_export_root is None:
+            raise LiveError('live_export_destination_unconfigured',503)
+        def authorize(db):
+            current=session(db,request,mutation=True)
+            own(db,patient_id,current['account_id'])
+            if current['account_id']!=owner:
+                raise APIError(401,'authentication_required','Sign in again')
+        with store.transaction() as db:
+            current=session(db,request,mutation=True);own(db,patient_id,current['account_id']);owner=current['account_id']
+        from .live_safety_export import ExportContext,export_live_safety
+        return export_live_safety(store,patient_id,data.cutoff,settings.live_export_root,ExportContext(owner,key,settings,authorize))
+
+    @app.get('/api/patients/{patient_id}/live-safety-exports/{export_id}/{artifact_name}')
+    def download_live_export(patient_id: str,export_id: str,artifact_name: str,request: Request):
+        from fastapi.responses import Response
+        column={'manifest.json':'manifest','observed-projection.json':'observed','live-hold-facts.json':'facts'}.get(artifact_name)
+        if column is None:
+            raise APIError(404,'not_found','Resource not found')
+        with store.transaction() as db:
+            current=session(db,request);own(db,patient_id,current['account_id'])
+            row=db.execute('SELECT * FROM live_export_receipts WHERE patient_id=? AND owner_id=?',(patient_id,current['account_id'])).fetchall()
+            saved=next((r for r in row if json.loads(r['manifest'])['export_id']==export_id),None)
+            if saved is None:
+                raise APIError(404,'not_found','Resource not found')
+            return Response(bytes(saved[column]),media_type='application/json',headers={'Content-Disposition':'attachment; filename="'+artifact_name+'"'})
+
     @app.post('/api/observed-archives/{export_id}')
     async def import_archive(export_id: str, request: Request):
         data = await body(request, ArchiveInput)
@@ -300,7 +333,19 @@ def create_app(settings: Settings) -> FastAPI:
             for partition in authority.partitions:
                 own(db, partition.schedule.patient_id, latest['account_id'])
         try:
+            if data.mode=='clinical_observation_import':
+                from .archive import verify_archive
+                package=verify_archive(raw,root,authority)
+                affected=any((r.kind=='hold_transition_bundle' and r.transition_type!='baseline'
+                    or r.kind=='hold_review_evidence' and r.review_result=='requires_hold'
+                    or r.kind=='decision_snapshot' and (r.workflow.clinical=='clinical_hold' or r.workflow.hold_reasons))
+                    for _,h,*_ in package.partitions for r in h.records)
+                if affected and settings.installed.control.enabled and settings.installed.authority.enabled and settings.installed.authority.grants:
+                    from .live_coordinator import project_archive
+                    return project_archive(store,settings,raw,root,authority,owner_id=owner,key=live_key(request),authorize=authorize)
             return archive_export(store, raw, root, authority, owner_id=owner, received_at=settings.clock(), mode=data.mode, fault=settings.fault, authorize=authorize)
+        except LiveError:
+            raise
         except ValueError as error:
             code = 'independent_hold_live_integration_required' if str(error) == 'independent_hold_live_integration_required' else 'archive_admission_rejected'
             raise APIError(409, code, str(error))

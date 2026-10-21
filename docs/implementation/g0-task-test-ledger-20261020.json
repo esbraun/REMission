@@ -2712,7 +2712,7 @@
       "requirement_id": "LEG-01-008",
       "kind": "legacy_atomic",
       "canonical_doc": "docs/spec/00-scope-and-invariants.md",
-      "canonical_locator": "The demonstration must show the full loop: ingestion \u00e2\u2020\u2019 assessment \u00e2\u2020\u2019 eligible choices \u00e2\u2020\u2019 posterior estimates \u00e2\u2020\u2019 clinic",
+      "canonical_locator": "The demonstration must show the full loop: ingestion â†’ assessment â†’ eligible choices â†’ posterior estimates â†’ clinic",
       "task_ids": [
         "G0-WORKFLOW",
         "G5-BROWSER"
@@ -3092,7 +3092,7 @@
       "requirement_id": "LEG-02-011",
       "kind": "legacy_atomic",
       "canonical_doc": "docs/spec/00-scope-and-invariants.md",
-      "canonical_locator": "**ISI interpretation.** The ISI is a seven-item, 0\u00e2\u20ac\u201c28 self-report scale that has been validated in a large mixed-ca",
+      "canonical_locator": "**ISI interpretation.** The ISI is a seven-item, 0â€“28 self-report scale that has been validated in a large mixed-ca",
       "task_ids": [
         "G0-WORKFLOW",
         "G5-SERVICE"
@@ -5802,7 +5802,7 @@
       "requirement_id": "LEG-06-005",
       "kind": "legacy_atomic",
       "canonical_doc": "docs/spec/02-synthetic-dgp.md",
-      "canonical_locator": "/  Demonstration  /  2,000 trajectories  /  4 studies with approximately 150\u00e2\u20ac\u201c250 participants each  /  60 trajecto",
+      "canonical_locator": "/  Demonstration  /  2,000 trajectories  /  4 studies with approximately 150â€“250 participants each  /  60 trajecto",
       "task_ids": [
         "G0-DGP",
         "G1-GENERATOR"
@@ -9182,7 +9182,7 @@
       "requirement_id": "LEG-11-002",
       "kind": "legacy_atomic",
       "canonical_doc": "docs/spec/06-service-and-ui.md",
-      "canonical_locator": "The demonstration has a persistent \"Synthetic demonstration \u00e2\u20ac\u201d simulated patients and estimates\" label. Reference-st",
+      "canonical_locator": "The demonstration has a persistent \"Synthetic demonstration â€” simulated patients and estimates\" label. Reference-st",
       "task_ids": [
         "G5-UI",
         "G5-BROWSER"
@@ -10442,7 +10442,7 @@
       "requirement_id": "LEG-13-005",
       "kind": "legacy_atomic",
       "canonical_doc": "docs/spec/06-service-and-ui.md",
-      "canonical_locator": "- A persistent banner says \"Historical review \u00e2\u20ac\u201d decision on [date/time]\", shows the historical stage, and provides",
+      "canonical_locator": "- A persistent banner says \"Historical review â€” decision on [date/time]\", shows the historical stage, and provides",
       "task_ids": [
         "G5-SERVICE",
         "G5-BROWSER"
@@ -12784,7 +12784,7 @@
       "requirement_id": "LEG-15-010",
       "kind": "legacy_atomic",
       "canonical_doc": "docs/spec/08-gates-and-release.md",
-      "canonical_locator": "Phase 0 precedes detailed visual design. Phases 1\u00e2\u20ac\u201c4 can expose results through a minimal research interface; phase",
+      "canonical_locator": "Phase 0 precedes detailed visual design. Phases 1â€“4 can expose results through a minimal research interface; phase",
       "task_ids": [
         "G7-REPRO"
       ],
@@ -18334,5 +18334,27 @@
         "checkruns": []
       }
     }
+  },
+  "live_hold_implementation": {
+    "task": "T-OBS2-LIVE-HOLD",
+    "status": "in_progress_not_accepted",
+    "base": "ec18cb4020ba239710a3fd615e365d5cd72b4d80",
+    "plan": "756ce26bf454cce89933439f03572cd34b29eda8",
+    "plan_review_blob": "0f90d6be4dbb5193dc31df8291abac57b339e401",
+    "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-implementation-sol-20261021",
+    "branch": "launch/g1-live-hold-implementation-20261021",
+    "assigned_model": "gpt-6.1-sol",
+    "assigned_effort": "xhigh",
+    "effective_model": "not_independently_introspectable_no_substitution",
+    "escalation_reason": "Difficult atomic multi-episode safety workflow, cross-process OS admission/capability cutover, authenticated evidence chronology, immutable complete-prefix products and fail-closed legacy paths",
+    "evidence": "docs/implementation/evidence/G1-LIVE-HOLD/README.md",
+    "scientific_clearance": "T-OBS2-CLEARANCE-POLICY blocked; no threshold/manual alias installed",
+    "next": [
+      "process/race/crash/cutover schedules",
+      "more negative and product tamper tests",
+      "UI/official MCP",
+      "runtime images/byte/isolation/635 audit",
+      "independent exact-code review"
+    ]
   }
 }

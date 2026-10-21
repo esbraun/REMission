@@ -32,10 +32,11 @@ def timestamp(value: datetime) -> str:
 
 
 class Store:
-    def __init__(self, path: str | Path, installed: InstalledBundle):
+    def __init__(self, path: str | Path, installed: InstalledBundle, *, clock=lambda: datetime.now(timezone.utc)):
         # Normal startup never creates directories, DBs or runs legacy SQL.
         self.path = Path(path)
         self.installed = InstalledBundle.model_validate_json(installed.model_dump_json())
+        self.clock = clock
         self.gate = AdmissionGate(self.path)
         with self.gate.hold(), closing(self.connect()) as db:
             self.validate_control(db)
@@ -71,11 +72,17 @@ class Store:
                 self.validate_control(db)
                 if prepare:
                     prepare(db)  # committed autocommit reads; sample R here.
+                operation_time=self.clock() if write else None
+                if write and operation_time<instant(self.validate_control(db)['last_receipt_at']):
+                    raise AdmissionError('service_clock_regression')
                 db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
                 self.validate_control(db)
                 if authorize:
                     authorize(db)  # authentication rechecked after writer wait.
                 yield db
+                if write:
+                    from .live_journal import receive
+                    receive(db,operation_time)
                 db.commit()
             except sqlite3.OperationalError as error:
                 db.rollback()

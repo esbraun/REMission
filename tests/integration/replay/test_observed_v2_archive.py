@@ -18,6 +18,7 @@ from services.foundation.cli import DEMO_PASSWORDS, seed
 from services.foundation.replay import replay
 from services.foundation.store import Store, digest
 from services.foundation.workflow import history
+from live_helpers import fresh_store
 
 ORIGIN = 'http://127.0.0.1:8765'
 NOW = datetime(2026, 10, 21, 12, tzinfo=timezone.utc)
@@ -27,13 +28,14 @@ class ArchiveTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
-        self.store = Store(self.root / 'archive.sqlite')
+        self.store = fresh_store(self.root / 'archive.sqlite')
+        self.store.clock=lambda:NOW
         seed(self.store)
         with self.store.transaction() as db:
             self.owner = db.execute("SELECT owner_id FROM patients WHERE id='SYN-02'").fetchone()[0]
         self.fixture = build(self.root / 'staging', hold=True)
         self.authority = ExportAuthorityV2.model_validate_json(canonical(self.fixture['authority']))
-        self.settings = Settings(self.store.path, clock=lambda: NOW,
+        self.settings = Settings(self.store.path, self.store.installed, clock=lambda: NOW,
                                  observed_archives={'fixture-export': (self.fixture['raw'], self.root / 'staging', self.authority)})
         self.client = TestClient(create_app(self.settings), base_url=ORIGIN)
 
@@ -119,8 +121,8 @@ class ArchiveTests(unittest.TestCase):
             if stage == 'after_archive_commit':
                 raise RuntimeError('simulated lost response after commit')
         with self.assertRaises(RuntimeError):
-            archive_export(Store(self.store.path), self.fixture['raw'], self.root / 'staging', self.authority, owner_id=self.owner, received_at=NOW, fault=after)
-        receipt = archive_export(Store(self.store.path), self.fixture['raw'], self.root / 'staging', self.authority, owner_id=self.owner, received_at=NOW)
+            archive_export(Store(self.store.path,self.store.installed,clock=lambda:NOW), self.fixture['raw'], self.root / 'staging', self.authority, owner_id=self.owner, received_at=NOW, fault=after)
+        receipt = archive_export(Store(self.store.path,self.store.installed,clock=lambda:NOW), self.fixture['raw'], self.root / 'staging', self.authority, owner_id=self.owner, received_at=NOW)
         self.assertEqual(receipt['cursor'], len(self.fixture['entries']))
         with self.assertRaisesRegex(ValueError, 'ownership'):
             archive_export(self.store, self.fixture['raw'], self.root / 'staging', self.authority, owner_id='doctor-bob', received_at=NOW)

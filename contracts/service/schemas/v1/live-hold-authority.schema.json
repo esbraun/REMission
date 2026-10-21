@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "Requirement": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "evidence_kinds": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Kinds",
+          "type": "array"
+        },
+        "requirement_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "responsible_role": {
+          "const": "doctor",
+          "title": "Responsible Role",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "definition",
+        "responsible_role",
+        "evidence_kinds",
+        "source_ids"
+      ],
+      "title": "Requirement",
+      "type": "object"
+    },
+    "SourceGrant": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "allowed_operations": {
+          "items": {
+            "const": "invalidate",
+            "type": "string"
+          },
+          "title": "Allowed Operations",
+          "type": "array"
+        },
+        "archive_authority_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Archive Authority Sha256",
+          "type": "string"
+        },
+        "archive_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Archive Id",
+          "type": "string"
+        },
+        "archive_patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Archive Patient Id",
+          "type": "string"
+        },
+        "due_at": {
+          "format": "date-time",
+          "title": "Due At",
+          "type": "string"
+        },
+        "episode_namespace": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Namespace",
+          "type": "string"
+        },
+        "escalation_destination": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Escalation Destination",
+          "type": "string"
+        },
+        "follow_up_owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Follow Up Owner Id",
+          "type": "string"
+        },
+        "follow_up_policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "package_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Package Sha256",
+          "type": "string"
+        },
+        "partition_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Partition Id",
+          "type": "string"
+        },
+        "required_reviews": {
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          },
+          "minItems": 1,
+          "title": "Required Reviews",
+          "type": "array"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "service_patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Service Patient Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Source Version",
+          "type": "string"
+        },
+        "trigger_rules": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "minItems": 1,
+          "title": "Trigger Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "account_id",
+        "service_patient_id",
+        "archive_patient_id",
+        "source_id",
+        "source_version",
+        "run_id",
+        "partition_id",
+        "archive_id",
+        "package_sha256",
+        "archive_authority_sha256",
+        "ownership_ref",
+        "episode_namespace",
+        "allowed_operations",
+        "trigger_rules",
+        "required_reviews",
+        "follow_up_owner_id",
+        "follow_up_policy",
+        "due_at",
+        "escalation_destination"
+      ],
+      "title": "SourceGrant",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:service:live-hold-authority:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "archive_verifier": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "authority_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Authority Id",
+      "type": "string"
+    },
+    "contract": {
+      "const": "LIVE-HOLD-01",
+      "title": "Contract",
+      "type": "string"
+    },
+    "enabled": {
+      "title": "Enabled",
+      "type": "boolean"
+    },
+    "execution": {
+      "enum": [
+        "synthetic_service",
+        "contract_fixture"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "grants": {
+      "items": {
+        "$ref": "#/$defs/SourceGrant"
+      },
+      "title": "Grants",
+      "type": "array"
+    },
+    "observed_binding": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "producer": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_registry": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "version": {
+      "$ref": "#/$defs/VersionRef"
+    }
+  },
+  "required": [
+    "schema_version",
+    "contract",
+    "synthetic",
+    "authority_id",
+    "version",
+    "enabled",
+    "observed_binding",
+    "archive_verifier",
+    "producer",
+    "source_registry",
+    "execution",
+    "grants"
+  ],
+  "title": "LiveHoldAuthority",
+  "type": "object"
+}

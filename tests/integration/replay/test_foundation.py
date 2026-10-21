@@ -15,12 +15,13 @@ from services.foundation.replay import replay
 from services.foundation.replay import parse_observed
 from services.foundation.store import Store, canonical, digest, instant
 from services.foundation.workflow import history, record_header
+from live_helpers import fresh_store
 
 ORIGIN="http://127.0.0.1:8765"
 
 
 class Clock:
-    def __init__(self):self.at=instant("2026-10-21T12:00:00+00:00")
+    def __init__(self,at=None):self.at=at or instant("2026-10-21T12:00:00+00:00")
     def __call__(self):return self.at
 
 
@@ -36,10 +37,10 @@ def observed(identifier="report-1",kind="daily_report",patient="SYN-02",event="2
 
 
 class FoundationTests(unittest.TestCase):
-    def setUp(self):
+    def setUp(self,start=None):
         self.directory=tempfile.TemporaryDirectory();self.path=Path(self.directory.name)/"real.sqlite"
-        self.clock=Clock();self.settings=Settings(self.path,clock=self.clock)
-        self.store=Store(self.path);seed(self.store)
+        self.clock=Clock(start);self.store=fresh_store(self.path);self.store.clock=self.clock;seed(self.store)
+        self.settings=Settings(self.path,self.store.installed,clock=self.clock)
         self.app=create_app(self.settings);self.client=TestClient(self.app,base_url=ORIGIN)
         self.login(self.client)
 
@@ -144,7 +145,7 @@ class FoundationTests(unittest.TestCase):
     def test_injected_rollback_persists_nothing(self):
         def fail(where):
             if where=="after_follow_up":raise RuntimeError("deliberate rollback probe")
-        client=TestClient(create_app(Settings(self.path,clock=self.clock,fault=fail)),base_url=ORIGIN,raise_server_exceptions=False);self.login(client)
+        client=TestClient(create_app(Settings(self.path,self.store.installed,clock=self.clock,fault=fail)),base_url=ORIGIN,raise_server_exceptions=False);self.login(client)
         response=client.post("/api/patients/SYN-02/approve",json=self.approval(client=client),headers=self.headers(client))
         self.assertEqual(response.status_code,500)
         with self.store.transaction() as db:
@@ -202,8 +203,8 @@ class FoundationTests(unittest.TestCase):
         def crash(_):raise RuntimeError("deliberate replay crash")
         with self.assertRaises(RuntimeError):replay(self.store,"resume",entries,"2026-10-21T12:00:00+00:00",fault=crash)
         with self.store.transaction() as db:self.assertEqual(db.execute("SELECT cursor FROM replay_runs").fetchone()[0],0);self.assertEqual(db.execute("SELECT count(*) FROM events").fetchone()[0],0)
-        replay(Store(self.path),"resume",list(reversed(entries)),"2026-10-21T12:00:00+00:00")
-        other=Store(Path(self.directory.name)/"reverse.sqlite");seed(other);replay(other,"resume",entries,"2026-10-21T12:00:00+00:00")
+        replay(Store(self.path,self.store.installed,clock=self.clock),"resume",list(reversed(entries)),"2026-10-21T12:00:00+00:00")
+        other=fresh_store(Path(self.directory.name)/"reverse.sqlite");other.clock=self.clock;seed(other);replay(other,"resume",entries,"2026-10-21T12:00:00+00:00")
         with self.store.transaction() as first,other.transaction() as second:
             a=first.execute("SELECT display_sha256 FROM decisions WHERE id=(SELECT current_decision FROM patients WHERE id='SYN-02')").fetchone()[0]
             b=second.execute("SELECT display_sha256 FROM decisions WHERE id=(SELECT current_decision FROM patients WHERE id='SYN-02')").fetchone()[0];self.assertEqual(a,b)
@@ -212,7 +213,7 @@ class FoundationTests(unittest.TestCase):
         entered=threading.Event();release=threading.Event()
         def pause(where):
             if where=="after_follow_up":entered.set();self.assertTrue(release.wait(5))
-        app=create_app(Settings(self.path,clock=self.clock,fault=pause))
+        app=create_app(Settings(self.path,self.store.installed,clock=self.clock,fault=pause))
         first=TestClient(app,base_url=ORIGIN);second=TestClient(app,base_url=ORIGIN);self.login(first);self.login(second)
         approval=self.approval(client=first);approval_headers=self.headers(first,key="race-before-hold");hold_headers=self.headers(second)
         with ThreadPoolExecutor(2) as pool:
@@ -267,7 +268,7 @@ class FoundationTests(unittest.TestCase):
         boundary=instant("2026-10-21T12:00:00+00:00")
         for offset in (-1,0,1):
             with self.subTest(offset=offset):
-                probe=FoundationTests();probe.setUp()
+                probe=FoundationTests();probe.setUp(start=boundary-timedelta(seconds=1))
                 try:
                     probe.clock.at=boundary-timedelta(seconds=1)
                     report=observed("boundary-report",event="2026-10-21T10:00:00+00:00",available=boundary.isoformat(),recorded_at=probe.clock().isoformat())
@@ -341,7 +342,7 @@ class FoundationTests(unittest.TestCase):
         third=observed("separate-arrival",event="2026-10-20T07:00:00+00:00",available="2026-10-20T08:00:00+00:00")
         entries=[correction,third,original]
         replay(self.store,"partitioned",entries,"2026-10-21T12:00:00+00:00",batch_size=1)
-        second=Store(Path(self.directory.name)/"single-batch.sqlite");seed(second)
+        second=fresh_store(Path(self.directory.name)/"single-batch.sqlite");second.clock=self.clock;seed(second)
         replay(second,"partitioned",list(reversed(entries)),"2026-10-21T12:00:00+00:00",batch_size=100)
         with self.store.transaction() as a,second.transaction() as b:
             query="SELECT display_sha256 FROM decisions WHERE id=(SELECT current_decision FROM patients WHERE id='SYN-02')"

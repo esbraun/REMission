@@ -22,6 +22,8 @@ from services.foundation.replay import replay_export
 from services.foundation.store import Store, instant
 from services.foundation.workflow import history
 from services.learner.worker import read_run_export
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'integration/replay'))
+from live_helpers import fresh_store
 
 
 class Interfaces(unittest.TestCase):
@@ -163,14 +165,14 @@ class Interfaces(unittest.TestCase):
         with self.assertRaises(ValueError):read_admitted(published,self.data['export_authority'])
 
     def test_real_sqlite_multi_patient_atomic_replay_resume_and_snapshot_cutoff(self):
-        store=Store(self.root/'actual.sqlite');seed(store)
+        store=fresh_store(self.root/'actual.sqlite');seed(store)
         def fault(_):raise RuntimeError('controlled pre-commit failure')
         with self.assertRaises(RuntimeError):replay_export(store,self.data['export_raw'],self.root,self.data['export_authority'],fault=fault)
         with store.transaction() as db:
             self.assertEqual(db.execute('SELECT count(*) FROM events').fetchone()[0],0)
             self.assertEqual(db.execute('SELECT cursor FROM replay_runs').fetchone()[0],0)
         replay_export(store,self.data['export_raw'],self.root,self.data['export_authority'],batch_size=1)
-        replay_export(Store(store.path),self.data['export_raw'],self.root,self.data['export_authority'],batch_size=2)
+        replay_export(Store(store.path,store.installed),self.data['export_raw'],self.root,self.data['export_authority'],batch_size=2)
         with store.transaction() as db:
             self.assertEqual(db.execute('SELECT count(*) FROM events').fetchone()[0],2)
             self.assertEqual(db.execute('SELECT cursor FROM replay_runs').fetchone()[0],2)

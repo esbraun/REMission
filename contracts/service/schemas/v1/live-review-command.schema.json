@@ -1,0 +1,231 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Namespace Id",
+          "type": "string"
+        },
+        "partition_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Partition Id"
+        },
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "store": {
+          "enum": [
+            "archive",
+            "event",
+            "live_review"
+          ],
+          "title": "Store",
+          "type": "string"
+        }
+      },
+      "required": [
+        "store",
+        "namespace_id",
+        "partition_id",
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "ReviewItem": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "finding": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Finding",
+          "type": "string"
+        },
+        "requirement_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "pending",
+            "satisfied"
+          ],
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "definition",
+        "evidence_refs",
+        "finding",
+        "result"
+      ],
+      "title": "ReviewItem",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:service:live-review-command:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract": {
+      "const": "LIVE-HOLD-01",
+      "title": "Contract",
+      "type": "string"
+    },
+    "current_assessment_attested": {
+      "const": true,
+      "title": "Current Assessment Attested",
+      "type": "boolean"
+    },
+    "decision_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "expected_consent_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Consent Version",
+      "type": "integer"
+    },
+    "expected_eligibility_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Eligibility Version",
+      "type": "integer"
+    },
+    "expected_episode_generation": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Episode Generation",
+      "type": "integer"
+    },
+    "expected_patient_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Patient Version",
+      "type": "integer"
+    },
+    "expected_state_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected State Version",
+      "type": "integer"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/ReviewItem"
+      },
+      "minItems": 1,
+      "title": "Items",
+      "type": "array"
+    },
+    "mode": {
+      "const": "current",
+      "title": "Mode",
+      "type": "string"
+    },
+    "rationale": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "review_rules": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Review Rules",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "trigger_set_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Trigger Set Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "contract",
+    "synthetic",
+    "mode",
+    "decision_id",
+    "expected_patient_version",
+    "expected_state_version",
+    "expected_consent_version",
+    "expected_eligibility_version",
+    "expected_episode_generation",
+    "trigger_set_sha256",
+    "review_rules",
+    "rationale",
+    "items",
+    "current_assessment_attested"
+  ],
+  "title": "ReviewInput",
+  "type": "object"
+}
