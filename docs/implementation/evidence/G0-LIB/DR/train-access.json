@@ -1,0 +1,26 @@
+{
+  "stage": "train",
+  "allowed_files": [
+    "plan.json",
+    "training.json"
+  ],
+  "actually_opened": [
+    "/input/plan.json",
+    "/input/training.json"
+  ],
+  "denied_actual_reads": [
+    "/input/rewards.json",
+    "/input/roster.json"
+  ],
+  "sklearn_imported": true,
+  "network": "disabled_by_container",
+  "fit_learn_predict_choice_calls": [
+    "fit",
+    "fit_transform",
+    "fit",
+    "partial_fit",
+    "fit",
+    "fit"
+  ],
+  "source_mount": "curated code only, no full repository/data"
+}

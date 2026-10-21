@@ -1,0 +1,4 @@
+PASS -m pip check
+PASS -m contracts.domain.export --check
+PASS -m unittest discover -s tests/contracts -v
+PASS docs/implementation/check-ledger-20261020.py

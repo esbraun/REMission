@@ -1,0 +1,424 @@
+{
+  "$defs": {
+    "DrawShape": {
+      "additionalProperties": false,
+      "properties": {
+        "chains": {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Chains",
+          "type": "array"
+        },
+        "draws": {
+          "exclusiveMinimum": 0,
+          "title": "Draws",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "mcmc_draws",
+          "title": "Kind",
+          "type": "string"
+        },
+        "quantities": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Quantities",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "chains",
+        "draws",
+        "quantities"
+      ],
+      "title": "DrawShape",
+      "type": "object"
+    },
+    "FileRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "title": "FileRef",
+      "type": "object"
+    },
+    "MixtureShape": {
+      "additionalProperties": false,
+      "properties": {
+        "components": {
+          "exclusiveMinimum": 0,
+          "title": "Components",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "normal_mixture",
+          "title": "Kind",
+          "type": "string"
+        },
+        "marginal_scale": {
+          "const": "ISI_points",
+          "title": "Marginal Scale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "components",
+        "marginal_scale"
+      ],
+      "title": "MixtureShape",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "device": {
+          "const": "cpu",
+          "title": "Device",
+          "type": "string"
+        },
+        "image": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Image",
+          "type": "string"
+        },
+        "packages": {
+          "minProperties": 1,
+          "patternProperties": {
+            "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "title": "Packages",
+          "type": "object"
+        },
+        "platform": {
+          "const": "linux-x86_64",
+          "title": "Platform",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "runtime": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Runtime",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "platform",
+        "runtime",
+        "packages",
+        "precision",
+        "device"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "SeedKey": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "enum": [
+            "fixture",
+            "development",
+            "confirmation",
+            "truth",
+            "fit",
+            "assignment"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "namespace",
+        "protocol",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process"
+      ],
+      "title": "SeedKey",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    },
+    "WCLSResultShape": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis": {
+          "$ref": "#/$defs/FileRef"
+        },
+        "input": {
+          "$ref": "#/$defs/FileRef"
+        },
+        "kind": {
+          "const": "wcls_result",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "input",
+        "analysis"
+      ],
+      "title": "WCLSResultShape",
+      "type": "object"
+    },
+    "WCLSShape": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis": {
+          "$ref": "#/$defs/FileRef"
+        },
+        "independent_unit": {
+          "const": "patient",
+          "title": "Independent Unit",
+          "type": "string"
+        },
+        "kind": {
+          "const": "wcls_fixture",
+          "title": "Kind",
+          "type": "string"
+        },
+        "rows": {
+          "exclusiveMinimum": 0,
+          "title": "Rows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "rows",
+        "analysis",
+        "independent_unit"
+      ],
+      "title": "WCLSShape",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "artifact_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Artifact Id",
+      "type": "string"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Failure Reason"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/FileRef"
+      },
+      "minItems": 1,
+      "title": "Inputs",
+      "type": "array"
+    },
+    "kind": {
+      "const": "offline_artifact",
+      "title": "Kind",
+      "type": "string"
+    },
+    "model": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "observation_cutoff": {
+      "format": "date-time",
+      "title": "Observation Cutoff",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/FileRef"
+    },
+    "prior": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "producer": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "producer_status": {
+      "enum": [
+        "completed",
+        "failed",
+        "abstained"
+      ],
+      "title": "Producer Status",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seed": {
+      "$ref": "#/$defs/SeedKey"
+    },
+    "shape": {
+      "discriminator": {
+        "mapping": {
+          "mcmc_draws": "#/$defs/DrawShape",
+          "normal_mixture": "#/$defs/MixtureShape",
+          "wcls_fixture": "#/$defs/WCLSShape",
+          "wcls_result": "#/$defs/WCLSResultShape"
+        },
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/MixtureShape"
+        },
+        {
+          "$ref": "#/$defs/DrawShape"
+        },
+        {
+          "$ref": "#/$defs/WCLSShape"
+        },
+        {
+          "$ref": "#/$defs/WCLSResultShape"
+        }
+      ],
+      "title": "Shape"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "transform": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "unit": {
+      "enum": [
+        "ISI_points",
+        "quality_points"
+      ],
+      "title": "Unit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "artifact_id",
+    "payload",
+    "inputs",
+    "sources",
+    "unit",
+    "model",
+    "prior",
+    "transform",
+    "seed",
+    "observation_cutoff",
+    "producer",
+    "producer_status",
+    "failure_reason",
+    "shape"
+  ],
+  "title": "ArtifactManifest",
+  "type": "object"
+}

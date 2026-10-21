@@ -414,26 +414,40 @@
       "owner_thread": "/root/dgp_workflow_sol",
       "agent_model": "gpt-6.1-sol",
       "reasoning_effort": "high",
-      "status": "blocked_on_G0_TIME_R1_independent_acceptance",
-      "candidate_commit": "6195f9b745b672f087c9fdbd670497f80b7864ba",
-      "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "status": "accepted_contract_scope_only",
+      "candidate_commit": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "base_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
       "integration_target": "main",
-      "review_disposition": "changes_requested",
+      "review_disposition": "ready_to_ship",
       "task_branch": "launch/g0-dgp-workflow-20261020",
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-20261020",
       "app_thread_id": "01a15d2f-f24b-7491-8257-3c634801dcf3",
-      "claim_limit": "S02/calibration repairs only; timing/full reproduction pending accepted TIME; not accepted",
-      "reviewed_head": "6195f9b745b672f087c9fdbd670497f80b7864ba",
-      "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "claim_limit": "DGP/workflow contract package only, no generator/UI/statistical/G0 acceptance",
+      "reviewed_head": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "reviewed_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
       "repair_checkpoint": "2c76f4c34bc1536714f3e1988fc68da7372eb807",
-      "repair_owner_thread": "/root/dgp_repair_sol",
-      "repair_owner_app_thread_id": "01a15d4c-f5b7-7900-9cf5-41efa0a959da",
+      "repair_owner_thread": "/root/dgp_resume_sol",
+      "repair_owner_app_thread_id": "01a15eb8-0f9a-7cb2-b796-608d4ce5864b",
       "repair_model": "gpt-6.1-sol",
       "repair_effort": "high",
-      "repair_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r1-20261021",
-      "repair_branch": "launch/g0-dgp-workflow-r1-20261021",
-      "repair_author_lifecycle": "archived then native removal verified by root; checkpoint clean/published",
-      "partial_tests": 18
+      "repair_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r2-20261021",
+      "repair_branch": "launch/g0-dgp-workflow-r2-20261021",
+      "repair_author_lifecycle": "archived after clean freeze; native removal verified by root",
+      "partial_tests": 18,
+      "repair_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "repair_status": "Root reports frozen/published R2, all60 tests/seven checks pass, independent exact-head/base review running; not accepted",
+      "review_target_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "reviewer_thread": "/root/dgp_r2_critic_astra",
+      "reviewer_app_thread_id": "01a15ec2-f67d-7522-9ade-45b236fd41bc",
+      "reviewer_model": "gpt-6-astra",
+      "reviewer_reasoning_effort": "medium",
+      "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r2-review-20261021",
+      "pr_url": "https://github.com/esbraun/REMission/pull/13",
+      "merge_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "accepted_review": {
+        "blob": "78e75133364b6babc2d3ce75d10f76b22e40105e",
+        "path": "docs/implementation/evidence/G0-LIB/R1/dgp-ready-review.md"
+      }
     },
     {
       "id": "G0-LIB",
@@ -447,7 +461,8 @@
         "tooling/library/**",
         "root locks/config",
         "docs/implementation/library-qualification.md",
-        "docs/implementation/ledger/status/evidence"
+        "docs/implementation/ledger/status/evidence",
+        "methods/ope/**"
       ],
       "outputs": "Release/license/runtime/API qualification, offline artifact formats, protocol scaffold; `docs/implementation/library-qualification.md`, `contracts/artifacts/`; integration owner alone writes root locks",
       "inputs": "G0-CONTRACT",
@@ -479,27 +494,71 @@
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
       "integration_target": "main",
       "task_branch": "launch/g0-library-20261020",
-      "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-      "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-      "status": "needs_review_with_unresolved_OPE_decision",
-      "candidate_commit": "d9ad54e899b2f38b286bd100aff037625edf160b",
+      "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
+      "status": "needs_independent_full_library_review",
+      "candidate_commit": null,
       "review_disposition": "pending",
       "pr_url": null,
       "merge_commit": null,
       "evidence": [
-        "docs/implementation/library-qualification.md",
-        "docs/implementation/evidence/G0-LIB/verification-20261020.md"
+        "docs/implementation/evidence/G0-LIB/DR/verification.md"
       ],
-      "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance",
+      "remaining_dependency": "Independent exact-head/base full implementation/runtime/evidence review",
       "frozen": true,
       "plan_review": {
-        "disposition": "changes_requested",
-        "scope": "OPE selection proposal only; no ship/qualification acceptance",
-        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
-        "path": "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md"
+        "disposition": "ready_to_proceed",
+        "scope": "DR plan and prior artifact repairs only; no full ship approval",
+        "root_accepted": true,
+        "reviewed_head": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+        "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+        "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
+        "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
       },
-      "shipping_review": "not_yet_reviewed",
-      "evidence_commit": "d9ad54e899b2f38b286bd100aff037625edf160b"
+      "shipping_review": "pending",
+      "evidence_commit": "Exact committed candidate supplied by handoff/review",
+      "package_id": "G0-LIB-DR",
+      "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "candidate_locator": "Exact new candidate supplied after commit",
+      "prior_candidate": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+      "prior_reviews": [
+        {
+          "scope": "plan_only",
+          "disposition": "changes_requested",
+          "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+          "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+        },
+        {
+          "scope": "implementation_evidence",
+          "disposition": "changes_requested",
+          "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+          "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+        }
+      ],
+      "proposal": "DR-EXCEPTION-R1 plan accepted by independent Astra and root; implementation/qualification candidate awaiting full independent review",
+      "blocker": null,
+      "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
+      "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts",
+      "accepted_plan": {
+        "disposition": "ready_to_proceed",
+        "scope": "DR plan and prior artifact repairs only; no full ship approval",
+        "root_accepted": true,
+        "reviewed_head": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+        "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+        "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
+        "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
+      },
+      "source_home": "methods/ope/functional.py",
+      "provenance_version": "DR-EXCEPTION-R1/1.0.0",
+      "portability_repair": {
+        "prior_head": "2bc76fdc392719a1233e907c8efda488cc51ebb9",
+        "substantive_fix_commit": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+        "change": "One -text attribute for raw-hashed DR/logging-definition.json; bytes/values/protocol hash unchanged",
+        "status": "both_fresh_checkout_modes_pass_all14_checks",
+        "evidence": "docs/implementation/evidence/G0-LIB/DR/portability-repair/checkout-results.json",
+        "algorithm_or_lock_change": false,
+        "fit_reruns": false
+      }
     },
     {
       "id": "G0-WORKFLOW",
@@ -581,17 +640,25 @@
       "owner_thread": "/root/dgp_workflow_sol",
       "agent_model": "gpt-6.1-sol",
       "reasoning_effort": "high",
-      "status": "bounded_low_fidelity_review_ready_combined_candidate_unaccepted",
-      "candidate_commit": "6195f9b745b672f087c9fdbd670497f80b7864ba",
+      "status": "accepted_contract_scope_only",
+      "candidate_commit": "985ce540f0cc6ae1e57a6268651971acb546929d",
       "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
       "integration_target": "main",
-      "review_disposition": "ready_to_ship_low_fidelity_document_scope_only",
+      "review_disposition": "ready_to_ship",
       "task_branch": "launch/g0-dgp-workflow-20261020",
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-20261020",
       "app_thread_id": "01a15d2f-f24b-7491-8257-3c634801dcf3",
-      "claim_limit": "Root-reported frozen author candidate, not yet independently accepted; author archived and native removal verified",
-      "combined_candidate_disposition": "changes_requested",
-      "review_blob": "94b100b39558fce4c6c17f9f79a6acad0c159b04"
+      "claim_limit": "DGP/workflow contract package only, no generator/UI/statistical/G0 acceptance",
+      "combined_candidate_disposition": "not_accepted",
+      "review_blob": "94b100b39558fce4c6c17f9f79a6acad0c159b04",
+      "reviewed_head": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "reviewed_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "pr_url": "https://github.com/esbraun/REMission/pull/13",
+      "merge_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "accepted_review": {
+        "blob": "78e75133364b6babc2d3ce75d10f76b22e40105e",
+        "path": "docs/implementation/evidence/G0-LIB/R1/dgp-ready-review.md"
+      }
     },
     {
       "id": "G1-FOUNDATION",
@@ -2323,15 +2390,15 @@
       "task_branch": "launch/g0-temporal-r1-20261021",
       "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
       "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-      "status": "needs_review",
-      "candidate_commit": null,
+      "status": "accepted",
+      "candidate_commit": "62e6ce85299b477b0c21a18d70b49392a68e1522",
       "candidate_locator": "Exact candidate supplied after commit, avoiding self-reference",
-      "review_disposition": "pending",
+      "review_disposition": "ready_to_ship",
       "evidence": [
         "docs/implementation/evidence/G0-TIME-R1/verification.md"
       ],
-      "pr_url": null,
-      "merge_commit": null,
+      "pr_url": "https://github.com/esbraun/REMission/pull/12",
+      "merge_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
       "owner_role": "sole shared-domain integration owner",
       "depends_on": [
         "G0-CONTRACT"
@@ -2384,7 +2451,13 @@
         "new_temporal_regression_groups": 8,
         "status": "targeted_pass_full_checks_recorded_separately"
       },
-      "clinical_review": "deferred_no_clinical_acceptance"
+      "clinical_review": "deferred_no_clinical_acceptance",
+      "reviewed_head": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+      "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "accepted_review": {
+        "blob": "80f39d8512ef631249374a1378a80aeda2f74561",
+        "path": "docs/implementation/evidence/G0-LIB/R1/time-ready-review.md"
+      }
     }
   ],
   "coverage": [
@@ -4371,7 +4444,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -4777,7 +4850,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -5036,7 +5109,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -5115,7 +5188,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -5158,7 +5231,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -5417,7 +5490,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -5496,7 +5569,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -13230,7 +13303,7 @@
           "accepted_review": "docs/implementation/evidence/G0-TIME-R1/accepted-contract-review.md"
         },
         "G0-TIME-R1": {
-          "status": "fixtures_pass_pending_independent_review",
+          "status": "accepted_temporal_contract_scope_only_PR12",
           "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
           "claim_limit": "Temporal contract scope only; DGP generation and runtime/service/clinical acceptance pending"
         }
@@ -13349,7 +13422,14 @@
         "docs/implementation/evidence/G0-LIB/LIB-01.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "LIB-02",
@@ -13369,7 +13449,14 @@
         "docs/implementation/evidence/G0-LIB/LIB-02.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "LIB-03",
@@ -13399,7 +13486,14 @@
         "docs/implementation/evidence/G5-SERVICE/LIB-03.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "LIB-BENCH",
@@ -13420,7 +13514,14 @@
         "docs/implementation/evidence/G0-LIB/LIB-BENCH.json"
       ],
       "status": "planned",
-      "observed_result": null
+      "observed_result": null,
+      "task_evidence": {
+        "G0-LIB": {
+          "status": "R1_repair_candidate_pending_re_review_DR_obligation_unexecuted",
+          "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+          "claim_limit": "Partial qualification only; does not close G2/G4/G5 consumers/statistical gates"
+        }
+      }
     },
     {
       "requirement_id": "TRUTH-01",
@@ -16468,17 +16569,32 @@
       "status": "pending_independent_review",
       "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
       "claim_limit": "Observed contract fixtures only; no app/generation/fit/pilot/clinical/G0 acceptance"
+    },
+    {
+      "task_id": "G0-LIB",
+      "package_id": "G0-LIB-R1",
+      "status": "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification",
+      "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
+      "claim_limit": "No DR implementation, estimator qualification, G0 or clinical/statistical acceptance"
+    },
+    {
+      "task_id": "G0-LIB",
+      "package_id": "G0-LIB-DR",
+      "status": "needs_independent_full_library_review",
+      "evidence": "docs/implementation/evidence/G0-LIB/DR/verification.md",
+      "claim_limit": "Actual bounded Ridge/DR/conditional fixed-Q bootstrap qualification, not G4 statistical/consumer/G0/human acceptance"
     }
   ],
   "runtime": {
     "total_slots_including_root": 4,
     "spawned_capacity": 3,
     "observed_open_non_luna": 2,
-    "observed_spawned": 2,
+    "observed_spawned": 3,
     "inventory": [
       "root orchestrator01a15cc8-bab2-73f3-bc3b-c2861965b8eb",
-      "integration Sol/high01a15cf4-3065-7063-b11e-3967008fe9a1 on temporal amendment",
-      "/root/ope_critic_astra Astra/medium01a15d56-cc14-7a43-8e66-9da3e290da2e: plan critique changes_requested; now qualified-library implementation/evidence review running, no full ship approval"
+      "integration Sol/high01a15cf4-3065-7063-b11e-3967008fe9a1 G0-LIB-DR",
+      "independent /root/dgp_r2_critic_astra Astra/medium01a15ec2-f67d-7522-9ade-45b236fd41bc completed plan/repair review; retained for root-assigned full library review, no removal inferred",
+      "G1 source-only Luna/high01a15ecb-0e17-7ad2-9199-a7cbb696da85 completed/idle/open per root; own g1-inputs-luna-20261021, basef11e905, e82fc9e source handoff preserved separately"
     ],
     "unsupported_controls": [
       "native collaboration close/release",
@@ -16486,9 +16602,8 @@
       "direct app-server input for multi-agent v2 children (observed rejected)"
     ],
     "queued": [
-      "independent G0-TIME-R1 exact-head/base review and root PR/merge",
-      "resume DGP from2c76f4c only after accepted TIME version/hash",
-      "separately authorized OPE proposal revision/qualification after plan critique",
+      "Independent exact-head/f11e905 full G0-LIB-DR implementation/runtime/evidence review",
+      "Accept G0-LIB/G0 only after prerequisite evidence/review; human review remains deferred",
       "G1-G7 full real hybrid implementation/validation/reproduction"
     ],
     "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted",
@@ -16509,8 +16624,17 @@
       "thread_id": "01a15cc9-7f45-79e1-90a9-40f4ef0bc5b9",
       "evidence": "Root native inventory omitted Luna; read_thread notLoaded/completed; source commits/worktree preserved"
     },
-    "observed_total_including_root": 3,
-    "model_capacity_observation": "Root reported prior selected-model capacity failure; same Sol/high retry observed running, no model substitution/escalation"
+    "observed_total_including_root": 4,
+    "model_capacity_observation": "Root reported prior selected-model capacity failure; same Sol/high retry observed running, no model substitution/escalation",
+    "closed_ope_critic": {
+      "thread_id": "01a15d56-cc14-7a43-8e66-9da3e290da2e",
+      "evidence": "Root archived after three reports; native removal verified; worktrees/reports preserved"
+    },
+    "DGP_capacity_observation": "First selected Sol/high turn at capacity; root same-model retry observed running, no substitution",
+    "closed_DGP_resume": {
+      "thread_id": "01a15eb8-0f9a-7cb2-b796-608d4ce5864b",
+      "evidence": "Root archived after clean published985ce540 freeze; native removal verified"
+    }
   },
   "repair_assignment": {
     "id": "G0-LAUNCH-FIX-01",
@@ -16565,20 +16689,60 @@
     "effective_model": "Explicit assignment observed; independent introspection unavailable",
     "effort_escalation_reason": null,
     "integration_target": "main",
-    "id": "G0-TIME-R1",
-    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-temporal-r1-20261021",
-    "task_branch": "launch/g0-temporal-r1-20261021",
-    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-    "status": "needs_review",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "task_branch": "launch/g0-library-20261020",
+    "id": "G0-LIB",
+    "package_id": "G0-LIB-DR",
+    "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+    "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
+    "status": "needs_independent_full_library_review",
     "candidate_commit": null,
-    "candidate_locator": "Exact candidate supplied after commit, avoiding self-reference",
     "review_disposition": "pending",
+    "candidate_locator": "Exact new candidate supplied after commit",
     "evidence": [
-      "docs/implementation/evidence/G0-TIME-R1/verification.md"
+      "docs/implementation/evidence/G0-LIB/DR/verification.md"
+    ],
+    "prior_candidate": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+    "prior_reviews": [
+      {
+        "scope": "plan_only",
+        "disposition": "changes_requested",
+        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+        "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+      },
+      {
+        "scope": "implementation_evidence",
+        "disposition": "changes_requested",
+        "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+        "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+      }
     ],
     "pr_url": null,
-    "merge_commit": null
+    "merge_commit": null,
+    "proposal": "DR-EXCEPTION-R1 plan accepted by independent Astra and root; implementation/qualification candidate awaiting full independent review",
+    "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
+    "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts",
+    "accepted_plan": {
+      "disposition": "ready_to_proceed",
+      "scope": "DR plan and prior artifact repairs only; no full ship approval",
+      "root_accepted": true,
+      "reviewed_head": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+      "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+      "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
+      "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
+    },
+    "source_home": "methods/ope/functional.py",
+    "provenance_version": "DR-EXCEPTION-R1/1.0.0",
+    "portability_repair": {
+      "prior_head": "2bc76fdc392719a1233e907c8efda488cc51ebb9",
+      "substantive_fix_commit": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+      "change": "One -text attribute for raw-hashed DR/logging-definition.json; bytes/values/protocol hash unchanged",
+      "status": "both_fresh_checkout_modes_pass_all14_checks",
+      "evidence": "docs/implementation/evidence/G0-LIB/DR/portability-repair/checkout-results.json",
+      "algorithm_or_lock_change": false,
+      "fit_reruns": false
+    }
   },
   "accepted_contract_assignment": {
     "id": "G0-CONTRACT",
@@ -16692,5 +16856,360 @@
       "path": "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md"
     },
     "implementation_review": "running independently at frozen d9ad54e/base6c; full acceptance still blocked by OPE"
+  },
+  "accepted_temporal_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "integration_target": "main",
+    "id": "G0-TIME-R1",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-temporal-r1-20261021",
+    "task_branch": "launch/g0-temporal-r1-20261021",
+    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "status": "accepted",
+    "candidate_commit": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+    "candidate_locator": "Exact candidate supplied after commit, avoiding self-reference",
+    "review_disposition": "ready_to_ship",
+    "evidence": [
+      "docs/implementation/evidence/G0-TIME-R1/verification.md"
+    ],
+    "pr_url": "https://github.com/esbraun/REMission/pull/12",
+    "merge_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+    "reviewed_head": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+    "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "accepted_review": {
+      "blob": "80f39d8512ef631249374a1378a80aeda2f74561",
+      "path": "docs/implementation/evidence/G0-LIB/R1/time-ready-review.md"
+    }
+  },
+  "prior_library_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "integration_target": "main",
+    "id": "G0-LIB",
+    "task_branch": "launch/g0-library-20261020",
+    "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "review_target_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "status": "needs_review_with_unresolved_OPE_decision",
+    "candidate_commit": "d9ad54e899b2f38b286bd100aff037625edf160b",
+    "review_disposition": "pending",
+    "pr_url": null,
+    "merge_commit": null,
+    "evidence": [
+      "docs/implementation/library-qualification.md",
+      "docs/implementation/evidence/G0-LIB/verification-20261020.md"
+    ],
+    "write_paths": [
+      "contracts/artifacts/**",
+      "tests/library/**",
+      "tooling/library/**",
+      "root locks/config",
+      "docs/implementation/library-qualification.md",
+      "docs/implementation/ledger/status/evidence"
+    ],
+    "remaining_dependency": "COBA8.1.0 stock DR incompatible with mandatory held-out nuisance predictions; explicit selection revision needs independent acceptance",
+    "frozen": true,
+    "shipping_review": "not_yet_reviewed",
+    "plan_review": {
+      "disposition": "changes_requested",
+      "scope": "OPE selection proposal only; no ship/qualification acceptance",
+      "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+      "path": "docs/implementation/evidence/G0-TIME-R1/ope-plan-review-changes-requested.md"
+    },
+    "implementation_review": "running independently at frozen d9ad54e/base6c; full acceptance still blocked by OPE"
+  },
+  "accepted_dgp_workflow_assignment": {
+    "G0-DGP": {
+      "id": "G0-DGP",
+      "owner_role": "integration owner",
+      "depends_on": [
+        "G0-CONTRACT",
+        "G0-TIME-R1"
+      ],
+      "write_paths": [
+        "contracts/dgp/",
+        "docs/implementation/dgp-decisions.md"
+      ],
+      "outputs": "Exhaustive parameter/override manifest, truth and scenario cell contracts; `contracts/dgp/`, `docs/implementation/dgp-decisions.md`",
+      "inputs": "G0-CONTRACT",
+      "acceptance": [
+        "T-G0-DGP: no unresolved coefficient, target or ordering ambiguity; independent review of every scenario override and analytic truth; deliberate missing parameters rejected"
+      ],
+      "methods_profile": "contracts",
+      "test_ids": [
+        "T-G0-DGP"
+      ],
+      "nonmethods_fields": null,
+      "requirement_ids": [
+        "LEG-06-001",
+        "LEG-06-002",
+        "LEG-06-003",
+        "LEG-06-004",
+        "LEG-06-005",
+        "LEG-06-006",
+        "LEG-06-007",
+        "LEG-06-008",
+        "LEG-06-009",
+        "LEG-06-010",
+        "LEG-06-011",
+        "LEG-06-012",
+        "LEG-06-013",
+        "LEG-06-014",
+        "LEG-06-015",
+        "LEG-06-016",
+        "LEG-06-017",
+        "LEG-06-018",
+        "LEG-06-019",
+        "LEG-06-020",
+        "LEG-06-021",
+        "LEG-06-022",
+        "LEG-06-023",
+        "LEG-06-024",
+        "LEG-06-025",
+        "LEG-06-026",
+        "LEG-06-027",
+        "LEG-06-028",
+        "LEG-06-029",
+        "LEG-06-030",
+        "LEG-06-031",
+        "LEG-06-032",
+        "LEG-06-033",
+        "LEG-06-034",
+        "LEG-06-035",
+        "LEG-06-036",
+        "LEG-06-037",
+        "LEG-06-038",
+        "LEG-06-039",
+        "LEG-06-040",
+        "DGP-01",
+        "DGP-02",
+        "DGP-03",
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12",
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23",
+        "S24",
+        "S25",
+        "S26",
+        "S27",
+        "S28",
+        "S29",
+        "S30",
+        "S31",
+        "S32"
+      ],
+      "canonical_docs": [
+        "docs/spec/02-synthetic-dgp.md",
+        "docs/spec/scenario-catalog.md"
+      ],
+      "owner_thread": "/root/dgp_workflow_sol",
+      "agent_model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "status": "accepted_contract_scope_only",
+      "candidate_commit": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "base_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "integration_target": "main",
+      "review_disposition": "ready_to_ship",
+      "task_branch": "launch/g0-dgp-workflow-20261020",
+      "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-20261020",
+      "app_thread_id": "01a15d2f-f24b-7491-8257-3c634801dcf3",
+      "claim_limit": "DGP/workflow contract package only, no generator/UI/statistical/G0 acceptance",
+      "reviewed_head": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "reviewed_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "repair_checkpoint": "2c76f4c34bc1536714f3e1988fc68da7372eb807",
+      "repair_owner_thread": "/root/dgp_resume_sol",
+      "repair_owner_app_thread_id": "01a15eb8-0f9a-7cb2-b796-608d4ce5864b",
+      "repair_model": "gpt-6.1-sol",
+      "repair_effort": "high",
+      "repair_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r2-20261021",
+      "repair_branch": "launch/g0-dgp-workflow-r2-20261021",
+      "repair_author_lifecycle": "archived after clean freeze; native removal verified by root",
+      "partial_tests": 18,
+      "repair_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "repair_status": "Root reports frozen/published R2, all60 tests/seven checks pass, independent exact-head/base review running; not accepted",
+      "review_target_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "reviewer_thread": "/root/dgp_r2_critic_astra",
+      "reviewer_app_thread_id": "01a15ec2-f67d-7522-9ade-45b236fd41bc",
+      "reviewer_model": "gpt-6-astra",
+      "reviewer_reasoning_effort": "medium",
+      "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-r2-review-20261021",
+      "pr_url": "https://github.com/esbraun/REMission/pull/13",
+      "merge_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "accepted_review": {
+        "blob": "78e75133364b6babc2d3ce75d10f76b22e40105e",
+        "path": "docs/implementation/evidence/G0-LIB/R1/dgp-ready-review.md"
+      }
+    },
+    "G0-WORKFLOW": {
+      "id": "G0-WORKFLOW",
+      "owner_role": "integration owner",
+      "depends_on": [
+        "G0-CONTRACT"
+      ],
+      "write_paths": [
+        "docs/implementation/workflow-contract.md"
+      ],
+      "outputs": "State/ownership/consent/readiness map and low-fidelity panel/patient/help sketches; `docs/implementation/workflow-contract.md`",
+      "inputs": "G0-CONTRACT",
+      "acceptance": [
+        "T-G0-WORKFLOW: all ten assignment stages, parallel states, permission matrix, hold/re-entry and history paths; provisional synthetic thresholds clearly labeled; real clinical review remains separate"
+      ],
+      "methods_profile": "N/A",
+      "test_ids": [
+        "T-G0-WORKFLOW"
+      ],
+      "nonmethods_fields": "N/A: protocol/estimand/DGP/scenario/truth/cutoff/seeds/comparator/allowed-info/source/failure methods fields; service/UI still enforce consumed contracts and negative paths",
+      "requirement_ids": [
+        "LEG-01-001",
+        "LEG-01-002",
+        "LEG-01-003",
+        "LEG-01-004",
+        "LEG-01-005",
+        "LEG-01-006",
+        "LEG-01-007",
+        "LEG-01-008",
+        "LEG-01-009",
+        "LEG-01-010",
+        "LEG-01-011",
+        "LEG-01-012",
+        "LEG-01-013",
+        "LEG-01-014",
+        "LEG-01-015",
+        "LEG-01-016",
+        "LEG-02-001",
+        "LEG-02-002",
+        "LEG-02-003",
+        "LEG-02-004",
+        "LEG-02-005",
+        "LEG-02-006",
+        "LEG-02-007",
+        "LEG-02-008",
+        "LEG-02-009",
+        "LEG-02-010",
+        "LEG-02-011",
+        "LEG-02-012",
+        "LEG-02-013",
+        "LEG-02-014",
+        "LEG-02-015",
+        "LEG-02-016",
+        "LEG-02-017",
+        "LEG-02-018",
+        "LEG-02-019",
+        "LEG-02-020",
+        "LEG-02-021",
+        "LEG-02-022",
+        "SYN-BOUNDARY",
+        "CLIN-UPDATE",
+        "UX-FOUNDATION",
+        "ASSIGN-01",
+        "ASSIGN-02",
+        "ASSIGN-03",
+        "ASSIGN-04",
+        "ASSIGN-05",
+        "ASSIGN-06",
+        "ASSIGN-07",
+        "ASSIGN-08",
+        "ASSIGN-09",
+        "ASSIGN-10"
+      ],
+      "canonical_docs": [
+        "docs/spec/00-scope-and-invariants.md",
+        "docs/spec/06-service-and-ui.md",
+        "docs/spec/requirement-map.md"
+      ],
+      "owner_thread": "/root/dgp_workflow_sol",
+      "agent_model": "gpt-6.1-sol",
+      "reasoning_effort": "high",
+      "status": "accepted_contract_scope_only",
+      "candidate_commit": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "integration_target": "main",
+      "review_disposition": "ready_to_ship",
+      "task_branch": "launch/g0-dgp-workflow-20261020",
+      "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-dgp-workflow-20261020",
+      "app_thread_id": "01a15d2f-f24b-7491-8257-3c634801dcf3",
+      "claim_limit": "DGP/workflow contract package only, no generator/UI/statistical/G0 acceptance",
+      "combined_candidate_disposition": "not_accepted",
+      "review_blob": "94b100b39558fce4c6c17f9f79a6acad0c159b04",
+      "reviewed_head": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "reviewed_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "pr_url": "https://github.com/esbraun/REMission/pull/13",
+      "merge_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "accepted_review": {
+        "blob": "78e75133364b6babc2d3ce75d10f76b22e40105e",
+        "path": "docs/implementation/evidence/G0-LIB/R1/dgp-ready-review.md"
+      }
+    }
+  },
+  "prior_library_repair_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "integration_target": "main",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "task_branch": "launch/g0-library-20261020",
+    "id": "G0-LIB",
+    "package_id": "G0-LIB-R1",
+    "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+    "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
+    "status": "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification",
+    "candidate_commit": null,
+    "review_disposition": "pending",
+    "candidate_locator": "Exact new candidate supplied after commit",
+    "evidence": [
+      "docs/implementation/evidence/G0-LIB/R1/verification.md"
+    ],
+    "prior_candidate": "d9ad54e899b2f38b286bd100aff037625edf160b",
+    "prior_reviews": [
+      {
+        "scope": "plan_only",
+        "disposition": "changes_requested",
+        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+        "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+      },
+      {
+        "scope": "implementation_evidence",
+        "disposition": "changes_requested",
+        "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+        "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+      }
+    ],
+    "pr_url": null,
+    "merge_commit": null,
+    "proposal": "DR-EXCEPTION-R1 unaccepted/unimplemented; independent re-critique precedes implementation",
+    "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
+    "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts"
   }
 }

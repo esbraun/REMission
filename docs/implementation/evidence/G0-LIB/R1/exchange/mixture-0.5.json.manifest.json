@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "synthetic": true,
+  "kind": "offline_artifact",
+  "artifact_id": "mixture-0.5.json",
+  "payload": {
+    "path": "mixture-0.5.json",
+    "sha256": "caee1570895e4857fa4f08edee1839582618f993dd5adc7cb116f694c5637416"
+  },
+  "inputs": [
+    {
+      "path": "mixture-recipe.json",
+      "sha256": "5ac17256bca0c92a37d946d3d826c4c691993c5fd8c1373fe4e53a00bd4a4de3"
+    },
+    {
+      "path": "offline-source.R",
+      "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+    }
+  ],
+  "sources": [
+    {
+      "id": "RBesT-fixed-mixture-CLI",
+      "version": "qualification-R1",
+      "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+    }
+  ],
+  "unit": "ISI_points",
+  "model": {
+    "id": "fixed-normal-mixture-recipe",
+    "version": "qualification-R1",
+    "sha256": "5ac17256bca0c92a37d946d3d826c4c691993c5fd8c1373fe4e53a00bd4a4de3"
+  },
+  "prior": {
+    "id": "fixed-normal-prior-not-gMAP",
+    "version": "qualification-R1",
+    "sha256": "5ac17256bca0c92a37d946d3d826c4c691993c5fd8c1373fe4e53a00bd4a4de3"
+  },
+  "transform": {
+    "id": "RBesT-robustify-to-JSON",
+    "version": "qualification-R1",
+    "sha256": "5ac17256bca0c92a37d946d3d826c4c691993c5fd8c1373fe4e53a00bd4a4de3"
+  },
+  "seed": {
+    "namespace": "fixture",
+    "protocol": "API-qualification",
+    "scenario": "toy",
+    "replicate": 0,
+    "patient": "synthetic",
+    "time_index": 0,
+    "process": "deterministic-file-exchange"
+  },
+  "observation_cutoff": "2026-10-20T00:00:00Z",
+  "producer": {
+    "image": "sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5",
+    "platform": "linux-x86_64",
+    "runtime": "R-4.5.2",
+    "packages": {
+      "RBesT": "1.12.0",
+      "SBC": "0.5.0.0",
+      "MRTAnalysis": "0.4.1",
+      "posterior": "1.7.0",
+      "rstan": "2.32.7"
+    },
+    "precision": "float64",
+    "device": "cpu"
+  },
+  "producer_status": "completed",
+  "failure_reason": null,
+  "shape": {
+    "kind": "normal_mixture",
+    "components": 2,
+    "marginal_scale": "ISI_points"
+  }
+}

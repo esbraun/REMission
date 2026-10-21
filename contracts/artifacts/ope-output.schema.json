@@ -1,0 +1,188 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "bootstrap_indices_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Bootstrap Indices Sha256"
+    },
+    "bootstrap_values": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "Bootstrap Values",
+      "type": "array"
+    },
+    "dr": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Dr",
+      "type": "array"
+    },
+    "eligible_windows": {
+      "title": "Eligible Windows",
+      "type": "integer"
+    },
+    "independent_patients": {
+      "title": "Independent Patients",
+      "type": "integer"
+    },
+    "intervals": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "Intervals",
+      "type": "array"
+    },
+    "ips": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Ips",
+      "type": "array"
+    },
+    "metadata": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Metadata",
+      "type": "object"
+    },
+    "paired_intervals": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "Paired Intervals",
+      "type": "array"
+    },
+    "patient_counts": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Patient Counts",
+      "type": "array"
+    },
+    "patient_order": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "title": "Patient Order",
+      "type": "array"
+    },
+    "patient_score_sums": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "Patient Score Sums",
+      "type": "array"
+    },
+    "policies": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "title": "Policies",
+      "type": "array"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Reason"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "computed_conditional",
+        "diagnostic_only",
+        "abstained",
+        "undefined"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "unavailable_windows": {
+      "title": "Unavailable Windows",
+      "type": "integer"
+    },
+    "unit": {
+      "const": "quality_points",
+      "title": "Unit",
+      "type": "string"
+    },
+    "version": {
+      "const": "DR-EXCEPTION-R1/1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "version",
+    "status",
+    "reason",
+    "unit",
+    "eligible_windows",
+    "unavailable_windows",
+    "independent_patients",
+    "policies",
+    "dr",
+    "ips",
+    "intervals",
+    "paired_intervals",
+    "bootstrap_values",
+    "patient_order",
+    "patient_counts",
+    "patient_score_sums",
+    "bootstrap_indices_sha256",
+    "metadata"
+  ],
+  "title": "OPEOutput",
+  "type": "object"
+}

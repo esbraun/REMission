@@ -1,0 +1,175 @@
+This is RBesT version 1.12.0 (released 2026-09-18, git-sha )
+Using default prior reference scale 1
+Using default prior reference scale 1
+$scope
+[1] "bounded offline API/file qualification; no SBC/recovery acceptance"
+
+$R
+[1] "R version 4.5.2 (2025-10-31)"
+
+$platform
+[1] "x86_64-pc-linux-gnu"
+
+$packages
+$packages[[1]]
+$packages[[1]]$package
+[1] "RBesT"
+
+$packages[[1]]$version
+[1] "1.12.0"
+
+
+$packages[[2]]
+$packages[[2]]$package
+[1] "SBC"
+
+$packages[[2]]$version
+[1] "0.5.0.0"
+
+
+$packages[[3]]
+$packages[[3]]$package
+[1] "MRTAnalysis"
+
+$packages[[3]]$version
+[1] "0.4.1"
+
+
+$packages[[4]]
+$packages[[4]]$package
+[1] "posterior"
+
+$packages[[4]]$version
+[1] "1.7.0"
+
+
+$packages[[5]]
+$packages[[5]]$package
+[1] "rstan"
+
+$packages[[5]]$version
+[1] "2.32.7"
+
+
+
+$rbest
+$rbest$native_json_roundtrip
+[1] TRUE
+
+$rbest$informative_weights
+[1] 0.00000000000000000 0.50000000000000000 0.90000000000000002
+[4] 1.00000000000000000
+
+$rbest$weak_sd
+[1] 5
+
+$rbest$mixtures
+$rbest$mixtures$`0`
+$rbest$mixtures$`0`$weights
+[1] 1
+
+$rbest$mixtures$`0`$means
+[1] 0
+
+$rbest$mixtures$`0`$sds
+[1] 5
+
+
+$rbest$mixtures$`0.5`
+$rbest$mixtures$`0.5`$weights
+[1] 0.5 0.5
+
+$rbest$mixtures$`0.5`$means
+[1] -2  0
+
+$rbest$mixtures$`0.5`$sds
+[1] 1 5
+
+
+$rbest$mixtures$`0.9`
+$rbest$mixtures$`0.9`$weights
+[1] 0.900000000000000022 0.099999999999999978
+
+$rbest$mixtures$`0.9`$means
+[1] -2  0
+
+$rbest$mixtures$`0.9`$sds
+[1] 1 5
+
+
+$rbest$mixtures$`1`
+$rbest$mixtures$`1`$weights
+[1] 1
+
+$rbest$mixtures$`1`$means
+[1] -2
+
+$rbest$mixtures$`1`$sds
+[1] 1
+
+
+
+$rbest$limitation
+[1] "No gMAP convergence or mixture-approximation validation claimed"
+
+
+$sbc
+$sbc$custom_backend
+[1] "SBC_backend_function"
+
+$sbc$shape
+[1] 800   1
+
+$sbc$actual_backend
+[1] "PyMC native NUTS file import"
+
+$sbc$input_coordinates
+[1] "chain 0:3, draw 0:199, quantity mu"
+
+$sbc$posterior_internal_coordinates
+[1] "1-based chain/iteration; file labels retained on exchange"
+
+$sbc$iid_draws
+[1] FALSE
+
+$sbc$default_thin_ranks
+[1] 10
+
+$sbc$calibration
+[1] "not_run"
+
+
+$wcls
+$wcls$coefficients
+[1] 0.99995814199918587 0.19844325809964478 1.99959764799069450
+
+$wcls$names
+[1] "(Intercept)"                       "x"                                
+[3] "I(action - numerator_probability)"
+
+$wcls$printed
+ [1] ""                                                                                                       
+ [2] "Call:"                                                                                                  
+ [3] "wcls(data = wcls_input, id = \"id\", outcome = \"y\", treatment = \"action\", "                         
+ [4] "    rand_prob = \"logging_probability\", moderator_formula = ~1, "                                      
+ [5] "    control_formula = ~x, availability = \"availability\", numerator_prob = \"numerator_probability\", "
+ [6] "    verbose = FALSE)"                                                                                   
+ [7] ""                                                                                                       
+ [8] "Coefficients:"                                                                                          
+ [9] "                      (Intercept)                                 x "                                   
+[10] "              0.99995814199918587               0.19844325809964478 "                                   
+[11] "I(action - numerator_probability) "                                                                     
+[12] "              1.99959764799069450 "                                                                     
+[13] ""                                                                                                       
+[14] "Degrees of Freedom: 72 Total (i.e. Null);  Residual"                                                    
+[15] ""                                                                                                       
+[16] "Scale is fixed."                                                                                        
+[17] ""                                                                                                       
+[18] "Correlation:  Structure = independence  "                                                               
+[19] "Number of clusters:   12   Maximum cluster size: 6 "                                                    
+[20] ""                                                                                                       
+
+$wcls$variance
+[1] "MRTAnalysis hat-matrix small-sample correction"
+
+

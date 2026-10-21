@@ -1,0 +1,273 @@
+{
+  "package": "G0-LIB-DR portability correction",
+  "substantive_fix_commit": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+  "base": "f11e90536b635a7db08cfed640445bec197a415c",
+  "prior_failed_head": "2bc76fdc392719a1233e907c8efda488cc51ebb9",
+  "image": "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+  "cases": [
+    {
+      "name": "default-windows",
+      "head": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+      "core_autocrlf": "true",
+      "raw_definition_sha256": "5f5cfad990ee6a10c4c92e285c7fc93182a94383f51d6587f8f8f2d17be08be2",
+      "definition_unchanged": true,
+      "all14checks": "pass",
+      "clean": true,
+      "no_alternates": true,
+      "unpublished_original_objects": {
+        "c239dca3503c32b5e20fbd630d69f1720f9b12ce": 1,
+        "8315ee9d2062f04a53cd777a4891080d7c604b7d": 1
+      }
+    },
+    {
+      "name": "lf",
+      "head": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+      "core_autocrlf": "false",
+      "raw_definition_sha256": "5f5cfad990ee6a10c4c92e285c7fc93182a94383f51d6587f8f8f2d17be08be2",
+      "definition_unchanged": true,
+      "all14checks": "pass",
+      "clean": true,
+      "no_alternates": true,
+      "unpublished_original_objects": {
+        "c239dca3503c32b5e20fbd630d69f1720f9b12ce": 1,
+        "8315ee9d2062f04a53cd777a4891080d7c604b7d": 1
+      }
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-fresh-20261021,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-m",
+        "tooling.library.verify_dr"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-fresh-20261021",
+      "started_utc": "2026-10-21T15:01:32.789775+00:00",
+      "finished_utc": "2026-10-21T15:01:33.888058+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/workspace/tooling/library/verify_dr.py\", line 44, in <module>\n    if __name__=='__main__':main()\n                            ~~~~^^\n  File \"/workspace/tooling/library/verify_dr.py\", line 30, in main\n    assert hashlib.sha256((E/'logging-definition.json').read_bytes()).hexdigest()==protocol['behavior']['sha256']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "command": [
+        "git",
+        "clone",
+        "--single-branch",
+        "--no-local",
+        "--branch",
+        "launch/g0-library-20261020",
+        "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+        "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-default-windows"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020",
+      "started_utc": "2026-10-21T15:01:33.888107+00:00",
+      "finished_utc": "2026-10-21T15:01:35.003672+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Cloning into 'C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-default-windows'...\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-default-windows",
+      "started_utc": "2026-10-21T15:01:35.003687+00:00",
+      "finished_utc": "2026-10-21T15:01:35.038518+00:00",
+      "exit_code": 0,
+      "stdout": "fb23a5b70c661c60fd572ffdce90b314fae134aa\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "config",
+        "--get",
+        "core.autocrlf"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-default-windows",
+      "started_utc": "2026-10-21T15:01:35.038534+00:00",
+      "finished_utc": "2026-10-21T15:01:35.069812+00:00",
+      "exit_code": 0,
+      "stdout": "true\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "docs/implementation/evidence/G0-LIB/DR/run_checks.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-default-windows",
+      "started_utc": "2026-10-21T15:01:35.071506+00:00",
+      "finished_utc": "2026-10-21T15:01:49.285359+00:00",
+      "exit_code": 0,
+      "stdout": "PASS -m pip check\nPASS -m contracts.domain.export --check\nPASS -m contracts.dgp.export --check\nPASS -m contracts.artifacts.ope_export --check\nPASS -m unittest discover -s tests/contracts -v\nPASS -m unittest discover -s tests/library -v\nPASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-default-windows,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m unittest discover -s tests/library/dr -v\nPASS docs/implementation/check-ledger-20261020.py\nPASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-default-windows,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -c import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])\nPASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-default-windows,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m tooling.library.verify_dr\nPASS diff --quiet d84203709b0164a0824913950c1d7cd7be25a2fb -- docs/implementation/evidence/G0-LIB :!docs/implementation/evidence/G0-LIB/DR/**\nPASS diff --quiet d84203709b0164a0824913950c1d7cd7be25a2fb -- tooling/library/requirements.lock tooling/library/r-packages.lock.csv tooling/library/python.Dockerfile tooling/library/offline-r.Dockerfile\nPASS diff --quiet f11e90536b635a7db08cfed640445bec197a415c -- contracts/domain contracts/dgp tests/contracts docs/implementation/dgp-decisions.md docs/implementation/workflow-contract.md docs/implementation/workflow-sketches.md docs/spec/01-estimands-and-contracts.md docs/spec/dgp-reference.md\nPASS diff --check f11e90536b635a7db08cfed640445bec197a415c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-default-windows",
+      "started_utc": "2026-10-21T15:01:49.285371+00:00",
+      "finished_utc": "2026-10-21T15:01:49.367838+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-e",
+        "c239dca3503c32b5e20fbd630d69f1720f9b12ce"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-default-windows",
+      "started_utc": "2026-10-21T15:01:49.367951+00:00",
+      "finished_utc": "2026-10-21T15:01:49.400904+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-e",
+        "8315ee9d2062f04a53cd777a4891080d7c604b7d"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-default-windows",
+      "started_utc": "2026-10-21T15:01:49.400919+00:00",
+      "finished_utc": "2026-10-21T15:01:49.436706+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.autocrlf=false",
+        "clone",
+        "--single-branch",
+        "--no-local",
+        "--branch",
+        "launch/g0-library-20261020",
+        "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+        "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-lf"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020",
+      "started_utc": "2026-10-21T15:01:49.436930+00:00",
+      "finished_utc": "2026-10-21T15:01:50.580437+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Cloning into 'C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-lf'...\n"
+    },
+    {
+      "command": [
+        "git",
+        "config",
+        "core.autocrlf",
+        "false"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:01:50.580458+00:00",
+      "finished_utc": "2026-10-21T15:01:50.616435+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:01:50.616450+00:00",
+      "finished_utc": "2026-10-21T15:01:50.654145+00:00",
+      "exit_code": 0,
+      "stdout": "fb23a5b70c661c60fd572ffdce90b314fae134aa\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "config",
+        "--get",
+        "core.autocrlf"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:01:50.654166+00:00",
+      "finished_utc": "2026-10-21T15:01:50.686771+00:00",
+      "exit_code": 0,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\.venv-contracts\\Scripts\\python.exe",
+        "docs/implementation/evidence/G0-LIB/DR/run_checks.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:01:50.689758+00:00",
+      "finished_utc": "2026-10-21T15:02:04.706584+00:00",
+      "exit_code": 0,
+      "stdout": "PASS -m pip check\nPASS -m contracts.domain.export --check\nPASS -m contracts.dgp.export --check\nPASS -m contracts.artifacts.ope_export --check\nPASS -m unittest discover -s tests/contracts -v\nPASS -m unittest discover -s tests/library -v\nPASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-lf,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m unittest discover -s tests/library/dr -v\nPASS docs/implementation/check-ledger-20261020.py\nPASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-lf,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -c import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])\nPASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020/tooling/library/__pycache__/dr-portability-r1-lf,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m tooling.library.verify_dr\nPASS diff --quiet d84203709b0164a0824913950c1d7cd7be25a2fb -- docs/implementation/evidence/G0-LIB :!docs/implementation/evidence/G0-LIB/DR/**\nPASS diff --quiet d84203709b0164a0824913950c1d7cd7be25a2fb -- tooling/library/requirements.lock tooling/library/r-packages.lock.csv tooling/library/python.Dockerfile tooling/library/offline-r.Dockerfile\nPASS diff --quiet f11e90536b635a7db08cfed640445bec197a415c -- contracts/domain contracts/dgp tests/contracts docs/implementation/dgp-decisions.md docs/implementation/workflow-contract.md docs/implementation/workflow-sketches.md docs/spec/01-estimands-and-contracts.md docs/spec/dgp-reference.md\nPASS diff --check f11e90536b635a7db08cfed640445bec197a415c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:02:04.706605+00:00",
+      "finished_utc": "2026-10-21T15:02:04.764251+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-e",
+        "c239dca3503c32b5e20fbd630d69f1720f9b12ce"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:02:04.764355+00:00",
+      "finished_utc": "2026-10-21T15:02:04.796832+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-e",
+        "8315ee9d2062f04a53cd777a4891080d7c604b7d"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020\\tooling\\library\\__pycache__\\dr-portability-r1-lf",
+      "started_utc": "2026-10-21T15:02:04.796846+00:00",
+      "finished_utc": "2026-10-21T15:02:04.831377+00:00",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "limits": "Fresh no-local clones from own assigned branch; no HTTPS claim, no fit reruns, final evidence-only commit recorded separately"
+}

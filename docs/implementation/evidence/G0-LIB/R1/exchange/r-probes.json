@@ -1,0 +1,71 @@
+{
+  "scope": "bounded offline API/file qualification; no SBC/recovery acceptance",
+  "R": "R version 4.5.2 (2025-10-31)",
+  "platform": "x86_64-pc-linux-gnu",
+  "packages": [
+    {
+      "package": "RBesT",
+      "version": "1.12.0"
+    },
+    {
+      "package": "SBC",
+      "version": "0.5.0.0"
+    },
+    {
+      "package": "MRTAnalysis",
+      "version": "0.4.1"
+    },
+    {
+      "package": "posterior",
+      "version": "1.7.0"
+    },
+    {
+      "package": "rstan",
+      "version": "2.32.7"
+    }
+  ],
+  "rbest": {
+    "native_json_roundtrip": true,
+    "informative_weights": [0, 0.5, 0.90000000000000002, 1],
+    "weak_sd": 5,
+    "mixtures": {
+      "0": {
+        "weights": 1,
+        "means": 0,
+        "sds": 5
+      },
+      "0.5": {
+        "weights": [0.5, 0.5],
+        "means": [-2, 0],
+        "sds": [1, 5]
+      },
+      "0.9": {
+        "weights": [0.90000000000000002, 0.099999999999999978],
+        "means": [-2, 0],
+        "sds": [1, 5]
+      },
+      "1": {
+        "weights": 1,
+        "means": -2,
+        "sds": 1
+      }
+    },
+    "limitation": "No gMAP convergence or mixture-approximation validation claimed"
+  },
+  "sbc": {
+    "custom_backend": "SBC_backend_function",
+    "shape": [800, 1],
+    "actual_backend": "PyMC native NUTS file import",
+    "input_coordinates": "chain 0:3, draw 0:199, quantity mu",
+    "posterior_internal_coordinates": "1-based chain/iteration; file labels retained on exchange",
+    "iid_draws": false,
+    "default_thin_ranks": 10,
+    "calibration": "not_run"
+  },
+  "wcls": {
+    "coefficients": [0.99995814199918587, 0.19844325809964478, 1.9995976479906945],
+    "names": ["(Intercept)", "x", "I(action - numerator_probability)"],
+    "printed": ["", "Call:", "wcls(data = wcls_input, id = \"id\", outcome = \"y\", treatment = \"action\", ", "    rand_prob = \"logging_probability\", moderator_formula = ~1, ", "    control_formula = ~x, availability = \"availability\", numerator_prob = \"numerator_probability\", ", "    verbose = FALSE)", "", "Coefficients:", "                      (Intercept)                                 x ", "              0.99995814199918587               0.19844325809964478 ", "I(action - numerator_probability) ", "              1.99959764799069450 ", "", "Degrees of Freedom: 72 Total (i.e. Null);  Residual", "", "Scale is fixed.", "", "Correlation:  Structure = independence  ", "Number of clusters:   12   Maximum cluster size: 6 ", ""],
+    "variance": "MRTAnalysis hat-matrix small-sample correction"
+  }
+}

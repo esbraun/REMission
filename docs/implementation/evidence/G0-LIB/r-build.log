@@ -1,0 +1,566 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from offline-r.Dockerfile
+#1 transferring dockerfile: 475B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/rocker/r-ver:4.5.2@sha256:fd4ccdd3a4a6f7ef805e2daeee2a0fe3bf126bc231f36351223baecf5a595a4c
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context:
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/5] FROM docker.io/rocker/r-ver:4.5.2@sha256:fd4ccdd3a4a6f7ef805e2daeee2a0fe3bf126bc231f36351223baecf5a595a4c
+#4 resolve docker.io/rocker/r-ver:4.5.2@sha256:fd4ccdd3a4a6f7ef805e2daeee2a0fe3bf126bc231f36351223baecf5a595a4c 0.0s done
+#4 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 1.20kB done
+#5 DONE 0.1s
+
+#6 [2/5] RUN apt-get update && apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev libxml2-dev libtbb-dev && rm -rf /var/lib/apt/lists/*
+#6 0.544 Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+#6 0.898 Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+#6 1.011 Get:3 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1,410 kB]
+#6 1.472 Get:4 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1,549 kB]
+#6 1.566 Get:5 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [2,122 kB]
+#6 1.738 Get:6 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [55.6 kB]
+#6 1.835 Get:7 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+#6 2.068 Get:8 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+#6 2.303 Get:9 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+#6 2.365 Get:10 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+#6 3.995 Get:11 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+#6 4.089 Get:12 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+#6 4.104 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2,231 kB]
+#6 4.193 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1,729 kB]
+#6 4.256 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2,169 kB]
+#6 4.401 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [61.7 kB]
+#6 4.403 Get:17 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [36.0 kB]
+#6 4.404 Get:18 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [669 B]
+#6 4.404 Get:19 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+#6 4.765 Fetched 33.6 MB in 4s (7,503 kB/s)
+#6 4.765 Reading package lists...
+#6 5.412 Reading package lists...
+#6 6.077 Building dependency tree...
+#6 6.238 Reading state information...
+#6 6.407 The following additional packages will be installed:
+#6 6.408   icu-devtools libcurl4t64 libhwloc15 libicu-dev libssl3t64 libtbb12
+#6 6.408   libtbbbind-2-5 libtbbmalloc2 libxml2 openssl
+#6 6.409 Suggested packages:
+#6 6.409   libcurl4-doc libidn-dev libkrb5-dev libldap2-dev librtmp-dev libssh2-1-dev
+#6 6.409   pkg-config zlib1g-dev libhwloc-contrib-plugins icu-doc libssl-doc libtbb-doc
+#6 6.409 Recommended packages:
+#6 6.409   libhwloc-plugins
+#6 6.485 The following NEW packages will be installed:
+#6 6.485   icu-devtools libcurl4-openssl-dev libhwloc15 libicu-dev libssl-dev
+#6 6.486   libtbb-dev libtbb12 libtbbbind-2-5 libtbbmalloc2 libxml2-dev
+#6 6.487 The following packages will be upgraded:
+#6 6.487   libcurl4t64 libssl3t64 libxml2 openssl
+#6 6.744 4 upgraded, 10 newly installed, 0 to remove and 85 not upgraded.
+#6 6.744 Need to get 20.4 MB of archives.
+#6 6.744 After this operation, 70.8 MB of additional disk space will be used.
+#6 6.744 Get:1 http://security.ubuntu.com/ubuntu noble-security/main amd64 libcurl4t64 amd64 8.5.0-2ubuntu10.16 [344 kB]
+#6 6.888 Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl3t64 amd64 3.0.13-0ubuntu3.16 [1,945 kB]
+#6 7.315 Get:3 http://security.ubuntu.com/ubuntu noble-security/main amd64 libcurl4-openssl-dev amd64 8.5.0-2ubuntu10.16 [447 kB]
+#6 8.364 Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libxml2 amd64 2.9.14+dfsg-1.3ubuntu3.10 [764 kB]
+#6 8.424 Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 openssl amd64 3.0.13-0ubuntu3.16 [1,004 kB]
+#6 8.499 Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 icu-devtools amd64 74.2-1ubuntu3.1 [212 kB]
+#6 8.521 Get:7 http://archive.ubuntu.com/ubuntu noble/universe amd64 libhwloc15 amd64 2.10.0-1build1 [172 kB]
+#6 8.542 Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libicu-dev amd64 74.2-1ubuntu3.1 [11.9 MB]
+#6 9.294 Get:9 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl-dev amd64 3.0.13-0ubuntu3.16 [2,409 kB]
+#6 9.454 Get:10 http://archive.ubuntu.com/ubuntu noble/universe amd64 libtbbmalloc2 amd64 2021.11.0-2ubuntu2 [60.5 kB]
+#6 9.455 Get:11 http://archive.ubuntu.com/ubuntu noble/universe amd64 libtbbbind-2-5 amd64 2021.11.0-2ubuntu2 [16.4 kB]
+#6 9.456 Get:12 http://archive.ubuntu.com/ubuntu noble/universe amd64 libtbb12 amd64 2021.11.0-2ubuntu2 [106 kB]
+#6 9.461 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libxml2-dev amd64 2.9.14+dfsg-1.3ubuntu3.10 [781 kB]
+#6 9.523 Get:14 http://archive.ubuntu.com/ubuntu noble/universe amd64 libtbb-dev amd64 2021.11.0-2ubuntu2 [253 kB]
+#6 9.665 debconf: delaying package configuration, since apt-utils is not installed
+#6 9.694 Fetched 20.4 MB in 3s (6,700 kB/s)
+#6 9.720 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 12394 files and directories currently installed.)
+#6 9.798 Preparing to unpack .../libssl3t64_3.0.13-0ubuntu3.16_amd64.deb ...
+#6 9.811 Unpacking libssl3t64:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.7) ...
+#6 9.910 Setting up libssl3t64:amd64 (3.0.13-0ubuntu3.16) ...
+#6 9.946 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 12394 files and directories currently installed.)
+#6 9.952 Preparing to unpack .../00-libxml2_2.9.14+dfsg-1.3ubuntu3.10_amd64.deb ...
+#6 9.960 Unpacking libxml2:amd64 (2.9.14+dfsg-1.3ubuntu3.10) over (2.9.14+dfsg-1.3ubuntu3.7) ...
+#6 10.02 Preparing to unpack .../01-openssl_3.0.13-0ubuntu3.16_amd64.deb ...
+#6 10.03 Unpacking openssl (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.7) ...
+#6 10.09 Selecting previously unselected package icu-devtools.
+#6 10.09 Preparing to unpack .../02-icu-devtools_74.2-1ubuntu3.1_amd64.deb ...
+#6 10.09 Unpacking icu-devtools (74.2-1ubuntu3.1) ...
+#6 10.13 Preparing to unpack .../03-libcurl4t64_8.5.0-2ubuntu10.16_amd64.deb ...
+#6 10.13 Unpacking libcurl4t64:amd64 (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.7) ...
+#6 10.17 Selecting previously unselected package libcurl4-openssl-dev:amd64.
+#6 10.17 Preparing to unpack .../04-libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb ...
+#6 10.17 Unpacking libcurl4-openssl-dev:amd64 (8.5.0-2ubuntu10.16) ...
+#6 10.20 Selecting previously unselected package libhwloc15:amd64.
+#6 10.20 Preparing to unpack .../05-libhwloc15_2.10.0-1build1_amd64.deb ...
+#6 10.20 Unpacking libhwloc15:amd64 (2.10.0-1build1) ...
+#6 10.23 Selecting previously unselected package libicu-dev:amd64.
+#6 10.23 Preparing to unpack .../06-libicu-dev_74.2-1ubuntu3.1_amd64.deb ...
+#6 10.23 Unpacking libicu-dev:amd64 (74.2-1ubuntu3.1) ...
+#6 10.42 Selecting previously unselected package libssl-dev:amd64.
+#6 10.42 Preparing to unpack .../07-libssl-dev_3.0.13-0ubuntu3.16_amd64.deb ...
+#6 10.43 Unpacking libssl-dev:amd64 (3.0.13-0ubuntu3.16) ...
+#6 10.49 Selecting previously unselected package libtbbmalloc2:amd64.
+#6 10.49 Preparing to unpack .../08-libtbbmalloc2_2021.11.0-2ubuntu2_amd64.deb ...
+#6 10.49 Unpacking libtbbmalloc2:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.52 Selecting previously unselected package libtbbbind-2-5:amd64.
+#6 10.52 Preparing to unpack .../09-libtbbbind-2-5_2021.11.0-2ubuntu2_amd64.deb ...
+#6 10.52 Unpacking libtbbbind-2-5:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.55 Selecting previously unselected package libtbb12:amd64.
+#6 10.55 Preparing to unpack .../10-libtbb12_2021.11.0-2ubuntu2_amd64.deb ...
+#6 10.56 Unpacking libtbb12:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.58 Selecting previously unselected package libxml2-dev:amd64.
+#6 10.58 Preparing to unpack .../11-libxml2-dev_2.9.14+dfsg-1.3ubuntu3.10_amd64.deb ...
+#6 10.59 Unpacking libxml2-dev:amd64 (2.9.14+dfsg-1.3ubuntu3.10) ...
+#6 10.62 Selecting previously unselected package libtbb-dev:amd64.
+#6 10.62 Preparing to unpack .../12-libtbb-dev_2021.11.0-2ubuntu2_amd64.deb ...
+#6 10.63 Unpacking libtbb-dev:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.67 Setting up libtbbmalloc2:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.68 Setting up libcurl4t64:amd64 (8.5.0-2ubuntu10.16) ...
+#6 10.69 Setting up libcurl4-openssl-dev:amd64 (8.5.0-2ubuntu10.16) ...
+#6 10.70 Setting up libssl-dev:amd64 (3.0.13-0ubuntu3.16) ...
+#6 10.71 Setting up libhwloc15:amd64 (2.10.0-1build1) ...
+#6 10.72 Setting up icu-devtools (74.2-1ubuntu3.1) ...
+#6 10.72 Setting up openssl (3.0.13-0ubuntu3.16) ...
+#6 10.73 Setting up libicu-dev:amd64 (74.2-1ubuntu3.1) ...
+#6 10.74 Setting up libxml2:amd64 (2.9.14+dfsg-1.3ubuntu3.10) ...
+#6 10.75 Setting up libtbbbind-2-5:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.75 Setting up libxml2-dev:amd64 (2.9.14+dfsg-1.3ubuntu3.10) ...
+#6 10.76 Setting up libtbb12:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.77 Setting up libtbb-dev:amd64 (2021.11.0-2ubuntu2) ...
+#6 10.78 Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+#6 DONE 11.1s
+
+#7 [3/5] COPY tooling/library/install-offline.R /opt/remission-install.R
+#7 DONE 0.0s
+
+#8 [4/5] RUN Rscript /opt/remission-install.R
+#8 0.255 Installing packages into ‘/usr/local/lib/R/site-library’
+#8 0.255 (as ‘lib’ is unspecified)
+#8 1.880 also installing the dependencies ‘otel’, ‘ps’, ‘callr’, ‘processx’, ‘quadprog’, ‘plyr’, ‘inline’, ‘gridExtra’, ‘loo’, ‘pkgbuild’, ‘QuickJSR’, ‘desc’, ‘backports’, ‘ggdist’, ‘ggridges’, ‘reshape2’, ‘rbibutils’, ‘broom’, ‘zoo’, ‘pkgconfig’, ‘utf8’, ‘numDeriv’, ‘farver’, ‘labeling’, ‘RColorBrewer’, ‘viridisLite’, ‘digest’, ‘listenv’, ‘parallelly’, ‘fastmap’, ‘Rcpp’, ‘RcppParallel’, ‘rstan’, ‘rstantools’, ‘assertthat’, ‘mvtnorm’, ‘Formula’, ‘checkmate’, ‘bayesplot’, ‘matrixStats’, ‘statmod’, ‘rlang’, ‘lifecycle’, ‘Rdpack’, ‘BH’, ‘RcppEigen’, ‘StanHeaders’, ‘rootSolve’, ‘geepack’, ‘sandwich’, ‘randomForest’, ‘ranger’, ‘tibble’, ‘vctrs’, ‘tensorA’, ‘pillar’, ‘distributional’, ‘cli’, ‘gtable’, ‘isoband’, ‘S7’, ‘scales’, ‘withr’, ‘future’, ‘globals’, ‘generics’, ‘glue’, ‘magrittr’, ‘stringr’, ‘cpp11’, ‘cachem’
+#8 1.880 
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/otel_0.2.0.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/ps_1.9.3.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/callr_3.8.0.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/processx_3.9.0.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/quadprog_1.5-8.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/plyr_1.8.9.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/inline_0.3.21.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/gridExtra_2.3.1.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/loo_2.10.1.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/pkgbuild_1.4.8.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/QuickJSR_1.11.0.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/desc_1.4.3.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/backports_1.5.1.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/ggdist_3.3.3.tar.gz'
+#8 1.924 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/ggridges_0.5.7.tar.gz'
+#8 2.674 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/reshape2_1.4.5.tar.gz'
+#8 2.681 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/rbibutils_2.4.1.tar.gz'
+#8 2.856 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/broom_1.0.13.tar.gz'
+#8 2.865 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/zoo_1.9-1.tar.gz'
+#8 2.880 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/pkgconfig_2.0.3.tar.gz'
+#8 2.880 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/utf8_1.2.6.tar.gz'
+#8 2.909 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/numDeriv_2016.8-1.1.tar.gz'
+#8 2.921 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/farver_2.1.2.tar.gz'
+#8 2.928 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/labeling_0.4.3.tar.gz'
+#8 2.928 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/RColorBrewer_1.1-3.tar.gz'
+#8 2.933 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/viridisLite_0.4.3.tar.gz'
+#8 2.993 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/digest_0.6.39.tar.gz'
+#8 2.998 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/listenv_1.1.0.tar.gz'
+#8 3.064 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/parallelly_1.48.0.tar.gz'
+#8 3.227 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/fastmap_1.2.0.tar.gz'
+#8 3.488 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/Rcpp_1.1.2.tar.gz'
+#8 3.542 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/RcppParallel_6.2.1.tar.gz'
+#8 3.573 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/rstan_2.32.7.tar.gz'
+#8 3.585 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/rstantools_2.7.1.tar.gz'
+#8 3.677 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/assertthat_0.2.1.tar.gz'
+#8 3.678 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/mvtnorm_1.4-2.tar.gz'
+#8 3.702 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/Formula_1.2-6.tar.gz'
+#8 3.715 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/checkmate_2.3.4.tar.gz'
+#8 3.777 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/bayesplot_1.16.0.tar.gz'
+#8 3.787 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/matrixStats_1.5.0.tar.gz'
+#8 3.803 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/statmod_1.5.2.tar.gz'
+#8 3.812 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/rlang_1.3.0.tar.gz'
+#8 3.849 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/lifecycle_1.0.5.tar.gz'
+#8 3.870 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/Rdpack_2.6.6.tar.gz'
+#8 3.874 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/BH_1.90.0-1.tar.gz'
+#8 3.945 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/RcppEigen_0.3.4.0.2.tar.gz'
+#8 4.154 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/StanHeaders_2.39.1.tar.gz'
+#8 4.191 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/rootSolve_1.8.2.4.tar.gz'
+#8 4.588 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/geepack_1.3.13.tar.gz'
+#8 4.594 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/sandwich_3.1-3.tar.gz'
+#8 4.703 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/randomForest_4.7-1.2.tar.gz'
+#8 4.727 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/ranger_0.18.0.tar.gz'
+#8 4.843 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/tibble_3.3.1.tar.gz'
+#8 4.928 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/vctrs_0.7.3.tar.gz'
+#8 4.974 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/tensorA_0.36.2.1.tar.gz'
+#8 4.977 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/pillar_1.11.1.tar.gz'
+#8 4.995 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/distributional_0.9.0.tar.gz'
+#8 5.440 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/cli_3.6.6.tar.gz'
+#8 5.526 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/gtable_0.3.6.tar.gz'
+#8 5.598 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/isoband_0.3.0.tar.gz'
+#8 5.617 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/S7_0.2.2.tar.gz'
+#8 5.762 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/scales_1.4.0.tar.gz'
+#8 5.794 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/withr_3.0.3.tar.gz'
+#8 5.808 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/future_1.80.0.tar.gz'
+#8 5.874 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/globals_0.20.0.tar.gz'
+#8 5.885 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/generics_0.1.4.tar.gz'
+#8 5.898 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/glue_1.8.1.tar.gz'
+#8 6.040 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/magrittr_2.0.5.tar.gz'
+#8 6.212 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/stringr_1.6.0.tar.gz'
+#8 6.507 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/cpp11_0.5.5.tar.gz'
+#8 6.547 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/cachem_1.1.0.tar.gz'
+#8 6.554 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/RBesT_1.12-0.tar.gz'
+#8 6.574 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/MRTAnalysis_0.4.1.tar.gz'
+#8 6.640 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/jsonlite_2.0.0.tar.gz'
+#8 6.702 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/posterior_1.7.0.tar.gz'
+#8 6.721 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/R6_2.6.1.tar.gz'
+#8 6.860 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/ggplot2_4.0.3.tar.gz'
+#8 6.965 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/stringi_1.8.9.tar.gz'
+#8 6.976 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/abind_1.4-8.tar.gz'
+#8 6.995 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/future.apply_1.21.0.tar.gz'
+#8 6.995 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/dplyr_1.2.1.tar.gz'
+#8 7.009 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/tidyr_1.3.2.tar.gz'
+#8 7.018 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/tidyselect_1.2.1.tar.gz'
+#8 7.025 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/purrr_1.2.2.tar.gz'
+#8 7.034 trying URL 'https://p3m.dev/cran/__linux__/noble/2026-10-20/src/contrib/memoise_2.0.1.tar.gz'
+#8 8.176 begin installing package ‘otel’
+#8 8.176 begin installing package ‘ps’
+#8 8.334 * installing *binary* package ‘ps’ ...
+#8 8.334 * DONE (ps)
+#8 8.334 * installing *binary* package ‘otel’ ...
+#8 8.334 * DONE (otel)
+#8 8.334 begin installing package ‘quadprog’
+#8 8.335 begin installing package ‘inline’
+#8 8.466 * installing *binary* package ‘quadprog’ ...
+#8 8.466 * DONE (quadprog)
+#8 8.467 begin installing package ‘QuickJSR’
+#8 8.471 * installing *binary* package ‘inline’ ...
+#8 8.471 * DONE (inline)
+#8 8.471 begin installing package ‘backports’
+#8 8.606 * installing *binary* package ‘backports’ ...
+#8 8.606 * DONE (backports)
+#8 8.606 begin installing package ‘rbibutils’
+#8 8.830 * installing *binary* package ‘rbibutils’ ...
+#8 8.830 * DONE (rbibutils)
+#8 8.831 begin installing package ‘zoo’
+#8 8.849 * installing *binary* package ‘QuickJSR’ ...
+#8 8.849 * DONE (QuickJSR)
+#8 8.850 begin installing package ‘pkgconfig’
+#8 8.994 * installing *binary* package ‘pkgconfig’ ...
+#8 8.994 * DONE (pkgconfig)
+#8 8.994 begin installing package ‘utf8’
+#8 9.030 * installing *binary* package ‘zoo’ ...
+#8 9.030 * DONE (zoo)
+#8 9.031 begin installing package ‘numDeriv’
+#8 9.140 * installing *binary* package ‘utf8’ ...
+#8 9.140 * DONE (utf8)
+#8 9.141 begin installing package ‘farver’
+#8 9.199 * installing *binary* package ‘numDeriv’ ...
+#8 9.199 * DONE (numDeriv)
+#8 9.200 begin installing package ‘labeling’
+#8 9.333 * installing *binary* package ‘labeling’ ...
+#8 9.333 * DONE (labeling)
+#8 9.333 begin installing package ‘RColorBrewer’
+#8 9.369 * installing *binary* package ‘farver’ ...
+#8 9.369 * DONE (farver)
+#8 9.369 begin installing package ‘viridisLite’
+#8 9.477 * installing *binary* package ‘RColorBrewer’ ...
+#8 9.477 * DONE (RColorBrewer)
+#8 9.477 begin installing package ‘digest’
+#8 9.533 * installing *binary* package ‘viridisLite’ ...
+#8 9.533 * DONE (viridisLite)
+#8 9.534 begin installing package ‘listenv’
+#8 9.658 * installing *binary* package ‘digest’ ...
+#8 9.658 * DONE (digest)
+#8 9.659 begin installing package ‘parallelly’
+#8 9.688 * installing *binary* package ‘listenv’ ...
+#8 9.688 * DONE (listenv)
+#8 9.688 begin installing package ‘fastmap’
+#8 9.856 * installing *binary* package ‘parallelly’ ...
+#8 9.856 * DONE (parallelly)
+#8 9.856 * installing *binary* package ‘fastmap’ ...
+#8 9.856 * DONE (fastmap)
+#8 9.857 begin installing package ‘Rcpp’
+#8 9.857 begin installing package ‘RcppParallel’
+#8 10.32 * installing *binary* package ‘RcppParallel’ ...
+#8 10.32 * DONE (RcppParallel)
+#8 10.32 begin installing package ‘assertthat’
+#8 10.37 * installing *binary* package ‘Rcpp’ ...
+#8 10.37 * DONE (Rcpp)
+#8 10.37 begin installing package ‘mvtnorm’
+#8 10.49 * installing *binary* package ‘assertthat’ ...
+#8 10.49 * DONE (assertthat)
+#8 10.49 begin installing package ‘Formula’
+#8 10.59 * installing *binary* package ‘mvtnorm’ ...
+#8 10.59 * DONE (mvtnorm)
+#8 10.59 begin installing package ‘matrixStats’
+#8 10.64 * installing *binary* package ‘Formula’ ...
+#8 10.64 * DONE (Formula)
+#8 10.64 begin installing package ‘statmod’
+#8 10.79 * installing *binary* package ‘statmod’ ...
+#8 10.79 * DONE (statmod)
+#8 10.79 begin installing package ‘rlang’
+#8 10.81 * installing *binary* package ‘matrixStats’ ...
+#8 10.81 * DONE (matrixStats)
+#8 10.81 begin installing package ‘BH’
+#8 10.98 * installing *binary* package ‘rlang’ ...
+#8 10.98 * DONE (rlang)
+#8 10.98 begin installing package ‘rootSolve’
+#8 11.17 * installing *binary* package ‘rootSolve’ ...
+#8 11.17 * DONE (rootSolve)
+#8 11.17 begin installing package ‘randomForest’
+#8 11.33 * installing *binary* package ‘randomForest’ ...
+#8 11.33 * DONE (randomForest)
+#8 11.33 begin installing package ‘tensorA’
+#8 11.47 * installing *binary* package ‘tensorA’ ...
+#8 11.47 * DONE (tensorA)
+#8 11.47 begin installing package ‘cli’
+#8 11.72 * installing *binary* package ‘cli’ ...
+#8 11.72 * DONE (cli)
+#8 11.72 begin installing package ‘S7’
+#8 11.89 * installing *binary* package ‘S7’ ...
+#8 11.89 * DONE (S7)
+#8 11.89 begin installing package ‘withr’
+#8 12.05 * installing *binary* package ‘withr’ ...
+#8 12.05 * DONE (withr)
+#8 12.05 begin installing package ‘globals’
+#8 12.24 * installing *binary* package ‘globals’ ...
+#8 12.24 * DONE (globals)
+#8 12.24 begin installing package ‘generics’
+#8 12.48 * installing *binary* package ‘generics’ ...
+#8 12.48 * DONE (generics)
+#8 12.48 begin installing package ‘glue’
+#8 12.72 * installing *binary* package ‘glue’ ...
+#8 12.72 * DONE (glue)
+#8 12.72 begin installing package ‘magrittr’
+#8 12.89 * installing *binary* package ‘magrittr’ ...
+#8 12.89 * DONE (magrittr)
+#8 12.89 begin installing package ‘cpp11’
+#8 13.07 * installing *binary* package ‘cpp11’ ...
+#8 13.07 * DONE (cpp11)
+#8 13.08 begin installing package ‘jsonlite’
+#8 13.34 * installing *binary* package ‘jsonlite’ ...
+#8 13.34 * DONE (jsonlite)
+#8 13.34 begin installing package ‘R6’
+#8 13.48 * installing *binary* package ‘R6’ ...
+#8 13.48 * DONE (R6)
+#8 13.48 begin installing package ‘stringi’
+#8 13.79 * installing *binary* package ‘stringi’ ...
+#8 13.79 * DONE (stringi)
+#8 13.80 begin installing package ‘abind’
+#8 13.95 * installing *binary* package ‘abind’ ...
+#8 13.95 * DONE (abind)
+#8 13.95 begin installing package ‘processx’
+#8 14.11 * installing *binary* package ‘processx’ ...
+#8 14.11 * DONE (processx)
+#8 14.11 begin installing package ‘plyr’
+#8 14.28 * installing *binary* package ‘plyr’ ...
+#8 14.28 * DONE (plyr)
+#8 14.28 begin installing package ‘desc’
+#8 14.43 * installing *binary* package ‘desc’ ...
+#8 14.43 * DONE (desc)
+#8 14.43 begin installing package ‘checkmate’
+#8 14.59 * installing *binary* package ‘checkmate’ ...
+#8 14.59 * DONE (checkmate)
+#8 14.59 begin installing package ‘lifecycle’
+#8 14.77 * installing *binary* package ‘lifecycle’ ...
+#8 14.77 * DONE (lifecycle)
+#8 14.77 begin installing package ‘Rdpack’
+#8 15.07 * installing *binary* package ‘Rdpack’ ...
+#8 15.07 * DONE (Rdpack)
+#8 15.07 begin installing package ‘RcppEigen’
+#8 15.77 * installing *binary* package ‘RcppEigen’ ...
+#8 15.77 * DONE (RcppEigen)
+#8 15.77 begin installing package ‘sandwich’
+#8 15.99 * installing *binary* package ‘sandwich’ ...
+#8 15.99 * DONE (sandwich)
+#8 15.99 begin installing package ‘isoband’
+#8 16.18 * installing *binary* package ‘isoband’ ...
+#8 16.18 * DONE (isoband)
+#8 16.18 begin installing package ‘future’
+#8 16.47 * installing *binary* package ‘future’ ...
+#8 16.47 * DONE (future)
+#8 16.47 begin installing package ‘cachem’
+#8 16.61 * installing *binary* package ‘cachem’ ...
+#8 16.61 * DONE (cachem)
+#8 16.62 begin installing package ‘callr’
+#8 16.82 * installing *binary* package ‘callr’ ...
+#8 16.82 * DONE (callr)
+#8 16.82 begin installing package ‘rstantools’
+#8 17.02 * installing *binary* package ‘rstantools’ ...
+#8 17.02 * DONE (rstantools)
+#8 17.02 begin installing package ‘StanHeaders’
+#8 18.61 * installing *binary* package ‘StanHeaders’ ...
+#8 18.61 * DONE (StanHeaders)
+#8 18.61 begin installing package ‘ranger’
+#8 18.77 * installing *binary* package ‘ranger’ ...
+#8 18.77 * DONE (ranger)
+#8 18.77 begin installing package ‘vctrs’
+#8 19.03 * installing *binary* package ‘vctrs’ ...
+#8 19.03 * DONE (vctrs)
+#8 19.03 begin installing package ‘gtable’
+#8 19.19 * installing *binary* package ‘gtable’ ...
+#8 19.19 * DONE (gtable)
+#8 19.19 begin installing package ‘scales’
+#8 19.36 * installing *binary* package ‘scales’ ...
+#8 19.36 * DONE (scales)
+#8 19.36 begin installing package ‘future.apply’
+#8 19.55 * installing *binary* package ‘future.apply’ ...
+#8 19.55 * DONE (future.apply)
+#8 19.55 begin installing package ‘memoise’
+#8 19.68 * installing *binary* package ‘BH’ ...
+#8 19.68 * DONE (BH)
+#8 19.68 begin installing package ‘gridExtra’
+#8 19.70 * installing *binary* package ‘memoise’ ...
+#8 19.70 * DONE (memoise)
+#8 19.70 begin installing package ‘pkgbuild’
+#8 19.91 * installing *binary* package ‘gridExtra’ ...
+#8 19.91 * DONE (gridExtra)
+#8 19.91 begin installing package ‘pillar’
+#8 19.91 * installing *binary* package ‘pkgbuild’ ...
+#8 19.91 * DONE (pkgbuild)
+#8 19.91 begin installing package ‘stringr’
+#8 20.15 * installing *binary* package ‘stringr’ ...
+#8 20.15 * DONE (stringr)
+#8 20.15 begin installing package ‘ggplot2’
+#8 20.17 * installing *binary* package ‘pillar’ ...
+#8 20.17 * DONE (pillar)
+#8 20.17 begin installing package ‘tidyselect’
+#8 20.35 * installing *binary* package ‘tidyselect’ ...
+#8 20.35 * DONE (tidyselect)
+#8 20.35 begin installing package ‘purrr’
+#8 20.51 * installing *binary* package ‘purrr’ ...
+#8 20.51 * DONE (purrr)
+#8 20.51 begin installing package ‘reshape2’
+#8 20.63 * installing *binary* package ‘ggplot2’ ...
+#8 20.63 * DONE (ggplot2)
+#8 20.63 begin installing package ‘tibble’
+#8 20.69 * installing *binary* package ‘reshape2’ ...
+#8 20.69 * DONE (reshape2)
+#8 20.69 begin installing package ‘distributional’
+#8 20.83 * installing *binary* package ‘tibble’ ...
+#8 20.83 * DONE (tibble)
+#8 20.83 begin installing package ‘ggridges’
+#8 20.86 * installing *binary* package ‘distributional’ ...
+#8 20.86 * DONE (distributional)
+#8 20.86 begin installing package ‘dplyr’
+#8 21.05 * installing *binary* package ‘ggridges’ ...
+#8 21.05 * DONE (ggridges)
+#8 21.05 begin installing package ‘ggdist’
+#8 21.07 * installing *binary* package ‘dplyr’ ...
+#8 21.07 * DONE (dplyr)
+#8 21.07 begin installing package ‘posterior’
+#8 21.26 * installing *binary* package ‘posterior’ ...
+#8 21.26 * DONE (posterior)
+#8 21.26 begin installing package ‘tidyr’
+#8 21.29 * installing *binary* package ‘ggdist’ ...
+#8 21.29 * DONE (ggdist)
+#8 21.29 begin installing package ‘loo’
+#8 21.46 * installing *binary* package ‘tidyr’ ...
+#8 21.46 * DONE (tidyr)
+#8 21.46 begin installing package ‘broom’
+#8 21.53 * installing *binary* package ‘loo’ ...
+#8 21.53 * DONE (loo)
+#8 21.53 begin installing package ‘bayesplot’
+#8 21.67 * installing *binary* package ‘broom’ ...
+#8 21.67 * DONE (broom)
+#8 21.67 begin installing package ‘rstan’
+#8 21.82 * installing *binary* package ‘bayesplot’ ...
+#8 21.82 * DONE (bayesplot)
+#8 21.82 begin installing package ‘geepack’
+#8 22.03 * installing *binary* package ‘geepack’ ...
+#8 22.03 * DONE (geepack)
+#8 22.03 begin installing package ‘MRTAnalysis’
+#8 22.26 * installing *binary* package ‘MRTAnalysis’ ...
+#8 22.26 * DONE (MRTAnalysis)
+#8 23.17 * installing *binary* package ‘rstan’ ...
+#8 23.17 * DONE (rstan)
+#8 23.17 begin installing package ‘RBesT’
+#8 23.41 * installing *binary* package ‘RBesT’ ...
+#8 23.41 * DONE (RBesT)
+#8 23.42 
+#8 23.42 The downloaded source packages are in
+#8 23.42 	‘/tmp/RtmpubNhw5/downloaded_packages’
+#8 23.43 trying URL 'https://github.com/hyunjimoon/SBC/archive/e40a320c335460851618f7019baf79d39bbedf29.tar.gz'
+#8 25.67 downloaded 20.3 MB
+#8 25.67 
+#8 25.67 Installing package into ‘/usr/local/lib/R/site-library’
+#8 25.67 (as ‘lib’ is unspecified)
+#8 26.39 Warning in untar2(tarfile, files, list, exdir, restore_times) :
+#8 26.39   skipping pax global extended headers
+#8 26.40 * installing *source* package ‘SBC’ ...
+#8 26.40 ** this is package ‘SBC’ version ‘0.5.0.0’
+#8 26.40 ** using staged installation
+#8 26.41 ** R
+#8 26.43 ** inst
+#8 26.43 ** byte-compile and prepare package for lazy loading
+#8 28.25 ** building package indices
+#8 28.48 ** installing vignettes
+#8 28.48 ** testing if installed package can be loaded from temporary location
+#8 29.06 ** testing if installed package can be loaded from final location
+#8 29.72 ** testing if installed package keeps a record of temporary installation path
+#8 29.73 * DONE (SBC)
+#8 DONE 30.1s
+
+#9 [5/5] WORKDIR /workspace
+#9 DONE 0.1s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 6.5s done
+#10 exporting manifest sha256:bffb1102364477a07fe7bbfa25463d63dfc4eb49329ae008f48281f0afeec62d done
+#10 exporting config sha256:5df9ec4bf4fb8a1424d5ef7d20d51004d954521148704b2728e42c32d0622030 done
+#10 exporting attestation manifest sha256:978c95728455b8dc2b42aed8ffef31db2d6c401a9d4d0112b73fb0c177aa0301 0.0s done
+#10 exporting manifest list sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5 done
+#10 naming to docker.io/library/remission-r-qualification:20261020 done
+#10 unpacking to docker.io/library/remission-r-qualification:20261020
+#10 unpacking to docker.io/library/remission-r-qualification:20261020 2.9s done
+#10 DONE 9.6s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/6yoem5hf7ywwjlsql0t81d214

@@ -148,9 +148,37 @@ def main():
     assert accepted["reviewed_head"] == accepted_head and accepted["merge_commit"] == accepted_merge
     accepted_report = accepted["accepted_review"]["path"]
     assert git("hash-object", "--path", accepted_report, accepted_report).strip() == "78c63b418994faac455ccecf25020c6fb63c88e1"
+    temporal = data["accepted_temporal_assignment"]
+    main_base = "b24c3c0fb78bf19928750eae29e852141bd649a7"
+    assert temporal["status"] == "accepted" and temporal["review_disposition"] == "ready_to_ship"
+    assert temporal["reviewed_head"] == "62e6ce85299b477b0c21a18d70b49392a68e1522" and temporal["reviewed_base"] == accepted_merge
+    assert git("show", "-s", "--format=%P", main_base).split() == [accepted_merge, temporal["reviewed_head"]]
+    temporal_report = temporal["accepted_review"]["path"]
+    assert git("hash-object", "--path", temporal_report, temporal_report).strip() == "80f39d8512ef631249374a1378a80aeda2f74561"
     current = data["current_assignment"]
-    assert current["id"] == "G0-TIME-R1" and current["base_commit"] == accepted_merge
-    assert current["status"] == "needs_review"
+    assert current["id"] == "G0-LIB" and current["package_id"] == "G0-LIB-DR"
+    dgp_merge = "f11e90536b635a7db08cfed640445bec197a415c"
+    assert git("show", "-s", "--format=%P", dgp_merge).split() == [main_base, "985ce540f0cc6ae1e57a6268651971acb546929d"]
+    for task_id in ["G0-DGP", "G0-WORKFLOW"]:
+        package = data["accepted_dgp_workflow_assignment"][task_id]
+        assert package["status"] == "accepted_contract_scope_only" and package["review_disposition"] == "ready_to_ship"
+        assert package["merge_commit"] == dgp_merge and package["reviewed_base"] == main_base
+        package_report = package["accepted_review"]["path"]
+        assert git("hash-object", "--path", package_report, package_report).strip() == "78e75133364b6babc2d3ce75d10f76b22e40105e"
+    assert current["base_commit"] == current["review_target_base"] == dgp_merge
+    assert current["status"] == "needs_independent_full_library_review"
+    plan = current["accepted_plan"]
+    assert plan["disposition"] == "ready_to_proceed" and plan["root_accepted"] is True
+    assert plan["reviewed_head"] == "d84203709b0164a0824913950c1d7cd7be25a2fb" and plan["reviewed_base"] == dgp_merge
+    assert git("hash-object", "--path", plan["path"], plan["path"]).strip() == "bd9eb376680c7225cfdad3c0ac162d1698326063"
+    assert tasks["G0-LIB"]["status"] == current["status"] and tasks["G0-LIB"]["shipping_review"] == "pending"
+    for name, blob in [("independent-source-byte-follow-up.md", "df3ed8b9375d7a1ad4acd0e5fda1c424d0be678e"),
+                       ("byte-inspection.json", "93a8d185b34f94f742886aa9c5e9bc38e676654e"),
+                       ("lf-reproduction.json", "6e694cd446277b5dadbf176dfed118221ab7989d")]:
+        report_path = "docs/implementation/evidence/G0-LIB/DR/portability/" + name
+        assert git("hash-object", "--path", report_path, report_path).strip() == blob
+    for review in current["prior_reviews"]:
+        assert git("hash-object", "--path", review["path"], review["path"]).strip() == review["blob"]
     assert tasks["G0-TIME-R1"]["depends_on"] == ["G0-CONTRACT"]
     assert "G0-TIME-R1" in tasks["G0-DGP"]["depends_on"]
     assert "G0-TIME-R1" in ancestors["G7-REPRO"]

@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "synthetic": true,
+  "kind": "offline_artifact",
+  "artifact_id": "wcls-result.json",
+  "payload": {
+    "path": "wcls-result.json",
+    "sha256": "e73112bef0c35ae751857f6ae9b099119ac371acadc3eee4588286659262cae0"
+  },
+  "inputs": [
+    {
+      "path": "wcls-input.csv",
+      "sha256": "485e0c8a8216e4f89e75469dade63d29647813143e8eda3a9bb9c4b534e78ce3"
+    },
+    {
+      "path": "wcls-analysis.json",
+      "sha256": "8e7c95aba0045bd92497743d7b6ec49893f646e277aab1ff86c2e76c3009e187"
+    },
+    {
+      "path": "offline-source.R",
+      "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+    }
+  ],
+  "sources": [
+    {
+      "id": "MRTAnalysis-WCLS-CLI",
+      "version": "qualification-R1",
+      "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+    }
+  ],
+  "unit": "quality_points",
+  "model": {
+    "id": "MRTAnalysis-WCLS-reference",
+    "version": "qualification-R1",
+    "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+  },
+  "prior": {
+    "id": "not-applicable-frequentist-analysis",
+    "version": "qualification-R1",
+    "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+  },
+  "transform": {
+    "id": "R-coefficients-JSON-export",
+    "version": "qualification-R1",
+    "sha256": "a601dc0cb0fcf4f4ffcc8b738a9c76551ba145923a6aac5758ce2ccfda94d49d"
+  },
+  "seed": {
+    "namespace": "fixture",
+    "protocol": "API-qualification",
+    "scenario": "toy",
+    "replicate": 0,
+    "patient": "synthetic",
+    "time_index": 0,
+    "process": "deterministic-file-exchange"
+  },
+  "observation_cutoff": "2026-10-20T00:00:00Z",
+  "producer": {
+    "image": "sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5",
+    "platform": "linux-x86_64",
+    "runtime": "R-4.5.2",
+    "packages": {
+      "RBesT": "1.12.0",
+      "SBC": "0.5.0.0",
+      "MRTAnalysis": "0.4.1",
+      "posterior": "1.7.0",
+      "rstan": "2.32.7"
+    },
+    "precision": "float64",
+    "device": "cpu"
+  },
+  "producer_status": "completed",
+  "failure_reason": null,
+  "shape": {
+    "kind": "wcls_result",
+    "input": {
+      "path": "wcls-input.csv",
+      "sha256": "485e0c8a8216e4f89e75469dade63d29647813143e8eda3a9bb9c4b534e78ce3"
+    },
+    "analysis": {
+      "path": "wcls-analysis.json",
+      "sha256": "8e7c95aba0045bd92497743d7b6ec49893f646e277aab1ff86c2e76c3009e187"
+    }
+  }
+}

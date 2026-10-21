@@ -1,0 +1,17 @@
+{
+  "started_utc": "2026-10-21T07:01:26.872355+00:00",
+  "finished_utc": "2026-10-21T07:01:36.594246+00:00",
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-sol-integration-20261020",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--mount",
+    "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020,target=/workspace",
+    "python:3.13.7-slim-bookworm@sha256:adafcc17694d715c905b4c7bebd96907a1fd5cf183395f0ebc4d3428bd22d92d",
+    "sh",
+    "-c",
+    "pip install pip-audit && pip-audit --disable-pip --no-deps -r /workspace/tooling/library/requirements.lock -f json -o /workspace/docs/implementation/evidence/G0-LIB/python-audit.json"
+  ],
+  "exit_code": 0
+}

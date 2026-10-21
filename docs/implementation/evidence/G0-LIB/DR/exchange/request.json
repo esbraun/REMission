@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "synthetic": true,
+  "version": "DR-EXCEPTION-R1/1.0.0",
+  "estimand": "current_action_value_over_behavior_history_eligible_windows",
+  "unit": "quality_points",
+  "aggregation": "pooled_eligible_decision_mean",
+  "logging_regime": "fixed_independent_patients",
+  "protocol": {
+    "path": "protocol.json",
+    "sha256": "eefd17073d1b819ced0837492e9431cb964905628b707f02cfdf7ffcae1e43de"
+  },
+  "roster": {
+    "path": "roster.json",
+    "sha256": "d3394dd2c804478a5603252cbd9651df25666b16141163ce736d5df2a6e9fe59"
+  },
+  "rewards": {
+    "path": "rewards.json",
+    "sha256": "8f9e04294767ca200a77f5dfe86f86ae8d830c3f3a8f050c54e577e816d7ebe6"
+  },
+  "predictions": {
+    "path": "q.json",
+    "sha256": "d0b2fc9246b8bcf031d8030995443eb039d2515c96a9973bad928581a742a334"
+  },
+  "targets": [
+    {
+      "path": "policy-a.json",
+      "sha256": "f49f0348c093908a3c66dbf9175a8442d1d0ccb7095d86162af3b8586ff35b4c"
+    },
+    {
+      "path": "policy-b.json",
+      "sha256": "58abfdfeaf6ff91332d06b3b606bcf99d887ed215bfa50b942bc4a4d07145bb9"
+    }
+  ],
+  "receipt": {
+    "path": "receipt.json",
+    "sha256": "8c63e0f90dce5950e01c82ae570899dd19d5e7822a929a3752390a84bb33eb6c"
+  },
+  "bindings": {
+    "receipt_sha256": "8c63e0f90dce5950e01c82ae570899dd19d5e7822a929a3752390a84bb33eb6c",
+    "training_sha256": "ecb11983d774e0287611c883aaad2d9ab6c78f2dcb635777b534214af87c4cdb",
+    "plan_sha256": "a3f02f33f91d95b71e132f638a3a5907ef96b0b82122f21bbbe4508b44bf762c",
+    "model_sha256": "2a4c0acd7d843e97c140b0914734cdb2b846b353664abee9d8f66f3aef7720b5",
+    "trainer_sha256": "835b428c894d4e6cdc46957d39a854325138868858a3d864928e498dcae83391",
+    "predictor_sha256": "835b428c894d4e6cdc46957d39a854325138868858a3d864928e498dcae83391",
+    "q_sha256": "d0b2fc9246b8bcf031d8030995443eb039d2515c96a9973bad928581a742a334",
+    "target_sha256": [
+      "f49f0348c093908a3c66dbf9175a8442d1d0ccb7095d86162af3b8586ff35b4c",
+      "58abfdfeaf6ff91332d06b3b606bcf99d887ed215bfa50b942bc4a4d07145bb9"
+    ],
+    "policy_sha256": [
+      "f46f6ad83f088556b3a746f0e7a401409cec69262c7e3ff4abb289188ddb6897",
+      "2a64dee2f68cba4aed75a06ed593bd6fb8caf5bb8697a78c2715a8b57f86c1b3"
+    ]
+  },
+  "inference": true,
+  "bootstrap_seed": 73152,
+  "bootstrap_replicates": 2000,
+  "minimum_patients": 30
+}

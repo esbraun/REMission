@@ -1,0 +1,28 @@
+{
+  "version": "DR-EXCEPTION-R1/1.0.0",
+  "image": "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+  "training_rows": 24,
+  "training_patients": 12,
+  "evaluation_patients": 30,
+  "eligible_windows": 60,
+  "bootstrap_replicates": 2000,
+  "seed": 73152,
+  "base_DR": [
+    3.76817759597804,
+    3.423704690978874
+  ],
+  "changed_reward_DR": [
+    3.86192759597804,
+    3.532038024312206
+  ],
+  "sealed_artifact_hashes": {
+    "q.json": "d0b2fc9246b8bcf031d8030995443eb039d2515c96a9973bad928581a742a334",
+    "policy-a.json": "f49f0348c093908a3c66dbf9175a8442d1d0ccb7095d86162af3b8586ff35b4c",
+    "policy-b.json": "58abfdfeaf6ff91332d06b3b606bcf99d887ed215bfa50b942bc4a4d07145bb9",
+    "receipt.json": "8c63e0f90dce5950e01c82ae570899dd19d5e7822a929a3752390a84bb33eb6c"
+  },
+  "held_fixed_on_reward_mutation": true,
+  "fit_learn_predict_choice_calls_in_scorer": 0,
+  "source_data_access": "actual denied reads in separate network-disabled least-data mounts; curated code only",
+  "limits": "fixture conditional inference only; no G4 truth/coverage/null/MAR/MNAR/cohort qualification"
+}

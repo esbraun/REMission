@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "synthetic": true,
+  "kind": "offline_artifact",
+  "artifact_id": "mixture-0.5.json",
+  "payload": {
+    "path": "mixture-0.5.json",
+    "sha256": "caee1570895e4857fa4f08edee1839582618f993dd5adc7cb116f694c5637416"
+  },
+  "inputs": [
+    {
+      "path": "fit-input.json",
+      "sha256": "b27c9ffb7619294b1be521eedc0a823efa44d60a595915958a823a8eaccbd852"
+    },
+    {
+      "path": "pymc-draws.csv",
+      "sha256": "23bf75716ecdfb90b3dda0dce83d76242106e942363b2daf1eed6c989089965f"
+    }
+  ],
+  "sources": [
+    {
+      "id": "offline-CLI-fixture",
+      "version": "qualification-fixture-1",
+      "sha256": "1d910269f479bc14edbe94ca38771cd04c1acb7213c4a6f5ade2117885eb1c66"
+    }
+  ],
+  "unit": "ISI_points",
+  "model": {
+    "id": "toy-normal-model",
+    "version": "qualification-fixture-1",
+    "sha256": "1d910269f479bc14edbe94ca38771cd04c1acb7213c4a6f5ade2117885eb1c66"
+  },
+  "prior": {
+    "id": "toy-normal-prior",
+    "version": "qualification-fixture-1",
+    "sha256": "1d910269f479bc14edbe94ca38771cd04c1acb7213c4a6f5ade2117885eb1c66"
+  },
+  "transform": {
+    "id": "identity",
+    "version": "qualification-fixture-1",
+    "sha256": "1d910269f479bc14edbe94ca38771cd04c1acb7213c4a6f5ade2117885eb1c66"
+  },
+  "seed": {
+    "namespace": "fixture",
+    "protocol": "API-qualification",
+    "scenario": "toy",
+    "replicate": 0,
+    "patient": "synthetic",
+    "time_index": 0,
+    "process": "file-exchange"
+  },
+  "observation_cutoff": "2026-10-20T00:00:00Z",
+  "producer": {
+    "image": "sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5",
+    "platform": "linux-x86_64",
+    "runtime": "R-4.5.2",
+    "packages": {
+      "RBesT": "1.12.0",
+      "SBC": "0.5.0.0",
+      "MRTAnalysis": "0.4.1",
+      "posterior": "1.7.0",
+      "rstan": "2.32.7"
+    },
+    "precision": "float64",
+    "device": "cpu"
+  },
+  "producer_status": "completed",
+  "failure_reason": null,
+  "shape": {
+    "kind": "normal_mixture",
+    "components": 2,
+    "marginal_scale": "ISI_points"
+  }
+}

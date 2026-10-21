@@ -1,0 +1,362 @@
+class SequentialCB(Evaluator):
+    """Sequential evaluation for CB learners."""
+
+    _ONLY_DISCRETE    = set()
+    _IMPLICIT_EXCLUDE = {"context", "actions", "rewards", "action", "reward", "probability", "eval_rewards", "learn_rewards"}
+
+    def __init__(self,
+        record: Sequence[Literal['reward','time','probability','action','context','actions','rewards']] = ['reward','action','probability'],
+        learn : Optional[Literal['on','off','ips','dr','dm']] = 'on',
+        eval  : Optional[Literal['on','ips','dr','dm']] ='on',
+        seed  : float = None) -> None:
+        """Instantiate a SequentialCB evaluator.
+
+        Args:
+            record: Variables to record for each learner interaction.
+            learn: action and reward revealed to learner on `learn` call:
+                *on* --- on-policy action/reward (requires 'actions' and 'rewards'),
+                *off* --- off-policy action/reward (requires 'action' and 'reward'),
+                *ips* --- on-policy action/ips-reward (requires 'actions', 'action', 'reward', and 'probability'),
+                *dr* --- on-policy action/dr-reward (requires 'actions', 'action', and 'reward'),
+                *dm* --- on-policy action/dm-reward (requires 'actions', 'action', and 'reward'),
+                *None* --- `learn` is not called.
+            eval: reward recorded given learner prediction:
+                *on* --- actual reward (requires 'actions' and 'rewards'),
+                *ips* --- ips-reward (requires 'actions', 'action', 'reward', and 'probability'),
+                *dr* --- dr-reward (requires 'actions', 'action', and 'reward'),
+                *dm* --- dm-reward (requires 'actions', 'action', and 'reward'),
+                *None* --- no reward is recorded.
+            seed: Determine which action is played when learners return an action PMF.
+        """
+
+        self._record = [record] if isinstance(record,str) else record
+        self._learn  = learn or ''
+        self._eval   = eval or ''
+        self._seed   = seed
+
+        if 'ope_loss' in self._record:
+            # OPE loss metric is only available for VW models
+            # Divide by the number of samples for the average loss metric and see this article for more info
+            # https://vowpalwabbit.org/docs/vowpal_wabbit/python/latest/tutorials/off_policy_evaluation.html
+            PackageChecker.vowpalwabbit('OffPolicyEvaluator')
+
+    @property
+    def params(self) -> Mapping[str,Any]:
+        return {'learn': self._learn, 'eval': self._eval, 'seed': self._seed }
+
+    def _required(self, has_score:bool) -> set:
+        learn,eval = self._learn,self._eval
+
+        pred = (learn and learn != 'off') or (eval and (eval != 'ips' or not has_score))
+        off  = (learn and learn != 'on')  or (eval and eval != 'on')
+        rwds = (learn == 'on')            or (eval == 'on')
+
+        required_keys = set()
+        if pred: required_keys.update(['actions'])
+        if off : required_keys.update(['action','reward'])
+        if rwds: required_keys.update(['rewards'])
+
+        return required_keys
+
+    def _validate(self, first: Mapping, has_score:bool) -> None:
+        required_keys = self._required(has_score)
+        missing_keys  = required_keys-first.keys()
+
+        if missing_keys:
+            raise CobaException(f"{self.__class__.__name__}(learn={self._learn or None},eval={self._eval or None}) requires {missing_keys}.")
+
+        if not self._discrete(first):
+            for metric in set(self._record).intersection(SequentialCB._ONLY_DISCRETE):
+                warnings.warn(f"The {metric} metric can only be calculated for discrete environments")#pragma: no cover
+
+    def _discrete(self,interaction):
+        if 'actions' not in interaction:
+            return False
+        else:
+            batched   = interaction and (is_batch(interaction.get('context')) or is_batch(interaction.get('actions')))
+            actions   = interaction['actions'][0] if batched else interaction['actions']
+            discrete  = len(actions or []) > 0
+
+        return discrete
+
+    def _results(self,learner:SafeLearner,first:Mapping, interactions:Iterable[Mapping]) -> Iterable[Mapping[Any,Any]]:
+        #import here to avoid circular dependencies...
+        from coba.environments.filters import OpeRewards, Batch, BatchSafe
+
+        batched   = first and (is_batch(first.get('context')) or is_batch(first.get('action')) or is_batch(first.get('actions')))
+        discrete  = self._discrete(first)
+        has_score = learner.has_score
+
+        learn,eval = self._learn,self._eval
+
+        N          = 0
+        n_zero_lrn = 0
+        n_zero_val = 0
+        n_zeroes   = lambda R: int(R==0) if not batched else sum([r==0 for r in R])
+        lrn_warned   = False
+        val_warned   = False
+
+        lrn_on  = learn == 'on'
+        lrn_off = learn == 'off'
+        lrn_ips = learn == 'ips'
+        lrn_dr  = learn == 'dr'
+        lrn_dm  = learn == 'dm'
+        val_on  = eval  == 'on'
+        val_ips = eval  == 'ips'
+        val_dr  = eval  == 'dr'
+        val_dm  = eval  == 'dm'
+
+        has_context = 'context'     in first
+        has_actions = 'actions'     in first
+        has_rewards = 'rewards'     in first
+        has_reward  = 'reward'      in first
+        has_action  = 'action'      in first
+        has_prob    = 'probability' in first
+
+        out_prob     = 'probability' in self._record and eval
+        out_time     = 'time'        in self._record
+        out_action   = 'action'      in self._record and eval
+        out_context  = 'context'     in self._record
+        out_actions  = 'actions'     in self._record and has_actions
+        out_rewards  = 'rewards'     in self._record and has_rewards
+        out_reward   = 'reward'      in self._record and eval
+        out_ope_loss = 'ope_loss'    in self._record and eval
+
+        should_pred = (learn and not lrn_off) or val_on or val_dm or val_dr or (val_ips and not has_score) or out_action or out_prob
+
+        if out_rewards and discrete:
+            get_rewards = (lambda Rs,As:[[R(a) for a in A] for R,A in zip(Rs,As)]) if batched else (lambda R,A: [R(a) for a in A])
+        if out_rewards and not discrete:
+            get_rewards = lambda R,_: R
+
+        info = CobaContext.learning_info
+        info.clear()
+
+        learn_type = 'IPS' if lrn_ips else 'DR' if lrn_dr else 'DM' if lrn_dm else None
+        eval_type  = 'IPS' if val_ips else 'DR' if val_dr else 'DM' if val_dm else None
+
+        if learn_type:
+            interactions = BatchSafe(OpeRewards(learn_type,target='learn_rewards',features=[1,'a','xa'])).filter(interactions)
+
+        if eval_type and eval_type != learn_type:
+            interactions = BatchSafe(OpeRewards(eval_type,target='eval_rewards',features=[1,'a','xa'])).filter(interactions)
+
+        learn_target = 'learn_rewards'
+        eval_target  = 'eval_rewards' if eval_type and eval_type != learn_type else 'learn_rewards'
+
+        for interaction in interactions:
+
+            context = interaction['context'     ] if has_context else None
+            actions = interaction['actions'     ] if has_actions else None
+            rewards = interaction['rewards'     ] if has_rewards else None
+            off_rwd = interaction['reward'      ] if has_reward  else None
+            off_act = interaction['action'      ] if has_action  else None
+            off_pr  = interaction['probability' ] if has_prob    else None
+
+            lrn_rwds = interaction[learn_target] if learn_type else rewards if lrn_on else None
+            val_rwds = interaction[eval_target ] if eval_type  else rewards if val_on else None
+
+            N += 1 if not batched else len(lrn_rwds) if lrn_rwds else len(val_rwds)
+
+            start = time.time()
+            if should_pred: on_act,on_pr,on_kw=learner.predict(context,actions)
+            pred_time = time.time()-start
+
+            if eval:
+                if val_ips and has_score and not should_pred:
+                    scr_ = learner.score(context,actions,off_act)
+                    rwd_ = val_rwds(off_act)
+                    eval_reward = scr_*rwd_ if not batched else Batch.List(map(mul,scr_,rwd_))
+                else:
+                    eval_reward = val_rwds(on_act)
+
+                n_zero_val += n_zeroes(eval_reward)
+
+            if learn:
+                learn_reward = off_rwd if lrn_off else lrn_rwds(on_act)
+                n_zero_lrn += n_zeroes(learn_reward)
+                start = time.time()
+                if lrn_off: learner.learn(context, off_act, learn_reward, off_pr         )
+                else      : learner.learn(context, on_act , learn_reward, on_pr , **on_kw)
+                learn_time = time.time()-start
+
+            if 200 > N and N > 20 and not lrn_warned and learn_type == 'IPS' and n_zero_lrn <= (N*.01):
+                lrn_warned = True
+                #The warning will display even in quiet mode due to CobaException
+                CobaContext.logger.log(CobaException(
+                    "WARNING: the learner's predicted actions are highly correlated"
+                    " with the logging policy and we are learning from an IPS reward"
+                    " estimate. This can cause biased learning due to IPS assuming"
+                    " independence between logging and learning policies. To solve"
+                    " this consider using DM or DR instead of IPS, make sure the"
+                    " rng seed is not the same in the logging and learning policy,"
+                    " or shuffle the order of interactions in the Environment."
+                ))
+
+            if 200 > N and N > 20 and not val_warned and eval_type == 'IPS' and not has_score and n_zero_val <= (N*.01):
+                val_warned = True
+                #The warning will display even in quiet mode due to CobaException
+                CobaContext.logger.log(CobaException(
+                    "WARNING: the learner's predicted actions are highly correlated"
+                    " with the logging policy and we are evaluating from an IPS reward"
+                    " estimate. This can cause biased evaluation due to IPS assuming"
+                    " independence between logging and learning policies. To solve"
+                    " this consider using DM or DR instead of IPS or make sure the"
+                    " rng seed is not the same in the logging and learning policy,"
+                    " or shuffle the order of interactions in the Environment."
+                ))
+
+            out = {}
+
+            if out_time    : out['predict_time'] = pred_time
+            if out_time    : out['learn_time']   = learn_time
+            if out_context : out['context']      = context
+            if out_actions : out['actions']      = actions
+            if out_action  : out['action']       = on_act
+            if out_reward  : out['reward']       = eval_reward
+            if out_rewards : out['rewards']      = get_rewards(rewards,actions)
+            if out_ope_loss: out['ope_loss']     = get_ope_loss(learner)
+
+            if out_prob and should_pred and on_pr is not None:
+                out['probability'] = on_pr
+
+            out.update({k: interaction[k] for k in interaction.keys()-SequentialCB._IMPLICIT_EXCLUDE})
+
+            if info:
+                out.update(info)
+                info.clear()
+
+            if out:
+                yield out
+
+    def evaluate(self, environment: Optional[Environment], learner: Optional[Learner]) -> Iterable[Mapping[Any,Any]]:
+
+        first, interactions = peek_first(environment.read())
+        seed = self._seed if self._seed is not None else CobaContext.store.get("experiment_seed")
+
+        if not interactions: return []
+
+        from coba.environments import Finalize, Unbatch, BatchSafe
+
+        learner = SafeLearner(learner, seed)
+        self._validate(first,learner.has_score)
+        results = self._results(learner, first, BatchSafe(Finalize()).filter(interactions))
+
+        #We Unbatch to work with Result
+        yield from Unbatch().filter(results)
+
+FILTERS
+['Logged', 'OpeRewards']
+OPE
+class OpeRewards(EnvironmentFilter):
+    """Transform logged interactions to simulated interactions."""
+
+    def __init__(self, rwd_type:Literal['IPS','DM','DR']=None, target:str = 'rewards', features=[1,'x','a','xa','xxa']):
+        """Instantiate an OpeRewards filter.
+
+        Args:
+            rewards_type: How to estimate the rewards function from the logged
+            data (i.e., inverse propensity score, direct method, or doubly robust).
+
+        Remarks:
+            Adds 'rewards' to interactions with 'context', 'action', 'reward',
+            and 'probability'.
+        """
+        if rwd_type in ['DM','DR']:
+            PackageChecker.vowpalwabbit(f"{rwd_type} OpeRewards")
+        self._rwd_type = rwd_type
+        self._target   = target
+        self._features = features
+
+    @property
+    def params(self) -> Mapping[str, Any]:
+        return {'ope_reward': self._rwd_type or 'None'}
+
+    def filter(self, interactions: Iterable[Interaction]) -> Iterable[Interaction]:
+        rwd_type = self._rwd_type
+
+        if rwd_type is None:
+            yield from interactions
+
+        elif rwd_type == "IPS":
+            for interaction in interactions:
+                interaction = interaction.copy()
+                interaction[self._target] = BinaryReward(interaction['action'], interaction['reward']/(interaction.get('probability') or 1))
+                yield interaction
+
+        elif rwd_type in ["DM","DR"]:
+            from coba.learners.vowpal import VowpalMediator
+
+            class DMReward:
+                def __init__(self, vw:VowpalMediator, context:Any) -> None:
+                    self._vw = vw
+                    self._x  = context
+
+                def __call__(self, action) -> Any:
+                    feats   = {"x":self._x, 'a':action} if self._x is not None else {'a':action}
+                    return vw.predict(vw.make_example(feats))
+
+            class DRReward:
+                def __init__(self,vw:VowpalMediator, context:Any,  off_action, off_reward, off_prob) -> None:
+                    self._vw         = vw
+                    self._x          = context
+                    self._off_action = off_action
+                    self._off_reward = off_reward
+                    self._off_prob   = (off_prob or 1)
+
+                def __call__(self, action) -> Any:
+                    feats   = {"x":self._x, 'a':action} if self._x is not None else {'a':action}
+                    dm_part = vw.predict(vw.make_example(feats))
+                    dr_part = (self._off_reward-dm_part)/self._off_prob if action == self._off_action else 0
+                    return dr_part + dm_part
+
+            rng = CobaRandom(1)
+            vw = VowpalMediator()
+
+            # When using cb_adf to estimate rewards for actions instead of the
+            # regression we would receive rewards far outside of the expected boundaries.
+            #vw.init_learner("--cb_adf --interactions xa --interactions xxa --quiet ", label_type=4)
+
+            args = "--quiet"
+            if 'x' not in self._features: args = '--ignore_linear x ' + args
+            if 'a' not in self._features: args = '--ignore_linear a ' + args
+            if 1 not in self._features  : args = '--noconstant ' + args
+            for f in self._features:
+                if f not in ['x','a',1]:
+                    args = f'--interactions {f} ' + args
+
+            vw.init_learner(args, label_type=1)
+
+            #so that we don't run forever
+            #when interactions is re-iterable
+            interactions = iter(interactions)
+
+            while True:
+
+                #Batch Shuffling reduces the correlation between
+                #the reward functions learned by this VW learner
+                #and potential downstream VW learners. If this
+                #correlation is strong, we will over estimate
+                #the downstream VW learner's performance.
+                L = list(islice(interactions,4000))
+
+                if not L: break
+
+                for interaction in rng.shuffle(L):
+                    if 'context' in interaction:
+                        features = {"x": interaction['context'], "a": interaction['action']}
+                    else:
+                        features = {"a": interaction['action']}
+                    label    = f"{interaction['reward']} {1/(interaction.get('probability') or 1)}"
+                    vw.learn(vw.make_example(features,label))
+
+                for interaction in L:
+                    new = interaction.copy()
+
+                    if rwd_type=="DR":
+                        new[self._target] = DRReward(vw,new.get('context'),new['action'],new['reward'],new['probability'])
+                    else:
+                        new[self._target] = DMReward(vw,new.get('context'))
+
+                    yield new
+

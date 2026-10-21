@@ -1,0 +1,177 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from python.Dockerfile
+#1 transferring dockerfile: 662B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.13.7-slim-bookworm@sha256:adafcc17694d715c905b4c7bebd96907a1fd5cf183395f0ebc4d3428bd22d92d
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 112B done
+#3 DONE 0.0s
+
+#4 [1/5] FROM docker.io/library/python:3.13.7-slim-bookworm@sha256:adafcc17694d715c905b4c7bebd96907a1fd5cf183395f0ebc4d3428bd22d92d
+#4 resolve docker.io/library/python:3.13.7-slim-bookworm@sha256:adafcc17694d715c905b4c7bebd96907a1fd5cf183395f0ebc4d3428bd22d92d 0.0s done
+#4 DONE 0.0s
+
+#5 [2/5] RUN apt-get update && apt-get install -y --no-install-recommends g++ make libgomp1 && rm -rf /var/lib/apt/lists/*
+#5 CACHED
+
+#6 [3/5] WORKDIR /workspace
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 5.05kB done
+#7 DONE 0.0s
+
+#8 [4/5] COPY tooling/library/requirements.lock /workspace/tooling/library/requirements.lock
+#8 DONE 0.0s
+
+#9 [5/5] RUN python -m pip install --require-hashes --report /opt/python-install-report.json -r tooling/library/requirements.lock && python -m pip check
+#9 1.093 Collecting Pygments==2.21.0 (from -r tooling/library/requirements.lock (line 1))
+#9 1.174   Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#9 1.333      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 10.0 MB/s  0:00:00
+#9 1.367 Collecting annotated-types==0.8.0 (from -r tooling/library/requirements.lock (line 2))
+#9 1.386   Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#9 1.420 Collecting arviz-base==1.3.1 (from -r tooling/library/requirements.lock (line 3))
+#9 1.452   Downloading arviz_base-1.3.1-py3-none-any.whl (1.4 MB)
+#9 1.549      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 14.4 MB/s  0:00:00
+#9 1.581 Collecting arviz-plots==1.3.2 (from -r tooling/library/requirements.lock (line 4))
+#9 1.608   Downloading arviz_plots-1.3.2-py3-none-any.whl (253 kB)
+#9 1.650 Collecting arviz-stats==1.3.3 (from -r tooling/library/requirements.lock (line 5))
+#9 1.673   Downloading arviz_stats-1.3.3-py3-none-any.whl (209 kB)
+#9 1.722 Collecting arviz==1.3.0 (from -r tooling/library/requirements.lock (line 6))
+#9 1.741   Downloading arviz-1.3.0-py3-none-any.whl (9.2 kB)
+#9 1.789 Collecting cachetools==6.2.6 (from -r tooling/library/requirements.lock (line 7))
+#9 1.809   Downloading cachetools-6.2.6-py3-none-any.whl (11 kB)
+#9 1.849 Collecting certifi==2026.10.19 (from -r tooling/library/requirements.lock (line 8))
+#9 1.870   Downloading certifi-2026.10.19-py3-none-any.whl (136 kB)
+#9 1.948 Collecting cftime==1.6.6.1 (from -r tooling/library/requirements.lock (line 9))
+#9 1.975   Downloading cftime-1.6.6.1-cp311-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (1.7 MB)
+#9 2.048      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 24.3 MB/s  0:00:00
+#9 2.077 Collecting cloudpickle==3.1.2 (from -r tooling/library/requirements.lock (line 10))
+#9 2.104   Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+#9 2.220 Collecting coba==8.1.0 (from -r tooling/library/requirements.lock (line 11))
+#9 2.241   Downloading coba-8.1.0-py3-none-any.whl (168 kB)
+#9 2.341 Collecting contourpy==1.4.0 (from -r tooling/library/requirements.lock (line 12))
+#9 2.363   Downloading contourpy-1.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (384 kB)
+#9 2.416 Collecting cycler==0.12.1 (from -r tooling/library/requirements.lock (line 13))
+#9 2.433   Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+#9 2.469 Collecting filelock==4.2.4 (from -r tooling/library/requirements.lock (line 14))
+#9 2.495   Downloading filelock-4.2.4-py3-none-any.whl (162 kB)
+#9 2.667 Collecting fonttools==4.67.0 (from -r tooling/library/requirements.lock (line 15))
+#9 2.683   Downloading fonttools-4.67.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.4 MB)
+#9 2.988      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 17.6 MB/s  0:00:00
+#9 3.030 Collecting formulaic==1.2.2 (from -r tooling/library/requirements.lock (line 16))
+#9 3.051   Downloading formulaic-1.2.2-py3-none-any.whl (118 kB)
+#9 3.089 Collecting interface_meta==2.0.1 (from -r tooling/library/requirements.lock (line 17))
+#9 3.113   Downloading interface_meta-2.0.1-py3-none-any.whl (15 kB)
+#9 3.147 Collecting joblib==1.6.0 (from -r tooling/library/requirements.lock (line 18))
+#9 3.169   Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+#9 3.265 Collecting kiwisolver==1.5.1 (from -r tooling/library/requirements.lock (line 19))
+#9 3.286   Downloading kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.5 MB)
+#9 3.366      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 23.6 MB/s  0:00:00
+#9 3.394 Collecting lazy-loader==0.6 (from -r tooling/library/requirements.lock (line 20))
+#9 3.415   Downloading lazy_loader-0.6-py3-none-any.whl (8.8 kB)
+#9 3.493 Collecting llvmlite==0.50.0 (from -r tooling/library/requirements.lock (line 21))
+#9 3.514   Downloading llvmlite-0.50.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (59.7 MB)
+#9 7.055      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.7/59.7 MB 16.9 MB/s  0:00:03
+#9 7.135 Collecting markdown-it-py==4.2.0 (from -r tooling/library/requirements.lock (line 22))
+#9 7.158   Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+#9 7.298 Collecting matplotlib==3.11.2 (from -r tooling/library/requirements.lock (line 23))
+#9 7.330   Downloading matplotlib-3.11.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.9 MB)
+#9 7.782      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 21.6 MB/s  0:00:00
+#9 7.827 Collecting mdurl==0.1.2 (from -r tooling/library/requirements.lock (line 24))
+#9 7.846   Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+#9 7.914 Collecting narwhals==2.27.1 (from -r tooling/library/requirements.lock (line 25))
+#9 7.941   Downloading narwhals-2.27.1-py3-none-any.whl (483 kB)
+#9 8.035 Collecting netCDF4==1.7.5 (from -r tooling/library/requirements.lock (line 26))
+#9 8.070   Downloading netcdf4-1.7.5-cp311-abi3-manylinux_2_28_x86_64.whl (10.6 MB)
+#9 8.593      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.6/10.6 MB 20.4 MB/s  0:00:00
+#9 8.698 Collecting numba==0.68.0 (from -r tooling/library/requirements.lock (line 27))
+#9 8.717   Downloading numba-0.68.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (3.8 MB)
+#9 8.937      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 18.3 MB/s  0:00:00
+#9 9.146 Collecting numpy==2.5.4 (from -r tooling/library/requirements.lock (line 28))
+#9 9.177   Downloading numpy-2.5.4-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+#9 10.18      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 16.8 MB/s  0:00:01
+#9 10.22 Collecting packaging==26.3 (from -r tooling/library/requirements.lock (line 29))
+#9 10.25   Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#9 10.38 Collecting pandas==3.0.6 (from -r tooling/library/requirements.lock (line 30))
+#9 10.40   Downloading pandas-3.0.6-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (10.8 MB)
+#9 11.03      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 17.5 MB/s  0:00:00
+#9 11.08 Collecting patsy==1.0.3 (from -r tooling/library/requirements.lock (line 31))
+#9 11.11   Downloading patsy-1.0.3-py2.py3-none-any.whl (233 kB)
+#9 11.31 Collecting pillow==13.0.0 (from -r tooling/library/requirements.lock (line 32))
+#9 11.34   Downloading pillow-13.0.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+#9 11.75      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 17.0 MB/s  0:00:00
+#9 11.86 Collecting pydantic==2.14.1 (from -r tooling/library/requirements.lock (line 33))
+#9 11.88   Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+#9 12.48 Collecting pydantic_core==2.50.1 (from -r tooling/library/requirements.lock (line 34))
+#9 12.51   Downloading pydantic_core-2.50.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#9 12.65      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 16.2 MB/s  0:00:00
+#9 12.69 Collecting pymc==6.3.2 (from -r tooling/library/requirements.lock (line 35))
+#9 12.71   Downloading pymc-6.3.2-py3-none-any.whl (608 kB)
+#9 12.75      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 608.3/608.3 kB 22.4 MB/s  0:00:00
+#9 12.78 Collecting pyparsing==3.3.3 (from -r tooling/library/requirements.lock (line 36))
+#9 12.80   Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+#9 12.91 Collecting pytensor==3.3.4 (from -r tooling/library/requirements.lock (line 37))
+#9 12.93   Downloading pytensor-3.3.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (2.5 MB)
+#9 13.08      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.5/2.5 MB 17.3 MB/s  0:00:00
+#9 13.11 Collecting python-dateutil==2.9.0.post0 (from -r tooling/library/requirements.lock (line 38))
+#9 13.13   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#9 13.19 Collecting rich==15.0.0 (from -r tooling/library/requirements.lock (line 39))
+#9 13.21   Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+#9 13.31 Collecting scikit-learn==1.9.1 (from -r tooling/library/requirements.lock (line 40))
+#9 13.33   Downloading scikit_learn-1.9.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (9.1 MB)
+#9 13.84      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.1/9.1 MB 17.9 MB/s  0:00:00
+#9 13.95 Collecting scipy==1.18.1 (from -r tooling/library/requirements.lock (line 41))
+#9 13.97   Downloading scipy-1.18.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+#9 15.87      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 18.7 MB/s  0:00:01
+#9 16.02 Collecting setuptools==84.2.1 (from -r tooling/library/requirements.lock (line 42))
+#9 16.03   Downloading setuptools-84.2.1-py3-none-any.whl (876 kB)
+#9 16.10      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 876.3/876.3 kB 11.9 MB/s  0:00:00
+#9 16.13 Collecting six==1.17.0 (from -r tooling/library/requirements.lock (line 43))
+#9 16.15   Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#9 16.21 Collecting statsmodels==0.15.0 (from -r tooling/library/requirements.lock (line 44))
+#9 16.24   Downloading statsmodels-0.15.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (12.1 MB)
+#9 16.82      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 20.9 MB/s  0:00:00
+#9 16.96 Collecting stochtree==0.4.5 (from -r tooling/library/requirements.lock (line 45))
+#9 17.08   Downloading stochtree-0.4.5-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (1.2 MB)
+#9 17.15      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 14.3 MB/s  0:00:00
+#9 17.17 Collecting threadpoolctl==3.7.0 (from -r tooling/library/requirements.lock (line 46))
+#9 17.19   Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+#9 17.22 Collecting typing-inspection==0.4.4 (from -r tooling/library/requirements.lock (line 47))
+#9 17.25   Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#9 17.28 Collecting typing_extensions==4.16.0 (from -r tooling/library/requirements.lock (line 48))
+#9 17.30   Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#9 17.64 Collecting wrapt==2.5.1 (from -r tooling/library/requirements.lock (line 49))
+#9 17.66   Downloading wrapt-2.5.1-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (248 kB)
+#9 17.72 Collecting xarray-einstats==0.11.0 (from -r tooling/library/requirements.lock (line 50))
+#9 17.74   Downloading xarray_einstats-0.11.0-py3-none-any.whl (39 kB)
+#9 17.79 Collecting xarray==2026.9.0 (from -r tooling/library/requirements.lock (line 51))
+#9 17.81   Downloading xarray-2026.9.0-py3-none-any.whl (1.4 MB)
+#9 17.91      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 14.5 MB/s  0:00:00
+#9 18.40 Installing collected packages: wrapt, typing_extensions, threadpoolctl, six, setuptools, pyparsing, Pygments, pillow, packaging, numpy, narwhals, mdurl, llvmlite, kiwisolver, interface_meta, fonttools, filelock, cycler, coba, cloudpickle, certifi, cachetools, annotated-types, typing-inspection, scipy, python-dateutil, pydantic_core, patsy, numba, markdown-it-py, lazy-loader, joblib, contourpy, cftime, scikit-learn, rich, pytensor, pydantic, pandas, netCDF4, matplotlib, arviz-stats, xarray, stochtree, formulaic, xarray-einstats, statsmodels, arviz-base, arviz-plots, arviz, pymc
+#9 37.20 
+#9 37.20 Successfully installed Pygments-2.21.0 annotated-types-0.8.0 arviz-1.3.0 arviz-base-1.3.1 arviz-plots-1.3.2 arviz-stats-1.3.3 cachetools-6.2.6 certifi-2026.10.19 cftime-1.6.6.1 cloudpickle-3.1.2 coba-8.1.0 contourpy-1.4.0 cycler-0.12.1 filelock-4.2.4 fonttools-4.67.0 formulaic-1.2.2 interface_meta-2.0.1 joblib-1.6.0 kiwisolver-1.5.1 lazy-loader-0.6 llvmlite-0.50.0 markdown-it-py-4.2.0 matplotlib-3.11.2 mdurl-0.1.2 narwhals-2.27.1 netCDF4-1.7.5 numba-0.68.0 numpy-2.5.4 packaging-26.3 pandas-3.0.6 patsy-1.0.3 pillow-13.0.0 pydantic-2.14.1 pydantic_core-2.50.1 pymc-6.3.2 pyparsing-3.3.3 pytensor-3.3.4 python-dateutil-2.9.0.post0 rich-15.0.0 scikit-learn-1.9.1 scipy-1.18.1 setuptools-84.2.1 six-1.17.0 statsmodels-0.15.0 stochtree-0.4.5 threadpoolctl-3.7.0 typing-inspection-0.4.4 typing_extensions-4.16.0 wrapt-2.5.1 xarray-2026.9.0 xarray-einstats-0.11.0
+#9 37.20 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 37.34 
+#9 37.34 [notice] A new release of pip is available: 25.2 -> 26.2.2
+#9 37.34 [notice] To update, run: pip install --upgrade pip
+#9 38.51 No broken requirements found.
+#9 DONE 38.8s
+
+#10 exporting to image
+#10 exporting layers
+#10 exporting layers 21.8s done
+#10 exporting manifest sha256:945d0d9eae6e8d1780dd394eff6e9dccb5e9c827071a265b138cdd95fd62f93a done
+#10 exporting config sha256:99b7bd06a8c5cccd8254c3d8ad9508348b1c1bb79be5c5644f4a31e620299e74 done
+#10 exporting attestation manifest sha256:d77d8f9f00a0b8b5b99ae0c77b7c5549a73df2d9cfeb4500136b79c4fbc7ca98 done
+#10 exporting manifest list sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 done
+#10 naming to docker.io/library/remission-python-locked:20261020 done
+#10 unpacking to docker.io/library/remission-python-locked:20261020
+#10 unpacking to docker.io/library/remission-python-locked:20261020 4.3s done
+#10 DONE 26.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/ovohacjpof5582rhubms9wpmk

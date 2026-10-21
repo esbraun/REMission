@@ -1,0 +1,7 @@
+/usr/local/lib/python3.13/site-packages/pytensor/configparser.py:307: UserWarning: PyTensor does not recognise this flag: device
+  warnings.warn(f"PyTensor does not recognise this flag: {key}")
+Traceback (most recent call last):
+  File "/workspace/tooling/library/inspect-api.py", line 16, in <module>
+    print(platform.platform(), platform.python_version(), pytensor.config.floatX, pytensor.config.device)
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PyTensorConfigParser' object has no attribute 'device'

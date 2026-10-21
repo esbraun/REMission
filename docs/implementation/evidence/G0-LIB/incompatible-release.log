@@ -1,0 +1,19 @@
+Collecting pymc==6.3.2
+  Using cached pymc-6.3.2-py3-none-any.whl.metadata (17 kB)
+Collecting arviz==0.22.0
+  Downloading arviz-0.22.0-py3-none-any.whl.metadata (8.9 kB)
+INFO: pip is looking at multiple versions of pymc to determine which version is compatible with other requirements. This could take a while.
+ERROR: Cannot install arviz==0.22.0 and pymc==6.3.2 because these package versions have conflicting dependencies.
+
+The conflict is caused by:
+    The user requested arviz==0.22.0
+    pymc 6.3.2 depends on arviz<2.0 and >=1.1.0
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip to attempt to solve the dependency conflict
+
+
+[notice] A new release of pip is available: 25.2 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts

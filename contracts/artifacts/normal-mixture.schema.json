@@ -1,0 +1,93 @@
+{
+  "$defs": {
+    "NormalComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "mean": {
+          "title": "Mean",
+          "type": "number"
+        },
+        "role": {
+          "enum": [
+            "informative",
+            "weak"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sd": {
+          "exclusiveMinimum": 0,
+          "title": "Sd",
+          "type": "number"
+        },
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "weight",
+        "mean",
+        "sd",
+        "role"
+      ],
+      "title": "NormalComponent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "components": {
+      "items": {
+        "$ref": "#/$defs/NormalComponent"
+      },
+      "minItems": 1,
+      "title": "Components",
+      "type": "array"
+    },
+    "informative_weight": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Informative Weight",
+      "type": "number"
+    },
+    "kind": {
+      "const": "normal_mixture",
+      "title": "Kind",
+      "type": "string"
+    },
+    "marginal_scale": {
+      "const": "ISI_points",
+      "title": "Marginal Scale",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "weak_sd": {
+      "exclusiveMinimum": 0,
+      "title": "Weak Sd",
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "marginal_scale",
+    "informative_weight",
+    "weak_sd",
+    "components"
+  ],
+  "title": "NormalMixture",
+  "type": "object"
+}

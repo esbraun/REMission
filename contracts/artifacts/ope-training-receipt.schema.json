@@ -1,0 +1,194 @@
+{
+  "$defs": {
+    "TrainingPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "alpha": {
+          "const": 1.0,
+          "title": "Alpha",
+          "type": "number"
+        },
+        "basis": {
+          "const": "x,action,x_times_action;StandardScaler;Ridge_intercept",
+          "title": "Basis",
+          "type": "string"
+        },
+        "cutoff": {
+          "format": "date-time",
+          "title": "Cutoff",
+          "type": "string"
+        },
+        "evaluation_patients": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Evaluation Patients",
+          "type": "array"
+        },
+        "evaluation_start": {
+          "format": "date-time",
+          "title": "Evaluation Start",
+          "type": "string"
+        },
+        "protocol_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Protocol Sha256",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "solver": {
+          "const": "svd",
+          "title": "Solver",
+          "type": "string"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "version": {
+          "const": "DR-EXCEPTION-R1/1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "version",
+        "cutoff",
+        "evaluation_start",
+        "evaluation_patients",
+        "basis",
+        "alpha",
+        "solver",
+        "seed",
+        "protocol_sha256"
+      ],
+      "title": "TrainingPlan",
+      "type": "object"
+    },
+    "TrainingStamp": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Action",
+          "type": "integer"
+        },
+        "decision_at": {
+          "format": "date-time",
+          "title": "Decision At",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "reward_available_at": {
+          "format": "date-time",
+          "title": "Reward Available At",
+          "type": "string"
+        },
+        "row_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Row Id",
+          "type": "string"
+        },
+        "x_available_at": {
+          "format": "date-time",
+          "title": "X Available At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "row_id",
+        "patient_id",
+        "action",
+        "decision_at",
+        "x_available_at",
+        "reward_available_at"
+      ],
+      "title": "TrainingStamp",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "fit_at": {
+      "format": "date-time",
+      "title": "Fit At",
+      "type": "string"
+    },
+    "model_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Model Sha256",
+      "type": "string"
+    },
+    "plan": {
+      "$ref": "#/$defs/TrainingPlan"
+    },
+    "plan_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Plan Sha256",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/TrainingStamp"
+      },
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "trainer_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Trainer Sha256",
+      "type": "string"
+    },
+    "training_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Training Sha256",
+      "type": "string"
+    },
+    "version": {
+      "const": "DR-EXCEPTION-R1/1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "version",
+    "plan",
+    "plan_sha256",
+    "training_sha256",
+    "model_sha256",
+    "trainer_sha256",
+    "fit_at",
+    "rows"
+  ],
+  "title": "TrainingReceipt",
+  "type": "object"
+}
