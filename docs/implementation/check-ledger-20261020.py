@@ -129,8 +129,12 @@ def main():
     assert data["task_defaults"]["integration_target"] == "main"
     assert git("rev-parse", BASE + "^{tree}") == git("rev-parse", REVIEW_BASE + "^{tree}")
     subprocess.check_call(["git", "merge-base", "--is-ancestor", BASE, REVIEW_BASE], cwd=ROOT)
-    # Bounded contract scope accepted; this amendment cannot accept a gate.
-    assert data["gate_status"]["G0"] == "running"
+    # Exact combined closure record governs the current review checkpoint.
+    # Package qualification cannot accept the combined gate by itself.
+    closure = data["g0_closure"]
+    assert closure["status"] == "ready-for-independent-closure-review"
+    assert closure["gate_status"] == data["gate_status"]["G0"] == "running"
+    assert closure["independent_combined_review"] == closure["root_gate_acceptance"] == "pending"
     assert all(state == "not-started" for gate, state in data["gate_status"].items() if gate != "G0")
     prior = data["repair_assignment"]
     assert prior["review_disposition"] == "ready_to_ship"
@@ -155,7 +159,7 @@ def main():
     assert git("show", "-s", "--format=%P", main_base).split() == [accepted_merge, temporal["reviewed_head"]]
     temporal_report = temporal["accepted_review"]["path"]
     assert git("hash-object", "--path", temporal_report, temporal_report).strip() == "80f39d8512ef631249374a1378a80aeda2f74561"
-    current = data["current_assignment"]
+    current = data["accepted_library_assignment"]
     assert current["id"] == "G0-LIB" and current["package_id"] == "G0-LIB-DR"
     dgp_merge = "f11e90536b635a7db08cfed640445bec197a415c"
     assert git("show", "-s", "--format=%P", dgp_merge).split() == [main_base, "985ce540f0cc6ae1e57a6268651971acb546929d"]
@@ -166,12 +170,48 @@ def main():
         package_report = package["accepted_review"]["path"]
         assert git("hash-object", "--path", package_report, package_report).strip() == "78e75133364b6babc2d3ce75d10f76b22e40105e"
     assert current["base_commit"] == current["review_target_base"] == dgp_merge
-    assert current["status"] == "needs_independent_full_library_review"
+    lib_head = "142f61217c850b132c3fcd21f59a5657fd9bbcfa"
+    lib_merge = "fa3fca61b5b5c886064d2429d785b8de9e6fd146"
+    assert current["status"] == "accepted_library_qualification_scope_only"
+    assert current["review_disposition"] == "ready_to_ship"
+    assert current["reviewed_head"] == current["candidate_commit"] == lib_head
+    assert current["reviewed_base"] == dgp_merge and current["merge_commit"] == lib_merge
+    assert current["pr_url"] == "https://github.com/esbraun/REMission/pull/14"
+    assert git("show", "-s", "--format=%P", lib_merge).split() == [dgp_merge, lib_head]
+    lib_review = current["accepted_review"]
+    for key, expected in [("path", "72eef90709ba4aba9de4097f0ec6d778472c8cc5"),
+                          ("evidence_manifest_path", "376fec50de6dda096c20b85ff570b56dec6444de")]:
+        assert git("hash-object", "--no-filters", lib_review[key]).strip() == expected
+    assert lib_review["disposition"] == "ready_to_ship"
+    assert "not G0 overall" in read(lib_review["path"])
+    assignment = data["current_assignment"]
+    assert assignment["id"] == "G0-CLOSURE"
+    assert assignment["status"] == closure["status"]
+    assert assignment["base_commit"] == assignment["review_target_base"] == closure["base_commit"] == lib_merge
+    assert closure["required_packages"] == ["G0-PLAN", "G0-CONTRACT", "G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB"]
+    assert closure["accepted_merge_chain"] == [PUBLISHED_MERGE, accepted_merge, main_base, dgp_merge, lib_merge]
+    subprocess.check_call(["git", "merge-base", "--is-ancestor", lib_merge, "HEAD"], cwd=ROOT)
     plan = current["accepted_plan"]
     assert plan["disposition"] == "ready_to_proceed" and plan["root_accepted"] is True
     assert plan["reviewed_head"] == "d84203709b0164a0824913950c1d7cd7be25a2fb" and plan["reviewed_base"] == dgp_merge
     assert git("hash-object", "--path", plan["path"], plan["path"]).strip() == "bd9eb376680c7225cfdad3c0ac162d1698326063"
-    assert tasks["G0-LIB"]["status"] == current["status"] and tasks["G0-LIB"]["shipping_review"] == "pending"
+    assert tasks["G0-LIB"]["status"] == current["status"] and tasks["G0-LIB"]["shipping_review"] == "ready_to_ship"
+    assert all(row["status"] == "planned" for row in rows), "package review cannot close shared requirement rows"
+    assert data["claim_status"] == {"synthetic-engineering": "running", "human-factors": "not-started", "clinical-review": "not-started", "clinical-validation": "not-started"}
+    current_evidence = {item["task_id"]: item for item in data["execution_evidence"] if item.get("record_kind") == "current_accepted_package"}
+    assert set(current_evidence) == {"G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB"}
+    for item in current_evidence.values():
+        assert item["review_disposition"] == "ready_to_ship" and (ROOT / item["evidence"]).is_file()
+    workflow = read("docs/implementation/workflow-contract.md")
+    assert set(re.findall(r"^\| (ASSIGN-\d{2}) ", workflow, re.M)) == {f"ASSIGN-{i:02d}" for i in range(1, 11)}
+    g1 = data["accepted_g1_plan"]
+    assert g1["status"] == "root_accepted_plan_only"
+    assert g1["reviewed_head"] == "690b538f45a54dd4707e02e7e68e1c63bbea0884" and g1["reviewed_base"] == dgp_merge
+    # Original planning commits are provenance, not fresh-clone prerequisites.
+    assert git("hash-object", "--path", g1["path"], g1["path"]).strip() == "5d46eb071485a9d5f2ed0473880a75fcab181556"
+    for key, blob in [("first_critique", "0d261661bc426dc037a5d93cec7f04736f47558c"),
+                      ("accepted_critique", "a0addffb138bc991f1f54a6676ae59ca5dde538d")]:
+        assert git("hash-object", "--no-filters", g1[key]["path"]).strip() == blob
     for name, blob in [("independent-source-byte-follow-up.md", "df3ed8b9375d7a1ad4acd0e5fda1c424d0be678e"),
                        ("byte-inspection.json", "93a8d185b34f94f742886aa9c5e9bc38e676654e"),
                        ("lf-reproduction.json", "6e694cd446277b5dadbf176dfed118221ab7989d")]:
