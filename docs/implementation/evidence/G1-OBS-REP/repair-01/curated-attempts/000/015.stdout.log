@@ -1,0 +1,237 @@
+[
+    {
+        "Id": "03a1ed04e0e3be26019dacfe3e456a16ab5da243c67ac66df2b90c0871efe0cb",
+        "Created": "2026-10-21T21:31:59.304270508Z",
+        "Path": "python",
+        "Args": [
+            "/app/evaluator_canary.py",
+            "serve"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 61528,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-21T21:31:59.346637156Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:208203540cbe6a818dbdbd95f99454b2efcd78cb0c6724e5c26d8ad30bb53706",
+        "ResolvConfPath": "/var/lib/docker/containers/03a1ed04e0e3be26019dacfe3e456a16ab5da243c67ac66df2b90c0871efe0cb/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/03a1ed04e0e3be26019dacfe3e456a16ab5da243c67ac66df2b90c0871efe0cb/hostname",
+        "HostsPath": "/var/lib/docker/containers/03a1ed04e0e3be26019dacfe3e456a16ab5da243c67ac66df2b90c0871efe0cb/hosts",
+        "LogPath": "/var/lib/docker/containers/03a1ed04e0e3be26019dacfe3e456a16ab5da243c67ac66df2b90c0871efe0cb/03a1ed04e0e3be26019dacfe3e456a16ab5da243c67ac66df2b90c0871efe0cb-json.log",
+        "Name": "/remission-obs2-repair-sol-20261021-000-evaluator",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "remission-obs2-repair-sol-20261021-000-private",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges:true"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,noexec,nosuid,size=128m"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 2147483648,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 4294967296,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": "remission-obs2-repair-sol-20261021-000-truth",
+                    "Target": "/truth",
+                    "ReadOnly": true
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "remission-obs2-repair-sol-20261021-000-truth",
+                "Source": "/var/lib/docker/volumes/remission-obs2-repair-sol-20261021-000-truth/_data",
+                "Destination": "/truth",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": false,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "03a1ed04e0e3",
+            "Domainname": "",
+            "User": "20000:20000",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "/app/evaluator_canary.py",
+                "serve"
+            ],
+            "Image": "remission-obs2-repair-sol-20261021-evaluator:candidate",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": null,
+            "Labels": {
+                "remission.task": "obs2-repair-sol-20261021"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "3507ef9e73963c1dd306d25e2cfbdd04d7af2685b32200ed3cc95ae307b64242",
+            "SandboxKey": "/var/run/docker/netns/3507ef9e7396",
+            "Ports": {},
+            "Networks": {
+                "remission-obs2-repair-sol-20261021-000-private": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "8996846aaac02e356fd41ea40fbef9ecd3fa1b5426c11ed8e197dae0453b88d0",
+                    "EndpointID": "aa5e6f0564ff66faf110b456bff3c226f64955fee597be91c31ab5901aac5f2a",
+                    "Gateway": "",
+                    "IPAddress": "172.27.0.2",
+                    "MacAddress": "66:59:69:dc:ad:87",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": [
+                        "remission-obs2-repair-sol-20261021-000-evaluator",
+                        "03a1ed04e0e3"
+                    ]
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:80bcf59499869bcea6f7ec756ab56622eb6650e2c1aa294e23d89dda6a9cf399",
+            "size": 3329,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

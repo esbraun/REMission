@@ -7,6 +7,12 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[5]
 OUT = Path(__file__).resolve().parent / 'reviewer'
 BLOBS = {
+    'full-horizon-addendum.md': '6aee8f28012337f1728f5098e5ae4e71b02b32a8',
+    'full-horizon-manifest.json': '7c8db98ea52dbe89f83a026d40bea4bd7e938df8',
+    'full-horizon-probe.py': '2580ce12ae1c4ee6efad58e137129b2c6ad14847',
+    'full-horizon.command.json': 'cc310206fb8a73ea1e7f6a4b8c05259679e4d352',
+    'full-horizon.stdout.log': 'ec56c3003432f321e574cad121f46c5cd2fe1bf2',
+    'full-horizon.stderr.log': 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391',
     'changes-requested.md': '405a91e4d3a2a532623d88a2039e848e58e0da95',
     'surviving-evidence-manifest.json': 'cd3f0be230e1c33f80a85971e54274e9decdf450',
     'hold-identity.py': '5b8bef5d0ed5fe749316e5bd5ed8c625d385dc5a',
@@ -34,21 +40,22 @@ def main():
     (OUT.parent / 'reviewer-manifest.json').write_text(json.dumps(dict(candidate='ceb5a5fc786f487045fd948986bc4bb8b8a43bf4', artifacts=metadata), indent=2) + '\n', encoding='utf-8', newline='\n')
     # Publish only surviving originals; the report discloses four overwritten
     # reviewer streams. Their missing bytes are never reconstructed.
-    surviving = json.loads((OUT / 'surviving-evidence-manifest.json').read_bytes())['files']
-    assert len(surviving) == 192
-    destination = OUT.parent / 'reviewer-surviving'
-    for name, item in surviving.items():
-        path = PurePosixPath(name)
-        assert not path.is_absolute() and '..' not in path.parts and '\\' not in name
-        target = destination.joinpath(*path.parts)
-        assert target.resolve().is_relative_to(destination.resolve())
-        raw = subprocess.check_output(['git', 'cat-file', 'blob', item['git_blob']], cwd=ROOT)
-        assert len(raw) == item['bytes'] and hashlib.sha256(raw).hexdigest() == item['sha256']
-        if target.exists():
-            assert target.read_bytes() == raw
-        else:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(raw)
+    for manifest, folder, count in [('surviving-evidence-manifest.json', 'reviewer-surviving', 192), ('full-horizon-manifest.json', 'reviewer-surviving/full-horizon-addendum', 880)]:
+        surviving = json.loads((OUT / manifest).read_bytes())['files']
+        assert len(surviving) == count
+        destination = OUT.parent / folder
+        for name, item in surviving.items():
+            path = PurePosixPath(name)
+            assert not path.is_absolute() and '..' not in path.parts and '\\' not in name
+            target = destination.joinpath(*path.parts)
+            assert target.resolve().is_relative_to(destination.resolve())
+            if target.exists():
+                raw = target.read_bytes()
+            else:
+                raw = subprocess.check_output(['git', 'cat-file', 'blob', item['git_blob']], cwd=ROOT)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(raw)
+            assert len(raw) == item['bytes'] and hashlib.sha256(raw).hexdigest() == item['sha256']
 
 
 if __name__ == '__main__':

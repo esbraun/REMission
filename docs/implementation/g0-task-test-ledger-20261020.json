@@ -17934,7 +17934,7 @@
     "plan_base": "6bc8bd998e8a0baaef9884998e740665fb5fd7b1",
     "plan_path": "docs/implementation/g1-observed-representation-proposal-r1-20261021.md",
     "plan_critique_blob": "247db69414bf153dfe46ca2f734e94d58e9b0480",
-    "implementation_status": "frozen_pending_independent_exact_head_review",
+    "implementation_status": "repair_frozen_pending_fresh_independent_review",
     "owner_thread": "01a16010-edcd-73d1-a3b2-6849b68f580e",
     "agent_model": "gpt-6.1-sol",
     "reasoning_effort": "xhigh",
@@ -17970,7 +17970,10 @@
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/041.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/042.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/043.command.json",
-          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json"
+          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/README.md",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json",
+          "tests/run_contracts/test_observed_v2_repair.py"
         ],
         "limits": "No production/statistical/human/clinical acceptance",
         "test_cases": [
@@ -17985,6 +17988,13 @@
           "tests/integration/replay/test_observed_v2_archive.py::ArchiveTests.test_entire_hold_partition_rejected_before_any_current_publication_including_v1",
           "tests/integration/replay/test_observed_v2_archive.py::ArchiveTests.test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict",
           "tests/integration/replay/test_observed_v2_archive.py::ArchiveTests.test_clinical_subset_imports_signed_report_but_never_admin_authority"
+        ],
+        "repair_test_cases": [
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_enclosing_run_partition_rejects_consistent_foreign_hold_chain_and_standalone_reviews",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_generation_horizon_rejects_new_reports_v1_v2_missing_and_equivalent_observations",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_delayed_day84_report_correction_and_later_administrative_review_remain_valid",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_actual_private_result_rejects_day85_even_with_correct_full_seed_key",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_complete_85_decision_wire_keeps_day85_undefined_administrative_endpoint"
         ]
       },
       "T-OBS2-SUPPORT": {
@@ -18011,7 +18021,10 @@
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/041.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/042.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/043.command.json",
-          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json"
+          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/README.md",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json",
+          "tests/run_contracts/test_observed_v2_repair.py"
         ],
         "limits": "No production/statistical/human/clinical acceptance",
         "test_cases": [
@@ -18037,6 +18050,13 @@
           "tests/run_contracts/test_private_v2.py::PrivateV2Tests.test_failed_result_retained_and_execution_run_ref_truth_roster_rejected",
           "tests/run_contracts/test_private_v2.py::PrivateV2Tests.test_calibration_requires_trusted_digest_solved_target_and_fixture_authority",
           "tests/run_contracts/test_private_v2.py::PrivateV2Tests.test_registered_cell_export_requires_solved_calibration_full_keys_and_receipts"
+        ],
+        "repair_test_cases": [
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_enclosing_run_partition_rejects_consistent_foreign_hold_chain_and_standalone_reviews",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_generation_horizon_rejects_new_reports_v1_v2_missing_and_equivalent_observations",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_delayed_day84_report_correction_and_later_administrative_review_remain_valid",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_actual_private_result_rejects_day85_even_with_correct_full_seed_key",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_complete_85_decision_wire_keeps_day85_undefined_administrative_endpoint"
         ]
       },
       "T-OBS2-LINKS": {
@@ -18109,7 +18129,10 @@
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/041.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/042.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/043.command.json",
-          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json"
+          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/README.md",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json",
+          "tests/run_contracts/test_observed_v2_repair.py"
         ],
         "limits": "No production/statistical/human/clinical acceptance",
         "test_cases": [
@@ -18124,6 +18147,13 @@
           "tests/integration/replay/test_observed_v2_archive.py::ArchiveTests.test_entire_hold_partition_rejected_before_any_current_publication_including_v1",
           "tests/integration/replay/test_observed_v2_archive.py::ArchiveTests.test_real_sqlite_before_after_commit_crash_restart_cursor_and_conflict",
           "tests/integration/replay/test_observed_v2_archive.py::ArchiveTests.test_clinical_subset_imports_signed_report_but_never_admin_authority"
+        ],
+        "repair_test_cases": [
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_enclosing_run_partition_rejects_consistent_foreign_hold_chain_and_standalone_reviews",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_generation_horizon_rejects_new_reports_v1_v2_missing_and_equivalent_observations",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_delayed_day84_report_correction_and_later_administrative_review_remain_valid",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_actual_private_result_rejects_day85_even_with_correct_full_seed_key",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_complete_85_decision_wire_keeps_day85_undefined_administrative_endpoint"
         ]
       },
       "T-OBS2-ARCHIVE": {
@@ -18174,7 +18204,10 @@
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/041.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/042.command.json",
           "docs/implementation/evidence/G1-OBS-REP/implementation/checks/043.command.json",
-          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json"
+          "docs/implementation/evidence/G1-OBS-REP/implementation/checks/044.command.json",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/README.md",
+          "docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json",
+          "tests/run_contracts/test_observed_v2_repair.py"
         ],
         "limits": "No production/statistical/human/clinical acceptance",
         "test_cases": [
@@ -18182,6 +18215,13 @@
           "tests/run_contracts/test_private_v2.py::PrivateV2Tests.test_failed_result_retained_and_execution_run_ref_truth_roster_rejected",
           "tests/run_contracts/test_private_v2.py::PrivateV2Tests.test_calibration_requires_trusted_digest_solved_target_and_fixture_authority",
           "tests/run_contracts/test_private_v2.py::PrivateV2Tests.test_registered_cell_export_requires_solved_calibration_full_keys_and_receipts"
+        ],
+        "repair_test_cases": [
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_enclosing_run_partition_rejects_consistent_foreign_hold_chain_and_standalone_reviews",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_generation_horizon_rejects_new_reports_v1_v2_missing_and_equivalent_observations",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_delayed_day84_report_correction_and_later_administrative_review_remain_valid",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_actual_private_result_rejects_day85_even_with_correct_full_seed_key",
+          "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_complete_85_decision_wire_keeps_day85_undefined_administrative_endpoint"
         ]
       },
       "T-OBS2-LIVE-HOLD": {
@@ -18207,11 +18247,41 @@
     "unchanged_coverage_entries": 635,
     "subjective_burden_law": null,
     "independent_hold_clearance_law": null,
-    "source_commit": "f049f4bc5b83ff7cc7cfebedff41a5f6fdcf77ae",
-    "evidence_manifest": "docs/implementation/evidence/G1-OBS-REP/implementation/raw-manifest.json",
-    "exact_clone_attempt": "001",
-    "curated_attempt": "004",
+    "source_commit": "124ab096120bf28a055f6413b4f813c83095ada7",
+    "evidence_manifest": "docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json",
+    "exact_clone_attempt": "docs/implementation/evidence/G1-OBS-REP/repair-01/clone-attempts/000",
+    "curated_attempt": "docs/implementation/evidence/G1-OBS-REP/repair-01/curated-attempts/000",
     "observed_tests": {
+      "domain": 67,
+      "run_contracts": 54,
+      "service_replay": 25,
+      "artifact_lineage": 11,
+      "dr_ope": 11
+    },
+    "repair_01": {
+      "rejected_head": "ceb5a5fc786f487045fd948986bc4bb8b8a43bf4",
+      "source_commit": "124ab096120bf28a055f6413b4f813c83095ada7",
+      "base": "6bc8bd998e8a0baaef9884998e740665fb5fd7b1",
+      "disposition": "pending_fresh_exact_head_review",
+      "reviewer_report": "docs/implementation/evidence/G1-OBS-REP/repair-01/reviewer/changes-requested.md",
+      "reviewer_addendum": "docs/implementation/evidence/G1-OBS-REP/repair-01/reviewer/full-horizon-addendum.md",
+      "evidence": "docs/implementation/evidence/G1-OBS-REP/repair-01/README.md",
+      "test_cases": [
+        "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_enclosing_run_partition_rejects_consistent_foreign_hold_chain_and_standalone_reviews",
+        "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_generation_horizon_rejects_new_reports_v1_v2_missing_and_equivalent_observations",
+        "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_delayed_day84_report_correction_and_later_administrative_review_remain_valid",
+        "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_actual_private_result_rejects_day85_even_with_correct_full_seed_key",
+        "tests/run_contracts/test_observed_v2_repair.py::ObservedV2RepairTests.test_complete_85_decision_wire_keeps_day85_undefined_administrative_endpoint"
+      ],
+      "observed_tests": {
+        "domain": 67,
+        "run_contracts": 54,
+        "service_replay": 25,
+        "artifact_lineage": 11,
+        "dr_ope": 11
+      }
+    },
+    "prior_candidate_observed_tests": {
       "domain": 67,
       "run_contracts": 49,
       "service_replay": 25,

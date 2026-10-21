@@ -1,0 +1,1057 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+    "started_at": "2026-10-21T21:29:23.783621+00:00",
+    "ended_at": "2026-10-21T21:29:23.815458+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "49934179a041e522524ede84301f85ab833ac1b4e819cd23a328650296a42b7f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "clone",
+      "--no-hardlinks",
+      "--config",
+      "core.autocrlf=false",
+      "--no-checkout",
+      "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+      "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+    "started_at": "2026-10-21T21:29:23.818445+00:00",
+    "ended_at": "2026-10-21T21:29:23.946257+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "d36092a5f4db6c0ad0e64f652244ad7d1fb94e8f12e2bbcbef8eb733e1b02d27"
+  },
+  {
+    "command": [
+      "git",
+      "checkout",
+      "--detach",
+      "124ab096120bf28a055f6413b4f813c83095ada7"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:29:23.946682+00:00",
+    "ended_at": "2026-10-21T21:29:24.499145+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "aab4ccda7e3dd7cdde5b779ddb5cf6eb37326ca1943aa0721fc5d19ec6fa2e0e"
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:29:24.499438+00:00",
+    "ended_at": "2026-10-21T21:29:24.530488+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "49934179a041e522524ede84301f85ab833ac1b4e819cd23a328650296a42b7f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--porcelain"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:29:24.530771+00:00",
+    "ended_at": "2026-10-21T21:29:24.655738+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "ls-files",
+      "contracts",
+      "services",
+      "tests",
+      "tooling/foundation",
+      "web/src"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:29:24.656039+00:00",
+    "ended_at": "2026-10-21T21:29:24.687090+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "526cbdb259017b60f69156dea0eaa2f292325c6a253ab1ce7ab277e860a73f91",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--network",
+      "none",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=bind,source=C:/Users/erics/AppData/Local/Temp/remission-obs2-repair-portability-9bs_hoa7/checkout,target=/app,readonly",
+      "--workdir",
+      "/app",
+      "remission-foundation-runtime:candidate",
+      "python",
+      "docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+    "started_at": "2026-10-21T21:29:27.668948+00:00",
+    "ended_at": "2026-10-21T21:29:40.472092+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "be0ddd3d7ea5e67532d631d09dd3856d7fd863f550a57490c8a996984d6c6b71",
+    "stderr_sha256": "7fedc3f56f4992cdc2aa46a05d63ac636f15b6017c8ee7a4b2f6f63d8cc3e999"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--network",
+      "none",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=bind,source=C:/Users/erics/AppData/Local/Temp/remission-obs2-repair-portability-9bs_hoa7/checkout,target=/app,readonly",
+      "--workdir",
+      "/app",
+      "remission-foundation-runtime:candidate",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/contracts",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+    "started_at": "2026-10-21T21:29:40.472475+00:00",
+    "ended_at": "2026-10-21T21:29:42.933498+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "5ae377cef42d65c8a7f6055d8b3f858c00964dceb2b95017d3c83856cf13dbba"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--network",
+      "none",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=bind,source=C:/Users/erics/AppData/Local/Temp/remission-obs2-repair-portability-9bs_hoa7/checkout,target=/app,readonly",
+      "--workdir",
+      "/app",
+      "remission-foundation-runtime:candidate",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/run_contracts",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+    "started_at": "2026-10-21T21:29:42.933900+00:00",
+    "ended_at": "2026-10-21T21:30:57.999946+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "3a03a300af3c3ee32867df53bb33741337ba5c4c1b86afe118b426b5dbeb29b1"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--network",
+      "none",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=bind,source=C:/Users/erics/AppData/Local/Temp/remission-obs2-repair-portability-9bs_hoa7/checkout,target=/app,readonly",
+      "--workdir",
+      "/app",
+      "remission-foundation-runtime:candidate",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/integration/replay",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-sol-20261021",
+    "started_at": "2026-10-21T21:30:58.000264+00:00",
+    "ended_at": "2026-10-21T21:31:11.716509+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "2f54d4429a5ac839bc0e449cb99731b9006119a3ef68694ac1219c15f5f997f7"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "docs/implementation/check-ledger-20261020.py"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:11.717119+00:00",
+    "ended_at": "2026-10-21T21:31:13.672277+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "5b335e7e551c6b421e59f48650ccde945333a1ac5a56c38807982ec318bcc638",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/dgp-config.schema.json",
+      "contracts/domain/schemas/dgp-config.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.696643+00:00",
+    "ended_at": "2026-10-21T21:31:13.731221+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "074585e053a18648037a3af8649cf2c50b88cf9e7ac316aacc42d170d59be20f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/estimand.schema.json",
+      "contracts/domain/schemas/estimand.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.731553+00:00",
+    "ended_at": "2026-10-21T21:31:13.778968+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "13200a06d9e60fa859ba3644e49e4d03c4bc667f2684e4246af5d935d762b554",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/evaluation-protocol.schema.json",
+      "contracts/domain/schemas/evaluation-protocol.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.779419+00:00",
+    "ended_at": "2026-10-21T21:31:13.812380+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "99903dd4efb53bb8c63c995b77ba340db4fd2dd0f1ecb693c9d74a8c21d4eff7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/evaluator-truth.schema.json",
+      "contracts/domain/schemas/evaluator-truth.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.812766+00:00",
+    "ended_at": "2026-10-21T21:31:13.843582+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "6153d02bc26f411915b6586f81977e9cf4c20cd1eada467d7df2f23b0542d89d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/evidence-record.schema.json",
+      "contracts/domain/schemas/evidence-record.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.843923+00:00",
+    "ended_at": "2026-10-21T21:31:13.878945+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "9a9014b5d629e9c07a9cba3c176fa73696088d7c72c632921c668ee4f397dd73",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/external-study.schema.json",
+      "contracts/domain/schemas/external-study.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.879299+00:00",
+    "ended_at": "2026-10-21T21:31:13.924542+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "6b09a9c6a54a319bff95509403c4f702fe0192f323773e354aa185ae9f9690d3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/fit-metadata.schema.json",
+      "contracts/domain/schemas/fit-metadata.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.924971+00:00",
+    "ended_at": "2026-10-21T21:31:13.958112+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "677f1a9bf6168fc9d1a0392b7269599f1465ac20792d37ba45d5e50bcc65d2ee",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/fit-request.schema.json",
+      "contracts/domain/schemas/fit-request.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.958450+00:00",
+    "ended_at": "2026-10-21T21:31:13.991020+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "7317396b8c3a8543407832f1a3a9053d215a575eae6439e456f3f3d27a0ed5f4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/gate-evidence.schema.json",
+      "contracts/domain/schemas/gate-evidence.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:13.991371+00:00",
+    "ended_at": "2026-10-21T21:31:14.023341+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "891536d5ff36ca00e4ff38cd601a763544998392999ce86249b6b0557d080198",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/interruption-result.schema.json",
+      "contracts/domain/schemas/interruption-result.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.023688+00:00",
+    "ended_at": "2026-10-21T21:31:14.054760+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "bac5322d7fb5be9539e94219840faa2199896dd5426b7609660d046ed66be854",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/learner-history.schema.json",
+      "contracts/domain/schemas/learner-history.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.055129+00:00",
+    "ended_at": "2026-10-21T21:31:14.095232+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "34fa2490b9aab3db05c1c6d6d2e4aaf242840d1854a79c9b5d1edf489a7ad4bf",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/learner-input.schema.json",
+      "contracts/domain/schemas/learner-input.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.095572+00:00",
+    "ended_at": "2026-10-21T21:31:14.126251+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "626a90eb4873dda91e5c695ab7b4c25659c0ce4f98f1f1cf5be0df7805419dd4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/observed-history.schema.json",
+      "contracts/domain/schemas/observed-history.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.126585+00:00",
+    "ended_at": "2026-10-21T21:31:14.157304+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "54329f70c7e489d0b1f77a5f529abf8ba40e21e7b3661d06cfbddd2d3c0e669f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/observed-records.schema.json",
+      "contracts/domain/schemas/observed-records.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.157648+00:00",
+    "ended_at": "2026-10-21T21:31:14.188493+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "710a28effc8bbc4b0305b8515cb0ecc70748e1a34d3db6550b51a1ea1753399f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/replicate-result.schema.json",
+      "contracts/domain/schemas/replicate-result.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.188837+00:00",
+    "ended_at": "2026-10-21T21:31:14.231272+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "2617bb70742a07054c1095de6e8dd35979c292cd911306030d21f7ae19534ba4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/reporting-decision.schema.json",
+      "contracts/domain/schemas/reporting-decision.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.231675+00:00",
+    "ended_at": "2026-10-21T21:31:14.269697+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "6135dbdf688196030b1c0a4606bd8e95a7cfca848b1f5832155f009a776fff01",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/temporal.schema.json",
+      "contracts/domain/schemas/temporal.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.270037+00:00",
+    "ended_at": "2026-10-21T21:31:14.303059+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "b9ff71f74b37bc1baee75ca3a164859f6cba660f36ac4c62b2f2af22928de28d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/schemas/threshold.schema.json",
+      "contracts/domain/schemas/threshold.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.303434+00:00",
+    "ended_at": "2026-10-21T21:31:14.333869+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "8ee84cb6ffa888f2144e8b01b9d704ad93bb975a040003cc5d71cf2a24999b67",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/calibration-artifact.schema.json",
+      "contracts/runs/schemas/calibration-artifact.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.334209+00:00",
+    "ended_at": "2026-10-21T21:31:14.365875+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "032b2daa2138300a37ef9afc748fa677be5764f51cce405596e410ff48d4d2af",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/evaluator-request.schema.json",
+      "contracts/runs/schemas/evaluator-request.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.366231+00:00",
+    "ended_at": "2026-10-21T21:31:14.413771+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "d02703772173525bb618b043620c8e5a8b34b30a1105f135605316bb2cf0fafb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/evaluator-response.schema.json",
+      "contracts/runs/schemas/evaluator-response.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.414141+00:00",
+    "ended_at": "2026-10-21T21:31:14.446683+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "dc076076c4e477bd11f930ce5f251d9f4ec11f3b96f766b3a9390a586f606c6b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/external-calibration-evidence.schema.json",
+      "contracts/runs/schemas/external-calibration-evidence.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.447031+00:00",
+    "ended_at": "2026-10-21T21:31:14.477733+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "baf2af601706f8524244bfbf7b79536f07fbba9831ff44974bbaaaa444471ece",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/iid-investigation.schema.json",
+      "contracts/runs/schemas/iid-investigation.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.478095+00:00",
+    "ended_at": "2026-10-21T21:31:14.509108+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "c4caea19d8458150e6346dfce802edc20bc841cf0df9d63fd4fc21040b12755e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/observed-export.schema.json",
+      "contracts/runs/schemas/observed-export.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.509465+00:00",
+    "ended_at": "2026-10-21T21:31:14.543424+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "0809d8b47c7d5492241cf80315e0ab89524663815c5f97164812b539a3e92726",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/observed-replay.schema.json",
+      "contracts/runs/schemas/observed-replay.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.545870+00:00",
+    "ended_at": "2026-10-21T21:31:14.577562+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "547bee5553d91b2509c270d098eea9f9f62b64b73260d3feb306ff4760f76495",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/probability-evidence.schema.json",
+      "contracts/runs/schemas/probability-evidence.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.577931+00:00",
+    "ended_at": "2026-10-21T21:31:14.611274+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "8f09280bed61c42f2af985cd7b808cee246e06ffb52838ffd2e59d022e06061b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/probability-paired-path.schema.json",
+      "contracts/runs/schemas/probability-paired-path.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.611633+00:00",
+    "ended_at": "2026-10-21T21:31:14.642039+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e2e756b78bffbe0a51cfd7b9f9794bb4e6362d8fc9d59d5ae9d2c98c0612ccc8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/probability-pilot-plan.schema.json",
+      "contracts/runs/schemas/probability-pilot-plan.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.642422+00:00",
+    "ended_at": "2026-10-21T21:31:14.674152+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "f09e7f047a4bfc5ec465ef0741c5e65843957162231012d8d2b5fb49f09abf7e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/probability-pilot-trial.schema.json",
+      "contracts/runs/schemas/probability-pilot-trial.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.674526+00:00",
+    "ended_at": "2026-10-21T21:31:14.704831+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "739a75d2aeb928dedeea98942512e35e98e9f7260ef390eb0512681931bd328f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/probability-structural-proof.schema.json",
+      "contracts/runs/schemas/probability-structural-proof.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.705241+00:00",
+    "ended_at": "2026-10-21T21:31:14.735827+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "32f89eed72e6ebe0c1d03d27f6265d9934eaff373b2bbb569141b20f0234179e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/probability-truth-filter-receipt.schema.json",
+      "contracts/runs/schemas/probability-truth-filter-receipt.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.736197+00:00",
+    "ended_at": "2026-10-21T21:31:14.768185+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "a7eb0edd0c1b5a54e3ec9967a2d6e4d26fd0744cd9127e6a0d084d0ea1ca4d61",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/run-manifest.schema.json",
+      "contracts/runs/schemas/run-manifest.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.768606+00:00",
+    "ended_at": "2026-10-21T21:31:14.802099+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "1232592af4ec4f6ad9e116fffd04da6fe149f76b52b6a5a508a1e31712b0aac1",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/run-result.schema.json",
+      "contracts/runs/schemas/run-result.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.802482+00:00",
+    "ended_at": "2026-10-21T21:31:14.844939+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "7c1014a1140e9b70de1c02283ae1249dcb15899fbab036b70d3428bc521c625e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/seed-ledger.schema.json",
+      "contracts/runs/schemas/seed-ledger.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.845367+00:00",
+    "ended_at": "2026-10-21T21:31:14.881570+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "d8ed6527bd013400d60352771cd15440ddf1366a71dbb6ead5e920781cc433ac",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/symptom-pilot-binding.schema.json",
+      "contracts/runs/schemas/symptom-pilot-binding.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.881946+00:00",
+    "ended_at": "2026-10-21T21:31:14.915472+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "ac0dd81a8b8c99a180aea0f64dec11ced62aa37d43f855080a52c7011e91e554",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/trusted-export-authority.schema.json",
+      "contracts/runs/schemas/trusted-export-authority.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.915845+00:00",
+    "ended_at": "2026-10-21T21:31:14.949396+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "7e5342954418192e9654b85efdf4ffca1dbb9195fe5c3f79ccb1acaddffbe986",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/trusted-iid-investigation-authority.schema.json",
+      "contracts/runs/schemas/trusted-iid-investigation-authority.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.949816+00:00",
+    "ended_at": "2026-10-21T21:31:14.985300+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "0778cff0c59075167ab415784b90b0df85c74865ab3d879414f1b7da69ceb7c6",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/schemas/trusted-run-authority.schema.json",
+      "contracts/runs/schemas/trusted-run-authority.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:14.985734+00:00",
+    "ended_at": "2026-10-21T21:31:15.021167+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "7ee8c0b392c0e0ff1ffcf677a223fc6854c7a79936a3d89900547e74891efa8f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/dictionary-v1.json",
+      "contracts/domain/dictionary-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.021581+00:00",
+    "ended_at": "2026-10-21T21:31:15.053717+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "400d6008f5c77d33f1aca0e5be929ff771e8d9557fce7cea299cecd4d302c072",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/bindings-v1.json",
+      "contracts/runs/bindings-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.054122+00:00",
+    "ended_at": "2026-10-21T21:31:15.086604+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e46c63fc8b951fc212f10a85fc103d456882a26f7b2bd694cad02b4651b9356d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/runs/dictionary-v1.json",
+      "contracts/runs/dictionary-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.087002+00:00",
+    "ended_at": "2026-10-21T21:31:15.118693+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "237f5e630efbd674a1f5fc9e0be22957d5d5456312088c2f37957dba1e48bf82",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "docs/implementation/g1-technical-plan-20261021.md",
+      "docs/implementation/g1-technical-plan-20261021.md"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.119145+00:00",
+    "ended_at": "2026-10-21T21:31:15.159222+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "af89b6bf18a1b8c0dcc30e135971544b61a0db260da95502e18672cb9a588596",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/dgp/parameters-v1.json",
+      "contracts/dgp/parameters-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.159698+00:00",
+    "ended_at": "2026-10-21T21:31:15.190484+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "5c0d309038c0de214d26c1d78bab191f34ee36343b3969c42b8806bf4dfa13c6",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "docs/spec/dgp-reference.md",
+      "docs/spec/dgp-reference.md"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.190886+00:00",
+    "ended_at": "2026-10-21T21:31:15.221798+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "5a19708984bb67cb7949750f5cc8d58dc9f20c238c617f3db4a8e80354dd85c6",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/dgp/scenarios-v1.json",
+      "contracts/dgp/scenarios-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.222222+00:00",
+    "ended_at": "2026-10-21T21:31:15.254977+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e20d1cfbf5dd683eb5b6927654b3646830e48f33042c3bc07d79ebbde631e3d5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "docs/spec/scenario-catalog.md",
+      "docs/spec/scenario-catalog.md"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.255380+00:00",
+    "ended_at": "2026-10-21T21:31:15.286254+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "a68508398d3f990ccdee37b6afa8dded620347a0c86c647f52ff262abe0b61d8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/dgp/timing-v1.json",
+      "contracts/dgp/timing-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.286658+00:00",
+    "ended_at": "2026-10-21T21:31:15.318122+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "ed48390ce6d87198edd8620bebd128a966140c384e6e8654181842330403fa3a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/domain/temporal-v2.json",
+      "contracts/domain/temporal-v2.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.318515+00:00",
+    "ended_at": "2026-10-21T21:31:15.359516+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "4a95d38acda379981a919639c3f11b689e27e2c347053800ef84bf284f017653",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/dgp/calibration-binding-v1.schema.json",
+      "contracts/dgp/calibration-binding-v1.schema.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.359924+00:00",
+    "ended_at": "2026-10-21T21:31:15.399898+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "a3a957586b21b8ac9abbac396bf1eabd6ba9479bd43f03b6568688a3fa781878",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "contracts/dgp/truth-fixtures-v1.json",
+      "contracts/dgp/truth-fixtures-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.400325+00:00",
+    "ended_at": "2026-10-21T21:31:15.439283+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "48395fbee1e06c2cbe226e05d1dfb41eeaa6f886d10bc8ac53e98caf5e25660f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "docs/implementation/g1-estint-probability-precision-proposal-r1-20261021.md",
+      "docs/implementation/g1-estint-probability-precision-proposal-r1-20261021.md"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.439725+00:00",
+    "ended_at": "2026-10-21T21:31:15.481667+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "4c5ce969d1bb925a37c9f91bcbb077b2154923f4ae155bf640d8ae279de21cc2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "tests/contracts/fixtures/estimands-v1.json",
+      "tests/contracts/fixtures/estimands-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.482101+00:00",
+    "ended_at": "2026-10-21T21:31:15.515892+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "902dbc21fd7ed449abccad9fe50f42fb7630543e3d788560909aa702ac9a3168",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "hash-object",
+      "--path",
+      "tests/contracts/fixtures/observed-entities-v1.json",
+      "tests/contracts/fixtures/observed-entities-v1.json"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.516355+00:00",
+    "ended_at": "2026-10-21T21:31:15.552819+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "70513f07851056027a93bd1e2f210a0fbe073e7c905d7ca8b7c1191a4d4c22ed",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--porcelain"
+    ],
+    "cwd": "C:\\Users\\erics\\AppData\\Local\\Temp\\remission-obs2-repair-portability-9bs_hoa7\\checkout",
+    "started_at": "2026-10-21T21:31:15.553321+00:00",
+    "ended_at": "2026-10-21T21:31:15.684278+00:00",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
