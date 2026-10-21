@@ -1,0 +1,153 @@
+{
+  "created_utc": "2026-10-21T13:58:15.553811+00:00",
+  "input_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+  "repair_input": "2c76f4c34bc1536714f3e1988fc68da7372eb807",
+  "owner_thread": "01a15eb8-0f9a-7cb2-b796-608d4ce5864b",
+  "source_commit": "Candidate commit containing evidence; exact SHA in independent review/root handoff",
+  "requested_model": "gpt-6.1-sol",
+  "requested_effort": "high",
+  "effective_model_introspection": "unavailable; assignment configuration only",
+  "helpers": [],
+  "python": "3.13.7",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "packages": [
+    "annotated-types==0.8.0",
+    "pydantic==2.14.1",
+    "pydantic_core==2.50.1",
+    "typing-inspection==0.4.4",
+    "typing_extensions==4.16.0"
+  ],
+  "source_sha256_normalized_LF": {
+    "contracts/dgp/__init__.py": "194bbca4042d91a0f51af2926fc6eef40c4e92935c21e7f83d643425dbfebd6f",
+    "contracts/dgp/calibration-binding-v1.schema.json": "cfbaa02466c698c2ab24457eeddfd94bc18e25264491442d9f5e6b268f2154c6",
+    "contracts/dgp/calibration.py": "607a5ada232a513061aa2be95bd49f316496fd9bb0f3763ae1b76b42b631c355",
+    "contracts/dgp/checks.py": "77b0575d84a3a59b5aec19ff0cca8884d7bbf8d2180398698d04b184d94121c1",
+    "contracts/dgp/export.py": "4ef127ff1fb7a20fdbf0d09c91bda38c13fbc20dc6af5407d7d5acf79a63950a",
+    "contracts/dgp/external-target-evidence-v1.schema.json": "b4ea2a33f2b94ff4d621720788c8dcb4fc50771a97ff2c130c01cf09d7fb086b",
+    "contracts/dgp/parameters-v1.json": "f273d92792e09570c19a9145c09da08e3c214ac6d520059f12b3c26809e5b22d",
+    "contracts/dgp/parameters.py": "b8294e1d328a7b1fd21bf270521829adee52274c4df85bed66785376dd1d1107",
+    "contracts/dgp/scenarios-v1.json": "ed5e29aa398b615c623e24d218b8442f3ab14c2bf4187e6657b2589bde7809ac",
+    "contracts/dgp/scenarios.py": "3aae38b2898c15d552827067f2ce6dd42e2fbab83349422132ed8f64707048d9",
+    "contracts/dgp/timing-v1.json": "336a3a9e5182212cf26f873359c82e08f92f154a5dbe34ceb280cf6a5feed87b",
+    "contracts/dgp/timing.py": "b7e8faba0f01e2c46199a1dc836e5d34eb2bc113dd48cb8ab4956287b3f63ef4",
+    "contracts/dgp/truth-fixtures-v1.json": "059032cf5e0e1c6849eab8ed42237a0ddf2255366410d1be4bfbf5e99f75fcae",
+    "contracts/dgp/truth.py": "d3552eddf553e55ae9239428da94f99af92f0d99a19621b305c42f32f8b32249",
+    "docs/implementation/dgp-decisions.md": "0d03d470ff8e6e59e6f8f6bf780a3bbaab273abe7afe5f04e26c2920b4747b3f",
+    "tests/contracts/test_dgp_contracts.py": "e90f06d259d61a4fe744b46c1107d0bc2ad46fdc25724a906d877836a5a488c8",
+    "tests/contracts/test_dgp_timing.py": "d32431533c5cdcfef814a31a40b8724d93e4afb5b2f32c02b3c422241a8bee9f"
+  },
+  "acceptance": "pending_independent_Astra_exact_head_base_review",
+  "human_factors": "not_started_deferred",
+  "clinical_review": "not_started_deferred",
+  "clinical_validation": "not_started_separate_future_project",
+  "task": "G0-DGP",
+  "artifact_version": "1.2.0",
+  "kind": "contract_and_analytic_fixture_checks_only",
+  "temporal_contract": {
+    "id": "TIME-01",
+    "version": "2.0.0",
+    "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275"
+  },
+  "calibration_binding_schema_version": "1.1.0",
+  "analytic_fixture_version": "1.0.0",
+  "parameter_count": 185,
+  "variant_count": 73,
+  "cell_count": 82,
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.3857990000396967,
+      "stdout": "No broken requirements found.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "contracts.dgp.export",
+        "--check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.24232720001600683,
+      "stdout": "DGP parameter/scenario artifacts match v1.2.0; independent fixtures remain v1.0.0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "contracts.domain.export",
+        "--check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.33098620001692325,
+      "stdout": "Contract JSON Schema/dictionary match typed source\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/contracts",
+        "-v"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.6501757999649271,
+      "stdout": "",
+      "stderr": "test_both_precision_constraints_zero_se_and_cap (test_dgp_contracts.IndependentTruthFixtures.test_both_precision_constraints_zero_se_and_cap) ... ok\ntest_calibration_binding_rejects_missing_derived_values_and_wrong_target (test_dgp_contracts.IndependentTruthFixtures.test_calibration_binding_rejects_missing_derived_values_and_wrong_target) ... ok\ntest_calibration_solver_rejects_infeasible_and_cap_not_pass (test_dgp_contracts.IndependentTruthFixtures.test_calibration_solver_rejects_infeasible_and_cap_not_pass) ... ok\ntest_external_target_is_derived_and_bound_to_independent_upstream_identities (test_dgp_contracts.IndependentTruthFixtures.test_external_target_is_derived_and_bound_to_independent_upstream_identities) ... ok\ntest_keyed_streams_do_not_depend_on_prior_draw_counts (test_dgp_contracts.IndependentTruthFixtures.test_keyed_streams_do_not_depend_on_prior_draw_counts) ... ok\ntest_normal_beta_analytic_answers (test_dgp_contracts.IndependentTruthFixtures.test_normal_beta_analytic_answers) ... ok\ntest_ordinal_tail_sum_and_exact_policy_tree_values (test_dgp_contracts.IndependentTruthFixtures.test_ordinal_tail_sum_and_exact_policy_tree_values) ... ok\ntest_two_period_descendants_and_continuation_are_recomputed (test_dgp_contracts.IndependentTruthFixtures.test_two_period_descendants_and_continuation_are_recomputed) ... ok\ntest_exact_family_variant_counts_no_implicit_products (test_dgp_contracts.ParameterAndCellContracts.test_exact_family_variant_counts_no_implicit_products) ... ok\ntest_generated_artifacts_are_valid_complete_inputs (test_dgp_contracts.ParameterAndCellContracts.test_generated_artifacts_are_valid_complete_inputs) ... ok\ntest_missing_required_coefficient_is_rejected_before_resolution (test_dgp_contracts.ParameterAndCellContracts.test_missing_required_coefficient_is_rejected_before_resolution) ... ok\ntest_null_paths_and_modifier_target_do_not_conflate_medication (test_dgp_contracts.ParameterAndCellContracts.test_null_paths_and_modifier_target_do_not_conflate_medication) ... ok\ntest_omitted_source_modifier_actually_modifies_the_behavioral_target (test_dgp_contracts.ParameterAndCellContracts.test_omitted_source_modifier_actually_modifies_the_behavioral_target) ... ok\ntest_reference_numeric_units_and_covariance_preserve_canonical_defaults (test_dgp_contracts.ParameterAndCellContracts.test_reference_numeric_units_and_covariance_preserve_canonical_defaults) ... ok\ntest_resolution_is_isolated_and_never_unknown_cell_fallback (test_dgp_contracts.ParameterAndCellContracts.test_resolution_is_isolated_and_never_unknown_cell_fallback) ... ok\ntest_s02_threshold_crossing_changes_availability_but_not_outcome_law (test_dgp_contracts.ParameterAndCellContracts.test_s02_threshold_crossing_changes_availability_but_not_outcome_law) ... ok\ntest_target_version_override_and_order_are_frozen (test_dgp_contracts.ParameterAndCellContracts.test_target_version_override_and_order_are_frozen) ... ok\ntest_unknown_and_malformed_parameter_records_are_not_defaults (test_dgp_contracts.ParameterAndCellContracts.test_unknown_and_malformed_parameter_records_are_not_defaults) ... ok\ntest_accepted_identity_and_all_generated_consumers_bound (test_dgp_timing.DGPTimingComposition.test_accepted_identity_and_all_generated_consumers_bound) ... ok\ntest_initial_history_and_delayed_previous_report_equal_cutoff (test_dgp_timing.DGPTimingComposition.test_initial_history_and_delayed_previous_report_equal_cutoff) ... ok\ntest_mar_uses_actual_separate_observation_with_canonical_coefficients (test_dgp_timing.DGPTimingComposition.test_mar_uses_actual_separate_observation_with_canonical_coefficients) ... ok\ntest_reporting_families_preserve_parents_targets_and_null_paths (test_dgp_timing.DGPTimingComposition.test_reporting_families_preserve_parents_targets_and_null_paths) ... ok\ntest_separate_keyed_measurement_observation_and_upload_identities (test_dgp_timing.DGPTimingComposition.test_separate_keyed_measurement_observation_and_upload_identities) ... ok\ntest_source_time_and_self_conditioning_faults_fail_closed (test_dgp_timing.DGPTimingComposition.test_source_time_and_self_conditioning_faults_fail_closed) ... ok\ntest_three_clocks_cutoffs_and_independent_wearable_delays (test_dgp_timing.DGPTimingComposition.test_three_clocks_cutoffs_and_independent_wearable_delays) ... ok\ntest_all_entity_fixtures_and_registered_estimands_are_serializable (test_domain.ContractTests.test_all_entity_fixtures_and_registered_estimands_are_serializable) ... ok\ntest_all_estimand_semantics_roundtrip (test_domain.ContractTests.test_all_estimand_semantics_roundtrip) ... ok\ntest_all_registered_endpoints_bind_units_direction_and_policy_reward (test_domain.ContractTests.test_all_registered_endpoints_bind_units_direction_and_policy_reward) ... ok\ntest_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal (test_domain.ContractTests.test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal) ... ok\ntest_corrected_history_projects_into_valid_learner_without_double_likelihood (test_domain.ContractTests.test_corrected_history_projects_into_valid_learner_without_double_likelihood) ... ok\ntest_cutoff_excludes_equal_time_late_and_future_records (test_domain.ContractTests.test_cutoff_excludes_equal_time_late_and_future_records) ... ok\ntest_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts (test_domain.ContractTests.test_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts) ... ok\ntest_est_int_zero_denominator_and_tradeoffs_remain_separate (test_domain.ContractTests.test_est_int_zero_denominator_and_tradeoffs_remain_separate) ... ok\ntest_evaluation_accounting_failure_and_confirmation_contracts (test_domain.ContractTests.test_evaluation_accounting_failure_and_confirmation_contracts) ... ok\ntest_evaluation_minimums_truth_precision_and_source_boundary (test_domain.ContractTests.test_evaluation_minimums_truth_precision_and_source_boundary) ... ok\ntest_external_study_ipd_summary_double_count_denied (test_domain.ContractTests.test_external_study_ipd_summary_double_count_denied) ... ok\ntest_fit_versions_and_hashes_rejected_before_dispatch (test_domain.ContractTests.test_fit_versions_and_hashes_rejected_before_dispatch) ... ok\ntest_invalid_estimand_units_recall_and_event_strategy (test_domain.ContractTests.test_invalid_estimand_units_recall_and_event_strategy) ... ok\ntest_isi_items_recall_trending_and_no_postdeath_isi (test_domain.ContractTests.test_isi_items_recall_trending_and_no_postdeath_isi) ... ok\ntest_late_correction_does_not_rewrite_old_history_and_duplicates_drop (test_domain.ContractTests.test_late_correction_does_not_rewrite_old_history_and_duplicates_drop) ... ok\ntest_missing_reward_is_not_zero (test_domain.ContractTests.test_missing_reward_is_not_zero) ... ok\ntest_named_threshold_is_provisional_and_no_unit_substitution (test_domain.ContractTests.test_named_threshold_is_provisional_and_no_unit_substitution) ... ok\ntest_no_latent_or_truth_payload_can_enter_learner_schema (test_domain.ContractTests.test_no_latent_or_truth_payload_can_enter_learner_schema) ... ok\ntest_protocol_approval_does_not_preselect_randomized_winner (test_domain.ContractTests.test_protocol_approval_does_not_preselect_randomized_winner) ... ok\ntest_record_clock_naive_timezone_and_future_nested_covariate_rejected (test_domain.ContractTests.test_record_clock_naive_timezone_and_future_nested_covariate_rejected) ... ok\ntest_retracted_active_consent_never_authorizes_or_revives_predecessor (test_domain.ContractTests.test_retracted_active_consent_never_authorizes_or_revives_predecessor) ... ok\ntest_schema_exports_match_and_contain_no_evaluator_types_in_learner (test_domain.ContractTests.test_schema_exports_match_and_contain_no_evaluator_types_in_learner) ... ok\ntest_stale_patient_history_hold_permissions_and_exclusions_block_approval (test_domain.ContractTests.test_stale_patient_history_hold_permissions_and_exclusions_block_approval) ... ok\ntest_support_freeze_cannot_drift_during_block_or_washout (test_domain.ContractTests.test_support_freeze_cannot_drift_during_block_or_washout) ... ok\ntest_temporal_parent_graph_and_seeded_future_cycle_faults (test_domain.ContractTests.test_temporal_parent_graph_and_seeded_future_cycle_faults) ... ok\ntest_typed_fit_metadata_roundtrip_and_failure (test_domain.ContractTests.test_typed_fit_metadata_roundtrip_and_failure) ... ok\ntest_version_and_strict_types_reject_without_coercion (test_domain.ContractTests.test_version_and_strict_types_reject_without_coercion) ... ok\ntest_delayed_previous_quality_equal_time_and_deterministic_ties (test_temporal_r1.TemporalR1Tests.test_delayed_previous_quality_equal_time_and_deterministic_ties) ... ok\ntest_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling (test_temporal_r1.TemporalR1Tests.test_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling) ... ok\ntest_no_reporting_assessment_after_known_death (test_temporal_r1.TemporalR1Tests.test_no_reporting_assessment_after_known_death) ... ok\ntest_observed_only_predictors_roundtrip_and_missing_history (test_temporal_r1.TemporalR1Tests.test_observed_only_predictors_roundtrip_and_missing_history) ... ok\ntest_pain_after_or_equal_report_decision_and_missing_report_source_rejected (test_temporal_r1.TemporalR1Tests.test_pain_after_or_equal_report_decision_and_missing_report_source_rejected) ... ok\ntest_three_clock_upload_delays_and_strict_cutoffs (test_temporal_r1.TemporalR1Tests.test_three_clock_upload_delays_and_strict_cutoffs) ... ok\ntest_v1_preserved_and_v2_validates (test_temporal_r1.TemporalR1Tests.test_v1_preserved_and_v2_validates) ... ok\ntest_wearable_available_independently_before_pain_or_report (test_temporal_r1.TemporalR1Tests.test_wearable_available_independently_before_pain_or_report) ... ok\n\n----------------------------------------------------------------------\nRan 60 tests in 0.356s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "docs/implementation/check-ledger-20261020.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.7033580999122933,
+      "stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; gates unaccepted.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.04212499991990626,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "b24c3c0fb78bf19928750eae29e852141bd649a7"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.0436908999690786,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "not_executed": [
+    "longitudinal generator",
+    "independent Layer B rollout",
+    "achieved-rate/external calibration",
+    "source SE pilot",
+    "distribution inspection",
+    "paired-trajectory null equality",
+    "evaluator process/storage denial",
+    "scenario statistical/policy runs",
+    "human/clinical reviews"
+  ]
+}
