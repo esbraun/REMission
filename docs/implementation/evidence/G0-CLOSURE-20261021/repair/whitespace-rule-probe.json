@@ -1,0 +1,59 @@
+{
+  "purpose": "Positive/negative controls prove narrow cr-at-eol preserves real trailing-space detection",
+  "valid_raw_crlf_passed": true,
+  "actual_trailing_space_rejected": true,
+  "commands": [
+    {
+      "command": [
+        "git",
+        "init"
+      ],
+      "exit_code": 0,
+      "stdout": "Initialized empty Git repository in C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-sol-20261021/contracts/artifacts/__pycache__/g0-closure-whitespace-probe/.git/\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "add",
+        ".gitattributes",
+        "capture.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "add",
+        "capture.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 2,
+      "stdout": "capture.json:1: trailing whitespace.\n+{\"trailing_space\":true} \n",
+      "stderr": ""
+    }
+  ]
+}
