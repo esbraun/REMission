@@ -1,0 +1,2488 @@
+{
+  "version": "1.0.0",
+  "synthetic": true,
+  "parameters": {
+    "start_day": {
+      "value": -14,
+      "unit": "days",
+      "distribution": "integer deterministic",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "end_day": {
+      "value": 84,
+      "unit": "days",
+      "distribution": "integer deterministic",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "initial_day": {
+      "value": -15,
+      "unit": "days",
+      "distribution": "integer deterministic",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "visit_days": {
+      "value": [
+        0,
+        21,
+        42
+      ],
+      "unit": "days",
+      "distribution": "scheduled integer days",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "isi_days": {
+      "value": [
+        0,
+        14,
+        28,
+        42,
+        56,
+        70,
+        84
+      ],
+      "unit": "days",
+      "distribution": "scheduled integer days",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "recall_days": {
+      "value": 14,
+      "unit": "days",
+      "distribution": "arithmetic mean of preceding nights",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "visit_horizon": {
+      "value": 42,
+      "unit": "days",
+      "distribution": "endpoint d+42",
+      "parents": [
+        "visit"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "X_law": {
+      "value": [
+        0,
+        1
+      ],
+      "unit": "dimensionless",
+      "distribution": "Normal(mean,SD)",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "age_years_law": {
+      "value": [
+        18,
+        80
+      ],
+      "unit": "years",
+      "distribution": "DiscreteUniform inclusive adults, descriptive only",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "M_probability": {
+      "value": 0.5,
+      "unit": "probability",
+      "distribution": "Bernoulli",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "U_law": {
+      "value": [
+        0,
+        1
+      ],
+      "unit": "dimensionless",
+      "distribution": "Normal(mean,SD), measured except S07",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "b_law": {
+      "value": [
+        0,
+        0.2
+      ],
+      "unit": "dimensionless",
+      "distribution": "Normal(mean,SD), prognostic only",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "phase_offset_law": {
+      "value": [
+        0,
+        20
+      ],
+      "unit": "days",
+      "distribution": "DiscreteUniform inclusive",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "site_probabilities": {
+      "value": [
+        0.3333333333333333,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "unit": "probability",
+      "distribution": "Categorical sites 0,1,2",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "leukemia_probabilities": {
+      "value": [
+        0.5,
+        0.3,
+        0.2
+      ],
+      "unit": "probability",
+      "distribution": "Categorical fictional strata L1,L2,L3; descriptive only",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "therapy_probabilities": {
+      "value": [
+        0.6,
+        0.4
+      ],
+      "unit": "probability",
+      "distribution": "Categorical fictional therapy T1,T2; descriptive only",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "comorbidity_probability": {
+      "value": 0.3,
+      "unit": "probability",
+      "distribution": "Bernoulli; descriptive/exclusion review",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "preference_probabilities": {
+      "value": [
+        0.5,
+        0.3,
+        0.2
+      ],
+      "unit": "probability",
+      "distribution": "Categorical behavioral,medication,undecided",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "prompt_preference_probability": {
+      "value": 0.8,
+      "unit": "probability",
+      "distribution": "Bernoulli acceptance; availability constraint",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "med_benefit_law": {
+      "value": [
+        1,
+        0
+      ],
+      "unit": "dimensionless",
+      "distribution": "Normal multiplicative factor mean,SD; zero SD reference, 0.15 variation fixture",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "med_harm_law": {
+      "value": [
+        1,
+        0
+      ],
+      "unit": "dimensionless",
+      "distribution": "Normal multiplicative factor mean,SD; zero SD reference, 0.1 variation fixture",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "site_intercepts": {
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "unit": "severity units",
+      "distribution": "additive by site; site-shift sensitivity [0,0.15,-0.15]",
+      "parents": [
+        "site"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "initial_L": {
+      "value": [
+        0,
+        0,
+        0
+      ],
+      "unit": "dimensionless",
+      "distribution": "point mass day -15",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "initial_states": {
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "unit": "dimensionless",
+      "distribution": "point mass z,B,C_A,C_B,R,T,cumulative_prompts day -15",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "initial_living_outpatient": {
+      "value": [
+        1,
+        1
+      ],
+      "unit": "indicator",
+      "distribution": "point mass alive,outpatient",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "initial_taken": {
+      "value": [
+        0,
+        0
+      ],
+      "unit": "indicator",
+      "distribution": "point mass MED_A,MED_B",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "initial_quality": {
+      "value": 7,
+      "unit": "quality_points",
+      "distribution": "missing-history initializer, paired missing flag always exported",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "initial_n1_residual_sd": {
+      "value": 0.4,
+      "unit": "severity units",
+      "distribution": "Normal stationary SD",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "phase_period": {
+      "value": 21,
+      "unit": "days",
+      "distribution": "phase=(t+J) mod period",
+      "parents": [
+        "clock",
+        "J"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "steroid_phase_days": {
+      "value": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "unit": "days",
+      "distribution": "membership indicator S",
+      "parents": [
+        "clock",
+        "J"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "regimen_phase_days": {
+      "value": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "unit": "days",
+      "distribution": "replacement steroid window after shift_day",
+      "parents": [
+        "clock",
+        "J"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "shift_day": {
+      "value": 42,
+      "unit": "days",
+      "distribution": "abrupt boundary inclusive",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "L_ar": {
+      "value": 0.6,
+      "unit": "dimensionless",
+      "distribution": "coordinatewise L_previous coefficient",
+      "parents": [
+        "L_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "L_z": {
+      "value": 0.15,
+      "unit": "dimensionless",
+      "distribution": "coordinatewise z_previous coefficient",
+      "parents": [
+        "z_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "L_steroid": {
+      "value": 0.25,
+      "unit": "dimensionless",
+      "distribution": "coordinatewise S coefficient",
+      "parents": [
+        "S"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "L_X": {
+      "value": 0.1,
+      "unit": "dimensionless",
+      "distribution": "coordinatewise X coefficient",
+      "parents": [
+        "X"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "L_U": {
+      "value": 0.1,
+      "unit": "dimensionless",
+      "distribution": "coordinatewise U coefficient",
+      "parents": [
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "L_T": {
+      "value": -0.1,
+      "unit": "dimensionless",
+      "distribution": "coordinatewise assigned T_previous coefficient",
+      "parents": [
+        "T_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "L_covariance": {
+      "value": [
+        0.09,
+        0.027,
+        0.027,
+        0.027,
+        0.09,
+        0.027,
+        0.027,
+        0.027,
+        0.09
+      ],
+      "unit": "variance units",
+      "distribution": "MVNormal row-major 3x3 innovation covariance",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "B_retention": {
+      "value": 0.995,
+      "unit": "dimensionless",
+      "distribution": "B=min(1,retention*B_previous+gain*D*(1-B_previous))",
+      "parents": [
+        "B_previous",
+        "D"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "B_gain": {
+      "value": 0.08,
+      "unit": "dimensionless",
+      "distribution": "delivered program increment",
+      "parents": [
+        "B_previous",
+        "D"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "carry_half_life": {
+      "value": 1,
+      "unit": "days",
+      "distribution": "lambda=2**(-1/h), h=0 => lambda=0",
+      "parents": [
+        "C_previous",
+        "Taken"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "rebound_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "zero unless enabled",
+      "parents": [
+        "Taken_previous",
+        "Taken"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "R_ar": {
+      "value": 0.5,
+      "unit": "dimensionless",
+      "distribution": "R_previous coefficient",
+      "parents": [
+        "R_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "R_stop": {
+      "value": 0.5,
+      "unit": "dimensionless",
+      "distribution": "any previously taken drug stopped today indicator",
+      "parents": [
+        "Taken_previous",
+        "Taken"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_ar": {
+      "value": 0.5,
+      "unit": "dimensionless",
+      "distribution": "z_previous coefficient",
+      "parents": [
+        "z_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_X": {
+      "value": 0.2,
+      "unit": "dimensionless",
+      "distribution": "X coefficient",
+      "parents": [
+        "X"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_M": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "additional prognostic binary M coefficient, S05 0.2",
+      "parents": [
+        "M"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "z_U": {
+      "value": 0.15,
+      "unit": "dimensionless",
+      "distribution": "U coefficient",
+      "parents": [
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_L": {
+      "value": 0.15,
+      "unit": "dimensionless",
+      "distribution": "mean current L coefficient",
+      "parents": [
+        "L"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_steroid": {
+      "value": 0.2,
+      "unit": "dimensionless",
+      "distribution": "S coefficient",
+      "parents": [
+        "S"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_phase": {
+      "value": 0.1,
+      "unit": "dimensionless",
+      "distribution": "sin(2*pi*(t+J)/21) coefficient",
+      "parents": [
+        "clock",
+        "J"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_b": {
+      "value": 1,
+      "unit": "dimensionless",
+      "distribution": "latent intercept coefficient; never assignment parent",
+      "parents": [
+        "b"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_B": {
+      "value": -0.15,
+      "unit": "dimensionless",
+      "distribution": "skill coefficient",
+      "parents": [
+        "B"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_med_A": {
+      "value": -0.2,
+      "unit": "dimensionless",
+      "distribution": "C_A coefficient times patient med benefit factor",
+      "parents": [
+        "C_A",
+        "med_benefit"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_med_B": {
+      "value": -0.12,
+      "unit": "dimensionless",
+      "distribution": "C_B coefficient times patient med benefit factor",
+      "parents": [
+        "C_B",
+        "med_benefit"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_med_A_modifier": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "C_A*(2M-1) coefficient; medication modifier fixture -0.25",
+      "parents": [
+        "C_A",
+        "M"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_T": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "direct assigned behavioral T coefficient, only explicit reductions",
+      "parents": [
+        "T"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "z_T_modifier": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "T*(2M-1) coefficient, only explicit reductions",
+      "parents": [
+        "T",
+        "M"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "z_R": {
+      "value": 0.2,
+      "unit": "dimensionless",
+      "distribution": "rebound coefficient",
+      "parents": [
+        "R"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_prompt": {
+      "value": -0.08,
+      "unit": "dimensionless",
+      "distribution": "offered prompt A coefficient times delivery, not program T",
+      "parents": [
+        "A",
+        "delivered_prompt"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_delayed_prompt": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "yesterday offered/delivered prompt coefficient, delayed-harm 0.15",
+      "parents": [
+        "A_previous",
+        "delivered_prompt_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_rescue": {
+      "value": -0.1,
+      "unit": "dimensionless",
+      "distribution": "fictional rescue same-night contribution",
+      "parents": [
+        "rescue"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_nonlinear": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "L_pain**2-1 coefficient, nonlinear 0.15",
+      "parents": [
+        "L_pain"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "z_innovation_sd": {
+      "value": 0.4,
+      "unit": "severity units",
+      "distribution": "Normal(0,SD) or t3 scaled SD/sqrt(3)",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "heavy_tail_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "replace severity innovation with t df3 scaled to same SD",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "n1_rho": {
+      "value": 0.4,
+      "unit": "dimensionless",
+      "distribution": "e_t=rho*e_prev+sqrt(1-rho**2)*N(0,0.4); replaces eta, not added twice",
+      "parents": [
+        "e_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "Q_intercept": {
+      "value": 7,
+      "unit": "quality_points",
+      "distribution": "clip(intercept+z_coef*z+error,0,10)",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "Q_z": {
+      "value": -2,
+      "unit": "quality_points",
+      "distribution": "severity coefficient",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "Q_sd": {
+      "value": 0.5,
+      "unit": "quality_points",
+      "distribution": "Normal(0,SD)",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "F_intercept": {
+      "value": 7,
+      "unit": "function_points",
+      "distribution": "clip(intercept+z_coef*z+L_coef*mean(L)+med_coef*(C_A+C_B)*harm+error,0,10)",
+      "parents": [
+        "z",
+        "L",
+        "C_A",
+        "C_B",
+        "med_harm"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "F_z": {
+      "value": -1,
+      "unit": "function_points",
+      "distribution": "severity coefficient",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "F_L": {
+      "value": -0.4,
+      "unit": "function_points",
+      "distribution": "mean L coefficient",
+      "parents": [
+        "L"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "F_med": {
+      "value": -0.5,
+      "unit": "function_points",
+      "distribution": "carryover sum coefficient times med harm factor",
+      "parents": [
+        "C_A",
+        "C_B",
+        "med_harm"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "F_sd": {
+      "value": 0.5,
+      "unit": "function_points",
+      "distribution": "Normal(0,SD)",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "clinical_scale_bounds": {
+      "value": [
+        0,
+        10
+      ],
+      "unit": "quality_points",
+      "distribution": "clip daily Q,F,fatigue",
+      "parents": [
+        "z",
+        "L"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "fatigue_max": {
+      "value": 10,
+      "unit": "function_points",
+      "distribution": "10-previous morning F, never next morning F",
+      "parents": [
+        "F_previous_morning"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "nap_logit": {
+      "value": [
+        -1,
+        0.15
+      ],
+      "unit": "dimensionless",
+      "distribution": "Bernoulli expit(intercept+slope*available fatigue)",
+      "parents": [
+        "F_previous_morning"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "assignment_logit": {
+      "value": [
+        0,
+        0.4,
+        0.5,
+        0.3
+      ],
+      "unit": "dimensionless",
+      "distribution": "expit(intercept+X*coef+mean(L)*coef+U*coef)",
+      "parents": [
+        "X",
+        "L",
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "assignment_floor": {
+      "value": 0.2,
+      "unit": "probability",
+      "distribution": "clip assignment p to [floor,1-floor]",
+      "parents": [
+        "X",
+        "L",
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "randomized_probability": {
+      "value": 0.5,
+      "unit": "probability",
+      "distribution": "Bernoulli known assignment probability",
+      "parents": [
+        "approved_protocol"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "structural_zero_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "when enabled P(T=1)=0 if X>1, otherwise reference p",
+      "parents": [
+        "X"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "structural_zero_X_cutoff": {
+      "value": 1,
+      "unit": "dimensionless",
+      "distribution": "unsupported region X>cutoff",
+      "parents": [
+        "X"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "delivery_logit": {
+      "value": [
+        1.5,
+        -0.2
+      ],
+      "unit": "dimensionless",
+      "distribution": "Bernoulli expit(intercept+coef*mean(L)) conditional T=1",
+      "parents": [
+        "T",
+        "L"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "override_probability": {
+      "value": 0,
+      "unit": "probability",
+      "distribution": "Bernoulli; switch T proposal to usual_care, keep original assignment",
+      "parents": [
+        "assignment"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "med_taken_probability": {
+      "value": 0.9,
+      "unit": "probability",
+      "distribution": "Bernoulli conditional assigned medication",
+      "parents": [
+        "med_assignment"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "rescue_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "rescue Bernoulli only when enabled",
+      "parents": [
+        "z_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "rescue_logit": {
+      "value": [
+        -3,
+        0.5
+      ],
+      "unit": "dimensionless",
+      "distribution": "expit(intercept+coef*z_previous), evaluator mechanism only",
+      "parents": [
+        "z_previous"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "prompt_probability": {
+      "value": 0.5,
+      "unit": "probability",
+      "distribution": "MRT offer Bernoulli conditional available",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "prompt_delivery_probability": {
+      "value": 1,
+      "unit": "probability",
+      "distribution": "offered support delivered Bernoulli; missed scenario 0.8",
+      "parents": [
+        "A"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "prompt_max_day": {
+      "value": 1,
+      "unit": "count",
+      "distribution": "burden cap before assignment",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "prompt_max_week": {
+      "value": 4,
+      "unit": "count",
+      "distribution": "rolling seven-day cap before assignment",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "prompt_window_days": {
+      "value": 7,
+      "unit": "days",
+      "distribution": "rolling burden window",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "habituation_rate": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "z_prompt/(1+rate*cumulative delivered prompts); stress 0.2",
+      "parents": [
+        "past_delivered_prompts"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "prompt_state_gain": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "additional B gain from prompts; reference zero, null must zero",
+      "parents": [
+        "A",
+        "delivered_prompt"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "irregular_visit_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "extra visit Bernoulli outside scheduled visits",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "irregular_visit_logit": {
+      "value": [
+        -4,
+        0.2
+      ],
+      "unit": "dimensionless",
+      "distribution": "expit(intercept+coef*previous observed pain), no record => pain 0 plus missing flag",
+      "parents": [
+        "previous_observed_pain"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "visit_jitter_days": {
+      "value": [
+        -2,
+        -1,
+        0,
+        1,
+        2
+      ],
+      "unit": "days",
+      "distribution": "Categorical actual-scheduled offset when irregular enabled; day0 fixed",
+      "parents": [
+        "schedule"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "visit_jitter_probabilities": {
+      "value": [
+        0.1,
+        0.2,
+        0.4,
+        0.2,
+        0.1
+      ],
+      "unit": "probability",
+      "distribution": "Categorical jitter, clamp actual to [0,84], coalesce same-day visits",
+      "parents": [
+        "schedule"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "recall_sd": {
+      "value": 0.2,
+      "unit": "severity units",
+      "distribution": "Normal(0,SD) added to 14-night mean z",
+      "parents": [
+        "z_previous14"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "item_cutpoints": {
+      "value": [
+        -1.5,
+        -0.5,
+        0.5,
+        1.5
+      ],
+      "unit": "severity units",
+      "distribution": "P(item<=c)=expit(cutpoint-recall-offset)",
+      "parents": [
+        "recall"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "item_offsets": {
+      "value": [
+        -0.3,
+        -0.2,
+        -0.1,
+        0,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "unit": "severity units",
+      "distribution": "seven item offsets",
+      "parents": [
+        "item_index"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "item_copula_rho": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "equicorrelated Gaussian copula uniforms; retains logistic ordinal margins",
+      "parents": [
+        "recall",
+        "common_item_error"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "item_phase_offsets": {
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "unit": "severity units",
+      "distribution": "offset increment times steroid indicator at assessment",
+      "parents": [
+        "S_assessment"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "W_intercept": {
+      "value": 60,
+      "unit": "minutes",
+      "distribution": "clip(intercept+slope*z,0,480)",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "W_z": {
+      "value": 20,
+      "unit": "minutes",
+      "distribution": "wake severity slope",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "sleep_window": {
+      "value": 480,
+      "unit": "minutes",
+      "distribution": "true sleep=window-true wake",
+      "parents": [
+        "z"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "diary_sd": {
+      "value": 20,
+      "unit": "minutes",
+      "distribution": "true sleep+Normal(0,SD); diary not clipped",
+      "parents": [
+        "true_sleep"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "wearable_wake_bias": {
+      "value": 0.3,
+      "unit": "dimensionless",
+      "distribution": "wearable sleep=true sleep+bias*W+noise then clip",
+      "parents": [
+        "true_sleep",
+        "W"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "wearable_sd": {
+      "value": 15,
+      "unit": "minutes",
+      "distribution": "Normal(0,SD)",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "device_shift_minutes": {
+      "value": 0,
+      "unit": "minutes",
+      "distribution": "added to wearable from shift_day; stress 30",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "missing_fraction": {
+      "value": 0,
+      "unit": "probability",
+      "distribution": "target nonreport rate, calibration output required for MAR/MNAR",
+      "parents": [
+        "report_process"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "report_mode": {
+      "value": 0,
+      "unit": "code",
+      "distribution": "0 complete,1 MCAR,2 MAR,3 MNAR,4 action_MNAR",
+      "parents": [
+        "report_process"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "report_MAR_coefficients": {
+      "value": [
+        -0.4,
+        -0.2
+      ],
+      "unit": "dimensionless",
+      "distribution": "logit observation a+c1*(10-prev observed Q)/2+c2*current observed pain",
+      "parents": [
+        "previous_observed_Q",
+        "current_observed_pain"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "report_MNAR_quality": {
+      "value": 0.5,
+      "unit": "dimensionless",
+      "distribution": "additional (current unobserved Q-7) coefficient",
+      "parents": [
+        "Q_current_unobserved"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "report_action_quality": {
+      "value": 0,
+      "unit": "dimensionless",
+      "distribution": "additional A_previous*(current unobserved Q-7); action_MNAR 1",
+      "parents": [
+        "A_previous",
+        "Q_current_unobserved"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "delay_days": {
+      "value": [
+        0,
+        1,
+        3
+      ],
+      "unit": "days",
+      "distribution": "upload delay Categorical, separately keyed report/wearable",
+      "parents": [
+        "measurement"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "delay_probabilities": {
+      "value": [
+        1,
+        0,
+        0
+      ],
+      "unit": "probability",
+      "distribution": "reference immediate; stress [0.7,0.2,0.1]",
+      "parents": [
+        "measurement"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "death_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "absorbing death, applied before decisions",
+      "parents": [
+        "L",
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "admission_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "admission only alive/outpatient, assignments suspended",
+      "parents": [
+        "L",
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "death_logit": {
+      "value": [
+        -7,
+        0.3,
+        0.2
+      ],
+      "unit": "dimensionless",
+      "distribution": "expit(intercept+coef*mean(L)+coef*U)",
+      "parents": [
+        "L",
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "admission_logit": {
+      "value": [
+        -5,
+        0.4,
+        0.2
+      ],
+      "unit": "dimensionless",
+      "distribution": "expit(intercept+coef*mean(L)+coef*U)",
+      "parents": [
+        "L",
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "admission_days": {
+      "value": 7,
+      "unit": "days",
+      "distribution": "discharge at admission day+7 unless dead; no assignment during admission",
+      "parents": [
+        "admission_time"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "discontinuation_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "stop delivery after day21 while retaining assignment",
+      "parents": [
+        "L_day21"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "discontinuation_day": {
+      "value": 21,
+      "unit": "days",
+      "distribution": "decision once end of day21; D=0 from day22",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "discontinuation_logit": {
+      "value": [
+        -2,
+        0.3
+      ],
+      "unit": "dimensionless",
+      "distribution": "expit(intercept+coef*mean(L_day21))",
+      "parents": [
+        "L_day21"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "regimen_change_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "steroid window switches at shift_day",
+      "parents": [
+        "clock"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "adverse_logit": {
+      "value": [
+        -5,
+        0.4,
+        0.3
+      ],
+      "unit": "dimensionless",
+      "distribution": "Bernoulli expit(intercept+coef*previous carry sum*harm+coef*available fatigue)",
+      "parents": [
+        "C_previous",
+        "F_previous_morning",
+        "med_harm"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "adverse_enabled": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "reference off; enabled eligibility fixtures simulate observed review trigger",
+      "parents": [
+        "C_previous",
+        "F_previous_morning"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "exclusion_probability": {
+      "value": 0.05,
+      "unit": "probability",
+      "distribution": "baseline fictional medication exclusion, review not clinical recommendation",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "stability_max_L": {
+      "value": 3,
+      "unit": "dimensionless",
+      "distribution": "if any L>threshold remove experimental eligibility and require review",
+      "parents": [
+        "L"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "n1_blocks": {
+      "value": 4,
+      "unit": "count",
+      "distribution": "even blocks arranged equal probability AB/BA pairs",
+      "parents": [
+        "approved_protocol"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "n1_active_days": {
+      "value": 7,
+      "unit": "days",
+      "distribution": "active block duration",
+      "parents": [
+        "approved_protocol"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "n1_washout_days": {
+      "value": 2,
+      "unit": "days",
+      "distribution": "default washout, not clinical adequate-washout claim",
+      "parents": [
+        "approved_protocol"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "n1_phase_mode": {
+      "value": 0,
+      "unit": "code",
+      "distribution": "0 random AB/BA;1 A starts phase0/B phase9;2 balanced crossover start phases0,9 then swap next pair",
+      "parents": [
+        "clock",
+        "J"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "n1_stop_mode": {
+      "value": 0,
+      "unit": "code",
+      "distribution": "0 protocol complete;1 stop after two blocks if mean available Q<3 or observed adverse;2 stop after one block",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "n1_stop_quality": {
+      "value": 3,
+      "unit": "quality_points",
+      "distribution": "mean reported Q trigger after two complete blocks",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "n1_min_blocks": {
+      "value": 2,
+      "unit": "count",
+      "distribution": "at least one completed A and B; otherwise inconclusive",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "n1_min_reporting_fraction": {
+      "value": 0.7,
+      "unit": "probability",
+      "distribution": "minimum per-block reports for informative block",
+      "parents": [
+        "available_history"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "response_day": {
+      "value": 28,
+      "unit": "days",
+      "distribution": "behavioral response review; seven-item 14-day recall endpoint",
+      "parents": [
+        "ISI_day0",
+        "ISI_day28"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "strategy_endpoint_day": {
+      "value": 84,
+      "unit": "days",
+      "distribution": "continuing behavioral strategy final ISI",
+      "parents": [
+        "ISI_day84"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "response_ISI_improvement": {
+      "value": 6,
+      "unit": "ISI_points",
+      "distribution": "response if baseline ISI-current ISI>=threshold; engineering only",
+      "parents": [
+        "observed_ISI"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "response_flip_probability": {
+      "value": 0,
+      "unit": "probability",
+      "distribution": "independent label flip; noisy fixture 0.2, true response retained evaluator only",
+      "parents": [
+        "observed_response"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "sparse_response_probability": {
+      "value": 0,
+      "unit": "probability",
+      "distribution": "when >0 replace response classification with Bernoulli(p); sparse fixture 0.9",
+      "parents": [
+        "response_fixture"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "escalation_B_gain": {
+      "value": 0.12,
+      "unit": "dimensionless",
+      "distribution": "replace B_gain after assigned escalation, continue durable B",
+      "parents": [
+        "escalation_assignment",
+        "B_previous",
+        "D"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "external_sizes": {
+      "value": [
+        150,
+        180,
+        220,
+        250
+      ],
+      "unit": "count",
+      "distribution": "four independent 1:1 trials",
+      "parents": [
+        "study_id"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "external_X_law": {
+      "value": [
+        0,
+        1
+      ],
+      "unit": "dimensionless",
+      "distribution": "Normal(mean,SD); shifted [1,1]",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "external_M_probability": {
+      "value": 0.5,
+      "unit": "probability",
+      "distribution": "Bernoulli; shifted 0.8",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "external_shift_SE": {
+      "value": 0,
+      "unit": "source_SE",
+      "distribution": "requested marginal source contrast shift; stresses1,2",
+      "parents": [
+        "independent_source_pilot"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "external_reverse_sign": {
+      "value": 0,
+      "unit": "indicator",
+      "distribution": "target source contrast=-reference source contrast",
+      "parents": [
+        "independent_source_truth"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "external_modifier_export": {
+      "value": 1,
+      "unit": "indicator",
+      "distribution": "source M omitted in S11 only",
+      "parents": [
+        "M"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "export_U": {
+      "value": 1,
+      "unit": "indicator",
+      "distribution": "remove U from learner export in S07 only",
+      "parents": [
+        "U"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "calibration_sample": {
+      "value": 200000,
+      "unit": "count",
+      "distribution": "independent nuisance calibration population before development",
+      "parents": [
+        "calibration_namespace"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "calibration_bracket": {
+      "value": [
+        -30,
+        30
+      ],
+      "unit": "logit",
+      "distribution": "bisection bracket for report/event intercept",
+      "parents": [
+        "nuisance_covariates"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "calibration_rate_tolerance": {
+      "value": 0.0001,
+      "unit": "probability",
+      "distribution": "absolute numerical mean-rate tolerance",
+      "parents": [
+        "calibration_sample"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "calibration_max_iterations": {
+      "value": 100,
+      "unit": "count",
+      "distribution": "bisection cap; infeasible/cap => blocked, no substitution",
+      "parents": [
+        "solver"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "external_coefficient_bracket": {
+      "value": [
+        -5,
+        5
+      ],
+      "unit": "severity units",
+      "distribution": "bisection direct behavioral z_T source shift, base z_T=0",
+      "parents": [
+        "source_intervention_rollouts"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "external_contrast_tolerance": {
+      "value": 0.005,
+      "unit": "ISI_points",
+      "distribution": "absolute achieved-target difference plus reported truth MCSE",
+      "parents": [
+        "source_intervention_rollouts"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "source_SE_pilot_replicates": {
+      "value": 1000,
+      "unit": "count",
+      "distribution": "independent n200 1:1 trials, freeze sqrt(mean(SE**2))",
+      "parents": [
+        "pilot_namespace"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "source_SE_pilot_n": {
+      "value": 200,
+      "unit": "count",
+      "distribution": "pilot study size, equal arms",
+      "parents": [
+        "pilot_namespace"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "truth_ISI_MCSE": {
+      "value": 0.05,
+      "unit": "ISI_points",
+      "distribution": "absolute MCSE maximum",
+      "parents": [
+        "independent_batches"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "truth_quality_MCSE": {
+      "value": 0.01,
+      "unit": "quality_points",
+      "distribution": "absolute MCSE maximum",
+      "parents": [
+        "independent_batches"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "truth_relative_MCSE": {
+      "value": 0.1,
+      "unit": "dimensionless",
+      "distribution": "also <=fraction*smallest estimator SE",
+      "parents": [
+        "pilot_then_final_SE"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "truth_batch_size": {
+      "value": 10000,
+      "unit": "count",
+      "distribution": "independent paired rollout batches",
+      "parents": [
+        "truth_namespace"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "truth_max_batches": {
+      "value": 1000,
+      "unit": "count",
+      "distribution": "compute cap; exhausted precision => inconclusive",
+      "parents": [
+        "truth_namespace"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "meaningful_ISI": {
+      "value": 3,
+      "unit": "ISI_points",
+      "distribution": "synthetic meaningful improvement threshold",
+      "parents": [
+        "decision_contract"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "meaningful_quality": {
+      "value": 0.5,
+      "unit": "quality_points",
+      "distribution": "synthetic meaningful improvement threshold",
+      "parents": [
+        "decision_contract"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "minimum_overlap": {
+      "value": 0.05,
+      "unit": "probability",
+      "distribution": "comparative claim requires all target actions >=threshold",
+      "parents": [
+        "observed_assignment_support"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "maximum_weight": {
+      "value": 20,
+      "unit": "dimensionless",
+      "distribution": "abstain if declared target weight exceeds threshold; no clipping to identification",
+      "parents": [
+        "propensities"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "minimum_effective_sample": {
+      "value": 20,
+      "unit": "count",
+      "distribution": "support precision gate for ranking, not clinical precision",
+      "parents": [
+        "weights"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "maximum_ISI_interval_width": {
+      "value": 6,
+      "unit": "ISI_points",
+      "distribution": "claim precision gate",
+      "parents": [
+        "accepted_fit"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "tail_probability_MCSE": {
+      "value": 0.0025,
+      "unit": "probability",
+      "distribution": "claim precision gate",
+      "parents": [
+        "posterior_tail"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "probability_cutoffs": {
+      "value": [
+        0.95,
+        0.975,
+        0.99,
+        0.995
+      ],
+      "unit": "probability",
+      "distribution": "development only select least stringent satisfying exact clinic-wide null bound",
+      "parents": [
+        "development_complete_null_runs"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "false_claim_upper": {
+      "value": 0.05,
+      "unit": "probability",
+      "distribution": "one-sided95% exact upper bound, all locked null development cells",
+      "parents": [
+        "development_null_runs"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "MNAR_sensitivity_quality": {
+      "value": [
+        -0.5,
+        0,
+        0.5
+      ],
+      "unit": "dimensionless",
+      "distribution": "unobserved quality coefficient sensitivity grid",
+      "parents": [
+        "report_model"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "MNAR_sensitivity_action": {
+      "value": [
+        -1,
+        0,
+        1
+      ],
+      "unit": "dimensionless",
+      "distribution": "action-quality coefficient sensitivity grid, separately reported",
+      "parents": [
+        "report_model"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "bandit_bounds": {
+      "value": [
+        0.1,
+        0.9
+      ],
+      "unit": "probability",
+      "distribution": "feasible final two-action assignment bounds",
+      "parents": [
+        "availability"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "bandit_probability_MCSE": {
+      "value": 0.005,
+      "unit": "probability",
+      "distribution": "otherwise fixed support fallback",
+      "parents": [
+        "policy_draws"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "smoke_sizes": {
+      "value": [
+        100,
+        6,
+        30,
+        30
+      ],
+      "unit": "count",
+      "distribution": "historical,prospective,external1,external2",
+      "parents": [
+        "preset"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "demo_sizes": {
+      "value": [
+        2000,
+        60
+      ],
+      "unit": "count",
+      "distribution": "historical,prospective",
+      "parents": [
+        "preset"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/dgp-reference.md",
+      "source_kind": "reference"
+    },
+    "repetitions": {
+      "value": [
+        5,
+        200,
+        1000,
+        1000,
+        2000
+      ],
+      "unit": "count",
+      "distribution": "smoke,development,recovery,policy,null",
+      "parents": [
+        "protocol"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/spec/scenario-catalog.md",
+      "source_kind": "catalog"
+    },
+    "root_seed": {
+      "value": 20261020,
+      "unit": "integer",
+      "distribution": "explicit root entropy for seed derivation v1",
+      "parents": [
+        "none"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "fault_logged_propensity": {
+      "value": 0.5,
+      "unit": "probability",
+      "distribution": "S32 persist this p while executing fault_executed_propensity",
+      "parents": [
+        "fault_fixture"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "fault_executed_propensity": {
+      "value": 0.8,
+      "unit": "probability",
+      "distribution": "S32 wrong-propensity actual Bernoulli p, must be rejected",
+      "parents": [
+        "fault_fixture"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    },
+    "fault_action_lower_bounds": {
+      "value": [
+        0.6,
+        0.6
+      ],
+      "unit": "probability",
+      "distribution": "S32 two-action bounds sum>1, must be rejected",
+      "parents": [
+        "fault_fixture"
+      ],
+      "applicability": "reference and cells explicitly overriding this symbol",
+      "provenance": "synthetic_engineering",
+      "source": "docs/implementation/dgp-decisions.md",
+      "source_kind": "choice"
+    }
+  }
+}

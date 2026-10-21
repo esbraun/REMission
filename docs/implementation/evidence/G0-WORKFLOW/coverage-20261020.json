@@ -1,0 +1,88 @@
+{
+  "created_utc": "2026-10-21T07:02:08.809317+00:00",
+  "input_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+  "source_commit": "Candidate commit containing evidence; exact SHA in independent review/root handoff",
+  "requested_model": "gpt-6.1-sol",
+  "requested_effort": "high",
+  "effective_model_introspection": "unavailable; assignment configuration only",
+  "helpers": [],
+  "python": "3.13.7",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "packages": [
+    "annotated-types==0.8.0",
+    "pydantic==2.14.1",
+    "pydantic_core==2.50.1",
+    "typing-inspection==0.4.4",
+    "typing_extensions==4.16.0"
+  ],
+  "source_sha256_normalized_LF": {
+    "contracts/dgp/__init__.py": "194bbca4042d91a0f51af2926fc6eef40c4e92935c21e7f83d643425dbfebd6f",
+    "contracts/dgp/calibration-binding-v1.schema.json": "06761bada9d6a97b729b48d18945b3297699de5a7c541252f6886a9313170f75",
+    "contracts/dgp/calibration.py": "c831cd2205902671bcf6441dd6f01c8cb67e093feb9d9c76ca3ce2bc8c8854aa",
+    "contracts/dgp/checks.py": "f548d6bf490f3ffed926348d4ac60ea582d8704570b461a009b8181d80bc03b9",
+    "contracts/dgp/export.py": "5412b03408b0a4975cafd6aec2214baea03b68e931e08bc77b35c84d21a27ed3",
+    "contracts/dgp/parameters-v1.json": "17fef62e48f426de2f779758ca916262ffc71fdc58cb05f207490a748bcf2d51",
+    "contracts/dgp/parameters.py": "927ec6d80cb9ef172ad3fe4b23db5d82a8e5e0705ae2e42b097899df8a139560",
+    "contracts/dgp/scenarios-v1.json": "58061971106c3c54dbb15b150d89a0446142c87053a412c3aedc2258e42afd24",
+    "contracts/dgp/scenarios.py": "77bf2a4355a51d1ecabf33f5e2c2e641209d6166e27a25b452d6f83e4297878b",
+    "contracts/dgp/truth-fixtures-v1.json": "059032cf5e0e1c6849eab8ed42237a0ddf2255366410d1be4bfbf5e99f75fcae",
+    "contracts/dgp/truth.py": "d3552eddf553e55ae9239428da94f99af92f0d99a19621b305c42f32f8b32249",
+    "docs/implementation/dgp-decisions.md": "b01df97b322e011cff5b39d218fe57344979db7498d1e09d3850ab9b91d0ae0b",
+    "docs/implementation/workflow-contract.md": "904d8a7ebe8052a7196829ac52a19aec7b98a4972bf0e8c56c886a5660920252",
+    "tests/contracts/test_dgp_contracts.py": "665c05d471c1ac71c050ff5563ec3216fe2983af1d9cd9a048f46abfdef1d699"
+  },
+  "acceptance": "pending_independent_Astra_exact_head_base_review",
+  "human_factors": "not_started_deferred",
+  "clinical_review": "not_started_deferred",
+  "clinical_validation": "not_started_separate_future_project",
+  "task": "G0-WORKFLOW",
+  "artifact_version": "1.0.0",
+  "kind": "low_fidelity_document_coverage_not_UI_or_human_validation",
+  "coverage": [
+    "ASSIGN-01",
+    "ASSIGN-02",
+    "ASSIGN-03",
+    "ASSIGN-04",
+    "ASSIGN-05",
+    "ASSIGN-06",
+    "ASSIGN-07",
+    "ASSIGN-08",
+    "ASSIGN-09",
+    "ASSIGN-10"
+  ],
+  "covered_contract_paths": [
+    "parallel states",
+    "role/action allow-deny matrix",
+    "consent/oversight/retraction",
+    "hold/re-entry",
+    "full support freeze",
+    "ordinary care/randomization",
+    "immutable history",
+    "drafts/atomic current-version approval",
+    "provisional thresholds/result statuses",
+    "panel/patient/context-help sketches"
+  ],
+  "skill_sha256_normalized_LF": {
+    "C:\\Users\\erics\\.codex\\skills\\react-best-practices\\SKILL.md": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355",
+    "C:\\Users\\erics\\.codex\\skills\\react-best-practices\\rules\\async-parallel.md": "6d2f841896279e976dfcdc1ac89e70771ac188baadfd43c096b5706cb838b961",
+    "C:\\Users\\erics\\.codex\\skills\\react-best-practices\\rules\\rerender-derived-state-no-effect.md": "cb11ec76f50aa7b6847269f02d79b120c889a30d9ecd2c1d578f75144419c77a",
+    "C:\\Users\\erics\\.codex\\skills\\composition-patterns\\SKILL.md": "e38e0eaa609316b10423a9a138ed95e35099accd3f735585295c8a8f165c28a3",
+    "C:\\Users\\erics\\.codex\\skills\\composition-patterns\\rules\\architecture-avoid-boolean-props.md": "007555ebb020f4d552582a2c4db194db71a1fd33094012e5187bcfa4f8c392d5",
+    "C:\\Users\\erics\\.codex\\skills\\web-design-guidelines\\SKILL.md": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f"
+  },
+  "fetched_rules": {
+    "url": "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md",
+    "retrieved_utc": "2026-10-21T07:02:09.416825+00:00",
+    "sha256_raw_bytes": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234",
+    "bytes": 8055
+  },
+  "executed_UI_checks": [],
+  "not_executed": [
+    "runnable service/UI",
+    "browser/rendered desktop/narrow screenshots",
+    "keyboard/screen-reader/manual accessibility",
+    "intended-user task sessions",
+    "clinical/ethics review",
+    "clinical validation"
+  ]
+}

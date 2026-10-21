@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "purpose": {
+      "enum": [
+        "report_rate",
+        "event_rate",
+        "external_contrast"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "solved",
+        "infeasible",
+        "inconclusive"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "dgp": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "cell_id": {
+      "title": "Cell Id",
+      "type": "string"
+    },
+    "calibration_sample_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Calibration Sample Sha256",
+      "type": "string"
+    },
+    "seed_key_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Seed Key Sha256",
+      "type": "string"
+    },
+    "sample_size": {
+      "exclusiveMinimum": 0,
+      "title": "Sample Size",
+      "type": "integer"
+    },
+    "target": {
+      "title": "Target",
+      "type": "number"
+    },
+    "achieved": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Achieved"
+    },
+    "achieved_mcse": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Achieved Mcse"
+    },
+    "coefficient": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Coefficient"
+    },
+    "iterations": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Iterations",
+      "type": "integer"
+    },
+    "source_se": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Source Se"
+    },
+    "source_se_mcse": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Source Se Mcse"
+    },
+    "source_pilot": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "smallest_estimator_se": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Smallest Estimator Se"
+    },
+    "frozen_before": {
+      "const": "development_and_confirmation",
+      "title": "Frozen Before",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "purpose",
+    "status",
+    "dgp",
+    "cell_id",
+    "calibration_sample_sha256",
+    "seed_key_sha256",
+    "sample_size",
+    "target",
+    "achieved",
+    "achieved_mcse",
+    "coefficient",
+    "iterations",
+    "source_se",
+    "source_se_mcse",
+    "source_pilot",
+    "smallest_estimator_se",
+    "frozen_before"
+  ],
+  "title": "CalibrationBinding",
+  "type": "object"
+}
