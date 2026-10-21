@@ -12,6 +12,7 @@ import time
 
 from .parameters import VERSION, reference_parameters
 from .scenarios import ROWS, scenario_manifest
+from .timing import TEMPORAL
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -31,7 +32,7 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/contracts", "-v"],
         [sys.executable, "docs/implementation/check-ledger-20261020.py"],
         ["git", "diff", "--check"],
-        ["git", "diff", "--check", "6c3fb070d36bfefbd070f2a2c33ccba7631734be"],
+        ["git", "diff", "--check", "b24c3c0fb78bf19928750eae29e852141bd649a7"],
     ]
     results = []
     for command in commands:
@@ -49,8 +50,8 @@ def main():
                     *ROOT.glob("tests/contracts/test_dgp*.py"),
                     ROOT / "docs/implementation/dgp-decisions.md"])
     common = {"created_utc": datetime.now(timezone.utc).isoformat(),
-              "input_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-              "repair_input": "6195f9b745b672f087c9fdbd670497f80b7864ba",
+              "input_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+              "repair_input": "2c76f4c34bc1536714f3e1988fc68da7372eb807",
               "owner_thread": os.environ.get("CODEX_THREAD_ID"),
               "source_commit": "Candidate commit containing evidence; exact SHA in independent review/root handoff",
               "requested_model": "gpt-6.1-sol", "requested_effort": "high",
@@ -62,12 +63,14 @@ def main():
               "human_factors": "not_started_deferred", "clinical_review": "not_started_deferred",
               "clinical_validation": "not_started_separate_future_project"}
     dgp = common | {"task": "G0-DGP", "artifact_version": VERSION, "kind": "contract_and_analytic_fixture_checks_only",
+                    "temporal_contract": TEMPORAL, "calibration_binding_schema_version": "1.1.0",
+                    "analytic_fixture_version": "1.0.0",
                     "parameter_count": len(reference_parameters()["parameters"]), "variant_count": len(ROWS),
                     "cell_count": len(scenario_manifest()["cells"]), "checks": results,
                     "not_executed": ["longitudinal generator", "independent Layer B rollout", "achieved-rate/external calibration",
                                      "source SE pilot", "distribution inspection", "paired-trajectory null equality",
                                      "evaluator process/storage denial", "scenario statistical/policy runs", "human/clinical reviews"]}
-    path = ROOT / "docs/implementation/evidence/G0-DGP/R1/check-results-20261021.json"
+    path = ROOT / "docs/implementation/evidence/G0-DGP/R2/check-results-20261021.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(dgp, indent=2) + "\n", encoding="utf-8")
 

@@ -6,6 +6,7 @@ from pydantic import Field, model_validator
 from contracts.domain.common import Nonnegative, StrictModel, VersionRef
 from .parameters import VERSION, reference_parameters
 from .scenarios import resolve_cell, scenario_manifest
+from .timing import TEMPORAL
 
 
 class ExternalTargetEvidence(StrictModel):
@@ -47,7 +48,8 @@ def calibration_request(*, cell_id: str, dgp: VersionRef,
         raise ValueError("cell has no registered derived calibration; exact MCAR/event defaults are not solved coefficients")
     # Includes the operation, resolved cell, upstream identities and numeric pilot
     # inputs. Changing even an upstream artifact with equal numbers invalidates it.
-    specification = {"dgp_version": VERSION, "cell": resolved["cell"], "expected": expected,
+    specification = {"dgp_version": VERSION, "temporal_contract": TEMPORAL,
+                     "cell": resolved["cell"], "expected": expected,
                      "external": external.model_dump(mode="json") if external else None}
     digest = sha256(json.dumps(specification, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
     expected["target_spec"] = {"id": "dgp-calibration-target", "version": VERSION, "sha256": digest}

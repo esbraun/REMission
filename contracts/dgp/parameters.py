@@ -1,4 +1,4 @@
-"""Complete DGP v1.1.0 inventory. Values are synthetic engineering choices.
+"""Complete DGP v1.2.0 inventory. Values are synthetic engineering choices.
 
 Rows are the authoritative parameter table, not runtime fallbacks. A consumer
 must submit the complete table to validate_parameters before resolving a cell.
@@ -7,7 +7,7 @@ Normal second parameters are SDs; covariance entries are variances.
 import json
 from copy import deepcopy
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 REFERENCE = "docs/spec/dgp-reference.md"
 CATALOG = "docs/spec/scenario-catalog.md"
 DECISIONS = "docs/implementation/dgp-decisions.md"
@@ -130,7 +130,7 @@ report_mode|0|code|0 complete,1 MCAR,2 MAR,3 MNAR,4 action_MNAR|report_process|c
 report_MAR_coefficients|[-0.4,-0.2]|dimensionless|logit observation a+c1*(10-prev observed Q)/2+c2*current observed pain|previous_observed_Q,current_observed_pain|reference
 report_MNAR_quality|0.5|dimensionless|additional (current unobserved Q-7) coefficient|Q_current_unobserved|reference
 report_action_quality|0|dimensionless|additional A_previous*(current unobserved Q-7); action_MNAR 1|A_previous,Q_current_unobserved|choice
-delay_days|[0,1,3]|days|upload delay Categorical, separately keyed report/wearable|measurement|reference
+delay_days|[0,1,3]|days|upload delay Categorical; report from 08:01 recording, wearable from 07:00 sync; separate keys|report_recording,wearable_sync|reference
 delay_probabilities|[1,0,0]|probability|reference immediate; stress [0.7,0.2,0.1]|measurement|reference
 death_enabled|0|indicator|absorbing death, applied before decisions|L,U|reference
 admission_enabled|0|indicator|admission only alive/outpatient, assignments suspended|L,U|reference
@@ -215,7 +215,8 @@ def reference_parameters() -> dict:
                            "provenance": "synthetic_engineering",
                            "source": {"reference": REFERENCE, "catalog": CATALOG, "choice": DECISIONS}[source],
                            "source_kind": source}
-    return {"version": VERSION, "synthetic": True, "parameters": records}
+    from .timing import TEMPORAL
+    return {"version": VERSION, "synthetic": True, "temporal_contract": deepcopy(TEMPORAL), "parameters": records}
 
 
 def validate_parameters(manifest: dict) -> dict:

@@ -6,6 +6,7 @@ from .parameters import VERSION, reference_parameters, validate_parameters
 from .scenarios import scenario_manifest, validate_scenarios
 from .truth import fixture_manifest
 from .calibration import CalibrationBinding, ExternalTargetEvidence
+from .timing import timing_manifest
 
 ROOT = Path(__file__).resolve().parent
 
@@ -14,6 +15,7 @@ def artifacts() -> dict:
     parameters = validate_parameters(reference_parameters())
     scenarios = validate_scenarios(scenario_manifest())
     return {"parameters-v1.json": parameters, "scenarios-v1.json": scenarios,
+            "timing-v1.json": timing_manifest(),
             "truth-fixtures-v1.json": fixture_manifest(),
             "calibration-binding-v1.schema.json": CalibrationBinding.model_json_schema(),
             "external-target-evidence-v1.schema.json": ExternalTargetEvidence.model_json_schema()}

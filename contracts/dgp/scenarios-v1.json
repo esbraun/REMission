@@ -1,14 +1,19 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "catalog_version": 1,
   "synthetic": true,
+  "temporal_contract": {
+    "id": "TIME-01",
+    "version": "2.0.0",
+    "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275"
+  },
   "cells": [
     {
       "id": "S01.reference.n60",
       "family": "S01",
       "variant": "reference",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "visit",
       "estimand": "EST-VISIT",
@@ -27,7 +32,7 @@
       "family": "S01",
       "variant": "reference",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "visit",
       "estimand": "EST-VISIT",
@@ -46,7 +51,7 @@
       "family": "S02",
       "variant": "outcome_null",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "z_L": 0,
         "z_B": 0,
@@ -72,7 +77,7 @@
       "family": "S02",
       "variant": "outcome_null",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "z_L": 0,
         "z_B": 0,
@@ -98,7 +103,7 @@
       "family": "S03",
       "variant": "constant",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "constant_fixture",
       "estimand": "FIX-CONSTANT",
@@ -117,7 +122,7 @@
       "family": "S03",
       "variant": "constant",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "constant_fixture",
       "estimand": "FIX-CONSTANT",
@@ -136,7 +141,7 @@
       "family": "S04",
       "variant": "observed_modifier",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "L_T": 0,
         "z_B": 0,
@@ -160,7 +165,7 @@
       "family": "S04",
       "variant": "observed_modifier",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "L_T": 0,
         "z_B": 0,
@@ -184,7 +189,7 @@
       "family": "S05",
       "variant": "prognostic_null",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "L_T": 0,
         "z_B": 0,
@@ -208,7 +213,7 @@
       "family": "S05",
       "variant": "prognostic_null",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "L_T": 0,
         "z_B": 0,
@@ -232,7 +237,7 @@
       "family": "S06",
       "variant": "feedback",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "visit",
       "estimand": "EST-VISIT",
@@ -251,7 +256,7 @@
       "family": "S07",
       "variant": "hidden_U",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "export_U": 0
       },
@@ -272,7 +277,7 @@
       "family": "S08",
       "variant": "floor_020",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "assignment_floor": 0.2
       },
@@ -293,7 +298,7 @@
       "family": "S08",
       "variant": "floor_005",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "assignment_floor": 0.05
       },
@@ -314,7 +319,7 @@
       "family": "S08",
       "variant": "floor_001",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "assignment_floor": 0.01
       },
@@ -335,7 +340,7 @@
       "family": "S08",
       "variant": "structural_zero",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "structural_zero_enabled": 1
       },
@@ -356,7 +361,7 @@
       "family": "S09",
       "variant": "compatible",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "external_visit",
       "estimand": "EST-VISIT",
@@ -375,7 +380,7 @@
       "family": "S10",
       "variant": "shift_1SE",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "external_shift_SE": 1
       },
@@ -396,7 +401,7 @@
       "family": "S10",
       "variant": "shift_2SE",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "external_shift_SE": 2
       },
@@ -417,7 +422,7 @@
       "family": "S10",
       "variant": "reverse_sign",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "external_reverse_sign": 1
       },
@@ -438,7 +443,7 @@
       "family": "S11",
       "variant": "omitted_modifier_shift",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "external_modifier_export": 0,
         "external_X_law": [
@@ -467,7 +472,7 @@
       "family": "S12",
       "variant": "IPD_and_summary",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "lineage",
       "estimand": "SYSTEM-LINEAGE",
@@ -486,7 +491,7 @@
       "family": "S12",
       "variant": "duplicated_summary_meta",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "lineage",
       "estimand": "SYSTEM-LINEAGE",
@@ -505,7 +510,7 @@
       "family": "S12",
       "variant": "repeated_update",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "lineage",
       "estimand": "SYSTEM-LINEAGE",
@@ -524,7 +529,7 @@
       "family": "S13",
       "variant": "blocks_2_rho04",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_blocks": 2
       },
@@ -545,7 +550,7 @@
       "family": "S13",
       "variant": "blocks_4_rho04",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_blocks": 4
       },
@@ -566,7 +571,7 @@
       "family": "S13",
       "variant": "blocks_8_rho04",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_blocks": 8
       },
@@ -587,7 +592,7 @@
       "family": "S13",
       "variant": "blocks_4_rho0",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_blocks": 4,
         "n1_rho": 0
@@ -609,7 +614,7 @@
       "family": "S13",
       "variant": "blocks_4_rho08",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_blocks": 4,
         "n1_rho": 0.8
@@ -631,7 +636,7 @@
       "family": "S14",
       "variant": "half_life_0",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "carry_half_life": 0
       },
@@ -652,7 +657,7 @@
       "family": "S14",
       "variant": "half_life_1",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "carry_half_life": 1
       },
@@ -673,7 +678,7 @@
       "family": "S14",
       "variant": "half_life_3",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "carry_half_life": 3
       },
@@ -694,7 +699,7 @@
       "family": "S14",
       "variant": "rebound_absent",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "rebound_enabled": 0
       },
@@ -715,7 +720,7 @@
       "family": "S14",
       "variant": "rebound_present",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "rebound_enabled": 1
       },
@@ -736,7 +741,7 @@
       "family": "S15",
       "variant": "phase_aligned",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_phase_mode": 1
       },
@@ -757,7 +762,7 @@
       "family": "S15",
       "variant": "phase_balanced",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_phase_mode": 2
       },
@@ -778,7 +783,7 @@
       "family": "S16",
       "variant": "adherence_rescue",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "med_taken_probability": 0.7,
         "rescue_enabled": 1
@@ -800,7 +805,7 @@
       "family": "S16",
       "variant": "outcome_stop",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_stop_mode": 1
       },
@@ -821,7 +826,7 @@
       "family": "S16",
       "variant": "insufficient_blocks",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "n1_stop_mode": 2
       },
@@ -842,7 +847,7 @@
       "family": "S17",
       "variant": "randomized_tree",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "randomized_tree",
       "estimand": "FIX-ESC-RANDOMIZED",
@@ -861,7 +866,7 @@
       "family": "S18",
       "variant": "observational_tree",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "observational_tree",
       "estimand": "FIX-ESC-OBSERVATIONAL",
@@ -880,7 +885,7 @@
       "family": "S19",
       "variant": "noisy_response",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "response_flip_probability": 0.2
       },
@@ -901,7 +906,7 @@
       "family": "S19",
       "variant": "sparse_nonresponders",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "sparse_response_probability": 0.9
       },
@@ -922,7 +927,7 @@
       "family": "S20",
       "variant": "prompt_null",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "z_prompt": 0,
         "z_delayed_prompt": 0,
@@ -948,7 +953,7 @@
       "family": "S20",
       "variant": "prompt_null",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "z_prompt": 0,
         "z_delayed_prompt": 0,
@@ -974,7 +979,7 @@
       "family": "S21",
       "variant": "immediate",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "mrt",
       "estimand": "EST-MRT",
@@ -994,7 +999,7 @@
       "family": "S21",
       "variant": "immediate",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "mrt",
       "estimand": "EST-MRT",
@@ -1014,7 +1019,7 @@
       "family": "S22",
       "variant": "habituation",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "habituation_rate": 0.2
       },
@@ -1036,7 +1041,7 @@
       "family": "S22",
       "variant": "habituation",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "habituation_rate": 0.2
       },
@@ -1058,7 +1063,7 @@
       "family": "S22",
       "variant": "delayed_harm",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "z_delayed_prompt": 0.15
       },
@@ -1080,7 +1085,7 @@
       "family": "S22",
       "variant": "delayed_harm",
       "patients": 240,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "z_delayed_prompt": 0.15
       },
@@ -1102,7 +1107,7 @@
       "family": "S23",
       "variant": "MCAR_0",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 1,
         "missing_fraction": 0
@@ -1124,7 +1129,7 @@
       "family": "S23",
       "variant": "MCAR_20",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 1,
         "missing_fraction": 0.2
@@ -1146,7 +1151,7 @@
       "family": "S23",
       "variant": "MCAR_40",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 1,
         "missing_fraction": 0.4
@@ -1168,7 +1173,7 @@
       "family": "S23",
       "variant": "MAR_20",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 2,
         "missing_fraction": 0.2
@@ -1190,7 +1195,7 @@
       "family": "S23",
       "variant": "MAR_40",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 2,
         "missing_fraction": 0.4
@@ -1212,7 +1217,7 @@
       "family": "S24",
       "variant": "MNAR_20",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 3,
         "missing_fraction": 0.2
@@ -1235,7 +1240,7 @@
       "family": "S24",
       "variant": "MNAR_40",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 3,
         "missing_fraction": 0.4
@@ -1258,7 +1263,7 @@
       "family": "S24",
       "variant": "action_reporting_equal_rewards",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "report_mode": 4,
         "missing_fraction": 0.2,
@@ -1285,7 +1290,7 @@
       "family": "S25",
       "variant": "quiet_wake",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "wearable_wake_bias": 0.3
       },
@@ -1306,7 +1311,7 @@
       "family": "S25",
       "variant": "device_shift",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "device_shift_minutes": 30
       },
@@ -1327,7 +1332,7 @@
       "family": "S26",
       "variant": "correlated_items",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "item_copula_rho": 0.4
       },
@@ -1348,7 +1353,7 @@
       "family": "S26",
       "variant": "overlapping_recall",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "measurement",
       "estimand": "EST-VISIT",
@@ -1367,7 +1372,7 @@
       "family": "S26",
       "variant": "phase_item_shift",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "item_phase_offsets": [
           0.3,
@@ -1396,7 +1401,7 @@
       "family": "S27",
       "variant": "admission",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "admission_enabled": 1
       },
@@ -1418,7 +1423,7 @@
       "family": "S27",
       "variant": "death",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "death_enabled": 1
       },
@@ -1440,7 +1445,7 @@
       "family": "S27",
       "variant": "discontinuation",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "discontinuation_enabled": 1
       },
@@ -1462,7 +1467,7 @@
       "family": "S27",
       "variant": "regimen_change",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "regimen_change_enabled": 1
       },
@@ -1484,7 +1489,7 @@
       "family": "S28",
       "variant": "late_upload",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "delay_probabilities": [
           0.7,
@@ -1509,7 +1514,7 @@
       "family": "S28",
       "variant": "correction",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1528,7 +1533,7 @@
       "family": "S28",
       "variant": "duplicate",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1547,7 +1552,7 @@
       "family": "S28",
       "variant": "stale_approval",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1566,7 +1571,7 @@
       "family": "S28",
       "variant": "consent_withdrawal",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1585,7 +1590,7 @@
       "family": "S29",
       "variant": "frozen_support",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "frozen_n1",
       "estimand": "EST-N1",
@@ -1606,7 +1611,7 @@
       "family": "S29",
       "variant": "drifting_global",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "frozen_n1",
       "estimand": "EST-N1",
@@ -1627,7 +1632,7 @@
       "family": "S30",
       "variant": "conflict_sparse_overlap",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "external_shift_SE": 2,
         "assignment_floor": 0.01
@@ -1649,7 +1654,7 @@
       "family": "S31",
       "variant": "phase_carryover",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "regimen_change_enabled": 1,
         "carry_half_life": 3
@@ -1671,7 +1676,7 @@
       "family": "S31",
       "variant": "admission_reporting",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {
         "admission_enabled": 1,
         "report_mode": 2,
@@ -1694,7 +1699,7 @@
       "family": "S32",
       "variant": "wrong_propensity",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1713,7 +1718,7 @@
       "family": "S32",
       "variant": "infeasible_bounds",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1732,7 +1737,7 @@
       "family": "S32",
       "variant": "missing_fit",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",
@@ -1751,7 +1756,7 @@
       "family": "S32",
       "variant": "no_actions",
       "patients": 60,
-      "version": "1.1.0",
+      "version": "1.2.0",
       "overrides": {},
       "target": "system",
       "estimand": "SYSTEM-BOUNDARY",

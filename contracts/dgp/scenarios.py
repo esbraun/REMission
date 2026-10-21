@@ -110,6 +110,7 @@ TARGETS = {
 
 
 def scenario_manifest() -> dict:
+    from .timing import TEMPORAL
     cells = []
     for family, variant, overrides, target, tiers in ROWS:
         sizes = [60, 240] if family in {"S01", "S02", "S03", "S04", "S05", "S20", "S21", "S22"} else [60]
@@ -122,7 +123,8 @@ def scenario_manifest() -> dict:
                           "intervention": intervention, "comparator": comparator,
                           "layer": layer, "tiers": list(tiers),
                           "source": f"docs/spec/scenario-catalog.md#{family}"})
-    return {"version": VERSION, "catalog_version": 1, "synthetic": True, "cells": cells}
+    return {"version": VERSION, "catalog_version": 1, "synthetic": True,
+            "temporal_contract": deepcopy(TEMPORAL), "cells": cells}
 
 
 def validate_scenarios(manifest: dict) -> dict:

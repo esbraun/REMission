@@ -1,6 +1,11 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "synthetic": true,
+  "temporal_contract": {
+    "id": "TIME-01",
+    "version": "2.0.0",
+    "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275"
+  },
   "parameters": {
     "start_day": {
       "value": -14,
@@ -1582,9 +1587,10 @@
         3
       ],
       "unit": "days",
-      "distribution": "upload delay Categorical, separately keyed report/wearable",
+      "distribution": "upload delay Categorical; report from 08:01 recording, wearable from 07:00 sync; separate keys",
       "parents": [
-        "measurement"
+        "report_recording",
+        "wearable_sync"
       ],
       "applicability": "reference and cells explicitly overriding this symbol",
       "provenance": "synthetic_engineering",

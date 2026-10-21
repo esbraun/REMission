@@ -142,7 +142,7 @@ class ParameterAndCellContracts(unittest.TestCase):
 
 class IndependentTruthFixtures(unittest.TestCase):
     def test_calibration_binding_rejects_missing_derived_values_and_wrong_target(self):
-        ref = {"id": "dgp-v1", "version": "1.1.0", "sha256": "a" * 64}
+        ref = {"id": "dgp-v1", "version": "1.2.0", "sha256": "a" * 64}
         request = calibration_request(cell_id="S23.MAR_20.n60", dgp=VersionRef.model_validate(ref))
         data = {"schema_version": "1.1.0", "synthetic": True, "purpose": "report_rate", "status": "solved",
                 "dgp": ref, "cell_id": "S23.MAR_20.n60", "calibration_sample_sha256": "b" * 64,
@@ -178,7 +178,7 @@ class IndependentTruthFixtures(unittest.TestCase):
                     require_solved(hostile, cell_id=hostile.cell_id, dgp=VersionRef.model_validate(ref))
 
     def test_external_target_is_derived_and_bound_to_independent_upstream_identities(self):
-        ref = VersionRef(id="dgp-v1", version="1.1.0", sha256="a" * 64)
+        ref = VersionRef(id="dgp-v1", version="1.2.0", sha256="a" * 64)
         evidence = ExternalTargetEvidence(
             source_reference=VersionRef(id="reference-contrast", version="1", sha256="b" * 64),
             source_pilot=VersionRef(id="source-se-pilot", version="1", sha256="c" * 64),
