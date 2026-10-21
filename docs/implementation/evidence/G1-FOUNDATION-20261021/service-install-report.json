@@ -1,0 +1,952 @@
+{
+  "version": "1",
+  "pip_version": "25.2",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/50/c3/759716158338892ed8e483077241cdf80e1fd727f56baf750c75bfea58de/fastapi-0.157.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=45b5cbf098ce3f47e008ca67931ce333d028129c823e3b6766a3bd0d70b81f7f",
+          "hashes": {
+            "sha256": "45b5cbf098ce3f47e008ca67931ce333d028129c823e3b6766a3bd0d70b81f7f"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "fastapi",
+        "version": "0.157.0",
+        "summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+        "description": "<p align=\"center\">\n  <a href=\"https://fastapi.tiangolo.com\"><img src=\"https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png\" alt=\"FastAPI\"></a>\n</p>\n<p align=\"center\">\n    <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>\n</p>\n<p align=\"center\">\n<a href=\"https://github.com/fastapi/fastapi/actions?query=workflow%3ATest+event%3Apush+branch%3Amaster\">\n    <img src=\"https://github.com/fastapi/fastapi/actions/workflows/test.yml/badge.svg?event=push&branch=master\" alt=\"Test\">\n</a>\n<a href=\"https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/fastapi\">\n    <img src=\"https://coverage-badge.samuelcolvin.workers.dev/fastapi/fastapi.svg\" alt=\"Coverage\">\n</a>\n<a href=\"https://pypi.org/project/fastapi\">\n    <img src=\"https://img.shields.io/pypi/v/fastapi?color=%2334D058&label=pypi%20package\" alt=\"Package version\">\n</a>\n<a href=\"https://pypi.org/project/fastapi\">\n    <img src=\"https://img.shields.io/pypi/pyversions/fastapi.svg?color=%2334D058\" alt=\"Supported Python versions\">\n</a>\n</p>\n\n---\n\n**Documentation**: [https://fastapi.tiangolo.com](https://fastapi.tiangolo.com)\n\n**Source Code**: [https://github.com/fastapi/fastapi](https://github.com/fastapi/fastapi)\n\n---\n\nFastAPI is a modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.\n\nThe key features are:\n\n* **Fast**: Very high performance, on par with **NodeJS** and **Go** (thanks to Starlette and Pydantic). [One of the fastest Python frameworks available](#performance).\n* **Fast to code**: Increase the speed to develop features by about 200% to 300%. *\n* **Fewer bugs**: Reduce about 40% of human (developer) induced errors. *\n* **Intuitive**: Great editor support. <dfn title=\"also known as auto-complete, autocompletion, IntelliSense\">Completion</dfn> everywhere. Less time debugging.\n* **Easy**: Designed to be easy to use and learn. Less time reading docs.\n* **Short**: Minimize code duplication. Multiple features from each parameter declaration. Fewer bugs.\n* **Robust**: Get production-ready code. With automatic interactive documentation.\n* **Standards-based**: Based on (and fully compatible with) the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification) (previously known as Swagger) and [JSON Schema](https://json-schema.org/).\n\n<small>* estimation based on tests conducted by an internal development team, building production applications.</small>\n\n## Sponsors\n\n<!-- sponsors -->\n### Keystone Sponsor\n\n<a href=\"https://fastapicloud.com\" target=\"_blank\" title=\"FastAPI Cloud. By the same team behind FastAPI. You code. We Cloud.\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/fastapicloud.png\"></a>\n\n### Gold Sponsors\n\n<a href=\"https://blockbee.io?ref=fastapi\" target=\"_blank\" title=\"BlockBee Cryptocurrency Payment Gateway\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/blockbee.png\"></a>\n<a href=\"https://www.propelauth.com/?utm_source=fastapi&utm_campaign=1223&utm_medium=mainbadge\" target=\"_blank\" title=\"Auth, user management and more for your B2B product\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/propelauth.png\"></a>\n<a href=\"https://www.coderabbit.ai/?utm_source=fastapi&utm_medium=badge&utm_campaign=fastapi\" target=\"_blank\" title=\"Cut Code Review Time & Bugs in Half with CodeRabbit\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/coderabbit.png\"></a>\n<a href=\"https://subtotal.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=open-source\" target=\"_blank\" title=\"The Gold Standard in Retail Account Linking\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/subtotal.svg\"></a>\n<a href=\"https://docs.railway.com/guides/fastapi?utm_medium=integration&utm_source=docs&utm_campaign=fastapi\" target=\"_blank\" title=\"Deploy enterprise applications at startup speed\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/railway.png\"></a>\n<a href=\"https://serpapi.com/?utm_source=fastapi_website\" target=\"_blank\" title=\"SerpApi: Web Search API\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/serpapi.png\"></a>\n<a href=\"https://www.greptile.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=fastapi_sponsor_page\" target=\"_blank\" title=\"Greptile: The AI Code Reviewer\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/greptile.png\"></a>\n\n### Silver Sponsors\n\n<a href=\"https://databento.com/?utm_source=fastapi&utm_medium=sponsor&utm_content=display\" target=\"_blank\" title=\"Pay as you go for market data\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/databento.svg\"></a>\n<a href=\"https://www.svix.com/\" target=\"_blank\" title=\"Svix - Webhooks as a service\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/svix.svg\"></a>\n<a href=\"https://dribia.com/en/\" target=\"_blank\" title=\"Dribia - Data Science within your reach\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/dribia.png\"></a>\n<a href=\"https://www.bairesdev.com/\" target=\"_blank\" title=\"BairesDev | Nearshore Software Development & Staff Augmentation Company\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/bairesdev.svg\"></a>\n<a href=\"https://tutorcruncher.com/?utm_source=fastapi\" target=\"_blank\" title=\"TutorCruncher\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/tutorcruncher.png\"></a>\n\n<!-- /sponsors -->\n\n[Other sponsors](https://fastapi.tiangolo.com/fastapi-people/#sponsors)\n\n## Opinions\n\n\n\n<div class=\"only-github\" markdown=\"1\">\n\n\"_[...] I'm using **FastAPI** a ton these days. [...] I'm actually planning to use it for all of my team's **ML services at Microsoft**. Some of them are getting integrated into the core **Windows** product and some **Office** products._\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Kabir Khan - <strong>Microsoft</strong> <a href=\"https://github.com/fastapi/fastapi/pull/26\"><small>(ref)</small></a></div>\n\n---\n\n\"_We adopted the **FastAPI** library to spawn a **REST** server that can be queried to obtain **predictions**. [for Ludwig]_\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Piero Molino, Yaroslav Dudin, and Sai Sumanth Miryala - <strong>Uber</strong> <a href=\"https://www.uber.com/us/en/blog/ludwig-v0-2/\"><small>(ref)</small></a></div>\n\n---\n\n\"_**Netflix** is pleased to announce the open-source release of our **crisis management** orchestration framework: **Dispatch**! [built with **FastAPI**]_\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Kevin Glisson, Marc Vilanova, Forest Monsen - <strong>Netflix</strong> <a href=\"https://netflixtechblog.com/introducing-dispatch-da4b8a2a8072\"><small>(ref)</small></a></div>\n\n---\n\n\"_If anyone is looking to build a production Python API, I would highly recommend **FastAPI**. It is **beautifully designed**, **simple to use** and **highly scalable**, it has become a **key component** in our API first development strategy and is driving many automations and services such as our Virtual TAC Engineer._\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Deon Pillsbury - <strong>Cisco</strong> <a href=\"https://www.linkedin.com/posts/deonpillsbury_cisco-cx-python-activity-6963242628536487936-trAp/\"><small>(ref)</small></a></div>\n\n---\n\n</div>\n\n## FastAPI mini documentary\n\nThere's a [FastAPI mini documentary](https://www.youtube.com/watch?v=mpR8ngthqiE) released at the end of 2025, you can watch it online:\n\n<a class=\"fastapi-feature-banner\" href=\"https://www.youtube.com/watch?v=mpR8ngthqiE\"><img src=\"https://fastapi.tiangolo.com/img/fastapi-documentary.jpg\" alt=\"FastAPI Mini Documentary\"></a>\n\n## **Typer**, the FastAPI of CLIs\n\n<a href=\"https://typer.tiangolo.com\"><img src=\"https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg\" style=\"width: 20%;\"></a>\n\nIf you are building a <abbr title=\"Command Line Interface\">CLI</abbr> app to be used in the terminal instead of a web API, check out [**Typer**](https://typer.tiangolo.com/).\n\n**Typer** is FastAPI's little sibling. And it's intended to be the **FastAPI of CLIs**. ⌨️ 🚀\n\n## Requirements\n\nFastAPI stands on the shoulders of giants:\n\n* [Starlette](https://starlette.dev/) for the web parts.\n* [Pydantic](https://pydantic.dev/docs/) for the data parts.\n\n## Installation\n\nFirst, [install `uv`](https://docs.astral.sh/uv/getting-started/installation/), and then add FastAPI to your project:\n\n<div class=\"termy\">\n\n```console\n$ uv add \"fastapi[standard]\"\n\n---> 100%\n```\n\n</div>\n\n**Note**: Make sure you put `\"fastapi[standard]\"` in quotes to ensure it works in all terminals.\n\nIf you prefer to use `pip`, install `fastapi[standard]` inside a virtual environment. See the [installation guide](tutorial/#install-fastapi) for the alternative steps.\n\n## Example\n\n### Create it\n\nCreate a file `main.py` with:\n\n```Python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/\")\ndef read_root():\n    return {\"Hello\": \"World\"}\n\n\n@app.get(\"/items/{item_id}\")\ndef read_item(item_id: int, q: str | None = None):\n    return {\"item_id\": item_id, \"q\": q}\n```\n\n<details markdown=\"1\">\n<summary>Or use <code>async def</code>...</summary>\n\nIf your code uses `async` / `await`, use `async def`:\n\n```Python hl_lines=\"7  12\"\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/\")\nasync def read_root():\n    return {\"Hello\": \"World\"}\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: int, q: str | None = None):\n    return {\"item_id\": item_id, \"q\": q}\n```\n\n**Note**:\n\nIf you don't know, check the _\"In a hurry?\"_ section about [`async` and `await` in the docs](https://fastapi.tiangolo.com/async/#in-a-hurry).\n\n</details>\n\n### Run it\n\nRun the server with:\n\n<div class=\"termy\">\n\n```console\n$ uv run fastapi dev\n\n ╭────────── FastAPI CLI - Development mode ───────────╮\n │                                                     │\n │  Serving at: http://127.0.0.1:8000                  │\n │                                                     │\n │  API docs: http://127.0.0.1:8000/docs               │\n │                                                     │\n │  Running in development mode, for production use:   │\n │                                                     │\n │  fastapi run                                        │\n │                                                     │\n ╰─────────────────────────────────────────────────────╯\n\nINFO:     Will watch for changes in these directories: ['/home/user/code/awesomeapp']\nINFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)\nINFO:     Started reloader process [2248755] using WatchFiles\nINFO:     Started server process [2248757]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\n```\n\n</div>\n\n<details markdown=\"1\">\n<summary>About the command <code>fastapi dev</code>...</summary>\n\nThe command `fastapi dev` reads your `main.py` file automatically, detects the **FastAPI** app in it, and starts a server using [Uvicorn](https://uvicorn.dev).\n\nBy default, `fastapi dev` will start with auto-reload enabled for local development.\n\nYou can read more about it in the [FastAPI CLI docs](https://fastapi.tiangolo.com/fastapi-cli/).\n\n</details>\n\n### Check it\n\nOpen your browser at [http://127.0.0.1:8000/items/5?q=somequery](http://127.0.0.1:8000/items/5?q=somequery).\n\nYou will see the JSON response as:\n\n```JSON\n{\"item_id\": 5, \"q\": \"somequery\"}\n```\n\nYou already created an API that:\n\n* Receives HTTP requests in the _paths_ `/` and `/items/{item_id}`.\n* Both _paths_ take `GET` <em>operations</em> (also known as HTTP _methods_).\n* The _path_ `/items/{item_id}` has a _path parameter_ `item_id` that should be an `int`.\n* The _path_ `/items/{item_id}` has an optional `str` _query parameter_ `q`.\n\n### Interactive API docs\n\nNow go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).\n\nYou will see the automatic interactive API documentation (provided by [Swagger UI](https://github.com/swagger-api/swagger-ui)):\n\n![Swagger UI](https://fastapi.tiangolo.com/img/index/index-01-swagger-ui-simple.png)\n\n### Alternative API docs\n\nAnd now, go to [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).\n\nYou will see the alternative automatic documentation (provided by [ReDoc](https://github.com/Redocly/redoc)):\n\n![ReDoc](https://fastapi.tiangolo.com/img/index/index-02-redoc-simple.png)\n\n## Example upgrade\n\nNow modify the file `main.py` to receive a body from a `PUT` request.\n\nDeclare the body using standard Python types, thanks to Pydantic.\n\n```Python hl_lines=\"2  7-10 23-25\"\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\n\nclass Item(BaseModel):\n    name: str\n    price: float\n    is_offer: bool | None = None\n\n\n@app.get(\"/\")\ndef read_root():\n    return {\"Hello\": \"World\"}\n\n\n@app.get(\"/items/{item_id}\")\ndef read_item(item_id: int, q: str | None = None):\n    return {\"item_id\": item_id, \"q\": q}\n\n\n@app.put(\"/items/{item_id}\")\ndef update_item(item_id: int, item: Item):\n    return {\"item_name\": item.name, \"item_id\": item_id}\n```\n\nThe `fastapi dev` server should reload automatically.\n\n### Interactive API docs upgrade\n\nNow go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).\n\n* The interactive API documentation will be automatically updated, including the new body:\n\n![Swagger UI](https://fastapi.tiangolo.com/img/index/index-03-swagger-02.png)\n\n* Click on the button \"Try it out\", it allows you to fill the parameters and directly interact with the API:\n\n![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-04-swagger-03.png)\n\n* Then click on the \"Execute\" button, the user interface will communicate with your API, send the parameters, get the results and show them on the screen:\n\n![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-05-swagger-04.png)\n\n### Alternative API docs upgrade\n\nAnd now, go to [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).\n\n* The alternative documentation will also reflect the new query parameter and body:\n\n![ReDoc](https://fastapi.tiangolo.com/img/index/index-06-redoc-02.png)\n\n### Recap\n\nIn summary, you declare **once** the types of parameters, body, etc. as function parameters.\n\nYou do that with standard modern Python types.\n\nYou don't have to learn a new syntax, the methods or classes of a specific library, etc.\n\nJust standard **Python**.\n\nFor example, for an `int`:\n\n```Python\nitem_id: int\n```\n\nor for a more complex `Item` model:\n\n```Python\nitem: Item\n```\n\n...and with that single declaration you get:\n\n* Editor support, including:\n    * Completion.\n    * Type checks.\n* Validation of data:\n    * Automatic and clear errors when the data is invalid.\n    * Validation even for deeply nested JSON objects.\n* <dfn title=\"also known as: serialization, parsing, marshalling\">Conversion</dfn> of input data: coming from the network to Python data and types. Reading from:\n    * JSON.\n    * Path parameters.\n    * Query parameters.\n    * Cookies.\n    * Headers.\n    * Forms.\n    * Files.\n* <dfn title=\"also known as: serialization, parsing, marshalling\">Conversion</dfn> of output data: converting from Python data and types to network data (as JSON):\n    * Convert Python types (`str`, `int`, `float`, `bool`, `list`, etc).\n    * `datetime` objects.\n    * `UUID` objects.\n    * Database models.\n    * ...and many more.\n* Automatic interactive API documentation, including 2 alternative user interfaces:\n    * Swagger UI.\n    * ReDoc.\n\n---\n\nComing back to the previous code example, **FastAPI** will:\n\n* Validate that there is an `item_id` in the path for `GET` and `PUT` requests.\n* Validate that the `item_id` is of type `int` for `GET` and `PUT` requests.\n    * If it is not, the client will see a useful, clear error.\n* Check if there is an optional query parameter named `q` (as in `http://127.0.0.1:8000/items/foo?q=somequery`) for `GET` requests.\n    * As the `q` parameter is declared with `= None`, it is optional.\n    * Without the `None` it would be required (as is the body in the case with `PUT`).\n* For `PUT` requests to `/items/{item_id}`, read the body as JSON:\n    * Check that it has a required attribute `name` that should be a `str`.\n    * Check that it has a required attribute `price` that has to be a `float`.\n    * Check that it has an optional attribute `is_offer`, that should be a `bool`, if present.\n    * All this would also work for deeply nested JSON objects.\n* Convert from and to JSON automatically.\n* Document everything with OpenAPI, that can be used by:\n    * Interactive documentation systems.\n    * Automatic client code generation systems, for many languages.\n* Provide 2 interactive documentation web interfaces directly.\n\n---\n\nWe just scratched the surface, but you already get the idea of how it all works.\n\nTry changing the line with:\n\n```Python\n    return {\"item_name\": item.name, \"item_id\": item_id}\n```\n\n...from:\n\n```Python\n        ... \"item_name\": item.name ...\n```\n\n...to:\n\n```Python\n        ... \"item_price\": item.price ...\n```\n\n...and see how your editor will auto-complete the attributes and know their types:\n\n![editor support](https://fastapi.tiangolo.com/img/vscode-completion.png)\n\nFor a more complete example including more features, see the <a href=\"https://fastapi.tiangolo.com/tutorial/\">Tutorial - User Guide</a>.\n\n**Spoiler alert**: the tutorial - user guide includes:\n\n* Declaration of **parameters** from other different places such as: **headers**, **cookies**, **form fields** and **files**.\n* How to set **validation constraints** such as `maximum_length` or `regex`.\n* A very powerful and easy to use **<dfn title=\"also known as components, resources, providers, services, injectables\">Dependency Injection</dfn>** system.\n* Security and authentication, including support for **OAuth2** with **JWT tokens** and **HTTP Basic** auth.\n* More advanced (but equally easy) techniques for declaring **deeply nested JSON models** (thanks to Pydantic).\n* **GraphQL** integration with [Strawberry](https://strawberry.rocks) and other libraries.\n* Many extra features (thanks to Starlette) such as:\n    * **WebSockets**\n    * extremely easy tests based on HTTPX and `pytest`\n    * **CORS**\n    * **Cookie Sessions**\n    * ...and more.\n\n### Deploy your app (optional)\n\nYou can optionally deploy your FastAPI app to [FastAPI Cloud](https://fastapicloud.com) with a single command. 🚀\n\n<div class=\"termy\">\n\n```console\n$ uv run fastapi deploy\n\nDeploying to FastAPI Cloud...\n\n✅ Deployment successful!\n\n🐔 Ready the chicken! Your app is ready at https://myapp.fastapicloud.dev\n```\n\n</div>\n\nThe CLI will automatically detect your FastAPI application and deploy it to the cloud. If you are not logged in, your browser will open to complete the authentication process.\n\nThat's it! Now you can access your app at that URL. ✨\n\n#### About FastAPI Cloud\n\n**[FastAPI Cloud](https://fastapicloud.com)** is built by the same author and team behind **FastAPI**.\n\nIt streamlines the process of **building**, **deploying**, and **accessing** an API with minimal effort.\n\nIt brings the same **developer experience** of building apps with FastAPI to **deploying** them to the cloud. 🎉\n\nFastAPI Cloud is the primary sponsor and funding provider for the *FastAPI and friends* open source projects. ✨\n\n#### Deploy to other cloud providers\n\nFastAPI is open source and based on standards. You can deploy FastAPI apps to any cloud provider you choose.\n\nFollow your cloud provider's guides to deploy FastAPI apps with them. 🤓\n\n## Performance\n\nIndependent TechEmpower benchmarks show **FastAPI** applications running under Uvicorn as [one of the fastest Python frameworks available](https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=query&l=zijzen-7), only below Starlette and Uvicorn themselves (used internally by FastAPI). (*)\n\nTo understand more about it, see the section [Benchmarks](https://fastapi.tiangolo.com/benchmarks/).\n\n## Dependencies\n\nFastAPI depends on Pydantic and Starlette.\n\n### `standard` Dependencies\n\nWhen you install FastAPI with `uv add \"fastapi[standard]\"` it comes with the `standard` group of optional dependencies:\n\nUsed by Pydantic:\n\n* [`email-validator`](https://github.com/JoshData/python-email-validator) - for email validation.\n\nUsed by Starlette:\n\n* [`httpx2`](https://pydantic.dev/docs/httpx2/) (or `httpx`) - Used by the `TestClient`.\n* [`jinja2`](https://jinja.palletsprojects.com) - Required if you want to use the default template configuration.\n* [`python-multipart`](https://github.com/Kludex/python-multipart) - Required if you want to support form <dfn title=\"converting the string that comes from an HTTP request into Python data\">\"parsing\"</dfn>, with `request.form()`.\n\nUsed by FastAPI:\n\n* [`uvicorn`](https://uvicorn.dev) - for the server that loads and serves your application. This includes `uvicorn[standard]`, which includes some dependencies (e.g. `uvloop`) needed for high performance serving.\n* `fastapi-cli[standard]` - to provide the `fastapi` command.\n    * This includes `fastapi-cloud-cli`, which allows you to deploy your FastAPI application to [FastAPI Cloud](https://fastapicloud.com).\n\n### Without `standard` Dependencies\n\nIf you don't want to include the `standard` optional dependencies, you can install with `uv add fastapi` instead of `uv add \"fastapi[standard]\"`.\n\n### Without `fastapi-cloud-cli`\n\nIf you want to install FastAPI with the standard dependencies but without the `fastapi-cloud-cli`, you can install with `uv add \"fastapi[standard-no-fastapi-cloud-cli]\"`.\n\n### Additional Optional Dependencies\n\nThere are some additional dependencies you might want to install.\n\nAdditional optional Pydantic dependencies:\n\n* [`pydantic-settings`](https://pydantic.dev/docs/validation/latest/concepts/pydantic_settings/) - for settings management.\n* [`pydantic-extra-types`](https://github.com/pydantic/pydantic-extra-types) - for extra types to be used with Pydantic.\n\nAdditional optional FastAPI dependencies:\n\n* [`orjson`](https://github.com/ijl/orjson) - Required if you want to use `ORJSONResponse`.\n* [`ujson`](https://github.com/ultrajson/ultrajson) - Required if you want to use `UJSONResponse`.\n\n## License\n\nThis project is licensed under the terms of the MIT license.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Sebastián Ramírez <tiangolo@gmail.com>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Intended Audience :: Information Technology",
+          "Intended Audience :: System Administrators",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python",
+          "Topic :: Internet",
+          "Topic :: Software Development :: Libraries :: Application Frameworks",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Software Development",
+          "Typing :: Typed",
+          "Development Status :: 4 - Beta",
+          "Environment :: Web Environment",
+          "Framework :: AsyncIO",
+          "Framework :: FastAPI",
+          "Framework :: Pydantic",
+          "Framework :: Pydantic :: 2",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "starlette>=0.46.0",
+          "pydantic>=2.9.0",
+          "typing-extensions>=4.8.0",
+          "typing-inspection>=0.4.2",
+          "annotated-doc>=0.0.2",
+          "opentelemetry-api>=1.44.0",
+          "opentelemetry-sdk>=1.44.0; extra == \"opentelemetry\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"opentelemetry\"",
+          "opentelemetry-sdk>=1.44.0; extra == \"standard\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"standard\"",
+          "fastapi-cli[standard]>=0.0.32; extra == \"standard\"",
+          "fastar>=0.9.0; extra == \"standard\"",
+          "httpx<1.0.0,>=0.23.0; extra == \"standard\"",
+          "httpx2>=2.0.0; extra == \"standard\"",
+          "jinja2>=3.1.5; extra == \"standard\"",
+          "python-multipart>=0.0.18; extra == \"standard\"",
+          "email-validator>=2.0.0; extra == \"standard\"",
+          "uvicorn[standard]>=0.12.0; extra == \"standard\"",
+          "pydantic-settings>=2.0.0; extra == \"standard\"",
+          "pydantic-extra-types>=2.0.0; extra == \"standard\"",
+          "opentelemetry-sdk>=1.44.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "fastapi-cli[standard-no-fastapi-cloud-cli]>=0.0.32; extra == \"standard-no-fastapi-cloud-cli\"",
+          "httpx<1.0.0,>=0.23.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "httpx2>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "jinja2>=3.1.5; extra == \"standard-no-fastapi-cloud-cli\"",
+          "python-multipart>=0.0.18; extra == \"standard-no-fastapi-cloud-cli\"",
+          "email-validator>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "uvicorn[standard]>=0.12.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "pydantic-settings>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "pydantic-extra-types>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "opentelemetry-sdk>=1.44.0; extra == \"all\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"all\"",
+          "fastapi-cli[standard]>=0.0.32; extra == \"all\"",
+          "httpx<1.0.0,>=0.23.0; extra == \"all\"",
+          "httpx2>=2.0.0; extra == \"all\"",
+          "jinja2>=3.1.5; extra == \"all\"",
+          "python-multipart>=0.0.18; extra == \"all\"",
+          "itsdangerous>=1.1.0; extra == \"all\"",
+          "pyyaml>=5.3.1; extra == \"all\"",
+          "email-validator>=2.0.0; extra == \"all\"",
+          "uvicorn[standard]>=0.12.0; extra == \"all\"",
+          "pydantic-settings>=2.0.0; extra == \"all\"",
+          "pydantic-extra-types>=2.0.0; extra == \"all\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://github.com/fastapi/fastapi",
+          "Documentation, https://fastapi.tiangolo.com/",
+          "Repository, https://github.com/fastapi/fastapi",
+          "Issues, https://github.com/fastapi/fastapi/issues",
+          "Changelog, https://fastapi.tiangolo.com/release-notes/"
+        ],
+        "provides_extra": [
+          "opentelemetry",
+          "standard",
+          "standard-no-fastapi-cloud-cli",
+          "all"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf",
+          "hashes": {
+            "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "uvicorn",
+        "version": "0.54.0",
+        "summary": "The lightning-fast ASGI server.",
+        "description": "<p align=\"center\">\n  <img width=\"320\" height=\"320\" src=\"https://raw.githubusercontent.com/tomchristie/uvicorn/main/docs/uvicorn.png\" alt='uvicorn'>\n</p>\n\n<p align=\"center\">\n<em>An ASGI web server, for Python.</em>\n</p>\n\n---\n\n[![Build Status](https://github.com/Kludex/uvicorn/workflows/Test%20Suite/badge.svg)](https://github.com/Kludex/uvicorn/actions)\n[![Package version](https://badge.fury.io/py/uvicorn.svg)](https://pypi.python.org/pypi/uvicorn)\n[![Supported Python Version](https://img.shields.io/pypi/pyversions/uvicorn.svg?color=%2334D058)](https://pypi.org/project/uvicorn)\n[![Discord](https://img.shields.io/discord/1051468649518616576?logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/RxKUF5JuHs)\n\n---\n\n**Documentation**: [https://uvicorn.dev](https://uvicorn.dev)\n\n**Source Code**: [https://www.github.com/Kludex/uvicorn](https://www.github.com/Kludex/uvicorn)\n\n---\n\nUvicorn is an ASGI web server implementation for Python.\n\nUntil recently Python has lacked a minimal low-level server/application interface for\nasync frameworks. The [ASGI specification][asgi] fills this gap, and means we're now able to\nstart building a common set of tooling usable across all async frameworks.\n\nUvicorn currently supports HTTP/1.1, HTTP/2 and WebSockets.\n\n## Quickstart\n\nInstall using `pip`:\n\n```shell\n$ pip install uvicorn\n```\n\nThis will install uvicorn with minimal (pure Python) dependencies.\n\n```shell\n$ pip install 'uvicorn[standard]'\n```\n\nThis will install uvicorn with \"Cython-based\" dependencies (where possible) and other \"optional extras\".\n\nIn this context, \"Cython-based\" means the following:\n\n- the event loop `uvloop` will be installed and used if possible.\n- the http protocol will be handled by `httptools` if possible.\n\nMoreover, \"optional extras\" means that:\n\n- the websocket protocol will be handled by `websockets` (should you want to use `wsproto` you'd need to install it manually) if possible.\n- the `--reload` flag in development mode will use `watchfiles`.\n- `python-dotenv` will be installed should you want to use the `--env-file` option.\n- `PyYAML` will be installed to allow you to provide a `.yaml` file to `--log-config`, if desired.\n\nCreate an application, in `example.py`:\n\n```python\nasync def app(scope, receive, send):\n    assert scope['type'] == 'http'\n\n    await send({\n        'type': 'http.response.start',\n        'status': 200,\n        'headers': [\n            (b'content-type', b'text/plain'),\n        ],\n    })\n    await send({\n        'type': 'http.response.body',\n        'body': b'Hello, world!',\n    })\n```\n\nRun the server:\n\n```shell\n$ uvicorn example:app\n```\n\n---\n\n## Why ASGI?\n\nMost well established Python Web frameworks started out as WSGI-based frameworks.\n\nWSGI applications are a single, synchronous callable that takes a request and returns a response.\nThis doesn’t allow for long-lived connections, like you get with long-poll HTTP or WebSocket connections,\nwhich WSGI doesn't support well.\n\nHaving an async concurrency model also allows for options such as lightweight background tasks,\nand can be less of a limiting factor for endpoints that have long periods being blocked on network\nI/O such as dealing with slow HTTP requests.\n\n---\n\n## Alternative ASGI servers\n\nA strength of the ASGI protocol is that it decouples the server implementation\nfrom the application framework. This allows for an ecosystem of interoperating\nwebservers and application frameworks.\n\n### Daphne\n\nThe first ASGI server implementation, originally developed to power Django Channels, is [the Daphne webserver][daphne].\n\nIt is run widely in production, and supports HTTP/1.1, HTTP/2, and WebSockets.\n\nAny of the example applications given here can equally well be run using `daphne` instead.\n\n```\n$ pip install daphne\n$ daphne app:App\n```\n\n### Hypercorn\n\n[Hypercorn][hypercorn] was initially part of the Quart web framework, before\nbeing separated out into a standalone ASGI server.\n\nHypercorn supports HTTP/1.1, HTTP/2, and WebSockets.\n\nIt also supports [the excellent `trio` async framework][trio], as an alternative to `asyncio`.\n\n```\n$ pip install hypercorn\n$ hypercorn app:App\n```\n\n### Mangum\n\n[Mangum][mangum] is an adapter for using ASGI applications with AWS Lambda & API Gateway.\n\n### Granian\n\n[Granian][granian] is an ASGI compatible Rust HTTP server which supports HTTP/2, TLS and WebSockets.\n\n---\n\n<p align=\"center\"><i>Uvicorn is <a href=\"https://github.com/Kludex/uvicorn/blob/main/LICENSE.md\">BSD licensed</a> code.<br/>Designed & crafted with care.</i><br/>&mdash; 🦄  &mdash;</p>\n\n[asgi]: https://asgi.readthedocs.io/en/latest/\n[daphne]: https://github.com/django/daphne\n[hypercorn]: https://github.com/pgjones/hypercorn\n[trio]: https://trio.readthedocs.io\n[mangum]: https://github.com/jordaneremieff/mangum\n[granian]: https://github.com/emmett-framework/granian\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Tom Christie <tom@tomchristie.com>",
+        "maintainer_email": "Marcelo Trylesinski <marcelotryle@gmail.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE.md"
+        ],
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Environment :: Web Environment",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "click>=7.0",
+          "h11>=0.8",
+          "typing-extensions>=4.0; python_version < '3.11'",
+          "httptools>=0.8.0; extra == 'standard'",
+          "python-dotenv>=0.13; extra == 'standard'",
+          "pyyaml>=5.1; extra == 'standard'",
+          "uvloop>=0.15.1; (sys_platform != 'win32' and (sys_platform != 'cygwin' and platform_python_implementation != 'PyPy')) and extra == 'standard'",
+          "watchfiles>=0.20; extra == 'standard'",
+          "websockets>=13.0; extra == 'standard'"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Changelog, https://uvicorn.dev/release-notes",
+          "Funding, https://github.com/sponsors/Kludex",
+          "Homepage, https://uvicorn.dev/",
+          "Source, https://github.com/Kludex/uvicorn"
+        ],
+        "provides_extra": [
+          "standard"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/4f/d3/a8b22fa575b297cd6e3e3b0155c7e25db170edf1c74783d6a31a2490b8d9/argon2_cffi-25.1.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741",
+          "hashes": {
+            "sha256": "fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "argon2-cffi",
+        "version": "25.1.0",
+        "summary": "Argon2 for Python",
+        "description": "# *argon2-cffi*: Argon2 for Python\n\n\n[Argon2](https://github.com/p-h-c/phc-winner-argon2) won the [Password Hashing Competition](https://www.password-hashing.net/) and *argon2-cffi* is the simplest way to use it in Python:\n\n```pycon\n>>> from argon2 import PasswordHasher\n>>> ph = PasswordHasher()\n>>> hash = ph.hash(\"correct horse battery staple\")\n>>> hash  # doctest: +SKIP\n'$argon2id$v=19$m=65536,t=3,p=4$MIIRqgvgQbgj220jfp0MPA$YfwJSVjtjSU0zzV/P3S9nnQ/USre2wvJMjfCIjrTQbg'\n>>> ph.verify(hash, \"correct horse battery staple\")\nTrue\n>>> ph.check_needs_rehash(hash)\nFalse\n>>> ph.verify(hash, \"Tr0ub4dor&3\")\nTraceback (most recent call last):\n  ...\nargon2.exceptions.VerifyMismatchError: The password does not match the supplied hash\n\n```\n<!-- end short -->\n\n## Project Links\n\n- [**PyPI**](https://pypi.org/project/argon2-cffi/)\n- [**GitHub**](https://github.com/hynek/argon2-cffi)\n- [**Documentation**](https://argon2-cffi.readthedocs.io/)\n- [**Changelog**](https://github.com/hynek/argon2-cffi/blob/main/CHANGELOG.md)\n- [**Funding**](https://hynek.me/say-thanks/)\n- The low-level Argon2 CFFI bindings are maintained in the separate [*argon2-cffi-bindings*](https://github.com/hynek/argon2-cffi-bindings) project.\n\n## Release Information\n\n### Added\n\n- Official support for Python 3.13 and 3.14.\n  No code changes were necessary.\n\n\n### Removed\n\n- Python 3.7 is not supported anymore.\n  [#186](https://github.com/hynek/argon2-cffi/pull/186)\n\n\n### Changed\n\n- `argon2.PasswordHasher.check_needs_rehash()` now also accepts bytes like the rest of the API.\n  [#174](https://github.com/hynek/argon2-cffi/pull/174)\n\n- Improved parameter compatibility handling for Pyodide / WebAssembly environments.\n  [#190](https://github.com/hynek/argon2-cffi/pull/190)\n\n\n---\n\n[Full Changelog →](https://github.com/hynek/argon2-cffi/blob/main/CHANGELOG.md)\n\n\n## Credits\n\n*argon2-cffi* is maintained by [Hynek Schlawack](https://hynek.me/).\n\nThe development is kindly supported by my employer [Variomedia AG](https://www.variomedia.de/), *argon2-cffi* [Tidelift subscribers](https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek), and my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).\n\n\n## *argon2-cffi* for Enterprise\n\nAvailable as part of the [Tidelift Subscription](https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek).\n\nThe maintainers of *argon2-cffi* and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open-source packages you use to build your applications.\nSave time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use.\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "hash",
+          "hashing",
+          "password",
+          "security"
+        ],
+        "author_email": "Hynek Schlawack <hs@ox.cx>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Operating System :: MacOS :: MacOS X",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: POSIX",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Security :: Cryptography",
+          "Typing :: Typed"
+        ],
+        "requires_dist": [
+          "argon2-cffi-bindings"
+        ],
+        "requires_python": ">=3.8",
+        "project_url": [
+          "Documentation, https://argon2-cffi.readthedocs.io/",
+          "Changelog, https://github.com/hynek/argon2-cffi/blob/main/CHANGELOG.md",
+          "GitHub, https://github.com/hynek/argon2-cffi",
+          "Funding, https://github.com/sponsors/hynek",
+          "Tidelift, https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad",
+          "hashes": {
+            "sha256": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.3",
+        "name": "httpx",
+        "version": "0.28.1",
+        "summary": "The next generation HTTP client.",
+        "description": "<p align=\"center\">\n  <a href=\"https://www.python-httpx.org/\"><img width=\"350\" height=\"208\" src=\"https://raw.githubusercontent.com/encode/httpx/master/docs/img/butterfly.png\" alt='HTTPX'></a>\n</p>\n\n<p align=\"center\"><strong>HTTPX</strong> <em>- A next-generation HTTP client for Python.</em></p>\n\n<p align=\"center\">\n<a href=\"https://github.com/encode/httpx/actions\">\n    <img src=\"https://github.com/encode/httpx/workflows/Test%20Suite/badge.svg\" alt=\"Test Suite\">\n</a>\n<a href=\"https://pypi.org/project/httpx/\">\n    <img src=\"https://badge.fury.io/py/httpx.svg\" alt=\"Package version\">\n</a>\n</p>\n\nHTTPX is a fully featured HTTP client library for Python 3. It includes **an integrated command line client**, has support for both **HTTP/1.1 and HTTP/2**, and provides both **sync and async APIs**.\n\n---\n\nInstall HTTPX using pip:\n\n```shell\n$ pip install httpx\n```\n\nNow, let's get started:\n\n```pycon\n>>> import httpx\n>>> r = httpx.get('https://www.example.org/')\n>>> r\n<Response [200 OK]>\n>>> r.status_code\n200\n>>> r.headers['content-type']\n'text/html; charset=UTF-8'\n>>> r.text\n'<!doctype html>\\n<html>\\n<head>\\n<title>Example Domain</title>...'\n```\n\nOr, using the command-line client.\n\n```shell\n$ pip install 'httpx[cli]'  # The command line client is an optional dependency.\n```\n\nWhich now allows us to use HTTPX directly from the command-line...\n\n<p align=\"center\">\n  <img width=\"700\" src=\"https://raw.githubusercontent.com/encode/httpx/master/docs/img/httpx-help.png\" alt='httpx --help'>\n</p>\n\nSending a request...\n\n<p align=\"center\">\n  <img width=\"700\" src=\"https://raw.githubusercontent.com/encode/httpx/master/docs/img/httpx-request.png\" alt='httpx http://httpbin.org/json'>\n</p>\n\n## Features\n\nHTTPX builds on the well-established usability of `requests`, and gives you:\n\n* A broadly [requests-compatible API](https://www.python-httpx.org/compatibility/).\n* An integrated command-line client.\n* HTTP/1.1 [and HTTP/2 support](https://www.python-httpx.org/http2/).\n* Standard synchronous interface, but with [async support if you need it](https://www.python-httpx.org/async/).\n* Ability to make requests directly to [WSGI applications](https://www.python-httpx.org/advanced/transports/#wsgi-transport) or [ASGI applications](https://www.python-httpx.org/advanced/transports/#asgi-transport).\n* Strict timeouts everywhere.\n* Fully type annotated.\n* 100% test coverage.\n\nPlus all the standard features of `requests`...\n\n* International Domains and URLs\n* Keep-Alive & Connection Pooling\n* Sessions with Cookie Persistence\n* Browser-style SSL Verification\n* Basic/Digest Authentication\n* Elegant Key/Value Cookies\n* Automatic Decompression\n* Automatic Content Decoding\n* Unicode Response Bodies\n* Multipart File Uploads\n* HTTP(S) Proxy Support\n* Connection Timeouts\n* Streaming Downloads\n* .netrc Support\n* Chunked Requests\n\n## Installation\n\nInstall with pip:\n\n```shell\n$ pip install httpx\n```\n\nOr, to include the optional HTTP/2 support, use:\n\n```shell\n$ pip install httpx[http2]\n```\n\nHTTPX requires Python 3.8+.\n\n## Documentation\n\nProject documentation is available at [https://www.python-httpx.org/](https://www.python-httpx.org/).\n\nFor a run-through of all the basics, head over to the [QuickStart](https://www.python-httpx.org/quickstart/).\n\nFor more advanced topics, see the [Advanced Usage](https://www.python-httpx.org/advanced/) section, the [async support](https://www.python-httpx.org/async/) section, or the [HTTP/2](https://www.python-httpx.org/http2/) section.\n\nThe [Developer Interface](https://www.python-httpx.org/api/) provides a comprehensive API reference.\n\nTo find out about tools that integrate with HTTPX, see [Third Party Packages](https://www.python-httpx.org/third_party_packages/).\n\n## Contribute\n\nIf you want to contribute with HTTPX check out the [Contributing Guide](https://www.python-httpx.org/contributing/) to learn how to start.\n\n## Dependencies\n\nThe HTTPX project relies on these excellent libraries:\n\n* `httpcore` - The underlying transport implementation for `httpx`.\n  * `h11` - HTTP/1.1 support.\n* `certifi` - SSL certificates.\n* `idna` - Internationalized domain name support.\n* `sniffio` - Async library autodetection.\n\nAs well as these optional installs:\n\n* `h2` - HTTP/2 support. *(Optional, with `httpx[http2]`)*\n* `socksio` - SOCKS proxy support. *(Optional, with `httpx[socks]`)*\n* `rich` - Rich terminal support. *(Optional, with `httpx[cli]`)*\n* `click` - Command line client support. *(Optional, with `httpx[cli]`)*\n* `brotli` or `brotlicffi` - Decoding for \"brotli\" compressed responses. *(Optional, with `httpx[brotli]`)*\n* `zstandard` - Decoding for \"zstd\" compressed responses. *(Optional, with `httpx[zstd]`)*\n\nA huge amount of credit is due to `requests` for the API layout that\nmuch of this work follows, as well as to `urllib3` for plenty of design\ninspiration around the lower-level networking details.\n\n---\n\n<p align=\"center\"><i>HTTPX is <a href=\"https://github.com/encode/httpx/blob/master/LICENSE.md\">BSD licensed</a> code.<br/>Designed & crafted with care.</i><br/>&mdash; 🦋 &mdash;</p>\n\n## Release Information\n\n### Fixed\n\n* Reintroduced supposedly-private `URLTypes` shortcut. (#2673)\n\n\n---\n\n[Full changelog](https://github.com/encode/httpx/blob/master/CHANGELOG.md)\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Tom Christie <tom@tomchristie.com>",
+        "license": "BSD-3-Clause",
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Environment :: Web Environment",
+          "Framework :: AsyncIO",
+          "Framework :: Trio",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "anyio",
+          "certifi",
+          "httpcore==1.*",
+          "idna",
+          "brotli; (platform_python_implementation == 'CPython') and extra == 'brotli'",
+          "brotlicffi; (platform_python_implementation != 'CPython') and extra == 'brotli'",
+          "click==8.*; extra == 'cli'",
+          "pygments==2.*; extra == 'cli'",
+          "rich<14,>=10; extra == 'cli'",
+          "h2<5,>=3; extra == 'http2'",
+          "socksio==1.*; extra == 'socks'",
+          "zstandard>=0.18.0; extra == 'zstd'"
+        ],
+        "requires_python": ">=3.8",
+        "project_url": [
+          "Changelog, https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+          "Documentation, https://www.python-httpx.org",
+          "Homepage, https://github.com/encode/httpx",
+          "Source, https://github.com/encode/httpx"
+        ],
+        "provides_extra": [
+          "brotli",
+          "cli",
+          "http2",
+          "socks",
+          "zstd"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55",
+          "hashes": {
+            "sha256": "2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "httpcore",
+        "version": "1.0.9",
+        "summary": "A minimal low-level HTTP client.",
+        "description": "# HTTP Core\n\n[![Test Suite](https://github.com/encode/httpcore/workflows/Test%20Suite/badge.svg)](https://github.com/encode/httpcore/actions)\n[![Package version](https://badge.fury.io/py/httpcore.svg)](https://pypi.org/project/httpcore/)\n\n> *Do one thing, and do it well.*\n\nThe HTTP Core package provides a minimal low-level HTTP client, which does\none thing only. Sending HTTP requests.\n\nIt does not provide any high level model abstractions over the API,\ndoes not handle redirects, multipart uploads, building authentication headers,\ntransparent HTTP caching, URL parsing, session cookie handling,\ncontent or charset decoding, handling JSON, environment based configuration\ndefaults, or any of that Jazz.\n\nSome things HTTP Core does do:\n\n* Sending HTTP requests.\n* Thread-safe / task-safe connection pooling.\n* HTTP(S) proxy & SOCKS proxy support.\n* Supports HTTP/1.1 and HTTP/2.\n* Provides both sync and async interfaces.\n* Async backend support for `asyncio` and `trio`.\n\n## Requirements\n\nPython 3.8+\n\n## Installation\n\nFor HTTP/1.1 only support, install with:\n\n```shell\n$ pip install httpcore\n```\n\nThere are also a number of optional extras available...\n\n```shell\n$ pip install httpcore['asyncio,trio,http2,socks']\n```\n\n## Sending requests\n\nSend an HTTP request:\n\n```python\nimport httpcore\n\nresponse = httpcore.request(\"GET\", \"https://www.example.com/\")\n\nprint(response)\n# <Response [200]>\nprint(response.status)\n# 200\nprint(response.headers)\n# [(b'Accept-Ranges', b'bytes'), (b'Age', b'557328'), (b'Cache-Control', b'max-age=604800'), ...]\nprint(response.content)\n# b'<!doctype html>\\n<html>\\n<head>\\n<title>Example Domain</title>\\n\\n<meta charset=\"utf-8\"/>\\n ...'\n```\n\nThe top-level `httpcore.request()` function is provided for convenience. In practice whenever you're working with `httpcore` you'll want to use the connection pooling functionality that it provides.\n\n```python\nimport httpcore\n\nhttp = httpcore.ConnectionPool()\nresponse = http.request(\"GET\", \"https://www.example.com/\")\n```\n\nOnce you're ready to get going, [head over to the documentation](https://www.encode.io/httpcore/).\n\n## Motivation\n\nYou *probably* don't want to be using HTTP Core directly. It might make sense if\nyou're writing something like a proxy service in Python, and you just want\nsomething at the lowest possible level, but more typically you'll want to use\na higher level client library, such as `httpx`.\n\nThe motivation for `httpcore` is:\n\n* To provide a reusable low-level client library, that other packages can then build on top of.\n* To provide a *really clear interface split* between the networking code and client logic,\n  so that each is easier to understand and reason about in isolation.\n\n## Dependencies\n\nThe `httpcore` package has the following dependencies...\n\n* `h11`\n* `certifi`\n\nAnd the following optional extras...\n\n* `anyio` - Required by `pip install httpcore['asyncio']`.\n* `trio` - Required by `pip install httpcore['trio']`.\n* `h2` - Required by `pip install httpcore['http2']`.\n* `socksio` - Required by `pip install httpcore['socks']`.\n\n## Versioning\n\nWe use [SEMVER for our versioning policy](https://semver.org/).\n\nFor changes between package versions please see our [project changelog](CHANGELOG.md).\n\nWe recommend pinning your requirements either the most current major version, or a more specific version range:\n\n```python\npip install 'httpcore==1.*'\n```\n# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).\n\n## Version 1.0.9 (April 24th, 2025)\n\n- Resolve https://github.com/advisories/GHSA-vqfr-h8mv-ghfj with h11 dependency update. (#1008)\n\n## Version 1.0.8 (April 11th, 2025)\n\n- Fix `AttributeError` when importing on Python 3.14. (#1005)\n\n## Version 1.0.7 (November 15th, 2024)\n\n- Support `proxy=…` configuration on `ConnectionPool()`. (#974)\n\n## Version 1.0.6 (October 1st, 2024)\n\n- Relax `trio` dependency pinning. (#956)\n- Handle `trio` raising `NotImplementedError` on unsupported platforms. (#955)\n- Handle mapping `ssl.SSLError` to `httpcore.ConnectError`. (#918)\n\n## 1.0.5 (March 27th, 2024)\n\n- Handle `EndOfStream` exception for anyio backend. (#899)\n- Allow trio `0.25.*` series in package dependancies. (#903)\n\n## 1.0.4 (February 21st, 2024)\n\n- Add `target` request extension. (#888)\n- Fix support for connection `Upgrade` and `CONNECT` when some data in the stream has been read. (#882)\n\n## 1.0.3 (February 13th, 2024)\n\n- Fix support for async cancellations. (#880)\n- Fix trace extension when used with socks proxy. (#849)\n- Fix SSL context for connections using the \"wss\" scheme (#869)\n\n## 1.0.2 (November 10th, 2023)\n\n- Fix `float(\"inf\")` timeouts in `Event.wait` function. (#846)\n\n## 1.0.1 (November 3rd, 2023)\n\n- Fix pool timeout to account for the total time spent retrying. (#823)\n- Raise a neater RuntimeError when the correct async deps are not installed. (#826)\n- Add support for synchronous TLS-in-TLS streams. (#840)\n\n## 1.0.0 (October 6th, 2023)\n\nFrom version 1.0 our async support is now optional, as the package has minimal dependencies by default.\n\nFor async support use either `pip install 'httpcore[asyncio]'` or `pip install 'httpcore[trio]'`.\n\nThe project versioning policy is now explicitly governed by SEMVER. See https://semver.org/.\n\n- Async support becomes fully optional. (#809)\n- Add support for Python 3.12. (#807)\n\n## 0.18.0 (September 8th, 2023)\n\n- Add support for HTTPS proxies. (#745, #786)\n- Drop Python 3.7 support. (#727)\n- Handle `sni_hostname` extension with SOCKS proxy. (#774)\n- Handle HTTP/1.1 half-closed connections gracefully. (#641)\n- Change the type of `Extensions` from `Mapping[Str, Any]` to `MutableMapping[Str, Any]`. (#762)\n\n## 0.17.3 (July 5th, 2023)\n\n- Support async cancellations, ensuring that the connection pool is left in a clean state when cancellations occur. (#726)\n- The networking backend interface has [been added to the public API](https://www.encode.io/httpcore/network-backends). Some classes which were previously private implementation detail are now part of the top-level public API. (#699)\n- Graceful handling of HTTP/2 GoAway frames, with requests being transparently retried on a new connection. (#730)\n- Add exceptions when a synchronous `trace callback` is passed to an asynchronous request or an asynchronous `trace callback` is passed to a synchronous request. (#717)\n- Drop Python 3.7 support. (#727)\n\n## 0.17.2 (May 23th, 2023)\n\n- Add `socket_options` argument to `ConnectionPool` and `HTTProxy` classes. (#668)\n- Improve logging with per-module logger names. (#690)\n- Add `sni_hostname` request extension. (#696)\n- Resolve race condition during import of `anyio` package. (#692)\n- Enable TCP_NODELAY for all synchronous sockets. (#651)\n\n## 0.17.1 (May 17th, 2023)\n\n- If 'retries' is set, then allow retries if an SSL handshake error occurs. (#669)\n- Improve correctness of tracebacks on network exceptions, by raising properly chained exceptions. (#678)\n- Prevent connection-hanging behaviour when HTTP/2 connections are closed by a server-sent 'GoAway' frame. (#679)\n- Fix edge-case exception when removing requests from the connection pool. (#680)\n- Fix pool timeout edge-case. (#688)\n\n## 0.17.0 (March 16th, 2023)\n\n- Add DEBUG level logging. (#648)\n- Respect HTTP/2 max concurrent streams when settings updates are sent by server. (#652)\n- Increase the allowable HTTP header size to 100kB. (#647)\n- Add `retries` option to SOCKS proxy classes. (#643)\n\n## 0.16.3 (December 20th, 2022)\n\n- Allow `ws` and `wss` schemes. Allows us to properly support websocket upgrade connections. (#625)\n- Forwarding HTTP proxies use a connection-per-remote-host. Required by some proxy implementations. (#637)\n- Don't raise `RuntimeError` when closing a connection pool with active connections. Removes some error cases when cancellations are used. (#631)\n- Lazy import `anyio`, so that it's no longer a hard dependancy, and isn't imported if unused. (#639)\n\n## 0.16.2 (November 25th, 2022)\n\n- Revert 'Fix async cancellation behaviour', which introduced race conditions. (#627)\n- Raise `RuntimeError` if attempting to us UNIX domain sockets on Windows. (#619)\n\n## 0.16.1 (November 17th, 2022)\n\n- Fix HTTP/1.1 interim informational responses, such as \"100 Continue\". (#605)\n\n## 0.16.0 (October 11th, 2022)\n\n- Support HTTP/1.1 informational responses. (#581)\n- Fix async cancellation behaviour. (#580)\n- Support `h11` 0.14. (#579)\n\n## 0.15.0 (May 17th, 2022)\n\n- Drop Python 3.6 support (#535)\n- Ensure HTTP proxy CONNECT requests include `timeout` configuration. (#506)\n- Switch to explicit `typing.Optional` for type hints. (#513)\n- For `trio` map OSError exceptions to `ConnectError`. (#543)\n\n## 0.14.7 (February 4th, 2022)\n\n- Requests which raise a PoolTimeout need to be removed from the pool queue. (#502)\n- Fix AttributeError that happened when Socks5Connection were terminated. (#501)\n\n## 0.14.6 (February 1st, 2022)\n\n- Fix SOCKS support for `http://` URLs. (#492)\n- Resolve race condition around exceptions during streaming a response. (#491)\n\n## 0.14.5 (January 18th, 2022)\n\n- SOCKS proxy support. (#478)\n- Add proxy_auth argument to HTTPProxy. (#481)\n- Improve error message on 'RemoteProtocolError' exception when server disconnects without sending a response. (#479)\n\n## 0.14.4 (January 5th, 2022)\n\n- Support HTTP/2 on HTTPS tunnelling proxies. (#468)\n- Fix proxy headers missing on HTTP forwarding. (#456)\n- Only instantiate SSL context if required. (#457)\n- More robust HTTP/2 handling. (#253, #439, #440, #441)\n\n## 0.14.3 (November 17th, 2021)\n\n- Fix race condition when removing closed connections from the pool. (#437)\n\n## 0.14.2 (November 16th, 2021)\n\n- Failed connections no longer remain in the pool. (Pull #433)\n\n## 0.14.1 (November 12th, 2021)\n\n- `max_connections` becomes optional. (Pull #429)\n- `certifi` is now included in the install dependancies. (Pull #428)\n- `h2` is now strictly optional. (Pull #428)\n\n## 0.14.0 (November 11th, 2021)\n\nThe 0.14 release is a complete reworking of `httpcore`, comprehensively addressing some underlying issues in the connection pooling, as well as substantially redesigning the API to be more user friendly.\n\nSome of the lower-level API design also makes the components more easily testable in isolation, and the package now has 100% test coverage.\n\nSee [discussion #419](https://github.com/encode/httpcore/discussions/419) for a little more background.\n\nThere's some other neat bits in there too, such as the \"trace\" extension, which gives a hook into inspecting the internal events that occur during the request/response cycle. This extension is needed for the HTTPX cli, in order to...\n\n* Log the point at which the connection is established, and the IP/port on which it is made.\n* Determine if the outgoing request should log as HTTP/1.1 or HTTP/2, rather than having to assume it's HTTP/2 if the --http2 flag was passed. (Which may not actually be true.)\n* Log SSL version info / certificate info.\n\nNote that `curio` support is not currently available in 0.14.0. If you're using `httpcore` with `curio` please get in touch, so we can assess if we ought to prioritize it as a feature or not.\n\n## 0.13.7 (September 13th, 2021)\n\n- Fix broken error messaging when URL scheme is missing, or a non HTTP(S) scheme is used. (Pull #403)\n\n## 0.13.6 (June 15th, 2021)\n\n### Fixed\n\n- Close sockets when read or write timeouts occur. (Pull #365)\n\n## 0.13.5 (June 14th, 2021)\n\n### Fixed\n\n- Resolved niggles with AnyIO EOF behaviours. (Pull #358, #362)\n\n## 0.13.4 (June 9th, 2021)\n\n### Added\n\n- Improved error messaging when URL scheme is missing, or a non HTTP(S) scheme is used. (Pull #354)\n\n### Fixed\n\n- Switched to `anyio` as the default backend implementation when running with `asyncio`. Resolves some awkward [TLS timeout issues](https://github.com/encode/httpx/discussions/1511).\n\n## 0.13.3 (May 6th, 2021)\n\n### Added\n\n- Support HTTP/2 prior knowledge, using `httpcore.SyncConnectionPool(http1=False)`. (Pull #333)\n\n### Fixed\n\n- Handle cases where environment does not provide `select.poll` support. (Pull #331)\n\n## 0.13.2 (April 29th, 2021)\n\n### Added\n\n- Improve error message for specific case of `RemoteProtocolError` where server disconnects without sending a response. (Pull #313)\n\n## 0.13.1 (April 28th, 2021)\n\n### Fixed\n\n- More resiliant testing for closed connections. (Pull #311)\n- Don't raise exceptions on ungraceful connection closes. (Pull #310)\n\n## 0.13.0 (April 21st, 2021)\n\nThe 0.13 release updates the core API in order to match the HTTPX Transport API,\nintroduced in HTTPX 0.18 onwards.\n\nAn example of making requests with the new interface is:\n\n```python\nwith httpcore.SyncConnectionPool() as http:\n    status_code, headers, stream, extensions = http.handle_request(\n        method=b'GET',\n        url=(b'https', b'example.org', 443, b'/'),\n        headers=[(b'host', b'example.org'), (b'user-agent', b'httpcore')]\n        stream=httpcore.ByteStream(b''),\n        extensions={}\n    )\n    body = stream.read()\n    print(status_code, body)\n```\n\n### Changed\n\n- The `.request()` method is now `handle_request()`. (Pull #296)\n- The `.arequest()` method is now `.handle_async_request()`. (Pull #296)\n- The `headers` argument is no longer optional. (Pull #296)\n- The `stream` argument is no longer optional. (Pull #296)\n- The `ext` argument is now named `extensions`, and is no longer optional. (Pull #296)\n- The `\"reason\"` extension keyword is now named `\"reason_phrase\"`. (Pull #296)\n- The `\"reason_phrase\"` and `\"http_version\"` extensions now use byte strings for their values. (Pull #296)\n- The `httpcore.PlainByteStream()` class becomes `httpcore.ByteStream()`. (Pull #296)\n\n### Added\n\n- Streams now support a `.read()` interface. (Pull #296)\n\n### Fixed\n\n- Task cancellation no longer leaks connections from the connection pool. (Pull #305)\n\n## 0.12.3 (December 7th, 2020)\n\n### Fixed\n\n- Abort SSL connections on close rather than waiting for remote EOF when using `asyncio`.  (Pull #167)\n- Fix exception raised in case of connect timeouts when using the `anyio` backend. (Pull #236)\n- Fix `Host` header precedence for `:authority` in HTTP/2. (Pull #241, #243)\n- Handle extra edge case when detecting for socket readability when using `asyncio`. (Pull #242, #244)\n- Fix `asyncio` SSL warning when using proxy tunneling. (Pull #249)\n\n## 0.12.2 (November 20th, 2020)\n\n### Fixed\n\n- Properly wrap connect errors on the asyncio backend. (Pull #235)\n- Fix `ImportError` occurring on Python 3.9 when using the HTTP/1.1 sync client in a multithreaded context. (Pull #237)\n\n## 0.12.1 (November 7th, 2020)\n\n### Added\n\n- Add connect retries. (Pull #221)\n\n### Fixed\n\n- Tweak detection of dropped connections, resolving an issue with open files limits on Linux. (Pull #185)\n- Avoid leaking connections when establishing an HTTP tunnel to a proxy has failed. (Pull #223)\n- Properly wrap OS errors when using `trio`. (Pull #225)\n\n## 0.12.0 (October 6th, 2020)\n\n### Changed\n\n- HTTP header casing is now preserved, rather than always sent in lowercase. (#216 and python-hyper/h11#104)\n\n### Added\n\n- Add Python 3.9 to officially supported versions.\n\n### Fixed\n\n- Gracefully handle a stdlib asyncio bug when a connection is closed while it is in a paused-for-reading state. (#201)\n\n## 0.11.1 (September 28nd, 2020)\n\n### Fixed\n\n- Add await to async semaphore release() coroutine (#197)\n- Drop incorrect curio classifier (#192)\n\n## 0.11.0 (September 22nd, 2020)\n\nThe Transport API with 0.11.0 has a couple of significant changes.\n\nFirstly we've moved changed the request interface in order to allow extensions, which will later enable us to support features\nsuch as trailing headers, HTTP/2 server push, and CONNECT/Upgrade connections.\n\nThe interface changes from:\n\n```python\ndef request(method, url, headers, stream, timeout):\n    return (http_version, status_code, reason, headers, stream)\n```\n\nTo instead including an optional dictionary of extensions on the request and response:\n\n```python\ndef request(method, url, headers, stream, ext):\n    return (status_code, headers, stream, ext)\n```\n\nHaving an open-ended extensions point will allow us to add later support for various optional features, that wouldn't otherwise be supported without these API changes.\n\nIn particular:\n\n* Trailing headers support.\n* HTTP/2 Server Push\n* sendfile.\n* Exposing raw connection on CONNECT, Upgrade, HTTP/2 bi-di streaming.\n* Exposing debug information out of the API, including template name, template context.\n\nCurrently extensions are limited to:\n\n* request: `timeout` - Optional. Timeout dictionary.\n* response: `http_version` - Optional. Include the HTTP version used on the response.\n* response: `reason` - Optional. Include the reason phrase used on the response. Only valid with HTTP/1.*.\n\nSee https://github.com/encode/httpx/issues/1274#issuecomment-694884553 for the history behind this.\n\nSecondly, the async version of `request` is now namespaced as `arequest`.\n\nThis allows concrete transports to support both sync and async implementations on the same class.\n\n### Added\n\n- Add curio support. (Pull #168)\n- Add anyio support, with `backend=\"anyio\"`. (Pull #169)\n\n### Changed\n\n- Update the Transport API to use 'ext' for optional extensions. (Pull #190)\n- Update the Transport API to use `.request` and `.arequest` so implementations can support both sync and async. (Pull #189)\n\n## 0.10.2 (August 20th, 2020)\n\n### Added\n\n- Added Unix Domain Socket support. (Pull #139)\n\n### Fixed\n\n- Always include the port on proxy CONNECT requests. (Pull #154)\n- Fix `max_keepalive_connections` configuration. (Pull #153)\n- Fixes behaviour in HTTP/1.1 where server disconnects can be used to signal the end of the response body. (Pull #164)\n\n## 0.10.1 (August 7th, 2020)\n\n- Include `max_keepalive_connections` on `AsyncHTTPProxy`/`SyncHTTPProxy` classes.\n\n## 0.10.0 (August 7th, 2020)\n\nThe most notable change in the 0.10.0 release is that HTTP/2 support is now fully optional.\n\nUse either `pip install httpcore` for HTTP/1.1 support only, or `pip install httpcore[http2]` for HTTP/1.1 and HTTP/2 support.\n\n### Added\n\n- HTTP/2 support becomes optional. (Pull #121, #130)\n- Add `local_address=...` support. (Pull #100, #134)\n- Add `PlainByteStream`, `IteratorByteStream`, `AsyncIteratorByteStream`. The `AsyncByteSteam` and `SyncByteStream` classes are now pure interface classes. (#133)\n- Add `LocalProtocolError`, `RemoteProtocolError` exceptions. (Pull #129)\n- Add `UnsupportedProtocol` exception. (Pull #128)\n- Add `.get_connection_info()` method. (Pull #102, #137)\n- Add better TRACE logs. (Pull #101)\n\n### Changed\n\n- `max_keepalive` is deprecated in favour of `max_keepalive_connections`. (Pull #140)\n\n### Fixed\n\n- Improve handling of server disconnects. (Pull #112)\n\n## 0.9.1 (May 27th, 2020)\n\n### Fixed\n\n- Proper host resolution for sync case, including IPv6 support. (Pull #97)\n- Close outstanding connections when connection pool is closed. (Pull #98)\n\n## 0.9.0 (May 21th, 2020)\n\n### Changed\n\n- URL port becomes an `Optional[int]` instead of `int`. (Pull #92)\n\n### Fixed\n\n- Honor HTTP/2 max concurrent streams settings. (Pull #89, #90)\n- Remove incorrect debug log. (Pull #83)\n\n## 0.8.4 (May 11th, 2020)\n\n### Added\n\n- Logging via HTTPCORE_LOG_LEVEL and HTTPX_LOG_LEVEL environment variables\nand TRACE level logging. (Pull #79)\n\n### Fixed\n\n- Reuse of connections on HTTP/2 in close concurrency situations. (Pull #81)\n\n## 0.8.3 (May 6rd, 2020)\n\n### Fixed\n\n- Include `Host` and `Accept` headers on proxy \"CONNECT\" requests.\n- De-duplicate any headers also contained in proxy_headers.\n- HTTP/2 flag not being passed down to proxy connections.\n\n## 0.8.2 (May 3rd, 2020)\n\n### Fixed\n\n- Fix connections using proxy forwarding requests not being added to the\nconnection pool properly. (Pull #70)\n\n## 0.8.1 (April 30th, 2020)\n\n### Changed\n\n- Allow inherintance of both `httpcore.AsyncByteStream`, `httpcore.SyncByteStream` without type conflicts.\n\n## 0.8.0 (April 30th, 2020)\n\n### Fixed\n\n- Fixed tunnel proxy support.\n\n### Added\n\n- New `TimeoutException` base class.\n\n## 0.7.0 (March 5th, 2020)\n\n- First integration with HTTPX.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Tom Christie <tom@tomchristie.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE.md"
+        ],
+        "classifier": [
+          "Development Status :: 3 - Alpha",
+          "Environment :: Web Environment",
+          "Framework :: AsyncIO",
+          "Framework :: Trio",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "certifi",
+          "h11>=0.16",
+          "anyio<5.0,>=4.0; extra == 'asyncio'",
+          "h2<5,>=3; extra == 'http2'",
+          "socksio==1.*; extra == 'socks'",
+          "trio<1.0,>=0.22.0; extra == 'trio'"
+        ],
+        "requires_python": ">=3.8",
+        "project_url": [
+          "Documentation, https://www.encode.io/httpcore",
+          "Homepage, https://www.encode.io/httpcore/",
+          "Source, https://github.com/encode/httpcore"
+        ],
+        "provides_extra": [
+          "asyncio",
+          "http2",
+          "socks",
+          "trio"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101",
+          "hashes": {
+            "sha256": "117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "annotated-doc",
+        "version": "0.0.5",
+        "summary": "Document parameters, class attributes, return types, and variables inline, with Annotated.",
+        "description": "# Annotated Doc\n\nDocument parameters, class attributes, return types, and variables inline, with `Annotated`.\n\n<a href=\"https://github.com/fastapi/annotated-doc/actions?query=workflow%3ATest+event%3Apush+branch%3Amain\" target=\"_blank\">\n    <img src=\"https://github.com/fastapi/annotated-doc/actions/workflows/test.yml/badge.svg?event=push&branch=main\" alt=\"Test\">\n</a>\n<a href=\"https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/annotated-doc\" target=\"_blank\">\n    <img src=\"https://coverage-badge.samuelcolvin.workers.dev/fastapi/annotated-doc.svg\" alt=\"Coverage\">\n</a>\n<a href=\"https://pypi.org/project/annotated-doc\" target=\"_blank\">\n    <img src=\"https://img.shields.io/pypi/v/annotated-doc?color=%2334D058&label=pypi%20package\" alt=\"Package version\">\n</a>\n<a href=\"https://pypi.org/project/annotated-doc\" target=\"_blank\">\n    <img src=\"https://img.shields.io/pypi/pyversions/annotated-doc.svg?color=%2334D058\" alt=\"Supported Python versions\">\n</a>\n\n## Installation\n\n```bash\npip install annotated-doc\n```\n\nOr with `uv`:\n\n```Python\nuv add annotated-doc\n```\n\n## Usage\n\nImport `Doc` and pass a single literal string with the documentation for the specific parameter, class attribute, return type, or variable.\n\nFor example, to document a parameter `name` in a function `hi` you could do:\n\n```Python\nfrom typing import Annotated\n\nfrom annotated_doc import Doc\n\ndef hi(name: Annotated[str, Doc(\"Who to say hi to\")]) -> None:\n    print(f\"Hi, {name}!\")\n```\n\nYou can also use it to document class attributes:\n\n```Python\nfrom typing import Annotated\n\nfrom annotated_doc import Doc\n\nclass User:\n    name: Annotated[str, Doc(\"The user's name\")]\n    age: Annotated[int, Doc(\"The user's age\")]\n```\n\nThe same way, you could document return types and variables, or anything that could have a type annotation with `Annotated`.\n\n## Who Uses This\n\n`annotated-doc` was made for:\n\n* [FastAPI](https://fastapi.tiangolo.com/)\n* [Typer](https://typer.tiangolo.com/)\n* [SQLModel](https://sqlmodel.tiangolo.com/)\n* [Asyncer](https://asyncer.tiangolo.com/)\n\n`annotated-doc` is supported by [griffe-typingdoc](https://github.com/mkdocstrings/griffe-typingdoc), which powers reference documentation like the one in the [FastAPI Reference](https://fastapi.tiangolo.com/reference/).\n\n## Reasons not to use `annotated-doc`\n\nYou are already comfortable with one of the existing docstring formats, like:\n\n* Sphinx\n* numpydoc\n* Google\n* Keras\n\nYour team is already comfortable using them.\n\nYou prefer having the documentation about parameters all together in a docstring, separated from the code defining them.\n\nYou care about a specific set of users, using one specific editor, and that editor already has support for the specific docstring format you use.\n\n## Reasons to use `annotated-doc`\n\n* No micro-syntax to learn for newcomers, it’s **just Python** syntax.\n* **Editing** would be already fully supported by default by any editor (current or future) supporting Python syntax, including syntax errors, syntax highlighting, etc.\n* **Rendering** would be relatively straightforward to implement by static tools (tools that don't need runtime execution), as the information can be extracted from the AST they normally already create.\n* **Deduplication of information**: the name of a parameter would be defined in a single place, not duplicated inside of a docstring.\n* **Elimination** of the possibility of having **inconsistencies** when removing a parameter or class variable and **forgetting to remove** its documentation.\n* **Minimization** of the probability of adding a new parameter or class variable and **forgetting to add its documentation**.\n* **Elimination** of the possibility of having **inconsistencies** between the **name** of a parameter in the **signature** and the name in the docstring when it is renamed.\n* **Access** to the documentation string for each symbol at **runtime**, including existing (older) Python versions.\n* A more formalized way to document other symbols, like type aliases, that could use Annotated.\n* **Support** for apps using FastAPI, Typer and others.\n* **AI Accessibility**: AI tools will have an easier way understanding each parameter as the distance from documentation to parameter is much closer.\n\n## History\n\nI ([@tiangolo](https://github.com/tiangolo)) originally wanted for this to be part of the Python standard library (in [PEP 727](https://peps.python.org/pep-0727/)), but the proposal was withdrawn as there was a fair amount of negative feedback and opposition.\n\nThe conclusion was that this was better done as an external effort, in a third-party library.\n\nSo, here it is, with a simpler approach, as a third-party library, in a way that can be used by others, starting with FastAPI and friends.\n\n## License\n\nThis project is licensed under the terms of the MIT license.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "=?utf-8?q?Sebasti=C3=A1n_Ram=C3=ADrez?= <tiangolo@gmail.com>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Intended Audience :: Information Technology",
+          "Intended Audience :: System Administrators",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python",
+          "Topic :: Internet",
+          "Topic :: Software Development :: Libraries :: Application Frameworks",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Software Development",
+          "Typing :: Typed",
+          "Development Status :: 4 - Beta",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14"
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Homepage, https://github.com/fastapi/annotated-doc",
+          "Documentation, https://github.com/fastapi/annotated-doc",
+          "Repository, https://github.com/fastapi/annotated-doc",
+          "Issues, https://github.com/fastapi/annotated-doc/issues",
+          "Changelog, https://github.com/fastapi/annotated-doc/release-notes.md"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360",
+          "hashes": {
+            "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "click",
+        "version": "8.5.0",
+        "summary": "Composable command line interface toolkit",
+        "description": "<div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/click/refs/heads/stable/docs/_static/click-name.svg\" alt=\"\" height=\"150\"></div>\n\n# Click\n\nClick is a Python package for creating beautiful command line interfaces\nin a composable way with as little code as necessary. It's the \"Command\nLine Interface Creation Kit\". It's highly configurable but comes with\nsensible defaults out of the box.\n\nIt aims to make the process of writing command line tools quick and fun\nwhile also preventing any frustration caused by the inability to\nimplement an intended CLI API.\n\nClick in three points:\n\n-   Arbitrary nesting of commands\n-   Automatic help page generation\n-   Supports lazy loading of subcommands at runtime\n\n\n## A Simple Example\n\n```python\nimport click\n\n@click.command()\n@click.option(\"--count\", default=1, help=\"Number of greetings.\")\n@click.option(\"--name\", prompt=\"Your name\", help=\"The person to greet.\")\ndef hello(count, name):\n    \"\"\"Simple program that greets NAME for a total of COUNT times.\"\"\"\n    for _ in range(count):\n        click.echo(f\"Hello, {name}!\")\n\nif __name__ == '__main__':\n    hello()\n```\n\n```\n$ python hello.py --count=3\nYour name: Click\nHello, Click!\nHello, Click!\nHello, Click!\n```\n\n\n## Donate\n\nThe Pallets organization develops and supports Click and other popular\npackages. In order to grow the community of contributors and users, and\nallow the maintainers to devote more time to the projects, [please\ndonate today][].\n\n[please donate today]: https://palletsprojects.com/donate\n\n## Contributing\n\nSee our [detailed contributing documentation][contrib] for many ways to\ncontribute, including reporting issues, requesting features, asking or answering\nquestions, and making PRs.\n\n[contrib]: https://palletsprojects.com/contributing/\n\n",
+        "description_content_type": "text/markdown",
+        "maintainer_email": "Pallets <contact@palletsprojects.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE.txt"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Typing :: Typed"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Changes, https://click.palletsprojects.com/page/changes/",
+          "Chat, https://discord.gg/pallets",
+          "Documentation, https://click.palletsprojects.com/",
+          "Donate, https://palletsprojects.com/donate",
+          "Source, https://github.com/pallets/click/"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86",
+          "hashes": {
+            "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "h11",
+        "version": "0.16.0",
+        "dynamic": [
+          "author",
+          "author-email",
+          "classifier",
+          "description",
+          "home-page",
+          "license",
+          "license-file",
+          "requires-python",
+          "summary"
+        ],
+        "summary": "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1",
+        "description": "h11\n===\n\n.. image:: https://travis-ci.org/python-hyper/h11.svg?branch=master\n   :target: https://travis-ci.org/python-hyper/h11\n   :alt: Automated test status\n\n.. image:: https://codecov.io/gh/python-hyper/h11/branch/master/graph/badge.svg\n   :target: https://codecov.io/gh/python-hyper/h11\n   :alt: Test coverage\n\n.. image:: https://readthedocs.org/projects/h11/badge/?version=latest\n   :target: http://h11.readthedocs.io/en/latest/?badge=latest\n   :alt: Documentation Status\n\nThis is a little HTTP/1.1 library written from scratch in Python,\nheavily inspired by `hyper-h2 <https://hyper-h2.readthedocs.io/>`_.\n\nIt's a \"bring-your-own-I/O\" library; h11 contains no IO code\nwhatsoever. This means you can hook h11 up to your favorite network\nAPI, and that could be anything you want: synchronous, threaded,\nasynchronous, or your own implementation of `RFC 6214\n<https://tools.ietf.org/html/rfc6214>`_ -- h11 won't judge you.\n(Compare this to the current state of the art, where every time a `new\nnetwork API <https://trio.readthedocs.io/>`_ comes along then someone\ngets to start over reimplementing the entire HTTP protocol from\nscratch.) Cory Benfield made an `excellent blog post describing the\nbenefits of this approach\n<https://lukasa.co.uk/2015/10/The_New_Hyper/>`_, or if you like video\nthen here's his `PyCon 2016 talk on the same theme\n<https://www.youtube.com/watch?v=7cC3_jGwl_U>`_.\n\nThis also means that h11 is not immediately useful out of the box:\nit's a toolkit for building programs that speak HTTP, not something\nthat could directly replace ``requests`` or ``twisted.web`` or\nwhatever. But h11 makes it much easier to implement something like\n``requests`` or ``twisted.web``.\n\nAt a high level, working with h11 goes like this:\n\n1) First, create an ``h11.Connection`` object to track the state of a\n   single HTTP/1.1 connection.\n\n2) When you read data off the network, pass it to\n   ``conn.receive_data(...)``; you'll get back a list of objects\n   representing high-level HTTP \"events\".\n\n3) When you want to send a high-level HTTP event, create the\n   corresponding \"event\" object and pass it to ``conn.send(...)``;\n   this will give you back some bytes that you can then push out\n   through the network.\n\nFor example, a client might instantiate and then send a\n``h11.Request`` object, then zero or more ``h11.Data`` objects for the\nrequest body (e.g., if this is a POST), and then a\n``h11.EndOfMessage`` to indicate the end of the message. Then the\nserver would then send back a ``h11.Response``, some ``h11.Data``, and\nits own ``h11.EndOfMessage``. If either side violates the protocol,\nyou'll get a ``h11.ProtocolError`` exception.\n\nh11 is suitable for implementing both servers and clients, and has a\npleasantly symmetric API: the events you send as a client are exactly\nthe ones that you receive as a server and vice-versa.\n\n`Here's an example of a tiny HTTP client\n<https://github.com/python-hyper/h11/blob/master/examples/basic-client.py>`_\n\nIt also has `a fine manual <https://h11.readthedocs.io/>`_.\n\nFAQ\n---\n\n*Whyyyyy?*\n\nI wanted to play with HTTP in `Curio\n<https://curio.readthedocs.io/en/latest/tutorial.html>`__ and `Trio\n<https://trio.readthedocs.io>`__, which at the time didn't have any\nHTTP libraries. So I thought, no big deal, Python has, like, a dozen\ndifferent implementations of HTTP, surely I can find one that's\nreusable. I didn't find one, but I did find Cory's call-to-arms\nblog-post. So I figured, well, fine, if I have to implement HTTP from\nscratch, at least I can make sure no-one *else* has to ever again.\n\n*Should I use it?*\n\nMaybe. You should be aware that it's a very young project. But, it's\nfeature complete and has an exhaustive test-suite and complete docs,\nso the next step is for people to try using it and see how it goes\n:-). If you do then please let us know -- if nothing else we'll want\nto talk to you before making any incompatible changes!\n\n*What are the features/limitations?*\n\nRoughly speaking, it's trying to be a robust, complete, and non-hacky\nimplementation of the first \"chapter\" of the HTTP/1.1 spec: `RFC 7230:\nHTTP/1.1 Message Syntax and Routing\n<https://tools.ietf.org/html/rfc7230>`_. That is, it mostly focuses on\nimplementing HTTP at the level of taking bytes on and off the wire,\nand the headers related to that, and tries to be anal about spec\nconformance. It doesn't know about higher-level concerns like URL\nrouting, conditional GETs, cross-origin cookie policies, or content\nnegotiation. But it does know how to take care of framing,\ncross-version differences in keep-alive handling, and the \"obsolete\nline folding\" rule, so you can focus your energies on the hard /\ninteresting parts for your application, and it tries to support the\nfull specification in the sense that any useful HTTP/1.1 conformant\napplication should be able to use h11.\n\nIt's pure Python, and has no dependencies outside of the standard\nlibrary.\n\nIt has a test suite with 100.0% coverage for both statements and\nbranches.\n\nCurrently it supports Python 3 (testing on 3.8-3.12) and PyPy 3.\nThe last Python 2-compatible version was h11 0.11.x.\n(Originally it had a Cython wrapper for `http-parser\n<https://github.com/nodejs/http-parser>`_ and a beautiful nested state\nmachine implemented with ``yield from`` to postprocess the output. But\nI had to take these out -- the new *parser* needs fewer lines-of-code\nthan the old *parser wrapper*, is written in pure Python, uses no\nexotic language syntax, and has more features. It's sad, really; that\nold state machine was really slick. I just need a few sentences here\nto mourn that.)\n\nI don't know how fast it is. I haven't benchmarked or profiled it yet,\nso it's probably got a few pointless hot spots, and I've been trying\nto err on the side of simplicity and robustness instead of\nmicro-optimization. But at the architectural level I tried hard to\navoid fundamentally bad decisions, e.g., I believe that all the\nparsing algorithms remain linear-time even in the face of pathological\ninput like slowloris, and there are no byte-by-byte loops. (I also\nbelieve that it maintains bounded memory usage in the face of\narbitrary/pathological input.)\n\nThe whole library is ~800 lines-of-code. You can read and understand\nthe whole thing in less than an hour. Most of the energy invested in\nthis so far has been spent on trying to keep things simple by\nminimizing special-cases and ad hoc state manipulation; even though it\nis now quite small and simple, I'm still annoyed that I haven't\nfigured out how to make it even smaller and simpler. (Unfortunately,\nHTTP does not lend itself to simplicity.)\n\nThe API is ~feature complete and I don't expect the general outlines\nto change much, but you can't judge an API's ergonomics until you\nactually document and use it, so I'd expect some changes in the\ndetails.\n\n*How do I try it?*\n\n.. code-block:: sh\n\n  $ pip install h11\n  $ git clone git@github.com:python-hyper/h11\n  $ cd h11/examples\n  $ python basic-client.py\n\nand go from there.\n\n*License?*\n\nMIT\n\n*Code of conduct?*\n\nContributors are requested to follow our `code of conduct\n<https://github.com/python-hyper/h11/blob/master/CODE_OF_CONDUCT.md>`_ in\nall project spaces.\n",
+        "home_page": "https://github.com/python-hyper/h11",
+        "author": "Nathaniel J. Smith",
+        "author_email": "njs@pobox.com",
+        "license": "MIT",
+        "license_file": [
+          "LICENSE.txt"
+        ],
+        "classifier": [
+          "Development Status :: 3 - Alpha",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: System :: Networking"
+        ],
+        "requires_python": ">=3.8"
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/1e/41/f7dcf80b81ee8e71c1a2b59f14208bc723edbd89ed027a73b175abf6348e/opentelemetry_api-1.45.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb",
+          "hashes": {
+            "sha256": "b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "opentelemetry-api",
+        "version": "1.45.1",
+        "summary": "OpenTelemetry Python API",
+        "description": "OpenTelemetry Python API\n============================================================================\n\n|pypi|\n\n.. |pypi| image:: https://badge.fury.io/py/opentelemetry-api.svg\n   :target: https://pypi.org/project/opentelemetry-api/\n\nInstallation\n------------\n\n::\n\n    pip install opentelemetry-api\n\nReferences\n----------\n\n* `OpenTelemetry Project <https://opentelemetry.io/>`_\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "OpenTelemetry Authors <cncf-opentelemetry-contributors@lists.cncf.io>",
+        "license_expression": "Apache-2.0",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Framework :: OpenTelemetry",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Typing :: Typed"
+        ],
+        "requires_dist": [
+          "typing-extensions>=4.5.0"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://github.com/open-telemetry/opentelemetry-python/tree/main/opentelemetry-api",
+          "Repository, https://github.com/open-telemetry/opentelemetry-python"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/f3/93/181df62699d9b5aca1d87e5cfda131dac87e3cdaebf668662f7206ca3470/starlette-1.9.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=fd3f159936e882d06c1108f84688f7cda2cf85fc6a592a50edbd175e882c2ddc",
+          "hashes": {
+            "sha256": "fd3f159936e882d06c1108f84688f7cda2cf85fc6a592a50edbd175e882c2ddc"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "starlette",
+        "version": "1.9.0",
+        "summary": "The little ASGI library that shines.",
+        "description": "<p align=\"center\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://raw.githubusercontent.com/Kludex/starlette/main/docs/img/starlette_dark.svg\" width=\"420px\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://raw.githubusercontent.com/Kludex/starlette/main/docs/img/starlette.svg\" width=\"420px\">\n    <img alt=\"starlette-logo\" src=\"https://raw.githubusercontent.com/Kludex/starlette/main/docs/img/starlette.svg\">\n  </picture>\n</p>\n\n<p align=\"center\">\n    <em>✨ The little ASGI framework that shines. ✨</em>\n</p>\n\n---\n\n[![Build Status](https://github.com/Kludex/starlette/workflows/Test%20Suite/badge.svg)](https://github.com/Kludex/starlette/actions)\n[![Package version](https://badge.fury.io/py/starlette.svg)](https://pypi.python.org/pypi/starlette)\n[![Supported Python Version](https://img.shields.io/pypi/pyversions/starlette.svg?color=%2334D058)](https://pypi.org/project/starlette)\n[![Discord](https://img.shields.io/discord/1051468649518616576?logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/RxKUF5JuHs)\n\n---\n\n**Documentation**: <a href=\"https://starlette.dev/\" target=\"_blank\">https://starlette.dev</a>\n\n**Source Code**: <a href=\"https://github.com/Kludex/starlette\" target=\"_blank\">https://github.com/Kludex/starlette</a>\n\n---\n\n# Starlette\n\nStarlette is a lightweight [ASGI][asgi] framework/toolkit,\nwhich is ideal for building async web services in Python.\n\nIt is production-ready, and gives you the following:\n\n* A lightweight, low-complexity HTTP web framework.\n* WebSocket support.\n* In-process background tasks.\n* Startup and shutdown events.\n* Test client built on `httpx2`.\n* CORS, GZip, Static Files, Streaming responses.\n* Session and Cookie support.\n* 100% test coverage.\n* 100% type annotated codebase.\n* Few hard dependencies.\n* Compatible with `asyncio` and `trio` backends.\n* Great overall performance [against independent benchmarks][techempower].\n\n## Installation\n\n```shell\n$ pip install starlette\n```\n\nYou'll also want to install an ASGI server, such as [uvicorn](https://uvicorn.dev) or any of the [other ASGI server implementations](https://asgi.readthedocs.io/en/latest/implementations.html#servers).\n\n```shell\n$ pip install uvicorn\n```\n\n## Example\n\n```python title=\"main.py\"\nfrom starlette.applications import Starlette\nfrom starlette.responses import JSONResponse\nfrom starlette.routing import Route\n\n\nasync def homepage(request):\n    return JSONResponse({'hello': 'world'})\n\nroutes = [\n    Route(\"/\", endpoint=homepage)\n]\n\napp = Starlette(debug=True, routes=routes)\n```\n\nThen run the application using Uvicorn:\n\n```shell\n$ uvicorn main:app\n```\n\n## Dependencies\n\nStarlette only requires `anyio`, and the following are optional:\n\n* [`httpx2`][httpx2] - Required if you want to use the `TestClient`.\n* [`jinja2`][jinja2] - Required if you want to use `Jinja2Templates`.\n* [`opentelemetry-api`][opentelemetry-api] - Required for `OpenTelemetryMiddleware`.\n* [`python-multipart`][python-multipart] - Required if you want to support form parsing, with `request.form()`.\n* [`itsdangerous`][itsdangerous] - Required for `SessionMiddleware` support.\n* [`pyyaml`][pyyaml] - Required for `SchemaGenerator` support.\n\nYou can install all of these with `pip install starlette[full]`.\n\n## Framework or Toolkit\n\nStarlette is designed to be used either as a complete framework, or as\nan ASGI toolkit. You can use any of its components independently.\n\n```python\nfrom starlette.responses import PlainTextResponse\n\n\nasync def app(scope, receive, send):\n    assert scope['type'] == 'http'\n    response = PlainTextResponse('Hello, world!')\n    await response(scope, receive, send)\n```\n\nRun the `app` application in `example.py`:\n\n```shell\n$ uvicorn example:app\nINFO: Started server process [11509]\nINFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)\n```\n\nRun uvicorn with `--reload` to enable auto-reloading on code changes.\n\n## Modularity\n\nThe modularity that Starlette is designed on promotes building reusable\ncomponents that can be shared between any ASGI framework. This should enable\nan ecosystem of shared middleware and mountable applications.\n\nThe clean API separation also means it's easier to understand each component\nin isolation.\n\n---\n\n<p align=\"center\"><i>Starlette is <a href=\"https://github.com/Kludex/starlette/blob/main/LICENSE.md\">BSD licensed</a> code.<br/>Designed & crafted with care.</i></br>&mdash; ⭐️ &mdash;</p>\n\n[asgi]: https://asgi.readthedocs.io/en/latest/\n[httpx2]: https://pypi.org/project/httpx2/\n[jinja2]: https://jinja.palletsprojects.com/\n[opentelemetry-api]: https://opentelemetry.io/docs/languages/python/api/\n[python-multipart]: https://multipart.fastapiexpert.com/\n[itsdangerous]: https://itsdangerous.palletsprojects.com/\n[sqlalchemy]: https://www.sqlalchemy.org\n[pyyaml]: https://pyyaml.org/wiki/PyYAMLDocumentation\n[techempower]: https://github.com/TechEmpower/FrameworkBenchmarks\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Tom Christie <tom@tomchristie.com>",
+        "maintainer_email": "Marcelo Trylesinski <marcelotryle@gmail.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE.md"
+        ],
+        "classifier": [
+          "Development Status :: 3 - Alpha",
+          "Environment :: Web Environment",
+          "Framework :: AnyIO",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "anyio<5,>=4.0.0",
+          "typing-extensions>=4.10.0; python_version < '3.13'",
+          "httpx2>=2.0.0; extra == 'full'",
+          "httpx<0.29.0,>=0.27.0; extra == 'full'",
+          "itsdangerous; extra == 'full'",
+          "jinja2; extra == 'full'",
+          "opentelemetry-api; extra == 'full'",
+          "python-multipart>=0.0.18; extra == 'full'",
+          "pyyaml; extra == 'full'"
+        ],
+        "requires_python": ">=3.11",
+        "project_url": [
+          "Homepage, https://github.com/Kludex/starlette",
+          "Documentation, https://starlette.dev/",
+          "Changelog, https://starlette.dev/release-notes/",
+          "Funding, https://github.com/sponsors/Kludex",
+          "Source, https://github.com/Kludex/starlette"
+        ],
+        "provides_extra": [
+          "full"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/12/b8/4bd346e22b28902df4d651910f5242c28d84e4a5c2435ca5c3f797ed7e2e/anyio-4.15.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101",
+          "hashes": {
+            "sha256": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "anyio",
+        "version": "4.15.1",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "High-level concurrency and networking framework on top of asyncio or Trio",
+        "description": ".. image:: https://github.com/agronholm/anyio/actions/workflows/test.yml/badge.svg\n  :target: https://github.com/agronholm/anyio/actions/workflows/test.yml\n  :alt: Build Status\n.. image:: https://coveralls.io/repos/github/agronholm/anyio/badge.svg?branch=master\n  :target: https://coveralls.io/github/agronholm/anyio?branch=master\n  :alt: Code Coverage\n.. image:: https://readthedocs.org/projects/anyio/badge/?version=latest\n  :target: https://anyio.readthedocs.io/en/latest/?badge=latest\n  :alt: Documentation\n.. image:: https://badges.gitter.im/gitterHQ/gitter.svg\n  :target: https://gitter.im/python-trio/AnyIO\n  :alt: Gitter chat\n.. image:: https://tidelift.com/badges/package/pypi/anyio\n  :target: https://tidelift.com/subscription/pkg/pypi-anyio\n  :alt: Tidelift\n\nAnyIO is an asynchronous networking and concurrency library that works on top of either asyncio_ or\nTrio_. It implements Trio-like `structured concurrency`_ (SC) on top of asyncio and works in harmony\nwith the native SC of Trio itself.\n\nApplications and libraries written against AnyIO's API will run unmodified on either asyncio_ or\nTrio_. AnyIO can also be adopted into a library or application incrementally – bit by bit, no full\nrefactoring necessary. It will blend in with the native libraries of your chosen backend.\n\nTo find out why you might want to use AnyIO's APIs instead of asyncio's, you can read about it\n`here <https://anyio.readthedocs.io/en/stable/why.html>`_.\n\nDocumentation\n-------------\n\nView full documentation at: https://anyio.readthedocs.io/\n\nFeatures\n--------\n\nAnyIO offers the following functionality:\n\n* Task groups (nurseries_ in trio terminology)\n* High-level networking (TCP, UDP and UNIX sockets)\n\n  * `Happy eyeballs`_ algorithm for TCP connections (more robust than that of asyncio on Python\n    3.8)\n  * async/await style UDP sockets (unlike asyncio where you still have to use Transports and\n    Protocols)\n\n* A versatile API for byte streams and object streams\n* Inter-task synchronization and communication (locks, conditions, events, semaphores, object\n  streams and futures)\n* Worker threads\n* Subprocesses\n* Subinterpreter support for code parallelization (on Python 3.13 and later)\n* Asynchronous file I/O (using worker threads)\n* Signal handling\n* Asynchronous versions of the functools_ and itertools_ modules\n\nAnyIO also comes with its own pytest_ plugin which also supports asynchronous fixtures.\nIt even works with the popular Hypothesis_ library.\n\n.. _asyncio: https://docs.python.org/3/library/asyncio.html\n.. _Trio: https://github.com/python-trio/trio\n.. _structured concurrency: https://en.wikipedia.org/wiki/Structured_concurrency\n.. _nurseries: https://trio.readthedocs.io/en/stable/reference-core.html#nurseries-and-spawning\n.. _Happy eyeballs: https://en.wikipedia.org/wiki/Happy_Eyeballs\n.. _pytest: https://docs.pytest.org/en/latest/\n.. _functools: https://docs.python.org/3/library/functools.html\n.. _itertools: https://docs.python.org/3/library/itertools.html\n.. _Hypothesis: https://hypothesis.works/\n\nSecurity contact information\n----------------------------\n\nTo report a security vulnerability, please use the `Tidelift security contact`_.\nTidelift will coordinate the fix and disclosure.\n\n.. _Tidelift security contact: https://tidelift.com/security\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Alex Grönholm <alex.gronholm@nextday.fi>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Framework :: AnyIO",
+          "Typing :: Typed",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: Free Threading :: 2 - Beta"
+        ],
+        "requires_dist": [
+          "exceptiongroup>=1.0.2; python_version < \"3.11\"",
+          "idna>=2.8",
+          "typing_extensions>=4.16.0; python_version < \"3.15\"",
+          "trio>=0.32.0; extra == \"trio\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Documentation, https://anyio.readthedocs.io/en/latest/",
+          "Changelog, https://anyio.readthedocs.io/en/stable/versionhistory.html",
+          "Source code, https://github.com/agronholm/anyio",
+          "Issue tracker, https://github.com/agronholm/anyio/issues"
+        ],
+        "provides_extra": [
+          "trio"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+          "hashes": {
+            "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "idna",
+        "version": "3.20",
+        "summary": "Internationalized Domain Names in Applications (IDNA)",
+        "description": "# Internationalized Domain Names in Applications (IDNA)\n\nSupport for [Internationalized Domain Names in Applications\n(IDNA)](https://tools.ietf.org/html/rfc5891) and [Unicode IDNA\nCompatibility Processing](https://unicode.org/reports/tr46/). It\nsupersedes the standard library's `encodings.idna`, which only\nimplements the 2003 specification, offering broader script coverage and\nlimiting domains with known security vulnerabilities.\n\n## Usage\n\nPackage may be installed from [PyPI](https://pypi.org/project/idna/) via\nthe typical methods (e.g. `python3 -m pip install idna`)\n\nFor typical usage, the `encode` and `decode` functions will take a\ndomain name argument and perform a conversion to ASCII-compatible encoding\n(known as A-labels), or to Unicode strings (known as U-labels)\nrespectively.\n\n```pycon\n>>> import idna\n>>> idna.encode('ドメイン.テスト')\nb'xn--eckwd4c7c.xn--zckzah'\n>>> print(idna.decode('xn--eckwd4c7c.xn--zckzah'))\nドメイン.テスト\n```\n\nConversions can be applied at a per-label basis using the `ulabel` or\n`alabel` functions for specialized use cases.\n\n\n### Compatibility Mapping (UTS #46)\n\nThis library provides support for [Unicode IDNA Compatibility\nProcessing](https://unicode.org/reports/tr46/) which normalizes input from\ndifferent potential ways a user may input a domain prior to performing the IDNA\nconversion operations. This functionality, known as a\n[mapping](https://tools.ietf.org/html/rfc5895), is considered by the\nspecification to be a local user-interface issue distinct from IDNA\nconversion functionality.\n\nFor example, \"Königsgäßchen\" is not a permissible label as capital letters\nare not allowed. UTS #46 will convert this into lower case prior to applying\nthe IDNA conversion.\n\n```pycon\n>>> import idna\n>>> idna.encode('Königsgäßchen')\n...\nidna.core.InvalidCodepoint: Codepoint U+004B at position 1 of 'Königsgäßchen' not allowed\n>>> idna.encode('Königsgäßchen', uts46=True)\nb'xn--knigsgchen-b4a3dun'\n>>> idna.decode('xn--knigsgchen-b4a3dun')\n'königsgäßchen'\n```\n\nWhen performing a decode operation for display purposes, `decode()`\naccepts a `display=True` argument that leaves any `xn--` label that\nfails to decode unchanged. This is useful for user interface display\nwhere a domain is in use, the A-label form can be presented when it\nis not a valid IDN.\n\n\n## Exceptions\n\nAll errors raised during conversion derive from the `idna.IDNAError`\nbase class. The more specific exceptions are:\n\n* `idna.IDNABidiError` — raised when a label contains an illegal\n  combination of left-to-right and right-to-left characters.\n* `idna.InvalidCodepoint` — raised when a label contains a codepoint\n  that is INVALID for IDNA.\n* `idna.InvalidCodepointContext` — raised when a CONTEXTO or CONTEXTJ\n  codepoint appears in a position whose contextual requirements are\n  not satisfied.\n\nExceptions carry machine-readable attributes so that applications do\nnot need to parse the message: `code` is a short, stable identifier\nfor the rule that failed (such as `disallowed_codepoint` or\n`label_too_long`); and, when the failure can be attributed to a\nparticular character, `text` (the label or domain being validated),\n`codepoint` (the offending codepoint as an integer) and `position`\nare set. \n\n\n## Command-line tool\n\nThe package supports command-line usage to convert domain names\nbetween their Unicode and ASCII-compatible forms. It can be run either\nas a module (`python3 -m idna`) or, once installed (such as with `uv\ntool` or `pipx`), via the `idna` script:\n\n```bash\n$ uv tool install idna\n$ idna xn--e1afmkfd.xn--p1ai\nпример.рф\n$ idna пример.рф\nxn--e1afmkfd.xn--p1ai\n```\n\nMode can be specified with `-e`/`--encode` or `-d`/`--decode`, otherwise\nit will be chosen automatically based on the first input. Multiple\ndomains can be supplied either as arguments or through standard input.\nUTS #46 mapping is applied by default, which lets the tool accept\ninputs that aren't strictly valid IDNA 2008 by normalising them first,\npass `--strict` to disable UTS #46.\n\nConversion failures are reported on stderr together with the\noffending input; processing continues with the remaining domains and\nthe tool exits with a non-zero status if any conversion failed.\n\n\n## Additional Notes\n\n* **Python version support**. This library supports Python 3.9 and higher.\n  As this library serves as a low-level toolkit for a variety of\n  applications, we strive to support all versions of Python that are\n  not beyond end-of-life. Free-threaded Python is also supported,\n  as the library holds no mutable global state the functions can be\n  called concurrently from multiple threads.\n\n* **Unicode version**. The IDNA and UTS #46 lookup tables are generated\n  from a specific Unicode release. Some Unicode data depends on the\n  running Python's `unicodedata` module, so on an older Python a\n  character new to Unicode may be rejected as unknown even if this\n  library knows about it.\n\n* **Emoji**. It is an occasional request to support emoji domains in\n  this library. Encoding of symbols like emoji is expressly prohibited by\n  the IDNA technical standard, and emoji domains are broadly phased\n  out across the domain industry due to associated security risks.\n\n* **Regenerating lookup tables**. The IDNA and UTS #46 functionality\n  relies upon pre-calculated lookup tables, generated using the\n  `idna-data` script in [`tools/`](tools/README.md).\n\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Kim Davies <kim+pypi@gumleaf.org>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE.md"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Intended Audience :: System Administrators",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Internet :: Name Service (DNS)",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Utilities"
+        ],
+        "requires_dist": [
+          "ruff >= 0.16.0 ; extra == \"all\"",
+          "mypy >= 1.11.2 ; extra == \"all\"",
+          "ty >= 0.0.37 ; extra == \"all\"",
+          "pytest >= 8.3.2 ; extra == \"all\"",
+          "hypothesis >= 6.141.1 ; extra == \"all\"",
+          "coverage >= 7.10.0 ; extra == \"all\""
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Changelog, https://github.com/kjd/idna/blob/master/HISTORY.md",
+          "Issue tracker, https://github.com/kjd/idna/issues",
+          "Source, https://github.com/kjd/idna"
+        ],
+        "provides_extra": [
+          "all"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/6f/86/5363df11b86d02cf3662208e7406496327649cc90eb365bf6f4e8a54a41f/argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=27f1821903e2ceadcb88ec2b45ef190897b7682449c772f4d9b53e42c520cf29",
+          "hashes": {
+            "sha256": "27f1821903e2ceadcb88ec2b45ef190897b7682449c772f4d9b53e42c520cf29"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "argon2-cffi-bindings",
+        "version": "26.1.0",
+        "summary": "Low-level CFFI bindings for Argon2",
+        "description": "# Low-level Python CFFI Bindings for Argon2\n\n[![License: MIT](https://img.shields.io/badge/license-MIT-C06524)](https://github.com/hynek/argon2-cffi-bindings/blob/main/LICENSE)\n[![No AI slop inside.](https://img.shields.io/badge/no-slop-purple)](https://github.com/hynek/argon2-cffi-bindings/blob/main/.github/AI_POLICY.md)\n[![PyPI version](https://img.shields.io/pypi/v/argon2-cffi-bindings)](https://pypi.org/project/argon2-cffi-bindings/)\n\n*argon2-cffi-bindings* provides low-level [CFFI](https://cffi.readthedocs.io/) bindings to the official implementation of the [Argon2] password hashing algorithm.\n\n<!-- [[[cog\n# Extract commit ID; refresh using `tox -e cog-render`\nimport subprocess\nout = subprocess.check_output([\"git\", \"submodule\"], text=True)\nid = out.strip().split(\" \", 1)[0]\nlink = f'[**`{id[:7]}`**](https://github.com/P-H-C/phc-winner-argon2/commit/{id})'\nprint(f\"The currently vendored Argon2 commit ID is {link}.\")\n]]] -->\nThe currently vendored Argon2 commit ID is [**`f57e61e`**](https://github.com/P-H-C/phc-winner-argon2/commit/f57e61e19229e23c4445b85494dbf7c07de721cb).\n<!-- [[[end]]] -->\n\n> [!NOTE]\n> If you want to hash passwords in an application, this package is **not** for you.\n> Have a look at [*argon2-cffi*] with its high-level abstractions!\n\nThese bindings have been extracted from [*argon2-cffi*] and it remains its main consumer.\nHowever, they may be used by other packages that want to use the Argon2 library without dealing with C-related complexities.\n\n\n## Usage\n\n*argon2-cffi-bindings* is available from [PyPI](https://pypi.org/project/argon2-cffi-bindings/).\nThe provided CFFI bindings are compiled in API mode.\n\nBest effort is given to provide binary wheels for as many platforms as possible.\n\nBuilding from source requires a C compiler and [CMake](https://cmake.org).\nIf no suitable CMake is found, one is downloaded automatically as part of the build.\n\n\n### Disabling Vendored Code\n\nA copy of [Argon2] is vendored and used by default, but can be disabled if *argon2-cffi-bindings* is installed using:\n\n```console\n$ env ARGON2_CFFI_USE_SYSTEM=1 \\\n  python -Im pip install --no-binary=argon2-cffi-bindings argon2-cffi-bindings\n```\n\n\n### Overriding Automatic SSE2 Detection\n\nUsually the build process tries to guess whether or not it should use [SSE2](https://en.wikipedia.org/wiki/SSE2)-optimized code (see [`CMakeLists.txt`](https://github.com/hynek/argon2-cffi-bindings/blob/main/CMakeLists.txt) for details).\nThis can go wrong and is problematic for cross-compiling.\n\nTherefore you can use the `ARGON2_CFFI_USE_SSE2` environment variable to control the process:\n\n- If you set it to ``1``, *argon2-cffi-bindings* will build **with** SSE2 support.\n- If you set it to ``0``, *argon2-cffi-bindings* will build **without** SSE2 support.\n- If you set it to anything else, it will be ignored and *argon2-cffi-bindings* will try to guess.\n\nHowever, if our heuristics fail you, we would welcome a bug report.\n\n\n### Python API\n\nSince this package is intended to be an implementation detail, it uses a private module name to prevent your users from using it by accident.\n\nTherefore you have to import the symbols from `_argon2_cffi_bindings`:\n\n```python\nfrom _argon2_cffi_bindings import ffi, lib\n```\n\nPlease refer to [*cffi* documentation](https://cffi.readthedocs.io/en/latest/using.html) on how to use the `ffi` and `lib` objects.\n\nThe list of symbols that are provided can be found in the [`_ffi.cdef.txt` file](https://github.com/hynek/argon2-cffi-bindings/blob/main/src/_argon2_cffi_bindings/_ffi.cdef.txt).\n\n[Argon2]: https://github.com/p-h-c/phc-winner-argon2\n[*argon2-cffi*]: https://argon2-cffi.readthedocs.io/\n\n\n## Project Information\n\n- [**Changelog**](https://github.com/hynek/argon2-cffi-bindings/blob/main/CHANGELOG.md)\n- [**Documentation**](https://github.com/hynek/argon2-cffi-bindings#readme)\n- [**PyPI**](https://pypi.org/project/argon2-cffi-bindings/)\n- [**Source Code**](https://github.com/hynek/argon2-cffi-bindings)\n\n\n### Credits & License\n\n*argon2-cffi-bindings* is written and maintained by [Hynek Schlawack](https://hynek.me/about/).\nIt is released under the [MIT license](https://github.com/hynek/argon2-cffi-bindings/blob/main/LICENSE).\n\nThe development is kindly supported by [Variomedia AG](https://www.variomedia.de/) and all my amazing [GitHub Sponsors](https://github.com/sponsors/hynek).\n\nThe authors of Argon2 were very helpful to get the library to compile on ancient versions of Visual Studio for ancient versions of Python.\n\nThe documentation quotes frequently in verbatim from the Argon2 [paper](https://www.password-hashing.net/argon2-specs.pdf) to avoid mistakes by rephrasing.\n\n\n#### Vendored Code\n\nThe original Argon2 repo can be found at <https://github.com/P-H-C/phc-winner-argon2/>.\n\nExcept for the components listed below, the Argon2 code in this repository is copyright (c) 2015 Daniel Dinu, Dmitry Khovratovich (main authors), Jean-Philippe Aumasson and Samuel Neves, and under [CC0] license.\n\nThe string encoding routines in `src/encoding.c` are copyright (c) 2015 Thomas Pornin, and under [CC0] license.\n\nThe [BLAKE2](https://www.blake2.net) code in `src/blake2/` is copyright (c) Samuel Neves, 2013-2015, and under [CC0] license.\n\n[CC0]: https://creativecommons.org/publicdomain/zero/1.0/\n\n\n### *argon2-cffi-bindings* for Enterprise\n\nAvailable as part of the [Tidelift Subscription](https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek).\n\nThe maintainers of *argon2-cffi-bindings* and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open-source packages you use to build your applications.\nSave time, reduce risk, and improve code health, while paying the maintainers of the exact packages you use.\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "password",
+          "hash",
+          "hashing",
+          "security",
+          "bindings",
+          "cffi"
+        ],
+        "author_email": "Hynek Schlawack <hs@ox.cx>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Natural Language :: English",
+          "Operating System :: MacOS :: MacOS X",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: POSIX",
+          "Operating System :: Unix",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: Free Threading",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Security :: Cryptography",
+          "Topic :: Security",
+          "Topic :: Software Development :: Libraries :: Python Modules"
+        ],
+        "requires_dist": [
+          "cffi>=1.0.1; python_version < \"3.14\"",
+          "cffi>=2; python_version >= \"3.14\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Tidelift, https://tidelift.com/?utm_source=lifter&utm_medium=referral&utm_campaign=hynek",
+          "Changelog, https://github.com/hynek/argon2-cffi-bindings/blob/main/CHANGELOG.md",
+          "GitHub, https://github.com/hynek/argon2-cffi-bindings",
+          "Funding, https://github.com/sponsors/hynek"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/95/95/86342356ff5953b3fb06f7ef7c5bee212d45e770abc7218d451b9148313c/cffi-2.1.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2",
+          "hashes": {
+            "sha256": "a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "cffi",
+        "version": "2.1.1",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "Foreign Function Interface for Python calling C code.",
+        "description": "[![GitHub Actions Status](https://github.com/python-cffi/cffi/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/python-cffi/cffi/actions/workflows/ci.yaml?query=branch%3Amain++)\n[![PyPI version](https://img.shields.io/pypi/v/cffi.svg)](https://pypi.org/project/cffi)\n[![Read the Docs](https://img.shields.io/badge/docs-latest-blue.svg)][Documentation]\n\n\nCFFI\n====\n\nForeign Function Interface for Python calling C code.\n\nPlease see the [Documentation] or uncompiled in the `doc/` subdirectory.\n\nDownload\n--------\n\n[Download page](https://github.com/python-cffi/cffi/releases)\n\nSource Code\n-----------\n\nSource code is publicly available on\n[GitHub](https://github.com/python-cffi/cffi).\n\nContact\n-------\n\n[Mailing list](https://groups.google.com/forum/#!forum/python-cffi)\n\nTesting/development tips\n------------------------\n\nAfter `git clone` or `wget && tar`, we will get a directory called `cffi` or `cffi-x.x.x`. We call it `repo-directory`. To run tests under CPython, run the following in the `repo-directory`:\n\n    pip install pytest\n    pip install -e .  # editable install of CFFI for local development\n    pytest src/c/ testing/\n\n[Documentation]: http://cffi.readthedocs.org/\n",
+        "description_content_type": "text/markdown",
+        "author": "Armin Rigo, Maciej Fijalkowski",
+        "maintainer": "Matt Davis, Matt Clay",
+        "license_expression": "MIT-0",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: Free Threading :: 2 - Beta",
+          "Programming Language :: Python :: Implementation :: CPython"
+        ],
+        "requires_dist": [
+          "pycparser; implementation_name != \"PyPy\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Documentation, https://cffi.readthedocs.io/",
+          "Changelog, https://cffi.readthedocs.io/en/latest/whatsnew.html",
+          "Download, https://github.com/python-cffi/cffi/releases",
+          "Contact, https://groups.google.com/forum/#!forum/python-cffi",
+          "Source Code, https://github.com/python-cffi/cffi",
+          "Issue Tracker, https://github.com/python-cffi/cffi/issues"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/90/11/0e6f11117525ff0eec40ebac3d313376f102df93ca44ad9e893ee85e4f89/pycparser-3.11-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=51d5a8ba2be0bbe440b99d2112604c95bbbc3c2748a64260186c541e1729cd80",
+          "hashes": {
+            "sha256": "51d5a8ba2be0bbe440b99d2112604c95bbbc3c2748a64260186c541e1729cd80"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "pycparser",
+        "version": "3.11",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "C parser in Python",
+        "description": "=========\npycparser\n=========\n\n\n.. image:: https://github.com/eliben/pycparser/workflows/pycparser-tests/badge.svg\n  :align: center\n  :target: https://github.com/eliben/pycparser/actions\n\n----\n\n.. contents::\n    :backlinks: none\n\n.. sectnum::\n\nIntroduction\n============\n\nWhat is pycparser?\n------------------\n\n**pycparser** is a parser for the C language, written in pure Python. It is a\nmodule designed to be easily integrated into applications that need to parse\nC source code.\n\nWhat is it good for?\n--------------------\n\nAnything that needs C code to be parsed. The following are some uses for\n**pycparser**, taken from real user reports:\n\n* C code obfuscator\n* Front-end for various specialized C compilers\n* Static code checker\n* Automatic unit-test discovery\n* Adding specialized extensions to the C language\n\nOne of the most popular uses of **pycparser** is in the `cffi\n<https://cffi.readthedocs.io/en/latest/>`_ library, which uses it to parse the\ndeclarations of C functions and types in order to auto-generate FFIs.\n\n**pycparser** is unique in the sense that it's written in pure Python - a very\nhigh level language that's easy to experiment with and tweak. To people familiar\nwith Lex and Yacc, **pycparser**'s code will be simple to understand. It also\nhas no external dependencies (except for a Python interpreter), making it very\nsimple to install and deploy.\n\nWhich version of C does pycparser support?\n------------------------------------------\n\n**pycparser** aims to support the full C99 language (according to the standard\nISO/IEC 9899). Some features from C11 are also supported, and patches to support\nmore are welcome.\n\n**pycparser** supports very few GCC extensions, but it's fairly easy to set\nthings up so that it parses code with a lot of GCC-isms successfully. See the\n`FAQ <https://github.com/eliben/pycparser/wiki/FAQ>`_ for more details.\n\nWhat grammar does pycparser follow?\n-----------------------------------\n\n**pycparser** very closely follows the C grammar provided in Annex A of the C99\nstandard (ISO/IEC 9899).\n\nHow is pycparser licensed?\n--------------------------\n\n`BSD license <https://github.com/eliben/pycparser/blob/main/LICENSE>`_.\n\nContact details\n---------------\n\nFor reporting problems with **pycparser** or submitting feature requests, please\nopen an `issue <https://github.com/eliben/pycparser/issues>`_, or submit a\npull request.\n\n\nInstalling\n==========\n\nPrerequisites\n-------------\n\n**pycparser** is being tested with modern versions of Python on\nLinux, macOS and Windows. See `the CI dashboard <https://github.com/eliben/pycparser/actions/workflows/ci.yml>`__\nfor details.\n\n**pycparser** has no external dependencies.\n\nInstallation process\n--------------------\n\nThe recommended way to install **pycparser** is with ``pip``::\n\n    > pip install pycparser\n\nUsing\n=====\n\nInteraction with the C preprocessor\n-----------------------------------\n\nIn order to be compilable, C code must be preprocessed by the C preprocessor -\n``cpp``. A compatible ``cpp`` handles preprocessing directives like ``#include`` and\n``#define``, removes comments, and performs other minor tasks that prepare the C\ncode for compilation.\n\nFor all but the most trivial snippets of C code **pycparser**, like a C\ncompiler, must receive preprocessed C code in order to function correctly. If\nyou import the top-level ``parse_file`` function from the **pycparser** package,\nit will interact with ``cpp`` for you, as long as it's in your PATH, or you\nprovide a path to it.\n\nNote also that you can use ``gcc -E`` or ``clang -E`` instead of ``cpp``. See\nthe ``using_gcc_E_libc.py`` example for more details. Windows users can download\nand install a binary build of Clang for Windows `from this website\n<http://llvm.org/releases/download.html>`_.\n\nWhat about the standard C library headers?\n------------------------------------------\n\nC code almost always ``#include``\\s various header files from the standard C\nlibrary, like ``stdio.h``. While (with some effort) **pycparser** can be made to\nparse the standard headers from any C compiler, it's much simpler to use the\nprovided \"fake\" standard includes for C11 in ``utils/fake_libc_include``. These\nare standard C header files that contain only the bare necessities to allow\nvalid parsing of the files that use them. As a bonus, since they're minimal, it\ncan significantly improve the performance of parsing large C files.\n\nThe key point to understand here is that **pycparser** doesn't really care about\nthe semantics of types. It only needs to know whether some token encountered in\nthe source is a previously defined type. This is essential in order to be able\nto parse C correctly.\n\nSee `this blog post\n<https://eli.thegreenplace.net/2015/on-parsing-c-type-declarations-and-fake-headers>`_\nfor more details.\n\nNote that the fake headers are not included in the ``pip`` package nor installed\nvia the package build (`#224 <https://github.com/eliben/pycparser/issues/224>`_).\n\nBasic usage\n-----------\n\nTake a look at the |examples|_ directory of the distribution for a few examples\nof using **pycparser**. These should be enough to get you started. Please note\nthat most realistic C code samples would require running the C preprocessor\nbefore passing the code to **pycparser**; see the previous sections for more\ndetails.\n\n.. |examples| replace:: ``examples``\n.. _examples: examples\n\n\nAdvanced usage\n--------------\n\nThe public interface of **pycparser** is well documented with comments in\n``pycparser/c_parser.py``. For a detailed overview of the various AST nodes\ncreated by the parser, see ``pycparser/_c_ast.cfg``.\n\nThere's also a `FAQ available here <https://github.com/eliben/pycparser/wiki/FAQ>`_.\nIn any case, you can always drop me an `email <eliben@gmail.com>`_ for help.\n\n\nModifying\n=========\n\nThere are a few points to keep in mind when modifying **pycparser**:\n\n* The code for **pycparser**'s AST nodes is automatically generated from a\n  configuration file - ``_c_ast.cfg``, by ``_ast_gen.py``. If you modify the AST\n  configuration or the generator, run ``make regen-ast`` from the repository\n  root to re-generate ``pycparser/c_ast.py`` and run ``make format``.\n* Read the docstring in the constructor of the ``CParser`` class for details\n  on configuration and compatibility arguments.\n\n\nPackage contents\n================\n\nOnce you unzip the ``pycparser`` package, you'll see the following files and\ndirectories:\n\nREADME.rst:\n  This README file.\n\nLICENSE:\n  The pycparser license\n\nsetup.py:\n  Legacy installation script (build metadata lives in ``pyproject.toml``).\n\npyproject.toml:\n  Package metadata and build configuration.\n\nexamples/:\n  A directory with some examples of using **pycparser**\n\npycparser/:\n  The **pycparser** module source code.\n\ntests/:\n  Unit tests.\n\nutils/fake_libc_include:\n  Minimal standard C library include files that should allow to parse any C code.\n  Note that these headers now include C11 code, so they may not work when the\n  preprocessor is configured to an earlier C standard (like ``-std=c99``).\n\nutils/internal/:\n  Internal utilities for my own use. You probably don't need them.\n\n\nContributors\n============\n\nSome people have contributed to **pycparser** by opening issues on bugs they've\nfound and/or submitting patches. The list of contributors is in the CONTRIBUTORS\nfile in the source distribution. After **pycparser** moved to Github I stopped\nupdating this list because Github does a much better job at tracking\ncontributions.\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Eli Bendersky <eliben@gmail.com>",
+        "maintainer_email": "Eli Bendersky <eliben@gmail.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://github.com/eliben/pycparser"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.13.7",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "6.18.33.2-microsoft-standard-WSL2",
+    "platform_system": "Linux",
+    "platform_version": "#1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026",
+    "python_full_version": "3.13.7",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.13",
+    "sys_platform": "linux"
+  }
+}

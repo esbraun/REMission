@@ -1,0 +1,20 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from runtime.Dockerfile
+#1 transferring dockerfile: 1.65kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7
+#2 ERROR: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+------
+ > [internal] load metadata for docker.io/library/sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7:
+------
+runtime.Dockerfile:1
+--------------------
+   1 | >>> FROM sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7
+   2 |     COPY tooling/foundation/requirements.in /opt/foundation/requirements.in
+   3 |     COPY tooling/library/requirements.lock /opt/foundation/numerical.lock
+--------------------
+ERROR: failed to build: failed to solve: sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7: failed to resolve source metadata for docker.io/library/sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/9vl1fasrygywaocv5rqkt3iwh
