@@ -18,7 +18,7 @@ def ref(identifier, version='2.0.0', digest=ZERO):
     return dict(id=identifier, version=version, sha256=digest)
 
 
-def build(root: Path, *, hold=False, prompt=False, cutoff=None):
+def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None):
     root.mkdir(parents=True, exist_ok=True)
     bindings = json.loads(Path('contracts/runs/bindings-v2.json').read_bytes())
     typed_bindings = BindingsV2.model_validate_json(canonical(bindings))
@@ -29,7 +29,8 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None):
     records, entries, identities = [], [], {}
     policy = ref('complete-fixed-no-prompt-mechanism')
     model = ref('explicit-no-estimator')
-    registry, transform = ref('fixture-source-registry'), ref('fixture-transform-registry')
+    registry = registry or ref('fixture-source-registry')
+    transform = transform or ref('fixture-transform-registry')
     mechanism = dict(schema_version='2.0.0', synthetic=True, kind='support_mechanism', id='fixture-mechanism', policy=policy, mode='fixed', parameter_refs=[ref('approved-fixed-action')],
                      action_versions={a: ref(a) for a in ['support_prompt', 'no_prompt']}, probability_rule=ref('fixed-mass-one'), context_mapping=ref('fixed-context'), burden_behavior=ref('accepted-operational-cap-rule'), constraints=ref('approved-envelope'), frozen_origin=None, approximation_settings=None, approximation_error=None)
 
@@ -37,7 +38,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None):
         return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
 
     def add(kind, event, *, version='1.0.0', identifier=None, process=None, substream='main', **fields):
-        identity = RecordIdentityV2.model_validate_json(canonical(dict(protocol=bindings['protocol']['id'], phase='fixture', run_id=run_id, cell_id='S23', cohort_id='cohort', replicate=0,
+        identity = RecordIdentityV2.model_validate_json(canonical(dict(protocol=bindings['protocol']['id'], phase='fixture', run_id=run_id, cell_id=cell_id, cohort_id='cohort', replicate=0,
                          patient_id=patient_id, time_index=(event.date() - ORIGIN.date()).days - (1 if kind == 'support_outcome_link' else 0), process=process or kind,
                          substream=substream, namespace='measurement' if kind == 'daily_report' else 'assignment' if kind in ('support_decision', 'assignment') else 'generation',
                          source_registry=registry, transformation=transform, input_refs=[], draw_consumed=False)))
@@ -60,7 +61,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None):
     add('consent', ORIGIN - timedelta(days=13), identifier='generated-active-consent', component='mrt_bandit', consent_version='fixture', oversight_version='fixture', consent_status='active', oversight_status='approved_synthetic', effective_at=(ORIGIN - timedelta(days=13)).isoformat(), expires_at=None, withdrawn_at=None)
     schedule = ScheduleInputV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='support_schedule_input', id='schedule', run_id=run_id, partition_id=partition_id,
                         protocol=bindings['protocol'], timing=bindings['timing'], temporal=bindings['temporal'], representation=bindings['observed_representation'], dgp=bindings['dgp'], catalog=bindings['catalog'],
-                        cell_id='S23', preset='evaluation', unit_id='unit', cohort_id='cohort', replicate=0, patient_id=patient_id, patient_ref=exact_ref(patient).model_dump(), timezone='UTC',
+                        cell_id=cell_id, preset='evaluation', unit_id='unit', cohort_id='cohort', replicate=0, patient_id=patient_id, patient_ref=exact_ref(patient).model_dump(), timezone='UTC',
                         time_zero_local_date=ORIGIN.date().isoformat(), time_zero_utc=ORIGIN.isoformat(), timezone_database=ref('fixture-tzdb'), derivation=ref('TIME-01-daily-0-84'), planned_horizon=84)))
     slots = derive_slots(schedule)
     schedule_ref = ref(schedule.id, digest=sha256(canonical(schedule.model_dump(mode='json'))))
@@ -156,7 +157,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None):
     history_artifact = artifact('history', f'observed/{run_id}/{partition_id}.json', history().model_dump(mode='json'), 'observed')
     replay_artifact = artifact('replay', f'replay/{run_id}/{partition_id}.json', dict(schema_version='2.0.0', synthetic=True, kind='observed_replay_batch', contract_version='2.0.0', run_id=run_id, partition_id=partition_id, patient_id=patient_id, entries=entries), 'replay')
     from contracts.runs.observed_v2 import CLINICAL_KINDS
-    partition = dict(id=partition_id, unit_id='unit', cell_id='S23', preset='evaluation', cohort_id='cohort', replicate=0, patient_id=patient_id, history=history_artifact, replay=replay_artifact, coverage=coverage_artifact, stage_ledgers=ledger_artifacts, completion_receipts=receipt_artifacts, mechanisms=mechanism_artifacts,
+    partition = dict(id=partition_id, unit_id='unit', cell_id=cell_id, preset='evaluation', cohort_id='cohort', replicate=0, patient_id=patient_id, history=history_artifact, replay=replay_artifact, coverage=coverage_artifact, stage_ledgers=ledger_artifacts, completion_receipts=receipt_artifacts, mechanisms=mechanism_artifacts,
                      records=[dict(record_id=r.record_id, payload_sha256=payload_hash(r), source=r.source.model_dump(), seed_key_sha256=ZERO, identity=identities[r.record_id], import_to_event_store=r.kind in CLINICAL_KINDS, exclusion_reason=None if r.kind in CLINICAL_KINDS else 'administrative_event_not_live_authority') for r in history().records])
     manifest = dict(schema_version='2.0.0', synthetic=True, kind='observed_export', contract_version='2.0.0', id='fixture-export', run_id=run_id, run_manifest=run_manifest, producer=producer, execution='contract_fixture', source_commit='6bc8bd998e8a0baaef9884998e740665fb5fd7b1', runtime=runtime, bindings=bindings, cutoff=cutoff.isoformat(), created_at=cutoff.isoformat(), status='partial', partitions=[partition])
     raw = canonical(manifest)

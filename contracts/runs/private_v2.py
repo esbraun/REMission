@@ -38,6 +38,15 @@ class RunResultV2(RunResult):
     bindings: BindingsV2
     completion_receipts: list[Artifact]
 
+    @model_validator(mode='after')
+    def execution_identity(self):
+        if (self.execution == 'contract_fixture') != (self.producer.role == 'contract_fixture') or self.producer.role not in ('generator', 'contract_fixture'):
+            raise ValueError('v2 result producer/execution mismatch')
+        unique([a.id for a in self.completion_receipts], 'result completion receipt')
+        if any(a.role != 'configuration' for a in self.completion_receipts):
+            raise ValueError('completion receipt must be a configuration artifact')
+        return self
+
 
 class SeedLedgerV2(SeedLedger):
     schema_version: Literal['2.0.0']
@@ -83,6 +92,17 @@ def verify_run_v2(raw, root, authority):
             raise ValueError('changed accepted v2 configuration bytes')
     for artifact in run.inputs:
         read_artifact(root, artifact, artifact.role)
+    for unit in run.units:
+        if unit.evaluation_configuration is not None:
+            ref = unit.evaluation_configuration
+            artifact = by_id.get(ref.id)
+            if artifact is None or artifact.role != 'configuration' or artifact.sha256 != ref.sha256:
+                raise ValueError('evaluation preset requires exact predeclared configuration bytes')
+            configuration = json.loads(read_artifact(root, artifact, 'configuration'))
+            expected = dict(id=ref.id, version=ref.version, repetitions=unit.repetitions,
+                            cohorts=[dict(id=c.id, role=c.role, patients_per_replicate=sum(p.replicate == 0 for p in c.patients)) for c in unit.cohorts])
+            if configuration != expected:
+                raise ValueError('evaluation cohort/replicate roster differs from hashed configuration')
     for ref in [run.source_registry, run.transformation_registry]:
         artifact = by_id.get(ref.id)
         if artifact is None or artifact.role != 'configuration' or artifact.sha256 != ref.sha256:
@@ -96,7 +116,7 @@ def verify_run_v2(raw, root, authority):
         unit, cohort, patient = slots[schedule.patient_id]
         if (schedule.run_id, schedule.unit_id, schedule.cell_id, schedule.cohort_id, schedule.replicate, schedule.preset) != (run.run_id, unit.id, unit.cell_id, cohort.id, patient.replicate, unit.preset):
             raise ValueError('schedule differs from accepted run cohort/replicate')
-        if (schedule.protocol, schedule.timing, schedule.temporal, schedule.representation) != (run.bindings.protocol, run.bindings.timing, run.bindings.temporal, run.bindings.observed_representation):
+        if (schedule.protocol, schedule.timing, schedule.temporal, schedule.representation, schedule.dgp, schedule.catalog) != (run.bindings.protocol, run.bindings.timing, run.bindings.temporal, run.bindings.observed_representation, run.bindings.dgp, run.bindings.catalog):
             raise ValueError('schedule changed accepted time grid/profile')
         schedules[patient.id] = schedule
     if set(schedules) != set(slots):
@@ -150,20 +170,52 @@ def validate_record_keys(run, partition, history, ledger, schedule):
     return True
 
 
-def verify_result_v2(raw, root, run, authority, expected_result_sha256, *, export_authorities):
+def verify_result_v2(raw, root, run, authority, expected_result_sha256, *, export_authorities, calibration_policies=None, external_inputs=None):
     if sha256(raw) != expected_result_sha256:
         raise ValueError('untrusted v2 result digest')
     result = RunResultV2.model_validate_json(raw)
-    if (result.run_id, result.run_manifest.sha256, result.run_manifest.version, result.producer, result.source_commit, result.runtime, result.bindings) != (run.run_id, authority.manifest_sha256, '2.0.0', run.producer, run.source_commit, run.runtime, run.bindings):
+    if (result.run_id, result.run_manifest.id, result.run_manifest.sha256, result.run_manifest.version, result.producer, result.source_commit, result.runtime, result.bindings, result.execution) != (run.run_id, run.run_id, authority.manifest_sha256, '2.0.0', run.producer, run.source_commit, run.runtime, run.bindings, run.execution):
         raise ValueError('v2 result changed accepted run provenance')
-    if result.seed_ledger is None:
+    if result.seed_ledger is None and result.observed_exports:
         raise ValueError('v2 output qualification needs complete seed ledger')
-    ledger = SeedLedgerV2.model_validate_json(read_artifact(root, result.seed_ledger, 'seed_ledger'))
-    if ledger.run_id != run.run_id:
+    ledger = SeedLedgerV2.model_validate_json(read_artifact(root, result.seed_ledger, 'seed_ledger')) if result.seed_ledger else None
+    if ledger is not None and ledger.run_id != run.run_id:
         raise ValueError('seed ledger run mismatch')
+    slots = {p.id: (u, c, p) for u in run.units for c in u.cohorts for p in c.patients}
+    for key in ledger.keys if ledger else []:
+        if key.patient not in slots:
+            raise ValueError('seed patient outside accepted run roster')
+        unit, _, patient = slots[key.patient]
+        if (key.scenario, key.replicate, key.phase, key.protocol) != (unit.cell_id, patient.replicate, run.phase, run.bindings.protocol.id):
+            raise ValueError('seed changed accepted run/cell/patient/phase/protocol')
+    # These are the accepted v1 scientific barriers, unchanged for v2 exports.
+    from contracts.dgp.parameters import reference_parameters
+    from contracts.dgp.scenarios import resolve_cell, scenario_manifest
+    from .private_admission import verify_calibration
+    calibration_needed = {}
+    for unit in run.units:
+        values = {name: row['value'] for name, row in resolve_cell(reference_parameters(), scenario_manifest(), unit.cell_id)['parameters'].items()}
+        calibration_needed[unit.cell_id] = values['report_mode'] in (2, 3, 4) or bool(values['external_shift_SE'] or values['external_reverse_sign'])
+    calibrated = {}
+    for calibration in result.calibration:
+        policy = (calibration_policies or {}).get(calibration.id)
+        if policy is None:
+            raise ValueError('calibration needs separately trusted evaluator digest and authority')
+        evaluator, trusted_digest = policy
+        if calibration.sha256 != trusted_digest:
+            raise ValueError('generator cannot substitute self-declared calibration digest')
+        external = (external_inputs or {}).get(calibration.id, (None, None))
+        artifact = verify_calibration(read_artifact(root, calibration, 'calibration'), root, expected_sha256=trusted_digest, evaluator=evaluator,
+                                      bindings=run.bindings, trusted_external_raw=external[0], trusted_external_sha256=external[1])
+        if artifact.binding.status != 'solved':
+            raise ValueError('unresolved calibration cannot authorize published scenario data')
+        if artifact.binding.cell_id in calibrated:
+            raise ValueError('duplicate calibration cell')
+        calibrated[artifact.binding.cell_id] = artifact
     schedules = {s.patient_id: s for a in run.schedule_inputs for s in [ScheduleInputV2.model_validate_json(read_artifact(root, a, 'configuration'))]}
     admitted = []
     seen = set()
+    qualified_receipts = {}
     for artifact in result.observed_exports:
         public = export_authorities.get(artifact.id)
         if public is None or public.export_sha256 != artifact.sha256:
@@ -171,19 +223,36 @@ def verify_result_v2(raw, root, run, authority, expected_result_sha256, *, expor
         manifest, partitions = verify_export_v2(read_artifact(root, artifact, 'observed_manifest'), root, public)
         if manifest.bindings != run.bindings or manifest.cutoff != run.cutoff:
             raise ValueError('export changed run bindings/cutoff')
+        if result.status == 'complete' and manifest.status != 'complete':
+            raise ValueError('complete result requires complete qualified exports')
         for partition, history, batch, projection, *_ in partitions:
             if partition.patient_id in seen or partition.patient_id not in schedules:
                 raise ValueError('unknown/repeated run patient')
             seen.add(partition.patient_id)
+            unit, cohort, patient = slots[partition.patient_id]
+            if (partition.unit_id, partition.cell_id, partition.preset, partition.cohort_id, partition.replicate) != (unit.id, unit.cell_id, unit.preset, cohort.id, patient.replicate):
+                raise ValueError('partition changed accepted cell/preset/cohort/replicate')
+            if calibration_needed[unit.cell_id] and unit.cell_id not in calibrated:
+                raise ValueError('registered calibrated cell requires independently verified solved binding')
             public_schedule = next(t.schedule for t in public.partitions if t.partition_id == partition.id)
             if public_schedule != schedules[partition.patient_id]:
                 raise ValueError('public authority schedule differs from independently accepted run origin')
             validate_record_keys(run, partition, history, ledger, schedules[partition.patient_id])
+            for receipt in partition.completion_receipts:
+                if receipt.id in qualified_receipts and qualified_receipts[receipt.id] != receipt:
+                    raise ValueError('conflicting cross-partition completion receipt identity')
+                qualified_receipts[receipt.id] = receipt
             admitted.append((manifest, partition, history, batch, projection))
     if result.status == 'complete' and seen != set(schedules):
         raise ValueError('complete v2 result omitted roster patient')
-    # Existing private truth/calibration artifacts keep their original schemas.
-    for artifact in [*result.private_truth, *result.calibration, *result.reports, *result.completion_receipts]:
+    from contracts.domain.evaluation import SimulatorTruth
+    for artifact in result.private_truth:
+        truth = SimulatorTruth.model_validate_json(read_artifact(root, artifact, 'private_truth'))
+        if truth.patient_id not in slots:
+            raise ValueError('private truth patient outside accepted run roster')
+    if {a.id: a for a in result.completion_receipts} != qualified_receipts:
+        raise ValueError('result completion receipts differ from qualified partition receipts')
+    for artifact in result.reports:
         read_artifact(root, artifact, artifact.role)
     return result, admitted
 
