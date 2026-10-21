@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "behavior": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "outcome_window_rule": {
+      "const": "one_decision_per_patient_next_morning",
+      "title": "Outcome Window Rule",
+      "type": "string"
+    },
+    "population_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Population Id",
+      "type": "string"
+    },
+    "protocol_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Protocol Id",
+      "type": "string"
+    },
+    "reward_horizon": {
+      "const": "next_morning_quality",
+      "title": "Reward Horizon",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sealed_at": {
+      "format": "date-time",
+      "title": "Sealed At",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "target_policy_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "title": "Target Policy Ids",
+      "type": "array"
+    },
+    "unit": {
+      "const": "quality_points",
+      "title": "Unit",
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "protocol_id",
+    "version",
+    "population_id",
+    "behavior",
+    "reward_horizon",
+    "outcome_window_rule",
+    "unit",
+    "target_policy_ids",
+    "sealed_at"
+  ],
+  "title": "EvaluationProtocol",
+  "type": "object"
+}

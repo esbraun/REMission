@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "QRow": {
+      "additionalProperties": false,
+      "properties": {
+        "row_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Row Id",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "row_id",
+        "values"
+      ],
+      "title": "QRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_order": {
+      "const": "0=no_prompt,1=approved_prompt",
+      "title": "Action Order",
+      "type": "string"
+    },
+    "model_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Model Sha256",
+      "type": "string"
+    },
+    "predicted_at": {
+      "format": "date-time",
+      "title": "Predicted At",
+      "type": "string"
+    },
+    "predictor_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Predictor Sha256",
+      "type": "string"
+    },
+    "receipt_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Receipt Sha256",
+      "type": "string"
+    },
+    "roster_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Roster Sha256",
+      "type": "string"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/QRow"
+      },
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "version": {
+      "const": "DR-EXCEPTION-R1/1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "version",
+    "action_order",
+    "roster_sha256",
+    "receipt_sha256",
+    "model_sha256",
+    "predictor_sha256",
+    "predicted_at",
+    "rows"
+  ],
+  "title": "Predictions",
+  "type": "object"
+}

@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "Decision": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Action"
+        },
+        "available_actions": {
+          "items": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Available Actions",
+          "type": "array"
+        },
+        "decision_at": {
+          "format": "date-time",
+          "title": "Decision At",
+          "type": "string"
+        },
+        "logging_probabilities": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Logging Probabilities",
+          "type": "array"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "row_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Row Id",
+          "type": "string"
+        },
+        "window_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Window Id",
+          "type": "string"
+        },
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "x_available_at": {
+          "format": "date-time",
+          "title": "X Available At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "row_id",
+        "patient_id",
+        "window_id",
+        "decision_at",
+        "x",
+        "x_available_at",
+        "available_actions",
+        "logging_probabilities",
+        "action"
+      ],
+      "title": "Decision",
+      "type": "object"
+    }
+  },
+  "items": {
+    "$ref": "#/$defs/Decision"
+  },
+  "type": "array"
+}

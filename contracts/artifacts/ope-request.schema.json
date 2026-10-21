@@ -1,0 +1,210 @@
+{
+  "$defs": {
+    "Bindings": {
+      "additionalProperties": false,
+      "properties": {
+        "model_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Model Sha256",
+          "type": "string"
+        },
+        "plan_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Plan Sha256",
+          "type": "string"
+        },
+        "policy_sha256": {
+          "items": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "title": "Policy Sha256",
+          "type": "array"
+        },
+        "predictor_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Predictor Sha256",
+          "type": "string"
+        },
+        "q_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Q Sha256",
+          "type": "string"
+        },
+        "receipt_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Receipt Sha256",
+          "type": "string"
+        },
+        "target_sha256": {
+          "items": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "title": "Target Sha256",
+          "type": "array"
+        },
+        "trainer_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Trainer Sha256",
+          "type": "string"
+        },
+        "training_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Training Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt_sha256",
+        "training_sha256",
+        "plan_sha256",
+        "model_sha256",
+        "trainer_sha256",
+        "predictor_sha256",
+        "q_sha256",
+        "target_sha256",
+        "policy_sha256"
+      ],
+      "title": "Bindings",
+      "type": "object"
+    },
+    "FileRef": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "title": "FileRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "aggregation": {
+      "const": "pooled_eligible_decision_mean",
+      "title": "Aggregation",
+      "type": "string"
+    },
+    "bindings": {
+      "$ref": "#/$defs/Bindings"
+    },
+    "bootstrap_replicates": {
+      "const": 2000,
+      "title": "Bootstrap Replicates",
+      "type": "integer"
+    },
+    "bootstrap_seed": {
+      "minimum": 0,
+      "title": "Bootstrap Seed",
+      "type": "integer"
+    },
+    "estimand": {
+      "const": "current_action_value_over_behavior_history_eligible_windows",
+      "title": "Estimand",
+      "type": "string"
+    },
+    "inference": {
+      "title": "Inference",
+      "type": "boolean"
+    },
+    "logging_regime": {
+      "enum": [
+        "fixed_independent_patients",
+        "pooled_adaptive"
+      ],
+      "title": "Logging Regime",
+      "type": "string"
+    },
+    "minimum_patients": {
+      "const": 30,
+      "title": "Minimum Patients",
+      "type": "integer"
+    },
+    "predictions": {
+      "$ref": "#/$defs/FileRef"
+    },
+    "protocol": {
+      "$ref": "#/$defs/FileRef"
+    },
+    "receipt": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FileRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rewards": {
+      "$ref": "#/$defs/FileRef"
+    },
+    "roster": {
+      "$ref": "#/$defs/FileRef"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "targets": {
+      "items": {
+        "$ref": "#/$defs/FileRef"
+      },
+      "minItems": 1,
+      "title": "Targets",
+      "type": "array"
+    },
+    "unit": {
+      "const": "quality_points",
+      "title": "Unit",
+      "type": "string"
+    },
+    "version": {
+      "const": "DR-EXCEPTION-R1/1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "version",
+    "estimand",
+    "unit",
+    "aggregation",
+    "logging_regime",
+    "protocol",
+    "roster",
+    "rewards",
+    "predictions",
+    "targets",
+    "receipt",
+    "bindings",
+    "inference",
+    "bootstrap_seed",
+    "bootstrap_replicates",
+    "minimum_patients"
+  ],
+  "title": "OPERequest",
+  "type": "object"
+}

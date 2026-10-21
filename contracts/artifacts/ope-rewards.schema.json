@@ -1,0 +1,48 @@
+{
+  "$defs": {
+    "Reward": {
+      "additionalProperties": false,
+      "properties": {
+        "row_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Row Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "missing",
+            "pending",
+            "undefined"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "row_id",
+        "status",
+        "value"
+      ],
+      "title": "Reward",
+      "type": "object"
+    }
+  },
+  "items": {
+    "$ref": "#/$defs/Reward"
+  },
+  "type": "array"
+}

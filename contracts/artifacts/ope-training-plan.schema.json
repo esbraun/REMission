@@ -1,0 +1,77 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "alpha": {
+      "const": 1.0,
+      "title": "Alpha",
+      "type": "number"
+    },
+    "basis": {
+      "const": "x,action,x_times_action;StandardScaler;Ridge_intercept",
+      "title": "Basis",
+      "type": "string"
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "evaluation_patients": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "title": "Evaluation Patients",
+      "type": "array"
+    },
+    "evaluation_start": {
+      "format": "date-time",
+      "title": "Evaluation Start",
+      "type": "string"
+    },
+    "protocol_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Protocol Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "solver": {
+      "const": "svd",
+      "title": "Solver",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "version": {
+      "const": "DR-EXCEPTION-R1/1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "version",
+    "cutoff",
+    "evaluation_start",
+    "evaluation_patients",
+    "basis",
+    "alpha",
+    "solver",
+    "seed",
+    "protocol_sha256"
+  ],
+  "title": "TrainingPlan",
+  "type": "object"
+}

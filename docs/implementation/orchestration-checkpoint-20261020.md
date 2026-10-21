@@ -1,3 +1,13 @@
+# Current G0-LIB-DR checkpoint (2026-10-21)
+
+Supersedes earlier R1/temporal candidate statuses below. Independent Astra report bd9eb376680c7225cfdad3c0ac162d1698326063 accepted DR-EXCEPTION-R1 plan and prior artifact repairs at d84203709b0164a0824913950c1d7cd7be25a2fb/f11e90536b635a7db08cfed640445bec197a415c; root explicitly accepted the plan before assigning bounded implementation. G0-LIB now needs full independent exact-head/base implementation/runtime/evidence review. G0 remains running; accepted G0-CONTRACT/TIME/DGP/workflow contract scope is unchanged.
+
+Same Sol/high owner/app01a15cf4-3065-7063-b11e-3967008fe9a1, exclusive original integration worktree, branch launch/g0-library-20261020, review basef11e905. No substitution/escalation; effective settings independently unobservable. Single DR source methods/ope/functional.py and strict artifact types implement the reviewed exact two-action formula, pooled eligible-window target, full support/provenance/missingness rejection and conditional paired whole-patient fixed-Q bootstrap. Actual isolated maintained Ridge/provenance stages and eleven DR regression groups pass; integrated60 contract tests,11 prior artifact groups, ten generated OPE schemas and raw source/data replay are recorded in [DR verification](evidence/G0-LIB/DR/verification.md). Original/R1 evidence, failed diagnostics, accepted domain/DGP/workflow sources and locks are preserved. Full G4/G2/G5 consumer/statistical gates remain; no G0/app/clinical/human acceptance. Source writes stop at committed candidate; root handles independent review/PR/merge.
+
+Root-reported inventory: root + integration Sol/high + retained independent /root/dgp_r2_critic_astra Astra/medium01a15ec2-f67d-7522-9ade-45b236fd41bc + completed idle/open G1 source-only Luna/high01a15ecb-0e17-7ad2-9199-a7cbb696da85 =four total, three children/two non-Luna. Luna's separate e82fc9e source handoff is preserved outside this package. No completion/removal/model switch is inferred. All source checkouts remain exclusive; only root controls verified lifecycle, assignment and publication.
+
+# Historical G0-LIB-R1 checkpoint (superseded)
+
 # Orchestration checkpoint — G0-LIB-R1 (2026-10-21)
 
 **Current record supersedes the temporal checkpoint below.** Accepted TIME PR12 mergeb24c3c0fb78bf19928750eae29e852141bd649a7 has verified parents6c3fb07+62e6ce8; full ready report80f39d8512ef631249374a1378a80aeda2f74561 is preserved in G0-LIB/R1. G0-CONTRACT and TIME alone accepted; G0 overall running.

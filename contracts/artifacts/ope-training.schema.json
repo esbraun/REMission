@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "TrainingRow": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Action",
+          "type": "integer"
+        },
+        "decision_at": {
+          "format": "date-time",
+          "title": "Decision At",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "reward": {
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Reward",
+          "type": "number"
+        },
+        "reward_available_at": {
+          "format": "date-time",
+          "title": "Reward Available At",
+          "type": "string"
+        },
+        "row_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Row Id",
+          "type": "string"
+        },
+        "window_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Window Id",
+          "type": "string"
+        },
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "x_available_at": {
+          "format": "date-time",
+          "title": "X Available At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "row_id",
+        "patient_id",
+        "window_id",
+        "decision_at",
+        "x",
+        "x_available_at",
+        "action",
+        "reward",
+        "reward_available_at"
+      ],
+      "title": "TrainingRow",
+      "type": "object"
+    }
+  },
+  "items": {
+    "$ref": "#/$defs/TrainingRow"
+  },
+  "type": "array"
+}
