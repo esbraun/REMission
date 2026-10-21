@@ -2405,6 +2405,21 @@
             "type": "boolean"
           }
         },
+        "policy_reward": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "const": "daily_sleep_quality",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Reward"
+          }
+        },
         "policy_value_target": {
           "required": true,
           "schema": {
@@ -4254,13 +4269,152 @@
         }
       }
     },
+    "LearnerHistory": {
+      "description": "Active values plus available lineage headers; old values are never included.",
+      "fields": {
+        "cutoff": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Cutoff",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "learner_history",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          }
+        },
+        "provenance": {
+          "required": true,
+          "schema": {
+            "items": {
+              "$ref": "#/$defs/RecordProvenance"
+            },
+            "title": "Provenance",
+            "type": "array"
+          }
+        },
+        "records": {
+          "required": true,
+          "schema": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "approval": "#/$defs/Approval",
+                  "assignment": "#/$defs/Assignment",
+                  "audit_run": "#/$defs/AuditRun",
+                  "consent": "#/$defs/Consent",
+                  "daily_report": "#/$defs/DailyReport",
+                  "decision_snapshot": "#/$defs/DecisionSnapshot",
+                  "delivery": "#/$defs/Delivery",
+                  "encounter": "#/$defs/Encounter",
+                  "follow_up": "#/$defs/FollowUpTask",
+                  "intercurrent_event": "#/$defs/IntercurrentEvent",
+                  "isi": "#/$defs/ISIAssessment",
+                  "medication_exposure": "#/$defs/MedicationExposure",
+                  "medication_order": "#/$defs/MedicationOrder",
+                  "observation": "#/$defs/Observation",
+                  "oura_like": "#/$defs/WearableObservation",
+                  "patient": "#/$defs/Patient",
+                  "recommendation": "#/$defs/Recommendation"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Patient"
+                },
+                {
+                  "$ref": "#/$defs/Consent"
+                },
+                {
+                  "$ref": "#/$defs/Encounter"
+                },
+                {
+                  "$ref": "#/$defs/MedicationOrder"
+                },
+                {
+                  "$ref": "#/$defs/MedicationExposure"
+                },
+                {
+                  "$ref": "#/$defs/Observation"
+                },
+                {
+                  "$ref": "#/$defs/IntercurrentEvent"
+                },
+                {
+                  "$ref": "#/$defs/WearableObservation"
+                },
+                {
+                  "$ref": "#/$defs/DailyReport"
+                },
+                {
+                  "$ref": "#/$defs/ISIAssessment"
+                },
+                {
+                  "$ref": "#/$defs/DecisionSnapshot"
+                },
+                {
+                  "$ref": "#/$defs/Recommendation"
+                },
+                {
+                  "$ref": "#/$defs/Approval"
+                },
+                {
+                  "$ref": "#/$defs/Assignment"
+                },
+                {
+                  "$ref": "#/$defs/Delivery"
+                },
+                {
+                  "$ref": "#/$defs/FollowUpTask"
+                },
+                {
+                  "$ref": "#/$defs/AuditRun"
+                }
+              ]
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
     "LearnerInput": {
       "description": "See typed class and canonical source map in contracts.md",
       "fields": {
         "history": {
           "required": true,
           "schema": {
-            "$ref": "#/$defs/ObservedHistory"
+            "$ref": "#/$defs/LearnerHistory"
           }
         },
         "kind": {
@@ -5131,7 +5285,7 @@
       }
     },
     "ObservedHistory": {
-      "description": "See typed class and canonical source map in contracts.md",
+      "description": "Authoritative complete lineage, retained outside learner likelihood input.",
       "fields": {
         "kind": {
           "required": true,
@@ -5649,6 +5803,139 @@
             "maxLength": 256,
             "minLength": 1,
             "title": "Reason",
+            "type": "string"
+          }
+        },
+        "record_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "record_status": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          }
+        },
+        "recorded_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          }
+        },
+        "revision": {
+          "required": true,
+          "schema": {
+            "exclusiveMinimum": 0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "schema_version": {
+          "required": true,
+          "schema": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "source": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Source"
+          }
+        },
+        "supersedes": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "synthetic": {
+          "required": true,
+          "schema": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "RecordProvenance": {
+      "description": "Lineage header only: no superseded clinical values enter learner likelihoods.",
+      "fields": {
+        "available_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          }
+        },
+        "duplicate_of": {
+          "required": true,
+          "schema": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          }
+        },
+        "event_at": {
+          "required": true,
+          "schema": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "lineage_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          }
+        },
+        "patient_id": {
+          "required": true,
+          "schema": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
             "type": "string"
           }
         },

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from pydantic import TypeAdapter
 
-from .boundaries import LearnerInput, ObservedHistory
+from .boundaries import LearnerHistory, LearnerInput, ObservedHistory
 from .common import FitMetadata
 from .entities import ExternalStudy, ObservedRecord
 from .estimands import EstimandContract, FitRequest, InterruptionResult, NamedThreshold
@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent
 ADAPTERS = {
     "observed-records": TypeAdapter(ObservedRecord),
     "learner-input": TypeAdapter(LearnerInput),
+    "learner-history": TypeAdapter(LearnerHistory),
     "observed-history": TypeAdapter(ObservedHistory),
     "estimand": TypeAdapter(EstimandContract),
     "fit-request": TypeAdapter(FitRequest),

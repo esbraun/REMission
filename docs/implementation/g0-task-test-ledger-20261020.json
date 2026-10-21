@@ -275,14 +275,30 @@
           "result": "Canonical temporal parent/order checklist and five explicit engineering timing decisions; read-only, no code/tests/numerical defaults"
         }
       ],
-      "blocker": "Independent exact-head/base implementation review pending; other G0 packages unexecuted",
+      "blocker": "Original 939 review changes_requested; repaired candidate awaits refreshed exact-head/base independent review",
       "contract_version": "1.0.0 proposed; requires independent acceptance before downstream use",
       "fixture_result": {
-        "tests": 24,
+        "tests": 27,
         "status": "passed",
         "kind": "hand_authored_contract_fixtures_not_empirical_fits",
-        "command": ".venv-contracts/Scripts/python.exe -m unittest discover -s tests/contracts -v"
-      }
+        "command": ".venv-contracts/Scripts/python.exe -m unittest discover -s tests/contracts -v",
+        "original_tests": 24,
+        "review_regression_groups": 3
+      },
+      "prior_reviews": [
+        {
+          "reviewed_head": "939dd29254bc4a6f2c4f6c92330bd1c3fc11c9d4",
+          "reviewed_base": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+          "disposition": "changes_requested",
+          "blob": "9b81514185ab38ed7550b8c3719cb30e85b7edc9",
+          "path": "docs/implementation/evidence/G0-CONTRACT/independent-review-01-20261020.md",
+          "findings": [
+            "P1 retracted consent authorization",
+            "P2 corrected history composition",
+            "P2 non-ISI units/direction"
+          ]
+        }
+      ]
     },
     {
       "id": "G0-DGP",
@@ -3004,7 +3020,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3039,7 +3056,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3074,7 +3092,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3109,7 +3128,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3144,7 +3164,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3179,7 +3200,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3214,7 +3236,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3249,7 +3272,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3284,7 +3308,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3319,7 +3344,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3354,7 +3380,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3389,7 +3416,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3424,7 +3452,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3459,7 +3488,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3494,7 +3524,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3529,7 +3560,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3564,7 +3596,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3599,7 +3632,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3634,7 +3668,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3669,7 +3704,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3704,7 +3740,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3739,7 +3776,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3774,7 +3812,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3809,7 +3848,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3844,7 +3884,8 @@
             "test_stale_patient_history_hold_permissions_and_exclusions_block_approval",
             "test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal",
             "test_protocol_approval_does_not_preselect_randomized_winner",
-            "test_support_freeze_cannot_drift_during_block_or_washout"
+            "test_support_freeze_cannot_drift_during_block_or_washout",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3875,7 +3916,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3906,7 +3948,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3937,7 +3980,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3968,7 +4012,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -3999,7 +4044,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4030,7 +4076,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4061,7 +4108,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4092,7 +4140,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4123,7 +4172,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4154,7 +4204,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4185,7 +4236,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4216,7 +4268,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4247,7 +4300,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4278,7 +4332,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4309,7 +4364,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4340,7 +4396,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4371,7 +4428,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4402,7 +4460,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4433,7 +4492,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4464,7 +4524,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4498,7 +4559,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4532,7 +4594,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4566,7 +4629,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4600,7 +4664,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4634,7 +4699,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4668,7 +4734,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4702,7 +4769,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4736,7 +4804,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4770,7 +4839,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4804,7 +4874,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4838,7 +4909,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4872,7 +4944,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4906,7 +4979,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4940,7 +5014,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -4974,7 +5049,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -5008,7 +5084,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -5042,7 +5119,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -5076,7 +5154,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -5110,7 +5189,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -5144,7 +5224,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -5178,7 +5259,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -12829,7 +12911,10 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood",
+            "test_retracted_active_consent_never_authorizes_or_revives_predecessor",
+            "test_all_registered_endpoints_bind_units_direction_and_policy_reward"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -12863,7 +12948,8 @@
             "test_cutoff_excludes_equal_time_late_and_future_records",
             "test_late_correction_does_not_rewrite_old_history_and_duplicates_drop",
             "test_no_latent_or_truth_payload_can_enter_learner_schema",
-            "test_temporal_parent_graph_and_seeded_future_cycle_faults"
+            "test_temporal_parent_graph_and_seeded_future_cycle_faults",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -12896,7 +12982,8 @@
             "test_all_estimand_semantics_roundtrip",
             "test_invalid_estimand_units_recall_and_event_strategy",
             "test_isi_items_recall_trending_and_no_postdeath_isi",
-            "test_est_int_zero_denominator_and_tradeoffs_remain_separate"
+            "test_est_int_zero_denominator_and_tradeoffs_remain_separate",
+            "test_corrected_history_projects_into_valid_learner_without_double_likelihood"
           ],
           "claim_limit": "Interface/contract behavior only; downstream runtime/statistical/service obligations remain pending"
         }
@@ -16081,9 +16168,11 @@
     {
       "task_id": "G0-CONTRACT",
       "status": "contract_fixtures_pass_pending_independent_review",
-      "test_count": 24,
+      "test_count": 27,
       "evidence": "docs/implementation/evidence/G0-CONTRACT/check-results-20261020.json",
-      "claim_limit": "No app/statistical/gate/human acceptance"
+      "claim_limit": "No app/statistical/gate/human acceptance",
+      "original_tests": 24,
+      "review_regressions": 3
     }
   ],
   "runtime": {
@@ -16206,6 +16295,27 @@
       "requirements-contracts.txt"
     ],
     "pr_url": null,
-    "merge_commit": null
+    "merge_commit": null,
+    "prior_reviews": [
+      {
+        "reviewed_head": "939dd29254bc4a6f2c4f6c92330bd1c3fc11c9d4",
+        "reviewed_base": "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+        "disposition": "changes_requested",
+        "blob": "9b81514185ab38ed7550b8c3719cb30e85b7edc9",
+        "path": "docs/implementation/evidence/G0-CONTRACT/independent-review-01-20261020.md",
+        "findings": [
+          "P1 retracted consent authorization",
+          "P2 corrected history composition",
+          "P2 non-ISI units/direction"
+        ]
+      }
+    ],
+    "repair_scope": "Resolve all three independent G0-CONTRACT findings; proposed interface only, refreshed exact-head/base review required",
+    "fixture_result": {
+      "original_tests_passed": 24,
+      "regression_groups_passed": 3,
+      "total": 27,
+      "status": "passed_no_new_failures"
+    }
   }
 }

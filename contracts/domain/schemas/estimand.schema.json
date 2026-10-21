@@ -338,6 +338,18 @@
       "title": "Patient Blinded",
       "type": "boolean"
     },
+    "policy_reward": {
+      "anyOf": [
+        {
+          "const": "daily_sleep_quality",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Policy Reward"
+    },
     "policy_value_target": {
       "anyOf": [
         {
@@ -424,6 +436,7 @@
     "intervention_policy",
     "comparator_policy",
     "policy_value_target",
+    "policy_reward",
     "event_strategies",
     "missing_data_assumptions",
     "identification_assumptions",

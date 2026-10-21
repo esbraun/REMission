@@ -141,6 +141,10 @@ def main():
     assert git("hash-object", "--path", report, report).strip() == "c7036122a5db0f40cbc3ea962741a306c7ecead7"
     current = data["current_assignment"]
     assert current["id"] == "G0-CONTRACT" and current["base_commit"] == merge
+    prior_contract = current["prior_reviews"][0]
+    assert prior_contract["reviewed_head"] == "939dd29254bc4a6f2c4f6c92330bd1c3fc11c9d4"
+    assert prior_contract["reviewed_base"] == merge and prior_contract["disposition"] == "changes_requested"
+    assert git("hash-object", "--path", prior_contract["path"], prior_contract["path"]).strip() == "9b81514185ab38ed7550b8c3719cb30e85b7edc9"
     print("PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; gates unaccepted.")
 
 

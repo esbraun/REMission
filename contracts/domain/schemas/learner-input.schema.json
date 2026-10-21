@@ -2103,6 +2103,136 @@
       "title": "IntercurrentEvent",
       "type": "object"
     },
+    "LearnerHistory": {
+      "additionalProperties": false,
+      "description": "Active values plus available lineage headers; old values are never included.",
+      "properties": {
+        "cutoff": {
+          "format": "date-time",
+          "title": "Cutoff",
+          "type": "string"
+        },
+        "kind": {
+          "const": "learner_history",
+          "title": "Kind",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "provenance": {
+          "items": {
+            "$ref": "#/$defs/RecordProvenance"
+          },
+          "title": "Provenance",
+          "type": "array"
+        },
+        "records": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "approval": "#/$defs/Approval",
+                "assignment": "#/$defs/Assignment",
+                "audit_run": "#/$defs/AuditRun",
+                "consent": "#/$defs/Consent",
+                "daily_report": "#/$defs/DailyReport",
+                "decision_snapshot": "#/$defs/DecisionSnapshot",
+                "delivery": "#/$defs/Delivery",
+                "encounter": "#/$defs/Encounter",
+                "follow_up": "#/$defs/FollowUpTask",
+                "intercurrent_event": "#/$defs/IntercurrentEvent",
+                "isi": "#/$defs/ISIAssessment",
+                "medication_exposure": "#/$defs/MedicationExposure",
+                "medication_order": "#/$defs/MedicationOrder",
+                "observation": "#/$defs/Observation",
+                "oura_like": "#/$defs/WearableObservation",
+                "patient": "#/$defs/Patient",
+                "recommendation": "#/$defs/Recommendation"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Patient"
+              },
+              {
+                "$ref": "#/$defs/Consent"
+              },
+              {
+                "$ref": "#/$defs/Encounter"
+              },
+              {
+                "$ref": "#/$defs/MedicationOrder"
+              },
+              {
+                "$ref": "#/$defs/MedicationExposure"
+              },
+              {
+                "$ref": "#/$defs/Observation"
+              },
+              {
+                "$ref": "#/$defs/IntercurrentEvent"
+              },
+              {
+                "$ref": "#/$defs/WearableObservation"
+              },
+              {
+                "$ref": "#/$defs/DailyReport"
+              },
+              {
+                "$ref": "#/$defs/ISIAssessment"
+              },
+              {
+                "$ref": "#/$defs/DecisionSnapshot"
+              },
+              {
+                "$ref": "#/$defs/Recommendation"
+              },
+              {
+                "$ref": "#/$defs/Approval"
+              },
+              {
+                "$ref": "#/$defs/Assignment"
+              },
+              {
+                "$ref": "#/$defs/Delivery"
+              },
+              {
+                "$ref": "#/$defs/FollowUpTask"
+              },
+              {
+                "$ref": "#/$defs/AuditRun"
+              }
+            ]
+          },
+          "title": "Records",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "kind",
+        "patient_id",
+        "cutoff",
+        "records",
+        "provenance"
+      ],
+      "title": "LearnerHistory",
+      "type": "object"
+    },
     "MedicationExposure": {
       "additionalProperties": false,
       "properties": {
@@ -2713,121 +2843,6 @@
       "title": "ObservedCovariate",
       "type": "object"
     },
-    "ObservedHistory": {
-      "additionalProperties": false,
-      "properties": {
-        "kind": {
-          "const": "observed_history",
-          "title": "Kind",
-          "type": "string"
-        },
-        "patient_id": {
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
-          "title": "Patient Id",
-          "type": "string"
-        },
-        "records": {
-          "items": {
-            "discriminator": {
-              "mapping": {
-                "approval": "#/$defs/Approval",
-                "assignment": "#/$defs/Assignment",
-                "audit_run": "#/$defs/AuditRun",
-                "consent": "#/$defs/Consent",
-                "daily_report": "#/$defs/DailyReport",
-                "decision_snapshot": "#/$defs/DecisionSnapshot",
-                "delivery": "#/$defs/Delivery",
-                "encounter": "#/$defs/Encounter",
-                "follow_up": "#/$defs/FollowUpTask",
-                "intercurrent_event": "#/$defs/IntercurrentEvent",
-                "isi": "#/$defs/ISIAssessment",
-                "medication_exposure": "#/$defs/MedicationExposure",
-                "medication_order": "#/$defs/MedicationOrder",
-                "observation": "#/$defs/Observation",
-                "oura_like": "#/$defs/WearableObservation",
-                "patient": "#/$defs/Patient",
-                "recommendation": "#/$defs/Recommendation"
-              },
-              "propertyName": "kind"
-            },
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Patient"
-              },
-              {
-                "$ref": "#/$defs/Consent"
-              },
-              {
-                "$ref": "#/$defs/Encounter"
-              },
-              {
-                "$ref": "#/$defs/MedicationOrder"
-              },
-              {
-                "$ref": "#/$defs/MedicationExposure"
-              },
-              {
-                "$ref": "#/$defs/Observation"
-              },
-              {
-                "$ref": "#/$defs/IntercurrentEvent"
-              },
-              {
-                "$ref": "#/$defs/WearableObservation"
-              },
-              {
-                "$ref": "#/$defs/DailyReport"
-              },
-              {
-                "$ref": "#/$defs/ISIAssessment"
-              },
-              {
-                "$ref": "#/$defs/DecisionSnapshot"
-              },
-              {
-                "$ref": "#/$defs/Recommendation"
-              },
-              {
-                "$ref": "#/$defs/Approval"
-              },
-              {
-                "$ref": "#/$defs/Assignment"
-              },
-              {
-                "$ref": "#/$defs/Delivery"
-              },
-              {
-                "$ref": "#/$defs/FollowUpTask"
-              },
-              {
-                "$ref": "#/$defs/AuditRun"
-              }
-            ]
-          },
-          "title": "Records",
-          "type": "array"
-        },
-        "schema_version": {
-          "const": "1.0.0",
-          "title": "Schema Version",
-          "type": "string"
-        },
-        "synthetic": {
-          "const": true,
-          "title": "Synthetic",
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "schema_version",
-        "synthetic",
-        "kind",
-        "patient_id",
-        "records"
-      ],
-      "title": "ObservedHistory",
-      "type": "object"
-    },
     "Patient": {
       "additionalProperties": false,
       "properties": {
@@ -3146,6 +3161,116 @@
         "reason"
       ],
       "title": "Recommendation",
+      "type": "object"
+    },
+    "RecordProvenance": {
+      "additionalProperties": false,
+      "description": "Lineage header only: no superseded clinical values enter learner likelihoods.",
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind"
+      ],
+      "title": "RecordProvenance",
       "type": "object"
     },
     "SeedKey": {
@@ -3592,7 +3717,7 @@
   "additionalProperties": false,
   "properties": {
     "history": {
-      "$ref": "#/$defs/ObservedHistory"
+      "$ref": "#/$defs/LearnerHistory"
     },
     "kind": {
       "const": "learner_input",

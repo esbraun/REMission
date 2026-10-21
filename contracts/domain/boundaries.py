@@ -1,9 +1,9 @@
 """Pure boundary checks. Storage, transactions and worker execution belong to G1/G5."""
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Sequence, TypeVar
 
 from pydantic import AwareDatetime, Field, model_validator
 
-from .common import Component, Identifier, Name, Versioned, VersionRef
+from .common import Component, Identifier, Record, Versioned, VersionRef
 from .entities import (Approval, Assignment, Consent, DecisionSnapshot,
                        ISIAssessment, ObservedRecord, ViewContext)
 from .estimands import EstimandContract, FitRequest
@@ -17,56 +17,119 @@ class ContractViolation(ValueError):
         super().__init__(message)
 
 
+class RecordProvenance(Record):
+    """Lineage header only: no superseded clinical values enter learner likelihoods."""
+    kind: Identifier
+
+
+HistoryRecord = TypeVar("HistoryRecord", bound=Record)
+
+
+def provenance(record: ObservedRecord) -> RecordProvenance:
+    fields = set(Record.model_fields) | {"kind"}
+    return RecordProvenance.model_validate(record.model_dump(include=fields))
+
+
+def validate_lineage(records: Sequence[ObservedRecord | RecordProvenance]) -> set[str]:
+    ids = {r.record_id: r for r in records}
+    if len(ids) != len(records):
+        raise ValueError("history must have unique record IDs")
+    if len({(r.lineage_id, r.revision) for r in records if r.duplicate_of is None}) != sum(r.duplicate_of is None for r in records):
+        raise ValueError("lineage revision must be unique")
+    successors = set()
+    for record in records:
+        if record.supersedes is not None:
+            prior = ids.get(record.supersedes)
+            if (prior is None or prior.lineage_id != record.lineage_id or prior.kind != record.kind
+                    or prior.event_at != record.event_at or prior.revision + 1 != record.revision
+                    or prior.available_at > record.available_at or record.supersedes in successors):
+                raise ValueError("correction must extend exactly one same-event lineage")
+            successors.add(record.supersedes)
+        if record.duplicate_of is not None:
+            prior = ids.get(record.duplicate_of)
+            if (prior is None or prior.kind != record.kind or prior.event_at != record.event_at
+                    or prior.source.raw_sha256 != record.source.raw_sha256
+                    or prior.available_at > record.available_at or prior.duplicate_of is not None):
+                raise ValueError("duplicate must identify an earlier original payload")
+    return successors
+
+
+def visible_records(records: Sequence[HistoryRecord], cutoff: AwareDatetime, *, inclusive: bool = False) -> list[HistoryRecord]:
+    return [r for r in records if r.event_at <= cutoff
+            and (r.recorded_at <= cutoff if inclusive else r.recorded_at < cutoff)
+            and (r.available_at <= cutoff if inclusive else r.available_at < cutoff)]
+
+
+def lineage_heads(records: Sequence[HistoryRecord]) -> list[HistoryRecord]:
+    superseded = {r.supersedes for r in records if r.supersedes is not None}
+    return sorted([r for r in records if r.record_id not in superseded and r.duplicate_of is None],
+                  key=lambda r: (r.available_at, r.recorded_at, r.record_id))
+
+
+def no_postdeath_outcomes(records: Sequence[ObservedRecord]) -> None:
+    deaths = [r.event_at for r in records if r.kind == "intercurrent_event" and r.event_type == "death"]
+    if deaths and any(r.kind in ("isi", "daily_report") and r.event_at >= min(deaths) for r in records):
+        raise ValueError("no symptom outcome exists after death")
+
+
 class ObservedHistory(Versioned):
+    """Authoritative complete lineage, retained outside learner likelihood input."""
     kind: Literal["observed_history"]
     patient_id: Identifier
     records: list[ObservedRecord]
 
     @model_validator(mode="after")
     def lineage_and_outcomes(self):
-        ids = {r.record_id: r for r in self.records}
-        if len(ids) != len(self.records) or any(r.patient_id != self.patient_id for r in self.records):
-            raise ValueError("history must have unique record IDs and one patient")
-        if len({(r.lineage_id, r.revision) for r in self.records if r.duplicate_of is None}) != sum(r.duplicate_of is None for r in self.records):
-            raise ValueError("lineage revision must be unique")
-        successors = set()
-        for record in self.records:
-            if record.supersedes is not None:
-                prior = ids.get(record.supersedes)
-                if (prior is None or prior.lineage_id != record.lineage_id or prior.kind != record.kind
-                        or prior.event_at != record.event_at or prior.revision + 1 != record.revision
-                        or prior.available_at > record.available_at or record.supersedes in successors):
-                    raise ValueError("correction must extend exactly one same-event lineage")
-                successors.add(record.supersedes)
-            if record.duplicate_of is not None:
-                prior = ids.get(record.duplicate_of)
-                if (prior is None or prior.kind != record.kind or prior.event_at != record.event_at
-                        or prior.source.raw_sha256 != record.source.raw_sha256
-                        or prior.available_at > record.available_at or prior.duplicate_of is not None):
-                    raise ValueError("duplicate must identify an earlier original payload")
-        latest = [r for r in self.records if r.record_id not in successors and r.record_status != "retracted" and r.duplicate_of is None]
-        deaths = [r.event_at for r in latest if r.kind == "intercurrent_event" and r.event_type == "death"]
-        if deaths and any(r.kind in ("isi", "daily_report") and r.event_at >= min(deaths) for r in latest):
-            raise ValueError("no symptom outcome exists after death")
+        if any(r.patient_id != self.patient_id for r in self.records):
+            raise ValueError("history must have one patient")
+        validate_lineage(self.records)
+        no_postdeath_outcomes([r for r in lineage_heads(self.records) if r.record_status != "retracted"])
         return self
 
     def as_known_at(self, cutoff: AwareDatetime) -> list[ObservedRecord]:
-        visible = [r for r in self.records if r.event_at <= cutoff and r.recorded_at < cutoff and r.available_at < cutoff and r.duplicate_of is None]
-        superseded = {r.supersedes for r in visible if r.supersedes is not None}
-        return sorted([r for r in visible if r.record_id not in superseded and r.record_status != "retracted"],
-                      key=lambda r: (r.available_at, r.recorded_at, r.record_id))
+        return [r for r in lineage_heads(visible_records(self.records, cutoff)) if r.record_status != "retracted"]
+
+    def project(self, cutoff: AwareDatetime) -> "LearnerHistory":
+        return LearnerHistory(schema_version="1.0.0", synthetic=True, kind="learner_history",
+                              patient_id=self.patient_id, cutoff=cutoff,
+                              records=self.as_known_at(cutoff),
+                              provenance=[provenance(r) for r in visible_records(self.records, cutoff)])
+
+
+class LearnerHistory(Versioned):
+    """Active values plus available lineage headers; old values are never included."""
+    kind: Literal["learner_history"]
+    patient_id: Identifier
+    cutoff: AwareDatetime
+    records: list[ObservedRecord]
+    provenance: list[RecordProvenance]
+
+    @model_validator(mode="after")
+    def validated_projection(self):
+        if any(r.patient_id != self.patient_id for r in [*self.records, *self.provenance]):
+            raise ValueError("learner projection must have one patient")
+        validate_lineage(self.provenance)
+        if len(visible_records(self.provenance, self.cutoff)) != len(self.provenance):
+            raise ValueError("projection provenance must be available strictly before cutoff")
+        expected = {r.record_id: r for r in lineage_heads(self.provenance) if r.record_status != "retracted"}
+        if len({r.record_id for r in self.records}) != len(self.records) or {r.record_id for r in self.records} != expected.keys():
+            raise ValueError("learner values must exactly match active lineage heads")
+        if any(provenance(r) != expected[r.record_id] for r in self.records):
+            raise ValueError("active record provenance mismatch")
+        no_postdeath_outcomes(self.records)
+        return self
 
 
 class LearnerInput(Versioned):
     kind: Literal["learner_input"]
     request: FitRequest
-    history: ObservedHistory
+    history: LearnerHistory
 
     @model_validator(mode="after")
     def only_available(self):
         cutoff = self.request.context.observation_cutoff
-        if {r.record_id for r in self.history.records} != {r.record_id for r in self.history.as_known_at(cutoff)}:
-            raise ValueError("learner payload must contain only active records available before cutoff")
+        if self.history.cutoff != cutoff:
+            raise ValueError("learner projection cutoff must match request")
         for record in self.history.records:
             covariates = record.covariates if record.kind == "patient" else [record.measure] if record.kind == "observation" else []
             if any(c.observed_at > cutoff or c.available_at >= cutoff for c in covariates):
@@ -128,8 +191,14 @@ def validate_approval(approval: Approval, current: DecisionSnapshot, view: ViewC
     if component is not None:
         if approval.purpose != "randomization_protocol":
             raise ContractViolation("wrong_approval_purpose", "Ordinary treatment approval cannot authorize randomization")
-        candidates = [c for c in consents if c.patient_id == current.patient_id and c.component == component and c.available_at <= at]
-        latest = max(candidates, key=lambda c: (c.available_at, c.revision, c.record_id), default=None)
+        candidates = visible_records([c for c in consents if c.patient_id == current.patient_id and c.component == component], at, inclusive=True)
+        try:
+            validate_lineage(candidates)
+        except ValueError as error:
+            raise ContractViolation("consent_unavailable", "Consent lineage is incomplete or inconsistent") from error
+        # Keep retracted heads in the current-envelope selection. Dropping a
+        # tombstone here could revive an older or superseded authorization.
+        latest = max(lineage_heads(candidates), key=lambda c: (c.available_at, c.recorded_at, c.revision, c.record_id), default=None)
         if latest is None or not latest.permits(component, at):
             raise ContractViolation("consent_unavailable", "Missing, expired or withdrawn component consent/oversight blocks draw")
     elif approval.purpose != "ordinary_treatment":

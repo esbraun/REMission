@@ -67,6 +67,7 @@ class Consent(Record):
 
     def permits(self, component: Component, at: AwareDatetime) -> bool:
         return (component == self.component and self.consent_status == "active"
+                and self.record_status != "retracted"
                 and self.oversight_status == "approved_synthetic"
                 and self.available_at <= at and self.effective_at <= at
                 and (self.expires_at is None or at < self.expires_at)

@@ -7,7 +7,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from contracts.domain.boundaries import (ContractViolation, LearnerInput,
+from contracts.domain.boundaries import (ContractViolation, LearnerHistory, LearnerInput, provenance,
     ObservedHistory, ensure_isi_comparable, validate_approval,
     validate_assignment, validate_fit_request, validate_isi_endpoint)
 from contracts.domain.common import Estimated, FitMetadata
@@ -64,6 +64,12 @@ def isi(name="I1", event="2026-10-15T07:00:00Z"):
 def history(records):
     return {"schema_version": "1.0.0", "synthetic": True, "kind": "observed_history",
             "patient_id": "P1", "records": records}
+
+
+def raw_projection(records, cutoff="2026-10-02T08:00:00Z"):
+    return {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_history",
+            "patient_id": "P1", "cutoff": cutoff, "records": records,
+            "provenance": [provenance(ADAPTERS["observed-records"].validate_json(json.dumps(r))).model_dump(mode="json") for r in records]}
 
 
 def request():
@@ -128,6 +134,7 @@ def estimand(identifier="EST-VISIT"):
             "intervention_policy": ref("fixture-target-policy-A") if identifier == "EST-POLICY" else None,
             "comparator_policy": ref("fixture-target-policy-B") if identifier == "EST-POLICY" else None,
             "policy_value_target": "fixed_contextual" if identifier == "EST-POLICY" else None,
+            "policy_reward": "daily_sleep_quality" if identifier == "EST-POLICY" else None,
             "event_strategies": [{"event": event, "strategy": "separate_survival_and_conditional_symptoms" if event == "death" else "separate_admission_and_conditional_symptoms" if event == "admission" else "treatment_policy", "explanation": "Canonical synthetic default; no common survivor or adherer restriction"}
                                  for event in ["death", "admission", "regimen_change", "steroid_change", "rescue", "discontinuation", "override"]],
             "missing_data_assumptions": ["explicit protocol sensitivity required"], "identification_assumptions": ["consistency, exchangeability and adequate support are assumptions"],
@@ -167,7 +174,7 @@ class ContractTests(unittest.TestCase):
         value = parse(ObservedHistory, payload)
         self.assertEqual([r.record_id for r in value.as_known_at(at("2026-10-02T08:00:00Z"))], ["early"])
         with self.assertRaises(ValidationError):
-            parse(LearnerInput, {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input", "request": request(), "history": payload})
+            parse(LearnerInput, {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input", "request": request(), "history": raw_projection(payload["records"])})
 
     def test_late_correction_does_not_rewrite_old_history_and_duplicates_drop(self):
         original = report()
@@ -185,10 +192,10 @@ class ContractTests(unittest.TestCase):
             with self.assertRaises(ValidationError): parse(DailyReport, {**report(), **patch})
         obs = {**record("observation"), "measure": {"concept": "pain", "value": 1.0, "unit": "dimensionless", "observed_at": "2026-10-03T00:00:00Z", "available_at": "2026-10-03T00:00:00Z"}, "lab_reference_context": None}
         with self.assertRaises(ValidationError):
-            parse(LearnerInput, {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input", "request": request(), "history": history([obs])})
+            parse(LearnerInput, {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input", "request": request(), "history": raw_projection([obs])})
 
     def test_no_latent_or_truth_payload_can_enter_learner_schema(self):
-        good = {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input", "request": request(), "history": history([report()])}
+        good = {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input", "request": request(), "history": raw_projection([report()])}
         parse(LearnerInput, good)
         for location in [good, good["request"]["context"], good["history"]["records"][0]]:
             bad = copy.deepcopy(good)
@@ -247,6 +254,71 @@ class ContractTests(unittest.TestCase):
             with self.assertRaises(ContractViolation) as caught:
                 validate_approval(draft, current, current.view, "doctor", now, "nof1", records)
             self.assertEqual(caught.exception.code, "consent_unavailable")
+
+    def test_retracted_active_consent_never_authorizes_or_revives_predecessor(self):
+        current, draft = parse(DecisionSnapshot, snapshot()), parse(Approval, approval())
+        now = at("2026-10-01T08:00:00Z")
+        retracted_root = parse(Consent, {**consent(), "record_status": "retracted"})
+        self.assertFalse(retracted_root.permits("nof1", now))
+        with self.assertRaises(ContractViolation) as caught:
+            validate_approval(draft, current, current.view, "doctor", now, "nof1", [retracted_root])
+        self.assertEqual(caught.exception.code, "consent_unavailable")
+        original = parse(Consent, consent())
+        retraction = parse(Consent, {**consent(), "record_id": "C2", "lineage_id": "C1", "revision": 2,
+            "supersedes": "C1", "record_status": "retracted", "recorded_at": "2026-10-01T08:30:00Z",
+            "available_at": "2026-10-01T08:30:00Z"})
+        # Later tombstone must preserve earlier authorization but never revive C1
+        # at/after retraction, despite the tombstone's active consent-status field.
+        validate_approval(draft, current, current.view, "doctor", now, "nof1", [original, retraction])
+        for instant in ["2026-10-01T08:30:00Z", "2026-10-01T09:00:00Z"]:
+            with self.subTest(instant=instant), self.assertRaises(ContractViolation) as caught:
+                validate_approval(draft, current, current.view, "doctor", at(instant), "nof1", [retraction, original])
+            self.assertEqual(caught.exception.code, "consent_unavailable")
+        with self.assertRaises(ContractViolation):
+            validate_approval(draft, current, current.view, "doctor", at("2026-10-01T09:00:00Z"), "nof1", [retraction])
+
+    def test_corrected_history_projects_into_valid_learner_without_double_likelihood(self):
+        original = report()
+        correction = {**report("R2", available="2026-10-03T07:00:00Z"), "lineage_id": "R1",
+                      "revision": 2, "supersedes": "R1", "sleep_quality": 3.0}
+        audit_history = parse(ObservedHistory, history([correction, original]))
+        early = audit_history.project(at("2026-10-02T08:00:00Z"))
+        late = audit_history.project(at("2026-10-05T08:00:00Z"))
+        self.assertEqual([(r.record_id, r.sleep_quality) for r in early.records], [("R1", 7.0)])
+        self.assertEqual([(r.record_id, r.sleep_quality) for r in late.records], [("R2", 3.0)])
+        self.assertEqual({p.record_id for p in late.provenance}, {"R1", "R2"})
+        self.assertTrue(all("sleep_quality" not in p.model_dump() for p in late.provenance))
+        late_request = request(); late_request["context"]["observation_cutoff"] = "2026-10-05T08:00:00Z"
+        for use_request, projection in [(request(), early), (late_request, late)]:
+            payload = {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input",
+                       "request": use_request, "history": projection.model_dump(mode="json")}
+            parsed = parse(LearnerInput, payload)
+            self.assertEqual(parsed, LearnerInput.model_validate_json(parsed.model_dump_json()))
+        with self.assertRaises(ValidationError):
+            parse(LearnerHistory, {**late.model_dump(mode="json"), "records": [original, correction]})
+        with self.assertRaises(ValidationError):
+            parse(LearnerHistory, {**late.model_dump(mode="json"), "provenance": [p.model_dump(mode="json") for p in late.provenance if p.record_id == "R2"]})
+        with self.assertRaises(ValidationError):
+            parse(LearnerInput, {"schema_version": "1.0.0", "synthetic": True, "kind": "learner_input",
+                                "request": request(), "history": late.model_dump(mode="json")})
+
+    def test_all_registered_endpoints_bind_units_direction_and_policy_reward(self):
+        identifiers = ["EST-VISIT", "EST-N1", "EST-ESC-STAGE", "EST-ESC-STRATEGY", "EST-MRT", "EST-POLICY", "EST-INT"]
+        for identifier in identifiers:
+            good = estimand(identifier); parse(EstimandContract, good)
+            wrong_unit = "function_points" if good["unit"] != "function_points" else "ISI_points"
+            wrong_direction = "lower_is_better" if good["direction"] != "lower_is_better" else "higher_is_better"
+            for patch in [{"unit": wrong_unit}, {"direction": wrong_direction}]:
+                with self.subTest(identifier=identifier, patch=patch), self.assertRaises(ValidationError):
+                    parse(EstimandContract, {**good, **patch})
+        for identifier in ["EST-N1", "EST-MRT", "EST-POLICY"]:
+            with self.subTest(reviewer_reproduction=identifier), self.assertRaises(ValidationError):
+                parse(EstimandContract, {**estimand(identifier), "unit": "ISI_points", "direction": "lower_is_better"})
+        for reward in [None, "unregistered_reward", "function"]:
+            with self.subTest(reward=reward), self.assertRaises(ValidationError):
+                parse(EstimandContract, {**estimand("EST-POLICY"), "policy_reward": reward})
+        with self.assertRaises(ValidationError):
+            parse(EstimandContract, {**estimand("EST-MRT"), "policy_reward": "daily_sleep_quality"})
 
     def test_protocol_approval_does_not_preselect_randomized_winner(self):
         self.assertIsNone(parse(Approval, approval()).option)

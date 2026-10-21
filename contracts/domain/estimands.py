@@ -56,6 +56,7 @@ class EstimandContract(Versioned):
     intervention_policy: VersionRef | None
     comparator_policy: VersionRef | None
     policy_value_target: Literal["fixed_contextual", "complete_cohort_algorithm"] | None
+    policy_reward: Literal["daily_sleep_quality"] | None
     event_strategies: Annotated[list[EventStrategy], Field(min_length=7, max_length=7)]
     missing_data_assumptions: list[Name]
     identification_assumptions: Annotated[list[Name], Field(min_length=1)]
@@ -102,16 +103,22 @@ class EstimandContract(Versioned):
             raise ValueError("stage/other effects cannot silently become embedded strategy values")
         policies = (self.intervention_policy, self.comparator_policy)
         if self.estimand_id == "EST-POLICY":
-            if self.policy_value_target is None or any(v is None for v in policies) or policies[0] == policies[1]:
-                raise ValueError("policy value requires distinct target-policy versions and contextual/cohort target")
-        elif self.policy_value_target is not None or any(v is not None for v in policies):
+            if self.policy_value_target is None or self.policy_reward is None or any(v is None for v in policies) or policies[0] == policies[1]:
+                raise ValueError("policy value requires distinct policies, contextual/cohort target and registered reward")
+        elif self.policy_value_target is not None or self.policy_reward is not None or any(v is not None for v in policies):
             raise ValueError("policy value target is separate from the history-generating support policy")
         if self.estimand_id == "EST-VISIT" and self.outcome != "ISI":
             raise ValueError("uninterrupted reference visit targets ISI")
         if self.estimand_id in ("EST-VISIT", "EST-INT") and actions & {"support_prompt", "no_prompt"}:
             raise ValueError("visit plans and support actions are distinct")
-        if self.outcome == "ISI" and (self.unit != "ISI_points" or self.direction != "lower_is_better"):
-            raise ValueError("ISI units/direction mismatch")
+        endpoints = {"ISI": ("ISI_points", "lower_is_better"),
+                     "daily_sleep_quality": ("quality_points", "higher_is_better"),
+                     "function": ("function_points", "higher_is_better"),
+                     "proximal_support_reward": ("quality_points", "higher_is_better"),
+                     "interruption_vector": ("probability_vector", "no_overall_order")}
+        endpoint = self.policy_reward if self.outcome == "policy_value" else self.outcome
+        if (self.unit, self.direction) != endpoints[endpoint]:
+            raise ValueError("registered endpoint/reward units and benefit direction mismatch")
         return self
 
 
