@@ -1,0 +1,276 @@
+{
+  "$defs": {
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:iid-investigation",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "batch_covariance": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "Batch Covariance",
+      "type": "array"
+    },
+    "batch_mcse": {
+      "items": {
+        "minimum": 0,
+        "type": "number"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "title": "Batch Mcse",
+      "type": "array"
+    },
+    "batch_size": {
+      "const": 10000,
+      "title": "Batch Size",
+      "type": "integer"
+    },
+    "batches": {
+      "maximum": 1000,
+      "minimum": 32,
+      "title": "Batches",
+      "type": "integer"
+    },
+    "component_order": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Component Order",
+      "type": "array"
+    },
+    "disposition": {
+      "enum": [
+        "resolved",
+        "unresolved"
+      ],
+      "title": "Disposition",
+      "type": "string"
+    },
+    "execution": {
+      "enum": [
+        "contract_fixture",
+        "engine_run"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "independent_unit": {
+      "const": "iid_paired_path",
+      "title": "Independent Unit",
+      "type": "string"
+    },
+    "independent_units": {
+      "maximum": 10000000,
+      "minimum": 320000,
+      "title": "Independent Units",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "iid_dispersion_investigation",
+      "title": "Kind",
+      "type": "string"
+    },
+    "mean": {
+      "items": {
+        "maximum": 1,
+        "minimum": 0,
+        "type": "number"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "title": "Mean",
+      "type": "array"
+    },
+    "method": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "pooled_iid_mcse": {
+      "items": {
+        "minimum": 0,
+        "type": "number"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "title": "Pooled Iid Mcse",
+      "type": "array"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "producer_qualification": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "rationale": {
+      "minLength": 40,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "raw_counts_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Raw Counts Sha256",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Request Sha256",
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "truth_evidence_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Truth Evidence Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "execution",
+    "producer",
+    "source_commit",
+    "runtime",
+    "producer_qualification",
+    "request_sha256",
+    "truth_evidence_sha256",
+    "raw_counts_sha256",
+    "independent_unit",
+    "independent_units",
+    "batches",
+    "batch_size",
+    "component_order",
+    "mean",
+    "batch_mcse",
+    "pooled_iid_mcse",
+    "batch_covariance",
+    "disposition",
+    "method",
+    "rationale"
+  ],
+  "title": "IIDInvestigation",
+  "type": "object"
+}

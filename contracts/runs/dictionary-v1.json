@@ -4006,6 +4006,248 @@
         }
       }
     },
+    "IIDInvestigation": {
+      "description": "See contracts/runs/README.md and canonical G1 plan",
+      "fields": {
+        "batch_covariance": {
+          "required": true,
+          "schema": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "title": "Batch Covariance",
+            "type": "array"
+          }
+        },
+        "batch_mcse": {
+          "required": true,
+          "schema": {
+            "items": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "maxItems": 6,
+            "minItems": 6,
+            "title": "Batch Mcse",
+            "type": "array"
+          }
+        },
+        "batch_size": {
+          "required": true,
+          "schema": {
+            "const": 10000,
+            "title": "Batch Size",
+            "type": "integer"
+          }
+        },
+        "batches": {
+          "required": true,
+          "schema": {
+            "maximum": 1000,
+            "minimum": 32,
+            "title": "Batches",
+            "type": "integer"
+          }
+        },
+        "component_order": {
+          "required": true,
+          "schema": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Component Order",
+            "type": "array"
+          }
+        },
+        "disposition": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "resolved",
+              "unresolved"
+            ],
+            "title": "Disposition",
+            "type": "string"
+          }
+        },
+        "execution": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "contract_fixture",
+              "engine_run"
+            ],
+            "title": "Execution",
+            "type": "string"
+          }
+        },
+        "independent_unit": {
+          "required": true,
+          "schema": {
+            "const": "iid_paired_path",
+            "title": "Independent Unit",
+            "type": "string"
+          }
+        },
+        "independent_units": {
+          "required": true,
+          "schema": {
+            "maximum": 10000000,
+            "minimum": 320000,
+            "title": "Independent Units",
+            "type": "integer"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "iid_dispersion_investigation",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "mean": {
+          "required": true,
+          "schema": {
+            "items": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "maxItems": 6,
+            "minItems": 6,
+            "title": "Mean",
+            "type": "array"
+          }
+        },
+        "method": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "pooled_iid_mcse": {
+          "required": true,
+          "schema": {
+            "items": {
+              "minimum": 0,
+              "type": "number"
+            },
+            "maxItems": 6,
+            "minItems": 6,
+            "title": "Pooled Iid Mcse",
+            "type": "array"
+          }
+        },
+        "producer": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Producer"
+          }
+        },
+        "producer_qualification": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "rationale": {
+          "required": true,
+          "schema": {
+            "minLength": 40,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "raw_counts_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Raw Counts Sha256",
+            "type": "string"
+          }
+        },
+        "request_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Request Sha256",
+            "type": "string"
+          }
+        },
+        "runtime": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Runtime"
+          }
+        },
+        "source_commit": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{40}$",
+            "title": "Source Commit",
+            "type": "string"
+          }
+        },
+        "truth_evidence_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Truth Evidence Sha256",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "IIDInvestigationAuthority": {
+      "description": "Trusted caller policy; never take this authority from an uploaded result.",
+      "fields": {
+        "allow_contract_fixture": {
+          "required": true,
+          "schema": {
+            "title": "Allow Contract Fixture",
+            "type": "boolean"
+          }
+        },
+        "producer": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Producer"
+          }
+        },
+        "producer_qualification": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "runtime": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Runtime"
+          }
+        },
+        "sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "source_commit": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{40}$",
+            "title": "Source Commit",
+            "type": "string"
+          }
+        }
+      }
+    },
     "ISIAssessment": {
       "description": "See contracts/runs/README.md and canonical G1 plan",
       "fields": {
@@ -6126,6 +6368,20 @@
             "type": "integer"
           }
         },
+        "iid_investigation": {
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Artifact"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
         "pilots": {
           "required": true,
           "schema": {
@@ -7680,6 +7936,68 @@
             ],
             "title": "Value",
             "type": "integer"
+          }
+        }
+      }
+    },
+    "SymptomPilotBinding": {
+      "description": "See contracts/runs/README.md and canonical G1 plan",
+      "fields": {
+        "comparison": {
+          "required": true,
+          "schema": {
+            "const": "own_arm_alive_outpatient_ISI_mean",
+            "title": "Comparison",
+            "type": "string"
+          }
+        },
+        "component": {
+          "required": true,
+          "schema": {
+            "enum": [
+              "intervention.conditional_isi",
+              "comparator.conditional_isi"
+            ],
+            "title": "Component",
+            "type": "string"
+          }
+        },
+        "kind": {
+          "required": true,
+          "schema": {
+            "const": "interruption_symptom_pilot_binding",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "probability_evidence": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/Artifact"
+          }
+        },
+        "request_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Request Sha256",
+            "type": "string"
+          }
+        },
+        "trial_refs_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Trial Refs Sha256",
+            "type": "string"
+          }
+        },
+        "unit": {
+          "required": true,
+          "schema": {
+            "const": "ISI_points",
+            "title": "Unit",
+            "type": "string"
           }
         }
       }

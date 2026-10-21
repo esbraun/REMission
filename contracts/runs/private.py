@@ -538,7 +538,21 @@ def validate_truth_response(request: TruthRequest, response: TruthResponse, *, q
             if response.batches!=qualified_probability['batches']:raise ValueError('reported probability batch count differs')
             for index,arm_name in enumerate(('intervention','comparator')):
                 arm=getattr(result,arm_name);actual=qualified_probability['conditional_isi'][index];p=precision[arm_name+'.conditional_isi']
-                if p.status=='computed' and (actual['status']!='computed' or arm.conditional_isi.numerator_count!=actual['count'] or arm.conditional_isi.denominator_count!=response.batches*10000 or abs(arm.conditional_isi.isi.value-actual['value'])>1e-12 or abs(p.numerical_standard_error-actual['mcse'])>1e-12):raise ValueError('conditional ISI must use its own actual eligible count/mean/batch uncertainty')
+                for name,times in qualified_probability['event_times'][arm_name].items():
+                    if sorted(getattr(arm,name))!=times:raise ValueError('reported event-time multiset differs from all qualified day42 paths')
+                if arm.conditional_isi.numerator_count!=actual['count'] or arm.conditional_isi.denominator_count!=response.batches*10000:raise ValueError('conditional ISI must use its own actual eligible count and full denominator, including partial vectors')
+                estimate=arm.conditional_isi.isi
+                if estimate.status=='estimated':
+                    if actual['status']!='computed' or abs(estimate.value-actual['value'])>1e-12:raise ValueError('reported symptom mean differs from qualified eligible paths')
+                    if estimate.standard_error is not None and abs(estimate.standard_error-actual['mcse'])>1e-12:raise ValueError('nested symptom uncertainty conflicts with qualified MCSE')
+                    if estimate.interval is not None:raise ValueError('no independently qualified symptom interval method; retain interval=None')
+                if p.status=='computed':
+                    if estimate.status!='estimated' or actual['status']!='computed' or abs(p.numerical_standard_error-actual['mcse'])>1e-12:raise ValueError('computed conditional ISI needs its actual eligible mean and batch uncertainty')
+                    matched=qualified_probability['symptom_matched_se'].get(p.component)
+                    if matched is None or abs(p.smallest_estimator_se-matched)>1e-12:raise ValueError('claimed symptom SE differs from its authenticated raw pilot and actual tighter comparison')
+                    if target.truth_kind=='observed_history_conditional_average':
+                        if response.conditional_accuracy is None:raise ValueError('computed conditional ISI needs separate symptom accuracy evidence')
+                        response.conditional_accuracy.require_accuracy(min(.05,.1*matched))
     if response.status!='computed':return
     if target.kind=='clinical':
         if target.estimand.estimand_id=='EST-INT':

@@ -5,7 +5,7 @@ import unittest
 
 import numpy as np
 
-from fixtures import full_key, load
+from fixtures import full_key, load, wire_investigation
 from contracts.runs.common import canonical, sha256
 from contracts.runs.probability import (COMPONENTS, PathOutcome, PilotTrial, ProbabilityEvidence, TruthFilterReceipt,
     StructuralDerivation, pilot_statistics, require_refinement, require_trial, truth_statistics)
@@ -97,13 +97,13 @@ class ProbabilityContracts(unittest.TestCase):
         bad=path.model_dump();bad['admission_day']=21.
         with self.assertRaises(ValueError):load(PathOutcome,bad)
         counts=np.repeat((5000+np.tile([-1,1],16))[:,None],6,axis=1)
-        stats=truth_statistics(counts,conditional=False,epsilon=np.repeat(.001,6))
+        stats=truth_statistics(counts,conditional=False,epsilon=np.repeat(.001,6),investigation=wire_investigation(counts))
         self.assertAlmostEqual(stats['covariance'][0,3],stats['mcse'][0]**2)
         self.assertIsNotNone(stats['pooled_iid_mcse'])
 
     def test_iid_and_conditional_zero_boundary_caps_structural_proof_scope(self):
         zeros=np.zeros((1000,6),dtype=int);epsilon=np.repeat(.001,6)
-        iid=truth_statistics(zeros,conditional=False,epsilon=epsilon)
+        iid=truth_statistics(zeros,conditional=False,epsilon=epsilon,investigation=wire_investigation(zeros))
         self.assertLess(iid['boundary_error'][0],.001)
         self.assertAlmostEqual(1-.05**(1/1000),.0029912495450953314)
         with self.assertRaises(ValueError):truth_statistics(zeros,conditional=True,epsilon=epsilon)

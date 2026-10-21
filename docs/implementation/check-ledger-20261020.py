@@ -218,6 +218,14 @@ def main():
     for record in [probability, probability["accepted_critique"], probability["original_proposal"], probability["original_critique"]]:
         assert git("hash-object", "--no-filters", record["path"]).strip() == record["blob"]
     assert probability["accepted_critique"]["disposition"] == "ready_to_proceed"
+    rejected = assignment["prior_reviews"][0]
+    assert rejected["reviewed_head"] == "2a7726be23864cf9c933295f1d33da3d6fbedd1b" and rejected["reviewed_base"] == generator_base
+    assert rejected["disposition"] == "changes_requested"
+    assert git("hash-object", "--no-filters", rejected["path"]).strip() == "bb708c7e9bffea3ff997fd0eafba05303b6f94fd"
+    assert git("hash-object", "--no-filters", rejected["evidence_manifest_path"]).strip() == "a732313d5a0b1957ca5c724691728db3d709a489"
+    interpretation = probability["iid_admission_interpretation"]
+    assert interpretation["status"] == "root_accepted_conservative_engineering_interpretation"
+    assert git("hash-object", "--no-filters", interpretation["path"]).strip() == "aede75810ca4ff2178b5f4126d0f80f050366618"
     assert closure["required_packages"] == ["G0-PLAN", "G0-CONTRACT", "G0-TIME-R1", "G0-DGP", "G0-WORKFLOW", "G0-LIB"]
     assert closure["accepted_merge_chain"] == [PUBLISHED_MERGE, accepted_merge, main_base, dgp_merge, lib_merge]
     subprocess.check_call(["git", "merge-base", "--is-ancestor", lib_merge, "HEAD"], cwd=ROOT)

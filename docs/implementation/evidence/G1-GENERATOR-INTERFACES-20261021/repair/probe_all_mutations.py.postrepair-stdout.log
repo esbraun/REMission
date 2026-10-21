@@ -1,0 +1,39 @@
+{
+  "kind": "supplemental_adapter_not_original_probe",
+  "original_script_blob": "7b16ef9cfb52cfd9304c6802eb2c8a8e8463ff3f",
+  "pure_wire_fixture": true,
+  "observations": [
+    {
+      "probe": "original_iid_counts",
+      "epsilon": 0.0001,
+      "admitted": false,
+      "error": "ValueError('truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended')"
+    },
+    {
+      "probe": "original_iid_counts",
+      "epsilon": 0.001,
+      "admitted": false,
+      "error": "ValueError('every IID admission needs a separately trusted resolved investigation')"
+    },
+    {
+      "probe": "missing_symptom_pilot",
+      "admitted": false,
+      "error": "FileNotFoundError(2, 'No such file or directory')"
+    },
+    {
+      "probe": "unbound_symptom_se",
+      "admitted": false,
+      "error": "ValueError('claimed symptom SE differs from its authenticated raw pilot and actual tighter comparison')"
+    },
+    {
+      "probe": "wrong_event_times",
+      "admitted": false,
+      "error": "ValueError('reported event-time multiset differs from all qualified day42 paths')"
+    },
+    {
+      "probe": "wrong_symptom_reported_se",
+      "admitted": false,
+      "error": "ValueError('nested symptom uncertainty conflicts with qualified MCSE')"
+    }
+  ]
+}

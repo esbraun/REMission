@@ -46,6 +46,35 @@ are necessary IO checks. Actual producer independence still requires independent
 source/runtime qualification; accepting a schema is not evidence of execution.
 No producer is qualified by this interface candidate.
 
+After the rejected2a review, unconditional IID admission requires both batch
+and pooled Bernoulli MCSE to meet the same final epsilon. Every such admission
+also requires a resolved investigation with a separately supplied trusted
+expected digest/producer/runtime/qualification authority. The artifact binds
+the exact request, complete truth-file manifest, raw counts, independent units,
+and recomputed mean/MCSE/covariance, with method and rationale. An uploaded
+`consistent` flag grants no authority; no investigation overrides an inequality
+or authorizes conditional descendants as IID units. There is no invented
+materiality ratio. Wire-test fixture authority is explicitly not production
+investigation or producer qualification.
+
+Computed conditional ISI uses its own authenticated `SymptomPilotBinding` and
+actual1000-trial eligible-arm values. Each trial needs at least two eligible
+values and positive sample SE. The conservative binding retains the minimum
+positive realized SE and `RMS_SE - 1.645*MCSE(RMS_SE)`; probability dispersion
+does not replace this unchanged symptom policy. A smaller authenticated-request
+comparison SE only tightens that bound. Conditional pilot refinements and the
+separate response approximation budget use the symptom's own ISI epsilon.
+Missing/undefined/zero pilots leave symptoms uncomputed while retaining the
+labelled event vector.
+
+Result event times are the sorted multisets of all non-null path event times
+through day42, retaining multiplicity across all paired batches and both arms
+separately. Admission before death remains present. Embedded ISI standard error
+must agree with qualified numerical MCSE or be absent when the precision record
+is authoritative; an unqualified interval is rejected. These consistency checks
+also apply when a vector retains computed components under an overall partial
+or undefined status.
+
 Probability evidence is read and recomputed from authenticated artifact bytes
 before a computed numerical interruption vector can be admitted. Complete paired
 paths retain death, admission and each arm's own eligible ISI values/counts.

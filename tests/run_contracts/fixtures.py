@@ -37,6 +37,17 @@ def runtime():
     return dict(image_sha256=manifest['images']['runtime'].removeprefix('sha256:'),numerical_lock=ref('numerical-lock','tooling/library/requirements.lock'),service_lock=ref('service-lock','tooling/foundation/requirements.lock'),python_version=platform.python_version(),numpy_version='2.5.4',prng='PCG64DXSM',seed_derivation='remission-seed-v1',precision='float64')
 
 
+def wire_investigation(counts,*,request_hash='a'*64,truth_hash='b'*64):
+    """Explicit caller fixture authority: never production investigation evidence."""
+    from contracts.runs.probability import COMPONENTS, IIDInvestigationAuthority, truth_diagnostics
+    stats=truth_diagnostics(counts,conditional=False)
+    producer=dict(id='contract-fixture-investigator',version='1.0.0',role='contract_fixture')
+    qualification=dict(id='wire-fixture-NOT-producer-qualified',version='1.0.0',sha256='f'*64)
+    data=dict(kind='iid_dispersion_investigation',execution='contract_fixture',producer=producer,source_commit=BASE,runtime=runtime(),producer_qualification=qualification,request_sha256=request_hash,truth_evidence_sha256=truth_hash,raw_counts_sha256=sha256(canonical(counts.tolist())),independent_unit='iid_paired_path',independent_units=len(counts)*10000,batches=len(counts),batch_size=10000,component_order=list(COMPONENTS),mean=stats['mean'].tolist(),batch_mcse=stats['mcse'].tolist(),pooled_iid_mcse=stats['pooled_iid_mcse'].tolist(),batch_covariance=stats['covariance'].tolist(),disposition='resolved',method=dict(id='wire-fixture-diagnostic',version='1.0.0',sha256='e'*64),rationale='Hand-authored deterministic contract fixture; diagnostic wire binding only, no independent producer execution or statistical qualification.')
+    raw=canonical(data);authority=load(IIDInvestigationAuthority,dict(sha256=sha256(raw),producer=producer,source_commit=BASE,runtime=runtime(),producer_qualification=qualification,allow_contract_fixture=True))
+    return raw,authority,request_hash,truth_hash
+
+
 def workloads():
     return dict(calibration_patients=200000,source_shift_pilot_trials=1000,source_shift_trial_size=200,comparator_pilot_trials=1000,source_comparator_sizes=[30,150,180,200,220,250],truth_batch_size=10000,truth_batch_cap=1000,smoke_repetitions_per_cell=5,catalog_cells=82,conditional_particle_levels=[1024,4096,16384,65536],conditional_filters_per_level=32,distribution_patients=10000)
 

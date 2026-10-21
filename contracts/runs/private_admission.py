@@ -98,7 +98,7 @@ def verify_result(raw: bytes, root: Path, run: RunManifest, authority: Authority
     return result,admitted
 
 
-def verify_truth(raw_request: bytes, raw_response: bytes, root: Path, *, request_sha256: str, response_sha256: str, evaluator: Authority):
+def verify_truth(raw_request: bytes, raw_response: bytes, root: Path, *, request_sha256: str, response_sha256: str, evaluator: Authority, investigation_authorities=None):
     if sha256(raw_request)!=request_sha256 or sha256(raw_response)!=response_sha256:raise ValueError('untrusted evaluator request/result digest')
     request=TruthRequest.model_validate_json(raw_request);response=TruthResponse.model_validate_json(raw_response)
     for value in (request,response):
@@ -120,11 +120,17 @@ def verify_truth(raw_request: bytes, raw_response: bytes, root: Path, *, request
     for artifact in response.diagnostics:read_artifact(root,artifact,artifact.role)
     qualified_probability=None
     if any(p.status=='computed' for p in response.interruption_precision):
-        from .probability import ProbabilityEvidence, qualify_probability
+        from .probability import ProbabilityEvidence, qualify_probability, qualify_symptom_pilot
         refs=[p.probability_evidence for p in response.interruption_precision if not p.component.endswith('conditional_isi')]
         if not refs or any(ref is None or ref!=refs[0] for ref in refs):raise ValueError('all six components must reference one full-vector R1 artifact')
         evidence=ProbabilityEvidence.model_validate_json(read_artifact(root,refs[0],'evaluator_result'))
-        qualified_probability=qualify_probability(evidence,root,request)
+        qualified_probability=qualify_probability(evidence,root,request,investigation_authorities=investigation_authorities)
+        qualified_probability['symptom_matched_se']={}
+        for precision in response.interruption_precision:
+            if precision.status=='computed' and precision.component.endswith('conditional_isi'):
+                qualified_probability['symptom_matched_se'][precision.component]=qualify_symptom_pilot(precision.matched_pilot,root,request,refs[0],qualified_probability,precision.component)
+        if response.conditional_accuracy is not None:
+            for artifact in response.conditional_accuracy.independent_reduced_checks:read_artifact(root,artifact,'evaluator_result')
     validate_truth_response(request,response,qualified_probability=qualified_probability)
     return request,response
 

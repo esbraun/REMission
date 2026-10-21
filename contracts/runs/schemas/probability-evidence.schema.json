@@ -498,6 +498,17 @@
       "title": "Diagnostic Filters Per Level",
       "type": "integer"
     },
+    "iid_investigation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "pilots": {
       "items": {
         "$ref": "#/$defs/ProbabilityPilot"

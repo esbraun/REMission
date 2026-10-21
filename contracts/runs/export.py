@@ -7,7 +7,7 @@ from pydantic import TypeAdapter
 from .common import Authority, Bindings, ExportAuthority, canonical, sha256
 from .observed import ObservedExport, ReplayBatch
 from .private import CalibrationArtifact, ExternalCalibrationEvidence, RunManifest, RunResult, SeedLedger, TruthRequest, TruthResponse
-from .probability import ProbabilityEvidence, ProbabilityPilotPlan, PilotTrial, PairedPath, StructuralDerivation, TruthFilterReceipt
+from .probability import ProbabilityEvidence, ProbabilityPilotPlan, PilotTrial, PairedPath, StructuralDerivation, TruthFilterReceipt, SymptomPilotBinding, IIDInvestigation, IIDInvestigationAuthority
 
 ROOT=Path(__file__).resolve().parents[2]
 PACKAGE=Path(__file__).resolve().parent
@@ -26,7 +26,7 @@ SOURCES={
 MODELS={'observed-export':ObservedExport,'observed-replay':ReplayBatch,'run-manifest':RunManifest,'run-result':RunResult,
         'seed-ledger':SeedLedger,'evaluator-request':TruthRequest,'evaluator-response':TruthResponse,
         'calibration-artifact':CalibrationArtifact,'external-calibration-evidence':ExternalCalibrationEvidence,'trusted-run-authority':Authority,'trusted-export-authority':ExportAuthority,
-        'probability-evidence':ProbabilityEvidence,'probability-pilot-plan':ProbabilityPilotPlan,'probability-pilot-trial':PilotTrial,'probability-paired-path':PairedPath,'probability-structural-proof':StructuralDerivation,'probability-truth-filter-receipt':TruthFilterReceipt}
+        'probability-evidence':ProbabilityEvidence,'probability-pilot-plan':ProbabilityPilotPlan,'probability-pilot-trial':PilotTrial,'probability-paired-path':PairedPath,'probability-structural-proof':StructuralDerivation,'probability-truth-filter-receipt':TruthFilterReceipt,'symptom-pilot-binding':SymptomPilotBinding,'iid-investigation':IIDInvestigation,'trusted-iid-investigation-authority':IIDInvestigationAuthority}
 
 
 def bindings_data():

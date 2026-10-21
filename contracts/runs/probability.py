@@ -13,7 +13,7 @@ from pydantic import Field, model_validator
 from scipy.stats import beta
 
 from contracts.domain.common import Nonnegative, Sha256, StrictModel, VersionRef
-from .common import Artifact, Token, canonical, read_artifact, sha256, unique
+from .common import Artifact, Commit, Producer, Runtime, Token, canonical, read_artifact, sha256, unique
 from .private import ConditionalAccuracy, StreamKey
 
 COMPONENTS=tuple(arm+'.'+event for arm in ('intervention','comparator')
@@ -66,6 +66,49 @@ def require_refinement(level_values, level_statistics, epsilon):
         binding_change=.1*np.abs(np.where(after['structural'],0.,after['binding'])-np.where(before['structural'],0.,before['binding']))
         if any((v>epsilon/4).any() for v in (mean_bound,sd_bound,binding_change)):
             raise ValueError('mean/variance/lower-binding refinement unresolved at final epsilon')
+
+
+def symptom_pilot_statistics(trials):
+    """Unchanged ISI policy: eligible-arm sample SEs and RMS lower limit."""
+    if len(trials)!=1000 or any(len(values)<2 or any(v is None for v in values) for values in trials):raise ValueError('symptom pilot needs all1000 trials with at least two actual eligible ISI values per arm')
+    arrays=[np.asarray(values,dtype=np.float64) for values in trials]
+    if any(not np.isfinite(values).all() or ((values<0)|(values>28)).any() for values in arrays):raise ValueError('invalid pilot ISI values')
+    means=np.asarray([values.mean() for values in arrays]);ses=np.asarray([values.std(ddof=1)/sqrt(len(values)) for values in arrays])
+    if (ses<=0).any():raise ValueError('zero/undefined realized symptom pilot SE is unresolved, without a positive floor')
+    squared=ses*ses;rms=float(sqrt(squared.mean()));mcse=float(squared.std(ddof=1)/(2*rms*sqrt(1000)));lower=rms-1.645*mcse
+    if lower<=0 or not isfinite(lower):raise ValueError('symptom RMS lower uncertainty limit unresolved')
+    return dict(means=means,trial_se=ses,rms_se=rms,rms_mcse=mcse,rms_lower=lower,binding=min(float(ses.min()),lower),empirical_sd=float(means.std(ddof=1)))
+
+
+class SymptomPilotBinding(StrictModel):
+    kind: Literal['interruption_symptom_pilot_binding']
+    request_sha256: Sha256
+    component: Literal['intervention.conditional_isi','comparator.conditional_isi']
+    comparison: Literal['own_arm_alive_outpatient_ISI_mean']
+    unit: Literal['ISI_points']
+    probability_evidence: Artifact
+    trial_refs_sha256: Sha256
+
+
+def qualify_symptom_pilot(ref, root, request, evidence_ref, qualified, component):
+    """Read its own authenticated binding; never reuse a probability SE."""
+    binding=SymptomPilotBinding.model_validate_json(read_artifact(root,ref,'evaluator_result'))
+    if binding.request_sha256!=sha256(canonical(request.model_dump(mode='json'))) or binding.component!=component or binding.probability_evidence!=evidence_ref or binding.trial_refs_sha256!=qualified['pilot_trial_refs_sha256']:raise ValueError('symptom pilot target/action/history/configuration/raw-trial binding mismatch')
+    arm=component.split('.')[0];configurations=qualified['symptom_pilots'][arm]
+    if any(any(stats is None for stats in levels) for levels in configurations):raise ValueError('actual eligible symptom pilot is missing/zero/undefined; probability pilot cannot substitute')
+    matched=min(levels[-1]['binding'] for levels in configurations)
+    # A smaller actual comparison supplied in the authenticated request only
+    # tightens this computed pilot bound; it cannot rescue an absent pilot.
+    if request.smallest_estimator_se is not None:matched=min(matched,request.smallest_estimator_se)
+    if matched<=0:raise ValueError('zero actual symptom comparator SE requires analytic truth or unresolved status')
+    epsilon=min(.05,.1*matched)
+    if request.target.truth_kind=='observed_history_conditional_average':
+        for levels in configurations:
+            if len(levels) not in (3,4):raise ValueError('conditional symptom pilot needs two approved successive refinements')
+            for index in range(len(levels)-2,len(levels)):
+                before,after=levels[index-1:index+1];delta=after['means']-before['means']
+                if abs(float(delta.mean()))+1.96*float(delta.std(ddof=1))/sqrt(1000)>epsilon/4:raise ValueError('conditional symptom pilot refinement unresolved at its own final ISI epsilon')
+    return matched
 
 
 class PathOutcome(StrictModel):
@@ -251,6 +294,7 @@ class ProbabilityEvidence(StrictModel):
     actual_matched_estimator_se: Annotated[list[Nonnegative],Field(min_length=6,max_length=6)] | None
     conditional_accuracy: ConditionalAccuracy | None
     diagnostic_filters_per_level: Literal[32]
+    iid_investigation: Artifact | None = None
 
     @model_validator(mode='after')
     def exact_vector(self):
@@ -262,8 +306,42 @@ class ProbabilityEvidence(StrictModel):
         return self
 
 
-def truth_statistics(counts, *, conditional, epsilon, proofs=None):
-    """Batch means, not descendants, are independent conditional units."""
+class IIDInvestigationAuthority(StrictModel):
+    """Trusted caller policy; never take this authority from an uploaded result."""
+    sha256: Sha256
+    producer: Producer
+    source_commit: Commit
+    runtime: Runtime
+    producer_qualification: VersionRef
+    allow_contract_fixture: bool
+
+
+class IIDInvestigation(StrictModel):
+    kind: Literal['iid_dispersion_investigation']
+    execution: Literal['contract_fixture','engine_run']
+    producer: Producer
+    source_commit: Commit
+    runtime: Runtime
+    producer_qualification: VersionRef
+    request_sha256: Sha256
+    truth_evidence_sha256: Sha256
+    raw_counts_sha256: Sha256
+    independent_unit: Literal['iid_paired_path']
+    independent_units: Annotated[int,Field(ge=320000,le=10000000)]
+    batches: Annotated[int,Field(ge=32,le=1000)]
+    batch_size: Literal[10000]
+    component_order: list[str]
+    mean: Annotated[list[Probability],Field(min_length=6,max_length=6)]
+    batch_mcse: Annotated[list[Nonnegative],Field(min_length=6,max_length=6)]
+    pooled_iid_mcse: Annotated[list[Nonnegative],Field(min_length=6,max_length=6)]
+    batch_covariance: list[list[float]]
+    disposition: Literal['resolved','unresolved']
+    method: VersionRef
+    rationale: Annotated[str,Field(min_length=40)]
+
+
+def truth_diagnostics(counts, *, conditional, proofs=None):
+    """Pure summaries only: returning diagnostics grants no admission status."""
     k=np.asarray(counts)
     if k.ndim!=2 or k.shape[1]!=6 or not 32<=len(k)<=1000 or not np.issubdtype(k.dtype,np.integer) or ((k<0)|(k>10000)).any():raise ValueError('32..1000 complete paired batches of 10000 required')
     q=k/10000;mean=q.mean(axis=0);se=q.std(axis=0,ddof=1)/sqrt(len(q));cov=np.cov(q,rowvar=False,ddof=1)/len(q)
@@ -276,12 +354,35 @@ def truth_statistics(counts, *, conditional, epsilon, proofs=None):
     pooled=np.sqrt(mean*(1-mean)/(len(q)*10000))
     z=1.96;total=len(q)*10000;den=1+z*z/total
     centre=(mean+z*z/(2*total))/den;half=z*np.sqrt(mean*(1-mean)/total+z*z/(4*total*total))/den
-    if (se>epsilon).any() or (boundary_error>epsilon).any():raise ValueError('truth MCSE/boundary precision unresolved; cap cannot be extended')
     return dict(mean=mean,mcse=se,covariance=cov,boundary_error=boundary_error,
                 pooled_iid_mcse=None if conditional else pooled,wilson_lower=None if conditional else centre-half,wilson_upper=None if conditional else centre+half)
 
 
-def qualify_probability(evidence, root: Path, request):
+def truth_statistics(counts, *, conditional, epsilon, proofs=None, investigation=None):
+    """Admission uses both IID inequalities plus an externally trusted review."""
+    stats=truth_diagnostics(counts,conditional=conditional,proofs=proofs)
+    epsilon=np.asarray(epsilon,dtype=np.float64)
+    if epsilon.shape!=(6,) or not np.isfinite(epsilon).all() or (epsilon<=0).any():raise ValueError('six finite positive final tolerances required')
+    if (stats['mcse']>epsilon).any() or (stats['boundary_error']>epsilon).any() or (not conditional and (stats['pooled_iid_mcse']>epsilon).any()):raise ValueError('truth batch/pooled IID MCSE/boundary precision unresolved; cap cannot be extended')
+    if conditional:
+        if investigation is not None:raise ValueError('IID investigation cannot authorize correlated filter descendants')
+    else:
+        if investigation is None:raise ValueError('every IID admission needs a separately trusted resolved investigation')
+        raw,authority,request_hash,truth_hash=investigation
+        if not isinstance(authority,IIDInvestigationAuthority) or sha256(raw)!=authority.sha256:raise ValueError('untrusted IID investigation bytes/authority')
+        report=IIDInvestigation.model_validate_json(raw)
+        if (report.producer,report.source_commit,report.runtime,report.producer_qualification)!=(authority.producer,authority.source_commit,authority.runtime,authority.producer_qualification):raise ValueError('IID investigation producer/runtime/qualification mismatch')
+        if (report.execution=='contract_fixture')!=(report.producer.role=='contract_fixture') or (report.execution=='contract_fixture' and not authority.allow_contract_fixture):raise ValueError('fixture investigation is not producer qualification')
+        if report.execution=='engine_run' and report.producer.role!='evaluator':raise ValueError('IID investigation requires a qualified evaluator')
+        expected=dict(request_sha256=request_hash,truth_evidence_sha256=truth_hash,raw_counts_sha256=sha256(canonical(np.asarray(counts).tolist())),independent_units=len(counts)*10000,batches=len(counts),component_order=list(COMPONENTS))
+        if report.disposition!='resolved' or any(getattr(report,k)!=v for k,v in expected.items()):raise ValueError('IID investigation unresolved or wrong target/truth/count/unit binding')
+        for name,actual in [('mean',stats['mean']),('batch_mcse',stats['mcse']),('pooled_iid_mcse',stats['pooled_iid_mcse']),('batch_covariance',stats['covariance'])]:
+            value=np.asarray(getattr(report,name))
+            if value.shape!=actual.shape or not np.isfinite(value).all() or not np.allclose(value,actual,rtol=0,atol=1e-15):raise ValueError('IID investigation disagrees with recomputed '+name)
+    return stats
+
+
+def qualify_probability(evidence, root: Path, request, *, investigation_authorities=None):
     """Recompute from hashed evaluator files; caller has authenticated producer."""
     if evidence.rule!=request.bindings.probability_precision or evidence.request_sha256!=sha256(canonical(request.model_dump(mode='json'))):raise ValueError('probability rule/request hash mismatch')
     conditional=request.target.truth_kind=='observed_history_conditional_average'
@@ -297,7 +398,7 @@ def qualify_probability(evidence, root: Path, request):
         derivation=StructuralDerivation.model_validate_json(read_artifact(root,proof.independent_derivation,'evaluator_result'))
         if (derivation.request_sha256,derivation.component,derivation.value,derivation.method)!=(evidence.request_sha256,proof.component,proof.value,proof.method):raise ValueError('structural proof target/provenance mismatch')
         proofs[proof.component]=proof.value
-    all_values=[];all_stats=[];bindings=[]
+    all_values=[];all_stats=[];bindings=[];symptom_pilots={arm:[] for arm in ('intervention','comparator')}
     for pilot in evidence.pilots:
         if pilot.conditional!=conditional or pilot.history_sha256!=history or pilot.dispersion_review!='consistent':raise ValueError('pilot history/dispersion remains unresolved')
         expected_levels=list(LEVELS[:len(pilot.levels)]) if conditional else [0]
@@ -306,16 +407,23 @@ def qualify_probability(evidence, root: Path, request):
         if pilot.n_arm!=expected_n:raise ValueError('matched randomized pilot arm size changed')
         read_artifact(root,pilot.independent_iid_check,'evaluator_result')
         read_artifact(root,pilot.producer_execution_qualification,'evaluator_result')
-        values=[];statistics=[]
+        values=[];statistics=[];symptom_levels={arm:[] for arm in symptom_pilots}
         for level in pilot.levels:
-            seen=set();counts=[]
+            seen=set();counts=[];symptom_trials={arm:[] for arm in symptom_pilots}
             for index,artifact in enumerate(level.trials):
                 trial=PilotTrial.model_validate_json(read_artifact(root,artifact,'evaluator_result'))
                 if trial.trial!=index:raise ValueError('all 1000 paired trial IDs must align across levels')
                 counts.append(require_trial(trial,conditional=conditional,n_arm=pilot.n_arm,protocol=request.bindings.protocol.id,cell=request.cell_id,config=pilot.configuration,level=level.particles,seen=seen,target_sha256=evidence.request_sha256,producer_run=request.run_id))
+                for arm in symptom_trials:
+                    symptom_trials[arm].append([e.outcome.conditional_isi for e in trial.environments if e.arm==arm and e.outcome.alive_outpatient_day42])
             x=np.asarray(counts)/pilot.n_arm;stats=pilot_statistics(x,counts,pilot.n_arm,proofs=proofs)
             values.append(x);statistics.append(stats)
+            for arm in symptom_levels:
+                try:symptom=symptom_pilot_statistics(symptom_trials[arm])
+                except ValueError:symptom=None # preserve unresolved ISI without hiding event outcomes
+                symptom_levels[arm].append(symptom)
         bindings.append(statistics[-1]['binding']);all_values.append(values);all_stats.append(statistics)
+        for arm in symptom_pilots:symptom_pilots[arm].append(symptom_levels[arm])
     matched=np.min(bindings,axis=0)
     if evidence.actual_matched_estimator_se is not None:
         actual=np.asarray(evidence.actual_matched_estimator_se)
@@ -326,6 +434,7 @@ def qualify_probability(evidence, root: Path, request):
     if conditional:
         for values,stats in zip(all_values,all_stats):require_refinement(values,stats,epsilon)
     counts=[];outer=set();paired_ids=None;isi_numerators=[];isi_denominators=[]
+    event_times={arm:dict(death_times_days=[],admission_times_days=[]) for arm in ('intervention','comparator')}
     for batch_index,batch in enumerate(evidence.batches):
         key=batch.independent_outer_key
         if (key.protocol,key.phase,key.namespace,key.scenario,key.replicate,key.patient,key.time_index,key.process)!=(request.bindings.protocol.id,'confirmation','truth',request.cell_id,batch_index,request.patient_id or 'population',42,'probability_truth_batch'):raise ValueError('outer truth batch key changed target/run/cutoff')
@@ -356,8 +465,19 @@ def qualify_probability(evidence, root: Path, request):
             outcomes=[getattr(p,arm) for p in paths];values=[p.conditional_isi for p in outcomes if p.alive_outpatient_day42]
             if any(value is None for value in values):raise ValueError('complete eligible conditional ISI values required; no silent loss after death/admission')
             sums.append(sum(values));eligible.append(len(values))
+            event_times[arm]['death_times_days'].extend(p.death_day for p in outcomes if p.death_day is not None and p.death_day<=42)
+            event_times[arm]['admission_times_days'].extend(p.admission_day for p in outcomes if p.admission_day is not None and p.admission_day<=42)
         isi_numerators.append(sums);isi_denominators.append(eligible)
-    stats=truth_statistics(counts,conditional=conditional,epsilon=epsilon,proofs=proofs)
+    investigation=None
+    if evidence.iid_investigation is not None:
+        if conditional:raise ValueError('conditional truth cannot use an IID descendant investigation')
+        ref=evidence.iid_investigation;authority=(investigation_authorities or {}).get(ref.sha256)
+        if authority is None:raise ValueError('IID investigation needs out-of-band expected digest/authority, not a self-declared flag')
+        truth_hash=sha256(canonical([batch.model_dump(mode='json') for batch in evidence.batches]))
+        raw=read_artifact(root,ref,'evaluator_result')
+        if IIDInvestigation.model_validate_json(raw).execution!=request.execution:raise ValueError('wire fixture investigation cannot qualify an actual producer run')
+        investigation=(raw,authority,evidence.request_sha256,truth_hash)
+    stats=truth_statistics(counts,conditional=conditional,epsilon=epsilon,proofs=proofs,investigation=investigation)
     if conditional:
         if evidence.conditional_accuracy is None:raise ValueError('conditional truth requires quadrature/refinement/within/between budget')
         accuracy=evidence.conditional_accuracy;accuracy.require_accuracy(float(min(epsilon)))
@@ -374,4 +494,7 @@ def qualify_probability(evidence, root: Path, request):
         else:
             mean=float(a[:,i].mean()/d[:,i].mean());mcse=float((a[:,i]-mean*d[:,i]).std(ddof=1)/(d[:,i].mean()*sqrt(len(d))))
             isi.append(dict(status='computed',count=count,value=mean,mcse=mcse))
-    return dict(**stats,epsilon=epsilon,matched_se=matched,batches=len(counts),structural_proofs=proofs,conditional_isi=isi)
+    for times in event_times.values():
+        for name in times:times[name].sort()
+    trial_refs=sha256(canonical([dict(configuration=p.configuration,levels=[l.model_dump(mode='json') for l in p.levels]) for p in evidence.pilots]))
+    return dict(**stats,epsilon=epsilon,matched_se=matched,batches=len(counts),structural_proofs=proofs,conditional_isi=isi,event_times=event_times,symptom_pilots=symptom_pilots,pilot_trial_refs_sha256=trial_refs)
