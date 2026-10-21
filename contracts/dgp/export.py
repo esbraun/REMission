@@ -2,10 +2,10 @@
 import argparse
 import json
 from pathlib import Path
-from .parameters import reference_parameters, validate_parameters
+from .parameters import VERSION, reference_parameters, validate_parameters
 from .scenarios import scenario_manifest, validate_scenarios
 from .truth import fixture_manifest
-from .calibration import CalibrationBinding
+from .calibration import CalibrationBinding, ExternalTargetEvidence
 
 ROOT = Path(__file__).resolve().parent
 
@@ -15,7 +15,8 @@ def artifacts() -> dict:
     scenarios = validate_scenarios(scenario_manifest())
     return {"parameters-v1.json": parameters, "scenarios-v1.json": scenarios,
             "truth-fixtures-v1.json": fixture_manifest(),
-            "calibration-binding-v1.schema.json": CalibrationBinding.model_json_schema()}
+            "calibration-binding-v1.schema.json": CalibrationBinding.model_json_schema(),
+            "external-target-evidence-v1.schema.json": ExternalTargetEvidence.model_json_schema()}
 
 
 def main():
@@ -30,7 +31,7 @@ def main():
                 raise SystemExit(f"stale or missing authoring artifact: {path}")
         else:
             path.write_text(content, encoding="utf-8")
-    print("DGP parameter/scenario/independent-fixture artifacts match v1.0.0")
+    print(f"DGP parameter/scenario artifacts match v{VERSION}; independent fixtures remain v1.0.0")
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0.0",
+      "const": "1.1.0",
       "title": "Schema Version",
       "type": "string"
     },
@@ -65,6 +65,9 @@
     "cell_id": {
       "title": "Cell Id",
       "type": "string"
+    },
+    "target_spec": {
+      "$ref": "#/$defs/VersionRef"
     },
     "calibration_sample_sha256": {
       "pattern": "^[a-f0-9]{64}$",
@@ -159,6 +162,16 @@
         }
       ]
     },
+    "source_reference": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "smallest_estimator_se": {
       "anyOf": [
         {
@@ -184,6 +197,7 @@
     "status",
     "dgp",
     "cell_id",
+    "target_spec",
     "calibration_sample_sha256",
     "seed_key_sha256",
     "sample_size",
@@ -195,6 +209,7 @@
     "source_se",
     "source_se_mcse",
     "source_pilot",
+    "source_reference",
     "smallest_estimator_se",
     "frozen_before"
   ],

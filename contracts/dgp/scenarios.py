@@ -10,7 +10,8 @@ from .parameters import VERSION, reference_parameters, validate_parameters
 # from the REQUIRED complete validated input table, never from code fallbacks.
 ROWS = [
     ("S01", "reference", {}, "visit", "R"),
-    ("S02", "outcome_null", {"z_L": 0, "z_B": 0}, "visit_null", "RN"),
+    ("S02", "outcome_null", {"z_L": 0, "z_B": 0, "z_prompt": 0,
+                              "z_delayed_prompt": 0, "prompt_state_gain": 0}, "visit_null", "RN"),
     ("S03", "constant", {}, "constant_fixture", "R"),
     ("S04", "observed_modifier", {"L_T": 0, "z_B": 0, "z_T_modifier": -0.4}, "visit_modifier", "RP"),
     ("S05", "prognostic_null", {"L_T": 0, "z_B": 0, "z_M": 0.2}, "visit_null", "RP"),

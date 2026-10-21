@@ -1,4 +1,4 @@
-"""Complete DGP v1.0.0 inventory. Values are synthetic engineering choices.
+"""Complete DGP v1.1.0 inventory. Values are synthetic engineering choices.
 
 Rows are the authoritative parameter table, not runtime fallbacks. A consumer
 must submit the complete table to validate_parameters before resolving a cell.
@@ -7,7 +7,7 @@ Normal second parameters are SDs; covariance entries are variances.
 import json
 from copy import deepcopy
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 REFERENCE = "docs/spec/dgp-reference.md"
 CATALOG = "docs/spec/scenario-catalog.md"
 DECISIONS = "docs/implementation/dgp-decisions.md"

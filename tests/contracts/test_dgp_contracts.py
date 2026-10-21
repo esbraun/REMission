@@ -6,7 +6,8 @@ from pathlib import Path
 import unittest
 
 from contracts.dgp.parameters import reference_parameters, validate_parameters
-from contracts.dgp.calibration import CalibrationBinding, require_solved
+from contracts.dgp.calibration import (CalibrationBinding, ExternalTargetEvidence,
+                                       calibration_request, require_solved)
 from contracts.domain.common import VersionRef
 from contracts.dgp.scenarios import resolve_cell, scenario_manifest, validate_scenarios
 from contracts.dgp.truth import (beta_posterior, bisect_calibration, escalation,
@@ -74,7 +75,7 @@ class ParameterAndCellContracts(unittest.TestCase):
         scenarios = scenario_manifest()
         null = resolve_cell(params, scenarios, "S02.outcome_null.n60")["parameters"]
         self.assertEqual(null["L_T"]["value"], -0.1)  # diagnostic intermediate changes
-        for key in ("z_L", "z_B", "z_T", "z_T_modifier"):
+        for key in ("z_L", "z_B", "z_T", "z_T_modifier", "z_prompt", "z_delayed_prompt", "prompt_state_gain"):
             self.assertEqual(null[key]["value"], 0)
         prompt = resolve_cell(params, scenarios, "S20.prompt_null.n60")["parameters"]
         for key in ("z_prompt", "z_delayed_prompt", "prompt_state_gain", "habituation_rate"):
@@ -84,6 +85,33 @@ class ParameterAndCellContracts(unittest.TestCase):
         self.assertEqual(modifier["cell"]["outcome"], "ISI")
         self.assertEqual(modifier["parameters"]["z_med_A_modifier"]["value"], 0)
         self.assertEqual(modifier["parameters"]["z_T_modifier"]["value"], -0.4)
+
+    def test_s02_threshold_crossing_changes_availability_but_not_outcome_law(self):
+        p = {k: row["value"] for k, row in resolve_cell(
+            reference_parameters(), scenario_manifest(), "S02.outcome_null.n60")["parameters"].items()}
+        # Independent algebra from shared innovations after 28 assigned nights;
+        # consent, weekday, preference, envelope and burden prerequisites agree.
+        delta = p["L_T"] * (1 - p["L_ar"] ** 28) / (1 - p["L_ar"])
+        histories = [(0, [3.05, 0, 0], .1), (1, [3.05 + delta, delta, delta], .7)]
+        available = [all(x <= p["stability_max_L"] for x in L) for _, L, _ in histories]
+        self.assertEqual(available, [False, True])
+        self.assertNotEqual(histories[0][1], histories[1][1])
+        transitions = []
+        for (T, L, B), offered in zip(histories, available):
+            # All varying parents of the declared severity equation are included;
+            # common other terms/innovation are represented by .3. Different B,
+            # current and prior prompt histories cannot change the null law.
+            transitions.append(.3 + p["z_L"] * sum(L) / 3 + p["z_B"] * B +
+                               p["z_T"] * T + p["z_T_modifier"] * T +
+                               p["z_prompt"] * offered + p["z_delayed_prompt"] * offered +
+                               p["z_nonlinear"] * (L[0] ** 2 - 1))
+        self.assertEqual(transitions[0], transitions[1])
+        # Identical recall/error implies identical category CDFs, stronger than
+        # checking only an expected total. This is bounded algebra, not G1 rollout.
+        laws = [[1 / (1 + math.exp(-(cut - z - offset)))
+                 for offset in p["item_offsets"] for cut in p["item_cutpoints"]]
+                for z in transitions]
+        self.assertEqual(laws[0], laws[1])
 
     def test_generated_artifacts_are_valid_complete_inputs(self):
         validate_parameters(json.loads((ROOT / "contracts/dgp/parameters-v1.json").read_text()))
@@ -114,12 +142,14 @@ class ParameterAndCellContracts(unittest.TestCase):
 
 class IndependentTruthFixtures(unittest.TestCase):
     def test_calibration_binding_rejects_missing_derived_values_and_wrong_target(self):
-        ref = {"id": "dgp-v1", "version": "1.0.0", "sha256": "a" * 64}
-        data = {"schema_version": "1.0.0", "synthetic": True, "purpose": "report_rate", "status": "solved",
+        ref = {"id": "dgp-v1", "version": "1.1.0", "sha256": "a" * 64}
+        request = calibration_request(cell_id="S23.MAR_20.n60", dgp=VersionRef.model_validate(ref))
+        data = {"schema_version": "1.1.0", "synthetic": True, "purpose": "report_rate", "status": "solved",
                 "dgp": ref, "cell_id": "S23.MAR_20.n60", "calibration_sample_sha256": "b" * 64,
                 "seed_key_sha256": "c" * 64, "sample_size": 200000, "target": .8, "achieved": .8,
                 "achieved_mcse": .001, "coefficient": 2.0, "iterations": 10,
-                "source_se": None, "source_se_mcse": None, "source_pilot": None,
+                "source_se": None, "source_se_mcse": None, "source_pilot": None, "source_reference": None,
+                "target_spec": request["target_spec"],
                 "smallest_estimator_se": None, "frozen_before": "development_and_confirmation"}
         binding = CalibrationBinding.model_validate(data)
         self.assertEqual(require_solved(binding, cell_id="S23.MAR_20.n60", dgp=VersionRef.model_validate(ref)), 2)
@@ -135,6 +165,41 @@ class IndependentTruthFixtures(unittest.TestCase):
         unresolved = CalibrationBinding.model_validate(data | {"status": "inconclusive", "coefficient": None})
         with self.assertRaises(ValueError):
             require_solved(unresolved, cell_id=data["cell_id"], dgp=VersionRef.model_validate(ref))
+
+        # Each hostile record is internally solved to its own target and keeps
+        # matching DGP/cell hashes. Consumption must still reject it.
+        for changes in ({"target": .6, "achieved": .6}, {"purpose": "event_rate"},
+                        {"target_spec": request["target_spec"] | {"sha256": "d" * 64}},
+                        {"cell_id": "S99.fake.n60"}, {"cell_id": "S01.reference.n60"},
+                        {"cell_id": "S23.MCAR_20.n60"}):
+            with self.subTest(changes=changes):
+                hostile = CalibrationBinding.model_validate(data | changes)
+                with self.assertRaises(ValueError):
+                    require_solved(hostile, cell_id=hostile.cell_id, dgp=VersionRef.model_validate(ref))
+
+    def test_external_target_is_derived_and_bound_to_independent_upstream_identities(self):
+        ref = VersionRef(id="dgp-v1", version="1.1.0", sha256="a" * 64)
+        evidence = ExternalTargetEvidence(
+            source_reference=VersionRef(id="reference-contrast", version="1", sha256="b" * 64),
+            source_pilot=VersionRef(id="source-se-pilot", version="1", sha256="c" * 64),
+            reference_contrast=-1., source_se=.2, source_se_mcse=.001, smallest_estimator_se=.1)
+        request = calibration_request(cell_id="S10.shift_2SE.n60", dgp=ref, external=evidence)
+        self.assertAlmostEqual(request["target"], -.6)
+        binding = CalibrationBinding.model_validate(request | {
+            "schema_version": "1.1.0", "synthetic": True, "status": "solved",
+            "calibration_sample_sha256": "d" * 64, "seed_key_sha256": "e" * 64,
+            "sample_size": 200000, "achieved": request["target"], "achieved_mcse": .001,
+            "coefficient": .15, "iterations": 12, "frozen_before": "development_and_confirmation"})
+        self.assertEqual(require_solved(binding, cell_id=binding.cell_id, dgp=ref, external=evidence), .15)
+        for changed in (evidence.model_copy(update={"source_pilot": VersionRef(id="source-se-pilot", version="2", sha256="f" * 64)}),
+                        evidence.model_copy(update={"source_reference": VersionRef(id="reference-contrast", version="2", sha256="f" * 64)}),
+                        evidence.model_copy(update={"reference_contrast": -.9})):
+            with self.assertRaises(ValueError):
+                require_solved(binding, cell_id=binding.cell_id, dgp=ref, external=changed)
+        with self.assertRaises(ValueError):
+            require_solved(binding, cell_id=binding.cell_id, dgp=ref)
+        reversal = calibration_request(cell_id="S10.reverse_sign.n60", dgp=ref, external=evidence)
+        self.assertEqual(reversal["target"], 1.)
 
     def test_normal_beta_analytic_answers(self):
         self.assertEqual(normal_posterior(10), (40 / 81, 4 / 81))
