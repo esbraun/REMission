@@ -49,4 +49,3 @@ def verify_truth_v2(raw_request: bytes, raw_response: bytes, root: Path, *, requ
             for artifact in response.conditional_accuracy.independent_reduced_checks:read_artifact(root,artifact,'evaluator_result')
     validate_truth_response_v2(request,response,qualified_probability=qualified_probability)
     return request,response
-

@@ -179,4 +179,3 @@ class ExportAuthorityV2(ExportAuthority):
         if not self.allow_contract_fixture and self.producer_qualification is None:
             raise ValueError('real producer qualification is required')
         return self
-
