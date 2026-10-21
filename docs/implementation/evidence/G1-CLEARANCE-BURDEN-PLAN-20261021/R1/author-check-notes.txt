@@ -28,3 +28,14 @@ live-hold binding supplement. Scientific R1 was committed as WIP 796b72671655772
 and this checkout remained clean. After that bounded review, root/head/clean were
 reverified here before scientific R1 finalization. No supplement source or
 unaccepted implementation was copied into this scientific proposal.
+
+Finalization exposed a raw-log recursion: tracked whitespace-check.txt copied the
+original Markdown hard breaks, so later whole-diff checks reported trailing spaces
+inside that log and the next log copied those warnings recursively. The attempted
+freeze commit 12a31159931a962099a23a3d4229a1cb266b6a31 left that generated log modified;
+it was not handed off as a final candidate. All raw historical/current log bytes
+are preserved in whitespace-log-recovery.json. The corrected logger uses a base64
+JSON envelope, keeping exact warning bytes without adding Markdown hard breaks to
+the working diff. The obsolete text log is removed only from this author's new
+R1 evidence; original proposal/Luna evidence files remain unchanged. Final checks
+must be rerun and a new freeze commit created. No runtime/service failure occurred.

@@ -43,10 +43,13 @@ for item in envelope['items']:
 # Includes preserved original warnings. New untracked files get their own no-index checks.
 whole=subprocess.run(['git','diff','--check',BASE],cwd=ROOT,capture_output=True)
 assert whole.returncode in (0,2)
-(HERE/'whitespace-check.txt').write_bytes(whole.stdout+whole.stderr)
+warning_raw=whole.stdout+whole.stderr
+(HERE/'whitespace-check.json').write_text(json.dumps({'encoding':'base64 exact Git stdout/stderr bytes',
+    'exit_code':whole.returncode,'raw_output':identity(warning_raw),
+    'base64':base64.b64encode(warning_raw).decode()},indent=2)+'\n',encoding='utf-8',newline='\n')
 scoped=[]
 for path in [PROPOSAL,*sorted(HERE.iterdir())]:
-    if not path.is_file() or path.name in ('artifact-manifest.json','whitespace-check.txt'):
+    if not path.is_file() or path.name=='artifact-manifest.json':
         continue
     result=subprocess.run(['git','-c','core.autocrlf=false','diff','--no-index','--check','--','NUL',str(path)],cwd=ROOT,capture_output=True)
     assert result.returncode in (0,1) and not result.stdout and not result.stderr, (str(path),result.stdout,result.stderr)
