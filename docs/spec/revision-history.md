@@ -1,8 +1,12 @@
 # Revision history
 
+## October 20 2026 Luna helper concurrency clarification
+
+Per user direction, the two-worker limit applies only to non-Luna subagents: GPT-6 Luna (`gpt-6-luna`) exploration and summary helpers are exempt and may run alongside two Astra/Sol workers. The orchestrator separately tracks the project worker count and the runtime's total spawned-thread count. Replaced the global-cap-of-two example with illustrative total capacity for workers plus helpers; Luna requests are queued for actual runtime capacity, resources, or dependencies rather than occupied non-Luna slots. Every helper still uses its own worktree. Model assignments, independent review, and merge acceptance remain unchanged.
+
 ## October 20 2026 worktree isolation and reviewed integration
 
-Required a separate Git worktree for every subagent, including planning, exploration, Luna helpers, browser verification, and independent Astra review. Worker assignments and ledger entries now identify absolute checkout paths, branches, accepted bases, and exact review candidates; shared-checkout fallback is removed. The existing two-subagent limit and role-specific model/effort policy remain unchanged.
+Required a separate Git worktree for every subagent, including planning, exploration, Luna helpers, browser verification, and independent Astra review. Worker assignments and ledger entries now identify absolute checkout paths, branches, accepted bases, and exact review candidates; shared-checkout fallback is removed. This revision retained the then-current two-subagent limit and role-specific model/effort policy; the later Luna clarification above supersedes its counting rule.
 
 Per user direction, the orchestrator may open PRs and merge accepted worktree branches into assigned integration targets without repeated confirmation once independent review deems the exact head/base ready to ship, required checks pass, findings are resolved, and dependencies are accepted. Source conflicts and repairs remain with Sol workers; changed heads/bases require refreshed review and affected checks. Updated the entry point, launch/delegation/handoff/browser guidance, plan index, and gate instructions. No application implementation, executed acceptance gate, or clinical/human-factors result is claimed.
 

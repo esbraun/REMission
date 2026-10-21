@@ -31,21 +31,22 @@ Multi-agent orchestration and the phase map below are REMission-specific workflo
 
 ## Subagent runtime configuration
 
-Use one primary orchestrator and at most two concurrently open subagent threads, honoring a lower runtime limit if present. The official configuration counts spawned threads separately from the primary. Before future implementation, configure the project or session with:
+Use one primary orchestrator and at most two concurrently open non-Luna subagent threads. **GPT-6 Luna (`gpt-6-luna`) helpers do not count toward the project's two-worker limit.** Enforce that model-specific limit in orchestration, counting idle as well as running non-Luna threads. Separately, the official runtime setting counts all spawned threads, including Luna, but excludes the primary. Configure sufficient total capacity for two workers plus helpers; for example, when supported:
 
 ```toml
 [agents]
 enabled = true
-max_concurrent_threads_per_session = 2
+# Total runtime capacity: e.g. two non-Luna workers plus two Luna helpers.
+max_concurrent_threads_per_session = 4
 ```
 
-This documentation update does not change local configuration. Verify the effective setting at launch; prompt instructions also enforce the cap. Only the orchestrator spawns agents, including Luna helpers requested by workers. Do not create separate top-level tasks or nested agents to bypass the cap. Keep an inventory of open thread IDs, task ownership, model/effort, assigned Git worktrees/branches/base commits, and queued requests in the task ledger.
+The value four is an illustrative total runtime capacity, not a separate project limit on Luna. Adjust the total setting to the supported helper capacity needed; do not use a total cap of two to express the non-Luna policy. This documentation update does not change local configuration. Verify the effective total setting at launch and report any capacity restrictions. Only the orchestrator spawns agents, including Luna helpers requested by workers. Do not create separate top-level tasks or nested agents to bypass runtime limits. Keep separate non-Luna and total thread counts, with open thread IDs, effective model/effort, task ownership, assigned Git worktrees/branches/base commits, and queued requests in the ledger. Acquire a non-Luna slot before changing a Luna thread to Astra/Sol.
 
 Confirm supported spawn, message, wait, resume/reuse, and close/release controls. A completed or interrupted turn may still occupy an open thread. Release completed threads before replacements, or reuse compatible existing threads if closing is unavailable. If the model/effort cannot be selected, the cap cannot be honored, or required threads cannot be released or reused, report the specific blocker and keep affected work queued; do not fall back to solo implementation.
 
 Set the model and reasoning effort explicitly on every assignment so parent inheritance cannot silently choose the wrong settings. If custom agent files are used, inspect their effective model and effort because file settings can override spawn settings. Use the runtime's supported independent-context spawn option when required for model overrides, supplying the bounded gate context and assignment rather than relying on inherited history. Subagents inherit session permissions; do not attempt to override those in custom role files.
 
-Schedule work in waves: Luna exploration, Astra planning and independent critique, Sol implementation, a separate Astra review, Sol repairs, and Astra re-review as needed. Independent work may occupy both slots, but helper requests and reviewers use those same slots. Follow the [delegation contract](delegation.md#delegation-and-integration-contract) to queue helpers and checkpoint waiting workers without deadlocking the workflow.
+Schedule non-Luna work in waves: Astra planning and independent critique, Sol implementation, a separate Astra review, Sol repairs, and Astra re-review as needed. Luna exploration and summary helpers may run before or alongside these workers without consuming either project worker slot. Two Sol workers plus one Luna helper, or one Astra reviewer plus one Sol worker plus two Luna helpers, are valid when total runtime capacity allows; three non-Luna workers are not. Follow the [delegation contract](delegation.md#delegation-and-integration-contract) to queue helpers only when runtime capacity, resources, or dependencies require it and checkpoint waiting workers if needed.
 
 Provision a separate Git worktree for every subagent before it starts, including read-only roles and helpers. Supply the absolute checkout path and verify that commands and edits use it; native subagent spawning does not itself satisfy this requirement. Writing workers own task branches from accepted commits; reviewers use separate worktrees pinned to the exact candidate. Use supported managed-worktree tools or native Git, preserve unrelated changes, and report unavailable isolation without a shared-checkout fallback. Follow [worktree isolation and reviewed merges](delegation.md#worktree-isolation-and-reviewed-merges) for lifecycle, review, and integration.
 
@@ -95,7 +96,7 @@ Read the [methods library decisions](../plans/methods/00-library-decisions.md) f
 ## How to launch
 
 1. Open a checkout of `esbraun/REMission` and inspect the current branch, working tree, `plan.md`, applicable `AGENTS.md` files, and available tools.
-2. Verify the role-specific model/effort settings and the two-subagent cap under [subagent runtime configuration](#subagent-runtime-configuration). Confirm delegation, thread lifecycle controls, separate Git worktree provisioning, and worker access to required files and tools. Use the existing primary thread as the sole orchestrator; no additional orchestrator thread is needed.
+2. Verify role-specific model/effort, the two-non-Luna worker limit, and separate total runtime capacity for Luna helpers under [subagent runtime configuration](#subagent-runtime-configuration). Confirm delegation, thread lifecycle controls, separate Git worktree provisioning, and worker access to required files and tools. Use the existing primary thread as the sole orchestrator; no additional orchestrator thread is needed.
 3. Delegate Playwright MCP setup and browser availability checks using [browser validation](browser-validation.md). Record tool or environment blockers before depending on them.
 4. Give the orchestrator the launch prompt in the next section. Use the task template for each delegated package; use the browser template for UI checks.
 5. Continue through phases 0–7 with persisted gates. If the run is interrupted, resume unfinished task IDs from the ledger. A bounded session can end with a precise checkpoint but must not label the complete app done.
@@ -138,14 +139,19 @@ Sol implementation may increase to xhigh for difficult work without user
 confirmation; record the reason. Set model/effort explicitly and verify effective
 settings, including custom-agent overrides. Never silently substitute models.
 
-Keep at most TWO subagent threads concurrently open, excluding this primary
-orchestrator and honoring a lower runtime cap. Verify the effective setting
-agents.max_concurrent_threads_per_session = 2. Only you spawn or assign agents.
-Workers freely request Luna help through you; helpers use the same two slots.
-Queue excess work and helper requests, reuse suitable threads, and release
-completed threads before replacements. A finished turn may still occupy a slot.
-If both workers need queued helpers, checkpoint and release a waiting worker
-to make progress. Do not spawn nested agents or separate top-level tasks.
+Keep at most TWO non-Luna subagent threads concurrently open, excluding this
+primary orchestrator. GPT-6 Luna (gpt-6-luna) helpers DO NOT COUNT toward that
+two-worker limit. Spawn requested Luna helpers alongside two Astra/Sol workers
+when runtime capacity allows; do not queue them merely because both worker
+slots are occupied. Only you spawn or assign agents.
+The runtime total cap counts ALL spawned threads, including Luna. Verify enough
+total capacity for two workers plus helpers; a global cap of two is incorrect
+for this policy. Track non-Luna and total counts separately, including idle open
+threads. There is no separate project count limit for Luna. Reserve a worker
+slot before switching Luna to a non-Luna model. Queue for actual runtime limits,
+resource conflicts, or dependencies; reuse threads and release completed ones.
+If runtime capacity prevents needed helpers, checkpoint a waiting worker to free
+capacity. Do not spawn nested agents or separate top-level tasks.
 
 Give EVERY subagent its own Git worktree, including explorers, planners,
 reviewers, browser workers, and Luna helpers. Assign absolute checkout paths,
@@ -209,8 +215,8 @@ task sessions.
 Have separate Astra medium review subagents examine technical plans, methods,
 software invariants, and UI evidence. Do not treat an implementer's self-review
 as independent review. Route findings to Sol for fixes and then to Astra for
-re-review; assign integration and gate reruns to subagents within the two-slot
-cap. Never accept a worker's unsupported "done" claim.
+re-review; assign integration and gate reruns within the two-non-Luna worker
+cap. Luna helpers remain exempt. Never accept a worker's unsupported "done" claim.
 
 Persist task state, commits, contracts, model/data versions, seeds, commands,
 results, and blockers before compaction or handoff. Use supported native
