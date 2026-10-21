@@ -1,0 +1,237 @@
+{
+  "$defs": {
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:2.0.0:daily-report",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adverse_symptoms": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Adverse Symptoms",
+      "type": "array"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "burden": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Burden"
+    },
+    "diary_sleep_minutes": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Diary Sleep Minutes"
+    },
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Duplicate Of"
+    },
+    "event_at": {
+      "format": "date-time",
+      "title": "Event At",
+      "type": "string"
+    },
+    "function": {
+      "anyOf": [
+        {
+          "maximum": 10,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Function"
+    },
+    "goals": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Goals",
+      "type": "array"
+    },
+    "kind": {
+      "const": "daily_report",
+      "title": "Kind",
+      "type": "string"
+    },
+    "lineage_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Lineage Id",
+      "type": "string"
+    },
+    "missingness": {
+      "enum": [
+        "observed",
+        "missing",
+        "pending"
+      ],
+      "title": "Missingness",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "record_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_status": {
+      "enum": [
+        "active",
+        "corrected",
+        "retracted"
+      ],
+      "title": "Record Status",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "revision": {
+      "exclusiveMinimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sleep_quality": {
+      "anyOf": [
+        {
+          "maximum": 10,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sleep Quality"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Supersedes"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "record_id",
+    "patient_id",
+    "event_at",
+    "recorded_at",
+    "available_at",
+    "source",
+    "lineage_id",
+    "revision",
+    "supersedes",
+    "duplicate_of",
+    "record_status",
+    "kind",
+    "sleep_quality",
+    "function",
+    "adverse_symptoms",
+    "diary_sleep_minutes",
+    "goals",
+    "burden",
+    "missingness"
+  ],
+  "title": "DailyReportV2",
+  "type": "object"
+}

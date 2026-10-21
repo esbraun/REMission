@@ -1,0 +1,5104 @@
+{
+  "$defs": {
+    "Approval": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "clinician_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Clinician Id",
+          "type": "string"
+        },
+        "decision_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "expected_consent_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Consent Version",
+          "type": "integer"
+        },
+        "expected_eligibility_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Eligibility Version",
+          "type": "integer"
+        },
+        "expected_patient_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Patient Version",
+          "type": "integer"
+        },
+        "expected_state_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected State Version",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "approval",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "option": {
+          "anyOf": [
+            {
+              "enum": [
+                "MED_A",
+                "MED_B",
+                "behavioral_continue",
+                "behavioral_escalate",
+                "support_prompt",
+                "no_prompt",
+                "usual_care"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Option"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "permitted_options": {
+          "items": {
+            "enum": [
+              "MED_A",
+              "MED_B",
+              "behavioral_continue",
+              "behavioral_escalate",
+              "support_prompt",
+              "no_prompt",
+              "usual_care"
+            ],
+            "type": "string"
+          },
+          "title": "Permitted Options",
+          "type": "array"
+        },
+        "purpose": {
+          "enum": [
+            "ordinary_treatment",
+            "randomization_protocol"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "decision_id",
+        "option",
+        "permitted_options",
+        "clinician_id",
+        "purpose",
+        "expected_patient_version",
+        "expected_state_version",
+        "expected_consent_version",
+        "expected_eligibility_version"
+      ],
+      "title": "Approval",
+      "type": "object"
+    },
+    "Assignment": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Approval Id",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "clinician_blinded": {
+          "title": "Clinician Blinded",
+          "type": "boolean"
+        },
+        "clinician_override": {
+          "anyOf": [
+            {
+              "enum": [
+                "MED_A",
+                "MED_B",
+                "behavioral_continue",
+                "behavioral_escalate",
+                "support_prompt",
+                "no_prompt",
+                "usual_care"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Clinician Override"
+        },
+        "component": {
+          "anyOf": [
+            {
+              "enum": [
+                "nof1",
+                "escalation",
+                "mrt_bandit"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Component"
+        },
+        "decision_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "experimental": {
+          "title": "Experimental",
+          "type": "boolean"
+        },
+        "kind": {
+          "const": "assignment",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "option": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Option",
+          "type": "string"
+        },
+        "override_reason": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Override Reason"
+        },
+        "patient_blinded": {
+          "title": "Patient Blinded",
+          "type": "boolean"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "probability": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Probability"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SeedKey"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "support_policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "decision_id",
+        "approval_id",
+        "option",
+        "experimental",
+        "component",
+        "probability",
+        "seed",
+        "support_policy",
+        "patient_blinded",
+        "clinician_blinded",
+        "clinician_override",
+        "override_reason"
+      ],
+      "title": "Assignment",
+      "type": "object"
+    },
+    "AuditRun": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Actor",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "change": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Change",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "execution_seconds": {
+          "minimum": 0,
+          "title": "Execution Seconds",
+          "type": "number"
+        },
+        "fit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FitMetadata"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_versions": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Input Versions",
+          "type": "array"
+        },
+        "kind": {
+          "const": "audit_run",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "lineage_refs": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Lineage Refs",
+          "type": "array"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "seed": {
+          "$ref": "#/$defs/SeedKey"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "actor",
+        "change",
+        "input_versions",
+        "seed",
+        "fit",
+        "execution_seconds",
+        "lineage_refs"
+      ],
+      "title": "AuditRun",
+      "type": "object"
+    },
+    "Clearance": {
+      "additionalProperties": false,
+      "properties": {
+        "assessment_snapshot_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "rule": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "not_applicable",
+            "pending",
+            "documented"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "rule",
+        "evidence_refs",
+        "assessment_snapshot_ref"
+      ],
+      "title": "Clearance",
+      "type": "object"
+    },
+    "Consent": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "component": {
+          "enum": [
+            "nof1",
+            "escalation",
+            "mrt_bandit"
+          ],
+          "title": "Component",
+          "type": "string"
+        },
+        "consent_status": {
+          "enum": [
+            "active",
+            "missing",
+            "expired",
+            "withdrawn"
+          ],
+          "title": "Consent Status",
+          "type": "string"
+        },
+        "consent_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Consent Version",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "effective_at": {
+          "format": "date-time",
+          "title": "Effective At",
+          "type": "string"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Expires At"
+        },
+        "kind": {
+          "const": "consent",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "oversight_status": {
+          "enum": [
+            "approved_synthetic",
+            "pending",
+            "expired",
+            "withdrawn"
+          ],
+          "title": "Oversight Status",
+          "type": "string"
+        },
+        "oversight_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Oversight Version",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "withdrawn_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Withdrawn At"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "component",
+        "consent_version",
+        "oversight_version",
+        "consent_status",
+        "oversight_status",
+        "effective_at",
+        "expires_at",
+        "withdrawn_at"
+      ],
+      "title": "Consent",
+      "type": "object"
+    },
+    "DailyReport": {
+      "additionalProperties": false,
+      "properties": {
+        "adverse_symptoms": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Adverse Symptoms",
+          "type": "array"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "burden": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Burden"
+        },
+        "diary_sleep_minutes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Diary Sleep Minutes"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "function": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Function"
+        },
+        "goals": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Goals",
+          "type": "array"
+        },
+        "kind": {
+          "const": "daily_report",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "missingness": {
+          "enum": [
+            "observed",
+            "missing",
+            "pending"
+          ],
+          "title": "Missingness",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sleep_quality": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sleep Quality"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "sleep_quality",
+        "function",
+        "adverse_symptoms",
+        "diary_sleep_minutes",
+        "goals",
+        "burden",
+        "missingness"
+      ],
+      "title": "DailyReport",
+      "type": "object"
+    },
+    "DailyReportV2": {
+      "additionalProperties": false,
+      "properties": {
+        "adverse_symptoms": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Adverse Symptoms",
+          "type": "array"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "burden": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Burden"
+        },
+        "diary_sleep_minutes": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Diary Sleep Minutes"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "function": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Function"
+        },
+        "goals": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Goals",
+          "type": "array"
+        },
+        "kind": {
+          "const": "daily_report",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "missingness": {
+          "enum": [
+            "observed",
+            "missing",
+            "pending"
+          ],
+          "title": "Missingness",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sleep_quality": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sleep Quality"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "sleep_quality",
+        "function",
+        "adverse_symptoms",
+        "diary_sleep_minutes",
+        "goals",
+        "burden",
+        "missingness"
+      ],
+      "title": "DailyReportV2",
+      "type": "object"
+    },
+    "DecisionSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "consent_version": {
+          "exclusiveMinimum": 0,
+          "title": "Consent Version",
+          "type": "integer"
+        },
+        "cutoff": {
+          "format": "date-time",
+          "title": "Cutoff",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "eligibility": {
+          "items": {
+            "$ref": "#/$defs/Eligibility"
+          },
+          "title": "Eligibility",
+          "type": "array"
+        },
+        "eligibility_version": {
+          "exclusiveMinimum": 0,
+          "title": "Eligibility Version",
+          "type": "integer"
+        },
+        "estimand": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "horizon_days": {
+          "exclusiveMinimum": 0,
+          "title": "Horizon Days",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "decision_snapshot",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "model": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "outcome": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Outcome",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "patient_version": {
+          "exclusiveMinimum": 0,
+          "title": "Patient Version",
+          "type": "integer"
+        },
+        "policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "posterior": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "state_version": {
+          "exclusiveMinimum": 0,
+          "title": "State Version",
+          "type": "integer"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "view": {
+          "$ref": "#/$defs/ViewContext"
+        },
+        "workflow": {
+          "$ref": "#/$defs/Workflow"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "cutoff",
+        "patient_version",
+        "state_version",
+        "consent_version",
+        "eligibility_version",
+        "workflow",
+        "view",
+        "eligibility",
+        "outcome",
+        "horizon_days",
+        "estimand",
+        "model",
+        "posterior",
+        "evidence",
+        "policy"
+      ],
+      "title": "DecisionSnapshot",
+      "type": "object"
+    },
+    "Delivery": {
+      "additionalProperties": false,
+      "properties": {
+        "adherence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Adherence"
+        },
+        "assignment_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Assignment Id",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "delivery",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "option": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Option",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "protocol_deviations": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Protocol Deviations",
+          "type": "array"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "rescue": {
+          "title": "Rescue",
+          "type": "boolean"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "stage": {
+          "enum": [
+            "offered",
+            "delivered",
+            "taken",
+            "not_taken",
+            "unknown"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "assignment_id",
+        "option",
+        "stage",
+        "adherence",
+        "rescue",
+        "protocol_deviations"
+      ],
+      "title": "Delivery",
+      "type": "object"
+    },
+    "Eligibility": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "eligible",
+            "excluded",
+            "requires_prescriber_review"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "status",
+        "reasons"
+      ],
+      "title": "Eligibility",
+      "type": "object"
+    },
+    "Encounter": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Actual At"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "care_setting": {
+          "enum": [
+            "outpatient",
+            "inpatient",
+            "remote"
+          ],
+          "title": "Care Setting",
+          "type": "string"
+        },
+        "chemotherapy_phase": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Chemotherapy Phase",
+          "type": "string"
+        },
+        "cycle": {
+          "exclusiveMinimum": 0,
+          "title": "Cycle",
+          "type": "integer"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "encounter",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "review_status": {
+          "enum": [
+            "pending",
+            "reviewed",
+            "hold"
+          ],
+          "title": "Review Status",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "scheduled_at": {
+          "format": "date-time",
+          "title": "Scheduled At",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "scheduled_at",
+        "actual_at",
+        "care_setting",
+        "chemotherapy_phase",
+        "cycle",
+        "review_status"
+      ],
+      "title": "Encounter",
+      "type": "object"
+    },
+    "EvidenceRole": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "role": {
+          "enum": [
+            "causal_context",
+            "transition_trigger",
+            "later_review"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "role"
+      ],
+      "title": "EvidenceRole",
+      "type": "object"
+    },
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "FitMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "backend": {
+          "const": "pymc",
+          "title": "Backend",
+          "type": "string"
+        },
+        "backend_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Backend Version",
+          "type": "string"
+        },
+        "diagnostics_artifacts": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Diagnostics Artifacts",
+          "type": "array"
+        },
+        "failure_reason": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Failure Reason"
+        },
+        "packages": {
+          "patternProperties": {
+            "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "title": "Packages",
+          "type": "object"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "sampler": {
+          "const": "native_nuts",
+          "title": "Sampler",
+          "type": "string"
+        },
+        "sampler_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Sampler Version",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "failed",
+            "abstained",
+            "pending"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "backend",
+        "backend_version",
+        "sampler",
+        "sampler_version",
+        "packages",
+        "precision",
+        "status",
+        "diagnostics_artifacts",
+        "failure_reason"
+      ],
+      "title": "FitMetadata",
+      "type": "object"
+    },
+    "FollowUpTask": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "due_at": {
+          "format": "date-time",
+          "title": "Due At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "escalation_destination": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Escalation Destination",
+          "type": "string"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "follow_up",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "owner": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "active",
+            "completed",
+            "cancelled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "trigger": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Trigger",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "owner",
+        "due_at",
+        "trigger",
+        "status",
+        "escalation_destination"
+      ],
+      "title": "FollowUpTask",
+      "type": "object"
+    },
+    "HoldReviewEvidenceV2": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Actor Id",
+          "type": "string"
+        },
+        "actor_role": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Actor Role",
+          "type": "string"
+        },
+        "assessed_at": {
+          "format": "date-time",
+          "title": "Assessed At",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "evidence_type": {
+          "enum": [
+            "trigger_observation",
+            "review",
+            "clearance"
+          ],
+          "title": "Evidence Type",
+          "type": "string"
+        },
+        "facts_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Facts Refs",
+          "type": "array"
+        },
+        "finding": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Finding",
+          "type": "string"
+        },
+        "follow_up_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Follow Up Refs",
+          "type": "array"
+        },
+        "hold_episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Hold Episode Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "hold_review_evidence",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "origin": {
+          "const": "simulation",
+          "title": "Origin",
+          "type": "string"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "partition_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Partition Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "requirement": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "review_result": {
+          "enum": [
+            "pending",
+            "requires_hold",
+            "requirements_satisfied"
+          ],
+          "title": "Review Result",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "rule": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "run_id",
+        "partition_id",
+        "hold_episode_id",
+        "evidence_type",
+        "rule",
+        "requirement",
+        "actor_id",
+        "actor_role",
+        "origin",
+        "ownership_ref",
+        "assessed_at",
+        "facts_refs",
+        "finding",
+        "review_result",
+        "follow_up_refs"
+      ],
+      "title": "HoldReviewEvidenceV2",
+      "type": "object"
+    },
+    "HoldTransitionBundleV2": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "blocked_actions": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Blocked Actions",
+          "type": "array"
+        },
+        "causal_context_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Causal Context Refs",
+          "type": "array"
+        },
+        "changed_fact_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Changed Fact Refs",
+          "type": "array"
+        },
+        "clearance": {
+          "$ref": "#/$defs/Clearance"
+        },
+        "context_cutoff": {
+          "format": "date-time",
+          "title": "Context Cutoff",
+          "type": "string"
+        },
+        "context_projection_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Context Projection Sha256",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "effective_at": {
+          "format": "date-time",
+          "title": "Effective At",
+          "type": "string"
+        },
+        "eligibility_configuration": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "evidence_roles": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRole"
+          },
+          "title": "Evidence Roles",
+          "type": "array"
+        },
+        "follow_up_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "minItems": 1,
+          "title": "Follow Up Refs",
+          "type": "array"
+        },
+        "hold_episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Hold Episode Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "hold_transition_bundle",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "model": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "owner_role": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Owner Role",
+          "type": "string"
+        },
+        "ownership_ref": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "partition_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Partition Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "predecessor_bundle_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predecessor_snapshot_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "required_reviews": {
+          "items": {
+            "$ref": "#/$defs/RequiredReview"
+          },
+          "title": "Required Reviews",
+          "type": "array"
+        },
+        "review_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Review Refs",
+          "type": "array"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "snapshot_ref": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "transition_sequence": {
+          "minimum": 0,
+          "title": "Transition Sequence",
+          "type": "integer"
+        },
+        "transition_type": {
+          "enum": [
+            "baseline",
+            "enter",
+            "change_reason",
+            "resolve_to_assessment"
+          ],
+          "title": "Transition Type",
+          "type": "string"
+        },
+        "trigger_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Trigger Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "run_id",
+        "partition_id",
+        "hold_episode_id",
+        "transition_sequence",
+        "transition_type",
+        "effective_at",
+        "snapshot_ref",
+        "predecessor_bundle_ref",
+        "predecessor_snapshot_ref",
+        "reason_codes",
+        "reason",
+        "trigger_refs",
+        "changed_fact_refs",
+        "blocked_actions",
+        "context_cutoff",
+        "causal_context_refs",
+        "context_projection_sha256",
+        "policy",
+        "model",
+        "eligibility_configuration",
+        "owner_id",
+        "owner_role",
+        "ownership_ref",
+        "follow_up_refs",
+        "required_reviews",
+        "review_refs",
+        "clearance",
+        "evidence_roles"
+      ],
+      "title": "HoldTransitionBundleV2",
+      "type": "object"
+    },
+    "ISIAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "instrument_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Instrument Version",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "maximum": 4,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 7,
+          "minItems": 7,
+          "title": "Items",
+          "type": "array"
+        },
+        "kind": {
+          "const": "isi",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "recall_days": {
+          "enum": [
+            14,
+            30
+          ],
+          "title": "Recall Days",
+          "type": "integer"
+        },
+        "recall_end": {
+          "format": "date-time",
+          "title": "Recall End",
+          "type": "string"
+        },
+        "recall_start": {
+          "format": "date-time",
+          "title": "Recall Start",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "instrument_version",
+        "recall_days",
+        "recall_start",
+        "recall_end",
+        "items"
+      ],
+      "title": "ISIAssessment",
+      "type": "object"
+    },
+    "IntercurrentEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "event_type": {
+          "enum": [
+            "death",
+            "admission",
+            "discharge",
+            "regimen_change",
+            "steroid_change",
+            "discontinuation",
+            "override",
+            "rescue",
+            "fever_suspected_infection",
+            "confusion",
+            "fall"
+          ],
+          "title": "Event Type",
+          "type": "string"
+        },
+        "kind": {
+          "const": "intercurrent_event",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "event_type",
+        "detail"
+      ],
+      "title": "IntercurrentEvent",
+      "type": "object"
+    },
+    "MedicationExposure": {
+      "additionalProperties": false,
+      "properties": {
+        "adherence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Adherence"
+        },
+        "administration_at": {
+          "format": "date-time",
+          "title": "Administration At",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "drug": {
+          "enum": [
+            "MED_A",
+            "MED_B"
+          ],
+          "title": "Drug",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "medication_exposure",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "order_ref": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Order Ref"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "report_status": {
+          "enum": [
+            "taken",
+            "not_taken",
+            "uncertain"
+          ],
+          "title": "Report Status",
+          "type": "string"
+        },
+        "rescue": {
+          "title": "Rescue",
+          "type": "boolean"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "uncertainty": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Uncertainty",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "drug",
+        "order_ref",
+        "administration_at",
+        "report_status",
+        "adherence",
+        "rescue",
+        "uncertainty"
+      ],
+      "title": "MedicationExposure",
+      "type": "object"
+    },
+    "MedicationOrder": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "changed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Changed At"
+        },
+        "drug": {
+          "enum": [
+            "MED_A",
+            "MED_B"
+          ],
+          "title": "Drug",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "intended_schedule": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Intended Schedule",
+          "type": "string"
+        },
+        "kind": {
+          "const": "medication_order",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "ordering_clinician": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Ordering Clinician",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "starts_at": {
+          "format": "date-time",
+          "title": "Starts At",
+          "type": "string"
+        },
+        "stopped_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Stopped At"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "drug",
+        "intended_schedule",
+        "starts_at",
+        "changed_at",
+        "stopped_at",
+        "ordering_clinician"
+      ],
+      "title": "MedicationOrder",
+      "type": "object"
+    },
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "observation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lab_reference_context": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lab Reference Context"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "measure": {
+          "$ref": "#/$defs/ObservedCovariate"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "measure",
+        "lab_reference_context"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "ObservedCovariate": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "concept": {
+          "enum": [
+            "pain",
+            "nausea",
+            "distress",
+            "fatigue",
+            "sleep_quality",
+            "function",
+            "adverse_symptom",
+            "sleep_minutes",
+            "wake_minutes",
+            "age_years",
+            "X",
+            "M",
+            "U",
+            "site",
+            "phase",
+            "steroid_indicator"
+          ],
+          "title": "Concept",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "dimensionless",
+            "quality_points",
+            "function_points",
+            "minutes",
+            "years",
+            "indicator"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "concept",
+        "value",
+        "unit",
+        "observed_at",
+        "available_at"
+      ],
+      "title": "ObservedCovariate",
+      "type": "object"
+    },
+    "OperationalBurden": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "pending",
+            "missing"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "offered_prompt_count",
+            "delivered_prompt_count"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "unit": {
+          "const": "count",
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "definition",
+        "type",
+        "unit",
+        "status",
+        "value",
+        "source_refs"
+      ],
+      "title": "OperationalBurden",
+      "type": "object"
+    },
+    "OutcomeWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "assessment_at": {
+          "format": "date-time",
+          "title": "Assessment At",
+          "type": "string"
+        },
+        "endpoint_definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "ends_at": {
+          "format": "date-time",
+          "title": "Ends At",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "local_date": {
+          "format": "date",
+          "title": "Local Date",
+          "type": "string"
+        },
+        "starts_at": {
+          "format": "date-time",
+          "title": "Starts At",
+          "type": "string"
+        },
+        "timezone": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "starts_at",
+        "ends_at",
+        "assessment_at",
+        "timezone",
+        "local_date",
+        "endpoint_definition"
+      ],
+      "title": "OutcomeWindow",
+      "type": "object"
+    },
+    "Patient": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "baseline_eligibility": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Baseline Eligibility",
+          "type": "array"
+        },
+        "care_team": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Care Team",
+          "type": "array"
+        },
+        "clinical_context": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Clinical Context",
+          "type": "string"
+        },
+        "covariates": {
+          "items": {
+            "$ref": "#/$defs/ObservedCovariate"
+          },
+          "title": "Covariates",
+          "type": "array"
+        },
+        "diagnosis_context": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Diagnosis Context",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "goals": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Goals",
+          "type": "array"
+        },
+        "kind": {
+          "const": "patient",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "preferences": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Preferences",
+          "type": "array"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "timezone": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "covariates",
+        "diagnosis_context",
+        "clinical_context",
+        "preferences",
+        "goals",
+        "baseline_eligibility",
+        "care_team",
+        "timezone"
+      ],
+      "title": "Patient",
+      "type": "object"
+    },
+    "Recommendation": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "decision_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "recommendation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "option": {
+          "anyOf": [
+            {
+              "enum": [
+                "MED_A",
+                "MED_B",
+                "behavioral_continue",
+                "behavioral_escalate",
+                "support_prompt",
+                "no_prompt",
+                "usual_care"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Option"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "decision_id",
+        "option",
+        "reason"
+      ],
+      "title": "Recommendation",
+      "type": "object"
+    },
+    "RequiredReview": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "requirement_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "responsible_role": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Responsible Role",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "satisfied"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "definition",
+        "responsible_role",
+        "status",
+        "evidence_refs"
+      ],
+      "title": "RequiredReview",
+      "type": "object"
+    },
+    "Reward": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_refs": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Definition Refs",
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "field": {
+          "const": "sleep_quality",
+          "title": "Field",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        },
+        "report_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "pending",
+            "missing",
+            "undefined"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "unit": {
+          "const": "quality_points",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "report_ref",
+        "field",
+        "unit",
+        "reason",
+        "evidence_refs",
+        "definition_refs"
+      ],
+      "title": "Reward",
+      "type": "object"
+    },
+    "SeedKey": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "enum": [
+            "fixture",
+            "development",
+            "confirmation",
+            "truth",
+            "fit",
+            "assignment"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "namespace",
+        "protocol",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process"
+      ],
+      "title": "SeedKey",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SupportDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "assignment_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Assignment Id"
+        },
+        "availability": {
+          "enum": [
+            "unavailable",
+            "deterministic",
+            "randomized"
+          ],
+          "title": "Availability",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "context": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Context",
+          "type": "array"
+        },
+        "context_mapping": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "context_projection_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Context Projection Sha256",
+          "type": "string"
+        },
+        "cutoff": {
+          "format": "date-time",
+          "title": "Cutoff",
+          "type": "string"
+        },
+        "decision_index": {
+          "minimum": 0,
+          "title": "Decision Index",
+          "type": "integer"
+        },
+        "decision_snapshot": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "distribution_persisted_at": {
+          "format": "date-time",
+          "title": "Distribution Persisted At",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "eligibility": {
+          "items": {
+            "$ref": "#/$defs/Eligibility"
+          },
+          "title": "Eligibility",
+          "type": "array"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "execution_receipt": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "kind": {
+          "const": "support_decision",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "mechanism": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "mode": {
+          "enum": [
+            "fixed",
+            "mrt",
+            "adaptive",
+            "frozen",
+            "paused"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "outcome_link_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Outcome Link Id",
+          "type": "string"
+        },
+        "outcome_window": {
+          "$ref": "#/$defs/OutcomeWindow"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "probabilities": {
+          "additionalProperties": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "propertyNames": {
+            "enum": [
+              "support_prompt",
+              "no_prompt"
+            ]
+          },
+          "title": "Probabilities",
+          "type": "object"
+        },
+        "probability_tolerance": {
+          "const": 1e-12,
+          "title": "Probability Tolerance",
+          "type": "number"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "unavailable_reasons": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Unavailable Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "decision_snapshot",
+        "decision_index",
+        "cutoff",
+        "context",
+        "context_projection_sha256",
+        "context_mapping",
+        "policy",
+        "mechanism",
+        "mode",
+        "eligibility",
+        "availability",
+        "unavailable_reasons",
+        "probabilities",
+        "probability_tolerance",
+        "assignment_id",
+        "distribution_persisted_at",
+        "execution_receipt",
+        "outcome_window",
+        "outcome_link_id"
+      ],
+      "title": "SupportDecision",
+      "type": "object"
+    },
+    "SupportOutcomeLink": {
+      "additionalProperties": false,
+      "properties": {
+        "assessment_at": {
+          "format": "date-time",
+          "title": "Assessment At",
+          "type": "string"
+        },
+        "assignment_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "burden": {
+          "items": {
+            "$ref": "#/$defs/OperationalBurden"
+          },
+          "title": "Burden",
+          "type": "array"
+        },
+        "delivered_closure_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "evaluated_as_of": {
+          "format": "date-time",
+          "title": "Evaluated As Of",
+          "type": "string"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "support_outcome_link",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "offered_closure_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "reward": {
+          "$ref": "#/$defs/Reward"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "support_decision": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "window_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Window Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "support_decision",
+        "assignment_ref",
+        "window_id",
+        "assessment_at",
+        "evaluated_as_of",
+        "reward",
+        "burden",
+        "offered_closure_ref",
+        "delivered_closure_ref"
+      ],
+      "title": "SupportOutcomeLink",
+      "type": "object"
+    },
+    "SupportStageClosureV2": {
+      "additionalProperties": false,
+      "properties": {
+        "assignment_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "completion_receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision_index": {
+          "minimum": 0,
+          "title": "Decision Index",
+          "type": "integer"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "support_stage_closure",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "partition_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Partition Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "row_count": {
+          "minimum": 0,
+          "title": "Row Count",
+          "type": "integer"
+        },
+        "rule": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "run_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "stage": {
+          "enum": [
+            "offered",
+            "delivered"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "stage_completed_at": {
+          "format": "date-time",
+          "title": "Stage Completed At",
+          "type": "string"
+        },
+        "stage_event_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "title": "Stage Event Refs",
+          "type": "array"
+        },
+        "stage_ledger": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "pending",
+            "missing"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "support_decision": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "window_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Window Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "run_id",
+        "partition_id",
+        "support_decision",
+        "assignment_ref",
+        "window_id",
+        "decision_index",
+        "stage",
+        "rule",
+        "stage_completed_at",
+        "status",
+        "stage_event_refs",
+        "stage_ledger",
+        "row_count",
+        "reason",
+        "completion_receipt"
+      ],
+      "title": "SupportStageClosureV2",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    },
+    "ViewContext": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "current",
+            "historical",
+            "retrospective_evaluation"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Snapshot Id"
+        }
+      },
+      "required": [
+        "patient_id",
+        "mode",
+        "snapshot_id"
+      ],
+      "title": "ViewContext",
+      "type": "object"
+    },
+    "WearableObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "device_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Device Version",
+          "type": "string"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duplicate Of"
+        },
+        "episode_end": {
+          "format": "date-time",
+          "title": "Episode End",
+          "type": "string"
+        },
+        "episode_start": {
+          "format": "date-time",
+          "title": "Episode Start",
+          "type": "string"
+        },
+        "estimated_sleep_minutes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Estimated Sleep Minutes"
+        },
+        "estimated_wake_minutes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Estimated Wake Minutes"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "kind": {
+          "const": "oura_like",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lineage_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "local_date": {
+          "format": "date",
+          "title": "Local Date",
+          "type": "string"
+        },
+        "missingness": {
+          "enum": [
+            "observed",
+            "missing",
+            "quality_rejected"
+          ],
+          "title": "Missingness",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "quality_flags": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Quality Flags",
+          "type": "array"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_status": {
+          "enum": [
+            "active",
+            "corrected",
+            "retracted"
+          ],
+          "title": "Record Status",
+          "type": "string"
+        },
+        "record_type": {
+          "const": "sleep_episode",
+          "title": "Record Type",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "exclusiveMinimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Supersedes"
+        },
+        "sync_at": {
+          "format": "date-time",
+          "title": "Sync At",
+          "type": "string"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        },
+        "timezone": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "synthetic",
+        "record_id",
+        "patient_id",
+        "event_at",
+        "recorded_at",
+        "available_at",
+        "source",
+        "lineage_id",
+        "revision",
+        "supersedes",
+        "duplicate_of",
+        "record_status",
+        "kind",
+        "record_type",
+        "local_date",
+        "timezone",
+        "episode_start",
+        "episode_end",
+        "sync_at",
+        "estimated_sleep_minutes",
+        "estimated_wake_minutes",
+        "device_version",
+        "quality_flags",
+        "missingness"
+      ],
+      "title": "WearableObservation",
+      "type": "object"
+    },
+    "Workflow": {
+      "additionalProperties": false,
+      "properties": {
+        "clinical": {
+          "enum": [
+            "assessment",
+            "initial_assignment",
+            "treatment_active",
+            "scheduled_reassessment",
+            "maintenance_closeout",
+            "clinical_hold"
+          ],
+          "title": "Clinical",
+          "type": "string"
+        },
+        "data_readiness": {
+          "enum": [
+            "ready",
+            "incomplete",
+            "stale",
+            "failed"
+          ],
+          "title": "Data Readiness",
+          "type": "string"
+        },
+        "hold_reasons": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Hold Reasons",
+          "type": "array"
+        },
+        "learning": {
+          "enum": [
+            "none",
+            "nof1_design",
+            "nof1_block",
+            "nof1_washout",
+            "nof1_review",
+            "escalation_decision",
+            "support_active",
+            "support_frozen",
+            "support_unavailable"
+          ],
+          "title": "Learning",
+          "type": "string"
+        },
+        "support_mode": {
+          "enum": [
+            "fixed",
+            "mrt",
+            "adaptive",
+            "frozen",
+            "paused"
+          ],
+          "title": "Support Mode",
+          "type": "string"
+        },
+        "support_policy": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "clinical",
+        "learning",
+        "data_readiness",
+        "hold_reasons",
+        "support_policy",
+        "support_mode"
+      ],
+      "title": "Workflow",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:2.0.0:observed-history",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "observed_history",
+      "title": "Kind",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "records": {
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/Patient"
+          },
+          {
+            "$ref": "#/$defs/Consent"
+          },
+          {
+            "$ref": "#/$defs/Encounter"
+          },
+          {
+            "$ref": "#/$defs/MedicationOrder"
+          },
+          {
+            "$ref": "#/$defs/MedicationExposure"
+          },
+          {
+            "$ref": "#/$defs/Observation"
+          },
+          {
+            "$ref": "#/$defs/IntercurrentEvent"
+          },
+          {
+            "$ref": "#/$defs/WearableObservation"
+          },
+          {
+            "$ref": "#/$defs/DailyReport"
+          },
+          {
+            "$ref": "#/$defs/ISIAssessment"
+          },
+          {
+            "$ref": "#/$defs/DecisionSnapshot"
+          },
+          {
+            "$ref": "#/$defs/Recommendation"
+          },
+          {
+            "$ref": "#/$defs/Approval"
+          },
+          {
+            "$ref": "#/$defs/Assignment"
+          },
+          {
+            "$ref": "#/$defs/Delivery"
+          },
+          {
+            "$ref": "#/$defs/FollowUpTask"
+          },
+          {
+            "$ref": "#/$defs/AuditRun"
+          },
+          {
+            "$ref": "#/$defs/DailyReportV2"
+          },
+          {
+            "$ref": "#/$defs/SupportDecision"
+          },
+          {
+            "$ref": "#/$defs/SupportOutcomeLink"
+          },
+          {
+            "$ref": "#/$defs/SupportStageClosureV2"
+          },
+          {
+            "$ref": "#/$defs/HoldReviewEvidenceV2"
+          },
+          {
+            "$ref": "#/$defs/HoldTransitionBundleV2"
+          }
+        ]
+      },
+      "title": "Records",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "patient_id",
+    "records"
+  ],
+  "title": "ObservedHistoryV2",
+  "type": "object"
+}

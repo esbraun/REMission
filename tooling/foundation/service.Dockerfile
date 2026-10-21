@@ -9,8 +9,11 @@ RUN npm run typecheck && npm run test && npm run build
 FROM remission-foundation-runtime:candidate AS service
 COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
 COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
+COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
 COPY services/foundation/ /app/services/foundation/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 COPY --from=client /client/dist/ /app/web/dist/
 RUN mkdir /data && chown 10001:10001 /data
 USER 10001:10001
@@ -19,4 +22,5 @@ CMD ["python","-m","uvicorn","services.foundation.server:app","--host","0.0.0.0"
 
 FROM service AS integration-tests
 COPY tests/integration/replay/ /app/tests/integration/replay/
+COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
 CMD ["python","-m","unittest","discover","-s","tests/integration/replay","-v"]

@@ -37,6 +37,7 @@ class Settings:
     clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc)
     fault: Callable[[str], None] | None = None
     web_root: Path | None = None
+    observed_archives: dict | None = None
 
     @property
     def secure_cookie(self):
@@ -92,6 +93,10 @@ class ReportInput(StrictModel):
     function: float = Field(ge=0,le=10)
     diary_sleep_minutes: float = Field(ge=0,le=1440)
     note: str = Field(max_length=256)
+
+
+class ArchiveInput(StrictModel):
+    mode: Literal['archive_only', 'clinical_observation_import']
 
 
 def create_app(settings: Settings) -> FastAPI:
@@ -154,6 +159,47 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction() as db:
             assert db.execute("SELECT version FROM schema_migrations").fetchone()[0] == 1
         return {"status": "ok", "synthetic": True, "runtime": "foundation-v1"}
+
+    @app.post('/api/observed-archives/{export_id}')
+    async def import_archive(export_id: str, request: Request):
+        data = await body(request, ArchiveInput)
+        # Only trusted host configuration selects bytes, paths and authority.
+        configured = (settings.observed_archives or {}).get(export_id)
+        with store.transaction() as db:
+            current = session(db, request, mutation=True)
+            if configured is None:
+                raise APIError(404, 'not_found', 'Resource not found')
+            raw, root, authority = configured
+            for partition in authority.partitions:
+                own(db, partition.schedule.patient_id, current['account_id'])
+            owner = current['account_id']
+        from .archive import archive_export
+        def authorize(db):
+            latest = session(db, request, mutation=True)
+            if latest['account_id'] != owner:
+                raise APIError(401, 'authentication_required', 'Sign in again')
+            for partition in authority.partitions:
+                own(db, partition.schedule.patient_id, latest['account_id'])
+        try:
+            return archive_export(store, raw, root, authority, owner_id=owner, received_at=settings.clock(), mode=data.mode, fault=settings.fault, authorize=authorize)
+        except ValueError as error:
+            code = 'independent_hold_live_integration_required' if str(error) == 'independent_hold_live_integration_required' else 'archive_admission_rejected'
+            raise APIError(409, code, str(error))
+
+    @app.get('/api/patients/{patient_id}/observed-archives/{archive_id}')
+    def read_archive(patient_id: str, archive_id: str, request: Request):
+        with store.transaction() as db:
+            current = session(db, request)
+            own(db, patient_id, current['account_id'])
+            archive = db.execute('SELECT * FROM observed_archives WHERE id=? AND owner_id=?', (archive_id, current['account_id'])).fetchone()
+            if archive is None:
+                raise APIError(404, 'not_found', 'Resource not found')
+            rows = db.execute('SELECT payload,raw_source FROM observed_archive_entries WHERE archive_id=? AND patient_id=? ORDER BY ordinal', (archive_id, patient_id)).fetchall()
+            if not rows:
+                raise APIError(404, 'not_found', 'Resource not found')
+            receipt = json.loads(archive['receipt'])
+            receipt['hold_intervals'] = {patient_id: receipt.get('hold_intervals', {})[patient_id]} if patient_id in receipt.get('hold_intervals', {}) else {}
+            return dict(mode='historical', read_only=True, receipt=receipt, entries=[dict(record=json.loads(r['payload']), raw_source=bytes(r['raw_source']).decode('utf-8')) for r in rows])
 
     @app.get("/api/session")
     def bootstrap(request: Request):
@@ -333,7 +379,10 @@ def create_app(settings: Settings) -> FastAPI:
     async def ingest(patient_id: str,request: Request):
         data=await body(request,IngestionInput)
         try:record=parse_observed(canonical(data.record).encode())
-        except ValueError:raise APIError(422,"invalid_observed_record","Observed record failed source/timing/field validation")
+        except ValueError as error:
+            if str(error) == 'independent_hold_live_integration_required':
+                raise APIError(409, 'independent_hold_live_integration_required', str(error))
+            raise APIError(422,"invalid_observed_record","Observed record failed source/timing/field validation")
         with store.transaction(write=True) as db:
             current=session(db,request,mutation=True);own(db,patient_id,current["account_id"])
             if record.patient_id!=patient_id:raise APIError(404,"not_found","Resource not found")

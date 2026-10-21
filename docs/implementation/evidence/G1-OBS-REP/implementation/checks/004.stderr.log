@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys,tempfile;sys.path.insert(0,"tests/run_contracts");from observed_v2_fixtures import build;from pathlib import Path;from contracts.runs.observed_v2 import ExportAuthorityV2;from contracts.runs.common import canonical;from contracts.runs.admission_v2 import verify_export_v2;d=tempfile.TemporaryDirectory();r=Path(d.name); f=build(r,hold=True);a=ExportAuthorityV2.model_validate_json(canonical(f["authority"]));m,p=verify_export_v2(f["raw"],r,a);print(m.id,len(p[0][1].records))
+                                                                                                                                                                                                                                                                                                                                                                                                                                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/app/contracts/runs/admission_v2.py", line 173, in verify_export_v2
+    validate_hold(history, record)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/contracts/domain/evidence_v2.py", line 122, in validate_hold
+    raise ValueError('hold_causal_projection_changed')
+ValueError: hold_causal_projection_changed

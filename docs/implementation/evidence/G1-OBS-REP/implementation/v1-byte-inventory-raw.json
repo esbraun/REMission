@@ -1,0 +1,769 @@
+{
+  "title": "G1 OBS-REP v1 generated-product baseline",
+  "base_commit": "6bc8bd998e8a0baaef9884998e740665fb5fd7b1",
+  "worktree": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-v1-products-luna-20261021",
+  "branch": "launch/g1-v1-products-20261021",
+  "purpose": "Read-only v1 preservation inventory for the accepted R1 proposal.",
+  "method": {
+    "git_blob": "git rev-parse <base>:<path>",
+    "git_bytes": "raw stdout of git show <base>:<path>",
+    "git_sha256": "SHA-256 over exact Git blob bytes without text filters",
+    "working_bytes": "ordinary worktree file bytes compared to base blob"
+  },
+  "generator_locators": {
+    "domain": "contracts/domain/export.py: products(), ADAPTERS; generated deterministic JSON Schemas and dictionary-v1.json from maintained typed models.",
+    "runs": "contracts/runs/export.py: products(), MODELS, SOURCES, bindings_data(); generated schemas, dictionary-v1.json and bindings-v1.json. Binding SHA-256 uses CRLF-to-LF normalized source bytes.",
+    "fixtures": "tests/contracts/fixtures/observed-entities-v1.json and estimands-v1.json are raw hand-authored contract fixtures. tests/run_contracts/fixtures.py constructs run/export test fixtures in memory; no checked-in run-export golden exists in the scoped fixture directory."
+  },
+  "scope": {
+    "generated_products": [
+      "contracts/domain/schemas/dgp-config.schema.json",
+      "contracts/domain/schemas/estimand.schema.json",
+      "contracts/domain/schemas/evaluation-protocol.schema.json",
+      "contracts/domain/schemas/evaluator-truth.schema.json",
+      "contracts/domain/schemas/evidence-record.schema.json",
+      "contracts/domain/schemas/external-study.schema.json",
+      "contracts/domain/schemas/fit-metadata.schema.json",
+      "contracts/domain/schemas/fit-request.schema.json",
+      "contracts/domain/schemas/gate-evidence.schema.json",
+      "contracts/domain/schemas/interruption-result.schema.json",
+      "contracts/domain/schemas/learner-history.schema.json",
+      "contracts/domain/schemas/learner-input.schema.json",
+      "contracts/domain/schemas/observed-history.schema.json",
+      "contracts/domain/schemas/observed-records.schema.json",
+      "contracts/domain/schemas/replicate-result.schema.json",
+      "contracts/domain/schemas/reporting-decision.schema.json",
+      "contracts/domain/schemas/temporal.schema.json",
+      "contracts/domain/schemas/threshold.schema.json",
+      "contracts/runs/schemas/calibration-artifact.schema.json",
+      "contracts/runs/schemas/evaluator-request.schema.json",
+      "contracts/runs/schemas/evaluator-response.schema.json",
+      "contracts/runs/schemas/external-calibration-evidence.schema.json",
+      "contracts/runs/schemas/iid-investigation.schema.json",
+      "contracts/runs/schemas/observed-export.schema.json",
+      "contracts/runs/schemas/observed-replay.schema.json",
+      "contracts/runs/schemas/probability-evidence.schema.json",
+      "contracts/runs/schemas/probability-paired-path.schema.json",
+      "contracts/runs/schemas/probability-pilot-plan.schema.json",
+      "contracts/runs/schemas/probability-pilot-trial.schema.json",
+      "contracts/runs/schemas/probability-structural-proof.schema.json",
+      "contracts/runs/schemas/probability-truth-filter-receipt.schema.json",
+      "contracts/runs/schemas/run-manifest.schema.json",
+      "contracts/runs/schemas/run-result.schema.json",
+      "contracts/runs/schemas/seed-ledger.schema.json",
+      "contracts/runs/schemas/symptom-pilot-binding.schema.json",
+      "contracts/runs/schemas/trusted-export-authority.schema.json",
+      "contracts/runs/schemas/trusted-iid-investigation-authority.schema.json",
+      "contracts/runs/schemas/trusted-run-authority.schema.json",
+      "contracts/domain/dictionary-v1.json",
+      "contracts/runs/bindings-v1.json",
+      "contracts/runs/dictionary-v1.json"
+    ],
+    "v1_bound_source_data_and_temporal": [
+      "docs/implementation/g1-technical-plan-20261021.md",
+      "contracts/dgp/parameters-v1.json",
+      "docs/spec/dgp-reference.md",
+      "contracts/dgp/scenarios-v1.json",
+      "docs/spec/scenario-catalog.md",
+      "contracts/dgp/timing-v1.json",
+      "contracts/domain/temporal-v2.json",
+      "contracts/dgp/calibration-binding-v1.schema.json",
+      "contracts/dgp/truth-fixtures-v1.json",
+      "docs/implementation/g1-estint-probability-precision-proposal-r1-20261021.md"
+    ],
+    "raw_fixtures": [
+      "tests/contracts/fixtures/estimands-v1.json",
+      "tests/contracts/fixtures/observed-entities-v1.json"
+    ],
+    "excluded": "Production code; other analytic/golden corpora; massive historical logs; files not in generated outputs or explicit bindings."
+  },
+  "files": [
+    {
+      "path": "contracts/domain/schemas/dgp-config.schema.json",
+      "git_blob": "bad35c18eefed6165ab933b9038d6177826d18a7",
+      "git_bytes": 6169,
+      "git_sha256": "fa6f2772ec72e5c04fda461aa8a8cb7c19f5cf3e15f1bdf4642021db8db4815f",
+      "working_bytes": 6444,
+      "working_sha256": "6f2924e20144e8282cafac499c5def40f8789c027da87e292e1ce648e4efd96b",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:dgp-config",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/estimand.schema.json",
+      "git_blob": "9f004314c944dab797643ad43d50884a97287da8",
+      "git_bytes": 9551,
+      "git_sha256": "05c964b2d29c7fc2a22572c8448e8039c7d7f665022f038eaa0296e8088aa4fb",
+      "working_bytes": 10003,
+      "working_sha256": "966cedd787d14e1f17bb7cd6a5dc1780fd89b8ae7460959b69833fc20460f627",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:estimand",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/evaluation-protocol.schema.json",
+      "git_blob": "b4cd68cd27e90ec47b38b430056ed50db8dcdc1d",
+      "git_bytes": 4201,
+      "git_sha256": "c8fbf0b5cad9527ce4de8d8d9dd9c10d030a6d1c1154146a4c0967712f09b0c6",
+      "working_bytes": 4389,
+      "working_sha256": "db9df27c673cd7e0fb8019a7864f59a487224abf725b33f534c149741d06c75e",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:evaluation-protocol",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/evaluator-truth.schema.json",
+      "git_blob": "aae73417a14d141eab8aaf9002ccff5bad98397a",
+      "git_bytes": 10549,
+      "git_sha256": "5aa61410c27a885e16da2e7a3a2a8156aa1f73986e759c7066cc9853c650f0c4",
+      "working_bytes": 10999,
+      "working_sha256": "3da163f705007fe9473ed44edc17f043c085ec6a6785a16088ba78b9ea8807fe",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:evaluator-truth",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/evidence-record.schema.json",
+      "git_blob": "3501671e8662be893c54dbe8bbd965838a0df116",
+      "git_bytes": 3176,
+      "git_sha256": "4cd496e4d3e6eef6ebeb6a9e33dfa33308d442fa805cb2b42de536be7165e9b1",
+      "working_bytes": 3331,
+      "working_sha256": "14e8339999e4d3856b3b7795e1e56eb715da4cee69043f1b3f4891d53101307d",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:evidence-record",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/external-study.schema.json",
+      "git_blob": "d7f5cb3e0178883f0cfdfd71956e908796ee95c9",
+      "git_bytes": 5157,
+      "git_sha256": "c802d33cd3cab73f25ae2290185498d15bff0658364fad0607fa00829d563b95",
+      "working_bytes": 5404,
+      "working_sha256": "b4cfae1555378a856b9e7df724acaf74fa3342a99c120df6cc5bbf848b806fa1",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:external-study",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/fit-metadata.schema.json",
+      "git_blob": "a657d421044261658294af6872720d4d3b76a4c3",
+      "git_bytes": 2460,
+      "git_sha256": "1c2f6cd408eca8282ec0ddc8db6deb56ba720990a2431dbc79bd6f1249efcdb5",
+      "working_bytes": 2578,
+      "working_sha256": "fc72df4ee8b900a2d0e24c9685729619c17be76edd317845140a0b308bb0dd9d",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:fit-metadata",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/fit-request.schema.json",
+      "git_blob": "95f8c84ccdc5cabff3065ebb272229baa57d96cd",
+      "git_bytes": 5346,
+      "git_sha256": "7c163ec3a8b3f8047f9dc4af86e1615e6bb9dbdcd951f9efa6652bbd779fa313",
+      "working_bytes": 5573,
+      "working_sha256": "7bb046b4e44a99ff8cd52ddc85ca7dceb1f54ae9a485e57ed7e4916ad73e46cb",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:fit-request",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/gate-evidence.schema.json",
+      "git_blob": "419ecf8fd7864556c01480de222c7d8cc1c6a2e2",
+      "git_bytes": 3620,
+      "git_sha256": "83fd14cfaa63e0205f71c3d83a846fbb736d75f6bc75a443bd58378de92d78c7",
+      "working_bytes": 3796,
+      "working_sha256": "f0cf09ca6f8a9ab2a3146e5c8231201e32e1e6d70f113d56ab81122cc869fb2e",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:gate-evidence",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/interruption-result.schema.json",
+      "git_blob": "6a7ee5c6fc3a7ea725bfa837bbc4837ff8c9e51a",
+      "git_bytes": 7248,
+      "git_sha256": "757a43760f6b0586b9b87a865a65ab8be725472e3cbf43410a57afb924f3a265",
+      "working_bytes": 7558,
+      "working_sha256": "9b026870c5a56f025c49921337016e069d75e37ea9c58b1fcfc36874157bbd2d",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:interruption-result",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/learner-history.schema.json",
+      "git_blob": "d39a7f00ea368248204ee4f3013d16f09a18c248",
+      "git_bytes": 86897,
+      "git_sha256": "8a20cd303f76458182deb654903a99fb9e5365076d6bf5c28f36d1fcdc989f92",
+      "working_bytes": 90474,
+      "working_sha256": "077215a5bb64d10c05c4285745a2d16efcb1b751c34783b9ac9b24554f8ba1d4",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:learner-history",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/learner-input.schema.json",
+      "git_blob": "ec3516206aa1a0c05485395ab8b77afb5acd2012",
+      "git_bytes": 91484,
+      "git_sha256": "74533b319683b858fa9e2fd15be4bdd40dbe90729bab1ed41f31e84e1e62fe2b",
+      "working_bytes": 95234,
+      "working_sha256": "3ef4770bf6e5a18ee23bf626b1d336bd0c5d33aaaf7d56d4028a553de45b2019",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:learner-input",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/observed-history.schema.json",
+      "git_blob": "782e8b2b0ea818b22c8fb2a1a57afe239e9cd48a",
+      "git_bytes": 83815,
+      "git_sha256": "19b9c363bb2a53a693a01d6c43541fc54b09f204481f40b03f80ebe8ae29c60a",
+      "working_bytes": 87268,
+      "working_sha256": "b1d2babe7ce884b962659cf8acb3e0bf1095d55120849e30fa172182ee683007",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:observed-history",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/observed-records.schema.json",
+      "git_blob": "14b6c8cfc67b3fc9adbf73b6e06abe92d82ed7f9",
+      "git_bytes": 82516,
+      "git_sha256": "206c08fe517e169adcab8ebc83572e616243056f23baf3a46089c2bbb76a00c3",
+      "working_bytes": 85930,
+      "working_sha256": "75e2984fd85890190cdb3b56ccebe299d180873fa1569f21ad133a950116030e",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:observed-records",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/replicate-result.schema.json",
+      "git_blob": "a208aaa37c843dc57599f12238b67b8fa7514d4b",
+      "git_bytes": 10445,
+      "git_sha256": "f047871e35ca18f029389cbb520208f866358f1a2745ea3028acec229e6211e8",
+      "working_bytes": 10915,
+      "working_sha256": "f5c19e338a48fbd34678ae613621db3a84335fe5ed07fe62f16525a74c7e86cb",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:replicate-result",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/reporting-decision.schema.json",
+      "git_blob": "c7783071edd092bb3a1e3a715a011d26e6ac3400",
+      "git_bytes": 89286,
+      "git_sha256": "3070db119c9b5f07ee1640fb8e8292a0a26a0a2c558461304db07b31e4c31b36",
+      "working_bytes": 92947,
+      "working_sha256": "9a9befc0d43b3646255d17c906b81e2d685f1adacd0b22b575e4a3339207d83d",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:reporting-decision",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/temporal.schema.json",
+      "git_blob": "70e092df9c35b9895d73972d343f5180d2bd9975",
+      "git_bytes": 7875,
+      "git_sha256": "61425e6683b44b1609161775266ffbfa8cb04f9fccdb37f4e8e54a42b9abac0d",
+      "working_bytes": 8186,
+      "working_sha256": "cc076973b5a3939c29aab71fdd8ea489e320d4a81f6e3667049af6594a1d0f38",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:temporal",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/schemas/threshold.schema.json",
+      "git_blob": "ecac818600a627f38a945b7a135a0357370a539f",
+      "git_bytes": 1596,
+      "git_sha256": "aa6e6644e9f03dfbea8c67c5cf0b5e8c192fb6df345b4b0b2981d42df696b44b",
+      "working_bytes": 1673,
+      "working_sha256": "6e1628c74590e896f379f96637d9015113bbfde6bcb496dde8c446a393576ed8",
+      "working_differs_from_git_bytes": true,
+      "urn": "urn:remission:domain:1.0.0:threshold",
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/runs/schemas/calibration-artifact.schema.json",
+      "git_blob": "0149ffb9b9b1c43d942eafec7098359c7b4eb303",
+      "git_bytes": 10370,
+      "git_sha256": "e1ba454cdb8b094c8be28c7327e949002665594ef835dacb10669accc2fe19ad",
+      "working_bytes": 10370,
+      "working_sha256": "e1ba454cdb8b094c8be28c7327e949002665594ef835dacb10669accc2fe19ad",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:calibration-artifact",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/evaluator-request.schema.json",
+      "git_blob": "5254f66771ba9de9432211972a80ebfd36ce9b02",
+      "git_bytes": 28216,
+      "git_sha256": "fc06d3d1148f7fd0b54e6f1aa6e1621fe3cf040c0c788d015efe90f826cdc31a",
+      "working_bytes": 28216,
+      "working_sha256": "fc06d3d1148f7fd0b54e6f1aa6e1621fe3cf040c0c788d015efe90f826cdc31a",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:evaluator-request",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/evaluator-response.schema.json",
+      "git_blob": "2a35a48c442d86f2a3605ba74c1ee5bee6167539",
+      "git_bytes": 26748,
+      "git_sha256": "583ad3aa3dccab5e16dd57add158e35f8b1357d4762719d65d9866473045ca12",
+      "working_bytes": 26748,
+      "working_sha256": "583ad3aa3dccab5e16dd57add158e35f8b1357d4762719d65d9866473045ca12",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:evaluator-response",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/external-calibration-evidence.schema.json",
+      "git_blob": "04d0aa3476b5108d042d3b6651bb0c9c81d6ec9c",
+      "git_bytes": 7888,
+      "git_sha256": "1bb422e1188b9175c08701223d158463a591d62668b4de38e491fe738d71f3a6",
+      "working_bytes": 7888,
+      "working_sha256": "1bb422e1188b9175c08701223d158463a591d62668b4de38e491fe738d71f3a6",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:external-calibration-evidence",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/iid-investigation.schema.json",
+      "git_blob": "5545b552455736b421dbf71ef731f98fa9187702",
+      "git_bytes": 6019,
+      "git_sha256": "1e4700b72070e1f1e15bb96de40450b887e0eb1aa656d87c3ba30c555e25d16b",
+      "working_bytes": 6019,
+      "working_sha256": "1e4700b72070e1f1e15bb96de40450b887e0eb1aa656d87c3ba30c555e25d16b",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:iid-investigation",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/observed-export.schema.json",
+      "git_blob": "54204a9d0c29ee8240f2ea54e9e2dff209f9b913",
+      "git_bytes": 11643,
+      "git_sha256": "fd0bbdc4059c6298b46d20893c060121c501d9be14ba21a7f09e8f8071c2f304",
+      "working_bytes": 11643,
+      "working_sha256": "fd0bbdc4059c6298b46d20893c060121c501d9be14ba21a7f09e8f8071c2f304",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:observed-export",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/observed-replay.schema.json",
+      "git_blob": "af27485ec43de8fdba8163311a2e9f2659c6dc43",
+      "git_bytes": 84712,
+      "git_sha256": "6ef37a10ede0d68755f8366985e56d77e4008936a2bbd18f95dfb06908892a63",
+      "working_bytes": 84712,
+      "working_sha256": "6ef37a10ede0d68755f8366985e56d77e4008936a2bbd18f95dfb06908892a63",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:observed-replay",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/probability-evidence.schema.json",
+      "git_blob": "56d427c1c2a4dd5b154c2481aec8422908e3f28f",
+      "git_bytes": 13421,
+      "git_sha256": "359083c701598b3155c121baa6286876ab11d91223b8b7337f60777f5f9b0a4f",
+      "working_bytes": 13421,
+      "working_sha256": "359083c701598b3155c121baa6286876ab11d91223b8b7337f60777f5f9b0a4f",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:probability-evidence",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/probability-paired-path.schema.json",
+      "git_blob": "018fcae7146348c89082cd55470df07335c9066d",
+      "git_bytes": 2098,
+      "git_sha256": "37d9da109f513e21177e2b68c97f08d0115e4254100dc1e85b390d150f79d086",
+      "working_bytes": 2098,
+      "working_sha256": "37d9da109f513e21177e2b68c97f08d0115e4254100dc1e85b390d150f79d086",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:probability-paired-path",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/probability-pilot-plan.schema.json",
+      "git_blob": "be9a37d90c3d6680793d0d249e4af3506e0463a1",
+      "git_bytes": 2010,
+      "git_sha256": "3fb722e7e696c47cc0120aeb85e83297dfc640e40fe79fed815245a01e99624a",
+      "working_bytes": 2010,
+      "working_sha256": "3fb722e7e696c47cc0120aeb85e83297dfc640e40fe79fed815245a01e99624a",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:probability-pilot-plan",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/probability-pilot-trial.schema.json",
+      "git_blob": "8e9dfc412dcbc65ee22a3917d22c7c61c6a119c8",
+      "git_bytes": 7320,
+      "git_sha256": "7797e384511fbae85ad8e0e90b19ea3932482c8c2a75627c5ac13782f158b109",
+      "working_bytes": 7320,
+      "working_sha256": "7797e384511fbae85ad8e0e90b19ea3932482c8c2a75627c5ac13782f158b109",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:probability-pilot-trial",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/probability-structural-proof.schema.json",
+      "git_blob": "265ed808d46717e49a559e2beedfc5b03894a728",
+      "git_bytes": 2306,
+      "git_sha256": "e0779d40cf3e900efef2d38d1d35bbbcd72465533ab88804b4a467e747b141bb",
+      "working_bytes": 2306,
+      "working_sha256": "e0779d40cf3e900efef2d38d1d35bbbcd72465533ab88804b4a467e747b141bb",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:probability-structural-proof",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/probability-truth-filter-receipt.schema.json",
+      "git_blob": "f639a96247bdd4fd74a0533d1c9937ede028a7d8",
+      "git_bytes": 3854,
+      "git_sha256": "f2103c596867c9448bccbe87ff721745f8338b745b95a9d95a81fe393d2aa3b5",
+      "working_bytes": 3854,
+      "working_sha256": "f2103c596867c9448bccbe87ff721745f8338b745b95a9d95a81fe393d2aa3b5",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:probability-truth-filter-receipt",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/run-manifest.schema.json",
+      "git_blob": "60896bdd8e00081a6f5fb6274901bccc79088a49",
+      "git_bytes": 13719,
+      "git_sha256": "419a91ab249e7b9ec6bf0c69d36a869376af52abd73c2af4a77f1a8d5f0e8f48",
+      "working_bytes": 13719,
+      "working_sha256": "419a91ab249e7b9ec6bf0c69d36a869376af52abd73c2af4a77f1a8d5f0e8f48",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:run-manifest",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/run-result.schema.json",
+      "git_blob": "0d448a631418fe08bc12c690afe12042568cddb6",
+      "git_bytes": 6673,
+      "git_sha256": "43f2ca8af4b0fe652c9f8e6642f3287027e34e8740cce811b6ae894c83e152d3",
+      "working_bytes": 6673,
+      "working_sha256": "43f2ca8af4b0fe652c9f8e6642f3287027e34e8740cce811b6ae894c83e152d3",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:run-result",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/seed-ledger.schema.json",
+      "git_blob": "6fbd248f34a58397cf79787915e65b60e928b85d",
+      "git_bytes": 3610,
+      "git_sha256": "2e5dc9941738a7e0f066bde2e06f7cab4d6a1c5ebd1f0cc8b208c0437ff0cc83",
+      "working_bytes": 3610,
+      "working_sha256": "2e5dc9941738a7e0f066bde2e06f7cab4d6a1c5ebd1f0cc8b208c0437ff0cc83",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:seed-ledger",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/symptom-pilot-binding.schema.json",
+      "git_blob": "397d3b68d04666799fcec55240025c81a0e1bf6c",
+      "git_bytes": 2600,
+      "git_sha256": "bbc6965631aa2443f91ad9d3700779ed426d192b574fe39be42744e58d5bcbef",
+      "working_bytes": 2600,
+      "working_sha256": "bbc6965631aa2443f91ad9d3700779ed426d192b574fe39be42744e58d5bcbef",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:symptom-pilot-binding",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/trusted-export-authority.schema.json",
+      "git_blob": "ff1e1e082b3cfba01eac983dc9e4720a5b0cf0b9",
+      "git_bytes": 4001,
+      "git_sha256": "52b0341f37dd9783da57e7e8e793b6bbaf0af19a0d0e193c7a08f2a666d198c1",
+      "working_bytes": 4001,
+      "working_sha256": "52b0341f37dd9783da57e7e8e793b6bbaf0af19a0d0e193c7a08f2a666d198c1",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:trusted-export-authority",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/trusted-iid-investigation-authority.schema.json",
+      "git_blob": "099f136caaf0c94d1e163531553968275f6436fb",
+      "git_bytes": 3675,
+      "git_sha256": "863d56cb3ae566fe4b92465731add0d3dc26634e8e51ffe91aba362e21214e60",
+      "working_bytes": 3675,
+      "working_sha256": "863d56cb3ae566fe4b92465731add0d3dc26634e8e51ffe91aba362e21214e60",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:trusted-iid-investigation-authority",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/runs/schemas/trusted-run-authority.schema.json",
+      "git_blob": "744cc2c76b182c40f8e979333f114c0260722bdc",
+      "git_bytes": 3867,
+      "git_sha256": "356d4e6fb9598d1b5aeb358338f53a674d59b3eeb5ea2a34a22d198fc72555ce",
+      "working_bytes": 3867,
+      "working_sha256": "356d4e6fb9598d1b5aeb358338f53a674d59b3eeb5ea2a34a22d198fc72555ce",
+      "working_differs_from_git_bytes": false,
+      "urn": "urn:remission:runs:1.0.0:trusted-run-authority",
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "contracts/domain/dictionary-v1.json",
+      "git_blob": "5a6dcfeabf75a8a262cffeb56e8d20ac9795ff96",
+      "git_bytes": 185461,
+      "git_sha256": "3ef0512b6c4c83c972d0c42843cde260eba91ca7468bffa513842020a26412d5",
+      "working_bytes": 192871,
+      "working_sha256": "d1b172c25a583b49ab0d28c94acafa84507330942182bab61cfdde6f0a5d35e7",
+      "working_differs_from_git_bytes": true,
+      "wire_schema_version": "1.0.0",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/runs/bindings-v1.json",
+      "git_blob": "02a49d4594e035af3f0e44a520d05434c73b6058",
+      "git_bytes": 1718,
+      "git_sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+      "working_bytes": 1718,
+      "working_sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+      "working_differs_from_git_bytes": false,
+      "bindings": {
+        "analytic_fixtures": {
+          "id": "DGP-ANALYTIC-FIXTURES",
+          "sha256": "059032cf5e0e1c6849eab8ed42237a0ddf2255366410d1be4bfbf5e99f75fcae",
+          "version": "1.0.0"
+        },
+        "calibration_schema": {
+          "id": "DGP-CALIBRATION",
+          "sha256": "cfbaa02466c698c2ab24457eeddfd94bc18e25264491442d9f5e6b268f2154c6",
+          "version": "1.1.0"
+        },
+        "catalog": {
+          "id": "DGP-CATALOG",
+          "sha256": "ef8f5720ac05b887d2def3f44b09dcf29be352474940bc8ed8ec7ba49d6eee40",
+          "version": "1.2.0"
+        },
+        "dgp": {
+          "id": "DGP-01",
+          "sha256": "f273d92792e09570c19a9145c09da08e3c214ac6d520059f12b3c26809e5b22d",
+          "version": "1.2.0"
+        },
+        "equations": {
+          "id": "DGP-EQUATIONS",
+          "sha256": "16b61de53f7b9fb6e837db63d89ccbc0efc105300d8bbd80ceec6cfbbf216b84",
+          "version": "1.2.0"
+        },
+        "parameters": {
+          "id": "DGP-PARAMETERS",
+          "sha256": "f273d92792e09570c19a9145c09da08e3c214ac6d520059f12b3c26809e5b22d",
+          "version": "1.2.0"
+        },
+        "probability_precision": {
+          "id": "ESTINT-PRECISION-01",
+          "sha256": "087e61f462c4447697f40de8471c818de58346e0b2a8f330854392585f43e989",
+          "version": "1.0.0-r1"
+        },
+        "protocol": {
+          "id": "remission-g1-v1",
+          "sha256": "730871eadff578f6e51fd75035876fb338bd9c168b71d84021b3e287664ef2e2",
+          "version": "1.0.0"
+        },
+        "scenarios": {
+          "id": "DGP-SCENARIOS",
+          "sha256": "ed5e29aa398b615c623e24d218b8442f3ab14c2bf4187e6657b2589bde7809ac",
+          "version": "1.2.0"
+        },
+        "temporal": {
+          "id": "TIME-01",
+          "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275",
+          "version": "2.0.0"
+        },
+        "timing": {
+          "id": "DGP-TIMING",
+          "sha256": "336a3a9e5182212cf26f873359c82e08f92f154a5dbe34ceb280cf6a5feed87b",
+          "version": "1.2.0"
+        }
+      }
+    },
+    {
+      "path": "contracts/runs/dictionary-v1.json",
+      "git_blob": "4cb0f65c26cc7c6cb21cd9352e70a34491386365",
+      "git_bytes": 230561,
+      "git_sha256": "81637308dbc9eee63bddb3fca54db4f8f21d84fd598774804013af8189d7f8b3",
+      "working_bytes": 230561,
+      "working_sha256": "81637308dbc9eee63bddb3fca54db4f8f21d84fd598774804013af8189d7f8b3",
+      "working_differs_from_git_bytes": false,
+      "wire_schema_version": "1.0.0"
+    },
+    {
+      "path": "docs/implementation/g1-technical-plan-20261021.md",
+      "git_blob": "5d46eb071485a9d5f2ed0473880a75fcab181556",
+      "git_bytes": 47454,
+      "git_sha256": "730871eadff578f6e51fd75035876fb338bd9c168b71d84021b3e287664ef2e2",
+      "working_bytes": 47609,
+      "working_sha256": "dadf564d58e91b49ee30da764870dd9c14bb094f22e8d6630edffc3dcfc815d3",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "protocol"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/dgp/parameters-v1.json",
+      "git_blob": "9b67acbd5b2e63c952918b29fbe161adf4e208b9",
+      "git_bytes": 77937,
+      "git_sha256": "f273d92792e09570c19a9145c09da08e3c214ac6d520059f12b3c26809e5b22d",
+      "working_bytes": 80431,
+      "working_sha256": "b6e2ab2e78b86a3f1c19cad6f67a5092a3f70232d644571b5e24454e8d14de77",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "dgp",
+        "parameters"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "docs/spec/dgp-reference.md",
+      "git_blob": "62f7894b887acbaab603b33da4f90cc85405c8a3",
+      "git_bytes": 10998,
+      "git_sha256": "16b61de53f7b9fb6e837db63d89ccbc0efc105300d8bbd80ceec6cfbbf216b84",
+      "working_bytes": 11072,
+      "working_sha256": "9ed034fd9ebdefd1b52911273f5381e7e34987b372a9c3b780a761d8009bf45c",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "equations"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/dgp/scenarios-v1.json",
+      "git_blob": "b5b542bfbb83e970f57af0676b78b9b942f97263",
+      "git_bytes": 44182,
+      "git_sha256": "ed5e29aa398b615c623e24d218b8442f3ab14c2bf4187e6657b2589bde7809ac",
+      "working_bytes": 45956,
+      "working_sha256": "4980fd89c20ce24d83d78f7262730f1dcb5468c655ed0d1a0b6c86ba9c393350",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "scenarios"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "docs/spec/scenario-catalog.md",
+      "git_blob": "a5e6b6c5b6fc855090b94ddf86cbe3647a8f2975",
+      "git_bytes": 7723,
+      "git_sha256": "ef8f5720ac05b887d2def3f44b09dcf29be352474940bc8ed8ec7ba49d6eee40",
+      "working_bytes": 7781,
+      "working_sha256": "1f1c179c0c15efae01c79d0d898eb4ed3cdd6c3ff6ebb9fa2c412c7fe34caa1d",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "catalog"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/dgp/timing-v1.json",
+      "git_blob": "e336c9f22a5734fe3a33da3f3f2d4b97a9d4ab7d",
+      "git_bytes": 3130,
+      "git_sha256": "336a3a9e5182212cf26f873359c82e08f92f154a5dbe34ceb280cf6a5feed87b",
+      "working_bytes": 3219,
+      "working_sha256": "1754b7f5eb104b03dfe0c74dec1c5de83e7fcf723e4a51774ad2742f03dbb5d5",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "timing"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/domain/temporal-v2.json",
+      "git_blob": "ce009c021e65bfca5b8ab6f9b630ab2013767944",
+      "git_bytes": 44335,
+      "git_sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275",
+      "working_bytes": 45767,
+      "working_sha256": "053320ea9f327a984f102bcd2b5563e65c8cc3467dbfedd32914da1f294c246f",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "temporal"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/dgp/calibration-binding-v1.schema.json",
+      "git_blob": "f2cbfd79e0732cc336a7b0ed9194a8ecdc25b361",
+      "git_bytes": 4120,
+      "git_sha256": "cfbaa02466c698c2ab24457eeddfd94bc18e25264491442d9f5e6b268f2154c6",
+      "working_bytes": 4338,
+      "working_sha256": "3ac7d12787d800061e2a9d8db99a9e6ff8f80a10fca8b2b3372aafcf67ce5502",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "calibration_schema"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "contracts/dgp/truth-fixtures-v1.json",
+      "git_blob": "f327e36e2264d3a8cd5e6da270a7e0196f4355b6",
+      "git_bytes": 2137,
+      "git_sha256": "059032cf5e0e1c6849eab8ed42237a0ddf2255366410d1be4bfbf5e99f75fcae",
+      "working_bytes": 2232,
+      "working_sha256": "4fb550161eca4503dacbb066456d4ec06a304ab5aa7710486a0367e19e8fc5db",
+      "working_differs_from_git_bytes": true,
+      "bound_by_run_binding_keys": [
+        "analytic_fixtures"
+      ],
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "docs/implementation/g1-estint-probability-precision-proposal-r1-20261021.md",
+      "git_blob": "233d78d5f9233499e566c87ecf34d3d4f12e3785",
+      "git_bytes": 25956,
+      "git_sha256": "087e61f462c4447697f40de8471c818de58346e0b2a8f330854392585f43e989",
+      "working_bytes": 25956,
+      "working_sha256": "087e61f462c4447697f40de8471c818de58346e0b2a8f330854392585f43e989",
+      "working_differs_from_git_bytes": false,
+      "bound_by_run_binding_keys": [
+        "probability_precision"
+      ]
+    },
+    {
+      "path": "tests/contracts/fixtures/estimands-v1.json",
+      "git_blob": "92c9d25c9d4c40347bed75bdb237c7634f465903",
+      "git_bytes": 27112,
+      "git_sha256": "6bfa95f18fcd8cd3e1932ab12526c92a2304e7d05b868e1e8b6edb4c1eb67b94",
+      "working_bytes": 27861,
+      "working_sha256": "e77a265b28ca54db8b99a90d3d284aa87c3a84d97299d60e26cca509d9812dcf",
+      "working_differs_from_git_bytes": true,
+      "class": "hand-authored raw contract fixture",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    },
+    {
+      "path": "tests/contracts/fixtures/observed-entities-v1.json",
+      "git_blob": "9a4c6c941667ac6f6fb164443c81b285804d29a2",
+      "git_bytes": 17153,
+      "git_sha256": "782b8ca7d704270c94cee94906d7765becc39615d475e3b413a6db16f66cb6fa",
+      "working_bytes": 17737,
+      "working_sha256": "39a8038f2eeb7cc2d9df57a7738adb255ad1d32dd91915201283b51981522b9f",
+      "working_differs_from_git_bytes": true,
+      "class": "hand-authored raw contract fixture",
+      "working_difference_kind": "CRLF-only checkout conversion"
+    }
+  ],
+  "sources_of_requirements": [
+    {
+      "source": "docs/implementation/g1-observed-representation-proposal-r1-20261021.md at commit b2e8adf3ebe95ef94dae7399e2a27b9cc89420ec",
+      "locator": "§2 Versioned wire proposal (v1 schemas/dictionaries/fixtures/historical hashes remain reproducible); §3 Archive, live authority and compatibility (separate bindings-v2, dictionary-v2 and v2 schema URNs; preserve v1 products byte-for-byte); §5 T-OBS2-COMPAT (planned golden-hash compatibility check)."
+    }
+  ],
+  "worktree_comparison_summary": {
+    "different_files": 30,
+    "crlf_only_differences": 30,
+    "other_differences": 0,
+    "git_config_core_autocrlf": "true"
+  }
+}
