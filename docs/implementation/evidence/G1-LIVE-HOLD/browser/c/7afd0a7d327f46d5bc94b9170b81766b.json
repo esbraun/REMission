@@ -1,0 +1,29 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "-i",
+    "remission-g1-live-hold-20261021-799f2981-service",
+    "python",
+    "-u",
+    "-c",
+    "from services.foundation.admission import AdmissionGate; import sys; gate=AdmissionGate('/data/remission.sqlite'); ctx=gate.hold(); ctx.__enter__(); print('ADMISSION_HELD',flush=True); assert sys.stdin.readline().strip()=='RELEASE'; ctx.__exit__(None,None,None); print('ADMISSION_RELEASED',flush=True)"
+  ],
+  "source_head": "1096d6da86048e7a53f98ed70abdd85f6f497aed",
+  "test_setup": "explicit_second_process_gate_barrier",
+  "started_unix": 1792625021.0341566,
+  "elapsed_seconds": 22.122669458389282,
+  "exit": 0,
+  "streams": {
+    "stdout": {
+      "path": "7afd0a7d327f46d5bc94b9170b81766b.stdout",
+      "bytes": 34,
+      "sha256": "66848f65868af4c01aa674944223e00d8032de5c839a59c53e815954dc0e5295"
+    },
+    "stderr": {
+      "path": "7afd0a7d327f46d5bc94b9170b81766b.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

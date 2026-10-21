@@ -15,6 +15,13 @@ as d82b015. These historical evidence bytes do not establish this implementation
 The full plan review and source-only helper chains are preserved in raw-inputs.json.
 
 Status: implementation in progress. No LIVE-HOLD runtime or browser acceptance yet.
+Source checkpoint 1096d6da86048e7a53f98ed70abdd85f6f497aed has an actual isolated
+old-stack drain/new-private-volume cutover in deployment-r4, with exact image and
+copied-source byte checks. The browser/ record preserves 105 official MCP entries,
+46 original generated artifacts, desktop/narrow screenshots and B-LH01–12 outcomes.
+These are implementer observations; independent exact-source acceptance is pending.
+The bounded current test checkpoint is 13 focused tests, with an earlier 36 affected
+service tests; final expanded and broad verification remains incomplete.
 Threshold clearance remains blocked by T-OBS2-CLEARANCE-POLICY. Only an explicitly
 installed structural synthetic concern rule can support the positive manual fixture.
 Actual scientific producer qualification, scientific clearance/burden laws, human and

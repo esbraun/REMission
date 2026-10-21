@@ -1,0 +1,102 @@
+- generic [ref=f3e2]:
+  - link "Skip to main content" [ref=f3e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - text: REMission
+      - generic [ref=f3e6]: Synthetic care workspace
+    - generic [ref=f3e11]:
+      - generic [ref=f3e12]: Dr Alice (synthetic)
+      - button "Sign out" [ref=f3e13] [cursor=pointer]
+  - generic [ref=f3e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [ref=f3e8]:
+    - navigation "Workspace" [ref=f3e14]:
+      - link "My panel" [ref=f3e15] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f3e16]: 10 owned synthetic patients
+    - region "Patient context" [ref=f3e99]:
+      - generic [ref=f3e100]:
+        - paragraph [ref=f3e101]: SYN-02 · Current workspace
+        - heading "Synthetic patient 02" [level=1] [ref=f3e102]
+        - paragraph [ref=f3e103]: "ASSIGN-09: Clinical hold or major phase change"
+      - generic [ref=f3e104]:
+        - generic [ref=f3e105]:
+          - term [ref=f3e106]: Clinical
+          - definition [ref=f3e107]: clinical hold
+        - generic [ref=f3e108]:
+          - term [ref=f3e109]: Learning
+          - definition [ref=f3e110]: none
+        - generic [ref=f3e111]:
+          - term [ref=f3e112]: Data readiness
+          - definition [ref=f3e113]: stale
+        - generic [ref=f3e114]:
+          - term [ref=f3e115]: Observation cutoff
+          - definition [ref=f3e116]: Oct 21, 2026, 4:21 PM PDT
+      - status [ref=f3e117]:
+        - strong [ref=f3e118]: Clinical hold
+        - paragraph [ref=f3e119]: experimental_stability_review
+    - navigation "Patient views" [ref=f3e120]:
+      - link "Overview" [ref=f3e121] [cursor=pointer]:
+        - /url: /patients/SYN-02/overview
+      - link "Current decision" [ref=f3e122] [cursor=pointer]:
+        - /url: /patients/SYN-02/current
+      - link "Monitoring" [ref=f3e123] [cursor=pointer]:
+        - /url: /patients/SYN-02/monitoring
+      - link "History" [ref=f3e124] [cursor=pointer]:
+        - /url: /patients/SYN-02/history
+    - region [ref=f3e125]:
+      - heading "Independent safety review" [level=2] [ref=f3e126]
+      - paragraph [ref=f3e127]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.
+      - article [ref=f3e128]:
+        - heading "experimental stability review · episode generation 1" [level=3] [ref=f3e129]
+        - paragraph [ref=f3e130]:
+          - strong [ref=f3e131]: Hold remains active.
+          - text: "Entered Oct 21, 2026, 4:20 PM. Review owner: alice; due Jan 2, 2026, 2:00 AM."
+        - paragraph [ref=f3e132]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.
+        - heading "Exact triggering evidence" [level=4] [ref=f3e133]
+        - list [ref=f3e134]:
+          - listitem [ref=f3e135]:
+            - button "Inspect obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9" [ref=f3e136] [cursor=pointer]
+            - generic [ref=f3e137]: SHA256 74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d
+        - paragraph [ref=f3e138]:
+          - strong [ref=f3e139]: T-OBS2-CLEARANCE-POLICY
+          - text: ": an accepted clearance criterion is unavailable for one or more active obligations. The whole episode remains held; there is no timer or default clearance."
+        - group [ref=f3e140]:
+          - generic "Installed review rules and all active obligations" [ref=f3e141] [cursor=pointer]
+      - generic [ref=f3e142]:
+        - heading "Record a configured synthetic concern" [level=3] [ref=f3e143]
+        - paragraph [ref=f3e144]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.
+        - generic [ref=f3e145]: Authorized source concern · none preselected
+        - combobox "Authorized source concern · none preselected" [ref=f3e146]:
+          - option "Choose a configured concern" [selected]
+          - option "Synthetic clinician_concern · source 1"
+          - option "Synthetic experimental_stability_review · source 2"
+          - option "Synthetic clinician_concern · source 3"
+        - button "Record selected concern and hold" [disabled] [ref=f3e147]
+    - generic [ref=f3e148]:
+      - paragraph [ref=f3e149]: 1 · Assess
+      - heading "Readiness and clinical review" [level=2] [ref=f3e150]
+      - paragraph [ref=f3e151]: "Clinical: clinical hold. Learning: none. Data: stale."
+      - paragraph [ref=f3e152]: Support is paused; policy fixed-approved-support version 1.0.0.
+      - generic [ref=f3e153]:
+        - button "Request clinical hold" [ref=f3e154] [cursor=pointer]
+        - button "Record prerequisite review" [ref=f3e155] [cursor=pointer]
+    - generic [ref=f3e156]:
+      - paragraph [ref=f3e157]: 2 · Compare
+      - heading "Eligible ordinary options" [level=2] [ref=f3e158]
+      - generic [ref=f3e159]:
+        - strong [ref=f3e160]: No statistical comparison is available
+        - paragraph [ref=f3e161]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.
+      - group [ref=f3e162]:
+        - generic "Inspect basis and engine status" [ref=f3e163] [cursor=pointer]
+    - generic [ref=f3e164]:
+      - paragraph [ref=f3e165]: 3 · Decide and follow up
+      - heading "Explicit ordinary synthetic choice" [level=2] [ref=f3e166]
+      - paragraph [ref=f3e167]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.
+    - generic [ref=f3e168]:
+      - heading "Saved decisions" [level=2] [ref=f3e169]
+      - list [ref=f3e170]:
+        - listitem [ref=f3e171]:
+          - link "Ordinary choice · Oct 21, 2026, 4:15 PM PDT" [ref=f3e172] [cursor=pointer]:
+            - /url: /patients/SYN-02/history/approval-6d8d84f3a63e484b8a1bf8b2965feb90
+    - generic [ref=f3e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.

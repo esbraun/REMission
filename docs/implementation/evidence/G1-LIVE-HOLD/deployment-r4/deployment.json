@@ -1,0 +1,62 @@
+{
+  "prefix": "remission-g1-live-hold-20261021-799f2981",
+  "source_commit": "1096d6da86048e7a53f98ed70abdd85f6f497aed",
+  "service_image": "sha256:a5da282a1b4fe618fb07650f18a9533b86911cde2da928106c6da3211f1e6c8a",
+  "learner_image": "sha256:6f122b1481aa53208d5d7c05acadca2e2ce89c99c29396519bfa064a67332ebf",
+  "runtime_image": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "old_image": "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8",
+  "url": "http://127.0.0.1:8769",
+  "port": 8769,
+  "network": "remission-g1-live-hold-20261021-799f2981-app",
+  "volumes": {
+    "historical": "remission-g1-live-hold-20261021-799f2981-historical",
+    "database": "remission-g1-live-hold-20261021-799f2981-database",
+    "fixtures": "remission-g1-live-hold-20261021-799f2981-fixtures",
+    "exports": "remission-g1-live-hold-20261021-799f2981-exports"
+  },
+  "old_container": "remission-g1-live-hold-20261021-799f2981-old",
+  "service_container": "remission-g1-live-hold-20261021-799f2981-service",
+  "old_health": {
+    "status": "ok",
+    "synthetic": true,
+    "runtime": "foundation-v1"
+  },
+  "current_health": {
+    "status": "ok",
+    "synthetic": true,
+    "runtime": "foundation-live-hold-v1",
+    "capability": "LIVE-HOLD-01/1.0.0",
+    "database_instance_id": "aa2865fa-781c-4436-956f-b4a219cddacb",
+    "authority_generation": 1
+  },
+  "old_stopped": true,
+  "old_restart_disabled": true,
+  "new_private_volume": true,
+  "source_hashes": {
+    "services/foundation/admission.py": "619b5de040c6990f339a1d755dc07f41c201e3ad3303efc0c2602cc21bed1d47",
+    "services/foundation/app.py": "4b38b67f2edbe01e599c8a7d8976540b6c631651ac7a54a40dba67c63e7e36cf",
+    "services/foundation/archive.py": "c81219237652e2675fe9cd4bef639c77d8cfa6794c3c8da9c284f9167ba40149",
+    "services/foundation/cli.py": "ae3d2097534ae2fb1500f6e6f6153d908a69c0011f17921ce69a4045096b1dfd",
+    "services/foundation/configuration.py": "45ded5265bb585602580aa4a0cce62aadeae04729973f50e476e98693aa5cd61",
+    "services/foundation/cutover.py": "656cd5fc913883d348035211a8ea8eab2ed4661feac55d09d957fadd574c26ad",
+    "services/foundation/live_coordinator.py": "a31162169a781911569574fad65b9809b3c55c912e91be567c47a307977b7f8c",
+    "services/foundation/live_hold.py": "cd56f04e681dce063f471b7cd30b85fa57b058357cb1f3b9f818129376b88c47",
+    "services/foundation/live_journal.py": "26823a9670005d6d9829718424c6ecc95381ee3c93d4d3cb68a79be1e0ebf7b3",
+    "services/foundation/live_safety_export.py": "41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87",
+    "services/foundation/replay.py": "64fdf49bc4850003f19da826731b1d04c232ff5eddef9c38842deed57b8348d9",
+    "services/foundation/server.py": "ae1736a22f03c2b5d3044d1a45a8263526f5f9fb249eb7d2f25e6f3961468448",
+    "services/foundation/store.py": "409925fe565b0ecae1c0f0980eaf68f8f0f35da85ec1dc12bba98a9083dbe260",
+    "services/foundation/workflow.py": "f1eddc2968b4e8d01c74fd4ad70acb2cf48e55ddfaa1550b97f64ddfa839409b",
+    "services/foundation/__init__.py": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481",
+    "services/foundation/migrations/001_foundation.sql": "b76b1af7f41080c83f1ac736655ca4bdca6ed03310b29e8196f4638894d0c93d",
+    "services/foundation/migrations/002_observed_archive.sql": "3e7660781b2aac3e5dcfa071831f9fc6d02997347b9aae3af73290133f6439ca",
+    "services/foundation/migrations/003_live_hold.sql": "896105c407e13fcd91edb15b924e87a589e6e7e84d35340dbb4dbf2d118def2c",
+    "contracts/service/__init__.py": "5c64ed8dba62d97a6d171bca56e54b985c6b1c7fbb39d084b99b2a9ef8d5bb75",
+    "contracts/service/live_hold.py": "8e3fdfef35fb57d69d0bc8745e99459efbc30f06bf272588b627de45260a2dd6",
+    "contracts/service/live_safety.py": "0b4ff5dec1af9d4199b033292045cd7180a86c58058b3ba77fdfdace9f98ce63",
+    "contracts/service/live_safety_admission.py": "645da988bcf0246a6fde06b3ea3ff12bfeadb95967dbacf8291386baa0db4b2d",
+    "contracts/service/bindings-v1.json": "39141354076c356c2884c16bc29dd9cbd916fc384a0e643039e2b9b8e5e0d895"
+  },
+  "fixture_claim": "contract_fixture only; upstream scientific producer not qualified",
+  "browser_cases": "not yet executed"
+}

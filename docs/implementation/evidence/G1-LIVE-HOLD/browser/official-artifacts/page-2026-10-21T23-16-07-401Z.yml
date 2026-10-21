@@ -1,0 +1,120 @@
+- generic [ref=f2e2]:
+  - link "Skip to main content" [ref=f2e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f2e4]:
+    - generic [ref=f2e5]:
+      - text: REMission
+      - generic [ref=f2e6]: Synthetic care workspace
+    - generic [ref=f2e11]:
+      - generic [ref=f2e12]: Dr Alice (synthetic)
+      - button "Sign out" [ref=f2e13] [cursor=pointer]
+  - generic [ref=f2e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [ref=f2e8]:
+    - navigation "Workspace" [ref=f2e14]:
+      - link "My panel" [ref=f2e15] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f2e16]: 10 owned synthetic patients
+    - region "Patient context" [ref=f2e75]:
+      - generic [ref=f2e76]:
+        - paragraph [ref=f2e77]: SYN-02 · Current workspace
+        - heading "Synthetic patient 02" [level=1] [ref=f2e78]
+        - paragraph [ref=f2e79]: "ASSIGN-09: Clinical hold or major phase change"
+      - generic [ref=f2e80]:
+        - generic [ref=f2e81]:
+          - term [ref=f2e82]: Clinical
+          - definition [ref=f2e83]: clinical hold
+        - generic [ref=f2e84]:
+          - term [ref=f2e85]: Learning
+          - definition [ref=f2e86]: none
+        - generic [ref=f2e87]:
+          - term [ref=f2e88]: Data readiness
+          - definition [ref=f2e89]: stale
+        - generic [ref=f2e90]:
+          - term [ref=f2e91]: Observation cutoff
+          - definition [ref=f2e92]: Oct 21, 2026, 4:15 PM PDT
+      - status [ref=f2e93]:
+        - strong [ref=f2e94]: Clinical hold
+        - paragraph [ref=f2e95]: clinician_concern
+    - navigation "Patient views" [ref=f2e96]:
+      - link "Overview" [ref=f2e97] [cursor=pointer]:
+        - /url: /patients/SYN-02/overview
+      - link "Current decision" [ref=f2e98] [cursor=pointer]:
+        - /url: /patients/SYN-02/current
+      - link "Monitoring" [ref=f2e99] [cursor=pointer]:
+        - /url: /patients/SYN-02/monitoring
+      - link "History" [ref=f2e100] [cursor=pointer]:
+        - /url: /patients/SYN-02/history
+    - region [ref=f2e101]:
+      - heading "Independent safety review" [level=2] [ref=f2e102]
+      - paragraph [ref=f2e103]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.
+      - article [ref=f2e104]:
+        - heading "clinician concern · episode generation 1" [level=3] [ref=f2e105]
+        - paragraph [ref=f2e106]:
+          - strong [ref=f2e107]: Hold remains active.
+          - text: "Entered Oct 21, 2026, 4:15 PM. Review owner: alice; due Jan 2, 2026, 2:00 AM."
+        - paragraph [ref=f2e108]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.
+        - heading "Exact triggering evidence" [level=4] [ref=f2e109]
+        - list [ref=f2e110]:
+          - listitem [ref=f2e111]:
+            - button "Inspect obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f" [active] [ref=f2e112] [cursor=pointer]
+            - generic [ref=f2e113]: SHA256 a364d0463b09a65091e50938be2ecfc2ab132eaf72a9c3b1ce6e6e284cab128e
+        - group [ref=f2e114]:
+          - generic "Installed review rules and all active obligations" [ref=f2e115] [cursor=pointer]
+        - group "Record a current authenticated assessment" [ref=f2e117]:
+          - generic [ref=f2e119]:
+            - generic [ref=f2e120]: "review-concern: finding and changed facts"
+            - 'textbox "review-concern: finding and changed facts" [ref=f2e121]'
+            - generic [ref=f2e122]: Requirement result
+            - combobox "Requirement result" [ref=f2e123]:
+              - option "Pending review" [selected]
+              - option "Satisfied under the installed rule"
+            - paragraph [ref=f2e124]: "Select the exact evidence supporting this requirement:"
+            - generic [ref=f2e125]:
+              - checkbox "obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f" [ref=f2e126]
+              - generic [ref=f2e127]: obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f
+          - generic [ref=f2e128]: Current assessment rationale and documented follow-up
+          - textbox "Current assessment rationale and documented follow-up" [ref=f2e129]
+          - generic [ref=f2e130]:
+            - checkbox "I have reviewed the entire active trigger and obligation set and attest this current assessment." [ref=f2e131]
+            - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.
+          - button "Save current review; keep hold active" [ref=f2e132] [cursor=pointer]
+      - group [ref=f2e164]:
+        - generic "Selected evidence · original archived source" [ref=f2e165] [cursor=pointer]
+        - generic [ref=f2e166]: "[ { \"record\": { \"actor_id\": \"alice\", \"actor_role\": \"doctor\", \"assessed_at\": \"2026-01-01T10:00:00Z\", \"available_at\": \"2026-01-01T10:00:00Z\", \"duplicate_of\": null, \"event_at\": \"2026-01-01T10:00:00Z\", \"evidence_type\": \"trigger_observation\", \"facts_refs\": [], \"finding\": \"simulated clinician concern, no hidden numeric coordinates\", \"follow_up_refs\": [ { \"payload_sha256\": \"558205e7652d4a3d91f932d02f736efbdaa54449e2f75633dad862d944f78080\", \"record_id\": \"hold-task-1\" } ], \"hold_episode_id\": \"episode\", \"kind\": \"hold_review_evidence\", \"lineage_id\": \"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\", \"origin\": \"simulation\", \"ownership_ref\": { \"payload_sha256\": \"900e29720ede0c2ee3efdcc120f8314c60ebd9e48a75eaa92965bd3022f26725\", \"record_id\": \"patient-source\" }, \"partition_id\": \"obs2-partition\", \"patient_id\": \"SYN-02\", \"record_id\": \"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\", \"record_status\": \"active\", \"recorded_at\": \"2026-01-01T10:00:00Z\", \"requirement\": { \"id\": \"review-concern\", \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\", \"version\": \"2.0.0\" }, \"review_result\": \"requires_hold\", \"revision\": 1, \"rule\": { \"id\": \"accepted-script-concern\", \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\", \"version\": \"2.0.0\" }, \"run_id\": \"live-demo-concern\", \"schema_version\": \"2.0.0\", \"source\": { \"adapter\": \"simulation\", \"id\": \"fixture-simulation\", \"raw_sha256\": \"dfbffea0fac35c7a124870ffcc1310c0b939b3955c639cd3a3ad947af881f2e5\", \"version\": \"1.2.0\" }, \"supersedes\": null, \"synthetic\": true }, \"raw_source\": \"{\\\"actor_id\\\":\\\"alice\\\",\\\"actor_role\\\":\\\"doctor\\\",\\\"assessed_at\\\":\\\"2026-01-01T10:00:00+00:00\\\",\\\"available_at\\\":\\\"2026-01-01T10:00:00+00:00\\\",\\\"duplicate_of\\\":null,\\\"event_at\\\":\\\"2026-01-01T10:00:00+00:00\\\",\\\"evidence_type\\\":\\\"trigger_observation\\\",\\\"facts_refs\\\":[],\\\"finding\\\":\\\"simulated clinician concern, no hidden numeric coordinates\\\",\\\"follow_up_refs\\\":[{\\\"payload_sha256\\\":\\\"558205e7652d4a3d91f932d02f736efbdaa54449e2f75633dad862d944f78080\\\",\\\"record_id\\\":\\\"hold-task-1\\\"}],\\\"hold_episode_id\\\":\\\"episode\\\",\\\"kind\\\":\\\"hold_review_evidence\\\",\\\"lineage_id\\\":\\\"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\\\",\\\"origin\\\":\\\"simulation\\\",\\\"ownership_ref\\\":{\\\"payload_sha256\\\":\\\"900e29720ede0c2ee3efdcc120f8314c60ebd9e48a75eaa92965bd3022f26725\\\",\\\"record_id\\\":\\\"patient-source\\\"},\\\"partition_id\\\":\\\"obs2-partition\\\",\\\"patient_id\\\":\\\"SYN-02\\\",\\\"record_id\\\":\\\"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\\\",\\\"record_status\\\":\\\"active\\\",\\\"recorded_at\\\":\\\"2026-01-01T10:00:00+00:00\\\",\\\"requirement\\\":{\\\"id\\\":\\\"review-concern\\\",\\\"sha256\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000\\\",\\\"version\\\":\\\"2.0.0\\\"},\\\"review_result\\\":\\\"requires_hold\\\",\\\"revision\\\":1,\\\"rule\\\":{\\\"id\\\":\\\"accepted-script-concern\\\",\\\"sha256\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000\\\",\\\"version\\\":\\\"2.0.0\\\"},\\\"run_id\\\":\\\"live-demo-concern\\\",\\\"schema_version\\\":\\\"2.0.0\\\",\\\"supersedes\\\":null,\\\"synthetic\\\":true}\" } ]"
+      - generic [ref=f2e133]:
+        - heading "Record a configured synthetic concern" [level=3] [ref=f2e134]
+        - paragraph [ref=f2e135]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.
+        - generic [ref=f2e136]: Authorized source concern · none preselected
+        - combobox "Authorized source concern · none preselected" [ref=f2e137]:
+          - option "Choose a configured concern" [selected]
+          - option "Synthetic clinician_concern · source 1"
+          - option "Synthetic experimental_stability_review · source 2"
+          - option "Synthetic clinician_concern · source 3"
+        - button "Record selected concern and hold" [disabled] [ref=f2e138]
+    - generic [ref=f2e139]:
+      - paragraph [ref=f2e140]: 1 · Assess
+      - heading "Readiness and clinical review" [level=2] [ref=f2e141]
+      - paragraph [ref=f2e142]: "Clinical: clinical hold. Learning: none. Data: stale."
+      - paragraph [ref=f2e143]: Support is paused; policy fixed-approved-support version 1.0.0.
+      - generic [ref=f2e144]:
+        - button "Request clinical hold" [ref=f2e145] [cursor=pointer]
+        - button "Record prerequisite review" [ref=f2e146] [cursor=pointer]
+    - generic [ref=f2e147]:
+      - paragraph [ref=f2e148]: 2 · Compare
+      - heading "Eligible ordinary options" [level=2] [ref=f2e149]
+      - generic [ref=f2e150]:
+        - strong [ref=f2e151]: No statistical comparison is available
+        - paragraph [ref=f2e152]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.
+      - group [ref=f2e153]:
+        - generic "Inspect basis and engine status" [ref=f2e154] [cursor=pointer]
+    - generic [ref=f2e155]:
+      - paragraph [ref=f2e156]: 3 · Decide and follow up
+      - heading "Explicit ordinary synthetic choice" [level=2] [ref=f2e157]
+      - paragraph [ref=f2e158]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.
+    - generic [ref=f2e159]:
+      - heading "Saved decisions" [level=2] [ref=f2e160]
+      - list [ref=f2e161]:
+        - listitem [ref=f2e162]:
+          - link "Ordinary choice · Oct 21, 2026, 4:15 PM PDT" [ref=f2e163] [cursor=pointer]:
+            - /url: /patients/SYN-02/history/approval-6d8d84f3a63e484b8a1bf8b2965feb90
+    - generic [ref=f2e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.
