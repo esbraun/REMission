@@ -1,0 +1,73 @@
+{
+  "checks": [
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=64m",
+        "--env",
+        "CONSUMER_ROLE=service",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021/artifacts/interfaces-consumer-probe-f654d84728d0433bbe6f5c4351121a41/observed,target=/observed,readonly",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021/artifacts/interfaces-consumer-probe-f654d84728d0433bbe6f5c4351121a41/authority.json,target=/config/authority.json,readonly",
+        "remission-interfaces-levels-repair-service:candidate",
+        "python",
+        "-c",
+        "import importlib,json,os,errno\nfrom pathlib import Path\nfrom contracts.runs.common import ExportAuthority\nfrom contracts.runs.admission import read_admitted\nauthority=ExportAuthority.model_validate_json(Path('/config/authority.json').read_bytes())\nroot=Path('/observed/contract-run/export-one')\nmanifest,partitions=read_admitted(root,authority)\nassert len(partitions)==2 and all(not row[3].records for row in partitions)\ndenied=[]\nfor module in ['contracts.runs.private','contracts.runs.private_admission','contracts.runs.probability','contracts.runs.export','contracts.dgp','contracts.domain.evaluation','simulation','evaluation.truth']:\n try: importlib.import_module(module)\n except ModuleNotFoundError: denied.append(module)\n else: raise AssertionError('private source import succeeded: '+module)\ntry: (root/'forged.json').write_text('{}')\nexcept OSError as error: assert error.errno in (errno.EROFS,errno.EACCES)\nelse: raise AssertionError('observed volume writable')\nif os.environ['CONSUMER_ROLE']=='service':\n from services.foundation.store import Store\n from services.foundation.cli import seed\n from services.foundation.replay import replay_export\n store=Store('/tmp/contracts.sqlite');seed(store)\n result=replay_export(store,(root/'manifest.json').read_bytes(),root,authority,batch_size=1)\n assert result['records']==2\n with store.transaction() as db: assert db.execute('SELECT count(*) FROM events').fetchone()[0]==2\nelse:\n from services.learner.worker import read_run_export\n _,histories=read_run_export(root,authority);assert len(histories)==2\nprint(json.dumps(dict(role=os.environ['CONSUMER_ROLE'],uid=os.getuid(),observed_partitions=2,equal_time_learner_records=0,denied_private_modules=denied,observed_write='denied',source_checkout_mount=False,fixture_only=True)))\n"
+      ],
+      "started_utc": "2026-10-21T19:01:14.698305+00:00",
+      "finished_utc": "2026-10-21T19:01:16.000820+00:00",
+      "exit_code": 0,
+      "stdout": "{\"role\": \"service\", \"uid\": 10001, \"observed_partitions\": 2, \"equal_time_learner_records\": 0, \"denied_private_modules\": [\"contracts.runs.private\", \"contracts.runs.private_admission\", \"contracts.runs.probability\", \"contracts.runs.export\", \"contracts.dgp\", \"contracts.domain.evaluation\", \"simulation\", \"evaluation.truth\"], \"observed_write\": \"denied\", \"source_checkout_mount\": false, \"fixture_only\": true}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=64m",
+        "--env",
+        "CONSUMER_ROLE=learner",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021/artifacts/interfaces-consumer-probe-f654d84728d0433bbe6f5c4351121a41/observed,target=/observed,readonly",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021/artifacts/interfaces-consumer-probe-f654d84728d0433bbe6f5c4351121a41/authority.json,target=/config/authority.json,readonly",
+        "remission-interfaces-levels-repair-learner:candidate",
+        "python",
+        "-c",
+        "import importlib,json,os,errno\nfrom pathlib import Path\nfrom contracts.runs.common import ExportAuthority\nfrom contracts.runs.admission import read_admitted\nauthority=ExportAuthority.model_validate_json(Path('/config/authority.json').read_bytes())\nroot=Path('/observed/contract-run/export-one')\nmanifest,partitions=read_admitted(root,authority)\nassert len(partitions)==2 and all(not row[3].records for row in partitions)\ndenied=[]\nfor module in ['contracts.runs.private','contracts.runs.private_admission','contracts.runs.probability','contracts.runs.export','contracts.dgp','contracts.domain.evaluation','simulation','evaluation.truth']:\n try: importlib.import_module(module)\n except ModuleNotFoundError: denied.append(module)\n else: raise AssertionError('private source import succeeded: '+module)\ntry: (root/'forged.json').write_text('{}')\nexcept OSError as error: assert error.errno in (errno.EROFS,errno.EACCES)\nelse: raise AssertionError('observed volume writable')\nif os.environ['CONSUMER_ROLE']=='service':\n from services.foundation.store import Store\n from services.foundation.cli import seed\n from services.foundation.replay import replay_export\n store=Store('/tmp/contracts.sqlite');seed(store)\n result=replay_export(store,(root/'manifest.json').read_bytes(),root,authority,batch_size=1)\n assert result['records']==2\n with store.transaction() as db: assert db.execute('SELECT count(*) FROM events').fetchone()[0]==2\nelse:\n from services.learner.worker import read_run_export\n _,histories=read_run_export(root,authority);assert len(histories)==2\nprint(json.dumps(dict(role=os.environ['CONSUMER_ROLE'],uid=os.getuid(),observed_partitions=2,equal_time_learner_records=0,denied_private_modules=denied,observed_write='denied',source_checkout_mount=False,fixture_only=True)))\n"
+      ],
+      "started_utc": "2026-10-21T19:01:16.000856+00:00",
+      "finished_utc": "2026-10-21T19:01:17.003866+00:00",
+      "exit_code": 0,
+      "stdout": "{\"role\": \"learner\", \"uid\": 10002, \"observed_partitions\": 2, \"equal_time_learner_records\": 0, \"denied_private_modules\": [\"contracts.runs.private\", \"contracts.runs.private_admission\", \"contracts.runs.probability\", \"contracts.runs.export\", \"contracts.dgp\", \"contracts.domain.evaluation\", \"simulation\", \"evaluation.truth\"], \"observed_write\": \"denied\", \"source_checkout_mount\": false, \"fixture_only\": true}\n",
+      "stderr": ""
+    }
+  ],
+  "images": {
+    "service": "sha256:434c60bd9e133525c8d440be9aa5c7cdfc13a6f860ec738342c36008a8ac6aaf",
+    "learner": "sha256:909326899fd698de2a9e090fb2cb2d6628cb325f1edb6a6eab368206bc9395f7",
+    "tests": "sha256:c6a9cd991610943f389c8e5105e61d5cae3a8210e2de2e8f4684137ebe445cb1"
+  },
+  "admitted_fixture": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021/artifacts/interfaces-consumer-probe-f654d84728d0433bbe6f5c4351121a41/observed/contract-run/export-one",
+  "claim": "Hand-authored contract fixture admission only; no generator/truth execution; no existing service/volume/port changed"
+}

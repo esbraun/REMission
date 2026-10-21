@@ -106,6 +106,9 @@ def verify_truth(raw_request: bytes, raw_response: bytes, root: Path, *, request
             raise ValueError('untrusted evaluator producer/run/source/runtime')
         if value.execution=='contract_fixture' and not evaluator.allow_contract_fixture:raise ValueError('contract fixture cannot authorize numerical acceptance')
     if request.run_manifest.sha256!=evaluator.manifest_sha256:raise ValueError('truth request run manifest mismatch')
+    for precision in response.interruption_precision:
+        if precision.status=='computed' and precision.method=='numerical' and not precision.component.endswith('conditional_isi') and precision.matched_pilot!=request.comparator_pilot:
+            raise ValueError('reported probability matched pilot differs from authenticated request plan')
     if request.observed_history:
         from contracts.domain.boundaries import LearnerHistory
         history=LearnerHistory.model_validate_json(read_artifact(root,request.observed_history,'observed'))
@@ -126,9 +129,12 @@ def verify_truth(raw_request: bytes, raw_response: bytes, root: Path, *, request
         evidence=ProbabilityEvidence.model_validate_json(read_artifact(root,refs[0],'evaluator_result'))
         qualified_probability=qualify_probability(evidence,root,request,investigation_authorities=investigation_authorities)
         qualified_probability['symptom_matched_se']={}
+        qualified_probability['symptom_qualifications']={}
         for precision in response.interruption_precision:
             if precision.status=='computed' and precision.component.endswith('conditional_isi'):
-                qualified_probability['symptom_matched_se'][precision.component]=qualify_symptom_pilot(precision.matched_pilot,root,request,refs[0],qualified_probability,precision.component)
+                qualification=qualify_symptom_pilot(precision.matched_pilot,root,request,refs[0],qualified_probability,precision.component)
+                qualified_probability['symptom_matched_se'][precision.component]=qualification.smallest_estimator_se
+                qualified_probability['symptom_qualifications'][precision.component]=qualification
         if response.conditional_accuracy is not None:
             for artifact in response.conditional_accuracy.independent_reduced_checks:read_artifact(root,artifact,'evaluator_result')
     validate_truth_response(request,response,qualified_probability=qualified_probability)

@@ -913,7 +913,7 @@
         "docs/spec/scenario-catalog.md"
       ],
       "status": "running",
-      "interface_candidate_status": "needs_review_after_precision_repair",
+      "interface_candidate_status": "needs_review_after_level_provenance_runner_repair",
       "owner_thread": "/root/g0_closure_sol",
       "app_thread_id": "01a15f0f-b7cd-73f3-86cb-af5f08360615",
       "agent_model": "gpt-6.1-sol",
@@ -922,7 +922,7 @@
       "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-generator-interfaces-sol-20261021",
       "task_branch": "launch/g1-generator-interfaces-20261021",
       "interface_evidence": [
-        "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/verification.md"
+        "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/verification.md"
       ],
       "claim_limit": "Shared run/export/evaluator contracts and pure R1 qualification only; no producer/filter/calibration/truth execution or throughput/statistical acceptance",
       "prior_interface_reviews": [
@@ -939,6 +939,21 @@
             "P1 IID batch/pooled precision and trusted resolved investigation",
             "P2 event-time/nested-uncertainty consistency"
           ]
+        },
+        {
+          "reviewed_head": "95a48144b936c690aa86e5743a5330a594403521",
+          "reviewed_base": "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e",
+          "disposition": "changes_requested",
+          "path": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-review-95a.md",
+          "blob": "4401db3d1c68a34d2bf604a4289bfcb5a8c2917d",
+          "evidence_manifest_path": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-evidence-manifest-95a.json",
+          "evidence_manifest_blob": "508141b5654038cebbd9599a9a5266b5971a831c",
+          "findings": [
+            "P2 symptom pilot/truth/response same verified final particle levels",
+            "P2 both imported replay runners must execute only own checkout source",
+            "P2 reported numerical probability matched pilot must equal authenticated request plan"
+          ],
+          "prior_2a_findings": "Explicitly resolved in independent95a review; new exact-head review remains required"
         }
       ]
     },
@@ -16806,10 +16821,26 @@
     },
     {
       "task_id": "G1-GENERATOR",
-      "record_kind": "current_author_interface_candidate",
+      "record_kind": "historical_author_precision_repair_checkpoint",
       "status": "needs_review_after_precision_repair",
       "evidence": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/verification.md",
       "claim_limit": "Pure contract/IO validation and repair only; actual independent producer execution/throughput/statistical acceptance remain pending"
+    },
+    {
+      "task_id": "G1-GENERATOR",
+      "record_kind": "historical_rejected_candidate",
+      "status": "changes_requested",
+      "reviewed_head": "95a48144b936c690aa86e5743a5330a594403521",
+      "reviewed_base": "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e",
+      "evidence": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-review-95a.md",
+      "claim_limit": "Original2a three findings resolved; nominal imported preservation pass read author source and is not independent. Separately reviewer-owned adapter18/18+5/5 passed; three new P2 findings remain."
+    },
+    {
+      "task_id": "G1-GENERATOR",
+      "record_kind": "current_author_interface_candidate",
+      "status": "needs_review_after_level_provenance_runner_repair",
+      "evidence": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/verification.md",
+      "claim_limit": "Shared run/export/evaluator contracts and pure R1 qualification only; no producer/filter/calibration/truth execution or throughput/statistical acceptance"
     }
   ],
   "runtime": {
@@ -16941,7 +16972,7 @@
     "review_disposition": "pending",
     "candidate_commit": null,
     "evidence": [
-      "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/verification.md"
+      "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/verification.md"
     ],
     "claim_limit": "Shared run/export/evaluator contracts and pure R1 qualification only; no producer/filter/calibration/truth execution or throughput/statistical acceptance",
     "prior_reviews": [
@@ -16958,9 +16989,24 @@
           "P1 IID batch/pooled precision and trusted resolved investigation",
           "P2 event-time/nested-uncertainty consistency"
         ]
+      },
+      {
+        "reviewed_head": "95a48144b936c690aa86e5743a5330a594403521",
+        "reviewed_base": "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e",
+        "disposition": "changes_requested",
+        "path": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-review-95a.md",
+        "blob": "4401db3d1c68a34d2bf604a4289bfcb5a8c2917d",
+        "evidence_manifest_path": "docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair-levels/independent-evidence-manifest-95a.json",
+        "evidence_manifest_blob": "508141b5654038cebbd9599a9a5266b5971a831c",
+        "findings": [
+          "P2 symptom pilot/truth/response same verified final particle levels",
+          "P2 both imported replay runners must execute only own checkout source",
+          "P2 reported numerical probability matched pilot must equal authenticated request plan"
+        ],
+        "prior_2a_findings": "Explicitly resolved in independent95a review; new exact-head review remains required"
       }
     ],
-    "blocker": "All three author repairs awaiting refreshed exact-head independent review; no merge acceptance"
+    "blocker": "Three95a author repairs awaiting refreshed exact-head independent review; no merge acceptance"
   },
   "accepted_contract_assignment": {
     "id": "G0-CONTRACT",

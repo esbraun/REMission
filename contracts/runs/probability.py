@@ -90,6 +90,14 @@ class SymptomPilotBinding(StrictModel):
     trial_refs_sha256: Sha256
 
 
+class SymptomPilotQualification(StrictModel):
+    """Internal result derived from authenticated files, never response claims."""
+    smallest_estimator_se: Annotated[float,Field(gt=0,allow_inf_nan=False)]
+    particle_levels: list[int]
+    final_particle_level: int
+    configuration_levels: dict[Token,list[int]]
+
+
 def qualify_symptom_pilot(ref, root, request, evidence_ref, qualified, component):
     """Read its own authenticated binding; never reuse a probability SE."""
     binding=SymptomPilotBinding.model_validate_json(read_artifact(root,ref,'evaluator_result'))
@@ -102,13 +110,19 @@ def qualify_symptom_pilot(ref, root, request, evidence_ref, qualified, component
     if request.smallest_estimator_se is not None:matched=min(matched,request.smallest_estimator_se)
     if matched<=0:raise ValueError('zero actual symptom comparator SE requires analytic truth or unresolved status')
     epsilon=min(.05,.1*matched)
+    configuration_levels=qualified.get('pilot_particle_levels')
+    if not configuration_levels or len(configuration_levels)!=len(configurations) or any(len(levels)!=len(stats) for levels,stats in zip(configuration_levels.values(),configurations)):
+        raise ValueError('authenticated symptom pilot particle levels missing or inconsistent')
+    conditional=request.target.truth_kind=='observed_history_conditional_average'
+    particle_levels=qualified.get('probability_truth_particle_levels') if conditional else [0]
+    if not particle_levels or any(levels!=particle_levels for levels in configuration_levels.values()):raise ValueError('qualified symptom pilots and probability truth levels differ')
     if request.target.truth_kind=='observed_history_conditional_average':
         for levels in configurations:
             if len(levels) not in (3,4):raise ValueError('conditional symptom pilot needs two approved successive refinements')
             for index in range(len(levels)-2,len(levels)):
                 before,after=levels[index-1:index+1];delta=after['means']-before['means']
                 if abs(float(delta.mean()))+1.96*float(delta.std(ddof=1))/sqrt(1000)>epsilon/4:raise ValueError('conditional symptom pilot refinement unresolved at its own final ISI epsilon')
-    return matched
+    return SymptomPilotQualification(smallest_estimator_se=matched,particle_levels=list(particle_levels),final_particle_level=particle_levels[-1],configuration_levels=configuration_levels)
 
 
 class PathOutcome(StrictModel):
@@ -497,4 +511,6 @@ def qualify_probability(evidence, root: Path, request, *, investigation_authorit
     for times in event_times.values():
         for name in times:times[name].sort()
     trial_refs=sha256(canonical([dict(configuration=p.configuration,levels=[l.model_dump(mode='json') for l in p.levels]) for p in evidence.pilots]))
-    return dict(**stats,epsilon=epsilon,matched_se=matched,batches=len(counts),structural_proofs=proofs,conditional_isi=isi,event_times=event_times,symptom_pilots=symptom_pilots,pilot_trial_refs_sha256=trial_refs)
+    truth_levels=list(evidence.conditional_accuracy.particle_levels) if conditional else None
+    return dict(**stats,epsilon=epsilon,matched_se=matched,batches=len(counts),structural_proofs=proofs,conditional_isi=isi,event_times=event_times,symptom_pilots=symptom_pilots,pilot_trial_refs_sha256=trial_refs,
+        pilot_particle_levels={p.configuration:[level.particles for level in p.levels] for p in evidence.pilots},probability_truth_particle_levels=truth_levels,probability_truth_final_particle_level=truth_levels[-1] if conditional else 0)

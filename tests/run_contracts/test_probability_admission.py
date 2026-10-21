@@ -65,7 +65,7 @@ class ProbabilityAdmission(unittest.TestCase):
             for which in ('intervention','comparator'):
                 component=which+'.conditional_isi'
                 symptom_refs[which]=artifact(root,'symptom-'+which,'probability/symptom-'+which+'.json',dict(kind='interruption_symptom_pilot_binding',request_sha256=request_hash,component=component,comparison='own_arm_alive_outpatient_ISI_mean',unit='ISI_points',probability_evidence=evidence_artifact,trial_refs_sha256=qualified['pilot_trial_refs_sha256']),'evaluator_result')
-                symptom_bounds[which]=qualify_symptom_pilot(load(Artifact,symptom_refs[which]),root,request,evidence_ref,qualified,component)
+                symptom_bounds[which]=qualify_symptom_pilot(load(Artifact,symptom_refs[which]),root,request,evidence_ref,qualified,component).smallest_estimator_se
             response['interruption_precision']=[]
             for which in ('intervention','comparator'):
                 for name in ('survival_day42','admission_by_day42','alive_outpatient_day42','conditional_isi'):
@@ -91,7 +91,7 @@ class ProbabilityAdmission(unittest.TestCase):
             bad=copy.deepcopy(response);bad['result']['intervention']['survival_day42']=.51
             raw=canonical(bad)
             with self.assertRaises(ValueError):verify(raw_request,raw,root,request_sha256=sha256(raw_request),response_sha256=sha256(raw),evaluator=helper.authority)
-            for label in ('missing_symptom_pilot','probability_pilot_substitution','inflated_symptom_se','wrong_death_times','omitted_admission_times','wrong_nested_se','unqualified_interval'):
+            for label in ('missing_symptom_pilot','probability_pilot_substitution','inflated_symptom_se','wrong_death_times','omitted_admission_times','wrong_nested_se','unqualified_interval','missing_probability_pilot','substituted_probability_pilot','partial_probability_pilot'):
                 bad=copy.deepcopy(response)
                 if label=='missing_symptom_pilot':bad['interruption_precision'][3]['matched_pilot'].update(path='missing/pilot.json',sha256='f'*64)
                 elif label=='probability_pilot_substitution':bad['interruption_precision'][3]['matched_pilot']=plan
@@ -99,7 +99,11 @@ class ProbabilityAdmission(unittest.TestCase):
                 elif label=='wrong_death_times':bad['result']['intervention']['death_times_days']=[999.]
                 elif label=='omitted_admission_times':bad['result']['intervention']['admission_times_days']=[]
                 elif label=='wrong_nested_se':bad['result']['intervention']['conditional_isi']['isi']['standard_error']=999.
-                else:bad['result']['intervention']['conditional_isi']['isi']['interval']=dict(lower=0.,upper=28.,level=.95,interval_type='confidence')
+                elif label=='unqualified_interval':bad['result']['intervention']['conditional_isi']['isi']['interval']=dict(lower=0.,upper=28.,level=.95,interval_type='confidence')
+                elif label=='substituted_probability_pilot':bad['interruption_precision'][0]['matched_pilot']=symptom_refs['intervention']
+                else:
+                    bad['interruption_precision'][0]['matched_pilot'].update(id='unrelated',path='missing/probability-pilot.json',sha256='f'*64,bytes=123)
+                    if label=='partial_probability_pilot':bad.update(status='pending',reason='Partial vector still must bind its computed probability pilot')
                 raw=canonical(bad)
                 with self.subTest(label=label),self.assertRaises((ValueError,FileNotFoundError)):verify(raw_request,raw,root,request_sha256=sha256(raw_request),response_sha256=sha256(raw),evaluator=helper.authority)
         finally:helper.tearDown()

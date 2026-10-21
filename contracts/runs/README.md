@@ -64,6 +64,11 @@ positive realized SE and `RMS_SE - 1.645*MCSE(RMS_SE)`; probability dispersion
 does not replace this unchanged symptom policy. A smaller authenticated-request
 comparison SE only tightens that bound. Conditional pilot refinements and the
 separate response approximation budget use the symptom's own ISI epsilon.
+Authenticated pilot and probability-truth particle levels/final level must equal
+the separate symptom response accuracy levels, including partial vectors.
+Computed numerical probability references must equal the already authenticated
+request comparator pilot plan; nonexistent or substituted reported references
+cannot accompany otherwise valid numbers.
 Missing/undefined/zero pilots leave symptoms uncomputed while retaining the
 labelled event vector.
 

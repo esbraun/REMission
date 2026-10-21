@@ -4,25 +4,29 @@ import hashlib
 import importlib.util
 import json
 import os
+import runpy
 from pathlib import Path
 import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[5]
-OUT=Path(__file__).resolve().parent
+OUT=Path(__file__).resolve().parent.parent/'repair-levels'
 PARENT=OUT.parent
 BASE='69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e'
-REJECTED='2a7726be23864cf9c933295f1d33da3d6fbedd1b'
+REJECTED='95a48144b936c690aa86e5743a5330a594403521'
 RUNTIME='sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa'
-PREFIX=os.environ.get('REMISSION_INTERFACE_IMAGE_PREFIX','remission-interfaces-repair')
+PREFIX=os.environ.get('REMISSION_INTERFACE_IMAGE_PREFIX','remission-interfaces-levels-repair')
 
 
 def run(command):
     start=datetime.now(timezone.utc).isoformat();result=subprocess.run(command,cwd=ROOT,capture_output=True,text=True,encoding='utf-8')
-    return dict(command=command,started_utc=start,finished_utc=datetime.now(timezone.utc).isoformat(),exit_code=result.returncode,stdout=result.stdout,stderr=result.stderr)
+    return dict(command=command,cwd=ROOT.as_posix(),started_utc=start,finished_utc=datetime.now(timezone.utc).isoformat(),exit_code=result.returncode,stdout=result.stdout,stderr=result.stderr)
 
 
 def main():
+    if Path.cwd().resolve()!=ROOT.resolve():raise ValueError('verification cwd must match executing checkout')
+    helpers=runpy.run_path(str(Path(__file__).with_name('command_paths.py')))
+    helpers['owned_path'](OUT,ROOT)
     assert subprocess.check_output(['docker','image','inspect','remission-foundation-runtime:candidate','--format','{{.Id}}'],cwd=ROOT,text=True).strip()==RUNTIME
     builds=[]
     for role,file,target in [('service','service.Dockerfile','service'),('learner','learner.Dockerfile',None),('tests','service.Dockerfile','integration-tests')]:
@@ -32,17 +36,15 @@ def main():
     (OUT/'build-results.json').write_text(json.dumps(builds,indent=2)+'\n',encoding='utf-8')
     if any(r['exit_code'] for r in builds):raise SystemExit(1)
     prior=json.loads((PARENT/'current-interface-check-results.json').read_text())
-    commands=[r['command'] for r in prior['checks'][:16]]
+    commands=helpers['rebind_commands']([r['command'] for r in prior['checks'][:16]],ROOT,sys.executable)
     for command in commands:
-        if command[0].lower().endswith('python.exe'):command[0]=sys.executable
         for index,value in enumerate(command):
-            if value.startswith('type=bind,source='):command[index]=f'type=bind,source={ROOT.as_posix()},target=/workspace,readonly'
             if value=='remission-interfaces-tests:candidate':command[index]=f'{PREFIX}-tests:candidate'
     # Reuse the observed consumer harness with ONLY its output directory/tag
     # redirected in this process; its original committed2a observations stay.
-    consumer_code="import importlib.util,os,pathlib; p=pathlib.Path('docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/verify_consumers.py'); s=importlib.util.spec_from_file_location('owned_consumer_probe',p); m=importlib.util.module_from_spec(s);s.loader.exec_module(m);m.OUT=p.parent/'repair';m.IMAGE_PREFIX="+repr(PREFIX)+";m.main()"
+    consumer_code="import importlib.util,os,pathlib; p=pathlib.Path('docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/verify_consumers.py'); s=importlib.util.spec_from_file_location('owned_consumer_probe',p); m=importlib.util.module_from_spec(s);s.loader.exec_module(m);m.OUT=pathlib.Path("+repr(OUT.relative_to(ROOT).as_posix())+");m.IMAGE_PREFIX="+repr(PREFIX)+";m.main()"
     commands.append([sys.executable,'-c',consumer_code])
-    commands += [['git','diff','--quiet',REJECTED,'--',PARENT.relative_to(ROOT).as_posix(),':!'+OUT.relative_to(ROOT).as_posix()+'/**']]
+    commands += [['git','diff','--quiet',REJECTED,'--',PARENT.relative_to(ROOT).as_posix(),':!'+OUT.relative_to(ROOT).as_posix()+'/**',*[':!'+(PARENT/'repair'/name).relative_to(ROOT).as_posix() for name in ('verify_repair.py','verify_affected.py','command_paths.py')]]]
     checks=[]
     for command in commands:
         record=run(command);checks.append(record);print('PASS' if not record['exit_code'] else 'FAIL',' '.join(command[-4:]),flush=True)
@@ -53,8 +55,9 @@ def main():
     # Explicit command avoids depending on a prior fixture command's suffix.
     container=['docker','run','--rm','--network','none','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--tmpfs','/tmp:rw,noexec,nosuid,size=512m','--mount',f'type=bind,source={ROOT.as_posix()},target=/workspace,readonly','--workdir','/workspace','--env','PYTHONPATH=/workspace',RUNTIME,'python']
     observations=[]
-    for name in ('independent-probes-2a.py','probe_all_mutations.py'):
-        record=run(container+[str((OUT/name).relative_to(ROOT)).replace('\\','/')]);observations.append(record)
+    probe_paths=[PARENT/'repair/independent-probes-2a.py',PARENT/'repair/probe_all_mutations.py',OUT/'independent-level-probe-95a.py',OUT/'independent-probability-pilot-probe-95a.py']
+    for path in probe_paths:
+        name=path.name;record=run(container+[path.relative_to(ROOT).as_posix()]);observations.append(record)
         (OUT/(name+'.postrepair-stdout.log')).write_bytes(record['stdout'].encode('utf-8'))
         (OUT/(name+'.postrepair-stderr.log')).write_bytes(record['stderr'].encode('utf-8'))
         print('OBSERVED',name,'exit',record['exit_code'],flush=True)
@@ -70,7 +73,7 @@ def main():
         roles[role]=dict(**result,source_sha256=expected,match=True)
     sources={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in (ROOT/'contracts/runs').rglob('*') if p.is_file() and '__pycache__' not in p.parts}
     (OUT/'source-and-images.json').write_text(json.dumps(dict(base=BASE,rejected=REJECTED,runtime=RUNTIME,images=images,actual_public_image_byte_probes=roles,private_contract_source_sha256=sources,claim='Own source only; no old image tags/stacks/ports/DBs modified; private contract modules excluded from consumers'),indent=2)+'\n',encoding='utf-8')
-    if any(r['exit_code'] for r in checks) or observations[0]['exit_code']!=1 or observations[1]['exit_code']!=0:raise SystemExit(1)
+    if any(r['exit_code'] for r in checks) or observations[0]['exit_code']!=1 or any(r['exit_code']!=0 for r in observations[1:]):raise SystemExit(1)
 
 
 if __name__=='__main__':main()

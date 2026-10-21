@@ -532,6 +532,7 @@ def validate_truth_response(request: TruthRequest, response: TruthResponse, *, q
             for index,component in enumerate(COMPONENTS):
                 p=precision[component]
                 if p.status!='computed':continue
+                if p.method=='numerical' and p.matched_pilot!=request.comparator_pilot:raise ValueError('reported probability matched pilot differs from authenticated request plan')
                 arm,name=component.split('.')
                 if (p.method!='numerical')!=(component in qualified_probability['structural_proofs']):raise ValueError('structural versus numerical component method mismatch')
                 if abs(getattr(getattr(result,arm),name)-float(qualified_probability['mean'][index]))>1e-12 or abs(p.numerical_standard_error-float(qualified_probability['mcse'][index]))>1e-12 or abs(p.smallest_estimator_se-float(qualified_probability['matched_se'][index]))>1e-12:raise ValueError('reported probability component differs from qualified files')
@@ -552,6 +553,12 @@ def validate_truth_response(request: TruthRequest, response: TruthResponse, *, q
                     if matched is None or abs(p.smallest_estimator_se-matched)>1e-12:raise ValueError('claimed symptom SE differs from its authenticated raw pilot and actual tighter comparison')
                     if target.truth_kind=='observed_history_conditional_average':
                         if response.conditional_accuracy is None:raise ValueError('computed conditional ISI needs separate symptom accuracy evidence')
+                        from .probability import SymptomPilotQualification
+                        qualification=qualified_probability.get('symptom_qualifications',{}).get(p.component)
+                        levels=response.conditional_accuracy.particle_levels
+                        if (not isinstance(qualification,SymptomPilotQualification) or levels!=qualification.particle_levels or levels[-1]!=qualification.final_particle_level
+                            or levels!=qualified_probability.get('probability_truth_particle_levels') or levels[-1]!=qualified_probability.get('probability_truth_final_particle_level')):
+                            raise ValueError('symptom accuracy must match authenticated symptom pilot and probability truth particle levels/final level')
                         response.conditional_accuracy.require_accuracy(min(.05,.1*matched))
     if response.status!='computed':return
     if target.kind=='clinical':

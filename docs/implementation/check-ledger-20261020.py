@@ -223,6 +223,11 @@ def main():
     assert rejected["disposition"] == "changes_requested"
     assert git("hash-object", "--no-filters", rejected["path"]).strip() == "bb708c7e9bffea3ff997fd0eafba05303b6f94fd"
     assert git("hash-object", "--no-filters", rejected["evidence_manifest_path"]).strip() == "a732313d5a0b1957ca5c724691728db3d709a489"
+    rejected95 = assignment["prior_reviews"][1]
+    assert rejected95["reviewed_head"] == "95a48144b936c690aa86e5743a5330a594403521" and rejected95["reviewed_base"] == generator_base
+    assert rejected95["disposition"] == "changes_requested"
+    assert git("hash-object", "--no-filters", rejected95["path"]).strip() == "4401db3d1c68a34d2bf604a4289bfcb5a8c2917d"
+    assert git("hash-object", "--no-filters", rejected95["evidence_manifest_path"]).strip() == "508141b5654038cebbd9599a9a5266b5971a831c"
     interpretation = probability["iid_admission_interpretation"]
     assert interpretation["status"] == "root_accepted_conservative_engineering_interpretation"
     assert git("hash-object", "--no-filters", interpretation["path"]).strip() == "aede75810ca4ff2178b5f4126d0f80f050366618"

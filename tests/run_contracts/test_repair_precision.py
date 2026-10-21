@@ -76,11 +76,13 @@ class RepairPrecision(unittest.TestCase):
             data.update(patient_id=history.patient_id,information_set='available_observed_history',observed_history=artifact(helper.root,'H','repair/H.json',history.model_dump(mode='json'),'observed'),smallest_estimator_se=.001)
             request=load(TruthRequest,data);dummy=artifact(helper.root,'private-evidence','repair/post-auth-fixture.json',dict(kind='post_auth_validator_fixture_not_a_producer_result'),'evaluator_result');evidence_ref=load(Artifact,dummy)
             stats=symptom_pilot_statistics([[12.,16.] for _ in range(1000)])
-            qualified=dict(mean=np.array([.9,.2,.7,.9,.2,.7]),mcse=np.repeat(.00001,6),matched_se=np.repeat(.1,6),batches=32,structural_proofs={},conditional_isi=[dict(status='computed',count=224000,value=14.,mcse=.000005)]*2,event_times={arm:dict(death_times_days=[20.],admission_times_days=[10.]) for arm in ('intervention','comparator')},symptom_pilots={arm:[[stats,stats,stats]] for arm in ('intervention','comparator')},pilot_trial_refs_sha256='a'*64,symptom_matched_se={})
+            qualified=dict(mean=np.array([.9,.2,.7,.9,.2,.7]),mcse=np.repeat(.00001,6),matched_se=np.repeat(.1,6),batches=32,structural_proofs={},conditional_isi=[dict(status='computed',count=224000,value=14.,mcse=.000005)]*2,event_times={arm:dict(death_times_days=[20.],admission_times_days=[10.]) for arm in ('intervention','comparator')},symptom_pilots={arm:[[stats,stats,stats]] for arm in ('intervention','comparator')},pilot_trial_refs_sha256='a'*64,symptom_matched_se={},symptom_qualifications={},pilot_particle_levels={'fixture-configuration':[1024,4096,16384]},probability_truth_particle_levels=[1024,4096,16384],probability_truth_final_particle_level=16384)
             bindings={}
             for arm in ('intervention','comparator'):
                 component=arm+'.conditional_isi';bindings[arm]=artifact(helper.root,'pilot-'+arm,'repair/pilot-'+arm+'.json',dict(kind='interruption_symptom_pilot_binding',request_sha256=sha256(canonical(request.model_dump(mode='json'))),component=component,comparison='own_arm_alive_outpatient_ISI_mean',unit='ISI_points',probability_evidence=dummy,trial_refs_sha256='a'*64),'evaluator_result')
-                qualified['symptom_matched_se'][component]=qualify_symptom_pilot(load(Artifact,bindings[arm]),helper.root,request,evidence_ref,qualified,component)
+                qualification=qualify_symptom_pilot(load(Artifact,bindings[arm]),helper.root,request,evidence_ref,qualified,component)
+                qualified['symptom_matched_se'][component]=qualification.smallest_estimator_se
+                qualified['symptom_qualifications'][component]=qualification
                 self.assertEqual(qualified['symptom_matched_se'][component],.001)
             def arm(action):return dict(action=action,survival_day42=.9,admission_by_day42=.2,alive_outpatient_day42=.7,conditional_isi=dict(numerator_count=224000,denominator_count=320000,conditioning_probability=.7,isi=dict(status='estimated',value=14.,unit='ISI_points',standard_error=.000005,interval=None)),death_times_days=[20.],admission_times_days=[10.])
             vector=dict(schema_version='1.0.0',synthetic=True,kind='interruption_result',estimand_id='EST-INT',estimand_version='1.0.0',horizon_days=42,intervention=arm(request.target.estimand.intervention),comparator=arm(request.target.estimand.comparator),interpretation='intervention_specific_conditional_populations_not_common_survivors',overall_ranking='suppressed')
@@ -95,6 +97,30 @@ class RepairPrecision(unittest.TestCase):
             for name in ('quadrature_change','within_filter_mcse','between_filter_mcse'):response['conditional_accuracy'][name]=.000001
             response['conditional_accuracy']['successive_differences']=[.000001,.000001]
             validate_truth_response(request,load(TruthResponse,response),qualified_probability=qualified)
+            four_levels=[1024,4096,16384,65536]
+            for overall in ('computed','pending'):
+                mismatch=copy.deepcopy(response);mismatch['conditional_accuracy']['particle_levels']=four_levels
+                if overall=='pending':mismatch.update(status='pending',reason='Partial vectors must retain verified final levels')
+                with self.subTest(pilot_levels=3,response_levels=4,overall=overall),self.assertRaisesRegex(ValueError,'particle levels/final level'):
+                    validate_truth_response(request,load(TruthResponse,mismatch),qualified_probability=qualified)
+            qualified_four=copy.deepcopy(qualified)
+            qualified_four.update(symptom_pilots={arm:[[stats]*4] for arm in ('intervention','comparator')},pilot_trial_refs_sha256='b'*64,pilot_particle_levels={'fixture-configuration':four_levels},probability_truth_particle_levels=four_levels,probability_truth_final_particle_level=65536)
+            response_four=copy.deepcopy(response);response_four['conditional_accuracy']['particle_levels']=four_levels
+            for index,which in ((3,'intervention'),(7,'comparator')):
+                binding=json.loads((helper.root/bindings[which]['path']).read_bytes());binding['trial_refs_sha256']='b'*64
+                ref=artifact(helper.root,'four-'+which,'repair/four-'+which+'.json',binding,'evaluator_result')
+                qualification=qualify_symptom_pilot(load(Artifact,ref),helper.root,request,evidence_ref,qualified_four,which+'.conditional_isi')
+                qualified_four['symptom_qualifications'][which+'.conditional_isi']=qualification
+                response_four['interruption_precision'][index]['matched_pilot']=ref
+            validate_truth_response(request,load(TruthResponse,response_four),qualified_probability=qualified_four)
+            for overall in ('computed','pending'):
+                mismatch=copy.deepcopy(response_four);mismatch['conditional_accuracy']['particle_levels']=[1024,4096,16384]
+                if overall=='pending':mismatch.update(status='pending',reason='Partial vectors must retain verified final levels')
+                with self.subTest(pilot_levels=4,response_levels=3,overall=overall),self.assertRaisesRegex(ValueError,'particle levels/final level'):
+                    validate_truth_response(request,load(TruthResponse,mismatch),qualified_probability=qualified_four)
+            wrong_truth=copy.deepcopy(qualified);wrong_truth['probability_truth_particle_levels']=four_levels;wrong_truth['probability_truth_final_particle_level']=65536
+            with self.assertRaisesRegex(ValueError,'particle levels/final level'):
+                validate_truth_response(request,load(TruthResponse,response),qualified_probability=wrong_truth)
             partial=copy.deepcopy(response);partial.update(status='pending',reason='Symptom precision remains pending')
             partial['interruption_precision'][3]['status']='pending'
             partial['result']['intervention']['conditional_isi'].update(numerator_count=7,denominator_count=10)
@@ -105,7 +131,7 @@ class RepairPrecision(unittest.TestCase):
             smaller=data|dict(smallest_estimator_se=.000001);new_request=load(TruthRequest,smaller)
             binding=json.loads((helper.root/bindings['intervention']['path']).read_bytes());binding['request_sha256']=sha256(canonical(new_request.model_dump(mode='json')))
             ref=artifact(helper.root,'pilot-new','repair/pilot-new.json',binding,'evaluator_result')
-            new_bound=qualify_symptom_pilot(load(Artifact,ref),helper.root,new_request,evidence_ref,qualified,'intervention.conditional_isi')
+            new_bound=qualify_symptom_pilot(load(Artifact,ref),helper.root,new_request,evidence_ref,qualified,'intervention.conditional_isi').smallest_estimator_se
             self.assertEqual(new_bound,.000001)
             bad=copy.deepcopy(response);bad['interruption_precision'][3]['smallest_estimator_se']=new_bound
             with self.assertRaises(ValueError):load(TruthResponse,bad)
