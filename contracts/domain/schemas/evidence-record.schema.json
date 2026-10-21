@@ -1,0 +1,155 @@
+{
+  "$id": "urn:remission:domain:1.0.0:evidence-record",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bibliography": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Bibliography",
+      "type": "string"
+    },
+    "consuming_requirements": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Consuming Requirements",
+      "type": "array"
+    },
+    "doi": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Doi"
+    },
+    "evidence_type": {
+      "enum": [
+        "real_literature_rationale",
+        "synthetic_quantitative_study",
+        "software_documentation"
+      ],
+      "title": "Evidence Type",
+      "type": "string"
+    },
+    "kind": {
+      "const": "evidence_record",
+      "title": "Kind",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "locator": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Locator",
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "rationale_only",
+        "synthetic_likelihood",
+        "software_api"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_version": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Source Version",
+      "type": "string"
+    },
+    "supported_claim": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Supported Claim",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "url": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Url",
+      "type": "string"
+    },
+    "verification_status": {
+      "enum": [
+        "unverified",
+        "verified",
+        "unavailable"
+      ],
+      "title": "Verification Status",
+      "type": "string"
+    },
+    "verified_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Verified At"
+    },
+    "year": {
+      "maximum": 2200,
+      "minimum": 1800,
+      "title": "Year",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "source_id",
+    "bibliography",
+    "year",
+    "url",
+    "doi",
+    "evidence_type",
+    "source_version",
+    "supported_claim",
+    "limitations",
+    "locator",
+    "verified_at",
+    "verification_status",
+    "consuming_requirements",
+    "role"
+  ],
+  "title": "EvidenceRecord",
+  "type": "object"
+}

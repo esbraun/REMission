@@ -1,0 +1,310 @@
+{
+  "$defs": {
+    "ConditionalSymptom": {
+      "additionalProperties": false,
+      "properties": {
+        "conditioning_probability": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Conditioning Probability",
+          "type": "number"
+        },
+        "denominator_count": {
+          "minimum": 0,
+          "title": "Denominator Count",
+          "type": "integer"
+        },
+        "isi": {
+          "discriminator": {
+            "mapping": {
+              "abstained": "#/$defs/Unavailable",
+              "estimated": "#/$defs/Estimated",
+              "failed": "#/$defs/Unavailable",
+              "inconclusive": "#/$defs/Unavailable",
+              "pending": "#/$defs/Unavailable",
+              "prior_only": "#/$defs/Unavailable",
+              "undefined": "#/$defs/Unavailable"
+            },
+            "propertyName": "status"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Estimated"
+            },
+            {
+              "$ref": "#/$defs/Unavailable"
+            }
+          ],
+          "title": "Isi"
+        },
+        "numerator_count": {
+          "minimum": 0,
+          "title": "Numerator Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "numerator_count",
+        "denominator_count",
+        "conditioning_probability",
+        "isi"
+      ],
+      "title": "ConditionalSymptom",
+      "type": "object"
+    },
+    "Estimated": {
+      "additionalProperties": false,
+      "properties": {
+        "interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Interval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "standard_error": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Standard Error"
+        },
+        "status": {
+          "const": "estimated",
+          "title": "Status",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "ISI_points",
+            "quality_points",
+            "function_points",
+            "probability",
+            "minutes",
+            "count"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "unit",
+        "standard_error",
+        "interval"
+      ],
+      "title": "Estimated",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "interval_type": {
+          "enum": [
+            "credible",
+            "confidence",
+            "prediction",
+            "monte_carlo"
+          ],
+          "title": "Interval Type",
+          "type": "string"
+        },
+        "level": {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Level",
+          "type": "number"
+        },
+        "lower": {
+          "title": "Lower",
+          "type": "number"
+        },
+        "upper": {
+          "title": "Upper",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "level",
+        "interval_type"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "InterventionOutcomes": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "MED_A",
+            "MED_B",
+            "behavioral_continue",
+            "behavioral_escalate",
+            "support_prompt",
+            "no_prompt",
+            "usual_care"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "admission_by_day42": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Admission By Day42",
+          "type": "number"
+        },
+        "admission_times_days": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "title": "Admission Times Days",
+          "type": "array"
+        },
+        "alive_outpatient_day42": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Alive Outpatient Day42",
+          "type": "number"
+        },
+        "conditional_isi": {
+          "$ref": "#/$defs/ConditionalSymptom"
+        },
+        "death_times_days": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "title": "Death Times Days",
+          "type": "array"
+        },
+        "survival_day42": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Survival Day42",
+          "type": "number"
+        }
+      },
+      "required": [
+        "action",
+        "survival_day42",
+        "admission_by_day42",
+        "alive_outpatient_day42",
+        "conditional_isi",
+        "death_times_days",
+        "admission_times_days"
+      ],
+      "title": "InterventionOutcomes",
+      "type": "object"
+    },
+    "Unavailable": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "undefined",
+            "failed",
+            "abstained",
+            "pending",
+            "inconclusive",
+            "prior_only"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "reason"
+      ],
+      "title": "Unavailable",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:interruption-result",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "comparator": {
+      "$ref": "#/$defs/InterventionOutcomes"
+    },
+    "estimand_id": {
+      "const": "EST-INT",
+      "title": "Estimand Id",
+      "type": "string"
+    },
+    "estimand_version": {
+      "const": "1.0.0",
+      "title": "Estimand Version",
+      "type": "string"
+    },
+    "horizon_days": {
+      "const": 42,
+      "title": "Horizon Days",
+      "type": "integer"
+    },
+    "interpretation": {
+      "const": "intervention_specific_conditional_populations_not_common_survivors",
+      "title": "Interpretation",
+      "type": "string"
+    },
+    "intervention": {
+      "$ref": "#/$defs/InterventionOutcomes"
+    },
+    "kind": {
+      "const": "interruption_result",
+      "title": "Kind",
+      "type": "string"
+    },
+    "overall_ranking": {
+      "const": "suppressed",
+      "title": "Overall Ranking",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "estimand_id",
+    "estimand_version",
+    "horizon_days",
+    "intervention",
+    "comparator",
+    "interpretation",
+    "overall_ranking"
+  ],
+  "title": "InterruptionResult",
+  "type": "object"
+}

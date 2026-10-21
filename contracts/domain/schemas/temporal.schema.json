@@ -1,0 +1,234 @@
+{
+  "$defs": {
+    "Parent": {
+      "additionalProperties": false,
+      "properties": {
+        "day_offset": {
+          "maximum": 0,
+          "title": "Day Offset",
+          "type": "integer"
+        },
+        "variable": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Variable",
+          "type": "string"
+        }
+      },
+      "required": [
+        "variable",
+        "day_offset"
+      ],
+      "title": "Parent",
+      "type": "object"
+    },
+    "Variable": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "parents": {
+          "items": {
+            "$ref": "#/$defs/Parent"
+          },
+          "title": "Parents",
+          "type": "array"
+        },
+        "phase": {
+          "minimum": 0,
+          "title": "Phase",
+          "type": "integer"
+        },
+        "postassignment_role_by_estimand": {
+          "additionalProperties": {
+            "enum": [
+              "covariate",
+              "treatment",
+              "mediator",
+              "outcome",
+              "observation_indicator",
+              "intercurrent_event",
+              "administrative"
+            ],
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "EST-VISIT",
+              "EST-N1",
+              "EST-ESC-STAGE",
+              "EST-ESC-STRATEGY",
+              "EST-MRT",
+              "EST-POLICY",
+              "EST-INT"
+            ]
+          },
+          "title": "Postassignment Role By Estimand",
+          "type": "object"
+        },
+        "role_by_estimand": {
+          "additionalProperties": {
+            "enum": [
+              "covariate",
+              "treatment",
+              "mediator",
+              "outcome",
+              "observation_indicator",
+              "intercurrent_event",
+              "administrative"
+            ],
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "EST-VISIT",
+              "EST-N1",
+              "EST-ESC-STAGE",
+              "EST-ESC-STRATEGY",
+              "EST-MRT",
+              "EST-POLICY",
+              "EST-INT"
+            ]
+          },
+          "title": "Role By Estimand",
+          "type": "object"
+        },
+        "source_locator": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Source Locator",
+          "type": "string"
+        },
+        "unit": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "visibility": {
+          "enum": [
+            "observed",
+            "evaluator_only",
+            "administrative"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "phase",
+        "unit",
+        "visibility",
+        "parents",
+        "role_by_estimand",
+        "postassignment_role_by_estimand",
+        "source_locator"
+      ],
+      "title": "Variable",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:temporal",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "daily_factorization": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Daily Factorization",
+      "type": "array"
+    },
+    "id": {
+      "const": "TIME-01",
+      "title": "Id",
+      "type": "string"
+    },
+    "initial_distribution": {
+      "const": "must_be_versioned_by_G0_DGP_before_generation",
+      "title": "Initial Distribution",
+      "type": "string"
+    },
+    "irregular_visit_process": {
+      "const": "must_be_versioned_by_G0_DGP_before_generation",
+      "title": "Irregular Visit Process",
+      "type": "string"
+    },
+    "kind": {
+      "const": "temporal_contract",
+      "title": "Kind",
+      "type": "string"
+    },
+    "learner_cutoff_rule": {
+      "const": "event_at_lte_cutoff_recorded_and_available_strictly_before",
+      "title": "Learner Cutoff Rule",
+      "type": "string"
+    },
+    "pending_numerical_decisions": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Pending Numerical Decisions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "tie_rule": {
+      "const": "phase_then_stable_record_id_known_holds_and_withdrawals_before_draw",
+      "title": "Tie Rule",
+      "type": "string"
+    },
+    "timestamp_rule": {
+      "const": "timezone_aware_utc_order_local_calendar_preserved",
+      "title": "Timestamp Rule",
+      "type": "string"
+    },
+    "variables": {
+      "items": {
+        "$ref": "#/$defs/Variable"
+      },
+      "minItems": 1,
+      "title": "Variables",
+      "type": "array"
+    },
+    "version": {
+      "const": "1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "id",
+    "version",
+    "timestamp_rule",
+    "learner_cutoff_rule",
+    "tie_rule",
+    "daily_factorization",
+    "initial_distribution",
+    "irregular_visit_process",
+    "variables",
+    "pending_numerical_decisions"
+  ],
+  "title": "TemporalContract",
+  "type": "object"
+}
