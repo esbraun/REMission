@@ -1,6 +1,6 @@
 # Gates and release
 
-Specification revision: 2026-10-19. Status: requirements only; no implementation or validation result is asserted.
+Specification revision: 2026-10-20. Status: requirements only; no implementation or validation result is asserted.
 
 **Read first:** [00-scope-and-invariants.md](00-scope-and-invariants.md), [07-validation-protocol.md](07-validation-protocol.md). Read linked scenario and evidence entries only when needed.
 
@@ -9,6 +9,8 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 ## Gate context and acceptance
 
 All gates are **not executed** at this documentation revision. The index, shared scope and [engineering guidelines](../execution/engineering-guidelines.md) are common context; read only the listed bundle and relevant linked evidence/scenario entries. Input contract changes invalidate dependent evidence, not immutable historical records.
+
+Execute packages under the [worktree and reviewed-merge contract](../execution/delegation.md#worktree-isolation-and-reviewed-merges): every subagent has a separate Git worktree, independent review identifies the exact candidate head/base, and the orchestrator may open PRs and merge accepted branches after applicable checks and dependencies pass. Record review evidence, PR, and merge commit in the ledger. A package merge is not acceptance of unexecuted gates or outstanding human/clinical review.
 
 | Gate | Reading bundle | Required outputs and acceptance evidence |
 |---|---|---|
@@ -22,6 +24,12 @@ All gates are **not executed** at this documentation revision. The index, shared
 | G7 Reproduction | This document; accepted manifests; [handoff](../execution/verification-and-handoff.md) | Clean-checkout reproduction, pinned dependencies, input/model/DGP hashes, preserved limitations, separate human/clinical status |
 
 G0 precedes G1 and detailed UI design. G2 depends on accepted G1. G3 depends on shared G0/G1 and accepted G2 interfaces. G4 depends on G1 and G3 coordination contracts. A thin service shell can be built independently after G0; G5 acceptance requires the actual G2–G4 engines. G6 depends on the locked integrated version; G7 follows G6. Unresolved statistical failures cannot be relabeled as UX acceptance.
+
+### Methods library reading and acceptance
+
+G0 qualifies the [library decisions](../plans/methods/00-library-decisions.md), licenses/runtime support and offline artifact contracts. G1 consumes the numerical implementation guidance. G2 reads [Bayesian/borrowing steps](../plans/methods/01-bayesian-and-borrowing.md); G3/G4 read [experiments/support steps](../plans/methods/02-experiments-and-support.md). G5 consumes LIB-03 result metadata. G6/G7 read [validation and selective benchmarks](../plans/methods/03-validation-and-benchmarks.md), applicable source records and accepted runtime/artifact manifests.
+
+Library selection may rely on clear applicable existing evidence without a redundant benchmark. Require a targeted future DGP comparison only for a material unresolved choice; preserve the required 20-fit resource pilot and all statistical acceptance gates. No library-selection evidence or documentation check counts as accepted model/policy validation.
 
 ### RELEASE-01 — Separate evidence statuses
 

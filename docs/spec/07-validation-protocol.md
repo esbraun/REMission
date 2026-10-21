@@ -6,6 +6,12 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
+## LIB-BENCH — Selective future library comparisons
+
+Follow the [library validation and benchmark plan](../plans/methods/03-validation-and-benchmarks.md). Use clear applicable official/published evidence for settled library choices. Plan targeted synthetic-DGP comparisons only for material unresolved accuracy, numerical, runtime or resource questions; record the decision, matched target, cells, protocol and disposition. Do not add blanket library tournaments. No benchmarking is executed by this documentation revision.
+
+Library-selection evidence can avoid redundant comparative benchmarks; it cannot waive required analytic checks, SBC, causal recovery, null calibration, complete-cohort runs or reproduction. The 20-fit runtime/storage pilot below remains resource planning for expensive suites, not a required bake-off. Use library interval/bootstrap routines with the declared independent sampling units, not their default row-level assumptions. [Software evidence](../evidence/software-libraries.md).
+
 ## VAL-01 — Prespecified evaluation design
 
 Use ADEMP: aims, data-generating mechanisms, estimands, methods and performance measures. Each protocol names cells from the [scenario catalog](scenario-catalog.md), matching estimands, model/prior versions, seeds, repetition counts, stopping/failure rules and artifacts. Freeze it before confirmation. [sim-ademp](../evidence/simulation.md#sim-ademp)

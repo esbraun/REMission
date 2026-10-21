@@ -1,5 +1,13 @@
 # Documentation migration verification
 
+## Methods library revision verification (October 19, 2026)
+
+- Added four sequenced methods planning documents and a software evidence register. Linked selected libraries, implementation steps and selective future DGP benchmarking through the plan, worker entry point, engineering/runtime guidance, canonical component specifications, gate reading bundles and requirement map.
+- Checked the final saved revision across all 49 Markdown files in the root plan/docs set, including new untracked documents: 927 local links/fragments, balanced fenced blocks, trailing whitespace and the under-400-line convention; zero errors. The five new documents contain 58, 50, 50, 59 and 133 lines respectively.
+- Checked tracked changes with git diff --check; no whitespace errors. Git reported an LF-to-CRLF normalization notice for the evidence index, not a failed content check. New untracked Markdown is covered by the separate content checks above.
+- Reviewed library-selection versus project-validation boundaries, RBesT weight translation, WCLS correction differences, actual-Python SBC, and oracle/leakage restrictions for consistency with existing requirements. This was an author consistency review, not an independent adversarial review.
+- No packages were installed or qualified in a runnable stack. No benchmark, model fit, SBC study, DGP simulation, application test, clinician study or human-factors validation was executed. Clear existing evidence may settle library choices; mandatory implementation/statistical gates remain pending.
+
 ## Engineering and skill revision verification (October 19, 2026)
 
 - Installed React best-practices, composition-patterns and web-design-guidelines using the system skill-installer helper at upstream commit `063bee94c3f4df8453406c830b0a7df0f2860278`. Compared every installed file byte-for-byte by SHA-256 against the pinned archive: 76 React, 14 composition and 1 web-design files matched.

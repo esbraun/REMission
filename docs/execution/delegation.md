@@ -10,11 +10,27 @@ Independent methods review checks the generator and truth evaluator against anal
 
 ## Delegation and integration contract
 
-The orchestrator is the only owner of task scheduling, gate status, integration ordering, and final PR coordination. All work packages have subagent owners; each package also receives independent review. Reuse workers across related tasks instead of spawning an unbounded agent per bullet. Required work is never dropped because the agent limit is reached: queue it.
+Use one orchestrator thread for user communication and feedback, plan and gate progress, task distribution, dependency scheduling, consolidated reporting, and reviewed PR integration. It assigns worktrees and ownership, opens PRs, and may merge accepted worktree branches under the procedure below; subagents perform technical work, including source integration edits and conflict resolution. All work packages have subagent owners, including exploration, technical planning, critique, implementation, integration edits, testing, evidence inspection, documentation, and release verification. The orchestrator uses returned review evidence to update gate status rather than performing the review itself. Each package receives independent review.
 
-Suggested roles are contract/workflow, simulator/data, Bayesian methods, experiments/support, service/integration, frontend, browser/accessibility, independent methods review, and release/documentation. These are responsibilities, not a requirement to run nine agents simultaneously. Leave capacity for integration and review within the actual runtime limit.
+The [entry point's model policy](../../implementation-prompt.md#launch-contract) is mandatory: `gpt-6-astra` at `medium` for planning, review, and critique; `gpt-6.1-sol` at `high` for implementation, integration, repairs, and verification; `gpt-6-luna` at `high` for exploration, summaries, and lightweight helpers. Sol implementation may increase to `xhigh` for difficult work without user confirmation; record the reason in the ledger and handoff. Do not silently substitute unsupported models or efforts.
 
-Before parallel writes, allocate disjoint paths or isolated worktrees. If worktrees are supported, branch workers from a known integration commit and integrate reviewed commits in dependency order. If workers share one tree, enforce exclusive file ownership; workers must not commit the whole shared worktree or stage other workers' files. Reserve dependency manifests, lockfiles, root configuration, shared schemas, generated clients, and migration numbering for the designated integration worker. Schedule cross-cutting changes explicitly.
+Keep at most two subagent threads concurrently open, excluding the primary orchestrator, and honor any lower runtime limit. Count idle open threads as well as running ones. Only the orchestrator may spawn agents or distribute tasks; workers request Luna assistance through it and do not spawn descendants. A helper occupies one of the same two slots. When both slots are occupied, queue the helper request, let independent work finish, and release a completed thread before assigning the helper. Never make both workers wait indefinitely for queued helpers: checkpoint and release a waiting worker if needed, preserving its changes and resumption instructions. Reuse suitable workers across related tasks; queue required work instead of dropping it.
+
+Use the runtime's supported lifecycle controls to release completed threads and confirm capacity before replacements. Interrupting or finishing a turn does not prove that a thread is closed. If the runtime cannot close threads, enforce the cap by reusing existing threads only when they can run the required model and effort; otherwise report the capability blocker and retain the queued work. Follow the [runtime configuration checks](runtime-and-workflow.md#subagent-runtime-configuration).
+
+Suggested roles are contract/workflow, simulator/data, Bayesian methods, experiments/support, service/integration, frontend, browser/accessibility, independent methods review, and release/documentation. These are responsibilities assigned in waves within the two-subagent cap. A separate Astra reviewer must inspect implementation and reproduce relevant checks; switching the implementing worker's role or model does not make its self-review independent. Route findings to a Sol worker for correction and then back to the independent reviewer. Apply the same independent critique discipline to technical plans before dependent implementation.
+
+### Worktree isolation and reviewed merges
+
+Every subagent works in its own Git worktree, including read-only explorers, planners, Luna helpers, independent reviewers, browser workers, and release workers. Before dispatch, provision a distinct absolute checkout path and record its base commit and task branch. Use supported managed-worktree tools when available, or native Git worktree commands. Pass the path explicitly in the assignment; spawning a thread alone is not isolation. Each worker verifies the worktree root and HEAD, sets shell workdir to that root, and confines edits, generated artifacts, staging, and commits to its assigned checkout. Never share the orchestrator's checkout or another live agent's worktree. Report unavailable isolation as a blocker; there is no shared-tree fallback.
+
+Writing workers use separate task branches created from an accepted integration commit. Read-only agents may use detached worktrees; reviewers must inspect the exact candidate commit in their own checkout, without checking out a branch already owned by a worker. A Luna helper inspecting pending work needs a committed checkpoint or a bounded evidence artifact, not access to a live worker checkout. Reused threads retain exclusive worktree ownership; before reassignment, preserve pending changes and verify the new task's base. Worktrees do not add agent slots: the two-subagent cap still covers helpers and reviewers.
+
+Allocate bounded write scopes even across isolated worktrees. Reserve dependency manifests, lockfiles, root configuration, shared schemas, generated clients, and migration numbering for the designated integration worker. Schedule cross-cutting edits explicitly. Publish each candidate as committed changes with its exact head SHA, base SHA, acceptance results, and evidence paths; stop writes to that candidate during review.
+
+The orchestrator is explicitly authorized to open PRs and merge worktree branches into the assigned integration target without another user confirmation when the independent Astra reviewer records a ready-to-ship disposition for that exact head/base, all required task/gate and repository checks pass, findings are resolved, and prerequisite packages are accepted. Observe branch protections and required approvals; do not bypass them. Merge in dependency order and record the PR URL, reviewed head/base, reviewer evidence, and resulting merge commit. Merging a package does not satisfy unrelated or outstanding human/clinical gates.
+
+If the candidate head or target base changes, obtain refreshed review and rerun affected checks before merging. Assign conflicts, rebases, and source repairs to a Sol integration worker in its own worktree, then submit the resulting candidate to Astra again. The orchestrator may execute the accepted merge, but does not resolve source conflicts itself. After merging, have a worker verify the integrated result and update downstream base commits. Archive/remove a worktree only after its needed commits and artifacts are preserved; retain failed or unfinished work for resumption. Closing an agent thread does not require deleting its worktree.
 
 Workers read their assigned plan sections and relevant shared contracts, not just a coordinator's paraphrase. A change to a shared interface becomes a versioned contract proposal; integration accepts it and informs consumers before dependent work proceeds. On a worker failure, preserve its changes, record the failure, and resume or reassign the task with explicit ownership. Stop dependent tasks rather than filling the gap with invented results.
 
@@ -30,15 +46,33 @@ truth_contract: <method, information set, numerical uncertainty>
 source_ids: [<supporting evidence IDs>]
 failure_policy: <declared failure and abstention behavior>
 owner_role: service
+owner_thread: <observed subagent thread ID>
+agent_model: gpt-6.1-sol
+reasoning_effort: high
+effort_escalation_reason: null # required when implementation increases to xhigh
+helper_requests: [] # task, inputs, expected summary, dependency, queued/running/done
 depends_on: [P0-CONTRACTS, P1-REPLAY]
 base_commit: <observed commit>
+worktree_path: <absolute worker checkout path>
+task_branch: <worker branch>
+integration_target: <assigned target branch>
+candidate_commit: <exact committed review candidate>
 write_paths: [<assigned paths>]
 inputs: [<versioned contracts and fixture IDs>]
 outputs: [<implementation, tests, documentation>]
 acceptance: [<observable checks and commands>]
 reviewer_role: invariant-review
+reviewer_thread: <separate subagent thread ID when assigned>
+reviewer_worktree: <separate absolute checkout pinned to candidate_commit>
+reviewer_model: gpt-6-astra
+reviewer_reasoning_effort: medium
 status: queued # running | needs_review | failed | blocked | complete
 evidence: [<result manifests and artifact paths>]
+review_disposition: pending # changes_requested | ready_to_ship
+reviewed_head: null
+reviewed_base: null
+pr_url: null
+merge_commit: null
 blocker: null
 ```
 
@@ -46,11 +80,23 @@ blocker: null
 
 ```text
 You own task <ID>: <concrete behavior>.
+Assigned model/effort: <model>/<effort> from the entry point's model policy.
+Report unavailable settings; do not silently substitute. For difficult Sol
+implementation, increase high to xhigh if supported and record the reason.
+Only the orchestrator assigns tasks or spawns agents. Request Luna help from
+it with the bounded question, inputs, expected summary, and whether you can
+continue independent work. Helpers share the global two-subagent limit.
+Send user questions and decisions to the orchestrator; do not solicit feedback
+directly or manage the master plan. Return a checkpoint if asked to free a slot.
 Apply the playbook's Codex guide rules: act promptly, batch independent reads,
 use native tools and patching, reuse code, preserve type safety and unrelated
 edits, surface failures, and finish through verification. Set shell workdir.
 Read plan.md sections <sections>, implementation-prompt.md, applicable
 AGENTS.md, and contracts <paths/versions>. Base commit: <commit>.
+Work only in your own Git worktree <absolute path>, task branch <branch>,
+integration target <target>. Verify worktree root and HEAD before work and
+set shell workdir accordingly. Never edit another agent's checkout or the
+orchestrator's checkout. Report missing isolation rather than sharing a tree.
 Dependencies already accepted: <IDs and evidence>. Write only <paths>.
 Coordinate shared-interface changes with the orchestrator before editing them.
 
@@ -59,23 +105,38 @@ Implement <specific outputs>. Cover <normal flow>, <failure flow>, and
 results with their generation provenance. Do not change plan scope or claim
 stakeholder approval. Inspect existing code and tests before adding abstractions.
 
-Run <task-specific checks>. For visible UI changes, arrange a Playwright MCP
-handoff with the browser worker using <case IDs>, <URL>, and <expected behavior>.
+Run <task-specific checks>. For visible UI changes, request an orchestrator-routed
+Playwright MCP handoff using <case IDs>, <URL>, and <expected behavior>.
 You are not done until required verification and independent review are accepted.
 
-Return: task ID; changed files/commit or patch; contract versions; exact checks
-and outcomes; seed/data/model versions; evidence paths; limitations; blockers;
+Return: task ID; actual agent model/effort and escalation reason; helper requests
+and results; worktree path, branch, base and candidate commit; changed files;
+contract versions; exact checks and outcomes; seed/data/model versions;
+evidence paths; limitations; blockers;
 and integration instructions. Distinguish observed results from expectations.
+Commit the candidate and stop changing it during review. The orchestrator owns
+PR creation and merges after independent acceptance; do not merge it yourself.
 ```
 
 ### Review prompt
 
 ```text
+Use gpt-6-astra at medium in a thread separate from the implementing worker.
+Use your own worktree <absolute path>, detached at candidate <head SHA>;
+compare against target base <base SHA>. Verify both commits before review.
 Review task <ID> independently against plan.md sections <sections>, contract
 <version>, and accepted base <commit>. Inspect the diff and verification evidence.
 Check causal/temporal leakage, state transitions, invalid actions, fabricated
 outputs, and relevant failure paths. Reproduce targeted checks where needed.
 Return findings ordered by severity with file references and reproduction steps.
+Include actual model/effort, acceptance checks and outcomes, evidence paths,
+blockers, and any Luna helper requests routed through the orchestrator.
+For technical plans, critique dependencies, feasibility, and acceptance criteria
+before implementation. Do not edit the implementation or approve your own work.
+Route findings and user questions to the orchestrator for assignment or feedback.
+Return reviewed head/base SHAs and an explicit ready_to_ship or changes_requested
+disposition. Changed head or target base requires refreshed review and affected
+checks. Do not merge branches or change the candidate in your review worktree.
 If no findings, state the reviewed scope and remaining evidence gaps. You cannot
 approve an unexecuted acceptance check on the basis of an implementer's assertion.
 ```

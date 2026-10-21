@@ -6,6 +6,10 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
+## EXP-LIB — Reused inference and protocol machinery
+
+Follow the [experiment implementation steps](../plans/methods/02-experiments-and-support.md): NumPy assignment draws, shared PyMC N-of-1 inference and statsmodels/NumPy design-based SMART analysis. Project code owns schedule eligibility, carryover/rebound terms, support freezing, path probabilities and compatible-strategy covariance. Use library numerical solvers rather than a bespoke inference engine; preserve actual elapsed-time residual dependence and independent block/patient sampling units. [Software rationale](../evidence/software-libraries.md).
+
 ## EXP-01 — Validation contract
 
 N-of-1 inputs are randomized block assignments and observed outcomes; target the assignment effect under the frozen support policy. Truth is an intervention contrast, not necessarily a pharmacokinetic coefficient. Evaluate bias, coverage, interval width, inconclusive rates, early stopping and false superiority using S13–S16 and S29. [n1bayes](../evidence/experiments.md#n1bayes)

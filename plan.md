@@ -1,14 +1,24 @@
 # REMission development plan
 
-Revision: 2026-10-19. Build a synthetic research demonstration for adult outpatient leukemia chemotherapy insomnia care. No clinical efficacy, clinical validation, or executed model-validation result is claimed.
+Revision: 2026-10-20. Build a synthetic research demonstration for adult outpatient leukemia chemotherapy insomnia care. No clinical efficacy, clinical validation, or executed model-validation result is claimed.
 
 This file is the authoritative navigation index. Requirements live in the linked canonical specifications; the [execution entry point](implementation-prompt.md) defines how future workers load context.
 
 Start with [scope and invariants](docs/spec/00-scope-and-invariants.md), then the [gate reading bundles](docs/spec/08-gates-and-release.md). See [scenario catalog](docs/spec/scenario-catalog.md), [requirement map](docs/spec/requirement-map.md), [evidence rules](docs/evidence/README.md), and [revision history](docs/spec/revision-history.md).
 
+## Implementation coordination
+
+Use one orchestrator and at most two concurrent subagents with the [entry point's model assignments](implementation-prompt.md#launch-contract). Every subagent works in its own Git worktree, including planners, explorers, helpers, and reviewers. The orchestrator may open PRs and merge accepted worktree branches into assigned integration targets after independent review deems the exact head/base ready to ship, required checks pass, findings are resolved, and dependencies are accepted. Follow the canonical [worktree and merge procedure](docs/execution/delegation.md#worktree-isolation-and-reviewed-merges); source conflicts and repairs remain delegated. Integration does not replace G0–G7 or outstanding human/clinical acceptance.
+
 ## UX implementation planning sequence
 
 Start with [UX research and foundations](docs/plans/ux/00-research-and-foundations.md), which indexes the ordered plans for doctor accounts, panel dashboard, patient decisions, contextual guides, technical appendix and validation. The [adversarial review](docs/plans/ux/07-adversarial-review.md) records the completed plan review. These are application requirements, not implemented features or accepted human-factors results. The existing G0-G7 dependencies still apply.
+
+## Data science library and methods implementation plans
+
+Use the [methods library decisions](docs/plans/methods/00-library-decisions.md) and ordered Bayesian/borrowing, experiments/support and validation plans. Selected foundations are PyMC, compatible ArviZ, NumPy/SciPy, statsmodels and scikit-learn; StochTree supplies the matched BCF benchmark and COBA contextual OPE. RBesT, SBC and MRTAnalysis run offline. nutpie is a conditional accelerator. The [software evidence register](docs/evidence/software-libraries.md) records sources and limitations.
+
+Use existing applicable evidence to settle clear library choices. Plan selective synthetic-DGP comparisons only for consequential unresolved questions; no benchmarks were executed for this documentation revision. Required project validation and G0-G7 gates remain unchanged.
 
 ## Engineering and UI skills
 

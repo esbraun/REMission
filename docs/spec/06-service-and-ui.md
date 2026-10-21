@@ -187,7 +187,7 @@ These are engineering choices, not findings from clinical studies.
 - **Frontend:** React/TypeScript with an accessible component foundation; design tokens and component behavior informed by the NHS guidance, adapted to the local clinical environment rather than presented as an NHS product.
 - **Service:** Python/FastAPI with typed validation contracts.
 - **Storage:** immutable events and snapshots in a local database; DuckDB/Parquet for reproducible analytics. Keep identifiers separate from model features even though all records are synthetic.
-- **Bayesian engine:** PyMC or Stan, with ArviZ-style diagnostics; pin dependencies during implementation.
+- **Bayesian engine:** PyMC with explicit native NUTS initially and compatible ArviZ diagnostics; pin tested dependencies during implementation. Follow the [methods library decisions](../plans/methods/00-library-decisions.md). RBesT/SBC/MRTAnalysis operate offline through versioned artifacts; nutpie requires a recorded acceleration check.
 - **Workers:** batch historical fitting, posterior rollout, incremental new-data jobs, and policy evaluation. Do not run a full MCMC chain during a clinician's approval click.
 - **Adapters:** synthetic FHIR/EMR replay, Oura-like replay, patient-report replay, and literature/evidence registry.
 - **Simulator/evaluator:** separate process and storage permissions for hidden truth.
