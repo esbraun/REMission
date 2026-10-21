@@ -1,6 +1,6 @@
 # Gates and release
 
-Specification revision: 2026-10-19. Status: requirements only; no implementation or validation result is asserted.
+Specification revision: 2026-10-20. Status: requirements only; no implementation or validation result is asserted.
 
 **Read first:** [00-scope-and-invariants.md](00-scope-and-invariants.md), [07-validation-protocol.md](07-validation-protocol.md). Read linked scenario and evidence entries only when needed.
 
@@ -9,6 +9,8 @@ Specification revision: 2026-10-19. Status: requirements only; no implementation
 ## Gate context and acceptance
 
 All gates are **not executed** at this documentation revision. The index, shared scope and [engineering guidelines](../execution/engineering-guidelines.md) are common context; read only the listed bundle and relevant linked evidence/scenario entries. Input contract changes invalidate dependent evidence, not immutable historical records.
+
+Execute packages under the [worktree and reviewed-merge contract](../execution/delegation.md#worktree-isolation-and-reviewed-merges): every subagent has a separate Git worktree, independent review identifies the exact candidate head/base, and the orchestrator may open PRs and merge accepted branches after applicable checks and dependencies pass. Record review evidence, PR, and merge commit in the ledger. A package merge is not acceptance of unexecuted gates or outstanding human/clinical review.
 
 | Gate | Reading bundle | Required outputs and acceptance evidence |
 |---|---|---|
