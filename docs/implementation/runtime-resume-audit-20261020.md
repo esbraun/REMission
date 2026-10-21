@@ -8,7 +8,7 @@
 
 **Base:** `91a1679fb2a92ca60fed7a2365f760df756f55f9`
 
-## Finding
+## Historical finding (superseded below)
 
 There is no verified, actionable control in the current live runtime to close/release one of the existing collaboration children or change that same child's model and effort to GPT-6.1-Sol/high while retaining its identity and assigned worktree.
 
@@ -38,4 +38,22 @@ The resumed user goal remains active: build, load, and test the synthetic demons
 - [Codex App Server — OpenAI Learn](https://learn.chatgpt.com/docs/app-server) documents `thread/resume` for an existing `threadId` and states that resuming with a different model produces a warning and a one-time model-switch instruction.
 - [Developer commands — OpenAI Learn](https://learn.chatgpt.com/docs/developer-commands) documents `/subagents` for switching to inspect or continue an agent thread; it does not provide a command to release a completed collaboration child.
 
-No existing thread was closed, interrupted, resumed, messaged, or model-switched. No existing project files or runtime configuration were edited.
+No existing thread was closed, interrupted, resumed, messaged, or model-switched during the original Luna audit. No existing project files or runtime configuration were edited by that audit.
+
+## Superseding root-verified resolution
+
+2026-10-20, after the original audit: root resolved the lifecycle blocker using supported archival of an existing, verified child. This update is Sol's durable record of root-supplied observed tool evidence; Sol did not repeat lifecycle mutations. The immutable original review reports preserve their earlier blocked observations.
+
+1. Root read only named process environment keys in the planner/Luna workers. Planner `CODEX_THREAD_ID` was `01a15ccb-51c2-7422-9cf1-29137399d061`; Luna was `01a15cc9-7f45-79e1-90a9-40f4ef0bc5b9`. Root app `read_thread` matched each ID to that child's recent turns and assigned checkout before any mutation. Parent/root ID is `01a15cc8-bab2-73f3-bc3b-c2861965b8eb`. Canonical collaboration names alone were not used as app IDs.
+2. Root attempted app `send_message_to_thread` with Sol/high on the verified planner identity. The runtime rejected it: `direct app-server input is not allowed for multi-agent v2 sub-agents`. No model changed; this direct-app-input path is unsupported for these children and must not be retried as a lifecycle solution.
+3. Root called supported `mcp__codex_app__set_thread_archived` with `threadId=01a15ccb-51c2-7422-9cf1-29137399d061`, `hostId=local`, `archived=true`. The return confirmed `archived=true` for that exact existing planner.
+4. Root then called native `collaboration.list_agents`. It contained only root, independent critic Astra and Luna; planner was absent. That actual removal established slot release. An archive return by itself, a completed turn or interruption is insufficient evidence of capacity.
+5. Only after verifying removal, root spawned `/root/integration_sol` with explicit `gpt-6.1-sol` / `high` and a fresh exclusive worktree at the accepted base. Root subsequently verified Sol app ID `01a15cf4-3065-7063-b11e-3967008fe9a1` with `read_thread`, matching active worktree commands and named ID lookup. Root similarly verified critic ID `01a15ccb-d23c-7e10-a1c8-6a55a6719daf` against its own critique-checkout commands.
+
+Current counts are two non-Luna workers (Sol/high, independent Astra/medium), one Luna/high helper, three spawned workers plus root = four total. Native collaboration still has no close/model-change parameter. Explicit spawn/assignment settings are observed; no independent effective-model introspection is exposed. There was no silent substitution, extra orchestrator, new top-level task, nested worker, shared checkout or limits bypass. Source planner/readiness branches and old worktrees remain preserved.
+
+Operative procedure for future root-only replacement: preserve commits/checkpoint and assigned worktree, obtain the actual existing child's app identity from a named environment key, verify that identity via `read_thread`, archive only that child using the supported app operation, confirm its removal from native live inventory, then provision/spawn the correctly configured replacement within both limits. If identity verification, archive or removal fails, keep dependent work queued. Do not infer that a generic archive always closes every runtime child.
+
+Sources for this operative result are root's observed named-key lookups, app `read_thread`, rejected `send_message_to_thread`, successful `set_thread_archived`, subsequent native `list_agents`, and explicit Sol spawn configuration, communicated directly to this repair worker. The general official references above describe broader capabilities; they do not establish this specific v2 child lifecycle behavior. Tool documentation for `set_thread_archived` and `read_thread` supplies the supported app operations. No runtime settings or private session/auth files were modified.
+
+READY-FIX-01 and G0-PLAN-FIX-01 are now authored by the assigned Sol/high in its own worktree and await exact-head/base independent Astra review. G0 actual contracts, library probes and G1-G7 implementation remain unexecuted. The active goal remains the full real-algorithm synthetic hybrid demo; human-factors and clinical review are deferred, without invented acceptance or an engineering blocker.

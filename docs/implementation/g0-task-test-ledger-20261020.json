@@ -1,5 +1,5 @@
 {
-  "schema_status": "Planning index v1; not an application/shared contract schema",
+  "schema_status": "Planning index v2; explicit runnable and final-validation packages; not an application/shared contract schema",
   "created": "2026-10-20",
   "accepted_specification_base": "50403963d11cc51e6109a635f9a2b6b1031b8cf4",
   "gate_status": {
@@ -30,7 +30,7 @@
     "accepted_specification_base": "50403963d11cc51e6109a635f9a2b6b1031b8cf4",
     "worktree_path": null,
     "task_branch": null,
-    "integration_target": "launch/implementation-20261020",
+    "integration_target": "main",
     "candidate_commit": null,
     "reviewer_role": "independent reviewer",
     "reviewer_thread": null,
@@ -44,7 +44,8 @@
     "reviewed_base": null,
     "pr_url": null,
     "merge_commit": null,
-    "blocker": "Dependencies unaccepted; Sol dispatch additionally blocked by absent release/model-change lifecycle controls"
+    "blocker": "Dependencies unaccepted; lifecycle path verified available, dispatch still requires root inventory and exclusive accepted-base worktree",
+    "review_target_base": "c7cdf4a8415073d0b275064a0b0aca188fc022fe"
   },
   "method_profiles": {
     "contracts": {
@@ -647,7 +648,7 @@
       ]
     },
     {
-      "id": "G2-BAYES",
+      "id": "G2-BAYES-IMPL",
       "owner_role": "g2-bayes",
       "depends_on": [
         "G1-GENERATOR",
@@ -657,14 +658,51 @@
         "methods/bayesian/",
         "tests/methods/bayesian/"
       ],
-      "outputs": "Longitudinal/measurement models and rollouts; `methods/bayesian/`, `tests/methods/bayesian/`",
-      "inputs": "Accepted G1",
+      "outputs": "Independently reviewed runnable milestone for G2-BAYES; no final statistical or gate acceptance",
+      "inputs": "Accepted dependencies and G0 contracts; selected-release runtime and frozen smoke fixtures",
       "acceptance": [
-        "T-G2-BAYES: actual PyMC analytic posterior agreement, likelihood-sensitive SBC and fault rejection, four-chain final diagnostics, fixed-DGP recovery and nonidentification characterization"
+        "T-G2-BAYES-IMPL: independently reviewed actual PyMC/native-NUTS fit worker and rollouts; analytic posterior agreement and five smoke runs per relevant executable scenario family; runnable pinned configuration, diagnostics and checkpoint/resume commands. Malformed fit requests (unsupported estimand/data/prior versions, cutoff, seed or model/sampler configuration) are rejected before costly fit; instrument fit entry to observe zero invocations. Result manifests preserve backend/sampler/package versions, precision, diagnostic references and accepted/failed/abstained status. This accepts runnable implementation only; SBC, full-scale diagnostics and recovery remain mandatory under G2-BAYES."
       ],
       "methods_profile": "bayes",
       "test_ids": [
-        "T-G2-BAYES"
+        "T-G2-BAYES-IMPL"
+      ],
+      "nonmethods_fields": null,
+      "requirement_ids": [
+        "LIB-03"
+      ],
+      "canonical_docs": [
+        "docs/plans/methods/01-bayesian-and-borrowing.md",
+        "docs/spec/03-bayesian-models.md",
+        "docs/spec/scenario-catalog.md",
+        "docs/plans/methods/00-library-decisions.md",
+        "docs/spec/07-validation-protocol.md",
+        "docs/plans/methods/03-validation-and-benchmarks.md"
+      ],
+      "milestone_kind": "runnable-implementation",
+      "final_validation_task": "G2-BAYES"
+    },
+    {
+      "id": "G2-BAYES",
+      "owner_role": "g2-bayes",
+      "depends_on": [
+        "G2-BAYES-IMPL",
+        "G2-PILOT"
+      ],
+      "write_paths": [
+        "methods/bayesian/",
+        "tests/methods/bayesian/"
+      ],
+      "outputs": "Longitudinal/measurement models and rollouts; `methods/bayesian/`, `tests/methods/bayesian/`",
+      "inputs": "Accepted G2-BAYES-IMPL runnable milestone and accepted G2-PILOT resource report; all original final statistical requirements remain mandatory",
+      "acceptance": [
+        "T-G2-BAYES: actual PyMC analytic posterior agreement, likelihood-sensitive SBC and fault rejection, four-chain final diagnostics, fixed-DGP recovery and nonidentification characterization",
+        "T-G2-BAYES-LIB03: reproduce request pre-fit rejection and metadata/artifact checks from the runnable milestone on the final pinned backend; retain accepted/failed/abstained metadata with all final attempts"
+      ],
+      "methods_profile": "bayes",
+      "test_ids": [
+        "T-G2-BAYES",
+        "T-G2-BAYES-LIB03"
       ],
       "nonmethods_fields": null,
       "requirement_ids": [
@@ -758,18 +796,59 @@
         "S26",
         "S27",
         "S30",
-        "S31"
+        "S31",
+        "LIB-03"
       ],
       "canonical_docs": [
         "docs/plans/methods/01-bayesian-and-borrowing.md",
         "docs/spec/03-bayesian-models.md",
-        "docs/spec/scenario-catalog.md"
-      ]
+        "docs/spec/scenario-catalog.md",
+        "docs/plans/methods/00-library-decisions.md"
+      ],
+      "milestone_kind": "final-statistical-acceptance"
+    },
+    {
+      "id": "G2-BORROW-IMPL",
+      "owner_role": "g2-borrow",
+      "depends_on": [
+        "G2-BAYES-IMPL",
+        "G0-LIB"
+      ],
+      "write_paths": [
+        "methods/borrowing/",
+        "offline/r/",
+        "methods/comparators/"
+      ],
+      "outputs": "Independently reviewed runnable milestone for G2-BORROW; no final statistical or gate acceptance",
+      "inputs": "Accepted dependencies and G0 contracts; selected-release runtime and frozen smoke fixtures",
+      "acceptance": [
+        "T-G2-BORROW-IMPL: independently reviewed executable offline-mixture importer, marginal bridge and matched BCF path; analytic fixtures and five smoke runs per relevant executable scenario family; runnable pinned pilot workload. Validate schema/source/input hashes, units, model/prior/transform versions, seed/runtime provenance and array/component/coordinate shapes before import; corrupt version/hash/shape fixtures must be rejected before costly fitting with zero fit invocations. This accepts runnable implementation only; all final borrowing sensitivity/recovery checks remain under G2-BORROW."
+      ],
+      "methods_profile": "bayes",
+      "test_ids": [
+        "T-G2-BORROW-IMPL"
+      ],
+      "nonmethods_fields": null,
+      "requirement_ids": [
+        "LIB-03"
+      ],
+      "canonical_docs": [
+        "docs/plans/methods/01-bayesian-and-borrowing.md",
+        "docs/spec/03-bayesian-models.md",
+        "docs/spec/scenario-catalog.md",
+        "docs/plans/methods/00-library-decisions.md",
+        "docs/spec/07-validation-protocol.md",
+        "docs/plans/methods/03-validation-and-benchmarks.md"
+      ],
+      "milestone_kind": "runnable-implementation",
+      "final_validation_task": "G2-BORROW"
     },
     {
       "id": "G2-BORROW",
       "owner_role": "g2-borrow",
       "depends_on": [
+        "G2-BORROW-IMPL",
+        "G2-PILOT",
         "G2-BAYES"
       ],
       "write_paths": [
@@ -778,13 +857,15 @@
         "methods/comparators/"
       ],
       "outputs": "Offline mixture import, marginal source/target bridge, BCF comparator; `methods/borrowing/`, `offline/r/`, `methods/comparators/`",
-      "inputs": "G2-BAYES interfaces; G0-LIB",
+      "inputs": "Accepted G2-BORROW-IMPL runnable milestone and accepted G2-PILOT resource report; all original final statistical requirements remain mandatory",
       "acceptance": [
-        "T-G2-BORROW: weights 0/.5/.9/1, at least two specified heterogeneity priors, source/target marginal truth, duplicated evidence rejected, matched single-decision BCF only"
+        "T-G2-BORROW: weights 0/.5/.9/1, at least two specified heterogeneity priors, source/target marginal truth, duplicated evidence rejected, matched single-decision BCF only",
+        "T-G2-BORROW-LIB03: reproduce request pre-fit rejection and metadata/artifact checks from the runnable milestone on the final pinned backend; retain accepted/failed/abstained metadata with all final attempts"
       ],
       "methods_profile": "bayes",
       "test_ids": [
-        "T-G2-BORROW"
+        "T-G2-BORROW",
+        "T-G2-BORROW-LIB03"
       ],
       "nonmethods_fields": null,
       "requirement_ids": [
@@ -863,26 +944,29 @@
         "S10",
         "S11",
         "S12",
-        "S30"
+        "S30",
+        "LIB-03"
       ],
       "canonical_docs": [
         "docs/plans/methods/01-bayesian-and-borrowing.md",
         "docs/spec/03-bayesian-models.md",
-        "docs/spec/scenario-catalog.md"
-      ]
+        "docs/spec/scenario-catalog.md",
+        "docs/plans/methods/00-library-decisions.md"
+      ],
+      "milestone_kind": "final-statistical-acceptance"
     },
     {
       "id": "G2-PILOT",
       "owner_role": "g2-pilot",
       "depends_on": [
-        "G2-BAYES",
-        "G2-BORROW"
+        "G2-BAYES-IMPL",
+        "G2-BORROW-IMPL"
       ],
       "write_paths": [
         "evaluation/pilot/"
       ],
       "outputs": "Twenty representative full-scale fits and cost/checkpoint report; `evaluation/pilot/`",
-      "inputs": "Runnable accepted G2 implementations and locked workload allocation",
+      "inputs": "Independently accepted runnable G2-BAYES-IMPL and G2-BORROW-IMPL milestones; locked representative full-scale workload allocation; no final SBC/recovery prerequisite",
       "acceptance": [
         "T-G2-PILOT: exactly 20 attempted fits retained, accepted yield, cold/warm/rollout/diagnostics/storage timing and memory, full suite projections; gates remain incomplete if budget unavailable"
       ],
@@ -891,19 +975,24 @@
         "T-G2-PILOT"
       ],
       "nonmethods_fields": null,
-      "requirement_ids": [],
+      "requirement_ids": [
+        "VAL-01"
+      ],
       "canonical_docs": [
-        "implementation-prompt.md",
-        "docs/execution/delegation.md"
-      ]
+        "docs/spec/07-validation-protocol.md",
+        "docs/plans/methods/03-validation-and-benchmarks.md",
+        "docs/plans/methods/00-library-decisions.md"
+      ],
+      "milestone_kind": "resource-pilot"
     },
     {
       "id": "G3-N1",
       "owner_role": "g3-n1",
       "depends_on": [
         "G1-GENERATOR",
-        "G2-BAYES",
-        "G0-WORKFLOW"
+        "G2-BAYES-IMPL",
+        "G0-WORKFLOW",
+        "G2-PILOT"
       ],
       "write_paths": [
         "protocols/nof1/",
@@ -912,7 +1001,8 @@
       "outputs": "Consent-aware randomized blocks, analysis and freeze snapshots; `protocols/nof1/`, `methods/nof1/`",
       "inputs": "Accepted G0/G1 and G2 interfaces; pilot before expensive suites",
       "acceptance": [
-        "T-G3-N1: assignment effects, 2/4/8 blocks, rho and half-life cells, rebound distinct, daily-grid residuals across missing days, stopping/rescue and no manual winning-block substitution"
+        "T-G3-N1: assignment effects, 2/4/8 blocks, rho and half-life cells, rebound distinct, daily-grid residuals across missing days, stopping/rescue and no manual winning-block substitution",
+        "Costly calibration/recovery/coverage/policy suites start only after accepted G2-PILOT; deterministic/smoke implementation may proceed from accepted interfaces, without accepting this package or gate early."
       ],
       "methods_profile": "experiments",
       "test_ids": [
@@ -978,15 +1068,17 @@
         "docs/spec/00-scope-and-invariants.md",
         "docs/spec/04-individual-experiments.md",
         "docs/spec/scenario-catalog.md"
-      ]
+      ],
+      "milestone_kind": "final-component-acceptance"
     },
     {
       "id": "G3-SMART",
       "owner_role": "g3-smart",
       "depends_on": [
         "G1-GENERATOR",
-        "G2-BAYES",
-        "G0-WORKFLOW"
+        "G2-BAYES-IMPL",
+        "G0-WORKFLOW",
+        "G2-PILOT"
       ],
       "write_paths": [
         "protocols/escalation/",
@@ -995,7 +1087,8 @@
       "outputs": "Continuing program/escalation and strategy estimator; `protocols/escalation/`, `methods/strategies/`",
       "inputs": "Accepted G0/G1/G2 interfaces",
       "acceptance": [
-        "T-G3-SMART: randomized and observational-first-stage enumeration, path probability products, compatible-strategy covariance and stage/strategy distinction; no skill washout"
+        "T-G3-SMART: randomized and observational-first-stage enumeration, path probability products, compatible-strategy covariance and stage/strategy distinction; no skill washout",
+        "Costly calibration/recovery/coverage/policy suites start only after accepted G2-PILOT; deterministic/smoke implementation may proceed from accepted interfaces, without accepting this package or gate early."
       ],
       "methods_profile": "experiments",
       "test_ids": [
@@ -1030,7 +1123,8 @@
       "canonical_docs": [
         "docs/spec/04-individual-experiments.md",
         "docs/spec/scenario-catalog.md"
-      ]
+      ],
+      "milestone_kind": "final-component-acceptance"
     },
     {
       "id": "G4-MRT",
@@ -1038,7 +1132,8 @@
       "depends_on": [
         "G1-GENERATOR",
         "G3-N1",
-        "G3-SMART"
+        "G3-SMART",
+        "G2-PILOT"
       ],
       "write_paths": [
         "methods/mrt/",
@@ -1047,7 +1142,8 @@
       "outputs": "Availability/logging/WCLS and missingness; `methods/mrt/`, `offline/r/wcls/`",
       "inputs": "Accepted G1 and G3 coordination",
       "acceptance": [
-        "T-G4-MRT: final propensity persisted before outcome, q=.5 bases fixed, cluster correction explicit, R coefficients matched with distinct SE procedures, 60/240 coverage, MAR cross-fitting/MNAR sensitivity"
+        "T-G4-MRT: final propensity persisted before outcome, q=.5 bases fixed, cluster correction explicit, R coefficients matched with distinct SE procedures, 60/240 coverage, MAR cross-fitting/MNAR sensitivity",
+        "Costly calibration/recovery/coverage/policy suites start only after accepted G2-PILOT; deterministic/smoke implementation may proceed from accepted interfaces, without accepting this package or gate early."
       ],
       "methods_profile": "support",
       "test_ids": [
@@ -1089,14 +1185,16 @@
         "docs/plans/methods/02-experiments-and-support.md",
         "docs/spec/05-support-learning.md",
         "docs/spec/scenario-catalog.md"
-      ]
+      ],
+      "milestone_kind": "final-component-acceptance"
     },
     {
       "id": "G4-POLICY",
       "owner_role": "g4-policy",
       "depends_on": [
         "G4-MRT",
-        "G3-N1"
+        "G3-N1",
+        "G2-PILOT"
       ],
       "write_paths": [
         "policy/",
@@ -1105,7 +1203,8 @@
       "outputs": "Bounded hierarchical bandit, fixed fallback, offline contextual OPE; `policy/`, `evaluation/ope/`",
       "inputs": "G4-MRT and G3 freeze contracts",
       "acceptance": [
-        "T-G4-POLICY: executed probability frequencies, [0.1,.9] feasibility, single/no-action behavior, immutable freeze including mappings, no medication actions, fixed stochastic IPS/DR against enumeration and on-policy truth"
+        "T-G4-POLICY: executed probability frequencies, [0.1,.9] feasibility, single/no-action behavior, immutable freeze including mappings, no medication actions, fixed stochastic IPS/DR against enumeration and on-policy truth",
+        "Costly calibration/recovery/coverage/policy suites start only after accepted G2-PILOT; deterministic/smoke implementation may proceed from accepted interfaces, without accepting this package or gate early."
       ],
       "methods_profile": "support",
       "test_ids": [
@@ -1148,7 +1247,8 @@
         "docs/plans/methods/02-experiments-and-support.md",
         "docs/spec/05-support-learning.md",
         "docs/spec/scenario-catalog.md"
-      ]
+      ],
+      "milestone_kind": "final-component-acceptance"
     },
     {
       "id": "G5-SERVICE",
@@ -1168,11 +1268,13 @@
       "outputs": "Auth, owned resources, approvals, model registry, durable drafts/history; `services/auth/`, `services/workflow/`, `tests/integration/`",
       "inputs": "Shell after G0; acceptance after actual G2-G4",
       "acceptance": [
-        "T-G5-SERVICE: real middleware/routes/storage, cookies/CSRF/reset revocation, all resource ownership, atomic approval/follow-up, idempotent lost-response recovery, stale hold/consent race, historical writes denied"
+        "T-G5-SERVICE: real middleware/routes/storage, cookies/CSRF/reset revocation, all resource ownership, atomic approval/follow-up, idempotent lost-response recovery, stale hold/consent race, historical writes denied",
+        "T-G5-SERVICE-LIB03: through real typed routes and persisted model registry, round-trip fit backend/sampler/package versions, numerical precision, diagnostics artifact references and accepted/failed/abstained status without lossy coercion. Malformed or incompatible fit requests and version/hash/shape-corrupt offline artifacts are rejected before costly worker invocation (observed zero invocations); no approval click runs a fit and no fabricated success appears."
       ],
       "methods_profile": "N/A",
       "test_ids": [
-        "T-G5-SERVICE"
+        "T-G5-SERVICE",
+        "T-G5-SERVICE-LIB03"
       ],
       "nonmethods_fields": "N/A: protocol/estimand/DGP/scenario/truth/cutoff/seeds/comparator/allowed-info/source/failure methods fields; service/UI still enforce consumed contracts and negative paths",
       "requirement_ids": [
@@ -1354,7 +1456,8 @@
         "INV-10",
         "INV-11",
         "INV-12",
-        "INV-13"
+        "INV-13",
+        "LIB-03"
       ],
       "canonical_docs": [
         "docs/execution/engineering-guidelines.md",
@@ -1363,7 +1466,8 @@
         "docs/spec/06-service-and-ui.md",
         "docs/spec/07-validation-protocol.md",
         "docs/spec/requirement-map.md",
-        "docs/spec/scenario-catalog.md"
+        "docs/spec/scenario-catalog.md",
+        "docs/plans/methods/00-library-decisions.md"
       ]
     },
     {
@@ -2053,8 +2157,8 @@
       "test_ids": [
         "T-G0-PLAN"
       ],
-      "status": "needs_review",
-      "blocker": "Independent critique pending; final SHA returned externally after commit",
+      "status": "changes_requested",
+      "blocker": "Original c239dca independent critique changes_requested; repaired planning candidate pending exact-head/base Astra review under G0-LAUNCH-FIX-01",
       "requirement_ids": [],
       "canonical_docs": [
         "implementation-prompt.md",
@@ -11939,14 +12043,24 @@
       ],
       "canonical_locator": "LIB-03",
       "task_ids": [
-        "G0-LIB"
+        "G0-LIB",
+        "G2-BAYES-IMPL",
+        "G2-BORROW-IMPL",
+        "G2-BAYES",
+        "G2-BORROW",
+        "G5-SERVICE"
       ],
       "test_ids": [
         "T-LIB-03"
       ],
-      "expected_acceptance": "Canonical requirement LIB-03 and associated gate evidence; see package acceptance and method profile",
+      "expected_acceptance": "G0 qualifies contracts/API; G2 enforces malformed-request rejection before costly fit, validates offline version/hash/shape/provenance before import and preserves typed result metadata; G5 verifies rejection before worker invocation and backend/sampler/package/precision/diagnostics/status round-trip through real routes and persistence.",
       "evidence_targets": [
-        "docs/implementation/evidence/G0-LIB/LIB-03.json"
+        "docs/implementation/evidence/G0-LIB/LIB-03.json",
+        "docs/implementation/evidence/G2-BAYES-IMPL/LIB-03.json",
+        "docs/implementation/evidence/G2-BORROW-IMPL/LIB-03.json",
+        "docs/implementation/evidence/G2-BAYES/LIB-03.json",
+        "docs/implementation/evidence/G2-BORROW/LIB-03.json",
+        "docs/implementation/evidence/G5-SERVICE/LIB-03.json"
       ],
       "status": "planned",
       "observed_result": null
@@ -12622,13 +12736,15 @@
       ],
       "canonical_locator": "VAL-01",
       "task_ids": [
+        "G2-PILOT",
         "G6-CONFIRM"
       ],
       "test_ids": [
         "T-VAL-01"
       ],
-      "expected_acceptance": "Canonical requirement VAL-01 and associated gate evidence; see package acceptance and method profile",
+      "expected_acceptance": "G2-PILOT: accepted independently reviewed runnable milestones precede exactly 20 attempted representative full-scale fits, projected locked-suite cost and checkpoint/resume report; G6 retains prespecified ADEMP, all repetition budgets and independent confirmation seeds. Resource shortage leaves gates incomplete.",
       "evidence_targets": [
+        "docs/implementation/evidence/G2-PILOT/VAL-01.json",
         "docs/implementation/evidence/G6-CONFIRM/VAL-01.json"
       ],
       "status": "planned",
@@ -15001,23 +15117,67 @@
     "observed_open_non_luna": 2,
     "observed_spawned": 3,
     "inventory": [
-      "root orchestrator",
-      "READY Luna retained after completion",
-      "G0 planner Astra",
-      "independent critic Astra"
+      "root orchestrator 01a15cc8-bab2-73f3-bc3b-c2861965b8eb",
+      "READY Luna/high 01a15cc9-7f45-79e1-90a9-40f4ef0bc5b9",
+      "independent critic Astra/medium /root/g0_critic_astra 01a15ccb-d23c-7e10-a1c8-6a55a6719daf",
+      "integration Sol/high /root/integration_sol 01a15cf4-3065-7063-b11e-3967008fe9a1"
     ],
     "unsupported_controls": [
-      "close/release",
-      "model-change"
+      "native collaboration close/release",
+      "native collaboration model-change",
+      "direct app-server input for multi-agent v2 children (observed rejected)"
     ],
     "queued": [
-      "READY-FIX-01 Sol source correction after changes_requested",
-      "Sol reviewed-document integration",
+      "independent Astra exact-head/base review of G0-LAUNCH-FIX-01",
+      "root reviewed PR to main at exact reviewed target base when accepted",
       "G0-CONTRACT",
       "G0-DGP",
       "G0-LIB",
       "G0-WORKFLOW"
     ],
-    "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted"
+    "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted",
+    "lifecycle_status": "RESOLVED: root verified existing planner app identity with read_thread, archived exact existing child with set_thread_archived, then native list_agents confirmed removal before Sol spawn",
+    "closed_planner": {
+      "canonical_name": "/root/g0_planner_astra",
+      "thread_id": "01a15ccb-51c2-7422-9cf1-29137399d061",
+      "release_evidence": "Root-reported archive returned archived=true and subsequent native list_agents omitted planner; source worktree/commits preserved"
+    },
+    "model_attestation": "Explicit model/effort assignment observed; no independent effective-model introspection"
+  },
+  "repair_assignment": {
+    "id": "G0-LAUNCH-FIX-01",
+    "components": [
+      "READY-FIX-01",
+      "G0-PLAN-FIX-01"
+    ],
+    "owner_thread": "/root/integration_sol",
+    "environment_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment; not independently introspectable",
+    "effort_escalation_reason": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "task_branch": "launch/g0-repair-integration-20261020",
+    "base_commit": "50403963d11cc51e6109a635f9a2b6b1031b8cf4",
+    "integration_target": "main",
+    "write_paths": [
+      "docs/implementation/**"
+    ],
+    "status": "needs_review",
+    "review_disposition": "pending",
+    "candidate_commit": null,
+    "candidate_locator": "Exact commit returned in handoff; no self-referential SHA",
+    "reviewer_thread": "/root/g0_critic_astra",
+    "reviewer_model": "gpt-6-astra",
+    "reviewer_reasoning_effort": "medium",
+    "helper_requests": [],
+    "pr_url": null,
+    "merge_commit": null,
+    "identity_verification": "Root app read_thread matched active commands in this exclusive checkout including named environment lookup",
+    "review_target_base": "c7cdf4a8415073d0b275064a0b0aca188fc022fe",
+    "historical_integration_target": "launch/implementation-20261020 (unused local target; superseded before review)",
+    "reviewer_worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-launch-fix-review-20261020",
+    "reviewer_app_thread_id": "01a15ccb-d23c-7e10-a1c8-6a55a6719daf",
+    "reviewer_checkout_status": "Root will provision exclusive detached checkout at exact committed candidate; existing critic thread reused, old review checkout preserved"
   }
 }
