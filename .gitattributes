@@ -7,3 +7,14 @@ docs/implementation/evidence/G0-LIB/DR/logging-definition.json -text
 docs/implementation/evidence/G0-LIB/*.log binary
 docs/implementation/evidence/G0-LIB/R1/*.log binary
 docs/implementation/evidence/G0-LIB/r-session.txt binary
+# Independent closure reviews/manifests are preserved as exact raw Git blobs.
+docs/implementation/evidence/G0-CLOSURE-20261021/lib-ready-review.md -text
+docs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G0-CLOSURE-20261021/g1-plan-first-critique.md -text
+docs/implementation/evidence/G0-CLOSURE-20261021/g1-plan-accepted-critique.md -text
+# Failed exact-head reproduction records retain their original bytes/line endings.
+docs/implementation/evidence/G0-CLOSURE-20261021/repair/failed-https-check-results-87b389d.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G0-CLOSURE-20261021/repair/failed-https-transport-87b389d.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G0-CLOSURE-20261021/repair/reviewer-check-results-87b389d.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G0-CLOSURE-20261021/repair/reviewer-https-check-results-87b389d.json -text whitespace=cr-at-eol
+docs/implementation/evidence/G0-CLOSURE-20261021/repair/reviewer-preservation-audit-87b389d.json -text whitespace=cr-at-eol

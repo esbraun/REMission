@@ -496,15 +496,15 @@
       "task_branch": "launch/g0-library-20261020",
       "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
       "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
-      "status": "needs_independent_full_library_review",
-      "candidate_commit": null,
-      "review_disposition": "pending",
-      "pr_url": null,
-      "merge_commit": null,
+      "status": "accepted_library_qualification_scope_only",
+      "candidate_commit": "142f61217c850b132c3fcd21f59a5657fd9bbcfa",
+      "review_disposition": "ready_to_ship",
+      "pr_url": "https://github.com/esbraun/REMission/pull/14",
+      "merge_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
       "evidence": [
         "docs/implementation/evidence/G0-LIB/DR/verification.md"
       ],
-      "remaining_dependency": "Independent exact-head/base full implementation/runtime/evidence review",
+      "remaining_dependency": "G2/G4/G5 consumers and statistical validation remain separate downstream tasks",
       "frozen": true,
       "plan_review": {
         "disposition": "ready_to_proceed",
@@ -515,7 +515,7 @@
         "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
         "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
       },
-      "shipping_review": "pending",
+      "shipping_review": "ready_to_ship",
       "evidence_commit": "Exact committed candidate supplied by handoff/review",
       "package_id": "G0-LIB-DR",
       "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
@@ -558,6 +558,15 @@
         "evidence": "docs/implementation/evidence/G0-LIB/DR/portability-repair/checkout-results.json",
         "algorithm_or_lock_change": false,
         "fit_reruns": false
+      },
+      "reviewed_head": "142f61217c850b132c3fcd21f59a5657fd9bbcfa",
+      "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+      "accepted_review": {
+        "path": "docs/implementation/evidence/G0-CLOSURE-20261021/lib-ready-review.md",
+        "blob": "72eef90709ba4aba9de4097f0ec6d778472c8cc5",
+        "disposition": "ready_to_ship",
+        "evidence_manifest_path": "docs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json",
+        "evidence_manifest_blob": "376fec50de6dda096c20b85ff570b56dec6444de"
       }
     },
     {
@@ -16562,27 +16571,79 @@
       "status": "qualification_candidate_pending_review_and_OPE_selection",
       "artifact_regression_groups": 7,
       "evidence": "docs/implementation/evidence/G0-LIB/verification-20261020.md",
-      "claim_limit": "Actual tiny API fits/file probes; short-run diagnostics fail final criteria; no pilot/calibration/recovery/policy/human/gate acceptance"
+      "claim_limit": "Actual tiny API fits/file probes; short-run diagnostics fail final criteria; no pilot/calibration/recovery/policy/human/gate acceptance",
+      "record_kind": "historical_observation",
+      "superseded_by": "Current accepted package entries added 2026-10-21; raw evidence retained"
     },
     {
       "task_id": "G0-TIME-R1",
       "status": "pending_independent_review",
       "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
-      "claim_limit": "Observed contract fixtures only; no app/generation/fit/pilot/clinical/G0 acceptance"
+      "claim_limit": "Observed contract fixtures only; no app/generation/fit/pilot/clinical/G0 acceptance",
+      "record_kind": "historical_observation",
+      "superseded_by": "Current accepted package entries added 2026-10-21; raw evidence retained"
     },
     {
       "task_id": "G0-LIB",
       "package_id": "G0-LIB-R1",
       "status": "needs_review_with_unresolved_OPE_decision_and_unexecuted_DR_qualification",
       "evidence": "docs/implementation/evidence/G0-LIB/R1/verification.md",
-      "claim_limit": "No DR implementation, estimator qualification, G0 or clinical/statistical acceptance"
+      "claim_limit": "No DR implementation, estimator qualification, G0 or clinical/statistical acceptance",
+      "record_kind": "historical_observation",
+      "superseded_by": "Current accepted package entries added 2026-10-21; raw evidence retained"
     },
     {
       "task_id": "G0-LIB",
       "package_id": "G0-LIB-DR",
       "status": "needs_independent_full_library_review",
       "evidence": "docs/implementation/evidence/G0-LIB/DR/verification.md",
-      "claim_limit": "Actual bounded Ridge/DR/conditional fixed-Q bootstrap qualification, not G4 statistical/consumer/G0/human acceptance"
+      "claim_limit": "Actual bounded Ridge/DR/conditional fixed-Q bootstrap qualification, not G4 statistical/consumer/G0/human acceptance",
+      "record_kind": "historical_observation",
+      "superseded_by": "Current accepted package entries added 2026-10-21; raw evidence retained"
+    },
+    {
+      "task_id": "G0-TIME-R1",
+      "status": "accepted_contract_scope_only",
+      "record_kind": "current_accepted_package",
+      "reviewed_head": "62e6ce85299b477b0c21a18d70b49392a68e1522",
+      "reviewed_base": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "merge_commit": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "review_disposition": "ready_to_ship",
+      "evidence": "docs/implementation/evidence/G0-TIME-R1/verification.md",
+      "claim_limit": "Bounded package only; downstream implementation/statistics and human/clinical gates remain"
+    },
+    {
+      "task_id": "G0-DGP",
+      "status": "accepted_contract_scope_only",
+      "record_kind": "current_accepted_package",
+      "reviewed_head": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "reviewed_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "merge_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "review_disposition": "ready_to_ship",
+      "evidence": "docs/implementation/evidence/G0-DGP/R2/verification.md",
+      "claim_limit": "Bounded package only; downstream implementation/statistics and human/clinical gates remain"
+    },
+    {
+      "task_id": "G0-WORKFLOW",
+      "status": "accepted_contract_scope_only",
+      "record_kind": "current_accepted_package",
+      "reviewed_head": "985ce540f0cc6ae1e57a6268651971acb546929d",
+      "reviewed_base": "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "merge_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+      "review_disposition": "ready_to_ship",
+      "evidence": "docs/implementation/evidence/G0-WORKFLOW/R2/consumer-update.md",
+      "claim_limit": "Bounded package only; downstream implementation/statistics and human/clinical gates remain"
+    },
+    {
+      "task_id": "G0-LIB",
+      "status": "accepted_library_qualification_scope_only",
+      "record_kind": "current_accepted_package",
+      "reviewed_head": "142f61217c850b132c3fcd21f59a5657fd9bbcfa",
+      "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+      "merge_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+      "review_disposition": "ready_to_ship",
+      "evidence": "docs/implementation/evidence/G0-LIB/DR/verification.md",
+      "claim_limit": "Bounded package only; downstream implementation/statistics and human/clinical gates remain"
     }
   ],
   "runtime": {
@@ -16592,9 +16653,9 @@
     "observed_spawned": 3,
     "inventory": [
       "root orchestrator01a15cc8-bab2-73f3-bc3b-c2861965b8eb",
-      "integration Sol/high01a15cf4-3065-7063-b11e-3967008fe9a1 G0-LIB-DR",
-      "independent /root/dgp_r2_critic_astra Astra/medium01a15ec2-f67d-7522-9ade-45b236fd41bc completed plan/repair review; retained for root-assigned full library review, no removal inferred",
-      "G1 source-only Luna/high01a15ecb-0e17-7ad2-9199-a7cbb696da85 completed/idle/open per root; own g1-inputs-luna-20261021, basef11e905, e82fc9e source handoff preserved separately"
+      "G0 closure Sol/high 01a15f0f-b7cd-73f3-86cb-af5f08360615 /root/g0_closure_sol",
+      "retained independent Astra/medium reviewer01a15ec2-f67d-7522-9ade-45b236fd41bc; no closure inferred",
+      "G1 source-only Luna/high01a15ecb-0e17-7ad2-9199-a7cbb696da85 idle/open per root; own checkout preserved"
     ],
     "unsupported_controls": [
       "native collaboration close/release",
@@ -16602,9 +16663,9 @@
       "direct app-server input for multi-agent v2 children (observed rejected)"
     ],
     "queued": [
-      "Independent exact-head/f11e905 full G0-LIB-DR implementation/runtime/evidence review",
-      "Accept G0-LIB/G0 only after prerequisite evidence/review; human review remains deferred",
-      "G1-G7 full real hybrid implementation/validation/reproduction"
+      "Independent combined G0 closure/accepted G1 plan exact-head/fa3f review and HTTPS reproduction",
+      "Root G0 acceptance after closure evidence/review; no G1 source before acceptance",
+      "G1-G7 real hybrid implementation/validation/reproduction; human/clinical separate"
     ],
     "browser": "Playwright MCP available per root and independent critic; browser_tabs(list) succeeded with about:blank; app/UI acceptance unexecuted",
     "lifecycle_status": "RESOLVED: root verified existing planner app identity with read_thread, archived exact existing child with set_thread_archived, then native list_agents confirmed removal before Sol spawn",
@@ -16682,67 +16743,24 @@
   },
   "human_review_schedule": "Explicitly deferred by user; not an engineering blocker and no acceptance invented",
   "current_assignment": {
-    "owner_thread": "/root/integration_sol",
-    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "id": "G0-CLOSURE",
+    "owner_thread": "/root/g0_closure_sol",
+    "app_thread_id": "01a15f0f-b7cd-73f3-86cb-af5f08360615",
     "agent_model": "gpt-6.1-sol",
     "reasoning_effort": "high",
     "effective_model": "Explicit assignment observed; independent introspection unavailable",
-    "effort_escalation_reason": null,
-    "integration_target": "main",
-    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
-    "task_branch": "launch/g0-library-20261020",
-    "id": "G0-LIB",
-    "package_id": "G0-LIB-DR",
-    "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
-    "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
-    "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
-    "status": "needs_independent_full_library_review",
-    "candidate_commit": null,
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-sol-20261021",
+    "task_branch": "launch/g0-closure-20261021",
+    "base_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "review_target_base": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "status": "ready-for-independent-closure-review",
     "review_disposition": "pending",
-    "candidate_locator": "Exact new candidate supplied after commit",
+    "candidate_commit": null,
+    "integration_target": "main",
+    "claim_limit": "Combined G0 verification and accepted G1 plan integration; no premature G0 acceptance or G1 source",
     "evidence": [
-      "docs/implementation/evidence/G0-LIB/DR/verification.md"
-    ],
-    "prior_candidate": "d84203709b0164a0824913950c1d7cd7be25a2fb",
-    "prior_reviews": [
-      {
-        "scope": "plan_only",
-        "disposition": "changes_requested",
-        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
-        "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
-      },
-      {
-        "scope": "implementation_evidence",
-        "disposition": "changes_requested",
-        "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
-        "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
-      }
-    ],
-    "pr_url": null,
-    "merge_commit": null,
-    "proposal": "DR-EXCEPTION-R1 plan accepted by independent Astra and root; implementation/qualification candidate awaiting full independent review",
-    "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
-    "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts",
-    "accepted_plan": {
-      "disposition": "ready_to_proceed",
-      "scope": "DR plan and prior artifact repairs only; no full ship approval",
-      "root_accepted": true,
-      "reviewed_head": "d84203709b0164a0824913950c1d7cd7be25a2fb",
-      "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
-      "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
-      "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
-    },
-    "source_home": "methods/ope/functional.py",
-    "provenance_version": "DR-EXCEPTION-R1/1.0.0",
-    "portability_repair": {
-      "prior_head": "2bc76fdc392719a1233e907c8efda488cc51ebb9",
-      "substantive_fix_commit": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
-      "change": "One -text attribute for raw-hashed DR/logging-definition.json; bytes/values/protocol hash unchanged",
-      "status": "both_fresh_checkout_modes_pass_all14_checks",
-      "evidence": "docs/implementation/evidence/G0-LIB/DR/portability-repair/checkout-results.json",
-      "algorithm_or_lock_change": false,
-      "fit_reruns": false
-    }
+      "docs/implementation/evidence/G0-CLOSURE-20261021/verification.md"
+    ]
   },
   "accepted_contract_assignment": {
     "id": "G0-CONTRACT",
@@ -17211,5 +17229,191 @@
     "proposal": "DR-EXCEPTION-R1 unaccepted/unimplemented; independent re-critique precedes implementation",
     "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
     "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts"
+  },
+  "prior_library_dr_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "integration_target": "main",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "task_branch": "launch/g0-library-20261020",
+    "id": "G0-LIB",
+    "package_id": "G0-LIB-DR",
+    "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+    "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
+    "status": "needs_independent_full_library_review",
+    "candidate_commit": null,
+    "review_disposition": "pending",
+    "candidate_locator": "Exact new candidate supplied after commit",
+    "evidence": [
+      "docs/implementation/evidence/G0-LIB/DR/verification.md"
+    ],
+    "prior_candidate": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+    "prior_reviews": [
+      {
+        "scope": "plan_only",
+        "disposition": "changes_requested",
+        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+        "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+      },
+      {
+        "scope": "implementation_evidence",
+        "disposition": "changes_requested",
+        "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+        "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+      }
+    ],
+    "pr_url": null,
+    "merge_commit": null,
+    "proposal": "DR-EXCEPTION-R1 plan accepted by independent Astra and root; implementation/qualification candidate awaiting full independent review",
+    "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
+    "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts",
+    "accepted_plan": {
+      "disposition": "ready_to_proceed",
+      "scope": "DR plan and prior artifact repairs only; no full ship approval",
+      "root_accepted": true,
+      "reviewed_head": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+      "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+      "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
+      "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
+    },
+    "source_home": "methods/ope/functional.py",
+    "provenance_version": "DR-EXCEPTION-R1/1.0.0",
+    "portability_repair": {
+      "prior_head": "2bc76fdc392719a1233e907c8efda488cc51ebb9",
+      "substantive_fix_commit": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+      "change": "One -text attribute for raw-hashed DR/logging-definition.json; bytes/values/protocol hash unchanged",
+      "status": "both_fresh_checkout_modes_pass_all14_checks",
+      "evidence": "docs/implementation/evidence/G0-LIB/DR/portability-repair/checkout-results.json",
+      "algorithm_or_lock_change": false,
+      "fit_reruns": false
+    }
+  },
+  "accepted_library_assignment": {
+    "owner_thread": "/root/integration_sol",
+    "app_thread_id": "01a15cf4-3065-7063-b11e-3967008fe9a1",
+    "agent_model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "effective_model": "Explicit assignment observed; independent introspection unavailable",
+    "effort_escalation_reason": null,
+    "integration_target": "main",
+    "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020",
+    "task_branch": "launch/g0-library-20261020",
+    "id": "G0-LIB",
+    "package_id": "G0-LIB-DR",
+    "creation_base_commit": "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+    "base_commit": "f11e90536b635a7db08cfed640445bec197a415c",
+    "review_target_base": "f11e90536b635a7db08cfed640445bec197a415c",
+    "status": "accepted_library_qualification_scope_only",
+    "candidate_commit": "142f61217c850b132c3fcd21f59a5657fd9bbcfa",
+    "review_disposition": "ready_to_ship",
+    "candidate_locator": "Accepted exact PR14 reviewed head and merge recorded above",
+    "evidence": [
+      "docs/implementation/evidence/G0-LIB/DR/verification.md"
+    ],
+    "prior_candidate": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+    "prior_reviews": [
+      {
+        "scope": "plan_only",
+        "disposition": "changes_requested",
+        "blob": "052677a20145fb14f5e1d2f509592a4de4942ef4",
+        "path": "docs/implementation/evidence/G0-LIB/R1/plan-review-01.md"
+      },
+      {
+        "scope": "implementation_evidence",
+        "disposition": "changes_requested",
+        "blob": "113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49",
+        "path": "docs/implementation/evidence/G0-LIB/R1/implementation-review-01.md"
+      }
+    ],
+    "pr_url": "https://github.com/esbraun/REMission/pull/14",
+    "merge_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "proposal": "Accepted bounded G0-LIB API/artifact/DR qualification; no G2/G4/G5 statistical or consumer acceptance",
+    "intermediate_repair_commit": "69aa569d5059f9539ac8c2366b5148a26d02655d",
+    "accepted_main_integration": "PR13 DGP/workflow contracts merged cleanly after repaired checkpoint; no source conflicts",
+    "accepted_plan": {
+      "disposition": "ready_to_proceed",
+      "scope": "DR plan and prior artifact repairs only; no full ship approval",
+      "root_accepted": true,
+      "reviewed_head": "d84203709b0164a0824913950c1d7cd7be25a2fb",
+      "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+      "blob": "bd9eb376680c7225cfdad3c0ac162d1698326063",
+      "path": "docs/implementation/evidence/G0-LIB/DR/approved-plan-and-repair-review.md"
+    },
+    "source_home": "methods/ope/functional.py",
+    "provenance_version": "DR-EXCEPTION-R1/1.0.0",
+    "portability_repair": {
+      "prior_head": "2bc76fdc392719a1233e907c8efda488cc51ebb9",
+      "substantive_fix_commit": "fb23a5b70c661c60fd572ffdce90b314fae134aa",
+      "change": "One -text attribute for raw-hashed DR/logging-definition.json; bytes/values/protocol hash unchanged",
+      "status": "both_fresh_checkout_modes_pass_all14_checks",
+      "evidence": "docs/implementation/evidence/G0-LIB/DR/portability-repair/checkout-results.json",
+      "algorithm_or_lock_change": false,
+      "fit_reruns": false
+    },
+    "reviewed_head": "142f61217c850b132c3fcd21f59a5657fd9bbcfa",
+    "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+    "claim_limit": "No overall G0/application/statistical/human/clinical acceptance",
+    "accepted_review": {
+      "path": "docs/implementation/evidence/G0-CLOSURE-20261021/lib-ready-review.md",
+      "blob": "72eef90709ba4aba9de4097f0ec6d778472c8cc5",
+      "disposition": "ready_to_ship",
+      "evidence_manifest_path": "docs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json",
+      "evidence_manifest_blob": "376fec50de6dda096c20b85ff570b56dec6444de"
+    }
+  },
+  "g0_closure": {
+    "status": "ready-for-independent-closure-review",
+    "gate_status": "running",
+    "base_commit": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+    "required_packages": [
+      "G0-PLAN",
+      "G0-CONTRACT",
+      "G0-TIME-R1",
+      "G0-DGP",
+      "G0-WORKFLOW",
+      "G0-LIB"
+    ],
+    "accepted_merge_chain": [
+      "e7965b998fa70df82e63a89ef720a6c8ad46ce6d",
+      "6c3fb070d36bfefbd070f2a2c33ccba7631734be",
+      "b24c3c0fb78bf19928750eae29e852141bd649a7",
+      "f11e90536b635a7db08cfed640445bec197a415c",
+      "fa3fca61b5b5c886064d2429d785b8de9e6fd146"
+    ],
+    "evidence_directory": "docs/implementation/evidence/G0-CLOSURE-20261021",
+    "verification_record": "docs/implementation/evidence/G0-CLOSURE-20261021/integrated-check-results.json",
+    "independent_combined_review": "pending",
+    "root_gate_acceptance": "pending",
+    "downstream_guards": "All 635 rows remain planned at requirement level; shared LIB-03 G2/G5 and DGP/scenario G1-G6 obligations remain mapped"
+  },
+  "accepted_g1_plan": {
+    "status": "root_accepted_plan_only",
+    "reviewed_head": "690b538f45a54dd4707e02e7e68e1c63bbea0884",
+    "reviewed_base": "f11e90536b635a7db08cfed640445bec197a415c",
+    "original_commits": [
+      "cdec7ce8f0bdc0edf7bdd2b5ec90cb699d454e97",
+      "690b538f45a54dd4707e02e7e68e1c63bbea0884"
+    ],
+    "integrated_commits": [
+      "04e475622d7592d6ec5f360f0104137e16eeaea0",
+      "6d130a458faeef0edec6bf8ecdbc6ce93762b8b3"
+    ],
+    "path": "docs/implementation/g1-technical-plan-20261021.md",
+    "first_critique": {
+      "path": "docs/implementation/evidence/G0-CLOSURE-20261021/g1-plan-first-critique.md",
+      "blob": "0d261661bc426dc037a5d93cec7f04736f47558c",
+      "disposition": "changes_requested"
+    },
+    "accepted_critique": {
+      "path": "docs/implementation/evidence/G0-CLOSURE-20261021/g1-plan-accepted-critique.md",
+      "blob": "a0addffb138bc991f1f54a6676ae59ca5dde538d",
+      "disposition": "ready_to_proceed"
+    },
+    "source_dispatch": "Waits for accepted combined G0 closure and qualified service runtime; no source implementation"
   }
 }

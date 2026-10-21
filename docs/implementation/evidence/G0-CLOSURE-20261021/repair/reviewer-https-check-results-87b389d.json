@@ -1,0 +1,295 @@
+{
+  "package": "G0-CLOSURE",
+  "accepted_base": "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+  "observed_head": "87b389d7b73fc797255c34957a144610452270b2",
+  "observed_branch": "launch/g0-closure-20261021",
+  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-review-20261021/contracts/artifacts/__pycache__/closure-review/fresh-clone",
+  "interpreter": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+  "python_version": "3.13.7",
+  "created_utc": "2026-10-21T15:33:11.011166+00:00",
+  "historical_runner": "G0-LIB/DR/run_checks.py unchanged; no --record",
+  "historical_runner_exit": 1,
+  "historical_command_count": 14,
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "started_utc": "2026-10-21T15:32:54.311597+00:00",
+      "finished_utc": "2026-10-21T15:32:54.767060+00:00",
+      "exit_code": 0,
+      "stdout": "No broken requirements found.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "contracts.domain.export",
+        "--check"
+      ],
+      "started_utc": "2026-10-21T15:32:54.767088+00:00",
+      "finished_utc": "2026-10-21T15:32:55.430974+00:00",
+      "exit_code": 0,
+      "stdout": "Contract JSON Schema/dictionary match typed source\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "contracts.dgp.export",
+        "--check"
+      ],
+      "started_utc": "2026-10-21T15:32:55.431001+00:00",
+      "finished_utc": "2026-10-21T15:32:55.812576+00:00",
+      "exit_code": 0,
+      "stdout": "DGP parameter/scenario artifacts match v1.2.0; independent fixtures remain v1.0.0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "contracts.artifacts.ope_export",
+        "--check"
+      ],
+      "started_utc": "2026-10-21T15:32:55.812601+00:00",
+      "finished_utc": "2026-10-21T15:32:56.120513+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: ten OPE schemas match typed source\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/contracts",
+        "-v"
+      ],
+      "started_utc": "2026-10-21T15:32:56.120539+00:00",
+      "finished_utc": "2026-10-21T15:32:56.969714+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_both_precision_constraints_zero_se_and_cap (test_dgp_contracts.IndependentTruthFixtures.test_both_precision_constraints_zero_se_and_cap) ... ok\ntest_calibration_binding_rejects_missing_derived_values_and_wrong_target (test_dgp_contracts.IndependentTruthFixtures.test_calibration_binding_rejects_missing_derived_values_and_wrong_target) ... ok\ntest_calibration_solver_rejects_infeasible_and_cap_not_pass (test_dgp_contracts.IndependentTruthFixtures.test_calibration_solver_rejects_infeasible_and_cap_not_pass) ... ok\ntest_external_target_is_derived_and_bound_to_independent_upstream_identities (test_dgp_contracts.IndependentTruthFixtures.test_external_target_is_derived_and_bound_to_independent_upstream_identities) ... ok\ntest_keyed_streams_do_not_depend_on_prior_draw_counts (test_dgp_contracts.IndependentTruthFixtures.test_keyed_streams_do_not_depend_on_prior_draw_counts) ... ok\ntest_normal_beta_analytic_answers (test_dgp_contracts.IndependentTruthFixtures.test_normal_beta_analytic_answers) ... ok\ntest_ordinal_tail_sum_and_exact_policy_tree_values (test_dgp_contracts.IndependentTruthFixtures.test_ordinal_tail_sum_and_exact_policy_tree_values) ... ok\ntest_two_period_descendants_and_continuation_are_recomputed (test_dgp_contracts.IndependentTruthFixtures.test_two_period_descendants_and_continuation_are_recomputed) ... ok\ntest_exact_family_variant_counts_no_implicit_products (test_dgp_contracts.ParameterAndCellContracts.test_exact_family_variant_counts_no_implicit_products) ... ok\ntest_generated_artifacts_are_valid_complete_inputs (test_dgp_contracts.ParameterAndCellContracts.test_generated_artifacts_are_valid_complete_inputs) ... ok\ntest_missing_required_coefficient_is_rejected_before_resolution (test_dgp_contracts.ParameterAndCellContracts.test_missing_required_coefficient_is_rejected_before_resolution) ... ok\ntest_null_paths_and_modifier_target_do_not_conflate_medication (test_dgp_contracts.ParameterAndCellContracts.test_null_paths_and_modifier_target_do_not_conflate_medication) ... ok\ntest_omitted_source_modifier_actually_modifies_the_behavioral_target (test_dgp_contracts.ParameterAndCellContracts.test_omitted_source_modifier_actually_modifies_the_behavioral_target) ... ok\ntest_reference_numeric_units_and_covariance_preserve_canonical_defaults (test_dgp_contracts.ParameterAndCellContracts.test_reference_numeric_units_and_covariance_preserve_canonical_defaults) ... ok\ntest_resolution_is_isolated_and_never_unknown_cell_fallback (test_dgp_contracts.ParameterAndCellContracts.test_resolution_is_isolated_and_never_unknown_cell_fallback) ... ok\ntest_s02_threshold_crossing_changes_availability_but_not_outcome_law (test_dgp_contracts.ParameterAndCellContracts.test_s02_threshold_crossing_changes_availability_but_not_outcome_law) ... ok\ntest_target_version_override_and_order_are_frozen (test_dgp_contracts.ParameterAndCellContracts.test_target_version_override_and_order_are_frozen) ... ok\ntest_unknown_and_malformed_parameter_records_are_not_defaults (test_dgp_contracts.ParameterAndCellContracts.test_unknown_and_malformed_parameter_records_are_not_defaults) ... ok\ntest_accepted_identity_and_all_generated_consumers_bound (test_dgp_timing.DGPTimingComposition.test_accepted_identity_and_all_generated_consumers_bound) ... ok\ntest_initial_history_and_delayed_previous_report_equal_cutoff (test_dgp_timing.DGPTimingComposition.test_initial_history_and_delayed_previous_report_equal_cutoff) ... ok\ntest_mar_uses_actual_separate_observation_with_canonical_coefficients (test_dgp_timing.DGPTimingComposition.test_mar_uses_actual_separate_observation_with_canonical_coefficients) ... ok\ntest_reporting_families_preserve_parents_targets_and_null_paths (test_dgp_timing.DGPTimingComposition.test_reporting_families_preserve_parents_targets_and_null_paths) ... ok\ntest_separate_keyed_measurement_observation_and_upload_identities (test_dgp_timing.DGPTimingComposition.test_separate_keyed_measurement_observation_and_upload_identities) ... ok\ntest_source_time_and_self_conditioning_faults_fail_closed (test_dgp_timing.DGPTimingComposition.test_source_time_and_self_conditioning_faults_fail_closed) ... ok\ntest_three_clocks_cutoffs_and_independent_wearable_delays (test_dgp_timing.DGPTimingComposition.test_three_clocks_cutoffs_and_independent_wearable_delays) ... ok\ntest_all_entity_fixtures_and_registered_estimands_are_serializable (test_domain.ContractTests.test_all_entity_fixtures_and_registered_estimands_are_serializable) ... ok\ntest_all_estimand_semantics_roundtrip (test_domain.ContractTests.test_all_estimand_semantics_roundtrip) ... ok\ntest_all_registered_endpoints_bind_units_direction_and_policy_reward (test_domain.ContractTests.test_all_registered_endpoints_bind_units_direction_and_policy_reward) ... ok\ntest_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal (test_domain.ContractTests.test_component_consent_missing_expired_withdrawn_and_simultaneous_withdrawal) ... ok\ntest_corrected_history_projects_into_valid_learner_without_double_likelihood (test_domain.ContractTests.test_corrected_history_projects_into_valid_learner_without_double_likelihood) ... ok\ntest_cutoff_excludes_equal_time_late_and_future_records (test_domain.ContractTests.test_cutoff_excludes_equal_time_late_and_future_records) ... ok\ntest_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts (test_domain.ContractTests.test_dgp_interface_requires_explicit_initial_visit_and_parameter_contracts) ... ok\ntest_est_int_zero_denominator_and_tradeoffs_remain_separate (test_domain.ContractTests.test_est_int_zero_denominator_and_tradeoffs_remain_separate) ... ok\ntest_evaluation_accounting_failure_and_confirmation_contracts (test_domain.ContractTests.test_evaluation_accounting_failure_and_confirmation_contracts) ... ok\ntest_evaluation_minimums_truth_precision_and_source_boundary (test_domain.ContractTests.test_evaluation_minimums_truth_precision_and_source_boundary) ... ok\ntest_external_study_ipd_summary_double_count_denied (test_domain.ContractTests.test_external_study_ipd_summary_double_count_denied) ... ok\ntest_fit_versions_and_hashes_rejected_before_dispatch (test_domain.ContractTests.test_fit_versions_and_hashes_rejected_before_dispatch) ... ok\ntest_invalid_estimand_units_recall_and_event_strategy (test_domain.ContractTests.test_invalid_estimand_units_recall_and_event_strategy) ... ok\ntest_isi_items_recall_trending_and_no_postdeath_isi (test_domain.ContractTests.test_isi_items_recall_trending_and_no_postdeath_isi) ... ok\ntest_late_correction_does_not_rewrite_old_history_and_duplicates_drop (test_domain.ContractTests.test_late_correction_does_not_rewrite_old_history_and_duplicates_drop) ... ok\ntest_missing_reward_is_not_zero (test_domain.ContractTests.test_missing_reward_is_not_zero) ... ok\ntest_named_threshold_is_provisional_and_no_unit_substitution (test_domain.ContractTests.test_named_threshold_is_provisional_and_no_unit_substitution) ... ok\ntest_no_latent_or_truth_payload_can_enter_learner_schema (test_domain.ContractTests.test_no_latent_or_truth_payload_can_enter_learner_schema) ... ok\ntest_protocol_approval_does_not_preselect_randomized_winner (test_domain.ContractTests.test_protocol_approval_does_not_preselect_randomized_winner) ... ok\ntest_record_clock_naive_timezone_and_future_nested_covariate_rejected (test_domain.ContractTests.test_record_clock_naive_timezone_and_future_nested_covariate_rejected) ... ok\ntest_retracted_active_consent_never_authorizes_or_revives_predecessor (test_domain.ContractTests.test_retracted_active_consent_never_authorizes_or_revives_predecessor) ... ok\ntest_schema_exports_match_and_contain_no_evaluator_types_in_learner (test_domain.ContractTests.test_schema_exports_match_and_contain_no_evaluator_types_in_learner) ... ok\ntest_stale_patient_history_hold_permissions_and_exclusions_block_approval (test_domain.ContractTests.test_stale_patient_history_hold_permissions_and_exclusions_block_approval) ... ok\ntest_support_freeze_cannot_drift_during_block_or_washout (test_domain.ContractTests.test_support_freeze_cannot_drift_during_block_or_washout) ... ok\ntest_temporal_parent_graph_and_seeded_future_cycle_faults (test_domain.ContractTests.test_temporal_parent_graph_and_seeded_future_cycle_faults) ... ok\ntest_typed_fit_metadata_roundtrip_and_failure (test_domain.ContractTests.test_typed_fit_metadata_roundtrip_and_failure) ... ok\ntest_version_and_strict_types_reject_without_coercion (test_domain.ContractTests.test_version_and_strict_types_reject_without_coercion) ... ok\ntest_delayed_previous_quality_equal_time_and_deterministic_ties (test_temporal_r1.TemporalR1Tests.test_delayed_previous_quality_equal_time_and_deterministic_ties) ... ok\ntest_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling (test_temporal_r1.TemporalR1Tests.test_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling) ... ok\ntest_no_reporting_assessment_after_known_death (test_temporal_r1.TemporalR1Tests.test_no_reporting_assessment_after_known_death) ... ok\ntest_observed_only_predictors_roundtrip_and_missing_history (test_temporal_r1.TemporalR1Tests.test_observed_only_predictors_roundtrip_and_missing_history) ... ok\ntest_pain_after_or_equal_report_decision_and_missing_report_source_rejected (test_temporal_r1.TemporalR1Tests.test_pain_after_or_equal_report_decision_and_missing_report_source_rejected) ... ok\ntest_three_clock_upload_delays_and_strict_cutoffs (test_temporal_r1.TemporalR1Tests.test_three_clock_upload_delays_and_strict_cutoffs) ... ok\ntest_v1_preserved_and_v2_validates (test_temporal_r1.TemporalR1Tests.test_v1_preserved_and_v2_validates) ... ok\ntest_wearable_available_independently_before_pain_or_report (test_temporal_r1.TemporalR1Tests.test_wearable_available_independently_before_pain_or_report) ... ok\n\n----------------------------------------------------------------------\nRan 60 tests in 0.438s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/library",
+        "-v"
+      ],
+      "started_utc": "2026-10-21T15:32:56.969737+00:00",
+      "finished_utc": "2026-10-21T15:32:57.744465+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_draw_coordinates_and_nonfinite (test_artifacts.ArtifactTests.test_draw_coordinates_and_nonfinite) ... ok\ntest_failure_context_and_path_before_worker (test_artifacts.ArtifactTests.test_failure_context_and_path_before_worker) ... ok\ntest_input_and_payload_tampering_before_worker (test_artifacts.ArtifactTests.test_input_and_payload_tampering_before_worker) ... ok\ntest_positive_roundtrip_and_dispatch (test_artifacts.ArtifactTests.test_positive_roundtrip_and_dispatch) ... ok\ntest_review_extra_short_rows_and_patient_identity_reject_before_worker (test_artifacts.ArtifactTests.test_review_extra_short_rows_and_patient_identity_reject_before_worker) ... ok\ntest_units_schema_weights_and_shape (test_artifacts.ArtifactTests.test_units_schema_weights_and_shape) ... ok\ntest_versions_and_malformed_request_before_worker (test_artifacts.ArtifactTests.test_versions_and_malformed_request_before_worker) ... ok\ntest_wcls_manifest_and_probability (test_artifacts.ArtifactTests.test_wcls_manifest_and_probability) ... ok\ntest_R_result_wrong_input_hash_or_unit_rejected_before_worker (test_lineage.LineageTests.test_R_result_wrong_input_hash_or_unit_rejected_before_worker) ... ok\ntest_artifact_specific_producers_and_direct_inputs (test_lineage.LineageTests.test_artifact_specific_producers_and_direct_inputs) ... ok\ntest_generator_definition_mutation_changes_lineage_and_stale_source_rejected (test_lineage.LineageTests.test_generator_definition_mutation_changes_lineage_and_stale_source_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.407s\n\nOK\n"
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-review-20261021/contracts/artifacts/__pycache__/closure-review/fresh-clone,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/library/dr",
+        "-v"
+      ],
+      "started_utc": "2026-10-21T15:32:57.744490+00:00",
+      "finished_utc": "2026-10-21T15:33:03.790138+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_independent_patient_ratio_bootstrap_and_shared_pair_reference (test_dr.Algebra.test_independent_patient_ratio_bootstrap_and_shared_pair_reference) ... ok\ntest_probability_support_availability_and_identity_failures (test_dr.Algebra.test_probability_support_availability_and_identity_failures) ... ok\ntest_reviewer_independent_rational_and_unequal_patient_denominator (test_dr.Algebra.test_reviewer_independent_rational_and_unequal_patient_denominator) ... ok\ntest_wire_action_identity_is_integer_and_versioned (test_dr.Algebra.test_wire_action_identity_is_integer_and_versioned) ... ok\ntest_zero_Q_residual_factual_target_and_singleton (test_dr.Algebra.test_zero_Q_residual_factual_target_and_singleton) ... ok\ntest_actual_training_guards_reject_before_Ridge_fit (test_dr.Provenance.test_actual_training_guards_reject_before_Ridge_fit) ... ok\ntest_missing_absent_training_insufficient_units_and_pooled_dependence (test_dr.Provenance.test_missing_absent_training_insufficient_units_and_pooled_dependence) ... ok\ntest_patient_time_row_action_and_training_mutations_before_score (test_dr.Provenance.test_patient_time_row_action_and_training_mutations_before_score) ... ok\ntest_raw_byte_hash_and_source_binding_rejection (test_dr.Provenance.test_raw_byte_hash_and_source_binding_rejection) ... ok\ntest_real_Ridge_artifacts_access_and_reward_mutation (test_dr.Provenance.test_real_Ridge_artifacts_access_and_reward_mutation) ... ok\ntest_unavailable_denominator_no_eligible_and_unit_guard (test_dr.Provenance.test_unavailable_denominator_no_eligible_and_unit_guard) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 3.448s\n\nOK\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g0-dgp-workflow-r2-review-20261021\\contracts\\dgp\\.venv\\Scripts\\python.exe",
+        "docs/implementation/check-ledger-20261020.py"
+      ],
+      "started_utc": "2026-10-21T15:33:03.790196+00:00",
+      "finished_utc": "2026-10-21T15:33:05.338759+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; gates unaccepted.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-review-20261021/contracts/artifacts/__pycache__/closure-review/fresh-clone,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-c",
+        "import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])"
+      ],
+      "started_utc": "2026-10-21T15:33:05.338786+00:00",
+      "finished_utc": "2026-10-21T15:33:08.395759+00:00",
+      "exit_code": 0,
+      "stdout": "No broken requirements found.\nPASS: exact runtime inventory; historical six manifests byte/shape only (original provenance claims superseded); seven R1 artifact-specific manifests and deterministic schemas\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-closure-review-20261021/contracts/artifacts/__pycache__/closure-review/fresh-clone,target=/workspace,readonly",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-m",
+        "tooling.library.verify_dr"
+      ],
+      "started_utc": "2026-10-21T15:33:08.395793+00:00",
+      "finished_utc": "2026-10-21T15:33:10.513694+00:00",
+      "exit_code": 0,
+      "stdout": "PASS: all actual raw input/model/source hashes,60-window pooled sums/counts and2000 paired fixed-seed replicates replay exactly\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--quiet",
+        "d84203709b0164a0824913950c1d7cd7be25a2fb",
+        "--",
+        "docs/implementation/evidence/G0-LIB",
+        ":!docs/implementation/evidence/G0-LIB/DR/**"
+      ],
+      "started_utc": "2026-10-21T15:33:10.513743+00:00",
+      "finished_utc": "2026-10-21T15:33:10.551784+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--quiet",
+        "d84203709b0164a0824913950c1d7cd7be25a2fb",
+        "--",
+        "tooling/library/requirements.lock",
+        "tooling/library/r-packages.lock.csv",
+        "tooling/library/python.Dockerfile",
+        "tooling/library/offline-r.Dockerfile"
+      ],
+      "started_utc": "2026-10-21T15:33:10.551824+00:00",
+      "finished_utc": "2026-10-21T15:33:10.593243+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--quiet",
+        "f11e90536b635a7db08cfed640445bec197a415c",
+        "--",
+        "contracts/domain",
+        "contracts/dgp",
+        "tests/contracts",
+        "docs/implementation/dgp-decisions.md",
+        "docs/implementation/workflow-contract.md",
+        "docs/implementation/workflow-sketches.md",
+        "docs/spec/01-estimands-and-contracts.md",
+        "docs/spec/dgp-reference.md"
+      ],
+      "started_utc": "2026-10-21T15:33:10.593272+00:00",
+      "finished_utc": "2026-10-21T15:33:10.629443+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "f11e90536b635a7db08cfed640445bec197a415c"
+      ],
+      "started_utc": "2026-10-21T15:33:10.629471+00:00",
+      "finished_utc": "2026-10-21T15:33:10.696289+00:00",
+      "exit_code": 2,
+      "stdout": "docs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:1: trailing whitespace.\n+{\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:2: trailing whitespace.\n+  \"run-own.py\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:3: trailing whitespace.\n+    \"sha256\": \"c7c3f9e3dc5280b0437b4916b0959ef5ea4a26acd1ae88e194da8ddecae71ae9\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:4: trailing whitespace.\n+    \"git_blob\": \"00744039e76443404d8da4727f2b966ad658b6db\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:5: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:6: trailing whitespace.\n+  \"independent.py\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:7: trailing whitespace.\n+    \"sha256\": \"0f81c3696e49858149f23a433ffe26207de4ec0086b8ef7a108d68219e8fbf66\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:8: trailing whitespace.\n+    \"git_blob\": \"741d3e594807fc2cbd641c586396a4de9b5900ea\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:9: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:10: trailing whitespace.\n+  \"independent-results.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:11: trailing whitespace.\n+    \"sha256\": \"acc0fee7a47c536eebe22433da944598c363cfd3e4e2f5bee8916b4051f4417f\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:12: trailing whitespace.\n+    \"git_blob\": \"258204f6cec6bfa0d5c6911704e02c430ec50e0c\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:13: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:14: trailing whitespace.\n+  \"bytes.py\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:15: trailing whitespace.\n+    \"sha256\": \"13374a75b4fdabf6485e79694c8641691b9bcb3342d519692c0b4efe649ec6d7\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:16: trailing whitespace.\n+    \"git_blob\": \"0544af61388223d35a2c36ed3946278f7944a436\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:17: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:18: trailing whitespace.\n+  \"byte-identity.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:19: trailing whitespace.\n+    \"sha256\": \"45a5e0a2371545202dfa762f92f5d264b1b575c99151cbc865995358e6de06ba\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:20: trailing whitespace.\n+    \"git_blob\": \"1adcd6b9f16106b35c69c1df8569f68bab114e41\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:21: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:22: trailing whitespace.\n+  \"runner.txt\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:23: trailing whitespace.\n+    \"sha256\": \"66355c794a0487ad91582e196e67a2ef5cae85770f20d2c5bc1df2ab37923606\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:24: trailing whitespace.\n+    \"git_blob\": \"4f6785f5a52cb9ceebb5117230498eed5131ad39\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:25: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:26: trailing whitespace.\n+  \"clone-runner.txt\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:27: trailing whitespace.\n+    \"sha256\": \"cd3fd3eddc9e67451447602a4c40cadcbcd25360fad6719cf5477f0d28730ff4\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:28: trailing whitespace.\n+    \"git_blob\": \"1ea2a796f0dcf88f706b1a90ca66ddb378f4d266\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:29: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:30: trailing whitespace.\n+  \"actual-evidence/commands.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:31: trailing whitespace.\n+    \"sha256\": \"0a6af76dbf117a0a680fd1fdfa070c72e0fb55255928533ad282cbca6cb4e33f\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:32: trailing whitespace.\n+    \"git_blob\": \"c013b4e1a9d9e97d3d20da9541f3d052ab1af8e5\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:33: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:34: trailing whitespace.\n+  \"actual-evidence/logging-definition.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:35: trailing whitespace.\n+    \"sha256\": \"5f5cfad990ee6a10c4c92e285c7fc93182a94383f51d6587f8f8f2d17be08be2\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:36: trailing whitespace.\n+    \"git_blob\": \"6f3b429fdc064b0636fe230411e6a748eb83534f\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:37: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:38: trailing whitespace.\n+  \"actual-evidence/mutated-score-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:39: trailing whitespace.\n+    \"sha256\": \"e3f1bd09bc0395d02ec01ec38f3dc52956240c1c962e83560ce51ac2b434415d\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:40: trailing whitespace.\n+    \"git_blob\": \"e8255ad527c7709bb525bfdcc4014cc3d40fcfb7\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:41: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:42: trailing whitespace.\n+  \"actual-evidence/predict-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:43: trailing whitespace.\n+    \"sha256\": \"b840a5a38bba28b62480c35dd08ac45cefb99c5ee117a4cf48b6ea82f70c4a95\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:44: trailing whitespace.\n+    \"git_blob\": \"5ea667fecc28bcf3c38af3ed9a2262ba6fbad502\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:45: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:46: trailing whitespace.\n+  \"actual-evidence/probe-summary.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:47: trailing whitespace.\n+    \"sha256\": \"095dde6f06c4000893ec96655a2ac1c6233a1feb2cb230914a67ef3ead9e27be\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:48: trailing whitespace.\n+    \"git_blob\": \"b5bc3536fa26bd690eaad5b950ecd2056fd06d9a\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:49: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:50: trailing whitespace.\n+  \"actual-evidence/recipe-source-sha256.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:51: trailing whitespace.\n+    \"sha256\": \"2a269e648ccdcaecb81d5d17c77dcfcb6ab03c8e666a024a6bc324d9ca48a80b\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:52: trailing whitespace.\n+    \"git_blob\": \"e5f0ea976f790649bdb6458536ea81facb8feb40\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:53: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:54: trailing whitespace.\n+  \"actual-evidence/result-reward-mutation.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:55: trailing whitespace.\n+    \"sha256\": \"948d9645a249e987bce56765340a438b7732186ed635a9363f157a81b17f3087\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:56: trailing whitespace.\n+    \"git_blob\": \"f0b1ed118cc23c1ba02fd876f99179349176523e\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:57: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:58: trailing whitespace.\n+  \"actual-evidence/result.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:59: trailing whitespace.\n+    \"sha256\": \"a0b7713a2be10f6914ab6f4eab462e2f11a30efa6760d858428675b39bf43662\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:60: trailing whitespace.\n+    \"git_blob\": \"900d9b5f4bd4f56f70e047ec1f02469a25c94d44\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:61: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:62: trailing whitespace.\n+  \"actual-evidence/score-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:63: trailing whitespace.\n+    \"sha256\": \"e3f1bd09bc0395d02ec01ec38f3dc52956240c1c962e83560ce51ac2b434415d\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:64: trailing whitespace.\n+    \"git_blob\": \"e8255ad527c7709bb525bfdcc4014cc3d40fcfb7\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:65: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:66: trailing whitespace.\n+  \"actual-evidence/source-manifest.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:67: trailing whitespace.\n+    \"sha256\": \"c65e6487513df999dd6eb36236a7727ba652031900d904e7201c5c0be45f9ba8\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:68: trailing whitespace.\n+    \"git_blob\": \"0f092017ee5a4d5811bd22147b169f4886f0483d\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:69: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:70: trailing whitespace.\n+  \"actual-evidence/train-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:71: trailing whitespace.\n+    \"sha256\": \"be91fbb716f3962803bfa0e4dbc5bebf17a6e30827d154e8c0e1b07b571e80c8\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:72: trailing whitespace.\n+    \"git_blob\": \"8d0c778995ef28f450d677a7f7bc3d2e6ade690b\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:73: trailing whitespace.\n+  }\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:74: trailing whitespace.\n+}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--quiet",
+        "fa3fca61b5b5c886064d2429d785b8de9e6fd146",
+        "--",
+        "contracts",
+        "methods",
+        "tooling",
+        "tests",
+        "requirements-contracts.txt"
+      ],
+      "started_utc": "2026-10-21T15:33:10.696357+00:00",
+      "finished_utc": "2026-10-21T15:33:10.733695+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "fa3fca61b5b5c886064d2429d785b8de9e6fd146"
+      ],
+      "started_utc": "2026-10-21T15:33:10.733718+00:00",
+      "finished_utc": "2026-10-21T15:33:10.779698+00:00",
+      "exit_code": 2,
+      "stdout": "docs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:1: trailing whitespace.\n+{\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:2: trailing whitespace.\n+  \"run-own.py\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:3: trailing whitespace.\n+    \"sha256\": \"c7c3f9e3dc5280b0437b4916b0959ef5ea4a26acd1ae88e194da8ddecae71ae9\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:4: trailing whitespace.\n+    \"git_blob\": \"00744039e76443404d8da4727f2b966ad658b6db\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:5: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:6: trailing whitespace.\n+  \"independent.py\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:7: trailing whitespace.\n+    \"sha256\": \"0f81c3696e49858149f23a433ffe26207de4ec0086b8ef7a108d68219e8fbf66\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:8: trailing whitespace.\n+    \"git_blob\": \"741d3e594807fc2cbd641c586396a4de9b5900ea\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:9: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:10: trailing whitespace.\n+  \"independent-results.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:11: trailing whitespace.\n+    \"sha256\": \"acc0fee7a47c536eebe22433da944598c363cfd3e4e2f5bee8916b4051f4417f\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:12: trailing whitespace.\n+    \"git_blob\": \"258204f6cec6bfa0d5c6911704e02c430ec50e0c\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:13: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:14: trailing whitespace.\n+  \"bytes.py\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:15: trailing whitespace.\n+    \"sha256\": \"13374a75b4fdabf6485e79694c8641691b9bcb3342d519692c0b4efe649ec6d7\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:16: trailing whitespace.\n+    \"git_blob\": \"0544af61388223d35a2c36ed3946278f7944a436\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:17: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:18: trailing whitespace.\n+  \"byte-identity.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:19: trailing whitespace.\n+    \"sha256\": \"45a5e0a2371545202dfa762f92f5d264b1b575c99151cbc865995358e6de06ba\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:20: trailing whitespace.\n+    \"git_blob\": \"1adcd6b9f16106b35c69c1df8569f68bab114e41\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:21: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:22: trailing whitespace.\n+  \"runner.txt\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:23: trailing whitespace.\n+    \"sha256\": \"66355c794a0487ad91582e196e67a2ef5cae85770f20d2c5bc1df2ab37923606\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:24: trailing whitespace.\n+    \"git_blob\": \"4f6785f5a52cb9ceebb5117230498eed5131ad39\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:25: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:26: trailing whitespace.\n+  \"clone-runner.txt\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:27: trailing whitespace.\n+    \"sha256\": \"cd3fd3eddc9e67451447602a4c40cadcbcd25360fad6719cf5477f0d28730ff4\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:28: trailing whitespace.\n+    \"git_blob\": \"1ea2a796f0dcf88f706b1a90ca66ddb378f4d266\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:29: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:30: trailing whitespace.\n+  \"actual-evidence/commands.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:31: trailing whitespace.\n+    \"sha256\": \"0a6af76dbf117a0a680fd1fdfa070c72e0fb55255928533ad282cbca6cb4e33f\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:32: trailing whitespace.\n+    \"git_blob\": \"c013b4e1a9d9e97d3d20da9541f3d052ab1af8e5\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:33: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:34: trailing whitespace.\n+  \"actual-evidence/logging-definition.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:35: trailing whitespace.\n+    \"sha256\": \"5f5cfad990ee6a10c4c92e285c7fc93182a94383f51d6587f8f8f2d17be08be2\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:36: trailing whitespace.\n+    \"git_blob\": \"6f3b429fdc064b0636fe230411e6a748eb83534f\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:37: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:38: trailing whitespace.\n+  \"actual-evidence/mutated-score-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:39: trailing whitespace.\n+    \"sha256\": \"e3f1bd09bc0395d02ec01ec38f3dc52956240c1c962e83560ce51ac2b434415d\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:40: trailing whitespace.\n+    \"git_blob\": \"e8255ad527c7709bb525bfdcc4014cc3d40fcfb7\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:41: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:42: trailing whitespace.\n+  \"actual-evidence/predict-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:43: trailing whitespace.\n+    \"sha256\": \"b840a5a38bba28b62480c35dd08ac45cefb99c5ee117a4cf48b6ea82f70c4a95\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:44: trailing whitespace.\n+    \"git_blob\": \"5ea667fecc28bcf3c38af3ed9a2262ba6fbad502\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:45: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:46: trailing whitespace.\n+  \"actual-evidence/probe-summary.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:47: trailing whitespace.\n+    \"sha256\": \"095dde6f06c4000893ec96655a2ac1c6233a1feb2cb230914a67ef3ead9e27be\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:48: trailing whitespace.\n+    \"git_blob\": \"b5bc3536fa26bd690eaad5b950ecd2056fd06d9a\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:49: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:50: trailing whitespace.\n+  \"actual-evidence/recipe-source-sha256.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:51: trailing whitespace.\n+    \"sha256\": \"2a269e648ccdcaecb81d5d17c77dcfcb6ab03c8e666a024a6bc324d9ca48a80b\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:52: trailing whitespace.\n+    \"git_blob\": \"e5f0ea976f790649bdb6458536ea81facb8feb40\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:53: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:54: trailing whitespace.\n+  \"actual-evidence/result-reward-mutation.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:55: trailing whitespace.\n+    \"sha256\": \"948d9645a249e987bce56765340a438b7732186ed635a9363f157a81b17f3087\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:56: trailing whitespace.\n+    \"git_blob\": \"f0b1ed118cc23c1ba02fd876f99179349176523e\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:57: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:58: trailing whitespace.\n+  \"actual-evidence/result.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:59: trailing whitespace.\n+    \"sha256\": \"a0b7713a2be10f6914ab6f4eab462e2f11a30efa6760d858428675b39bf43662\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:60: trailing whitespace.\n+    \"git_blob\": \"900d9b5f4bd4f56f70e047ec1f02469a25c94d44\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:61: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:62: trailing whitespace.\n+  \"actual-evidence/score-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:63: trailing whitespace.\n+    \"sha256\": \"e3f1bd09bc0395d02ec01ec38f3dc52956240c1c962e83560ce51ac2b434415d\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:64: trailing whitespace.\n+    \"git_blob\": \"e8255ad527c7709bb525bfdcc4014cc3d40fcfb7\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:65: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:66: trailing whitespace.\n+  \"actual-evidence/source-manifest.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:67: trailing whitespace.\n+    \"sha256\": \"c65e6487513df999dd6eb36236a7727ba652031900d904e7201c5c0be45f9ba8\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:68: trailing whitespace.\n+    \"git_blob\": \"0f092017ee5a4d5811bd22147b169f4886f0483d\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:69: trailing whitespace.\n+  },\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:70: trailing whitespace.\n+  \"actual-evidence/train-access.json\": {\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:71: trailing whitespace.\n+    \"sha256\": \"be91fbb716f3962803bfa0e4dbc5bebf17a6e30827d154e8c0e1b07b571e80c8\",\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:72: trailing whitespace.\n+    \"git_blob\": \"8d0c778995ef28f450d677a7f7bc3d2e6ade690b\"\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:73: trailing whitespace.\n+  }\ndocs/implementation/evidence/G0-CLOSURE-20261021/lib-review-evidence-manifest.json:74: trailing whitespace.\n+}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "--format",
+        "{{.Id}}"
+      ],
+      "started_utc": "2026-10-21T15:33:10.779720+00:00",
+      "finished_utc": "2026-10-21T15:33:10.943608+00:00",
+      "exit_code": 0,
+      "stdout": "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7\n",
+      "stderr": ""
+    }
+  ],
+  "limits": [
+    "Bounded integrated engineering qualification; independent combined review/root G0 acceptance pending",
+    "No unchanged expensive NUTS/R/BCF fits rerun; historical failures preserved",
+    "No G1 source, final statistical/consumer/application/human/clinical acceptance"
+  ]
+}
