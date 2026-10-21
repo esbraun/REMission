@@ -83,6 +83,20 @@ class ManualReviewRule(StrictModel):
     requirements: Annotated[list[Requirement], Field(min_length=1)]
 
 
+class FollowUpBinding(StrictModel):
+    reference: ExactRef
+    owner_id: Identifier
+    policy: VersionRef
+    due_at: AwareDatetime
+    escalation_destination: Name
+
+
+class TriggerBinding(StrictModel):
+    trigger_rule: VersionRef
+    required_reviews: Annotated[list[Requirement], Field(min_length=1)]
+    follow_ups: Annotated[list[FollowUpBinding], Field(min_length=1)]
+
+
 class SourceGrant(StrictModel):
     account_id: Identifier
     service_patient_id: Identifier
@@ -97,17 +111,33 @@ class SourceGrant(StrictModel):
     ownership_ref: ExactRef
     episode_namespace: Identifier
     allowed_operations: list[Literal['invalidate']]
-    trigger_rules: Annotated[list[VersionRef], Field(min_length=1)]
-    required_reviews: Annotated[list[Requirement], Field(min_length=1)]
-    follow_up_owner_id: Identifier
-    follow_up_policy: VersionRef
-    due_at: AwareDatetime
-    escalation_destination: Name
+    trigger_bindings: Annotated[list[TriggerBinding], Field(min_length=1)]
+
+
+class FollowUpAmendment(StrictModel):
+    service_patient_id: Identifier
+    episode_id: Identifier
+    episode_generation: Annotated[int, Field(gt=0)]
+    prior_authority_generation: Annotated[int, Field(gt=0)]
+    prior_authority_sha256: Sha256
+    prior_review_rules_sha256: Sha256
+    prior_trigger_set_sha256: Sha256
+    prior_obligation_set_sha256: Sha256
+    source_key: tuple[Identifier,Identifier,Identifier,Identifier]
+    source_id: Identifier
+    source_version: Name
+    owner_id: Identifier
+    grant: SourceGrant
+    source_bundle_ref: ExactRef
+    follow_up: FollowUpBinding
+    authorization: VersionRef
 
 
 class LiveHoldAuthority(Header):
     authority_id: Identifier
     version: VersionRef
+    service_contract: VersionRef
+    schema_binding: VersionRef
     enabled: bool
     observed_binding: VersionRef
     archive_verifier: VersionRef
@@ -115,6 +145,41 @@ class LiveHoldAuthority(Header):
     source_registry: VersionRef
     execution: Literal['synthetic_service', 'contract_fixture']
     grants: list[SourceGrant]
+    follow_up_amendments: list[FollowUpAmendment]
+
+    @model_validator(mode='after')
+    def unambiguous_bindings(self):
+        keys=set();requirements={};followups={}
+        for grant in self.grants:
+            key=(grant.account_id,grant.service_patient_id,grant.source_id,grant.source_version,grant.run_id,
+                 grant.partition_id,grant.archive_id,grant.package_sha256)
+            if key in keys:raise ValueError('duplicate_live_source_grant')
+            keys.add(key);rules=[]
+            for binding in grant.trigger_bindings:
+                if binding.trigger_rule in rules:raise ValueError('duplicate_trigger_rule_binding')
+                rules.append(binding.trigger_rule)
+                ids=[]
+                for requirement in binding.required_reviews:
+                    if requirement.requirement_id in ids:raise ValueError('duplicate_trigger_requirement')
+                    ids.append(requirement.requirement_id)
+                    if requirement.requirement_id in requirements and requirements[requirement.requirement_id]!=requirement:
+                        raise ValueError('conflicting_live_requirement')
+                    requirements[requirement.requirement_id]=requirement
+                refs=[]
+                for follow in binding.follow_ups:
+                    if follow.owner_id!=grant.account_id or follow.reference in refs:raise ValueError('invalid_followup_binding')
+                    refs.append(follow.reference)
+                    refkey=(grant.run_id,grant.partition_id,grant.archive_id,follow.reference.record_id)
+                    if refkey in followups and followups[refkey]!=follow:raise ValueError('conflicting_followup_binding')
+                    followups[refkey]=follow
+        amendments=[]
+        for amendment in self.follow_up_amendments:
+            if amendment.grant not in self.grants or amendment.owner_id!=amendment.grant.account_id or amendment.follow_up.owner_id!=amendment.owner_id:
+                raise ValueError('ungranted_followup_amendment')
+            key=(amendment.service_patient_id,amendment.episode_id,amendment.episode_generation,amendment.follow_up)
+            if key in amendments:raise ValueError('duplicate_followup_amendment')
+            amendments.append(key)
+        return self
 
 
 class ReviewRules(Header):

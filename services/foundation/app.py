@@ -197,7 +197,7 @@ def create_app(settings: Settings) -> FastAPI:
                 row=db.execute('SELECT payload FROM live_hold_episodes WHERE id=? AND patient_id=? ORDER BY generation DESC LIMIT 1',(episode_id,patient_id)).fetchone()
                 if row is None:
                     raise APIError(404,'not_found','Resource not found')
-                if any(g not in [x.model_dump(mode='json') for x in settings.installed.authority.grants] for g in json.loads(row[0])['grants']):
+                if not live.episode_grants_current(settings,json.loads(row[0])):
                     raise LiveError('live_source_grant_unavailable')
             return principal
         def prepare(db):
@@ -250,24 +250,22 @@ def create_app(settings: Settings) -> FastAPI:
     @app.get('/api/patients/{patient_id}/live-holds')
     def read_live_holds(patient_id: str,request: Request):
         from .live_journal import summary,active_episodes
-        from .live_hold import installed_rules
+        from .live_hold import installed_rules,episode_grants_current
         with store.transaction() as db:
             current=session(db,request);own(db,patient_id,current['account_id'])
             episodes=[]
             for row in active_episodes(db,patient_id):
                 e=row['data'];rules,complete=installed_rules(settings,e)
-                grants_valid=all(g in [x.model_dump(mode='json') for x in settings.installed.authority.grants] for g in e['grants'])
+                grants_valid=episode_grants_current(settings,e)
                 review=db.execute('SELECT payload,payload_sha256 FROM live_hold_reviews WHERE id=?',(e.get('current_review_id'),)).fetchone()
                 episodes.append(dict(episode_id=row['id'],generation=row['generation'],opened_at=row['opened_at'],
                     trigger_set_sha256=e['trigger_set_sha256'],obligation_set_sha256=e['obligation_set_sha256'],
-                    trigger_refs=e['trigger_refs'],reason_codes=e['reason_codes'],obligations=e['obligations'],task_id=e['task_id'],
+                    trigger_refs=e['trigger_refs'],reason_codes=e['reason_codes'],obligations=e['obligations'],task_ids=e['task_ids'],
                     review_rules=[r.ref.model_dump(mode='json') for r in rules],clearance_supported=complete and grants_valid,
                     blocker='live_source_grant_unavailable' if not grants_valid else None if complete else 'T-OBS2-CLEARANCE-POLICY',
                     current_review=dict(payload=json.loads(review[0]),payload_sha256=review[1]) if review else None))
-            tasks=[dict(r) for r in db.execute('SELECT * FROM live_hold_tasks WHERE patient_id=?',(patient_id,))]
-            for task in tasks:
-                task['payload']=json.loads(task['payload'])
-                task['events']=[json.loads(r[0]) for r in db.execute('SELECT payload FROM live_hold_task_events WHERE task_id=? ORDER BY rowid',(task['id'],))]
+            from .live_tasks import all_tasks
+            tasks=all_tasks(db,patient_id)
             available=[]
             for grant in settings.installed.authority.grants:
                 if grant.account_id!=current['account_id'] or grant.service_patient_id!=patient_id:

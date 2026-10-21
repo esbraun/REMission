@@ -21,6 +21,159 @@
       "title": "ExactRef",
       "type": "object"
     },
+    "FollowUpAmendment": {
+      "additionalProperties": false,
+      "properties": {
+        "authorization": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "episode_generation": {
+          "exclusiveMinimum": 0,
+          "title": "Episode Generation",
+          "type": "integer"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "follow_up": {
+          "$ref": "#/$defs/FollowUpBinding"
+        },
+        "grant": {
+          "$ref": "#/$defs/SourceGrant"
+        },
+        "owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "prior_authority_generation": {
+          "exclusiveMinimum": 0,
+          "title": "Prior Authority Generation",
+          "type": "integer"
+        },
+        "prior_authority_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Prior Authority Sha256",
+          "type": "string"
+        },
+        "prior_obligation_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Prior Obligation Set Sha256",
+          "type": "string"
+        },
+        "prior_review_rules_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Prior Review Rules Sha256",
+          "type": "string"
+        },
+        "prior_trigger_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Prior Trigger Set Sha256",
+          "type": "string"
+        },
+        "service_patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Service Patient Id",
+          "type": "string"
+        },
+        "source_bundle_ref": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_key": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            }
+          ],
+          "title": "Source Key",
+          "type": "array"
+        },
+        "source_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Source Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "service_patient_id",
+        "episode_id",
+        "episode_generation",
+        "prior_authority_generation",
+        "prior_authority_sha256",
+        "prior_review_rules_sha256",
+        "prior_trigger_set_sha256",
+        "prior_obligation_set_sha256",
+        "source_key",
+        "source_id",
+        "source_version",
+        "owner_id",
+        "grant",
+        "source_bundle_ref",
+        "follow_up",
+        "authorization"
+      ],
+      "title": "FollowUpAmendment",
+      "type": "object"
+    },
+    "FollowUpBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "due_at": {
+          "format": "date-time",
+          "title": "Due At",
+          "type": "string"
+        },
+        "escalation_destination": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Escalation Destination",
+          "type": "string"
+        },
+        "owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "policy": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "reference": {
+          "$ref": "#/$defs/ExactRef"
+        }
+      },
+      "required": [
+        "reference",
+        "owner_id",
+        "policy",
+        "due_at",
+        "escalation_destination"
+      ],
+      "title": "FollowUpBinding",
+      "type": "object"
+    },
     "Requirement": {
       "additionalProperties": false,
       "properties": {
@@ -97,29 +250,10 @@
           "title": "Archive Patient Id",
           "type": "string"
         },
-        "due_at": {
-          "format": "date-time",
-          "title": "Due At",
-          "type": "string"
-        },
         "episode_namespace": {
           "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
           "title": "Episode Namespace",
           "type": "string"
-        },
-        "escalation_destination": {
-          "maxLength": 256,
-          "minLength": 1,
-          "title": "Escalation Destination",
-          "type": "string"
-        },
-        "follow_up_owner_id": {
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
-          "title": "Follow Up Owner Id",
-          "type": "string"
-        },
-        "follow_up_policy": {
-          "$ref": "#/$defs/VersionRef"
         },
         "ownership_ref": {
           "$ref": "#/$defs/ExactRef"
@@ -133,14 +267,6 @@
           "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
           "title": "Partition Id",
           "type": "string"
-        },
-        "required_reviews": {
-          "items": {
-            "$ref": "#/$defs/Requirement"
-          },
-          "minItems": 1,
-          "title": "Required Reviews",
-          "type": "array"
         },
         "run_id": {
           "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
@@ -163,12 +289,12 @@
           "title": "Source Version",
           "type": "string"
         },
-        "trigger_rules": {
+        "trigger_bindings": {
           "items": {
-            "$ref": "#/$defs/VersionRef"
+            "$ref": "#/$defs/TriggerBinding"
           },
           "minItems": 1,
-          "title": "Trigger Rules",
+          "title": "Trigger Bindings",
           "type": "array"
         }
       },
@@ -186,14 +312,40 @@
         "ownership_ref",
         "episode_namespace",
         "allowed_operations",
-        "trigger_rules",
-        "required_reviews",
-        "follow_up_owner_id",
-        "follow_up_policy",
-        "due_at",
-        "escalation_destination"
+        "trigger_bindings"
       ],
       "title": "SourceGrant",
+      "type": "object"
+    },
+    "TriggerBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "follow_ups": {
+          "items": {
+            "$ref": "#/$defs/FollowUpBinding"
+          },
+          "minItems": 1,
+          "title": "Follow Ups",
+          "type": "array"
+        },
+        "required_reviews": {
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          },
+          "minItems": 1,
+          "title": "Required Reviews",
+          "type": "array"
+        },
+        "trigger_rule": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "trigger_rule",
+        "required_reviews",
+        "follow_ups"
+      ],
+      "title": "TriggerBinding",
       "type": "object"
     },
     "VersionRef": {
@@ -254,6 +406,13 @@
       "title": "Execution",
       "type": "string"
     },
+    "follow_up_amendments": {
+      "items": {
+        "$ref": "#/$defs/FollowUpAmendment"
+      },
+      "title": "Follow Up Amendments",
+      "type": "array"
+    },
     "grants": {
       "items": {
         "$ref": "#/$defs/SourceGrant"
@@ -267,10 +426,16 @@
     "producer": {
       "$ref": "#/$defs/VersionRef"
     },
+    "schema_binding": {
+      "$ref": "#/$defs/VersionRef"
+    },
     "schema_version": {
       "const": "1.0.0",
       "title": "Schema Version",
       "type": "string"
+    },
+    "service_contract": {
+      "$ref": "#/$defs/VersionRef"
     },
     "source_registry": {
       "$ref": "#/$defs/VersionRef"
@@ -290,13 +455,16 @@
     "synthetic",
     "authority_id",
     "version",
+    "service_contract",
+    "schema_binding",
     "enabled",
     "observed_binding",
     "archive_verifier",
     "producer",
     "source_registry",
     "execution",
-    "grants"
+    "grants",
+    "follow_up_amendments"
   ],
   "title": "LiveHoldAuthority",
   "type": "object"

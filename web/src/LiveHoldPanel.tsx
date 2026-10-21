@@ -4,8 +4,8 @@ import type { Workspace } from './types';
 type Ref = { id: string; version: string; sha256: string };
 type Evidence = { store: 'archive' | 'event' | 'live_review'; namespace_id: string; partition_id: string | null; record_id: string; payload_sha256: string };
 type Obligation = { requirement_id: string; definition: Ref; responsible_role: string; evidence_kinds: string[]; source_ids: string[] };
-type Episode = { episode_id: string; generation: number; opened_at: string; reason_codes: string[]; trigger_set_sha256: string; obligation_set_sha256: string; trigger_refs: Evidence[]; obligations: Obligation[]; review_rules: Ref[]; task_id: string; clearance_supported: boolean; blocker: string | null; current_review: { payload: { review_id: string; result: string; current_review_at: string; rationale: string }; payload_sha256: string } | null };
-type Holds = { episodes: Episode[]; tasks: { id: string; owner_id: string; due_at: string; events: { status: string }[] }[]; available_triggers: { label: string; command: object }[] };
+type Episode = { episode_id: string; generation: number; opened_at: string; reason_codes: string[]; trigger_set_sha256: string; obligation_set_sha256: string; trigger_refs: Evidence[]; obligations: Obligation[]; review_rules: Ref[]; task_ids: string[]; clearance_supported: boolean; blocker: string | null; current_review: { payload: { review_id: string; result: string; current_review_at: string; rationale: string }; payload_sha256: string } | null };
+type Holds = { episodes: Episode[]; tasks: { id: string; owner_id: string; due_at: string; payload: { escalation_destination: string }; events: { status: string }[] }[]; available_triggers: { label: string; command: object }[] };
 type Requester = <T>(url: string, options?: RequestInit) => Promise<T>;
 type Props = { workspace: Workspace; request: Requester; refresh: () => void; changed: (dirty: boolean) => void };
 
@@ -66,9 +66,10 @@ export function LiveHoldPanel({ workspace, request, refresh, changed }: Props) {
     {error ? <div role="alert" className="error"><p>{error}</p><button className="secondary" onClick={refresh}>Refresh safety information</button>{original.current ? <button disabled={pending} onClick={() => { const command = original.current; if (command) void submit(command.url, command.value); }}>Retry original safety operation</button> : null}</div> : null}
     {!holds ? <p role="status">Loading owned holds and review tasks…</p> : <>
       {holds.episodes.length ? holds.episodes.map(episode => {
-        const task = holds.tasks.find(item => item.id === episode.task_id);
+        const tasks = holds.tasks.filter(item => episode.task_ids.includes(item.id));
         return <article key={`${episode.episode_id}:${episode.generation}`} className="hold-episode"><h3>{episode.reason_codes.join(', ').replaceAll('_', ' ')} · episode generation {episode.generation}</h3>
-          <p><strong>Hold remains active.</strong> Entered {localTime(episode.opened_at)}. Review owner: {task?.owner_id ?? 'Unavailable'}; due {task ? localTime(task.due_at) : 'unavailable'}.</p>
+          <p><strong>Hold remains active.</strong> Entered {localTime(episode.opened_at)}.</p>
+          <h4>Owned review follow-ups</h4><ul>{tasks.map(task => <li key={task.id}>Review owner: {task.owner_id}; due {localTime(task.due_at)}. Status: {task.events.at(-1)?.status ?? 'unavailable'}. Escalation: {task.payload.escalation_destination}.</li>)}</ul>
           <p>Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.</p>
           <h4>Exact triggering evidence</h4><ul>{episode.trigger_refs.map(reference => <li key={reference.record_id}><button className="link evidence-link" onClick={() => void showEvidence(reference)}>Inspect {reference.record_id}</button><span className="hash">SHA256 {reference.payload_sha256}</span></li>)}</ul>
           {!episode.clearance_supported ? <p className="warning"><strong>{episode.blocker}</strong>: an accepted clearance criterion is unavailable for one or more active obligations. The whole episode remains held; there is no timer or default clearance.</p> : null}

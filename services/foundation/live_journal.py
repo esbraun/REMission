@@ -54,7 +54,7 @@ def summary(db, patient_id):
     return dict(contract='LIVE-HOLD-01',schema_version='1.0.0',authority_generation=c['authority_generation'],
         authority_sha256=c['authority_sha256'],review_rules_sha256=c['review_rules_sha256'],patient_sequence=sequence or 0,
         active_episodes=[dict(episode_id=e['id'],generation=e['generation'],trigger_set_sha256=e['data']['trigger_set_sha256'],
-            obligation_set_sha256=e['data']['obligation_set_sha256'],task_id=e['data']['task_id']) for e in active_episodes(db,patient_id)])
+            obligation_set_sha256=e['data']['obligation_set_sha256'],task_ids=e['data']['task_ids']) for e in active_episodes(db,patient_id)])
 
 
 def overlay(db, patient_id, state):

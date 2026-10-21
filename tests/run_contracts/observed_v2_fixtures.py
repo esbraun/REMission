@@ -20,7 +20,7 @@ def ref(identifier, version='2.0.0', digest=ZERO):
 
 
 def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None, complete=False, service_owner=None,
-          run_name='obs2-fixture-run',threshold_concern=False):
+          run_name='obs2-fixture-run',threshold_concern=False,extra_hold=False):
     root.mkdir(parents=True, exist_ok=True)
     owner=service_owner or 'sim-owner'
     owner_role='doctor' if service_owner else 'simulated_clinician'
@@ -82,7 +82,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
     def add_hold(seq, at):
         predecessor = hold_records[-1] if hold_records else None
         predecessor_snap = next((r for r in history().records if predecessor and r.record_id == predecessor.snapshot_ref.record_id), None)
-        held = seq == 1
+        held = seq >= 1
         reason_code='experimental_stability_review' if threshold_concern else 'clinician_concern'
         hold_snap = snapshot('hold-snapshot-' + str(seq), at, held=held, version=seq + 2,reason_code=reason_code)
         task = add('follow_up', at, identifier='hold-task-' + str(seq), owner=owner, due_at=(at + timedelta(days=1)).isoformat(), trigger='synthetic review required', status='pending', escalation_destination='sim-care-team')
@@ -90,8 +90,9 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
         rule_id='accepted-observed-threshold' if threshold_concern else 'accepted-script-concern'
         requirement_id='review-threshold' if threshold_concern else 'review-concern'
         if held:
-            trigger = add('hold_review_evidence', at, version='2.0.0', process='hold_review', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', evidence_type='trigger_observation', rule=ref(rule_id), requirement=ref(requirement_id), actor_id=owner, actor_role=owner_role, origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=at.isoformat(), facts_refs=[], finding='simulated observed concern, no hidden numeric coordinates; threshold clearance law unspecified' if threshold_concern else 'simulated clinician concern, no hidden numeric coordinates', review_result='requires_hold', follow_up_refs=[exact_ref(task).model_dump()])
-        bundle = add('hold_transition_bundle', at, version='2.0.0', process='hold_transition', substream='baseline' if not held else 'enter', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', transition_sequence=seq, transition_type='enter' if held else 'baseline', effective_at=at.isoformat(), snapshot_ref=exact_ref(hold_snap).model_dump(), predecessor_bundle_ref=exact_ref(predecessor).model_dump() if predecessor else None, predecessor_snapshot_ref=exact_ref(predecessor_snap).model_dump() if predecessor_snap else None,
+            trigger = add('hold_review_evidence', at, version='2.0.0', process='hold_review', substream='main' if seq==1 else 'strengthen-'+str(seq),run_id=run_id, partition_id=partition_id, hold_episode_id='episode', evidence_type='trigger_observation', rule=ref(rule_id), requirement=ref(requirement_id), actor_id=owner, actor_role=owner_role, origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=at.isoformat(), facts_refs=[], finding='simulated observed concern, no hidden numeric coordinates; threshold clearance law unspecified' if threshold_concern else 'simulated clinician concern, no hidden numeric coordinates', review_result='requires_hold', follow_up_refs=[exact_ref(task).model_dump()])
+        transition='baseline' if not held else 'enter' if seq==1 else 'change_reason'
+        bundle = add('hold_transition_bundle', at, version='2.0.0', process='hold_transition', substream='baseline' if not held else 'enter' if seq==1 else 'strengthen-'+str(seq), run_id=run_id, partition_id=partition_id, hold_episode_id='episode', transition_sequence=seq, transition_type=transition, effective_at=at.isoformat(), snapshot_ref=exact_ref(hold_snap).model_dump(), predecessor_bundle_ref=exact_ref(predecessor).model_dump() if predecessor else None, predecessor_snapshot_ref=exact_ref(predecessor_snap).model_dump() if predecessor_snap else None,
                      reason_codes=[reason_code] if held else [], reason='simulated hold' if held else 'initial baseline', trigger_refs=[exact_ref(trigger).model_dump()] if trigger else [], changed_fact_refs=[], blocked_actions=['MED_A', 'MED_B', 'support_prompt', 'no_prompt'] if held else [], context_cutoff=at.isoformat(), causal_context_refs=[], context_projection_sha256=projection_hash(history(), at), policy=policy, model=model, eligibility_configuration=ref('paused-experiment-eligibility'), owner_id=owner, owner_role=owner_role, ownership_ref=exact_ref(patient).model_dump(), follow_up_refs=[exact_ref(task).model_dump()], required_reviews=[dict(requirement_id=requirement_id,definition=ref(requirement_id),responsible_role='doctor',status='pending',evidence_refs=[])] if service_owner and held else [], review_refs=[], clearance=dict(status='pending' if held else 'not_applicable', rule=None, evidence_refs=[], assessment_snapshot_ref=None), evidence_roles=[dict(ref=exact_ref(trigger).model_dump(), role='transition_trigger')] if trigger else [])
         hold_records.append(bundle)
 
@@ -168,6 +169,10 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
                    offered_closure_ref=exact_ref(closures[0]).model_dump(), delivered_closure_ref=exact_ref(closures[1]).model_dump())
         decisions[index], links[index] = decision, link
         ledger_artifacts.extend(point_ledger_artifacts)
+    if extra_hold:
+        assert hold and not complete
+        # Explicit structural duplicate-clock concern, no scientific law.
+        add_hold(2,ORIGIN+timedelta(hours=10))
     if complete:
         cutoff = cutoff or ORIGIN + timedelta(days=85, hours=10)
     cutoff = cutoff or ORIGIN + timedelta(days=1, hours=10)

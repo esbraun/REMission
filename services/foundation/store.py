@@ -47,12 +47,16 @@ class Store:
         except sqlite3.Error as error:
             raise AdmissionError('service_generation_mismatch') from error
         expected = self.installed.control.model_dump()
+        bindings=json.loads(Path(__file__).resolve().parents[2].joinpath('contracts/service/bindings-v1.json').read_bytes())
         database_stat=self.path.stat();lock_stat=self.gate.path.stat()
         accepted_observed=json.loads(Path(__file__).resolve().parents[2].joinpath('contracts/runs/bindings-v2.json').read_bytes())['observed_representation']
         if (row is None or any(row[k] != v for k, v in expected.items())
                 or (row['database_device'],row['database_inode'],row['lock_device'],row['lock_inode'])!=
                    (database_stat.st_dev,database_stat.st_ino,lock_stat.st_dev,lock_stat.st_ino)
                 or row['capability'] != CAPABILITY
+                or {r[0] for r in db.execute('SELECT version FROM schema_migrations')}!={1,2,3,4}
+                or self.installed.authority.service_contract.model_dump()!=bindings['live_hold']
+                or self.installed.authority.schema_binding.model_dump()!=bindings['service_schema_set']
                 or digest(canonical(self.installed.authority.model_dump(mode='json'))) != row['authority_sha256']
                 or digest(canonical(self.installed.review_rules.model_dump(mode='json'))) != row['review_rules_sha256']
                 or self.installed.authority.observed_binding.model_dump()!=accepted_observed):

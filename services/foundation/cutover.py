@@ -15,6 +15,7 @@ IMMUTABLE = ['events', 'decisions', 'bundles', 'tasks', 'receipts', 'ingestion_r
              'live_hold_task_events', 'live_hold_keys', 'live_patient_journals', 'live_safety_facts',
              'live_projection_receipts', 'live_export_receipts']
 IMMUTABLE.append('live_activation_receipts')
+IMMUTABLE.extend(['live_hold_additional_tasks','live_hold_task_bindings','live_hold_additional_task_events'])
 
 
 def protected_snapshot(db):
@@ -96,7 +97,7 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
         preserved=protected_snapshot(db)
         scripts = Path(__file__).with_name('migrations')
         # One explicit offline transaction, including all schema/bootstrap facts.
-        sql = '\n'.join((scripts/name).read_text(encoding='utf-8') for name in ['001_foundation.sql','002_observed_archive.sql','003_live_hold.sql'])
+        sql = '\n'.join((scripts/name).read_text(encoding='utf-8') for name in ['001_foundation.sql','002_observed_archive.sql','003_live_hold.sql','004_live_hold_followups.sql'])
         db.executescript('BEGIN IMMEDIATE;\n'+sql)
         try:
             c = installed.control
@@ -135,7 +136,7 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
 def change_generation(store,new_bundle,at,*,fault=None):
     """Offline stopped-worker administrative cutover; never an HTTP operation."""
     from .live_journal import active_episodes,append_fact,receive
-    from .live_hold import object_hash,advance
+    from .live_hold import object_hash,advance,same_grant_identity
     from .workflow import create_decision
     with store.transaction(write=True) as db:
         old=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone();new=new_bundle.control
@@ -156,8 +157,8 @@ def change_generation(store,new_bundle,at,*,fault=None):
             for row in episodes:
                 e=row['data'];obligations={r['requirement_id']:r for r in e['obligations']}
                 for grant in new_bundle.authority.grants:
-                    if grant.service_patient_id==pid and grant.episode_namespace in json.loads(row['source_key']):
-                        for r in grant.required_reviews:
+                    if any(same_grant_identity(g,grant.model_dump(mode='json')) for g in e['grants']):
+                        for r in [r for binding in grant.trigger_bindings if binding.trigger_rule.model_dump(mode='json') in e['trigger_rules'] for r in binding.required_reviews]:
                             value=r.model_dump(mode='json')
                             if r.requirement_id in obligations and obligations[r.requirement_id]!=value:
                                 raise ValueError('obligation_substitution_requires_reviewed_policy')
@@ -167,7 +168,8 @@ def change_generation(store,new_bundle,at,*,fault=None):
                 e['obligation_set_sha256']=object_hash(public);e['current_review_id']=None
                 db.execute('UPDATE live_hold_episodes SET payload=?,last_operation=? WHERE id=? AND generation=?',(canonical(e),operation_id,row['id'],row['generation']))
                 resulting.append(dict(episode_id=row['id'],generation=row['generation'],obligations=public,obligation_set_sha256=e['obligation_set_sha256']))
-                db.execute('INSERT INTO live_hold_task_events VALUES(?,?,?,?)',('task-event-'+uuid.uuid4().hex,e['task_id'],operation_id,canonical(dict(status='pending',reason='authority_changed',obligations=e['obligations']))))
+                from .live_tasks import event
+                for task_id in e['task_ids']:event(db,task_id,operation_id,dict(status='pending',reason='authority_changed',obligations=e['obligations']))
             journal=db.execute('SELECT journal_id FROM live_patient_journals WHERE patient_id=?',(pid,)).fetchone()[0]
             append_fact(db,pid,operation_id,at,dict(type='authority_changed',old_generation=old['authority_generation'],new_generation=new.authority_generation,
                 old_authority_sha256=old['authority_sha256'],new_authority_sha256=new.authority_sha256,old_review_rules_sha256=old['review_rules_sha256'],

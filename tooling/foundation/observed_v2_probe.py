@@ -48,6 +48,8 @@ def main():
             ref=lambda name:dict(id=name,version='1.0.0',sha256='0'*64)
             installed=bundle_for(LiveHoldAuthority.model_validate_json(canonical(dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,
                 authority_id='role-probe-fixture-only',version=ref('role-probe'),enabled=True,
+                service_contract=json.loads(Path('/app/contracts/service/bindings-v1.json').read_bytes())['live_hold'],
+                schema_binding=json.loads(Path('/app/contracts/service/bindings-v1.json').read_bytes())['service_schema_set'],follow_up_amendments=[],
                 observed_binding=json.loads(Path('/app/contracts/runs/bindings-v2.json').read_bytes())['observed_representation'],
                 archive_verifier=ref('wire-verifier'),producer=ref('role-probe-fixture'),source_registry=ref('role-probe-registry'),execution='contract_fixture',grants=[]))),
                 ReviewRules(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,rules=[]))

@@ -72,6 +72,23 @@ def patient_row(db, patient_id, owner):
     return row
 
 
+def same_grant_identity(left,right):
+    return {k:v for k,v in left.items() if k!='trigger_bindings'}=={k:v for k,v in right.items() if k!='trigger_bindings'}
+
+
+def episode_grants_current(settings,e):
+    """Retained provenance allows only an exact, monotone current grant extension."""
+    current=[g.model_dump(mode='json') for g in settings.installed.authority.grants]
+    for old in e['grants']:
+        matching=[g for g in current if same_grant_identity(old,g)]
+        if len(matching)!=1:return False
+        for binding in old['trigger_bindings']:
+            new=next((b for b in matching[0]['trigger_bindings'] if b['trigger_rule']==binding['trigger_rule']),None)
+            if new is None or any(r not in new['required_reviews'] for r in binding['required_reviews']) or any(f not in new['follow_ups'] for f in binding['follow_ups']):
+                return False
+    return True
+
+
 def archive_history(db, archive_id, partition_id, patient_id):
     rows=db.execute('SELECT payload FROM observed_archive_entries WHERE archive_id=? AND partition_id=? AND patient_id=? ORDER BY ordinal',
         (archive_id,partition_id,patient_id)).fetchall()
@@ -154,34 +171,44 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
          bundle.source.id,bundle.source.version,object_hash(archive_authority.model_dump(mode='json')))),None)
     if grant is None or 'invalidate' not in grant.allowed_operations:
         raise LiveError('live_source_grant_unavailable')
-    if grant.ownership_ref!=bundle.ownership_ref or grant.follow_up_owner_id!=owner:
+    if grant.ownership_ref!=bundle.ownership_ref or bundle.owner_id!=owner or bundle.owner_role!='doctor':
         raise LiveError('live_source_grant_unavailable')
-    for follow in bundle.follow_up_refs:
-        task=current_reference(history,follow,at,{'follow_up'})
-        if task.owner!=owner or task.due_at!=grant.due_at or task.escalation_destination!=grant.escalation_destination:
+    triggers=[];requirements={};followups={}
+    for reference in bundle.trigger_refs:
+        trigger=current_reference(history,reference,at,{'hold_review_evidence'})
+        binding=next((b for b in grant.trigger_bindings if b.trigger_rule==trigger.rule),None)
+        if (trigger.review_result!='requires_hold' or trigger.evidence_type!='trigger_observation' or binding is None
+                or trigger.source.id!=grant.source_id or trigger.source.version!=grant.source_version
+                or trigger.requirement not in [r.definition for r in binding.required_reviews]):
+            raise LiveError('positive_hold_trigger_required')
+        for requirement in binding.required_reviews:requirements[requirement.requirement_id]=requirement
+        selected=[f for f in binding.follow_ups if f.reference in trigger.follow_up_refs]
+        if not selected or refs([f.reference for f in selected])!=refs(trigger.follow_up_refs):
             raise LiveError('hold_follow_up_mismatch')
-    requirements={r.requirement_id:r for r in grant.required_reviews}
+        for follow in selected:
+            task=current_reference(history,follow.reference,at,{'follow_up'})
+            if (task.owner!=owner or follow.owner_id!=owner or task.due_at!=follow.due_at
+                    or task.escalation_destination!=follow.escalation_destination
+                    or task.source.id!=grant.source_id or task.source.version!=grant.source_version):
+                raise LiveError('hold_follow_up_mismatch')
+            followups[canonical(follow.model_dump(mode='json'))]=follow
+        triggers.append(trigger)
+    if refs([f.reference for f in followups.values()])!=refs(bundle.follow_up_refs):
+        raise LiveError('hold_follow_up_mismatch')
     if {r.requirement_id for r in bundle.required_reviews} != set(requirements):
         raise LiveError('hold_requirement_mismatch')
     for r in bundle.required_reviews:
         required=requirements[r.requirement_id]
         if r.definition!=required.definition or r.responsible_role!=required.responsible_role:
             raise LiveError('hold_requirement_mismatch')
-    triggers=[]
-    for ref in bundle.trigger_refs:
-        trigger=current_reference(history,ref,at,{'hold_review_evidence'})
-        if (trigger.review_result!='requires_hold' or trigger.evidence_type!='trigger_observation'
-                or trigger.rule not in grant.trigger_rules
-                or trigger.source.id!=grant.source_id or trigger.source.version!=grant.source_version):
-            raise LiveError('positive_hold_trigger_required')
-        triggers.append(trigger)
     closure=current_closure(history,bundle,at)
     if any(max(r.event_at,r.recorded_at,r.available_at)>at for r in closure):
         raise LiveError('future_hold_evidence',422)
     source_key=[grant.episode_namespace,bundle.run_id,data.partition_id,bundle.hold_episode_id]
     semantic=[patient_id,*source_key,bundle.lineage_id,bundle.revision,exact_ref(bundle).payload_sha256]
     return dict(bundle=bundle,grant=grant,history=history,source_key=source_key,
-        semantic_sha256=object_hash(semantic),triggers=triggers,archive_id=data.archive_id,partition_id=data.partition_id)
+        semantic_sha256=object_hash(semantic),triggers=triggers,requirements=list(requirements.values()),followups=list(followups.values()),
+        archive_id=data.archive_id,partition_id=data.partition_id)
 
 
 def committed_key(db, owner, patient_id, family, key, request_sha256):
@@ -263,7 +290,7 @@ def invalidate(db, settings, owner, patient_id, data, key, at, prepared, *, _fin
     trigger_refs=[dict(store='archive',namespace_id=data.archive_id,partition_id=data.partition_id,**r) for r in refs(data.trigger_refs)]
     e['trigger_refs']=sorted({canonical(r):r for r in [*e['trigger_refs'],*trigger_refs]}.values(),key=canonical)
     obligations={r['requirement_id']:r for r in e['obligations']}
-    for r in grant.required_reviews:
+    for r in prepared['requirements']:
         value=r.model_dump(mode='json')
         if r.requirement_id in obligations and obligations[r.requirement_id]!=value:
             raise LiveError('hold_requirement_substitution_forbidden')
@@ -279,21 +306,21 @@ def invalidate(db, settings, owner, patient_id, data, key, at, prepared, *, _fin
     e['current_review_id']=None
     operation_id='hold-'+uuid.uuid4().hex
     if not active:
-        task_id='hold-review-'+uuid.uuid4().hex;e['task_id']=task_id
-        db.execute('INSERT INTO live_hold_tasks VALUES(?,?,?,?,?,?,?)',(task_id,patient_id,episode_id,generation,owner,timestamp(grant.due_at),
-            canonical(dict(policy=grant.follow_up_policy.model_dump(mode='json'),escalation_destination=grant.escalation_destination,requirements=e['obligations']))))
+        e['task_ids']=[]
         db.execute('INSERT INTO live_hold_episodes VALUES(?,?,?,?,?,?,?,?)',(episode_id,generation,patient_id,canonical(prepared['source_key']),'active',timestamp(at),operation_id,canonical(e)))
     else:
         db.execute('UPDATE live_hold_episodes SET payload=?,last_operation=? WHERE id=? AND generation=?',(canonical(e),operation_id,episode_id,generation))
     if settings.fault:
         settings.fault('after_hold_episode')
-    db.execute('INSERT INTO live_hold_task_events VALUES(?,?,?,?)',('task-event-'+uuid.uuid4().hex,e['task_id'],operation_id,canonical(dict(status='pending',trigger_set_sha256=e['trigger_set_sha256'],obligations=e['obligations']))))
+    from .live_tasks import add_bindings,binding_value
+    add_bindings(db,patient_id,episode_id,generation,owner,[binding_value(grant,f,bundle.hold_episode_id) for f in prepared['followups']],e['obligations'],operation_id,e)
+    db.execute('UPDATE live_hold_episodes SET payload=? WHERE id=? AND generation=?',(canonical(e),episode_id,generation))
     advance(db,patient_id)
     operation=dict(type='invalidate',action='strengthen' if active else 'open',episode_id=episode_id,generation=generation,
         trigger_refs=trigger_refs,active_trigger_refs=e['trigger_refs'],trigger_set_sha256=e['trigger_set_sha256'],reason_codes=e['reason_codes'],
         obligations=public_obligations,obligation_set_sha256=e['obligation_set_sha256'])
     return finish(db,settings,owner,patient_id,family,key,request_sha256,semantic,at,before,
-        dict(operation_id=operation_id,episode_id=episode_id,episode_generation=generation,task_ids=[e['task_id']],
+        dict(operation_id=operation_id,episode_id=episode_id,episode_generation=generation,task_ids=e['task_ids'],
             source_key=prepared['source_key'],bundle_lineage=bundle.lineage_id,bundle_revision=bundle.revision,
             package_sha256=grant.package_sha256,archive_id=data.archive_id,partition_id=data.partition_id,
             bundle_ref=data.bundle_ref.model_dump(mode='json'),trigger_refs=trigger_refs),operation,event_at=bundle.event_at,final_decision_id=_final_decision_id)
@@ -417,7 +444,7 @@ def record_review(db,settings,owner,patient_id,episode_id,data,key,at,prepared):
     db.execute('UPDATE live_hold_episodes SET payload=?,last_operation=? WHERE id=? AND generation=?',(canonical(e),operation_id,episode_id,row['generation']))
     advance(db,patient_id)
     return finish(db,settings,owner,patient_id,family,key,request_sha256,semantic,at,versions(patient),
-        dict(operation_id=operation_id,review_id=review_id,review_sha256=review_sha256,episode_id=episode_id,episode_generation=row['generation'],task_ids=[e['task_id']]),
+        dict(operation_id=operation_id,review_id=review_id,review_sha256=review_sha256,episode_id=episode_id,episode_generation=row['generation'],task_ids=e['task_ids']),
         dict(type='review_recorded',episode_id=episode_id,generation=row['generation'],review_id=review_id,review_sha256=review_sha256,
             current_review_at=timestamp(at),trigger_set_sha256=e['trigger_set_sha256'],obligation_set_sha256=e['obligation_set_sha256'],
             rule_refs=prepared['rules'],result=prepared['result']))
@@ -455,7 +482,8 @@ def clear_episode(db,settings,owner,patient_id,episode_id,data,key,at):
             dict(requirement_id=proof['requirement_id'],definition=proof['definition']))
     operation_id='clear-'+uuid.uuid4().hex
     db.execute("UPDATE live_hold_episodes SET status='closed',last_operation=? WHERE id=? AND generation=?",(operation_id,episode_id,row['generation']))
-    db.execute('INSERT INTO live_hold_task_events VALUES(?,?,?,?)',('task-event-'+uuid.uuid4().hex,e['task_id'],operation_id,canonical(dict(status='closed',review_id=data.review_id))))
+    from .live_tasks import event
+    for task_id in e['task_ids']:event(db,task_id,operation_id,dict(status='closed',review_id=data.review_id))
     from .workflow import state_for,current_safety
     held=any(r.kind=='intercurrent_event' and r.event_type in ('death','admission','regimen_change','steroid_change','fever_suspected_infection','confusion','fall') for r in current_safety(db,patient_id,at))
     state=state_for('ASSIGN-09' if held else 'ASSIGN-01','Known safety event requires clinical review')
@@ -463,6 +491,6 @@ def clear_episode(db,settings,owner,patient_id,episode_id,data,key,at):
     state['plan']=json.loads(patient['state_json'])['plan']
     advance(db,patient_id,state)
     return finish(db,settings,owner,patient_id,family,key,request_sha256,semantic,at,versions(patient),
-        dict(operation_id=operation_id,episode_id=episode_id,episode_generation=row['generation'],task_ids=[e['task_id']],review_id=data.review_id),
+        dict(operation_id=operation_id,episode_id=episode_id,episode_generation=row['generation'],task_ids=e['task_ids'],review_id=data.review_id),
         dict(type='clearance',episode_id=episode_id,generation=row['generation'],review_id=data.review_id,review_sha256=data.review_sha256,
             trigger_set_sha256=e['trigger_set_sha256'],obligation_set_sha256=e['obligation_set_sha256'],rule_refs=refs(data.review_rules)))

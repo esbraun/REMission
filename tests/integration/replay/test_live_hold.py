@@ -298,7 +298,7 @@ class LiveWorkflowTests(unittest.TestCase):
 
     def allow_event_review(self):
         installed=self.settings.installed;authority=installed.authority.model_copy(deep=True);rules=installed.review_rules.model_copy(deep=True)
-        for requirement in [*authority.grants[0].required_reviews,*rules.rules[0].requirements]:
+        for requirement in [*authority.grants[0].trigger_bindings[0].required_reviews,*rules.rules[0].requirements]:
             requirement.evidence_kinds.append('daily_report');requirement.source_ids.append('foundation-synthetic')
         self.install_next(authority,rules);self.restart_client()
 
@@ -379,6 +379,133 @@ class LiveWorkflowTests(unittest.TestCase):
             self.assertEqual(row['approved_at'],held.json()['live_received_at'])
             self.assertEqual(row['display_sha256'],approved.json()['display_sha256'])
             self.assertEqual(db.execute('SELECT count(*) FROM bundles').fetchone()[0],1)
+
+    def test_authentication_rechecked_after_unrelated_sqlite_writer_wait(self):
+        import httpx
+        admitted=CONTEXT.Event()
+        def boundary(point):
+            if point=='after_hold_admission':admitted.set()
+        before=self.safety_state()
+        with service_process(replace(self.settings,fault=boundary)) as (url,_),httpx.Client(base_url=url,timeout=20) as client:
+            headers=self.http_login(client);headers['Idempotency-Key']='revoked-during-wait'
+            writer=self.store.connect();writer.execute('BEGIN IMMEDIATE')
+            try:
+                writer.execute("UPDATE sessions SET revoked=1 WHERE account_id='alice'")
+                with ThreadPoolExecutor(max_workers=1) as executor:
+                    pending=executor.submit(client.post,'/api/patients/SYN-02/live-holds',json=self.command,headers=headers)
+                    self.assertTrue(admitted.wait(10),'authenticated receipt barrier not reached')
+                    writer.commit()
+                    response=pending.result(20)
+                self.assertEqual(response.status_code,401,response.text)
+            finally:writer.rollback();writer.close()
+        self.assertEqual(before,self.safety_state())
+        self.login();self.enter('revoked-during-wait')
+
+    def test_actual_generation_cutover_process_death_before_and_after_commit(self):
+        self.enter();self.store.clock=lambda:NOW
+        original=self.settings.installed;before=self.safety_state()
+        next_bundle=bundle_for(original.authority,original.review_rules,generation=2,instance=original.control.database_instance_id)
+        for point in ['before_generation_commit','after_generation_commit']:
+            def cutover_child():
+                child_store=Store(self.store.path,original,clock=lambda:NOW)
+                def crash(name):
+                    if name==point:os._exit(79)
+                change_generation(child_store,next_bundle,NOW,fault=crash)
+            process=CONTEXT.Process(target=cutover_child);process.start();process.join(15)
+            self.assertFalse(process.is_alive());self.assertEqual(process.exitcode,79)
+            if point=='before_generation_commit':self.assertEqual(before,self.safety_state())
+        with self.assertRaisesRegex(AdmissionError,'service_generation_mismatch'):Store(self.store.path,original)
+        self.store=Store(self.store.path,next_bundle,clock=lambda:NOW);self.settings=replace(self.settings,installed=next_bundle);self.restart_client()
+        current=self.client.get('/api/patients/SYN-02').json()
+        self.assertEqual(current['stage'],'ASSIGN-09')
+        self.assertEqual(current['snapshot']['patient_version'],before['patient'][3]+1)
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM live_hold_operations WHERE family='authority_changed'").fetchone()[0],1)
+            self.assertEqual(db.execute('SELECT count(*) FROM live_hold_tasks').fetchone()[0],1)
+
+    def test_database_leaf_alias_hardlink_and_copied_identity_refuse_startup(self):
+        alias=self.root/'alias.sqlite';alias.symlink_to(self.store.path)
+        with self.assertRaisesRegex(AdmissionError,'unsupported_database_alias'):Store(alias,self.settings.installed)
+        alias.unlink();os.link(self.store.path,alias)
+        with self.assertRaisesRegex(AdmissionError,'unsupported_database_alias'):Store(self.store.path,self.settings.installed)
+        alias.unlink()
+        copy_path=self.root/'copied.sqlite'
+        source=sqlite3.connect(self.store.path);destination=sqlite3.connect(copy_path)
+        try:source.backup(destination)
+        finally:source.close();destination.close()
+        Path(str(copy_path)+'.admission.lock').touch()
+        with self.assertRaisesRegex(AdmissionError,'service_generation_mismatch'):Store(copy_path,self.settings.installed)
+
+    def install_extra_transition_fixture(self):
+        from contracts.domain.evidence_v2 import exact_ref
+        fixture,archive_authority,addition,command=live_fixture(self.root/'extra',run_name='extra-concern-run',extra_hold=True)
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority)
+        self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'extra':(fixture['raw'],self.root/'extra/staging',archive_authority)})
+        self.restart_client();self.command=command
+        response=self.client.post('/api/observed-archives/extra',json={'mode':'archive_only'},headers=self.headers())
+        self.assertEqual(response.status_code,200,response.text)
+        bundle=next(r for r in fixture['history'].records if r.kind=='hold_transition_bundle' and r.transition_type=='change_reason')
+        return {**command,'bundle_ref':exact_ref(bundle).model_dump(mode='json'),'trigger_refs':[r.model_dump(mode='json') for r in bundle.trigger_refs]}
+
+    def test_distinct_same_episode_transition_strengthens_and_stales_review(self):
+        addition=self.install_extra_transition_fixture();first=self.enter()
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=self.review_input(episode),headers=self.headers('before-strengthen-review'))
+        self.assertEqual(response.status_code,200,response.text);review=response.json()
+        clear=self.review_input(episode)
+        for key in ['items','rationale','current_assessment_attested']:clear.pop(key)
+        clear.update(review_id=review['review_id'],review_sha256=review['review_sha256'])
+        before=self.client.get('/api/patients/SYN-02').json()['snapshot']
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=addition,headers=self.headers('strengthen'))
+        self.assertEqual(response.status_code,200,response.text)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        self.assertEqual(episode['generation'],1);self.assertEqual(len(episode['trigger_refs']),2);self.assertIsNone(episode['current_review'])
+        self.assertEqual(self.client.get('/api/patients/SYN-02').json()['snapshot']['patient_version'],before['patient_version']+1)
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/clearance',json=clear,headers=self.headers('obsolete-clear'))
+        self.assertEqual(response.status_code,409,response.text)
+        with self.store.transaction() as db:self.assertEqual(db.execute("SELECT count(*) FROM live_hold_task_bindings WHERE episode_id=?",(first['episode_id'],)).fetchone()[0],2)
+
+    def test_first_seen_distinct_old_trigger_reopens_after_clear_but_old_retry_does_not(self):
+        addition=self.install_extra_transition_fixture();first=self.enter();episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=self.review_input(episode),headers=self.headers('first-review'))
+        self.assertEqual(response.status_code,200,response.text);review=response.json()
+        clear=self.review_input(episode)
+        for key in ['items','rationale','current_assessment_attested']:clear.pop(key)
+        clear.update(review_id=review['review_id'],review_sha256=review['review_sha256'])
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/clearance',json=clear,headers=self.headers('first-clear'))
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(first,self.enter('old-distinct-key'))
+        self.assertEqual(self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'],[])
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=addition,headers=self.headers('new-generation'))
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(response.json()['episode_id'],first['episode_id']);self.assertEqual(response.json()['episode_generation'],2)
+        # Identical old semantic intent returns historical success only.
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/clearance',json=clear,headers=self.headers('old-clearance-alias'))
+        self.assertEqual(response.status_code,200,response.text);self.assertEqual(response.json()['episode_generation'],1)
+        current_episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        invalid=self.review_input(current_episode)
+        for key in ['items','rationale','current_assessment_attested']:invalid.pop(key)
+        invalid.update(review_id=review['review_id'],review_sha256=review['review_sha256'])
+        response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/clearance',json=invalid,headers=self.headers('cannot-reuse-old-review'))
+        self.assertEqual(response.status_code,409,response.text)
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM live_hold_tasks').fetchone()[0],2)
+            statuses=[r[0] for r in db.execute('SELECT status FROM live_hold_episodes ORDER BY generation')]
+            self.assertEqual(statuses,['closed','active'])
+
+    def test_whole_archive_multiple_transitions_commit_one_final_decision(self):
+        self.install_extra_transition_fixture()
+        with self.store.transaction() as db:before=db.execute('SELECT count(*) FROM decisions').fetchone()[0]
+        response=self.client.post('/api/observed-archives/extra',json={'mode':'clinical_observation_import'},headers=self.headers('multiple-projection'))
+        self.assertEqual(response.status_code,200,response.text);receipt=response.json()
+        self.assertEqual([r['ordinal'] for r in receipt['transitions']],[0,1])
+        final=receipt['patients']['SYN-02']['decision_id']
+        self.assertTrue(all(r['receipt']['decision_id']==final for r in receipt['transitions']))
+        self.assertEqual(receipt['patients']['SYN-02']['novel_hold_transitions'],2)
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM decisions').fetchone()[0],before+1)
+            self.assertEqual(db.execute('SELECT count(*) FROM live_hold_task_bindings').fetchone()[0],2)
 
     def install_next(self,authority=None,rules=None,*,fault=None):
         current=self.settings.installed

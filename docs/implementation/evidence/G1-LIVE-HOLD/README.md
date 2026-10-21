@@ -37,6 +37,26 @@ The old fixed-resource run_stack.py now refuses before any Docker call; actual
 activation but awaits final rebuilt-image role execution. The proposed per-trigger
 and plural-task amendment remains unaccepted; no dependent shared-shape code is
 installed. Its complete initial critique and standalone R1 chain are preserved.
+Root subsequently accepted exact amendment 189b990 after independent ready report
+51a1415 (full raw report/checks/manifest preserved in the same envelope). Its composed
+spec SHA is a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3.
+The next source boundary installs explicit trigger/follow-up configuration, additive
+004 anchor/additional/binding/event tables, plural current summaries/UI, and exact
+spec/schema propagation. Current focused 23 passed (ca39e970); the new extra concern
+fixture proves two same-episode tasks, strengthening, recurrence after clearance,
+old semantic retry without reopening, and one final coordinator decision for two
+transitions. Earlier a2a4f934 retained a test-expectation failure: an identical old
+clearance correctly returned its historical receipt. The corrected test separately
+asserts that old review evidence cannot clear the new generation. No runtime fix
+was made for that expected historical retry behavior.
+The pre-amendment broad run passed 67 domain,54 run,11 artifact and11 DR checks,
+all five preserved exporters plus the then-current service exporter, pip/runtime.
+Each command has its own source map; those results are not final amended-source
+qualification. Exact FollowUpAmendment validation is implemented but still needs
+cutover wiring/proofs; stopped003 upgrade, new mixed-task tests, rebuilt image/role
+audits and affected official MCP remain incomplete. Root separately reported
+scientific plan5409 accepted PLAN ONLY and queued after this structural package's
+exact review/merge. That queued science is not installed here.
 Threshold clearance remains blocked by T-OBS2-CLEARANCE-POLICY. Only an explicitly
 installed structural synthetic concern rule can support the positive manual fixture.
 Actual scientific producer qualification, scientific clearance/burden laws, human and
