@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import sqlite3
 from typing import Iterator
+from contracts.service.live_hold import CAPABILITY, InstalledBundle
+from .admission import AdmissionError, AdmissionGate
 
 
 def canonical(value) -> str:
@@ -30,17 +32,26 @@ def timestamp(value: datetime) -> str:
 
 
 class Store:
-    def __init__(self, path: str | Path):
+    def __init__(self, path: str | Path, installed: InstalledBundle):
+        # Normal startup never creates directories, DBs or runs legacy SQL.
         self.path = Path(path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with closing(self.connect()) as db:
-            db.execute("PRAGMA journal_mode=WAL")
-            migration = Path(__file__).with_name("migrations") / "001_foundation.sql"
-            db.executescript(migration.read_text(encoding="utf-8"))
-            db.executescript((migration.parent / "002_observed_archive.sql").read_text(encoding="utf-8"))
-            for table in ["events", "decisions", "bundles", "tasks", "receipts", "ingestion_receipts", "state_changes", "observed_archives", "observed_archive_entries", "observed_archive_artifacts"]:
-                for operation in ["UPDATE", "DELETE"]:
-                    db.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} BEFORE {operation} ON {table} BEGIN SELECT RAISE(ABORT,'immutable_record'); END")
+        self.installed = InstalledBundle.model_validate_json(installed.model_dump_json())
+        self.gate = AdmissionGate(self.path)
+        with self.gate.hold(), closing(self.connect()) as db:
+            self.validate_control(db)
+
+    def validate_control(self, db):
+        try:
+            row = db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone()
+        except sqlite3.Error as error:
+            raise AdmissionError('service_generation_mismatch') from error
+        expected = self.installed.control.model_dump()
+        if (row is None or any(row[k] != v for k, v in expected.items())
+                or row['capability'] != CAPABILITY
+                or digest(canonical(self.installed.authority.model_dump(mode='json'))) != row['authority_sha256']
+                or digest(canonical(self.installed.review_rules.model_dump(mode='json'))) != row['review_rules_sha256']):
+            raise AdmissionError('service_generation_mismatch')
+        return row
 
     def connect(self) -> sqlite3.Connection:
         db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
@@ -53,14 +64,26 @@ class Store:
         return db
 
     @contextmanager
-    def transaction(self, *, write: bool = False) -> Iterator[sqlite3.Connection]:
-        db = self.connect()
-        try:
-            db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
-            yield db
-            db.commit()
-        except BaseException:
-            db.rollback()
-            raise
-        finally:
-            db.close()
+    def transaction(self, *, write: bool = False, prepare=None, authorize=None) -> Iterator[sqlite3.Connection]:
+        with self.gate.hold():
+            db = self.connect()
+            try:
+                self.validate_control(db)
+                if prepare:
+                    prepare(db)  # committed autocommit reads; sample R here.
+                db.execute("BEGIN IMMEDIATE" if write else "BEGIN")
+                self.validate_control(db)
+                if authorize:
+                    authorize(db)  # authentication rechecked after writer wait.
+                yield db
+                db.commit()
+            except sqlite3.OperationalError as error:
+                db.rollback()
+                if 'locked' in str(error).lower() or 'busy' in str(error).lower():
+                    raise AdmissionError('safety_admission_busy') from error
+                raise
+            except BaseException:
+                db.rollback()
+                raise
+            finally:
+                db.close()

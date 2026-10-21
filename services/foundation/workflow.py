@@ -64,6 +64,21 @@ def current_safety(db, patient_id: str, at: datetime):
 def create_decision(db, patient_id: str, at: datetime) -> str:
     row = db.execute("SELECT * FROM patients WHERE id=?", (patient_id,)).fetchone()
     state = json.loads(row["state_json"])
+    from .live_journal import initialize_journal, overlay, summary, dispute_reviews, active_episodes
+    initialize_journal(db,patient_id,at)
+    state = overlay(db,patient_id,state)
+    db.execute('UPDATE patients SET state_json=? WHERE id=?',(canonical(state),patient_id))
+    # Non-live mutations invalidate review usability without an extra version bump.
+    # A freshly recorded review targets this exact resulting version and is retained.
+    for episode in active_episodes(db,patient_id):
+        review_id=episode['data'].get('current_review_id')
+        if review_id:
+            review=db.execute('SELECT payload FROM live_hold_reviews WHERE id=?',(review_id,)).fetchone()
+            saved=json.loads(review[0])
+            expected=dict(saved['input_versions']);expected.update(version=expected['version']+1,state_version=expected['state_version']+1,eligibility_version=expected['eligibility_version']+1)
+            if any(row[k]!=v for k,v in expected.items()):
+                dispute_reviews(db,patient_id,at,digest(canonical([patient_id,row['version'],state])))
+                break
     identifier = "decision-" + digest(canonical([patient_id, row["version"], timestamp(at)]))[:32]
     eligibility = [dict(action=action, status="excluded" if state["workflow"]["hold_reasons"] else "eligible",
                         reasons=state["workflow"]["hold_reasons"]) for action in ["MED_A", "MED_B", "behavioral_continue", "behavioral_escalate", "usual_care"]]
@@ -84,6 +99,7 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
                    estimates=dict(status="pending", reason="Statistical engines are not implemented; no treatment ranking is available"),
                    labels=["Synthetic demonstration", "No acute clinical monitoring"],
                    version_status="Foundation contract consumer; downstream G2-G5 engines pending")
+    display['live_safety_summary']=summary(db,patient_id)
     encoded = canonical(display)
     db.execute("INSERT INTO decisions VALUES (?,?,?,?,?)", (identifier, patient_id, snapshot.model_dump_json(), encoded, digest(encoded)))
     db.execute("UPDATE patients SET current_decision=?,cutoff=? WHERE id=?", (identifier, timestamp(at), patient_id))
