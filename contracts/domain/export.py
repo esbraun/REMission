@@ -11,7 +11,7 @@ from .entities import ExternalStudy, ObservedRecord
 from .estimands import EstimandContract, FitRequest, InterruptionResult, NamedThreshold
 from .evaluation import (DGPConfig, EvaluationProtocol, EvidenceRecord,
                          GateEvidence, ReplicateResult, SimulatorTruth, TruthResult)
-from .temporal import TemporalContract
+from .temporal import ReportingDecision, TemporalContract
 
 ROOT = Path(__file__).resolve().parent
 ADAPTERS = {
@@ -26,6 +26,7 @@ ADAPTERS = {
     "threshold": TypeAdapter(NamedThreshold),
     "external-study": TypeAdapter(ExternalStudy),
     "temporal": TypeAdapter(TemporalContract),
+    "reporting-decision": TypeAdapter(ReportingDecision),
     "dgp-config": TypeAdapter(DGPConfig),
     "evaluation-protocol": TypeAdapter(EvaluationProtocol),
     "replicate-result": TypeAdapter(ReplicateResult),

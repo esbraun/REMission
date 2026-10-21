@@ -1,4 +1,16 @@
-# Launch status — G0-CONTRACT candidate
+# Launch status — G0-TIME-R1 (2026-10-21)
+
+**Current record supersedes historical contract-candidate status below.** G0-CONTRACT was accepted in PR11 at head `abd511c5870d41269980f4554be89407b31749d6` / base `e7965b998fa70df82e63a89ef720a6c8ad46ce6d`, merge `6c3fb070d36bfefbd070f2a2c33ccba7631734be`. Unchanged ready report78c63b418994faac455ccecf25020c6fb63c88e1 is preserved under G0-TIME-R1 evidence. G0 itself remains running; G1–G7 unexecuted; human/clinical review explicitly deferred.
+
+Active shared amendment: `/root/integration_sol`, explicitly gpt-6.1-sol/high, app01a15cf4-3065-7063-b11e-3967008fe9a1, own `C:/Users/erics/Documents/Projects/REMission-worktrees/g0-temporal-r1-20261021`, branch `launch/g0-temporal-r1-20261021`, creation/review base6c3fb07, targetmain. No escalation; root reported a selected-model capacity interruption, followed by observed stable retry at the same settings. Proposed TIME-01 v2.0.0 preserves v1/wire1.0.0, separates observed pain/pre-report history/report decision/upload/wearable order and rejects hidden/current-outcome MAR inputs. Eight new regression groups and all27 original tests are required; exact captured evidence/version/hash is in [G0-TIME-R1](evidence/G0-TIME-R1/verification.md). Needs independent exact-head/base acceptance before DGP timing consumption.
+
+Frozen G0-LIB candidate `d9ad54e899b2f38b286bd100aff037625edf160b`, own original integration checkout/branch `launch/g0-library-20261020`, remains untouched/published and incomplete pending mandatory held-out DR choice. OPE plan critique changes_requested blob052677a20145fb14f5e1d2f509592a4de4942ef4 rejects the OBP default direction; root must separately authorize a bounded proposal revision and independent re-critique before implementation. The same independent Astra now reviews qualified library implementation/evidence, with no full ship approval. Failed short NUTS/gMAP diagnostics and original raw evidence remain preserved.
+
+DGP combined6195f9b received changes_requested raw94b100b39558fce4c6c17f9f79a6acad0c159b04; workflow ready applies only to low-fidelity document scope. Repair Sol's frozen/published checkpoint `2c76f4c34bc1536714f3e1988fc68da7372eb807` passes18 targeted S02/calibration checks but awaits accepted TIME before timing/full reproduction. Root archived repair app01a15d4c-f5b7-7900-9cf5-41efa0a959da and verified native removal; checkout/branch preserved. No combined acceptance.
+
+Current observed inventory: root + integration Sol + `/root/ope_critic_astra` Astra/medium app01a15d56-cc14-7a43-8e66-9da3e290da2e =three actual, two open non-Luna children. Luna absent from native inventory/notLoaded/completed; prior workers/reports preserved. Root owns lifecycle, independent review, PR/merge and later DGP continuation. No nested agents or unsupported model-change bypass. [Durable handoff](evidence/G0-TIME-R1/handoff.md) lists exclusive paths, exact commits/raw blobs/runtime retrieval commands and next dependencies. All635 stable mappings and final statistical gates remain; no whole multi-task requirement or G0/app/human acceptance is asserted.
+
+# Historical G0-CONTRACT candidate status (superseded)
 
 2026-10-20. **G0 is running and unaccepted. G0-CONTRACT needs independent implementation review.** G1-G7 remain unexecuted. The active goal remains the complete real-algorithm synthetic hybrid app, including loading/testing and reproduction; this contract package is an engineering prerequisite.
 

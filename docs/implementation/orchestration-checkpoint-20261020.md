@@ -1,4 +1,14 @@
-# Orchestration checkpoint — G0-CONTRACT
+# Orchestration checkpoint — G0-TIME-R1 (2026-10-21)
+
+**Current record supersedes the historical checkpoint below.** Exclusive author `/root/integration_sol`, explicit Sol/high app01a15cf4-3065-7063-b11e-3967008fe9a1, no escalation or independent effective-settings introspection. Same-model retry after root-reported capacity error observed stable. Own `C:/Users/erics/Documents/Projects/REMission-worktrees/g0-temporal-r1-20261021`, branch `launch/g0-temporal-r1-20261021`, exact accepted main creation/review base6c3fb070d36bfefbd070f2a2c33ccba7631734be. G0-CONTRACT accepted in PR11; G0 overall running/unaccepted.
+
+TIME-01 v2.0.0 preserves historical v1, wire1.0.0 and existing entity types. Pure observed-MAR/report-clock guards, explicit DAG, new consumer schema and eight regression groups are bounded amendment scope. Required full35/pip/export/635-ledger/v1/raw-review/whitespace checks and source version/hash are in [verification](evidence/G0-TIME-R1/verification.md). Stop writes after commit and obtain independent exact-head/base acceptance before DGP consumption. Root owns publishing/PR/merge.
+
+Library `d9ad54e` remains frozen in its original exclusive checkout, unresolved mandatory held-out DR dependency; plan-only review052677a changes_requested and qualified implementation review now ongoing. DGP partial `2c76f4c` remains frozen/published after S02/calibration repairs; timing/full checks await accepted TIME. Its author was archived and native removal verified. Workflow acceptance remains low-fidelity scope only; combined candidate unaccepted. Current root + integration Sol + OPE Astra =three actual; no active Luna in native inventory. Root may release this completed author through verified lifecycle controls to schedule independent temporal review, then assign a Sol continuation of DGP. Reports/checkouts preserved; no undocumented close/model-change control.
+
+The [durable handoff](evidence/G0-TIME-R1/handoff.md) records both frozen/active author checkouts, exact bases/branches/raw review blobs, runtime image/artifact commands and remaining OPE/temporal/DGP obligations. All635 mappings and final gates remain; no clinical/human/G0 acceptance. Human review explicitly deferred without blocking labeled provisional synthetic engineering.
+
+# Historical G0-CONTRACT checkpoint (superseded)
 
 2026-10-20. Current package `G0-CONTRACT`, explicit owner `/root/integration_sol`, Sol/high, no escalation. Exclusive `C:/Users/erics/Documents/Projects/REMission-worktrees/g0-sol-integration-20261020`; branch `launch/g0-contracts-20261020`; creation/review target base `e7965b998fa70df82e63a89ef720a6c8ad46ce6d`; target `main`. Verified worker ID `01a15cf4-3065-7063-b11e-3967008fe9a1`. Effective settings are not independently introspectable.
 
