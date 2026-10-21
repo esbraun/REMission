@@ -1,0 +1,30 @@
+{
+  "name": "curated-tests25",
+  "args": [
+    "docker",
+    "run",
+    "--rm",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges:true",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=128m",
+    "remission-obs2-repair-astra-20261021-tests:candidate"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-review-astra-20261021",
+  "head": "3763f7571a47d8ab421a2f8ad4e36e49fe1cc478",
+  "start": "2026-10-21T21:43:13.178762+00:00",
+  "end": "2026-10-21T21:43:26.249515+00:00",
+  "exit": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "274fd0eea06302331340403a13cc30934d69115cfbd25ff91815c8ecc756d4d0",
+  "sources_sha256": "158d007464569329a408d13fd8bf3693be22e771aaae125bcb3d3c7b3d9f5dfc"
+}

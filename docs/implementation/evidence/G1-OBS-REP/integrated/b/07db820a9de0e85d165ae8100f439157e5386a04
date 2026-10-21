@@ -1,0 +1,40 @@
+from pathlib import Path
+from datetime import timedelta
+from copy import deepcopy
+import sys,shutil,json
+sys.path.insert(0,'tests/run_contracts')
+from test_private_v2 import PrivateV2Tests
+from fixtures import artifact,full_key,load
+from contracts.runs.common import canonical,sha256
+from contracts.runs.observed_v2 import ExportAuthorityV2,ObservedExportV2
+from contracts.runs.private_v2 import verify_result_v2,validate_record_keys,SeedLedgerV2
+SOURCE=Path('.review-repair/original_fixture.py').read_text();ns={};exec(SOURCE,ns);ORIGIN=ns['ORIGIN'];OUT=Path('/out')
+helper=PrivateV2Tests();helper.setUp()
+try:
+ cutoff=ORIGIN+timedelta(days=90);helper.data.update(cutoff=cutoff.isoformat(),created_at=cutoff.isoformat());helper.bind_run();calibration,policies=helper.calibration()
+ for day in [84,85]:
+  extra="    add('daily_report', ORIGIN+timedelta(days="+str(day)+",hours=7), version='2.0.0', process='diary_report', substream='independent-extra', recorded_at=(ORIGIN+timedelta(days="+str(day)+",hours=8,minutes=1)).isoformat(), available_at=(ORIGIN+timedelta(days=87,hours=8,minutes=1)).isoformat(), sleep_quality=6.0, function=5.0, adverse_symptoms=[], diary_sleep_minutes=400.0, goals=[], burden=None, missingness='observed')\n"
+  scope={};exec(SOURCE.replace('    cutoff = cutoff or ORIGIN + timedelta(days=1, hours=10)',extra+'    cutoff = cutoff or ORIGIN + timedelta(days=1, hours=10)'),scope)
+  f=scope['build'](helper.root,cutoff=cutoff,cell_id='S23.MAR_20.n60',registry=helper.data['source_registry'],transform=helper.data['transformation_registry'])
+  manifest=deepcopy(f['manifest']);part=manifest['partitions'][0];keys={}
+  for b in part['records']:
+   i=b['identity'];key=full_key(patient=i['patient_id'],scenario=i['cell_id'],namespace=i['namespace'],phase=i['phase'],protocol=i['protocol'],replicate=i['replicate'],time_index=i['time_index'],process=i['process'],stream=i['substream']);keys[key['key_sha256']]=key;b['seed_key_sha256']=key['key_sha256']
+  runref=dict(id=helper.run.run_id,version='2.0.0',sha256=sha256(helper.run_raw));manifest['run_manifest']=runref
+  coverage=deepcopy(f['coverage']);coverage['run_manifest']=runref;part['coverage']=artifact(helper.root,'coverage',part['coverage']['path'],coverage,'configuration')
+  export=artifact(helper.root,manifest['id'],'exports/independent.json',manifest,'observed_manifest')
+  public=deepcopy(f['authority']);public.update(manifest_sha256=sha256(helper.run_raw),export_sha256=export['sha256']);public['partitions'][0].update(coverage_sha256=part['coverage']['sha256'],record_key_hashes={b['record_id']:b['seed_key_sha256'] for b in part['records']})
+  ledger=dict(schema_version='2.0.0',synthetic=True,kind='seed_ledger',contract_version='2.0.0',run_id=helper.run.run_id,keys=list(keys.values()));typed_ledger=load(SeedLedgerV2,ledger)
+  value=helper.result();value.update(status='partial',observed_exports=[export],seed_ledger=artifact(helper.root,'independent-seeds','seeds/independent.json',ledger,'seed_ledger'),calibration=[calibration],completion_receipts=part['completion_receipts']);raw=canonical(value);authority=load(ExportAuthorityV2,public)
+  target=OUT/('day'+str(day));shutil.copytree(helper.root,target)
+  for filename,payload in [('result.json',raw),('run.json',helper.run_raw),('run-authority.json',canonical(helper.authority.model_dump(mode='json'))),('export-authority.json',canonical(public)),('calibration-authority.json',canonical(policies[calibration['id']][0].model_dump(mode='json')))]: (target/filename).write_bytes(payload)
+  extra_record=next(r for r in f['history'].records if r.kind=='daily_report' and r.event_at==ORIGIN+timedelta(days=day,hours=7))
+  b=next(b for b in part['records'] if b['record_id']==extra_record.record_id);key=keys[b['seed_key_sha256']]
+  assert key['time_index']==day and key['namespace']=='measurement' and key['process']=='diary_report'
+  print('day',day,'fully parsed verified seed ledger',len(typed_ledger.keys),'extra-key',key['key_sha256'],'trusted solved calibration',calibration['sha256'],flush=True)
+  for label,call in [('FULL verify_result_v2',lambda:verify_result_v2(raw,helper.root,helper.run,helper.authority,sha256(raw),export_authorities={export['id']:authority},calibration_policies=policies)),('private validate_record_keys',lambda:validate_record_keys(helper.run,load(ObservedExportV2,manifest).partitions[0],f['history'],typed_ledger,f['schedule']))]:
+   try:result=call()
+   except ValueError as e:
+    assert day==85 and str(e)=='generated event outside accepted local horizon -14..84',str(e);print(label,'EXPECTED REJECT',str(e),flush=True)
+   else:
+    assert day==84;print(label,'PASS delayed in-horizon positive',flush=True)
+finally:helper.tearDown()

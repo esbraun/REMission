@@ -1,0 +1,7 @@
+import capture
+clone=capture.OUT/'https-clone'
+assert capture.run('clone-longpaths',['git','config','core.longpaths','true'],clone).returncode==0
+assert capture.run('checkout-longpaths',['git','checkout','--force','--detach','3763f7571a47d8ab421a2f8ad4e36e49fe1cc478'],clone).returncode==0
+assert not capture.run('clone-initial-status',['git','status','--porcelain'],clone).stdout.strip()
+capture.suite(clone,'clone')
+assert not capture.run('clone-final-status',['git','status','--porcelain'],clone).stdout.strip()

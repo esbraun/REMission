@@ -1,0 +1,16 @@
+{
+  "name": "clone-full-byte-audit",
+  "args": [
+    "C:\\Python313\\python.exe",
+    "-c",
+    "import json,hashlib,subprocess\nfrom pathlib import Path\nroot=Path.cwd();head=subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()\nfor label,path,commit in [('current','docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json',head),('historical','docs/implementation/evidence/G1-OBS-REP/implementation/raw-manifest.json','ceb5a5fc786f487045fd948986bc4bb8b8a43bf4')]:\n m=json.loads(Path(path).read_bytes());source=m['frozen_source_commit']\n assert not subprocess.check_output(['git','diff',source,commit,'--',*m['source_scope']])\n tree={line.split('\\t')[1]:line.split('\\t')[0].split()[2] for line in subprocess.check_output(['git','ls-tree','-r',commit,'--',*m['source_scope']]).decode().splitlines()}\n assert tree=={p:d['git_blob'] for p,d in m['source_files'].items()}\n for p,d in m['raw_artifacts'].items():\n  b=Path(p).read_bytes();assert len(b)==d['bytes'] and hashlib.sha256(b).hexdigest()==d['sha256'],p\n print(label,'PASS source',source,len(tree),'raw',len(m['raw_artifacts']))\nbase='6bc8bd998e8a0baaef9884998e740665fb5fd7b1'\nb=json.loads(Path('docs/implementation/evidence/G1-OBS-REP/implementation/v1-byte-inventory-raw.json').read_bytes())\nfor i in b['files']:\n assert subprocess.check_output(['git','hash-object','--path',i['path'],i['path']]).decode().strip()==i['git_blob']\n assert hashlib.sha256(subprocess.check_output(['git','show',base+':'+i['path']])).hexdigest()==i['git_sha256']\np='docs/implementation/g0-task-test-ledger-20261020.json';a=json.loads(subprocess.check_output(['git','show',base+':'+p]));z=json.loads(Path(p).read_bytes())\nassert a['coverage']==z['coverage'] and len(z['coverage'])==635 and a['coverage_counts']==z['coverage_counts']\nfor x,y in zip(a['tasks'],z['tasks']):\n for k in ['id','test_ids','requirement_ids','depends_on']:assert x[k]==y[k]\nprint('PASS53 original V1 blobs and635 exact coverage/original task-test-dependencies')\nassert not subprocess.check_output(['git','diff','HEAD','--','contracts','services','tests','tooling','web','.gitattributes'])\nprint('PASS tracked runtime source unchanged',head)\n"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-obs2-repair-review-astra-20261021\\.review-repair\\https-clone",
+  "head": "3763f7571a47d8ab421a2f8ad4e36e49fe1cc478",
+  "start": "2026-10-21T21:43:40.174223+00:00",
+  "end": "2026-10-21T21:43:54.525193+00:00",
+  "exit": 0,
+  "stdout_sha256": "0c40bf69ad72f1bce8e52c026105bb8d77f04c31666ee9973b084b0073e3bc21",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sources_sha256": "e69343c6af9ab94a06b66a141a84d86f73bd72d5f1294aefa9a41d599c107806"
+}

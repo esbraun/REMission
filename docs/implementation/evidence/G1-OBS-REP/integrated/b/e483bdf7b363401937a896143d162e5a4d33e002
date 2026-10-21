@@ -1,0 +1,23 @@
+import json,hashlib,subprocess
+from pathlib import Path
+root=Path.cwd();head=subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()
+for label,path,commit in [('current','docs/implementation/evidence/G1-OBS-REP/repair-01/raw-manifest.json',head),('historical','docs/implementation/evidence/G1-OBS-REP/implementation/raw-manifest.json','ceb5a5fc786f487045fd948986bc4bb8b8a43bf4')]:
+ m=json.loads(Path(path).read_bytes());source=m['frozen_source_commit']
+ assert not subprocess.check_output(['git','diff',source,commit,'--',*m['source_scope']])
+ tree={line.split('\t')[1]:line.split('\t')[0].split()[2] for line in subprocess.check_output(['git','ls-tree','-r',commit,'--',*m['source_scope']]).decode().splitlines()}
+ assert tree=={p:d['git_blob'] for p,d in m['source_files'].items()}
+ for p,d in m['raw_artifacts'].items():
+  b=Path(p).read_bytes();assert len(b)==d['bytes'] and hashlib.sha256(b).hexdigest()==d['sha256'],p
+ print(label,'PASS source',source,len(tree),'raw',len(m['raw_artifacts']))
+base='6bc8bd998e8a0baaef9884998e740665fb5fd7b1'
+b=json.loads(Path('docs/implementation/evidence/G1-OBS-REP/implementation/v1-byte-inventory-raw.json').read_bytes())
+for i in b['files']:
+ assert subprocess.check_output(['git','hash-object','--path',i['path'],i['path']]).decode().strip()==i['git_blob']
+ assert hashlib.sha256(subprocess.check_output(['git','show',base+':'+i['path']])).hexdigest()==i['git_sha256']
+p='docs/implementation/g0-task-test-ledger-20261020.json';a=json.loads(subprocess.check_output(['git','show',base+':'+p]));z=json.loads(Path(p).read_bytes())
+assert a['coverage']==z['coverage'] and len(z['coverage'])==635 and a['coverage_counts']==z['coverage_counts']
+for x,y in zip(a['tasks'],z['tasks']):
+ for k in ['id','test_ids','requirement_ids','depends_on']:assert x[k]==y[k]
+print('PASS53 original V1 blobs and635 exact coverage/original task-test-dependencies')
+assert not subprocess.check_output(['git','diff','HEAD','--','contracts','services','tests','tooling','web','.gitattributes'])
+print('PASS tracked runtime source unchanged',head)

@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "synthetic": true,
+  "information": "evaluator_only_analytic_not_learner_predictions",
+  "fixtures": {
+    "normal": {
+      "prior": [
+        0,
+        2
+      ],
+      "likelihood_sd": 1,
+      "n": 20,
+      "sum_y": 10,
+      "truth_mean": 0.49382716049382713,
+      "truth_variance": 0.04938271604938271
+    },
+    "beta": {
+      "prior": [
+        2,
+        3
+      ],
+      "n": 20,
+      "k": 8,
+      "truth_shape": [
+        10,
+        15
+      ]
+    },
+    "constant": {
+      "equation": "X~N(0,1);A~Bernoulli(.5);Y=1+X-A+N(0,1)",
+      "n": 200,
+      "ATE": -1
+    },
+    "modifier": {
+      "equation": "M~Bernoulli(.5);X~N(0,1);Y=1+X+A*(2*M-1)+N(0,1)",
+      "CATE_M0": -1,
+      "CATE_M1": 1,
+      "ATE": 0
+    },
+    "two_period": {
+      "assignment": "p(A0)=expit(-.5+.5*L0);p(A1)=expit(-.5+.8*L1+.2*A0)",
+      "transition": "L0~Bernoulli(.5);p(L1)=expit(-1+.8*L0+.7*A0)",
+      "outcome": "Y=L0+L1-A0-2*A1+N(0,1)",
+      "regime_values": {
+        "00": 0.8595537120287586,
+        "01": -1.1404462879712414,
+        "10": 0.024008407195097836,
+        "11": -1.975991592804902
+      }
+    },
+    "ordinal": {
+      "cutpoints": [
+        -1.5,
+        -0.5,
+        0.5,
+        1.5
+      ],
+      "single_item_at0": 2.0,
+      "single_item_at1": 2.7417162961724,
+      "seven_equal_at0": 14.0
+    },
+    "contextual_policy": {
+      "equation": "M~Bernoulli(.5);reward=1+A*(2*M-1)+N(0,1)",
+      "logging_p": 0.5,
+      "no_action": 1,
+      "always_action": 1,
+      "A_equals_M": 1.5
+    },
+    "escalation_randomized": {
+      "response": "p=.4+.2*A0",
+      "A0_p": 0.5,
+      "A1_nonresponder_p": 0.5,
+      "Y": "2+A0+R+2*(1-R)*A1+N(0,1)",
+      "regime_values": {
+        "00": 2.4000000000000004,
+        "01": 3.6,
+        "10": 3.6,
+        "11": 4.4
+      }
+    },
+    "escalation_observational": {
+      "X_p": 0.5,
+      "A0_p": ".2+.6*X",
+      "response": ".3+.2*A0+.2*X",
+      "A1_nonresponder_p": 0.5,
+      "Y": "2+A0+R+2*(1-R)*A1+X+N(0,1)",
+      "regime_values": {
+        "00": 2.9,
+        "01": 4.1,
+        "10": 4.1,
+        "11": 4.9
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+# Refreshed independent exact-code review — OBS-REP-02 repair01
+
+Disposition: **ready_to_ship**, limited to the bounded OBS-REP-02/2.0.0 representation, archive, provenance/admission and current-import rejection-guard package. No unresolved code findings in the reviewed scope. Both prior P2 findings are resolved with independently executed positive/reject evidence. This is not whole-G1 acceptance or live-hold integration acceptance.
+
+Exact reviewed HEAD:3763f7571a47d8ab421a2f8ad4e36e49fe1cc478.
+Accepted integration target: remote main at6bc8bd998e8a0baaef9884998e740665fb5fd7b1; observed merge-base identical. Root independently confirmed the remote; my captured git ls-remote origin refs/heads/main also returned6bc. Local main is stale atb21f00003e3f31866f29f9dc20f0d367d39ab11f and was neither switched nor reset. This disposition applies to the exact remote base above, not arbitrary local main.
+Source checkpoint124ab096120bf28a055f6413b4f813c83095ada7; final source/attributes scope is identical to that checkpoint. Rejected parentceb5a5fc786f487045fd948986bc4bb8b8a43bf4 remains unchanged.
+Own NEW detached checkout:C:/Users/erics/Documents/Projects/REMission-worktrees/g1-obs2-repair-review-astra-20261021.
+Own HTTPS clone:same path/.review-repair/https-clone.
+Assigned reviewer:gpt-6-astra/medium; no independent effective-model introspection available. No substitution. CODEX_THREAD_ID01a1604e-013b-7d92-8e5f-ffc6c092c0c5; task/root/g1_obs2_code_review_astra. No subagents spawned. No candidate source edits/commits/PR/merge. Only review artifacts and clone-local configuration were written; the old reviewer checkout/artifacts and all other worktrees were preserved.
+
+## Findings and repair assessment
+
+No new unresolved findings. Prior P2 foreign run/partition defect resolved at contracts/runs/admission_v2.py:14-30 and its per-record invocation: every hold review, hold transition bundle and support stage closure must match the enclosing run/partition. The check applies to standalone/unreferenced records, before archive publication. Internal equality between a foreign chain's members cannot replace this enclosing identity check.
+
+Independent public probes use the ORIGINAL rejected candidate's fixture source (extracted with git show from this own repository into original_fixture.py), rather than relying on the author's changed fixture helper. Unchanged matching hold positive passes. An internally consistent foreign run/partition chain rejects with 'embedded record run/partition differs from containing archive'. Standalone matching review and extra unreferenced closure pass; foreign standalone review/closure reject with that same intended error. All submitted manifest/authority/raw artifact bytes are retained under independent-public-wire/.
+
+Prior P2 generated day85 symptom defect resolved by shared validate_partition_record in contracts/runs/admission_v2.py and the direct private key validator call in contracts/runs/private_v2.py:146. Calendar day is derived from event_at in the trusted schedule timezone, not recorded_at or available_at. Generated clinical and action/state facts are confined to -14..84. Retained v1 records inside a v2 export are governed by this v2 generated-profile check; v1 standalone historical parsing/products remain unchanged. Later reviews, closures, follow-up/audit records and reserved administrative endpoint links are not globally rejected. The helper is not added to ordinary live ingestion; it remains scoped to generated export/private admission. No changed burden law, clearance rule, scientific coefficient, observation law, clipping, sample size or precision requirement.
+
+Independent original-fixture public probes pass legitimate day-14 and delayed day84 reports, reject numeric day85 with 'generated event outside accepted local horizon -14..84'. The executed54-test run suite additionally covers v1/v2/missing reports, equivalent pain/state observations, forbidden day-15, local-vs-UTC boundary, delayed day84 correction and later administrative review. Existing suite results were independently executed, not copied from author summaries.
+
+The previously missing EXACT full private-negative check is now independently executed and preserved. independent_private.py assembles original-fixture day84/day85 variants, binds the accepted private run, predeclared schedules, source/transformation registry, actual full parsed StreamKeys, correct time_index/process/namespace, separately trusted solved calibration fixture digest/authority, export authority, coverage/run refs and result receipts. FULL verify_result_v2 accepts the delayed day84 positive and rejects day85 specifically with the horizon error; direct validate_record_keys behaves identically. No unrelated missing-calibration/authority/key error is accepted as evidence. The day85 key digest printed in raw output is e2948b7b5bd6b180dbf1f70b28a54cd04efbdc80ad9a6e743687f43535a103e7. The trusted solved calibration fixture digest is eb4596f52f9f3b54b3f78337c2fcb7fd598a09dcdd2fc73ebbf8e8bff0ae9a02. Complete private input directories are preserved separately forday84/day85. These are valid calibration CONTRACT fixtures with explicit executed=false sample evidence, not actual scientific calibration or producer qualification.
+
+## Unchanged independent full-horizon positive
+
+Re-admitted the SAME previously independently authored complete-attempt-002 manifest/authority/data bytes and direct calendar from the original addendum, in own checkout, HTTPS clone, and curated service/learner images.432 preserved files matched the original addendum manifest SHA256 entries. The own curated preparation copies those exact bytes rather than calling the new author complete=True helper.
+
+Positive:85 scheduled decisions local09:00 on days0..84,85 reserved next-morning link lineages,84 generated reports through day84,170 explicitly fixture-attested empty stage ledgers, and day85 final undefined/outside_generated_horizon administrative endpoint. The day84 report is recordedday84 08:01, arrivesday85 08:01, and retains its original assessment under a later link revision/publication. The independent expected roster comes from fixed UTC origin/calendar offsets, not derive_slots as its own oracle. This demonstrates the repairs preserve both delayed arrival and permitted endpoint bookkeeping; it does not claim independent DST production qualification or complete statistical generation.
+
+## Authority and current-service boundary
+
+The actual HTTP POST /api/observed-archives/{export_id} accepts mode only. Raw/root/authority selection is server Settings.observed_archives, not caller digests, owner assertions or uploaded paths. Session authentication, mutation CSRF and patient ownership are checked, then rechecked inside the write transaction. Shared strict request models reject unsupported extra request fields. Direct archive_export is trusted internal plumbing. Neither caller-supplied fixture authority in tests nor an archived simulated consent/approval/resolution becomes live authorization.
+
+Current clinical imports of independent-hold partitions still fail before any clinical/archive/cursor publication via preflight_current, including reachable legacy/direct/batch paths. Actual service tests cover cookies, CSRF, ownership, full original raw archive, immutability, idempotency, rollback/crash/restart and unchanged approval/current-lineage safety. Full archive persistence and its clinical subset use the atomic transaction. Ordinary v1 historical parsing is kept separate from current authority restrictions. These points were inspected in the original full review; repair services are unchanged and all affected real service checks were rerun here.
+
+## Exact-source, evidence and compatibility audits
+
+Read the complete repair README, current manifest and source diff; retained original complete R1/engineering/delegation/oracle context and original FULL review/addendum. No live author checkout or unaccepted generator/evaluator engine source was read. No repository AGENTS.md was found during the original review; unchanged instructions continue to apply.
+
+Independent byte audit in own checkout AND HTTPS clone:
+- Current manifest:196 source Git blobs exactly match124ab source and final3763;1718 repair artifact sizes/SHA256 match. Runtime/test/container/web/.gitattributes final delta is empty.
+- Historical manifest remains scoped to rejectedceb5/f049:194 historical source identities and764 original raw artifacts match their original scope. Historical source assertions were not relabeled as current. Previous raw manifests/reports/addenda and their documented losses remain preserved.
+- All53 protected v1 Git blobs match the frozen baseline and accepted-base hashes; exact635 coverage mappings and all original task IDs/test_ids/requirement_ids/depends_on fields are preserved.
+- All five old/new domain/DGP/run schema/dictionary/binding exporters pass --check. No regeneration or silent v1 migration. Git diff --check passes.
+- Full original report405a91e4d3a2a532623d88a2039e848e58e0da95 and addendum6aee8f28012337f1728f5098e5ae4e71b02b32a8 remain unchanged. The old four missing historical streams were not reconstructed. Their old incomplete-private/full-horizon items are now addressed by new observed evidence, not retroactive edits.
+
+## Independently executed suites and commands
+
+Each new capture uses a UUID directory created exclusively before execution. command.json records exact argv/cwd/head/start/end/exit, separate complete stdout/stderr hashes and sources.json SHA256 map of actual tracked source bytes. All fresh capture hashes were checked; no collisions or overwritten new streams. Curated operations have their own serial command records and dedicated output directory. artifact-manifest.json indexes all surviving reviewer code, raw commands/streams/source maps and fixture bytes as Git blobs; it excludes itself and clone checkout contents.
+
+Both own checkout and fresh exact3763 HTTPS clone passed:
+- python docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py:five exporters, pip check, actual service qualifier,11artifact/library and11DR/OPE checks.
+- python -m unittest discover -s tests/contracts -v:67passed.
+- python -m unittest discover -s tests/run_contracts -v:54passed.
+- python -m unittest discover -s tests/integration/replay -v:25passed.
+- python docs/implementation/evidence/G1-OBS-REP/repair-01/re_admit_independent.py:unchanged independent complete wire/calendar passed.
+- python docs/implementation/check-ledger-20261020.py:635 mappings/repository consistency passed.
+- Independent self-contained audit code executed with each checkout as cwd:current/historical raw/source scopes,53v1 and exact task dependencies passed. No foreign author checkout executable supplied clone preservation checks.
+
+All Python runtime suites used exact service base sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa, including its actual FastAPI/Argon2/SQLite dependencies. The service tag was independently inspected against that ID. No dependency substitution. Docker runs limited to2CPU/2GiB, networknone, read-only root/source, dropped capabilities/no-new-privileges and bounded/tmp. Review-generated fixture output mounts are the only required writable mounts. No big statistical jobs.
+
+Fresh own-prefix curated images remission-obs2-repair-astra-20261021-* built from this exact source. Actual serviceUID10001 and learnerUID10002 passed ordinary-v2 positive, foreign-hold rejection, numericday85 rejection and SAME independent complete85 positive. Consumers had networknone/read-only volume-only mounts and no own-source mounts. Private import/read/list/network/write denials passed with positive evaluatorUID20000 canary file/HTTP controls. Actual copied runtime AND probe bytes were audited against this checkout. Separate actualUID10001 tests image passed25/25 service checks. Pinned npm lock/integrities were unchanged; only authorized registry acquisition during builds used networking. Client typecheck/tests/build passed. Existing8765-8768 stacks/DB/MCP state and original reviewer resources were untouched. Own named containers/networks/volumes were cleaned; own images retained for inspection.
+
+## Reproduction failure and Windows prerequisite
+
+HTTPS clone acquisition succeeded from https://github.com/esbraun/REMission.git using core.autocrlf=false and no checkout. The INITIAL default checkout failed with Filename too long for nested preserved evidence; complete raw stderr and exit128 are retained. It did not pass. The longest tracked relative path is162characters; this deep reviewer clone prefix is118, totaling280. The author documented short temporary-clone destination prefix on this host is86, totaling248, so no failure of that short-destination command was established.
+
+Applied git config core.longpaths true ONLY inside this own clone, then retried git checkout --force --detach3763. This succeeded. No global config or candidate source changed. Exact source was clean before and after all clone suites. Deep Windows destinations need this clone-local setting or a shorter checkout path; default deep-path portability is not claimed. The existing short-temporary-path reproduction command does not require a source correction on the evidence observed here. The local setting/retry are recorded separately from source cleanliness. One review lookup also queried a nonexistent optional verify_frozen_evidence.py path in repair01; the independent audit above supplies the actual current/historical verification instead.
+
+## Acceptance limits and handoff
+
+This ready_to_ship disposition resolves the two code findings and accepts only bounded OBS-REP-02 archive/contracts and fail-closed import guard on exact3763/base6bc. No remaining required bounded check in this assignment is marked unexecuted or passed by assertion alone. Head or target-base changes require refreshed review/affected checks; root rechecks remote before integration and performs PR/merge, followed by delegated integrated verification.
+
+B-OBS2-LIVE-HOLD/T-OBS2-LIVE-HOLD remains an OPEN REQUIRED separate ENGINEERING prerequisite: the named guard is not actual arrival-time invalidation, owned review or evidence-gated clearance. It cannot be deferred to G5/humans or closed by this report. Actual trusted producer/filter/likelihood/calibration execution, preset/catalog/statistical qualification, fullG1/G2-G7, human-factors/clinical review/clinical validation remain pending. No new scientific burden/clearance law was invented. Consumers remain HELD until root review/merge/integrated verification and explicit dispatch. No visible UI changes in the original or repair scope; no MCP browser validation was needed for a changed screen, and no unrelated browser/human gate is closed.
