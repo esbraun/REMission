@@ -145,12 +145,14 @@ def prepare(plan, private_root, staging_root, *, runtime, source_commit):
     exports=[]
     for day in (14,42):
         cutoff=START+timedelta(days=day);partitions=[];view=staging_root/f'day-{day}'
-        for index,patient in enumerate(plan.patients):
+        # Private plan order determines adapter indices. Public order/partition
+        # identifiers disclose only already-public member/run/cutoff identity.
+        for patient in sorted(plan.patients):
             selected=[e for e in trajectories[patient] if all(e['record'][clock]<cutoff.isoformat() for clock in ('event_at','recorded_at','available_at'))]
             history=ObservedHistory.model_validate_json(canonical(dict(schema_version='1.0.0',synthetic=True,
                 kind='observed_history',patient_id=patient,records=[e['record'] for e in selected])))
             project_history(history.project(cutoff)) # Enforce the actual reduced-H* boundary before output.
-            partition=f'member-{index:02d}-day-{day}'
+            partition='partition-'+sha256(canonical([plan.run_id,patient,day]))[:24]
             batch=ReplayBatch.model_validate_json(canonical(dict(schema_version='1.0.0',synthetic=True,
                 kind='observed_replay_batch',contract_version='1.0.0',run_id=plan.run_id,partition_id=partition,
                 patient_id=patient,entries=[e for e in selected if e['record']['kind'] in INGESTIBLE])))

@@ -143,6 +143,21 @@ class ResearchTests(unittest.TestCase):
             for denied in (b'raw_source',b'"source"',b'"seed"',b'"parameters"',b'"truth"',b'"namespace"'):
                 self.assertNotIn(denied,reduced)
 
+    def test_public_partition_order_does_not_disclose_private_adapter_order(self):
+        plan=copy.deepcopy(self.plan)
+        plan['patients']=plan['patients'][5:]+plan['patients'][:5]
+        research.prepare(plan,self.local/'private',self.local/'staging',runtime=self.pins,source_commit=self.commit)
+        mapping=json.loads((self.local/'private/configuration/recipe.json').read_bytes())['mapping']
+        self.assertEqual([m['patient_id'] for m in mapping if m['domain']=='generation'],plan['patients'])
+        self.assertEqual([m['index'] for m in mapping if m['domain']=='generation'],list(range(12)))
+        for day in (14,42):
+            manifest=json.loads((self.local/f'staging/day-{day}/candidate.json').read_bytes())
+            self.assertEqual([p['patient_id'] for p in manifest['partitions']],sorted(plan['patients']))
+            self.assertNotEqual([p['patient_id'] for p in manifest['partitions']],plan['patients'])
+            self.assertTrue(all(p['id'].startswith('partition-') and len(p['id'])==34 for p in manifest['partitions']))
+            self.assertFalse(any('member-' in p['id'] for p in manifest['partitions']))
+            verify_export(canonical(manifest),self.local/f'staging/day-{day}',authority(canonical(manifest)))
+
     def test_every_binding_mutation_and_canonical_mixture_rejected(self):
         canonical_bindings=json.loads((ROOT/'contracts/runs/bindings-v1.json').read_bytes())
         for name in RESTRICTED['bindings']:
