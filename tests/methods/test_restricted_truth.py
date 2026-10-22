@@ -222,7 +222,18 @@ class NumericalTests(unittest.TestCase):
         self.assertAlmostEqual(float(x.var()), variance, delta=.02)
 
     def test_weight_collapse_and_invalid_weights_remain_visible(self):
-        p = Problem((0,), (0.,), (0.,), quality=((0, 0.),))
+        # A deliberately extremely concentrated Gaussian overlap has effectively
+        # one supported prior draw. Independently calculate this concentration
+        # with scipy.stats, rather than changing the production collapse rule.
+        p = Problem((0,), (0.,), (0.,), gaussian=((0, 1000., .001),))
+        reference_rng = np.random.default_rng(1806)
+        b = reference_rng.uniform(16, 22, 256)
+        reference_rng.uniform(.8, 1.2, 256)
+        z = b+.8*reference_rng.standard_normal(256)
+        log_mass = norm.logpdf(1000., loc=z, scale=.001)
+        reference_weights = np.exp(log_mass-log_mass.max())
+        reference_weights /= reference_weights.sum()
+        self.assertLess(1/np.sum(reference_weights**2), 2.)
         posterior = condition(p, Settings(particles=256), np.random.default_rng(1806))
         self.assertTrue(posterior.diagnostics['severe_weight_collapse'])
         self.assertTrue(any(s['severe_weight_collapse'] for s in posterior.diagnostics['stages']))
