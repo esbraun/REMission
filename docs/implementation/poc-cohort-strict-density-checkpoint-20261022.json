@@ -1,0 +1,354 @@
+{
+  "id": "PA1-COHORT-STRICT-DENSITY-CHECKPOINT-20261022",
+  "source": "0aca35a9036a0bf5f0a5bdaee56fe339c703de39",
+  "isolated_shared_helper": "e300e253dfc6a52e72f79e309c6ac428e5275c5c",
+  "status": "author-strict12-factor-check-passed; full-mathematical-qualification-pending",
+  "absolute_tolerance": 1e-08,
+  "original_point_equal": true,
+  "canonical_point_sha256": "6e1bb612d030ed78fe1f4cb0ec4b13ff06dbe56555863978f1982e76b037a37c",
+  "independent_reference": -1423.437797406213,
+  "preflight": {
+    "guard_pass": true,
+    "optimizer": {
+      "type": "RewriteDatabaseQuery",
+      "name": "OPT_FAST_RUN",
+      "include": [
+        "fast_run"
+      ],
+      "exclude": [],
+      "require": [],
+      "subquery": {},
+      "position_cutoff": "inf",
+      "extra_rewrites": []
+    },
+    "linker": "VMLinker"
+  },
+  "gates": {
+    "all_factors_finite": true,
+    "independent_density_absolute_1e_8": true,
+    "independent_factors_absolute_1e_8": true
+  },
+  "modes": {
+    "diagnostic_fast_compile_cvm": {
+      "factor_sum": -1423.4377974060526,
+      "compiled_sum": -1423.4377974060524,
+      "signed_joint_error": 1.6052581486292183e-10,
+      "max_absolute_factor_error": 1.4352963262354024e-11,
+      "point_unchanged": true,
+      "point_unchanged_after_sum": true,
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      }
+    },
+    "production_unchanged_cvm": {
+      "factor_sum": -1423.4377974060503,
+      "compiled_sum": -1423.4377974060503,
+      "signed_joint_error": 1.6257217794191092e-10,
+      "max_absolute_factor_error": 1.411137873219559e-11,
+      "point_unchanged": true,
+      "point_unchanged_after_sum": true,
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      }
+    }
+  },
+  "helper_controls": {
+    "tests": 4,
+    "seconds": 8.795,
+    "status": "PASS",
+    "registered_two_RV_binding": true,
+    "independent_density_gradient_and_tail_controls": true
+  },
+  "source_changes": "Additive float64 same-library CDF helper with caller RV preservation; new-cohort fixed RV parameters explicitly float64. Legacy visit model unchanged.",
+  "limitations": [
+    "Renamed historical observed contract fixture, not independently generated qualified12patient input.",
+    "Author diagnostic source binds, not production COPY or independent acceptance.",
+    "No fullsuite/guide/Jacobian/permutation/singleton/prior/nativecoordinate qualification or NUTS/fit acceptance.",
+    "Frozen legacy singleton may retain its measured float32 normalization difference; preserve and disclose, never relax1e-8 or modify old fit source.",
+    "Core/positive-completed-comparison/API/UI/productionroles/genuineinput/studies/humanclinical work remains open."
+  ],
+  "raw_roots": [
+    {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4",
+      "created": {
+        "container_id": "ba406a5c3cb2225c0f0e0741f989542acf800927fba888885cf1566e1dd74ad5",
+        "name": "remission-cohort-sol-measurement-r4",
+        "source_head": "cb49f44f096c47c06579cfcf116d68838db51c73",
+        "source_manifest_sha256": "2d773c95ba8763883a1f6a64dabf9c1a09805de5e17707fd3fe0a4bc3d36dacf",
+        "seconds_cap": 300,
+        "no_fit": true
+      },
+      "terminal": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T17:03:55.034675195Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T17:03:42.708603755Z",
+        "Status": "exited"
+      },
+      "files": [
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\3069fe8ad0a94d64b256105394517638.json",
+          "bytes": 61249,
+          "sha256": "16b8bead52e572831fb41a5848be5e8cc4bc890d7395b5bee49ec05f9aa5bb25"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\3069fe8ad0a94d64b256105394517638.stderr",
+          "bytes": 1470,
+          "sha256": "49d9d0a76af0f215d55f014373899a19cd9fd2eaf01c7138d5a115c3067ccfa9"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\3069fe8ad0a94d64b256105394517638.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\4902fef5301b4a64a20951a18ac636bd.json",
+          "bytes": 62076,
+          "sha256": "d821f5a0bb04931cee1f55d11a06a62202aac48668862aab9268e482b6cb85cf"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\4902fef5301b4a64a20951a18ac636bd.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\4902fef5301b4a64a20951a18ac636bd.stdout",
+          "bytes": 963,
+          "sha256": "149f70d3a63231cd020b801f6e07b39ac006dd706eff9d65515acb386a4bb25a"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\61178426583041c1a2433559b889332b.json",
+          "bytes": 61291,
+          "sha256": "4a2f7e816160a3da5b3f0be718b94747863d7ff59e6e54d0e2e6a417d3ae3320"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\61178426583041c1a2433559b889332b.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\61178426583041c1a2433559b889332b.stdout",
+          "bytes": 72,
+          "sha256": "9d7fd194870b95609be4d5cea8d6023dff278cbca81580e459b26633d7da0179"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\7117267f567f4f97a2fb36f4a65c589d.json",
+          "bytes": 62075,
+          "sha256": "d0bf6b47c60f82fc197e06ffde4d235d667457a727441d4b4a920ef745dd485f"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\7117267f567f4f97a2fb36f4a65c589d.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\7117267f567f4f97a2fb36f4a65c589d.stdout",
+          "bytes": 982,
+          "sha256": "b615d62bb8565ee3a4fa2dea7c28865c5662f55781637342dcbc311308530d21"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\ee6eb98d98c444218d3b7ff2868242b4.json",
+          "bytes": 62137,
+          "sha256": "1feaff01787c4c733037aa39de786615fcd233e37c5b0f3f8e8af2c28c0a02cd"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\ee6eb98d98c444218d3b7ff2868242b4.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\commands\\ee6eb98d98c444218d3b7ff2868242b4.stdout",
+          "bytes": 65,
+          "sha256": "a45ce7d6dbc04ab33a719322f51485a99a9a19aa507e401a0bc9d0d2ee17d5d0"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\created-state.json",
+          "bytes": 963,
+          "sha256": "7ee82273ea3210dabadcdd4422ce55a44f3789a9eecad8280afc445d129d45df"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\created.json",
+          "bytes": 343,
+          "sha256": "c7e1dbb39246eb132d58d3d80222add2b91b5a5e9434529826d164d57269f1fc"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\helper.py",
+          "bytes": 2931,
+          "sha256": "0a6e84ee66960a5a48ea06a4bfef0de5d3ad6b6c7a8d17c88d28cd9a4f54ad53"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\run-status.json",
+          "bytes": 64349,
+          "sha256": "69ab424ad9bb21e384bb2b10fe9174b40255c621594b640c83453dacd3038482"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\source-manifest.json",
+          "bytes": 56179,
+          "sha256": "2d773c95ba8763883a1f6a64dabf9c1a09805de5e17707fd3fe0a4bc3d36dacf"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\measurement-r4\\terminal-state.json",
+          "bytes": 982,
+          "sha256": "b123190383eb36bc729f9996546b7cb58d1b10733a8fa7c6ef179301a89683c1"
+        }
+      ]
+    },
+    {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5",
+      "created": {
+        "container_id": "b47de7143cde0b1a64a34f3f72fe82fcc3619eece603b59884379ece27921591",
+        "name": "remission-cohort-sol-factors-r5",
+        "source_head": "0aca35a9036a0bf5f0a5bdaee56fe339c703de39",
+        "source_manifest_sha256": "2d773c95ba8763883a1f6a64dabf9c1a09805de5e17707fd3fe0a4bc3d36dacf",
+        "qualification_seconds_cap": 1800,
+        "no_fit": true
+      },
+      "terminal": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T17:06:33.0402776Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T17:05:17.568342942Z",
+        "Status": "exited"
+      },
+      "files": [
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\8b499804787a47c1bdedf08a25238694.json",
+          "bytes": 61292,
+          "sha256": "222527fdf28bd92824567604edf2fd238e3013332db91c18b765977490b61e8c"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\8b499804787a47c1bdedf08a25238694.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\8b499804787a47c1bdedf08a25238694.stdout",
+          "bytes": 72,
+          "sha256": "9d7fd194870b95609be4d5cea8d6023dff278cbca81580e459b26633d7da0179"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\992a2522eb9b4a419bca064e3a72c6d4.json",
+          "bytes": 62077,
+          "sha256": "0c8030ec1531fc28953125b0589bcdb313c11268160d7c84e653321f340fe655"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\992a2522eb9b4a419bca064e3a72c6d4.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\992a2522eb9b4a419bca064e3a72c6d4.stdout",
+          "bytes": 1200,
+          "sha256": "e10bdae3735866ea1fa8d68390a847d6eac60802d72cd83b3304e00a1fc6c824"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\a9141c3703a8409eb2525acd8bd6796f.json",
+          "bytes": 62077,
+          "sha256": "4610ccc6463b9059830fda3b5f7a183e38f16f99cb48ed156af35841c9620e84"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\a9141c3703a8409eb2525acd8bd6796f.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\a9141c3703a8409eb2525acd8bd6796f.stdout",
+          "bytes": 1183,
+          "sha256": "3bb84b16860e257fd3fc77b5d6ca08b402a1c92cc1c36f013baca3d4d7129fed"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\c0cdadf013ed47fca07e2011fc646352.json",
+          "bytes": 61257,
+          "sha256": "323a84a738e3f14064ea9b9e3dbc02dae84b5312717ef2fe4e0772af121ccb98"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\c0cdadf013ed47fca07e2011fc646352.stderr",
+          "bytes": 1443,
+          "sha256": "58c111802bce5be146b4f0d6c70410ee0cd31b3ec6bbb825e3e90e8a0f83a19b"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\c0cdadf013ed47fca07e2011fc646352.stdout",
+          "bytes": 283,
+          "sha256": "77035763ccb3aa3b7cf50bec1fc8a4364bafa15865f99fc2b8fa36f4ee3b8883"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\ea55963b35604eeb9e7330615957d7fc.json",
+          "bytes": 62282,
+          "sha256": "2076a3070e746fb1327bd22040f900f03ee14bee04af7740ada1c3ed440f9aff"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\ea55963b35604eeb9e7330615957d7fc.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\commands\\ea55963b35604eeb9e7330615957d7fc.stdout",
+          "bytes": 65,
+          "sha256": "92b8891d476c909b621b0f5dadd3c69501e1b00016c505296e537ebb0a15d69e"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\created-state.json",
+          "bytes": 1584,
+          "sha256": "1c3c9d063b3ce9998ac18eed5e2649f02bfd3102bd68ffb4bed946d78a8e10fd"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\created.json",
+          "bytes": 354,
+          "sha256": "d44fc96240abd6c85310f9f161a296be630b80632c5d572fb3dca16134b9ef22"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\helper.py",
+          "bytes": 3483,
+          "sha256": "6a3e8b351ebb4f4f87490b034624d204cce284cbc0e29621893e1e8bc2c0648c"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\output\\result.json",
+          "bytes": 103414,
+          "sha256": "f1ed0e80db8d8472794f3ceae2c5c549091bc4661e81cb52dac8580104dc7f98"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\run-status.json",
+          "bytes": 64356,
+          "sha256": "6e26f18f6540cc711ab99ca8366d34bcc5c1d4fc8534aaf65e39ba6ed591be78"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\source-manifest.json",
+          "bytes": 56179,
+          "sha256": "2d773c95ba8763883a1f6a64dabf9c1a09805de5e17707fd3fe0a4bc3d36dacf"
+        },
+        {
+          "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r5\\terminal-state.json",
+          "bytes": 1601,
+          "sha256": "be04cf48a7b78085f5a8cef6ae03a746ebaa4e153b9e08324f7086bbc5a11480"
+        }
+      ]
+    }
+  ],
+  "no_heavy_active": true,
+  "cohort_executable": false,
+  "no_fit": true
+}
