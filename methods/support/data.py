@@ -100,6 +100,9 @@ def _row(history, decision, active):
              and set(approval.permitted_options) == {'support_prompt', 'no_prompt'},
              'approved randomized binary support envelope required')
     _require(decision.distribution_persisted_at <= assignment.event_at, 'assignment precedes persisted final distribution')
+    _require(decision.available_at < decision.outcome_window.assessment_at
+             and assignment.available_at < decision.outcome_window.assessment_at,
+             'decision and assignment must be published before the outcome')
     context_ids = {ref.record_id for ref in decision.context}
     _require(len(context_ids) == len(decision.context), 'duplicate predecision context')
     _require(all(active[r].available_at < at for r in context_ids), 'unavailable predecision context')
@@ -188,6 +191,9 @@ def build_features(histories: Sequence[PublicHistory]) -> FeatureData:
                 excluded['incomplete_window'] += 1
                 continue
             outcome = active.get(decision.outcome_link_id)
+            if outcome is not None and outcome.kind == 'support_outcome_link' and outcome.reward.status in ('pending', 'undefined'):
+                excluded[outcome.reward.status] += 1
+                continue
             try:
                 row, status = _row(history, decision, active)
             except InvalidInput as error:

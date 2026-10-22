@@ -17,6 +17,7 @@ from statsmodels.regression.linear_model import WLS
 
 from contracts.domain.analysis import reference, sha
 from contracts.domain.protocol_request import S1_ESTIMAND, WCLS_PRIOR_REF
+from contracts.domain.protocol import LAW_REF, SUPPORT_REF
 from .data import FeatureData, design
 
 SETTINGS = dict(id='poc-support-s1-offline-r1', version='1.0.0', q=.5,
@@ -98,6 +99,8 @@ def fit(data: FeatureData, *, provenance_seed: str) -> WCLSResult:
     identity = dict(configuration=CONFIGURATION, settings_sha256=sha(SETTINGS),
         estimand=S1_ESTIMAND, prior=WCLS_PRIOR_REF, observation_cutoff=data.cutoff.isoformat(),
         history_sha256=data.history_sha256, seed=provenance_seed, seed_used=False,
+        expected_public_law=LAW_REF, expected_protocol=SUPPORT_REF,
+        input_view='active public reduced records; parent ProtocolInput admission remains required',
         source='public reduced quality/assignment/delivery/support-decision/outcome records only',
         package_versions=dict(python=platform.python_version(), numpy=np.__version__,
                               scipy=scipy.__version__, statsmodels=statsmodels.__version__))

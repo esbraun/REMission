@@ -31,7 +31,9 @@ def ref(record):
 
 
 def source_history(*, day=7, status='observed', prior=True, missing_prior=False, mode='mrt',
-                   probability=.5, malformed_missing_context=False, late_prior=False, pending=False):
+                   probability=.5, malformed_missing_context=False, late_prior=False, pending=False,
+                   delivery_offsets=(-7, -6, -1), availability='randomized', ordinary=False,
+                   bad_report_time=False, bad_link=False):
     """Actual reduced public types, no generator/truth/store imports."""
     at = ORIGIN+timedelta(days=day)
     records, context = [], []
@@ -47,7 +49,7 @@ def source_history(*, day=7, status='observed', prior=True, missing_prior=False,
         records.append(record('daily_report', 'recent-missing', at-timedelta(days=1, minutes=1),
                               sleep_quality=None, missingness='missing'))
     # Deliveries on nights t-6 and t-1 count; night t-7 is excluded.
-    for index, offset in enumerate((-7, -6, -1)):
+    for index, offset in enumerate(delivery_offsets):
         when = at+timedelta(days=offset, hours=8)
         assigned = record('assignment', f'old-a{index}', when-timedelta(hours=8),
             decision_id='old-decision', approval_id='old-approval', option='support_prompt',
@@ -64,7 +66,7 @@ def source_history(*, day=7, status='observed', prior=True, missing_prior=False,
     approval = record('approval', 'approval', at, decision_id=snapshot.record_id, option=None,
                       permitted_options=['support_prompt', 'no_prompt'], purpose='randomization_protocol')
     assignment = record('assignment', 'assignment', at, decision_id=snapshot.record_id, approval_id=approval.record_id,
-        option='support_prompt', experimental=True, component='mrt_bandit', probability=probability,
+        option='support_prompt', experimental=not ordinary, component='mrt_bandit', probability=probability,
         support_policy=POLICY, patient_blinded=False, clinician_blinded=False, clinician_override=None, override_reason=None)
     assessment = at+timedelta(days=1, minutes=-1)
     if malformed_missing_context:
@@ -74,16 +76,17 @@ def source_history(*, day=7, status='observed', prior=True, missing_prior=False,
         context_projection_sha256=sha(context), policy=POLICY, mode=mode,
         eligibility=[dict(action=a, status='eligible', reasons=[]) for a in ('support_prompt', 'no_prompt')],
         policy_constraint=dict(allowed_actions=['support_prompt', 'no_prompt'], reason='unrestricted', snapshot_ref=None),
-        availability='randomized', unavailable_reasons=[], probabilities=dict(support_prompt=probability, no_prompt=1-probability),
+        availability=availability, unavailable_reasons=[], probabilities=dict(support_prompt=probability, no_prompt=1-probability),
         assignment_id=assignment.record_id, distribution_persisted_at=at, execution_receipt_id='UNIT-receipt',
         outcome_window=dict(id='window', starts_at=at, ends_at=assessment, assessment_at=assessment,
             timezone='UTC', local_date=at.date(), endpoint_definition=reference('UNIT-quality', 'next-morning quality')),
         outcome_link_id='outcome').model_copy(update=dict(event_at=at))
-    report = record('daily_report', 'reward', assessment, sleep_quality=6. if status == 'observed' else None,
+    report = record('daily_report', 'reward', assessment-timedelta(minutes=1) if bad_report_time else assessment,
+                    sleep_quality=6. if status == 'observed' else None,
                     missingness='observed' if status == 'observed' else 'missing')
     publication = assessment+timedelta(seconds=10)
     outcome = record('support_outcome_link', 'outcome', publication, support_decision=ref(decision),
-        assignment_ref=ref(assignment), window_id='window', assessment_at=assessment, evaluated_as_of=publication,
+        assignment_ref=ref(assignment), window_id='wrong-window' if bad_link else 'window', assessment_at=assessment, evaluated_as_of=publication,
         reward=dict(status='pending' if pending else status, report_ref=ref(report) if status == 'observed' and not pending else None,
             field='sleep_quality', unit='quality_points', reason=None if status == 'observed' and not pending else 'UNIT-status',
             evidence_refs=[] if status == 'observed' and not pending else [ref(report)], definition_refs=[]),
@@ -120,7 +123,9 @@ class PublicFeatureTests(unittest.TestCase):
     def test_no_history_and_equal_time_report_unavailable(self):
         for history in (source_history(prior=False), source_history(late_prior=True)):
             self.assertEqual(build_features([history]).rows[0].controls[1:3], (7., 1.))
-        self.assertEqual(build_features([source_history(day=0, prior=False)]).rows[0].night, 1)
+        first = build_features([source_history(day=0, prior=False, delivery_offsets=())]).rows[0]
+        self.assertEqual(first.night, 1)
+        self.assertEqual(first.controls, (1., 7., 1., 0., 1/84))
 
     def test_record_order_and_irregular_common_cutoff(self):
         history = source_history()
@@ -137,7 +142,25 @@ class PublicFeatureTests(unittest.TestCase):
         self.assertIsNone(data.rows[0].reward)
         self.assertEqual(data.observed, ())
         self.assertEqual(build_features([source_history(pending=True)]).rows, ())
+        self.assertEqual(build_features([source_history(status='undefined')]).rows, ())
         self.assertEqual(build_features([source_history(mode='adaptive')]).rows, ())
+        self.assertEqual(build_features([source_history(mode='fixed')]).rows, ())
+        self.assertEqual(build_features([source_history(availability='deterministic')]).rows, ())
+        self.assertEqual(build_features([source_history(availability='unavailable')]).rows, ())
+
+    def test_assignment_linkage_and_causal_clock_negatives(self):
+        for kwargs, message in ((dict(ordinary=True), 'ordinary/unrandomized'),
+                                (dict(bad_report_time=True), 'report/assessment'),
+                                (dict(bad_link=True), 'linkage/clock')):
+            with self.assertRaisesRegex(InvalidInput, message):
+                build_features([source_history(**kwargs)])
+        h = source_history()
+        outcome = next(r for r in h.records if r.kind == 'support_outcome_link')
+        # An assessment exactly at the common cutoff is still incomplete.
+        before_publication = tuple(r for r in h.records if r.available_at < outcome.assessment_at)
+        not_completed = build_features([replace(h, cutoff=outcome.assessment_at, records=before_publication)])
+        self.assertEqual(not_completed.rows, ())
+        self.assertEqual(not_completed.excluded['incomplete_window'], 1)
 
     def test_propensity_and_source_negatives(self):
         with self.assertRaisesRegex(InvalidInput, 'exact recorded'):
@@ -156,6 +179,24 @@ class PublicFeatureTests(unittest.TestCase):
     def test_invalid_missing_context_withholds_only_sensitivity(self):
         data = build_features([source_history(status='missing', malformed_missing_context=True)])
         self.assertIn('feature source absent', data.sensitivity_reason)
+        missing = build_features([source_history(status='missing', bad_link=True)])
+        self.assertIn('linkage/clock', missing.sensitivity_reason)
+
+    def test_exact_reduced_hash_binding(self):
+        h = source_history()
+        changed = tuple(r.model_copy(update=dict(sleep_quality=4.)) if r.record_id == 'prior' else r for r in h.records)
+        with self.assertRaisesRegex(InvalidInput, 'changed public reduced reference'):
+            build_features([replace(h, records=changed)])
+        # Delivery adherence does not supply n_t; the public delivered stage does.
+        h = source_history()
+        changed = tuple(r.model_copy(update=dict(adherence=0.)) if r.kind == 'delivery' else r for r in h.records)
+        decision = next(r for r in changed if r.kind == 'support_decision')
+        by_id = {r.record_id: r for r in changed}
+        decision = decision.model_copy(update=dict(context=[type(v).model_validate(ref(by_id[v.record_id])) for v in decision.context]))
+        by_id[decision.record_id] = decision
+        outcome = by_id['outcome'].model_copy(update=dict(support_decision=type(by_id['outcome'].support_decision).model_validate(ref(decision))))
+        by_id['outcome'] = outcome
+        self.assertEqual(build_features([replace(h, records=tuple(by_id.values()))]).rows[0].controls[3], 2.)
 
 
 class WCLSTests(unittest.TestCase):
