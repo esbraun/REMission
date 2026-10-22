@@ -44,7 +44,7 @@ def check_fd(values,baseline,names,binding):
             if not all(__import__('math').isfinite(v) for v in (a,b)) or abs(a-b)>1e-5+1e-4*abs(b):raise ValueError('equal-coordinate gradient FD gate unmet')
 
 
-def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,reference=None,numba_policy=None,diagnostic_reference=None):
+def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,reference=None,numba_policy=None,diagnostic_reference=None,cvm_policy=None):
     started=time.monotonic();output.mkdir(parents=True,exist_ok=True)
     def marker(stage,**extra):
         memory={}
@@ -81,10 +81,13 @@ def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,ref
         input_files={name:hashlib.sha256((input_root/name).read_bytes()).hexdigest() for name in ('input.json','points.json','sources.json')})
     marker('input-verified',binding=binding)
     trace=None;compile_kwargs={};compilation=None;policy=None
-    if numba_policy is not None:
+    if numba_policy is not None and cvm_policy is not None:raise ValueError('only one fixed compilation policy')
+    execution_policy=numba_policy or cvm_policy
+    if execution_policy is not None:
         if monitor_policy is not None or reference is None or diagnostic_reference is None:raise ValueError('numba contrast requires its frozen references, never MonitorMode')
         from pa3_monitor import compilation_options
-        policy=json.loads(numba_policy.read_bytes())
+        policy=json.loads(execution_policy.read_bytes())
+        if policy['id']!=('pa3-cvm-target-qualification-v1' if cvm_policy else 'pa3-numba-fusion-contrast-v1'):raise ValueError('selected policy identity mismatch')
         if binding['input_files']!=policy['input_files']:raise ValueError('numba input freeze mismatch')
         for path,key in [(reference,'guided_reference_sha256'),(diagnostic_reference,'diagnostic_gradient_sha256'),(coordinates,'coordinates_sha256')]:
             if hashlib.sha256(path.read_bytes()).hexdigest()!=policy[key]:raise ValueError('numba reference hash mismatch')
@@ -110,7 +113,7 @@ def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,ref
         model=build_joint(data,sources,BORROW_CONFIG,guide=guided)
     marker('after-model-construction')
     result=dict(phase=phase,binding=binding,status='not-qualified')
-    if compilation:result.update(compilation=compilation,compilation_policy_sha256=hashlib.sha256(numba_policy.read_bytes()).hexdigest(),diagnostic_only=True)
+    if compilation:result.update(compilation=compilation,compilation_policy_sha256=hashlib.sha256(execution_policy.read_bytes()).hexdigest(),diagnostic_only=True)
     if phase=='coordinates':
         marker('before-coordinate-jacobian-compile')
         fn=model.compile_fn(model.replace_rvs_by_values([model['prior_normal_coordinates'],model['guide_log_jacobian']]),inputs=model.value_vars,on_unused_input='ignore')
@@ -132,7 +135,7 @@ def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,ref
         names=[v.name for v in model.value_vars]
         if any(set(point)!=set(names) for point in selected):raise ValueError('model coordinate names mismatch')
         native=phase=='guided-native-logp-gradient'
-        if native and numba_policy is None:raise ValueError('native combined phase requires explicit diagnostic policy')
+        if native and execution_policy is None:raise ValueError('native combined phase requires explicit diagnostic policy')
         gradient=phase.endswith('gradient')
         marker('before-gradient-compile' if gradient else 'before-logp-compile')
         begin=time.monotonic()
@@ -147,7 +150,7 @@ def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,ref
         if compilation:
             from pa3_monitor import save_inventory
             result['inventory']=save_inventory(fn._pytensor_function if native else fn.f,output,policy)
-            if result['inventory']['compiled_linker']!='NumbaLinker':raise ValueError('compiled linker changed')
+            if result['inventory']['compiled_linker']!=('VMLinker' if cvm_policy else 'NumbaLinker'):raise ValueError('compiled linker changed')
             marker('optimized-inventory-saved')
         values=[];differences=[];timings=[]
         native_logp=[];native_maps=[];calls=[]
@@ -229,5 +232,6 @@ if __name__=='__main__':
     parser.add_argument('--phase',choices=['coordinates','guided-logp','guided-gradient','guided-native-logp-gradient','original-logp','original-gradient','local-logp','changed-logp'],required=True)
     parser.add_argument('--seconds',type=float,required=True);parser.add_argument('--coordinates',type=Path)
     parser.add_argument('--monitor-policy',type=Path);parser.add_argument('--reference',type=Path)
-    parser.add_argument('--numba-policy',type=Path);parser.add_argument('--diagnostic-reference',type=Path);args=parser.parse_args()
-    run(args.input,args.output,args.phase,args.seconds,args.coordinates,args.monitor_policy,args.reference,args.numba_policy,args.diagnostic_reference)
+    policies=parser.add_mutually_exclusive_group();policies.add_argument('--numba-policy',type=Path);policies.add_argument('--cvm-policy',type=Path)
+    parser.add_argument('--diagnostic-reference',type=Path);args=parser.parse_args()
+    run(args.input,args.output,args.phase,args.seconds,args.coordinates,args.monitor_policy,args.reference,args.numba_policy,args.diagnostic_reference,args.cvm_policy)

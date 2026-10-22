@@ -41,28 +41,53 @@ def save_inventory(function,output,policy):
         input_types=[type_metadata(v) for v in node.inputs],output_types=[type_metadata(v) for v in node.outputs])
         for i,node in enumerate(nodes)],compiled_optimizer=optimizer_identity(function.maker.mode.provided_optimizer),
         compiled_linker=type(function.maker.mode.linker).__name__)
+    if policy.get('id')=='pa3-cvm-target-qualification-v1':result['execution_vm']=verify_cvm(function)
     encoded=(canonical(result)+'\n').encode()
     if len(encoded)>policy['inventory_byte_cap']:raise ValueError('inventory byte cap; no evaluation')
     (output/'optimized-inventory.json').write_bytes(encoded)
-    return dict(nodes=len(nodes),bytes=len(encoded),sha256=hashlib.sha256(encoded).hexdigest(),
-                compiled_optimizer=result['compiled_optimizer'],compiled_linker=result['compiled_linker'])
+    summary=dict(nodes=len(nodes),bytes=len(encoded),sha256=hashlib.sha256(encoded).hexdigest(),
+                 compiled_optimizer=result['compiled_optimizer'],compiled_linker=result['compiled_linker'])
+    if 'execution_vm' in result:summary['execution_vm']=result['execution_vm']
+    return summary
+
+
+def verify_cvm(function):
+    """Reject whole-VM fallback; this says nothing about every individual thunk."""
+    from pytensor.link.c.cvm import CVM
+    linker=function.maker.mode.linker
+    identity=dict(vm_type=type(function.vm).__module__+'.'+type(function.vm).__qualname__,
+        linker=type(linker).__name__,use_cloop=getattr(linker,'use_cloop',None),c_thunks=getattr(linker,'c_thunks',None),
+        callback_empty=getattr(linker,'callback',None) is None,callback_input_empty=getattr(linker,'callback_input',None) is None,
+        limitation='Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.')
+    if type(function.vm) is not CVM:raise ValueError('actual compiled VM is not CVM; whole-VM fallback is not qualified')
+    if (identity['linker']!='VMLinker' or identity['use_cloop'] is not True or identity['c_thunks'] is not True or
+        not identity['callback_empty'] or not identity['callback_input_empty']):raise ValueError('CVM linker flags/callbacks differ from freeze')
+    return identity
 
 
 def compilation_options(policy,default=None):
     """The unselected path never imports PyTensor or supplies a mode override."""
     if policy is None:return {},None
-    if policy['id']!='pa3-numba-fusion-contrast-v1' or policy['version']!='1.0.0':raise ValueError('unfrozen compilation policy')
-    if policy['excluded_tags']!=['fusion']:raise ValueError('only the frozen fusion group may be excluded')
+    cvm=policy['id']=='pa3-cvm-target-qualification-v1'
+    if (not cvm and policy['id']!='pa3-numba-fusion-contrast-v1') or policy['version']!='1.0.0':raise ValueError('unfrozen compilation policy')
+    if policy['excluded_tags']!=([] if cvm else ['fusion']):raise ValueError('only the frozen fusion group may be excluded; CVM excludes nothing')
     if default is None:
         from pytensor.compile.mode import get_default_mode
         default=get_default_mode()
     before=optimizer_identity(default.provided_optimizer)
     if before!=policy['default_optimizer'] or type(default.linker).__name__!='NumbaLinker':raise ValueError('default optimizer/linker mismatch')
-    candidate=default.excluding('fusion')
+    if cvm:
+        from pytensor.compile.mode import Mode
+        candidate=Mode(linker='cvm',optimizer=default.provided_optimizer)
+    else:candidate=default.excluding('fusion')
     after=optimizer_identity(candidate.provided_optimizer)
-    if after!=policy['candidate_optimizer'] or type(candidate.linker).__name__!='NumbaLinker':raise ValueError('candidate optimizer/linker mismatch')
-    return dict(mode=candidate),dict(default_optimizer=before,candidate_optimizer=after,linker='NumbaLinker',
-        rule='Compile-specific diagnostic fusion-group exclusion only; no environment/backend/sampler/production change')
+    expected='VMLinker' if cvm else 'NumbaLinker'
+    if after!=policy['candidate_optimizer'] or type(candidate.linker).__name__!=expected:raise ValueError('candidate optimizer/linker mismatch')
+    if cvm and (candidate.linker.use_cloop is not True or candidate.linker.c_thunks is not True or
+                candidate.linker.callback is not None or candidate.linker.callback_input is not None):raise ValueError('CVM requested flags/callbacks differ')
+    return dict(mode=candidate),dict(default_optimizer=before,candidate_optimizer=after,linker=expected,
+        rule='Compile-specific diagnostic CVM linker with original optimizer; no sampler/production change' if cvm else
+             'Compile-specific diagnostic fusion-group exclusion only; no environment/backend/sampler/production change')
 
 
 class MetadataTrace:

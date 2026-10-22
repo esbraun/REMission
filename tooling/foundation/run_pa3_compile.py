@@ -69,15 +69,16 @@ def phase_row(path,phase,contrast):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--image',required=True);parser.add_argument('--evidence',type=Path,required=True)
-    parser.add_argument('--numba-policy',type=Path)
+    policies=parser.add_mutually_exclusive_group();policies.add_argument('--numba-policy',type=Path);policies.add_argument('--cvm-policy',type=Path)
     args=parser.parse_args();args.evidence.mkdir(parents=True,exist_ok=False)
     def command(argv,seconds=60):
         outcome,metadata=run(argv,args.evidence/'commands',timeout_seconds=seconds)
         if outcome.returncode:raise RuntimeError('captured command failed: '+metadata['streams']['stderr']['path'])
         return outcome.stdout.decode().strip()
     def write(name,value):(args.evidence/name).write_text(json.dumps(value,indent=2,sort_keys=True,allow_nan=False)+'\n')
-    policy=json.loads(args.numba_policy.read_bytes()) if args.numba_policy else None
-    if policy and (policy['id']!='pa3-numba-fusion-contrast-v1' or policy['version']!='1.0.0' or
+    policy_path=args.numba_policy or args.cvm_policy
+    policy=json.loads(policy_path.read_bytes()) if policy_path else None
+    if policy and (policy['id']!=('pa3-cvm-target-qualification-v1' if args.cvm_policy else 'pa3-numba-fusion-contrast-v1') or policy['version']!='1.0.0' or
                    (policy['phase_seconds'],policy['suite_seconds'])!=(PHASE_SECONDS,SUITE_SECONDS)):
         raise ValueError('unfrozen numba contrast policy/deadlines')
     phases=NUMBA_PHASES if policy else PHASES
@@ -120,8 +121,9 @@ def main():
         limits=dict(cpu=2,memory_bytes=2147483648,network='none',readonly_root=True,uid='10002:10002'),
         target_rule='Unchanged exact guide/original priors/Q64/optimizer; one model per process. No native NUTS in diagnosis.')
     if policy:
-        manifest.update(compilation_policy=policy,compilation_policy_sha256=hashlib.sha256(args.numba_policy.read_bytes()).hexdigest(),
-            target_rule='Diagnostic compile-specific fusion-group exclusion; ordinary NumbaLinker, unchanged math/prior/guide/Q64. No NUTS or production change.',
+        manifest.update(compilation_policy=policy,compilation_policy_sha256=hashlib.sha256(policy_path.read_bytes()).hexdigest(),
+            target_rule='Diagnostic CVM linker/original optimizer, unchanged math/prior/guide/Q64; no NUTS or production change.' if args.cvm_policy else
+                        'Diagnostic compile-specific fusion-group exclusion; ordinary NumbaLinker, unchanged math/prior/guide/Q64. No NUTS or production change.',
             reused_coordinates_origin=policy['coordinates_origin'],reference_volumes=policy['readonly_volumes'])
     write('deployment.json',manifest)
     started=time.monotonic();inspections={};results=[]
@@ -137,7 +139,8 @@ def main():
             argv+=mount(policy['readonly_volumes']['diagnostic-gradient'],'/diagnostic',True)
         argv+=[image,'--input','/input','--output','/output','--phase',phase,'--seconds',str(limit)]
         if phase!='coordinates':argv+=['--coordinates','/mapped/coordinates.json']
-        if policy:argv+=['--numba-policy','/app/pa3-numba-policy.json','--reference','/reference/guided-logp.json','--diagnostic-reference','/diagnostic/guided-gradient.json']
+        if policy:argv+=['--cvm-policy' if args.cvm_policy else '--numba-policy','/app/pa3-cvm-policy.json' if args.cvm_policy else '/app/pa3-numba-policy.json',
+                         '--reference','/reference/guided-logp.json','--diagnostic-reference','/diagnostic/guided-gradient.json']
         before=time.monotonic();outcome,metadata=run(argv,args.evidence/'commands',timeout_seconds=limit)
         elapsed=time.monotonic()-before
         raw=json.loads(command(['docker','inspect',name]))[0]
