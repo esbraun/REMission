@@ -1,0 +1,199 @@
+{
+  "status": "estimated",
+  "reasons": [],
+  "identity": {
+    "configuration": {
+      "id": "poc-support-s1-offline-r1",
+      "version": "1.0.0",
+      "sha256": "6449cd86c811dc313946e42126e7a10ee93e648a730378fec05ff74066b11933"
+    },
+    "settings_sha256": "6449cd86c811dc313946e42126e7a10ee93e648a730378fec05ff74066b11933",
+    "estimand": {
+      "id": "EST-MRT:poc-support-v1",
+      "version": "1.0.0",
+      "sha256": "3526daad3b79b90c337a733ca10cd34e2c35b5c89868e8614b3ebe1e1f1af177"
+    },
+    "prior": {
+      "id": "poc-wcls-prior-not-applicable-v1",
+      "version": "1.0.0",
+      "sha256": "2efff2396d02f530b39b72750f8b229df3ae265926b42b90e2a4fc06ef134143"
+    },
+    "observation_cutoff": "2026-01-15T12:00:00+00:00",
+    "history_sha256": "cea0cc004e84e2d9b44c2c11aaa34cc4881524ba98eee0f0d4f75b5ff189f152",
+    "seed": "fit/wcls-unused-provenance/UNIT-deterministic-no-RNG",
+    "seed_used": false,
+    "expected_public_law": {
+      "id": "poc-longitudinal-v2",
+      "version": "1.0.0",
+      "sha256": "e9be7afedac962e93ce331bbd8f6a2eef039b56d916ce86d2b76c4c0700c42a0"
+    },
+    "expected_protocol": {
+      "id": "poc-support-envelope-v1",
+      "version": "1.0.0",
+      "sha256": "5cb2f035f684b54e2b9437dfcc9f62de318a8f08f5c90ed9ff80e0902b4a8be5"
+    },
+    "input_view": "active public reduced records; parent ProtocolInput admission remains required",
+    "source": "public reduced quality/assignment/delivery/support-decision/outcome records only",
+    "package_versions": {
+      "python": "3.13.7",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "statsmodels": "0.15.0"
+    }
+  },
+  "counts": {
+    "eligible_completed": 144,
+    "observed": 144,
+    "missing": 0,
+    "participants": 12,
+    "context_participants": 12,
+    "excluded": {},
+    "eligible_counts_complete": true
+  },
+  "coefficients": [
+    3.032409877065882,
+    0.19377845907106372,
+    0.1574661610452769,
+    -0.10003423747279507,
+    0.19155707537886535,
+    0.601997754037052
+  ],
+  "covariance": [
+    [
+      0.001228326533308758,
+      -0.00023828141769535366,
+      0.0003486511026795405,
+      -1.7117203455508055e-05,
+      -0.00010675477752441515,
+      0.00018963953633855017
+    ],
+    [
+      -0.00023828141769535353,
+      4.710157687336531e-05,
+      -6.971116101308023e-05,
+      2.2170109015700343e-06,
+      -1.1225712461066926e-05,
+      -2.5651381745921944e-05
+    ],
+    [
+      0.00034865110267954066,
+      -6.971116101308032e-05,
+      0.00017553731145201142,
+      -6.082582584447078e-06,
+      -1.7655613075128187e-05,
+      6.585078876347897e-05
+    ],
+    [
+      -1.711720345550805e-05,
+      2.2170109015700343e-06,
+      -6.082582584447076e-06,
+      3.6137137463314244e-06,
+      1.0517364923290407e-05,
+      -3.550432826212962e-05
+    ],
+    [
+      -0.00010675477752441517,
+      -1.122571246106683e-05,
+      -1.7655613075128573e-05,
+      1.0517364923290385e-05,
+      0.0019372410959629216,
+      -0.00011468618495575727
+    ],
+    [
+      0.0001896395363385502,
+      -2.5651381745921944e-05,
+      6.585078876347897e-05,
+      -3.550432826212963e-05,
+      -0.00011468618495575729,
+      0.0005383144894462144
+    ]
+  ],
+  "estimate": 0.601997754037052,
+  "standard_error": 0.023201605320456047,
+  "interval": [
+    0.550931365036425,
+    0.653064143037679
+  ],
+  "df": 11,
+  "singular_values": [
+    67.38919141562917,
+    13.327986483359904,
+    5.9201472824176316,
+    3.825638182437352,
+    1.3669284267274315,
+    0.4129282107833091
+  ],
+  "condition_number": 163.19832274911525,
+  "sensitivity_status": "available",
+  "sensitivity_reason": null,
+  "sensitivity": [
+    {
+      "delta0": -0.5,
+      "delta1": -0.5,
+      "estimate": 0.601997754037052,
+      "shift": 0.0,
+      "direction": "positive"
+    },
+    {
+      "delta0": -0.5,
+      "delta1": 0.0,
+      "estimate": 0.6519977540370521,
+      "shift": 0.049999999999999996,
+      "direction": "positive"
+    },
+    {
+      "delta0": -0.5,
+      "delta1": 0.5,
+      "estimate": 0.701997754037052,
+      "shift": 0.09999999999999999,
+      "direction": "positive"
+    },
+    {
+      "delta0": 0.0,
+      "delta1": -0.5,
+      "estimate": 0.551997754037052,
+      "shift": -0.049999999999999996,
+      "direction": "positive"
+    },
+    {
+      "delta0": 0.0,
+      "delta1": 0.0,
+      "estimate": 0.601997754037052,
+      "shift": 0.0,
+      "direction": "positive"
+    },
+    {
+      "delta0": 0.0,
+      "delta1": 0.5,
+      "estimate": 0.6519977540370521,
+      "shift": 0.049999999999999996,
+      "direction": "positive"
+    },
+    {
+      "delta0": 0.5,
+      "delta1": -0.5,
+      "estimate": 0.501997754037052,
+      "shift": -0.09999999999999999,
+      "direction": "positive"
+    },
+    {
+      "delta0": 0.5,
+      "delta1": 0.0,
+      "estimate": 0.551997754037052,
+      "shift": -0.049999999999999996,
+      "direction": "positive"
+    },
+    {
+      "delta0": 0.5,
+      "delta1": 0.5,
+      "estimate": 0.601997754037052,
+      "shift": -3.0839528461809895e-19,
+      "direction": "positive"
+    }
+  ],
+  "sensitivity_range": [
+    0.501997754037052,
+    0.701997754037052
+  ],
+  "sensitivity_label": "Assumption-driven missing-reward sensitivity; point estimates only"
+}
