@@ -1,5 +1,6 @@
 """PA3-B independent filter, rounding, mixture and gradient checks."""
 import math
+import os
 import unittest
 import numpy as np
 from scipy.stats import norm
@@ -50,16 +51,17 @@ class BridgeTests(unittest.TestCase):
         self.assertAlmostEqual(marginal(dict(theta,beta_c=0,beta_e=0,sd_beta_c=0,sd_beta_e=0)),0,places=14)
 
     def test_tensor_values_gradients_and_normalized_mixture_scalar_reference(self):
+        order=int(os.environ.get('PA3_TEST_QUADRATURE_ORDER','16'))
         vector=pt.dvector('theta')
         theta={name:vector[i] for i,name in enumerate(FIELDS)}
-        g=tensor_marginal(theta)
+        g=tensor_marginal(theta,order)
         total,responsibility=tensor_mixture(-1.4,.4,g,.2,.8)
         f=pytensor.function([vector],[g,total,responsibility,pt.grad(total,vector)])
         direction=np.array([.4,-.3,.2,.1,.1,-.1,.03,.04,.1,.1,-.2])
         for values in fixed_vectors():
             x=np.array([values[k] for k in FIELDS],dtype=float)
             vg,vl,vr,gradient=f(x)
-            self.assertAlmostEqual(vg,marginal(values),places=11)
+            self.assertAlmostEqual(vg,marginal(values,order),places=11)
             variance=.4**2+.8**2
             informative=.5*math.exp(-.5*(-1.4-vg-.2)**2/variance)/math.sqrt(2*math.pi*variance)
             weak=.5*math.exp(-.5*(-1.4)**2/(.4**2+100))/math.sqrt(2*math.pi*(.4**2+100))
