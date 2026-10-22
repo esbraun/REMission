@@ -151,9 +151,15 @@ python -m services.generator.research_support --plan <private-plan.json> --runti
 python /app/run_support_once.py --manifest <copied-public-input/manifest.json> --runtime <learner-runtime.json> --output-root <results>
 ```
 
-Choose the production time cap from the bounded measurements rather than reusing
-the UNIT300s cap for24 trajectories. All other isolation/resource controls remain
-fixed unless the orchestrator reviews a concrete change. No automatic retry,
+Proposed first genuine invocation limits are **1800s hard cap for the paired
+12-member producer and300s separately for the three-cutoff offline WCLS command**,
+each with an external literal-CID watchdog armed before start. These are bounded
+engineering stop limits for the first attempt, not measured12-member generation
+or WCLS costs, forecasts or SLAs. Only the UNIT timings above are measured; they
+do not establish a genuine panel runtime. Reaching a cap preserves the partial
+outputs/nonzero exit and needs review before any further attempt. The
+orchestrator must approve the exact invocations before execution. All other
+isolation/resource controls remain fixed unless it reviews a concrete change. No automatic retry,
 alternate seed or successful-fit requirement exists. An honest rank/cluster
 abstention is a completed attempted calculation.
 
