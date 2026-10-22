@@ -61,3 +61,31 @@ Threshold clearance remains blocked by T-OBS2-CLEARANCE-POLICY. Only an explicit
 installed structural synthetic concern rule can support the positive manual fixture.
 Actual scientific producer qualification, scientific clearance/burden laws, human and
 clinical acceptance remain open. No real systems or participants are involved.
+
+Incremental post-4f boundary: the independent early audit confirmed mandatory
+configured follow-up omission (full report dfb5690 and actual failing reproduction
+1f1eca0 preserved byte-exact in raw-supplement-review-and-compatibility.json).
+Admission now requires the complete configured set, and the two-transition fixture
+uses distinct exact rules with explicitly installed structural review rules. Actual
+subset rejection leaves all safety units unchanged; the complete two-follow-up
+positive creates distinct deadlines, retries once and explicitly closes both tasks.
+The first expanded run d1c659 retained a fixture failure: the newly distinct second
+rule had not been installed in the review registry. That fixture was corrected.
+Run83c00ec7 passed34:25 focused workflow,7 product and2 stopped003 upgrade tests.
+Its source map identifies exact command-start bytes; later optional archive-resolution
+fixture assembly is new, unqualified work for the pending amendment proofs.
+
+The stopped003 fixture executes54 frozen public consumer/service/helper sources
+from1096 in a separate Python process, creates actual authenticated ordinary saved
+history/hold/review, then closes all handles. The current additive004 upgrade makes
+a new private instance from a consistent backup, uniquely maps the old task binding,
+preserves all immutable SQL-value prefixes/IDs/display and receipt bytes/FKs, stales
+the review and advances the held patient once. Actual os._exit83 before004 commit
+rolls back schema/index changes and leaves the target unroutable; death after commit
+recovers under the new generation. The initial8d8a2f1 run retained a test assertion
+KeyError for task_id: the frozen original receipt already used task_ids. Correcting
+that assertion changed no service behavior. FollowUpAmendment wiring is present;
+its complete positive/negative/fault matrix and upgrade ambiguity/after-upgrade
+plural proofs remain pending, alongside final image/copy/role/broad/MCP qualification.
+The full independent bounded pass2 report33deca2/execution/manifest is preserved;
+it is historical4f mechanics evidence and does not accept the repaired candidate.

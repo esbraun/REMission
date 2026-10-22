@@ -1,0 +1,16 @@
+test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once (test_live_upgrade.StoppedUpgradeTests.test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once) ... ERROR
+test_actual_process_death_before004_commit_rolls_back_and_after_commit_recovers (test_live_upgrade.StoppedUpgradeTests.test_actual_process_death_before004_commit_rolls_back_and_after_commit_recovers) ... ok
+
+======================================================================
+ERROR: test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once (test_live_upgrade.StoppedUpgradeTests.test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/integration/replay/test_live_upgrade.py", line 56, in test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once
+    self.assertIsNone(episode['current_review_id']);self.assertEqual(episode['task_ids'],[self.results['entry']['task_id']])
+                                                                                          ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'task_id'
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.992s
+
+FAILED (errors=1)

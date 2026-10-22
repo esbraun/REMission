@@ -31,6 +31,18 @@ def timestamp(value: datetime) -> str:
     return value.astimezone(timezone.utc).isoformat()
 
 
+def validate_bundle(installed):
+    root=Path(__file__).resolve().parents[2]
+    bindings=json.loads(root.joinpath('contracts/service/bindings-v1.json').read_bytes())
+    observed=json.loads(root.joinpath('contracts/runs/bindings-v2.json').read_bytes())['observed_representation']
+    if (installed.authority.service_contract.model_dump()!=bindings['live_hold']
+            or installed.authority.schema_binding.model_dump()!=bindings['service_schema_set']
+            or installed.authority.observed_binding.model_dump()!=observed
+            or digest(canonical(installed.authority.model_dump(mode='json')))!=installed.control.authority_sha256
+            or digest(canonical(installed.review_rules.model_dump(mode='json')))!=installed.control.review_rules_sha256):
+        raise AdmissionError('service_generation_mismatch')
+
+
 class Store:
     def __init__(self, path: str | Path, installed: InstalledBundle, *, clock=lambda: datetime.now(timezone.utc)):
         # Normal startup never creates directories, DBs or runs legacy SQL.
@@ -42,6 +54,7 @@ class Store:
             self.validate_control(db)
 
     def validate_control(self, db):
+        validate_bundle(self.installed)
         try:
             row = db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone()
         except sqlite3.Error as error:

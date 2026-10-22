@@ -29,14 +29,14 @@ def fresh_store(path, installed=None):
     return store
 
 
-def live_fixture(root,*,run_name='obs2-fixture-run',threshold=False,extra_hold=False):
+def live_fixture(root,*,run_name='obs2-fixture-run',threshold=False,extra_hold=False,multi_followup=False,archive_resolution=False,export_name='fixture-export'):
     import sys
     sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'run_contracts'))
     from observed_v2_fixtures import build
     from contracts.domain.evidence_v2 import exact_ref
     from contracts.runs.observed_v2 import ExportAuthorityV2
     from services.foundation.store import digest
-    fixture=build(root/'staging',hold=True,service_owner='alice',run_name=run_name,threshold_concern=threshold,extra_hold=extra_hold)
+    fixture=build(root/'staging',hold=True,service_owner='alice',run_name=run_name,threshold_concern=threshold,extra_hold=extra_hold,multi_followup=multi_followup,archive_resolution=archive_resolution,export_name=export_name)
     authority=ExportAuthorityV2.model_validate_json(canonical(fixture['authority']))
     entries=[entry['record'] for entry in fixture['entries']]
     bundle=next(r for r in entries if r['kind']=='hold_transition_bundle' and r['transition_type']=='enter')
@@ -50,13 +50,18 @@ def live_fixture(root,*,run_name='obs2-fixture-run',threshold=False,extra_hold=F
         archive_authority_sha256=digest(canonical(authority.model_dump(mode='json'))),ownership_ref=bundle['ownership_ref'],episode_namespace='synthetic-fixture',
         allowed_operations=['invalidate'],trigger_bindings=[dict(trigger_rule=trigger['rule'],required_reviews=[requirement],
             follow_ups=[dict(reference=bundle['follow_up_refs'][0],owner_id='alice',policy=ref('explicit-fixture-follow-up'),due_at=task['due_at'],escalation_destination=task['escalation_destination'])])])
+    bindings=[];manual_rules=[]
     for record in entries:
-        if record['kind']=='hold_transition_bundle' and record['transition_type']=='change_reason':
-            for reference in record['follow_up_refs']:
+        if record['kind']=='hold_transition_bundle' and record['transition_type'] in ('enter','change_reason'):
+            matched=next(r for r in entries if r['record_id']==record['trigger_refs'][0]['record_id'])
+            follows=[]
+            for reference in matched['follow_up_refs']:
                 follow=next(r for r in entries if r['record_id']==reference['record_id'])
-                grant['trigger_bindings'][0]['follow_ups'].append(dict(reference=reference,owner_id='alice',policy=ref('explicit-fixture-follow-up'),due_at=follow['due_at'],escalation_destination=follow['escalation_destination']))
-    manual_rule=dict(ref=ref('MANUAL-HOLD-REVIEW'),trigger_rule=trigger['rule'],requirements=[requirement])
-    installed=fixture_bundle([grant],[] if threshold else [manual_rule])
+                follows.append(dict(reference=reference,owner_id='alice',policy=ref('explicit-fixture-follow-up'),due_at=follow['due_at'],escalation_destination=follow['escalation_destination']))
+            bindings.append(dict(trigger_rule=matched['rule'],required_reviews=[requirement],follow_ups=follows))
+            manual_rules.append(dict(ref=ref('MANUAL-HOLD-REVIEW' if len(manual_rules)==0 else 'MANUAL-HOLD-REVIEW-'+str(len(manual_rules)+1)),trigger_rule=matched['rule'],requirements=[requirement]))
+    grant['trigger_bindings']=bindings
+    installed=fixture_bundle([grant],[] if threshold else manual_rules)
     command=dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,archive_id=archive_id,partition_id=bundle['partition_id'],
         bundle_ref=dict(record_id=bundle['record_id'],payload_sha256=digest(canonical(bundle))),trigger_refs=bundle['trigger_refs'])
     return fixture,authority,installed,command

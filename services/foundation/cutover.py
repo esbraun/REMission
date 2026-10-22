@@ -7,7 +7,7 @@ import sqlite3
 import uuid
 from contracts.service.live_hold import CAPABILITY, ControlBinding, InstalledBundle, LiveHoldAuthority, ReviewRules
 from .admission import AdmissionError, AdmissionGate
-from .store import Store, canonical, digest, instant, timestamp
+from .store import Store, canonical, digest, instant, timestamp,validate_bundle
 
 IMMUTABLE = ['events', 'decisions', 'bundles', 'tasks', 'receipts', 'ingestion_receipts',
              'state_changes', 'observed_archives', 'observed_archive_entries', 'observed_archive_artifacts',
@@ -41,7 +41,7 @@ def bundle_for(authority: LiveHoldAuthority, rules: ReviewRules, *, generation=1
 
 def assert_quiescent(source: Path):
     """Fail if any observable process has the old DB, WAL or SHM open."""
-    targets = {str(source.resolve()), str(source.resolve())+'-wal', str(source.resolve())+'-shm'}
+    targets = {str(source.resolve()), str(source.resolve())+'-wal', str(source.resolve())+'-shm',str(source.resolve())+'.admission.lock'}
     for process in Path('/proc').iterdir():
         if not process.name.isdecimal():
             continue
@@ -66,6 +66,7 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
     Activation never mutates the historical source or silently restores its routing.
     """
     target = Path(target).absolute()
+    validate_bundle(installed)
     if target.exists() or Path(str(target)+'.admission.lock').exists():
         raise ValueError('cutover_requires_new_private_path')
     target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -133,12 +134,21 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
     return Store(target, installed)
 
 
-def change_generation(store,new_bundle,at,*,fault=None):
+def change_generation(store,new_bundle,*,fault=None,settings=None):
     """Offline stopped-worker administrative cutover; never an HTTP operation."""
-    from .live_journal import active_episodes,append_fact,receive
-    from .live_hold import object_hash,advance,same_grant_identity
-    from .workflow import create_decision
-    with store.transaction(write=True) as db:
+    from .followup_cutover import validate_amendments
+    validate_bundle(new_bundle)
+    prepared={}
+    def prepare(db):
+        # Current committed dependency access precedes the server-authored R.
+        values=validate_amendments(db,new_bundle,settings,store.clock())
+        prepared['at']=store.clock()
+        for value in values:value['proof']['verified_visible_at']=timestamp(prepared['at'])
+        prepared['amendments']=values
+    with store.transaction(write=True,prepare=prepare) as db:
+        at=prepared['at']
+        if validate_amendments(db,new_bundle,settings,at)!=prepared['amendments']:
+            raise ValueError('cutover_evidence_changed')
         old=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone();new=new_bundle.control
         if (new.database_instance_id!=old['database_instance_id'] or new.authority_generation!=old['authority_generation']+1
                 or digest(canonical(new_bundle.authority.model_dump(mode='json')))!=new.authority_sha256
@@ -150,10 +160,25 @@ def change_generation(store,new_bundle,at,*,fault=None):
             (new.authority_generation,new.authority_sha256,new.review_rules_sha256,int(new.enabled),new.activation_id,timestamp(at)))
         db.execute('INSERT INTO live_authority_history VALUES(?,?,?,?,?,?,?)',(new.authority_generation,new.authority_sha256,new.review_rules_sha256,
             canonical(new_bundle.authority.model_dump(mode='json')),canonical(new_bundle.review_rules.model_dump(mode='json')),new.activation_id,timestamp(at)))
-        for patient in db.execute('SELECT id FROM patients').fetchall():
+        generation_effects(db,old,new_bundle,at,prepared['amendments'])
+        from .live_journal import receive
+        receive(db,at)
+        if fault:fault('before_generation_commit')
+    if fault:fault('after_generation_commit')
+    return Store(store.path,new_bundle,clock=store.clock)
+
+
+def generation_effects(db,old,new_bundle,at,amendments):
+    """Shared atomic effects for normal generation change and explicit 003 upgrade."""
+    from .live_journal import active_episodes,append_fact
+    from .live_hold import object_hash,advance,same_grant_identity
+    from .live_tasks import add_bindings,event
+    from .workflow import create_decision
+    new=new_bundle.control
+    for patient in db.execute('SELECT id FROM patients').fetchall():
             pid=patient['id'];episodes=active_episodes(db,pid)
             if not episodes:continue
-            operation_id='authority-'+uuid.uuid4().hex;resulting=[]
+            operation_id='authority-'+uuid.uuid4().hex;resulting=[];task_sets=[]
             for row in episodes:
                 e=row['data'];obligations={r['requirement_id']:r for r in e['obligations']}
                 for grant in new_bundle.authority.grants:
@@ -166,21 +191,22 @@ def change_generation(store,new_bundle,at,*,fault=None):
                 e['obligations']=sorted(obligations.values(),key=lambda r:r['requirement_id'])
                 public=[{k:r[k] for k in ['requirement_id','definition']} for r in e['obligations']]
                 e['obligation_set_sha256']=object_hash(public);e['current_review_id']=None
+                additions=[a for a in amendments if a['episode_id']==row['id'] and a['generation']==row['generation']]
+                if additions:
+                    owner=db.execute('SELECT owner_id FROM patients WHERE id=?',(pid,)).fetchone()[0]
+                    add_bindings(db,pid,row['id'],row['generation'],owner,[a['binding'] for a in additions],e['obligations'],operation_id,e,record_pending=False)
+                    e['grants']=sorted({canonical(g):g for g in [*e['grants'],*[a['grant'] for a in additions]]}.values(),key=canonical)
                 db.execute('UPDATE live_hold_episodes SET payload=?,last_operation=? WHERE id=? AND generation=?',(canonical(e),operation_id,row['id'],row['generation']))
                 resulting.append(dict(episode_id=row['id'],generation=row['generation'],obligations=public,obligation_set_sha256=e['obligation_set_sha256']))
-                from .live_tasks import event
                 for task_id in e['task_ids']:event(db,task_id,operation_id,dict(status='pending',reason='authority_changed',obligations=e['obligations']))
+                task_sets.append(dict(episode_id=row['id'],generation=row['generation'],task_ids=e['task_ids'],amendments=additions))
             journal=db.execute('SELECT journal_id FROM live_patient_journals WHERE patient_id=?',(pid,)).fetchone()[0]
             append_fact(db,pid,operation_id,at,dict(type='authority_changed',old_generation=old['authority_generation'],new_generation=new.authority_generation,
                 old_authority_sha256=old['authority_sha256'],new_authority_sha256=new.authority_sha256,old_review_rules_sha256=old['review_rules_sha256'],
                 new_review_rules_sha256=new.review_rules_sha256,prior_journal_id=journal,active_episodes=resulting))
             advance(db,pid);decision_id=create_decision(db,pid,at)
-            response=dict(status='committed',operation_id=operation_id,decision_id=decision_id,authority_generation=new.authority_generation)
+            response=dict(status='committed',operation_id=operation_id,decision_id=decision_id,authority_generation=new.authority_generation,task_sets=task_sets)
             db.execute('INSERT INTO live_hold_operations(id,patient_id,family,semantic_sha256,received_at,payload,response) VALUES(?,?,?,?,?,?,?)',
                 (operation_id,pid,'authority_changed',object_hash([operation_id,new.authority_generation]),timestamp(at),canonical(response),canonical(response)))
             db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)',('audit-'+uuid.uuid4().hex,pid,'offline-administrator',timestamp(at),canonical(response)))
             db.execute('DELETE FROM drafts WHERE patient_id=?',(pid,))
-        receive(db,at)
-        if fault:fault('before_generation_commit')
-    if fault:fault('after_generation_commit')
-    return Store(store.path,new_bundle,clock=store.clock)

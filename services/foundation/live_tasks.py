@@ -22,7 +22,7 @@ def event(db,task_id,operation_id,value):
     db.execute('INSERT INTO '+table+' VALUES(?,?,?,?)',(identifier,task_id,operation_id,canonical(value)))
 
 
-def add_bindings(db,patient_id,episode_id,generation,owner,values,obligations,operation_id,episode):
+def add_bindings(db,patient_id,episode_id,generation,owner,values,obligations,operation_id,episode,*,record_pending=True):
     ids=set(episode.get('task_ids',[]))
     for value in sorted(values,key=canonical):
         encoded=canonical(value);full_hash=digest(encoded);follow=value['follow_up']
@@ -41,8 +41,9 @@ def add_bindings(db,patient_id,episode_id,generation,owner,values,obligations,op
             (episode_id,generation,full_hash,task_id,task_id if anchor else None,None if anchor else task_id,encoded))
         ids.add(task_id)
     episode['task_ids']=sorted(ids)
-    for task_id in episode['task_ids']:
-        event(db,task_id,operation_id,dict(status='pending',trigger_set_sha256=episode['trigger_set_sha256'],obligations=obligations))
+    if record_pending:
+        for task_id in episode['task_ids']:
+            event(db,task_id,operation_id,dict(status='pending',trigger_set_sha256=episode['trigger_set_sha256'],obligations=obligations))
 
 
 def all_tasks(db,patient_id):

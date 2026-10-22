@@ -182,8 +182,8 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
                 or trigger.requirement not in [r.definition for r in binding.required_reviews]):
             raise LiveError('positive_hold_trigger_required')
         for requirement in binding.required_reviews:requirements[requirement.requirement_id]=requirement
-        selected=[f for f in binding.follow_ups if f.reference in trigger.follow_up_refs]
-        if not selected or refs([f.reference for f in selected])!=refs(trigger.follow_up_refs):
+        selected=binding.follow_ups
+        if refs([f.reference for f in selected])!=refs(trigger.follow_up_refs):
             raise LiveError('hold_follow_up_mismatch')
         for follow in selected:
             task=current_reference(history,follow.reference,at,{'follow_up'})
