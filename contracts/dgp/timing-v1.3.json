@@ -1,0 +1,166 @@
+{
+  "cutoff": "event <= cutoff; recorded and available strictly before cutoff; equal arrivals excluded",
+  "future_obligations": [
+    "G1 emits separate observed clinical record even when report missing",
+    "G1 validates raw source provenance and process/storage isolation",
+    "G1 qualifies PCG64DXSM and scheduling/draw-count invariance",
+    "G1 calibrates reporting rates under this history/clock law"
+  ],
+  "hash_encoding": "UTF-8 source bytes; CRLF normalized to LF; no JSON reserialization",
+  "initial_history": "day -14 first reporting decision has no prior report; day -15 latent initial states are not records",
+  "local_clocks": {
+    "assignment": "09:00_e",
+    "assignment_cutoff": "09:00",
+    "burden_link_sweep": "08:03",
+    "burden_status_sweep": "08:02",
+    "current_admission_and_readiness": "09:00_d",
+    "episode_review": "09:00_c",
+    "pain_observed_recorded_available": "08:00",
+    "report_completion_publication": "08:01",
+    "report_decision_recording": "08:01",
+    "report_event": "07:00",
+    "safety_events_and_schedule": "09:00_a",
+    "synthetic_eligibility_assessment": "09:00_b",
+    "wearable_sync": "07:00"
+  },
+  "pain": {
+    "availability": "independent of report observation and report upload, including missing reports",
+    "concept": "pain",
+    "fallback": "none; missing/late/wrong-source pain rejects reporting decision",
+    "law": "exact separate clinical observation of current L pain coordinate; no added error",
+    "source": {
+      "adapter": "synthetic_fhir_shaped",
+      "id": "dgp-clinical-pain",
+      "version": "1.3.0"
+    },
+    "unit": "dimensionless"
+  },
+  "previous_quality": "latest active earlier-event report strictly available before 08:01; else 7 plus missing flag",
+  "process_keys": {
+    "diary_measurement": {
+      "namespace": "measurement",
+      "process": "diary_sleep",
+      "substream": "error"
+    },
+    "function_measurement": {
+      "namespace": "measurement",
+      "process": "morning_function",
+      "substream": "error"
+    },
+    "isi_measurement": {
+      "namespace": "measurement",
+      "process": "isi",
+      "substream": "recall_and_named_item_errors"
+    },
+    "pain_measurement": {
+      "namespace": "measurement",
+      "process": "clinical_pain",
+      "substream": "exact_observation"
+    },
+    "quality_measurement": {
+      "namespace": "measurement",
+      "process": "morning_quality",
+      "substream": "error"
+    },
+    "report_observation": {
+      "namespace": "missingness",
+      "process": "report_observation",
+      "substream": "bernoulli"
+    },
+    "report_status_transform": {
+      "namespace": "measurement",
+      "process": "report_status_transform",
+      "substream": "REPORT-STATUS-01/1.0.0-r1"
+    },
+    "report_upload": {
+      "namespace": "missingness",
+      "process": "report_upload",
+      "substream": "delay"
+    },
+    "subjective_support_burden": {
+      "namespace": "measurement",
+      "process": "subjective_support_burden",
+      "substream": "synthetic-support-burden-item/1.0.0-r1"
+    },
+    "synthetic_eligibility_assessment": {
+      "namespace": "measurement",
+      "process": "synthetic_eligibility_assessment",
+      "substream": "SIM-REVIEW-01/1.0.0-r1"
+    },
+    "wearable_measurement": {
+      "namespace": "measurement",
+      "process": "wearable_sleep",
+      "substream": "error"
+    },
+    "wearable_upload": {
+      "namespace": "missingness",
+      "process": "wearable_upload",
+      "substream": "delay"
+    }
+  },
+  "profile": {
+    "catalog": "1.1.0",
+    "cell_laws": {
+      "id": "DGP-CELL-LAWS",
+      "sha256": "017643b46921f9cc1956da13438f6170a1444845a15538a8ff824e3923d11467",
+      "version": "1.1.0"
+    },
+    "dgp": "1.3.0",
+    "laws": {
+      "BURDEN-PRECISION-01": {
+        "id": "BURDEN-PRECISION-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "EST-MRT-BURDEN": {
+        "id": "EST-MRT-BURDEN",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "REPORT-STATUS-01": {
+        "id": "REPORT-STATUS-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "SIM-BURDEN-01": {
+        "id": "SIM-BURDEN-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "SIM-REVIEW-01": {
+        "id": "SIM-REVIEW-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      }
+    },
+    "observed": "2.1.0",
+    "parameters": "1.3.0",
+    "review_scripts": {
+      "id": "SIM-REVIEW-SCRIPTS",
+      "sha256": "9e5fceb29dd31ee60d5cae5d08088d8539396d7f1d21a6de07c69172dbef222c",
+      "version": "1.0.0-r1"
+    },
+    "scientific_plan": {
+      "id": "G1-CLEARANCE-BURDEN-R1",
+      "sha256": "87e5b95f93f97d2beb19bef9ac159c8293655589c637668b948ff69ac39d17b5",
+      "version": "1.0.0-r1"
+    },
+    "temporal": {
+      "id": "TIME-01",
+      "sha256": "014f43780dcdf761aebc9eecac09b36b1d9bc051cb5b70f7bc77d5606195670f",
+      "version": "2.1.0"
+    }
+  },
+  "report_upload": "08:01 recording plus keyed 0/1/3-day delay; absent report has no upload",
+  "reporting_parent": "new immediate publicR source; one sharedR/shared delay; latent probability remains private",
+  "synthetic": true,
+  "temporal_contract": {
+    "id": "TIME-01",
+    "sha256": "014f43780dcdf761aebc9eecac09b36b1d9bc051cb5b70f7bc77d5606195670f",
+    "version": "2.1.0"
+  },
+  "temporal_source": "contracts/domain/temporal-v2.1.json",
+  "version": "1.3.0",
+  "wearable_upload": "07:00 sync plus separate keyed 0/1/3-day delay; no report/pain parent",
+  "wire_schema_version": "2.1.0"
+}

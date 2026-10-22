@@ -1,0 +1,111 @@
+{
+  "burden": {
+    "base_probability": 0.25,
+    "categories": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "delivered_domain": [
+      0,
+      1
+    ],
+    "id": "SIM-BURDEN-01",
+    "instrument": "synthetic-support-burden-item",
+    "no_delivery_score": 0,
+    "outgoing_causal_arrows": [],
+    "previous_windows": 6,
+    "prior_count_slope": 0.05,
+    "reporting": "same_single_R_and_delay_as_DailyReport",
+    "rolling_maximum": 4,
+    "trials": 4,
+    "unit": "synthetic_burden_score",
+    "version": "1.0.0-r1",
+    "window": "local_07_to_next_local_07_half_open"
+  },
+  "execution": "contract_data_not_qualified_engine",
+  "precision": {
+    "absolute_mean_mcse": 0.01,
+    "absolute_probability_mcse": 0.001,
+    "actual_execution": "future_measured_gate_not_finite_fixture",
+    "agreement_multiplier": 1.96,
+    "availability_candidate_cap": 10000,
+    "budget_fraction": 0.25,
+    "conditional_arm_n": 30,
+    "conditional_trial_environments": 60,
+    "environment_filters_per_level_history": 60000,
+    "id": "BURDEN-PRECISION-01",
+    "interval_alpha": 0.008333333333333333,
+    "lower_limit_multiplier": 1.645,
+    "particle_levels": [
+      1024,
+      4096,
+      16384,
+      65536
+    ],
+    "ratio_variance": "v_times_E_inverse_positive_Binomial_denominator",
+    "relative_binding_fraction": 0.1,
+    "sampled_zero": "unresolved_without_structural_proof",
+    "structural_proof": "independent_derived_and_source_bound",
+    "trials": 1000,
+    "truth_draws_per_batch": 10000,
+    "truth_filters_per_level": 32,
+    "truth_first_assessment_batches": 32,
+    "truth_max_batches": 1000,
+    "version": "1.0.0-r1"
+  },
+  "report_status": {
+    "burden_in_DailyReport": null,
+    "decision": "08:01",
+    "id": "REPORT-STATUS-01",
+    "likelihood": "R_once_then_shared_delay_and_received_measurements_once",
+    "missing": "R0_without_numeric_response",
+    "parent_publication": "08:01",
+    "pending": "R1_not_yet_received",
+    "shared_indicator": true,
+    "shared_upload_delay": true,
+    "state_sweep": "08:02",
+    "support_link_sweep": "08:03",
+    "undefined": "terminal_or_outside_horizon_not_missingness",
+    "version": "1.0.0-r1"
+  },
+  "review": {
+    "current_sources": "committed_same_09_source_sequence_prefix",
+    "earliest_resume": "next_local_date_09:00_with_fresh_all_condition_assessment",
+    "earliest_review": "next_local_date_09:00",
+    "id": "SIM-REVIEW-01",
+    "live_authority": false,
+    "resolution": "assessment_only",
+    "threshold_entry": "any_coordinate_strictly_greater_than_3",
+    "threshold_measurement": "all_coordinates_less_than_or_equal_to_3",
+    "unknown": "retain_entire_hold",
+    "version": "1.0.0-r1"
+  },
+  "synthetic": true,
+  "target": {
+    "comparator": "evaluator_complete_outcome_randomized_reference",
+    "definition_indicator": "Z",
+    "history": "strict_H_and_separate_current_committed_G_conditioned_on_I1",
+    "horizon_control": 84,
+    "id": "EST-MRT-BURDEN",
+    "information_role": "private_evaluator",
+    "native_q": "one_for_enrolled_alive_decisions_t_lte83_zero_at84_by_horizon",
+    "q_denominator": "assigned_arm_n",
+    "ratio_denominator": "sum(Z)",
+    "report_indicator": "R",
+    "required_times": [
+      0,
+      21,
+      42,
+      83
+    ],
+    "unit": [
+      "probability",
+      "synthetic_burden_score"
+    ],
+    "version": "1.0.0-r1"
+  },
+  "version": "1.3.0"
+}

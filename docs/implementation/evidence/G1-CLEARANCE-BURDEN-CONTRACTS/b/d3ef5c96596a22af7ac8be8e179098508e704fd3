@@ -1,0 +1,41 @@
+First freeze_evidence.py invocation after successful build_evidence.py:
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-clearance-burden-plan-r1-astra-20261021\docs\implementation\evidence\G1-CLEARANCE-BURDEN-PLAN-20261021\R1\freeze_evidence.py", line 29, in <module>
+    assert (ROOT/path).read_bytes()==raw, 'Original working bytes changed: '+path
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Original working bytes changed: docs/implementation/evidence/G1-CLEARANCE-BURDEN-PLAN-20261021/README.md
+
+Cause: checkout CRLF versus committed LF bytes, already a known preserved distinction.
+Correction: verify exact committed identity and content equality after CRLF-only normalization;
+record BOTH actual working-byte and committed-byte identities. No original file was edited.
+Raw source envelopes remain byte-exact and hash-object/cat-file verified.
+No output truncation recovery in R1 author execution through this checkpoint.
+
+Second freeze invocation reached the no-index whitespace check and asserted because
+stderr contained only Git's warning (stdout empty):
+warning: in the working copy of 'C:\Users\erics\Documents\Projects\REMission-worktrees\g1-clearance-burden-plan-r1-astra-20261021\docs\implementation\g1-clearance-burden-contract-proposal-r1-20261021.md', LF will be replaced by CRLF the next time Git touches it
+The strict assertion treated this conversion warning as a whitespace failure.
+Correction: use command-local `git -c core.autocrlf=false diff --no-index --check`;
+no repository/global Git setting changed and no source bytes changed.
+
+The WIP git-add emitted the same LF-to-CRLF conversion warning for the new R1
+Markdown/Python/JSON/text paths. Git committed LF source identities; raw artifacts
+were separately hash-object/cat-file verified. These are conversion warnings,
+not runtime failures or changes to preserved raw input envelopes.
+
+Root temporarily reassigned the author to independent review of a different
+live-hold binding supplement. Scientific R1 was committed as WIP 796b726716557727d57fb5f2d19b37d3fc0ade98
+and this checkout remained clean. After that bounded review, root/head/clean were
+reverified here before scientific R1 finalization. No supplement source or
+unaccepted implementation was copied into this scientific proposal.
+
+Finalization exposed a raw-log recursion: tracked whitespace-check.txt copied the
+original Markdown hard breaks, so later whole-diff checks reported trailing spaces
+inside that log and the next log copied those warnings recursively. The attempted
+freeze commit 12a31159931a962099a23a3d4229a1cb266b6a31 left that generated log modified;
+it was not handed off as a final candidate. All raw historical/current log bytes
+are preserved in whitespace-log-recovery.json. The corrected logger uses a base64
+JSON envelope, keeping exact warning bytes without adding Markdown hard breaks to
+the working diff. The obsolete text log is removed only from this author's new
+R1 evidence; original proposal/Luna evidence files remain unchanged. Final checks
+must be rerun and a new freeze commit created. No runtime/service failure occurred.

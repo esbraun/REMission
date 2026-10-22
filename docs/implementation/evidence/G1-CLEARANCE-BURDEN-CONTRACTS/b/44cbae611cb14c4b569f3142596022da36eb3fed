@@ -1,0 +1,46 @@
+# G1 legacy requirement traceability
+
+Source: `plan.md` at `b21f00003e3f31866f29f9dc20f0d367d39ab11f`. IDs enumerate original paragraphs, list items and table rows, including explanatory/math units so none is silently omitted. Excerpts are locators, not replacement requirements. Canonical documents retain full text; `revised` entries have explicit revision dispositions in the [history](../revision-history.md). Each mandatory unit receives task/test IDs before implementation. No tests are asserted here.
+
+| ID | Original excerpt | Canonical home | Disposition |
+|---|---|---|---|
+| LEG-06-001 | The simulator is a causal environment with separate data export and hidden truth, not an arbitrary table of correla | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-002 | ### Default engineering presets | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-003 |  /  Preset  /  Historical cohort  /  Synthetic external trials  /  Prospective cohort  /  Purpose  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-004 |  /  Smoke  /  100 trajectories  /  2 small studies  /  6 trajectories  /  Fast contract/UI checks  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-005 |  /  Demonstration  /  2,000 trajectories  /  4 studies with approximately 150–250 participants each  /  60 trajecto | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-006 |  /  Evaluation  /  Configurable  /  Configurable  /  Configurable  /  Repeated simulations and sensitivity analyses | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-007 | These sizes are software defaults, not sample-size recommendations or promises of adequate clinical precision. Nume | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | revised |
+| LEG-06-008 | ### Structural components | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-009 | 1. Baseline variation: leukemia/therapy strata, baseline insomnia, comorbidity, preferences, site, and measured eff | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-010 | 2. Daily clinical state: chemotherapy phase, steroid exposure, pain, nausea, distress, fatigue, naps, and previous  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-011 | 3. Treatment assignment: historical clinicians respond to severity and measured clinical state, producing confoundi | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-012 | 4. Treatment delivery: adherence, clinician overrides, rescue therapy, and missed support are generated separately  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-013 | 5. Durable behavioral learning: a cumulative skills state influences later sleep. Turning off a reminder does not e | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-014 | 6. Reversible medication dynamics: fictional onset/offset and carryover states, with patient-specific benefit and h | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-015 | 7. Sleep and function: latent sleep/wake and next-day function, autocorrelation, phase-dependent drift, and outcome | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-016 | 8. Measurement: Oura-like estimates include quiet-wake misclassification, symptom-dependent bias, algorithm changes | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-017 | 9. Visits and reports: generate dated outpatient observations, delayed uploads, and intermittent ISI assessments. G | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-018 | 10. External trials: randomize compatible interventions, generate study-level summaries and optional IPD, then intr | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-019 | 11. Clinical interruptions and intercurrent events: deterioration, medication exclusions, adverse symptoms, hospita | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-020 | In the base scenario, all common causes needed for the specified observational estimand are measured. In a separate | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-021 | ### Required scenarios | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-022 |  /  Scenario  /  What it should demonstrate  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-023 |  /  Compatible external studies  /  Borrowing can improve initial precision and learning efficiency  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-024 |  /  Conflicting external studies  /  Robust borrowing reduces dependence on incompatible evidence as local data acc | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-025 |  /  New Oura modifier absent historically  /  Wide modifier uncertainty at cold start; learning only when suitable  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-026 |  /  Sparse overlap  /  Suppress comparative ranking or flag unsupported extrapolation  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-027 |  /  Time-varying confounding  /  Static adjustment can be biased when prior treatment changes later confounders  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-028 |  /  Sharp null with treatment-affected confounders  /  No plan has any effect; measures how often the parametric lo | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | revised |
+| LEG-06-029 |  /  Medication carryover and rebound  /  Naive nightly comparison differs from a model/protocol addressing residual | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-030 |  /  Durable behavioral skills  /  On/off crossover is unsuitable for the continuing behavioral program  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-031 |  /  Illness-related missingness  /  Missing data can change conclusions; sensitivity analysis matters  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-032 |  /  Informative intercurrent events  /  Treating death or admission as ignorable censoring changes the estimate rel | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-033 |  /  Quiet wake/device shift  /  Wearable improvement can disagree with patient-reported improvement  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-034 |  /  Steroid/chemotherapy phase change  /  Effects and clinical readiness may change across phases  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-035 |  /  Clinical hold/interaction  /  Eligibility is removed before optimization or randomization  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-036 |  /  Override/nonadherence  /  Assignment, actual treatment, and analysis populations remain distinct  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-037 |  /  Concurrent learners  /  An adaptive support policy left running during an N-of-1 block versus the frozen policy | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-038 |  /  Prompt fatigue/delayed effects  /  Proximal reward optimization may not improve distal insomnia outcomes  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-039 |  /  Hidden confounding  /  Narrow posterior intervals need not imply valid causal effects  /  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |
+| LEG-06-040 | All learners receive only exported observations. Oracle counterfactuals and structural coefficients are restricted  | [02-synthetic-dgp.md](../02-synthetic-dgp.md) | preserved |

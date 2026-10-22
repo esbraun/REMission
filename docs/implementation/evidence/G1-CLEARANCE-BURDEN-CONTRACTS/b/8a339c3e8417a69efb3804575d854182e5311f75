@@ -1,0 +1,54 @@
+[
+  {
+    "command": [
+      "docker",
+      "build",
+      "-f",
+      "tooling/foundation/service.Dockerfile",
+      "--target",
+      "service",
+      "-t",
+      "remission-astra-95a481-service:candidate",
+      "."
+    ],
+    "started_utc": "2026-10-21T18:43:13.136535+00:00",
+    "finished_utc": "2026-10-21T18:43:14.166611+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from service.Dockerfile\n#1 transferring dockerfile: 1.32kB done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate\n#2 DONE 0.0s\n\n#3 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#3 DONE 0.0s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 178B done\n#4 DONE 0.0s\n\n#5 [service 1/7] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa\n#5 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done\n#5 DONE 0.0s\n\n#6 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#6 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done\n#6 DONE 0.0s\n\n#7 [internal] load build context\n#7 transferring context: 202.55kB 0.1s done\n#7 DONE 0.2s\n\n#8 [client 2/6] WORKDIR /client\n#8 CACHED\n\n#9 [service 6/7] COPY --from=client /client/dist/ /app/web/dist/\n#9 CACHED\n\n#10 [service 3/7] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/\n#10 CACHED\n\n#11 [service 4/7] COPY services/foundation/ /app/services/foundation/\n#11 CACHED\n\n#12 [client 4/6] RUN npm ci --ignore-scripts\n#12 CACHED\n\n#13 [client 5/6] COPY web/ ./\n#13 CACHED\n\n#14 [service 2/7] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/\n#14 CACHED\n\n#15 [client 3/6] COPY web/package.json web/package-lock.json ./\n#15 CACHED\n\n#16 [client 6/6] RUN npm run typecheck && npm run test && npm run build\n#16 CACHED\n\n#17 [service 5/7] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py\n#17 CACHED\n\n#18 [service 7/7] RUN mkdir /data && chown 10001:10001 /data\n#18 CACHED\n\n#19 exporting to image\n#19 exporting layers done\n#19 exporting manifest sha256:f385453009cdbbfb6c8d9acb136e2f74f2557fb876e4b407a1b788e6ab85feec done\n#19 exporting config sha256:20b180ff25ecf24090f38ba465c914df241a7733b581819b56f38df5b5dd9c2f done\n#19 exporting attestation manifest sha256:da6890953545a5a38286360dcb4eeaadb650991d4dbc9e5ff0e73cab75e5ccc0 done\n#19 exporting manifest list sha256:cc88c8f24e9a4a14a25fa8d4d0eb7a6b7c89335cd2f88f5d2033dbe6e3bf497f done\n#19 naming to docker.io/library/remission-astra-95a481-service:candidate done\n#19 unpacking to docker.io/library/remission-astra-95a481-service:candidate 0.0s done\n#19 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/qx3ftd7pgplw7z9jz4t80ju25\n"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "-f",
+      "tooling/foundation/learner.Dockerfile",
+      "-t",
+      "remission-astra-95a481-learner:candidate",
+      "."
+    ],
+    "started_utc": "2026-10-21T18:43:14.167014+00:00",
+    "finished_utc": "2026-10-21T18:43:14.953603+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from learner.Dockerfile\n#1 transferring dockerfile: 704B done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 178B done\n#3 DONE 0.0s\n\n#4 [1/6] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa\n#4 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done\n#4 DONE 0.0s\n\n#5 [internal] load build context\n#5 transferring context: 2.70kB 0.0s done\n#5 DONE 0.0s\n\n#6 [4/6] COPY services/learner/worker.py /app/services/learner/worker.py\n#6 CACHED\n\n#7 [5/6] COPY services/learner/export_observed.py /app/services/learner/export_observed.py\n#7 CACHED\n\n#8 [2/6] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/\n#8 CACHED\n\n#9 [3/6] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/\n#9 CACHED\n\n#10 [6/6] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py\n#10 CACHED\n\n#11 exporting to image\n#11 exporting layers done\n#11 exporting manifest sha256:aa813c054ac40df68253902b1dcd81c94fd69c9d19e6d8bd11d8600bd6e29694 done\n#11 exporting config sha256:a7367126688ea4392b9416b17ef358109e15854a12d5c473c0eed27a5f303419 done\n#11 exporting attestation manifest sha256:9ed70c50c7ec66e5284f10da4c9af6df64702ce4b36051ff1b0a3ed0f51b7577 done\n#11 exporting manifest list sha256:ac3d63066b46d4dee756b41f3f05b8e104d7bb3a60c95dbe6bcb401d472cc48c done\n#11 naming to docker.io/library/remission-astra-95a481-learner:candidate done\n#11 unpacking to docker.io/library/remission-astra-95a481-learner:candidate 0.0s done\n#11 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/u1ayzkor06a7ccqsysd57991f\n"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "-f",
+      "tooling/foundation/service.Dockerfile",
+      "--target",
+      "integration-tests",
+      "-t",
+      "remission-astra-95a481-tests:candidate",
+      "."
+    ],
+    "started_utc": "2026-10-21T18:43:14.964560+00:00",
+    "finished_utc": "2026-10-21T18:43:15.872422+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from service.Dockerfile\n#1 transferring dockerfile: 1.32kB done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#2 DONE 0.0s\n\n#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate\n#3 DONE 0.0s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 178B done\n#4 DONE 0.0s\n\n#5 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#5 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done\n#5 DONE 0.0s\n\n#6 [service 1/7] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa\n#6 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done\n#6 DONE 0.0s\n\n#7 [internal] load build context\n#7 transferring context: 169.19kB 0.0s done\n#7 DONE 0.0s\n\n#8 [client 4/6] RUN npm ci --ignore-scripts\n#8 CACHED\n\n#9 [service 5/7] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py\n#9 CACHED\n\n#10 [service 4/7] COPY services/foundation/ /app/services/foundation/\n#10 CACHED\n\n#11 [client 2/6] WORKDIR /client\n#11 CACHED\n\n#12 [client 6/6] RUN npm run typecheck && npm run test && npm run build\n#12 CACHED\n\n#13 [service 6/7] COPY --from=client /client/dist/ /app/web/dist/\n#13 CACHED\n\n#14 [service 2/7] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/\n#14 CACHED\n\n#15 [service 3/7] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/\n#15 CACHED\n\n#16 [client 3/6] COPY web/package.json web/package-lock.json ./\n#16 CACHED\n\n#17 [service 7/7] RUN mkdir /data && chown 10001:10001 /data\n#17 CACHED\n\n#18 [client 5/6] COPY web/ ./\n#18 CACHED\n\n#19 [integration-tests 1/1] COPY tests/integration/replay/ /app/tests/integration/replay/\n#19 CACHED\n\n#20 exporting to image\n#20 exporting layers done\n#20 exporting manifest sha256:1d05c3ed52bab3afb81d69040c4dd84228e2156530548886db9babbe9a6dd727 done\n#20 exporting config sha256:73d5f3dd9b2a8f4ca883f104403b385733321f5d926217f165af26828b07fabb done\n#20 exporting attestation manifest sha256:a4799a5b121c208de50eee66c401ad2c0e63004ecfce6a5528198cca2f1a9e6e 0.0s done\n#20 exporting manifest list sha256:ec15ad4dbee4ee0059b150b57808aede3943402eaf6f59cc74fad63398989296 done\n#20 naming to docker.io/library/remission-astra-95a481-tests:candidate done\n#20 unpacking to docker.io/library/remission-astra-95a481-tests:candidate 0.0s done\n#20 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/pfi56m2opfd90xgsoppyolawo\n"
+  }
+]

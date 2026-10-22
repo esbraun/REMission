@@ -1,0 +1,143 @@
+{
+  "base": "69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e",
+  "rejected": "2a7726be23864cf9c933295f1d33da3d6fbedd1b",
+  "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "images": {
+    "service": "sha256:39edada07767d76e192ec02ffc2e093aaa9cfa96509042a6f098a94768c9bc47",
+    "learner": "sha256:7851125a96e9d5f50f85fb972a9b01de1191fb1625d20d6b232b2c7cbb52ec63",
+    "tests": "sha256:886d917a5b7f2b474feacbb5fc14d24a4dd673dba612bf381e2887e384965171"
+  },
+  "actual_public_image_byte_probes": {
+    "service": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "sha256:39edada07767d76e192ec02ffc2e093aaa9cfa96509042a6f098a94768c9bc47",
+        "python",
+        "-c",
+        "import hashlib,json,pathlib; paths=['contracts/runs/__init__.py', 'contracts/runs/common.py', 'contracts/runs/observed.py', 'contracts/runs/admission.py', 'contracts/runs/bindings-v1.json', 'services/foundation/app.py', 'services/foundation/cli.py', 'services/foundation/replay.py', 'services/foundation/server.py', 'services/foundation/store.py', 'services/foundation/workflow.py', 'services/foundation/__init__.py']; print(json.dumps({p:hashlib.sha256((pathlib.Path(\"/app\")/p).read_bytes()).hexdigest() for p in paths}))"
+      ],
+      "started_utc": "2026-10-21T18:49:16.069952+00:00",
+      "finished_utc": "2026-10-21T18:49:16.516027+00:00",
+      "exit_code": 0,
+      "stdout": "{\"contracts/runs/__init__.py\": \"97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f\", \"contracts/runs/common.py\": \"be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef\", \"contracts/runs/observed.py\": \"53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760\", \"contracts/runs/admission.py\": \"c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde\", \"contracts/runs/bindings-v1.json\": \"0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d\", \"services/foundation/app.py\": \"5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c\", \"services/foundation/cli.py\": \"a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e\", \"services/foundation/replay.py\": \"0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58\", \"services/foundation/server.py\": \"42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d\", \"services/foundation/store.py\": \"775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3\", \"services/foundation/workflow.py\": \"147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7\", \"services/foundation/__init__.py\": \"a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481\"}\n",
+      "stderr": "",
+      "source_sha256": {
+        "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+        "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+        "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+        "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+        "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+        "services/foundation/app.py": "5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c",
+        "services/foundation/cli.py": "a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e",
+        "services/foundation/replay.py": "0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58",
+        "services/foundation/server.py": "42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d",
+        "services/foundation/store.py": "775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3",
+        "services/foundation/workflow.py": "147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7",
+        "services/foundation/__init__.py": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481"
+      },
+      "match": true
+    },
+    "learner": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "sha256:7851125a96e9d5f50f85fb972a9b01de1191fb1625d20d6b232b2c7cbb52ec63",
+        "python",
+        "-c",
+        "import hashlib,json,pathlib; paths=['contracts/runs/__init__.py', 'contracts/runs/common.py', 'contracts/runs/observed.py', 'contracts/runs/admission.py', 'contracts/runs/bindings-v1.json', 'services/learner/export_observed.py', 'services/learner/worker.py']; print(json.dumps({p:hashlib.sha256((pathlib.Path(\"/app\")/p).read_bytes()).hexdigest() for p in paths}))"
+      ],
+      "started_utc": "2026-10-21T18:49:16.517241+00:00",
+      "finished_utc": "2026-10-21T18:49:16.955389+00:00",
+      "exit_code": 0,
+      "stdout": "{\"contracts/runs/__init__.py\": \"97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f\", \"contracts/runs/common.py\": \"be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef\", \"contracts/runs/observed.py\": \"53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760\", \"contracts/runs/admission.py\": \"c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde\", \"contracts/runs/bindings-v1.json\": \"0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d\", \"services/learner/export_observed.py\": \"13d178e20c7d82eb930dc638c51e6779ebfd05790725cf7b05fcfe461ad301ab\", \"services/learner/worker.py\": \"3ddf6743567489d9cd6bf924ddfd4e2f0870b61732fba66cdd3667294f960dc6\"}\n",
+      "stderr": "",
+      "source_sha256": {
+        "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+        "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+        "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+        "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+        "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+        "services/learner/export_observed.py": "13d178e20c7d82eb930dc638c51e6779ebfd05790725cf7b05fcfe461ad301ab",
+        "services/learner/worker.py": "3ddf6743567489d9cd6bf924ddfd4e2f0870b61732fba66cdd3667294f960dc6"
+      },
+      "match": true
+    },
+    "tests": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "sha256:886d917a5b7f2b474feacbb5fc14d24a4dd673dba612bf381e2887e384965171",
+        "python",
+        "-c",
+        "import hashlib,json,pathlib; paths=['contracts/runs/__init__.py', 'contracts/runs/common.py', 'contracts/runs/observed.py', 'contracts/runs/admission.py', 'contracts/runs/bindings-v1.json', 'services/foundation/app.py', 'services/foundation/cli.py', 'services/foundation/replay.py', 'services/foundation/server.py', 'services/foundation/store.py', 'services/foundation/workflow.py', 'services/foundation/__init__.py']; print(json.dumps({p:hashlib.sha256((pathlib.Path(\"/app\")/p).read_bytes()).hexdigest() for p in paths}))"
+      ],
+      "started_utc": "2026-10-21T18:49:16.957013+00:00",
+      "finished_utc": "2026-10-21T18:49:17.368032+00:00",
+      "exit_code": 0,
+      "stdout": "{\"contracts/runs/__init__.py\": \"97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f\", \"contracts/runs/common.py\": \"be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef\", \"contracts/runs/observed.py\": \"53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760\", \"contracts/runs/admission.py\": \"c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde\", \"contracts/runs/bindings-v1.json\": \"0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d\", \"services/foundation/app.py\": \"5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c\", \"services/foundation/cli.py\": \"a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e\", \"services/foundation/replay.py\": \"0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58\", \"services/foundation/server.py\": \"42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d\", \"services/foundation/store.py\": \"775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3\", \"services/foundation/workflow.py\": \"147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7\", \"services/foundation/__init__.py\": \"a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481\"}\n",
+      "stderr": "",
+      "source_sha256": {
+        "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+        "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+        "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+        "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+        "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+        "services/foundation/app.py": "5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c",
+        "services/foundation/cli.py": "a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e",
+        "services/foundation/replay.py": "0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58",
+        "services/foundation/server.py": "42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d",
+        "services/foundation/store.py": "775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3",
+        "services/foundation/workflow.py": "147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7",
+        "services/foundation/__init__.py": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481"
+      },
+      "match": true
+    }
+  },
+  "private_contract_source_sha256": {
+    "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+    "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+    "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+    "contracts/runs/dictionary-v1.json": "81637308dbc9eee63bddb3fca54db4f8f21d84fd598774804013af8189d7f8b3",
+    "contracts/runs/export.py": "23ac6f562760c27daced78be7bd46c85d6f69b0313280f3a1ede3de8ec929172",
+    "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+    "contracts/runs/private.py": "63750010da3e4035f3372800ae0bbe05d2f5b3ce04c2e6a88073d070e740c01f",
+    "contracts/runs/private_admission.py": "3501f77e468e40bdcb13adeedbe681c48eb00f50c9f72a557d1515a9aa1916f3",
+    "contracts/runs/probability.py": "c4480df7d408a50c71ac57eb88b3070bb519ab2b62b4ab997e6988c610dd1dc7",
+    "contracts/runs/README.md": "0d92d62af5c50d244ab4087fb0476954924299cfa7785db7aaa27ac9f329720d",
+    "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+    "contracts/runs/schemas/calibration-artifact.schema.json": "e1ba454cdb8b094c8be28c7327e949002665594ef835dacb10669accc2fe19ad",
+    "contracts/runs/schemas/evaluator-request.schema.json": "fc06d3d1148f7fd0b54e6f1aa6e1621fe3cf040c0c788d015efe90f826cdc31a",
+    "contracts/runs/schemas/evaluator-response.schema.json": "583ad3aa3dccab5e16dd57add158e35f8b1357d4762719d65d9866473045ca12",
+    "contracts/runs/schemas/external-calibration-evidence.schema.json": "1bb422e1188b9175c08701223d158463a591d62668b4de38e491fe738d71f3a6",
+    "contracts/runs/schemas/iid-investigation.schema.json": "1e4700b72070e1f1e15bb96de40450b887e0eb1aa656d87c3ba30c555e25d16b",
+    "contracts/runs/schemas/observed-export.schema.json": "fd0bbdc4059c6298b46d20893c060121c501d9be14ba21a7f09e8f8071c2f304",
+    "contracts/runs/schemas/observed-replay.schema.json": "6ef37a10ede0d68755f8366985e56d77e4008936a2bbd18f95dfb06908892a63",
+    "contracts/runs/schemas/probability-evidence.schema.json": "359083c701598b3155c121baa6286876ab11d91223b8b7337f60777f5f9b0a4f",
+    "contracts/runs/schemas/probability-paired-path.schema.json": "37d9da109f513e21177e2b68c97f08d0115e4254100dc1e85b390d150f79d086",
+    "contracts/runs/schemas/probability-pilot-plan.schema.json": "3fb722e7e696c47cc0120aeb85e83297dfc640e40fe79fed815245a01e99624a",
+    "contracts/runs/schemas/probability-pilot-trial.schema.json": "7797e384511fbae85ad8e0e90b19ea3932482c8c2a75627c5ac13782f158b109",
+    "contracts/runs/schemas/probability-structural-proof.schema.json": "e0779d40cf3e900efef2d38d1d35bbbcd72465533ab88804b4a467e747b141bb",
+    "contracts/runs/schemas/probability-truth-filter-receipt.schema.json": "f2103c596867c9448bccbe87ff721745f8338b745b95a9d95a81fe393d2aa3b5",
+    "contracts/runs/schemas/run-manifest.schema.json": "419a91ab249e7b9ec6bf0c69d36a869376af52abd73c2af4a77f1a8d5f0e8f48",
+    "contracts/runs/schemas/run-result.schema.json": "43f2ca8af4b0fe652c9f8e6642f3287027e34e8740cce811b6ae894c83e152d3",
+    "contracts/runs/schemas/seed-ledger.schema.json": "2e5dc9941738a7e0f066bde2e06f7cab4d6a1c5ebd1f0cc8b208c0437ff0cc83",
+    "contracts/runs/schemas/symptom-pilot-binding.schema.json": "bbc6965631aa2443f91ad9d3700779ed426d192b574fe39be42744e58d5bcbef",
+    "contracts/runs/schemas/trusted-export-authority.schema.json": "52b0341f37dd9783da57e7e8e793b6bbaf0af19a0d0e193c7a08f2a666d198c1",
+    "contracts/runs/schemas/trusted-iid-investigation-authority.schema.json": "863d56cb3ae566fe4b92465731add0d3dc26634e8e51ffe91aba362e21214e60",
+    "contracts/runs/schemas/trusted-run-authority.schema.json": "356d4e6fb9598d1b5aeb358338f53a674d59b3eeb5ea2a34a22d198fc72555ce"
+  },
+  "claim": "Own source only; no old image tags/stacks/ports/DBs modified; private contract modules excluded from consumers"
+}

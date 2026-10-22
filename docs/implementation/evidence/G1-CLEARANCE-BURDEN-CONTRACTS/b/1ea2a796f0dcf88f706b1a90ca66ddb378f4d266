@@ -1,0 +1,14 @@
+PASS -m pip check
+PASS -m contracts.domain.export --check
+PASS -m contracts.dgp.export --check
+PASS -m contracts.artifacts.ope_export --check
+PASS -m unittest discover -s tests/contracts -v
+PASS -m unittest discover -s tests/library -v
+PASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-library-dr-review-20261021/contracts/artifacts/__pycache__/dr-review/fresh-clone,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m unittest discover -s tests/library/dr -v
+PASS docs/implementation/check-ledger-20261020.py
+PASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-library-dr-review-20261021/contracts/artifacts/__pycache__/dr-review/fresh-clone,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -c import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])
+PASS run --rm --network none --mount type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g0-library-dr-review-20261021/contracts/artifacts/__pycache__/dr-review/fresh-clone,target=/workspace,readonly sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m tooling.library.verify_dr
+PASS diff --quiet d84203709b0164a0824913950c1d7cd7be25a2fb -- docs/implementation/evidence/G0-LIB :!docs/implementation/evidence/G0-LIB/DR/**
+PASS diff --quiet d84203709b0164a0824913950c1d7cd7be25a2fb -- tooling/library/requirements.lock tooling/library/r-packages.lock.csv tooling/library/python.Dockerfile tooling/library/offline-r.Dockerfile
+PASS diff --quiet f11e90536b635a7db08cfed640445bec197a415c -- contracts/domain contracts/dgp tests/contracts docs/implementation/dgp-decisions.md docs/implementation/workflow-contract.md docs/implementation/workflow-sketches.md docs/spec/01-estimands-and-contracts.md docs/spec/dgp-reference.md
+PASS diff --check f11e90536b635a7db08cfed640445bec197a415c

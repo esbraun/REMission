@@ -1,0 +1,21 @@
+FROM node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d AS client
+WORKDIR /client
+COPY web/package.json web/package-lock.json ./
+RUN npm ci --ignore-scripts
+COPY web/ ./
+RUN npm run typecheck && npm run test && npm run build
+
+# build.py verifies this tag's exact qualified ID before invoking this build.
+FROM remission-foundation-runtime:review4d AS service
+COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+COPY services/foundation/ /app/services/foundation/
+COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+COPY --from=client /client/dist/ /app/web/dist/
+RUN mkdir /data && chown 10001:10001 /data
+USER 10001:10001
+EXPOSE 8765
+CMD ["python","-m","uvicorn","services.foundation.server:app","--host","0.0.0.0","--port","8765","--no-access-log"]
+
+FROM service AS integration-tests
+COPY tests/integration/replay/ /app/tests/integration/replay/
+CMD ["python","-m","unittest","discover","-s","tests/integration/replay","-v"]

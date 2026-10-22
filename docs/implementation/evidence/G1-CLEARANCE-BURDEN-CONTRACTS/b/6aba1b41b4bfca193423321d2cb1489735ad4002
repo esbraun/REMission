@@ -1,0 +1,229 @@
+[
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-python-locked:20261020",
+      "--format",
+      "{{.Id}}"
+    ],
+    "started_utc": "2026-10-21T17:12:15.028194+00:00",
+    "finished_utc": "2026-10-21T17:12:15.194307+00:00",
+    "exit_code": 0,
+    "stdout": "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--file",
+      "tooling/foundation/runtime.Dockerfile",
+      "--tag",
+      "remission-foundation-runtime:review3179",
+      "."
+    ],
+    "started_utc": "2026-10-21T17:12:15.194994+00:00",
+    "finished_utc": "2026-10-21T17:12:16.002028+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from runtime.Dockerfile\n#1 transferring dockerfile: 1.86kB done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/remission-python-locked:20261020\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 178B done\n#3 DONE 0.0s\n\n#4 [1/8] FROM docker.io/library/remission-python-locked:20261020@sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7\n#4 resolve docker.io/library/remission-python-locked:20261020@sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 0.0s done\n#4 DONE 0.0s\n\n#5 [internal] load build context\n#5 transferring context: 6.87kB done\n#5 DONE 0.0s\n\n#6 [4/8] COPY tooling/library/requirements.lock /opt/foundation/numerical.lock\n#6 CACHED\n\n#7 [6/8] RUN python -c \"import urllib.request,hashlib,zipfile,io;raw=urllib.request.urlopen('https://www.sqlite.org/2026/sqlite-amalgamation-3540100.zip').read();assert hashlib.sha3_256(raw).hexdigest()=='92281c86e2957f9b9305890f9ac04204caa7b677cc868dc326d942689df28e30';zipfile.ZipFile(io.BytesIO(raw)).extractall('/tmp/sqlite-source')\"  && mkdir -p /opt/foundation/sqlite  && gcc -shared -fPIC -O2 -DSQLITE_THREADSAFE=1 -DSQLITE_ENABLE_FTS5 -DSQLITE_ENABLE_RTREE /tmp/sqlite-source/sqlite-amalgamation-3540100/sqlite3.c -o /opt/foundation/sqlite/libsqlite3.so.0 -ldl -lpthread -lm  && rm -rf /tmp/sqlite-source\n#7 CACHED\n\n#8 [5/8] RUN python -c \"from pathlib import Path;p=Path('/opt/foundation');p.joinpath('constraints.txt').write_text(''.join(line.split(' --hash=')[0]+'\\n' for line in p.joinpath('numerical.lock').read_text().splitlines() if line and not line.startswith('#')))\"  && python -m pip install --no-cache-dir --require-hashes --report /opt/foundation/install-report.json -c /opt/foundation/constraints.txt -r /opt/foundation/requirements.lock  && python -m pip check\n#8 CACHED\n\n#9 [7/8] WORKDIR /app\n#9 CACHED\n\n#10 [2/8] COPY tooling/foundation/requirements.in /opt/foundation/requirements.in\n#10 CACHED\n\n#11 [3/8] COPY tooling/foundation/requirements.lock /opt/foundation/requirements.lock\n#11 CACHED\n\n#12 [8/8] RUN python -c \"import sqlite3;assert sqlite3.sqlite_version=='3.54.1'\"\n#12 CACHED\n\n#13 exporting to image\n#13 exporting layers done\n#13 exporting manifest sha256:bc18f05a79fbdb98a120337f90a51ae58d2054429cb2979c5b5cfd9fe6219594 done\n#13 exporting config sha256:308b460c7f7635742af9aa6e8dfa1235e35de9f48a3aad432d8e0ec3ed47d11f done\n#13 exporting attestation manifest sha256:072067510276705277de6711e3c6c10de82df402851399a327e99c40caa406ce done\n#13 exporting manifest list sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b done\n#13 naming to docker.io/library/remission-foundation-runtime:review3179 done\n#13 unpacking to docker.io/library/remission-foundation-runtime:review3179 done\n#13 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/i0142recjupjkc9d0909cstce\n"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1-foundation-p3-review-20261021/tooling/foundation/qualify.py,target=/probe.py,readonly",
+      "remission-foundation-runtime:review3179",
+      "python",
+      "/probe.py"
+    ],
+    "started_utc": "2026-10-21T17:12:16.002532+00:00",
+    "finished_utc": "2026-10-21T17:12:17.267169+00:00",
+    "exit_code": 0,
+    "stdout": "{\n  \"status\": \"pass\",\n  \"sqlite_version\": \"3.54.1\",\n  \"sqlite_source_id\": \"2026-10-16 14:45:20 555e07ef33f69a0957d24d8e555b702464a131d6f1607f4c3c1e4551e8e6ca76\",\n  \"packages\": {\n    \"fastapi\": \"0.157.0\",\n    \"starlette\": \"1.9.0\",\n    \"uvicorn\": \"0.54.0\",\n    \"argon2-cffi\": \"25.1.0\",\n    \"httpx\": \"0.28.1\",\n    \"pydantic\": \"2.14.1\"\n  },\n  \"checks\": [\n    \"actual ASGI route\",\n    \"Argon2 correct/wrong password\",\n    \"WAL/FULL/foreign_keys\",\n    \"two-connection writer exclusion\",\n    \"rollback\"\n  ]\n}\n",
+    "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--file",
+      "artifacts/review-p3/service.Dockerfile",
+      "--target",
+      "integration-tests",
+      "--tag",
+      "remission-foundation-tests:review3179",
+      "."
+    ],
+    "started_utc": "2026-10-21T17:12:17.267610+00:00",
+    "finished_utc": "2026-10-21T17:12:18.200325+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from service.Dockerfile\n#1 transferring dockerfile: 1.18kB 0.0s done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#2 DONE 0.0s\n\n#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:review3179\n#3 DONE 0.0s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 178B done\n#4 DONE 0.0s\n\n#5 [service 1/6] FROM docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b\n#5 resolve docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b 0.0s done\n#5 DONE 0.0s\n\n#6 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#6 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done\n#6 DONE 0.0s\n\n#7 [internal] load build context\n#7 transferring context: 213.18kB 0.1s done\n#7 DONE 0.1s\n\n#8 [service 3/6] COPY services/foundation/ /app/services/foundation/\n#8 CACHED\n\n#9 [service 6/6] RUN mkdir /data && chown 10001:10001 /data\n#9 CACHED\n\n#10 [client 3/6] COPY web/package.json web/package-lock.json ./\n#10 CACHED\n\n#11 [client 4/6] RUN npm ci --ignore-scripts\n#11 CACHED\n\n#12 [client 6/6] RUN npm run typecheck && npm run test && npm run build\n#12 CACHED\n\n#13 [service 2/6] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/\n#13 CACHED\n\n#14 [client 5/6] COPY web/ ./\n#14 CACHED\n\n#15 [service 4/6] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py\n#15 CACHED\n\n#16 [client 2/6] WORKDIR /client\n#16 CACHED\n\n#17 [service 5/6] COPY --from=client /client/dist/ /app/web/dist/\n#17 CACHED\n\n#18 [integration-tests 1/1] COPY tests/integration/replay/ /app/tests/integration/replay/\n#18 CACHED\n\n#19 exporting to image\n#19 exporting layers done\n#19 exporting manifest sha256:5dd89b8141d68d9b58846dcbbf5479d551dead93999e0cd566a9c418b25dcd01 done\n#19 exporting config sha256:877db86b35977063ec462b5e2b5426c6609ddc119a60f3c999cd84f5b5ee9d8e done\n#19 exporting attestation manifest sha256:372f98013330403d3f92e68c4f10f509cdeda1b5ea8dc250a66fa45e77160e29 done\n#19 exporting manifest list sha256:0107dfba6b6eb4e34b7fbb48eea56d4e866706b93b7d90e5798216e8252803dc done\n#19 naming to docker.io/library/remission-foundation-tests:review3179 done\n#19 unpacking to docker.io/library/remission-foundation-tests:review3179 0.0s done\n#19 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/xns85hc737kq5h6659kaxou84\n"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--file",
+      "artifacts/review-p3/service.Dockerfile",
+      "--target",
+      "service",
+      "--tag",
+      "remission-foundation-service:review3179",
+      "."
+    ],
+    "started_utc": "2026-10-21T17:12:18.200984+00:00",
+    "finished_utc": "2026-10-21T17:12:18.942910+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from service.Dockerfile\n#1 transferring dockerfile: 1.18kB done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#2 DONE 0.0s\n\n#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:review3179\n#3 DONE 0.0s\n\n#4 [internal] load .dockerignore\n#4 transferring context: 178B done\n#4 DONE 0.0s\n\n#5 [service 1/6] FROM docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b\n#5 resolve docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b 0.0s done\n#5 DONE 0.0s\n\n#6 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d\n#6 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done\n#6 DONE 0.0s\n\n#7 [internal] load build context\n#7 transferring context: 1.43kB done\n#7 DONE 0.0s\n\n#8 [service 5/6] COPY --from=client /client/dist/ /app/web/dist/\n#8 CACHED\n\n#9 [client 4/6] RUN npm ci --ignore-scripts\n#9 CACHED\n\n#10 [service 2/6] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/\n#10 CACHED\n\n#11 [client 3/6] COPY web/package.json web/package-lock.json ./\n#11 CACHED\n\n#12 [client 2/6] WORKDIR /client\n#12 CACHED\n\n#13 [client 6/6] RUN npm run typecheck && npm run test && npm run build\n#13 CACHED\n\n#14 [service 4/6] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py\n#14 CACHED\n\n#15 [service 3/6] COPY services/foundation/ /app/services/foundation/\n#15 CACHED\n\n#16 [client 5/6] COPY web/ ./\n#16 CACHED\n\n#17 [service 6/6] RUN mkdir /data && chown 10001:10001 /data\n#17 CACHED\n\n#18 exporting to image\n#18 exporting layers done\n#18 exporting manifest sha256:003964e8ece6d9a9efd83777943940e4f40e4983908b9f981bdd5a4448711677 done\n#18 exporting config sha256:a7d5eb2d2d68b1f7e2614546a7cc96cd4e3d6635a84d9a28cffb86c2c09c0cd8 done\n#18 exporting attestation manifest sha256:786f8f10a4d871236372829f8a277ec1fdaedb708c2a922889f6b174903e96bb done\n#18 exporting manifest list sha256:9227c66bc6f801a7ea4c56bef1e503113b2b35c15047a571a70988fd78864765 done\n#18 naming to docker.io/library/remission-foundation-service:review3179 done\n#18 unpacking to docker.io/library/remission-foundation-service:review3179 0.0s done\n#18 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/ja0iwytqpbxwsb6fe5he9fvag\n"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=64m",
+      "remission-foundation-tests:review3179"
+    ],
+    "started_utc": "2026-10-21T17:12:18.943798+00:00",
+    "finished_utc": "2026-10-21T17:12:26.609813+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\ntest_approval_atomic_history_idempotency_and_immutability (test_foundation.FoundationTests.test_approval_atomic_history_idempotency_and_immutability) ... ok\ntest_current_death_before_equal_after_and_strict_learner_boundary (test_foundation.FoundationTests.test_current_death_before_equal_after_and_strict_learner_boundary) ... ok\ntest_drafts_require_current_identity_version_and_explicit_resume (test_foundation.FoundationTests.test_drafts_require_current_identity_version_and_explicit_resume) ... ok\ntest_equal_arrival_lineage_and_batch_partition_have_identical_final_display (test_foundation.FoundationTests.test_equal_arrival_lineage_and_batch_partition_have_identical_final_display) ... ok\ntest_expiry_reset_revocation_and_rate_limit (test_foundation.FoundationTests.test_expiry_reset_revocation_and_rate_limit) ... ok\ntest_failed_replay_retains_rejected_receipt_after_batch_rollback (test_foundation.FoundationTests.test_failed_replay_retains_rejected_receipt_after_batch_rollback) ... ok\ntest_history_write_denial_even_forged_current_and_stage_statuses (test_foundation.FoundationTests.test_history_write_denial_even_forged_current_and_stage_statuses) ... ok\ntest_hold_and_consent_invalidate_an_old_approval (test_foundation.FoundationTests.test_hold_and_consent_invalidate_an_old_approval) ... ok\ntest_hold_arriving_during_approval_is_not_lost_to_stale_version (test_foundation.FoundationTests.test_hold_arriving_during_approval_is_not_lost_to_stale_version) ... ok\ntest_ingestion_lineage_raw_source_and_rejected_receipt (test_foundation.FoundationTests.test_ingestion_lineage_raw_source_and_rejected_receipt) ... ok\ntest_injected_rollback_persists_nothing (test_foundation.FoundationTests.test_injected_rollback_persists_nothing) ... ok\ntest_live_equal_time_death_cannot_clear_or_persist_fresh_approval (test_foundation.FoundationTests.test_live_equal_time_death_cannot_clear_or_persist_fresh_approval) ... ok\ntest_naive_nested_future_and_dst_overnight_records (test_foundation.FoundationTests.test_naive_nested_future_and_dst_overnight_records) ... ok\ntest_owner_scoped_panel_direct_nested_history_task_job (test_foundation.FoundationTests.test_owner_scoped_panel_direct_nested_history_task_job) ... ok\ntest_raw_source_privileged_payload_rejects_even_with_resealed_hash (test_foundation.FoundationTests.test_raw_source_privileged_payload_rejects_even_with_resealed_hash) ... ok\ntest_real_cookie_csrf_and_generic_auth (test_foundation.FoundationTests.test_real_cookie_csrf_and_generic_auth) ... ok\ntest_replay_cutoffs_corrections_retractions_and_duplicate_headers (test_foundation.FoundationTests.test_replay_cutoffs_corrections_retractions_and_duplicate_headers) ... ok\ntest_replay_restart_cursor_and_order_invariance (test_foundation.FoundationTests.test_replay_restart_cursor_and_order_invariance) ... ok\ntest_report_route_idempotency_and_post_death_rejection (test_foundation.FoundationTests.test_report_route_idempotency_and_post_death_rejection) ... ok\ntest_safety_lineage_retraction_correction_duplicates_and_active_control (test_foundation.FoundationTests.test_safety_lineage_retraction_correction_duplicates_and_active_control) ... ok\ntest_same_version_concurrent_approval_has_one_commit (test_foundation.FoundationTests.test_same_version_concurrent_approval_has_one_commit) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 6.612s\n\nOK\n"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--file",
+      "artifacts/review-p3/learner.Dockerfile",
+      "--tag",
+      "remission-foundation-learner:review3179",
+      "."
+    ],
+    "started_utc": "2026-10-21T17:12:26.610297+00:00",
+    "finished_utc": "2026-10-21T17:12:27.326310+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from learner.Dockerfile\n#1 transferring dockerfile: 547B 0.0s done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:review3179\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 178B done\n#3 DONE 0.0s\n\n#4 [internal] load build context\n#4 transferring context: 1.83kB done\n#4 DONE 0.0s\n\n#5 [1/5] FROM docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b\n#5 resolve docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b 0.0s done\n#5 DONE 0.0s\n\n#6 [3/5] COPY services/learner/worker.py /app/services/learner/worker.py\n#6 CACHED\n\n#7 [4/5] COPY services/learner/export_observed.py /app/services/learner/export_observed.py\n#7 CACHED\n\n#8 [2/5] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/\n#8 CACHED\n\n#9 [5/5] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py\n#9 CACHED\n\n#10 exporting to image\n#10 exporting layers done\n#10 exporting manifest sha256:7230b0dc6276490b07df5e76f0e9e2562d3d5bdf25821f3614484b529a8f1d87 done\n#10 exporting config sha256:2e0d2eb25ae139005648bacbfb88acc4dcd11e98dd0896d4696f946c223b37d2 done\n#10 exporting attestation manifest sha256:d5bb088a49ab1463afb32f4af526d762d764dc74391eade5f772e5d04aeec10f\n#10 exporting attestation manifest sha256:d5bb088a49ab1463afb32f4af526d762d764dc74391eade5f772e5d04aeec10f done\n#10 exporting manifest list sha256:3af470958b76e1b0e09a0217439b68b2de3c5a0a63a95a916c3f36c04742ed67 done\n#10 naming to docker.io/library/remission-foundation-learner:review3179 done\n#10 unpacking to docker.io/library/remission-foundation-learner:review3179 0.0s done\n#10 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/m7zfo1zf118xo3h0gtak6cfrp\n"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--file",
+      "artifacts/review-p3/evaluator.Dockerfile",
+      "--tag",
+      "remission-foundation-evaluator:review3179",
+      "."
+    ],
+    "started_utc": "2026-10-21T17:12:27.327038+00:00",
+    "finished_utc": "2026-10-21T17:12:28.043877+00:00",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "#0 building with \"desktop-linux\" instance using docker driver\n\n#1 [internal] load build definition from evaluator.Dockerfile\n#1 transferring dockerfile: 234B 0.0s done\n#1 DONE 0.0s\n\n#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:review3179\n#2 DONE 0.0s\n\n#3 [internal] load .dockerignore\n#3 transferring context: 178B done\n#3 DONE 0.0s\n\n#4 [internal] load build context\n#4 transferring context: 1.52kB done\n#4 DONE 0.0s\n\n#5 [1/2] FROM docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b\n#5 resolve docker.io/library/remission-foundation-runtime:review3179@sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b 0.0s done\n#5 DONE 0.0s\n\n#6 [2/2] COPY tooling/foundation/evaluator_canary.py /app/evaluator_canary.py\n#6 CACHED\n\n#7 exporting to image\n#7 exporting layers done\n#7 exporting manifest sha256:80bcf59499869bcea6f7ec756ab56622eb6650e2c1aa294e23d89dda6a9cf399 done\n#7 exporting config sha256:f04696d7c80323a7352fffb1689394c2ca7348cf395382df0708a1b0e1b6f708 done\n#7 exporting attestation manifest sha256:0d2883be4cc1d7d9d67d22c9a1131fe2419a42c5c505048d47be43800b71e6c7 0.0s done\n#7 exporting manifest list sha256:a7ba6a5eef9ad2b6f4608bd9b43f90d206f70941820df315aea03f56064cdff0\n#7 exporting manifest list sha256:a7ba6a5eef9ad2b6f4608bd9b43f90d206f70941820df315aea03f56064cdff0 done\n#7 naming to docker.io/library/remission-foundation-evaluator:review3179 done\n#7 unpacking to docker.io/library/remission-foundation-evaluator:review3179 done\n#7 DONE 0.1s\n\nView build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/2y9q330avsarz8gigotau9otp\n"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:review3179",
+      "--format",
+      "{{.Id}}"
+    ],
+    "started_utc": "2026-10-21T17:12:28.054514+00:00",
+    "finished_utc": "2026-10-21T17:12:28.286384+00:00",
+    "exit_code": 0,
+    "stdout": "sha256:cc59f99a9c385a83276cd69fb67b32825ed5aa783eb4ae82c7fa8446da5c349b\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-service:review3179",
+      "--format",
+      "{{.Id}}"
+    ],
+    "started_utc": "2026-10-21T17:12:28.287362+00:00",
+    "finished_utc": "2026-10-21T17:12:28.461706+00:00",
+    "exit_code": 0,
+    "stdout": "sha256:9227c66bc6f801a7ea4c56bef1e503113b2b35c15047a571a70988fd78864765\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-tests:review3179",
+      "--format",
+      "{{.Id}}"
+    ],
+    "started_utc": "2026-10-21T17:12:28.462200+00:00",
+    "finished_utc": "2026-10-21T17:12:28.640445+00:00",
+    "exit_code": 0,
+    "stdout": "sha256:0107dfba6b6eb4e34b7fbb48eea56d4e866706b93b7d90e5798216e8252803dc\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-learner:review3179",
+      "--format",
+      "{{.Id}}"
+    ],
+    "started_utc": "2026-10-21T17:12:28.640977+00:00",
+    "finished_utc": "2026-10-21T17:12:28.815274+00:00",
+    "exit_code": 0,
+    "stdout": "sha256:3af470958b76e1b0e09a0217439b68b2de3c5a0a63a95a916c3f36c04742ed67\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-evaluator:review3179",
+      "--format",
+      "{{.Id}}"
+    ],
+    "started_utc": "2026-10-21T17:12:28.816129+00:00",
+    "finished_utc": "2026-10-21T17:12:28.993232+00:00",
+    "exit_code": 0,
+    "stdout": "sha256:a7ba6a5eef9ad2b6f4608bd9b43f90d206f70941820df315aea03f56064cdff0\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "started_utc": "2026-10-21T17:12:28.993793+00:00",
+    "finished_utc": "2026-10-21T17:12:29.025306+00:00",
+    "exit_code": 0,
+    "stdout": "3179f3d2fcc7c9f285129b0272e868d413ced089\n",
+    "stderr": ""
+  }
+]

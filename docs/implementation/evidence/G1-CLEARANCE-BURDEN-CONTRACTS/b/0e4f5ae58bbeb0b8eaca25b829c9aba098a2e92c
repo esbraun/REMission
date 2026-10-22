@@ -1,0 +1,33 @@
+
+> remission-foundation-shell@0.1.0 typecheck
+> tsc --noEmit
+
+
+> remission-foundation-shell@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ a late response cannot cross patient, task, decision or historical context (0.587707ms)
+✔ logout and same-doctor login invalidate every pre-logout response (0.102571ms)
+✔ delayed logout success and failure cannot notify a reauthenticated same-doctor workspace (0.262971ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.733865
+
+> remission-foundation-shell@0.1.0 build
+> vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 16 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.68 kB │ gzip:  0.46 kB
+dist/assets/index-Du-TM-La.css    5.28 kB │ gzip:  1.88 kB
+dist/assets/index-C-Lxk2qH.js   243.78 kB │ gzip: 75.56 kB
+
+✓ built in 133ms

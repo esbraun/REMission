@@ -1,0 +1,2029 @@
+{
+  "daily_factorization": [
+    "p(baseline,initial states) (initial law version required from G0-DGP)",
+    "p(morning measures | prior-night states,past 14 severity states); preserve outcome event time",
+    "p(wearable availability | wearable measurement,separate keyed upload process)",
+    "p(L_t | L_previous,z_previous,steroids_t,X,U,T_previous)",
+    "p(independent observed pain record | current L_t); observed and available before report decision",
+    "p(pre-report history | prior records,strict-before availability,independent pain,wearable stream)",
+    "p(MAR report observation | previous observed quality,missing-history flag,current observed pain); MNAR truth is evaluator-only",
+    "p(report availability | observation decision,recording time,separate keyed upload delay); never backdate availability to event",
+    "p(decision history | records strictly available before later decision cutoff)",
+    "p(interruptions_t | living/outpatient_previous,L_t,U); apply death/admission holds before decisions",
+    "p(visit_t | available observed history,L_t,eligibility,X,U,irregular-visit protocol)",
+    "p(N1_assignment_t | protocol,consent,eligibility,history)",
+    "p(support_availability_t | history,consent,burden,hold); p(final propensity | availability,history,frozen support policy)",
+    "p(support_assignment_t | final logged propensity); persist unavailable decisions too",
+    "p(delivery,taken,rescue | assignments,L_t,past state,interruption)",
+    "p(skills,carryover,rebound | previous state,current delivery/taken and previous taken)",
+    "p(z_t | previous z,L_t,baseline,steroids,skills,carryover,rebound,support,rescue)",
+    "p(Q_next,F_next | z_t,L_t,carryover); available only at next morning, never current decision inputs",
+    "p(B_full_t | current07 window delivered countD,six previous windowsN); no new outgoing clinical/policy/report arrow",
+    "p(R_t | accepted report predictors; integrated currentQ only in declared MNAR modes); one sharedR, separate shared delta",
+    "publicR08:01 -> response upload -> receipt ->08:02 state ->08:03 link; strict learner availability always excludes equality",
+    "09a events/schedules ->09b qualified binary/current assessment ->09c union/review ->09d eligibility ->09e assignment",
+    "conditional burden target integrates permittedH plus committed currentG givenI1; descendants recomputed under each arm"
+  ],
+  "id": "TIME-01",
+  "initial_distribution": "must_be_versioned_by_G0_DGP_before_generation",
+  "irregular_visit_process": "must_be_versioned_by_G0_DGP_before_generation",
+  "kind": "temporal_contract",
+  "learner_cutoff_rule": "event_at_lte_cutoff_recorded_and_available_strictly_before",
+  "pending_numerical_decisions": [
+    "All additional parameter values/distributions/covariances and scenario overrides remain G0-DGP",
+    "Irregular visit/observation, missed delivery/support and event processes require reviewed G0-DGP manifest",
+    "EST-N1 block durations and escalation/strategy horizons require versioned protocol; these contracts assign no numerical defaults",
+    "Innovations denote separate process-keyed exogenous draws, never a shared noise value; law/seed allocation locked by G0-DGP"
+  ],
+  "reporting": {
+    "absent_quality": "baseline_7_with_missing_history_indicator",
+    "burden_missingness": "same_R_and_delay_no_second_observation_or_upload_draw",
+    "completion": "one_R_announced_08:01_before_values_shared_with_burden",
+    "current_admission": "separate_committed_09_G_never_equal_time_learner_H",
+    "equal_time": "strict_before_excludes_equal_arrivals_committed_source_sequence_for_dependencies",
+    "link_publication": "08:03_first_sweep_strictly_after_state_availability",
+    "mar_predictors": "previous_observed_quality_missing_indicator_and_current_observed_pain_only",
+    "pain_source": "independent_observed_clinical_record_before_report_decision",
+    "pre_report_history": "strictly_available_before_decision_excluding_current_report",
+    "previous_quality": "latest_active_observed_report_event_before_current_event",
+    "recording": "report_decision_time_not_morning_outcome_event_time",
+    "report_likelihood": "R_once_shared_delay_once_received_measurements_once",
+    "state_publication": "08:02_first_sweep_strictly_after_dependency_availability",
+    "upload": "recording_plus_independently_keyed_0_1_3_day_delay",
+    "wearable": "separate_stream_no_report_or_current_pain_parent"
+  },
+  "schema_version": "2.1.0",
+  "synthetic": true,
+  "tie_rule": "committed_source_sequence_prefix_for_equal_clock_ancestry_not_record_id_authority",
+  "timestamp_rule": "timezone_aware_utc_order_local_calendar_preserved",
+  "variables": [
+    {
+      "id": "M",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "U",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "X",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "clock_day",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference.md#population-and-time",
+      "unit": "integer UTC day",
+      "visibility": "administrative"
+    },
+    {
+      "id": "innovations",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "evaluator_only"
+    },
+    {
+      "id": "phase_offset",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "random_intercept",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "evaluator_only"
+    },
+    {
+      "id": "site",
+      "parents": [],
+      "phase": 0,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "support_window_counts",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "support_delivery"
+        },
+        {
+          "day_offset": -2,
+          "variable": "support_delivery"
+        },
+        {
+          "day_offset": -3,
+          "variable": "support_delivery"
+        },
+        {
+          "day_offset": -4,
+          "variable": "support_delivery"
+        },
+        {
+          "day_offset": -5,
+          "variable": "support_delivery"
+        },
+        {
+          "day_offset": -6,
+          "variable": "support_delivery"
+        },
+        {
+          "day_offset": -7,
+          "variable": "support_delivery"
+        }
+      ],
+      "phase": 5,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "count",
+      "visibility": "administrative"
+    },
+    {
+      "id": "morning_measurements",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "quality_next"
+        },
+        {
+          "day_offset": -1,
+          "variable": "function_next"
+        },
+        {
+          "day_offset": -1,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -2,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -3,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -4,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -5,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -6,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -7,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -8,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -9,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -10,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -11,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -12,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -13,
+          "variable": "severity"
+        },
+        {
+          "day_offset": -14,
+          "variable": "severity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 10,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "outcome",
+        "EST-ESC-STRATEGY": "outcome",
+        "EST-INT": "outcome",
+        "EST-MRT": "outcome",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "outcome",
+        "EST-POLICY": "outcome",
+        "EST-VISIT": "outcome"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "outcome",
+        "EST-ESC-STRATEGY": "outcome",
+        "EST-INT": "outcome",
+        "EST-MRT": "outcome",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "outcome",
+        "EST-POLICY": "outcome",
+        "EST-VISIT": "outcome"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "named measure units",
+      "visibility": "observed"
+    },
+    {
+      "id": "burden_full",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "support_window_counts"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 12,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "synthetic_burden_score",
+      "visibility": "evaluator_only"
+    },
+    {
+      "id": "wearable_availability",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "morning_measurements"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 20,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "source_locator": "docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history; docs/spec/dgp-reference.md#reports-and-availability",
+      "unit": "UTC timestamp",
+      "visibility": "observed"
+    },
+    {
+      "id": "steroid_schedule",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "phase_offset"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clock_day"
+        }
+      ],
+      "phase": 30,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "clinical_L",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": -1,
+          "variable": "severity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "steroid_schedule"
+        },
+        {
+          "day_offset": 0,
+          "variable": "X"
+        },
+        {
+          "day_offset": 0,
+          "variable": "U"
+        },
+        {
+          "day_offset": -1,
+          "variable": "visit_assignment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 40,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "observed_pain",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        }
+      ],
+      "phase": 50,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history; docs/spec/dgp-reference.md#reports-and-availability",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "pre_report_history",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "wearable_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "observed_pain"
+        }
+      ],
+      "phase": 60,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history; docs/spec/dgp-reference.md#reports-and-availability",
+      "unit": "versioned observed records",
+      "visibility": "administrative"
+    },
+    {
+      "id": "report_observation",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "observed_pain"
+        },
+        {
+          "day_offset": 0,
+          "variable": "pre_report_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        },
+        {
+          "day_offset": 0,
+          "variable": "morning_measurements"
+        }
+      ],
+      "phase": 70,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "source_locator": "docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history; docs/spec/dgp-reference.md#reports-and-availability",
+      "unit": "observation indicator",
+      "visibility": "evaluator_only"
+    },
+    {
+      "id": "report_completion",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "report_observation"
+        }
+      ],
+      "phase": 71,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "burden_rating_availability",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "burden_full"
+        },
+        {
+          "day_offset": 0,
+          "variable": "report_observation"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 80,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "synthetic_burden_score",
+      "visibility": "observed"
+    },
+    {
+      "id": "report_availability",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "morning_measurements"
+        },
+        {
+          "day_offset": 0,
+          "variable": "report_observation"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 80,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "UTC timestamp",
+      "visibility": "observed"
+    },
+    {
+      "id": "report_upload_receipt",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "report_completion"
+        },
+        {
+          "day_offset": 0,
+          "variable": "report_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "burden_rating_availability"
+        }
+      ],
+      "phase": 81,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "none",
+      "visibility": "administrative"
+    },
+    {
+      "id": "burden_assessment_state",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "report_completion"
+        },
+        {
+          "day_offset": 0,
+          "variable": "report_upload_receipt"
+        }
+      ],
+      "phase": 82,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "none",
+      "visibility": "administrative"
+    },
+    {
+      "id": "support_burden_outcome_link",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "burden_assessment_state"
+        },
+        {
+          "day_offset": -1,
+          "variable": "support_assignment"
+        }
+      ],
+      "phase": 83,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "none",
+      "visibility": "administrative"
+    },
+    {
+      "id": "available_history",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "report_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "wearable_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "observed_pain"
+        },
+        {
+          "day_offset": -1,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "report_completion"
+        },
+        {
+          "day_offset": 0,
+          "variable": "burden_rating_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "burden_assessment_state"
+        },
+        {
+          "day_offset": 0,
+          "variable": "support_burden_outcome_link"
+        }
+      ],
+      "phase": 90,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "versioned observed records",
+      "visibility": "administrative"
+    },
+    {
+      "id": "intercurrent_events",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "U"
+        },
+        {
+          "day_offset": -1,
+          "variable": "intercurrent_events"
+        }
+      ],
+      "phase": 100,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "intercurrent_event",
+        "EST-ESC-STRATEGY": "intercurrent_event",
+        "EST-INT": "intercurrent_event",
+        "EST-MRT": "intercurrent_event",
+        "EST-MRT-BURDEN": "intercurrent_event",
+        "EST-N1": "intercurrent_event",
+        "EST-POLICY": "intercurrent_event",
+        "EST-VISIT": "intercurrent_event"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "intercurrent_event",
+        "EST-ESC-STRATEGY": "intercurrent_event",
+        "EST-INT": "intercurrent_event",
+        "EST-MRT": "intercurrent_event",
+        "EST-MRT-BURDEN": "intercurrent_event",
+        "EST-N1": "intercurrent_event",
+        "EST-POLICY": "intercurrent_event",
+        "EST-VISIT": "intercurrent_event"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "event type/time",
+      "visibility": "observed"
+    },
+    {
+      "id": "committed_safety_prefix",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        }
+      ],
+      "phase": 101,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "none",
+      "visibility": "administrative"
+    },
+    {
+      "id": "current_synthetic_assessment",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "committed_safety_prefix"
+        }
+      ],
+      "phase": 102,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "episode_review_readiness",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "current_synthetic_assessment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "committed_safety_prefix"
+        }
+      ],
+      "phase": 103,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "none",
+      "visibility": "administrative"
+    },
+    {
+      "id": "current_consent_and_holds",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "episode_review_readiness"
+        }
+      ],
+      "phase": 110,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/00-scope-and-invariants.md#21-research-oversight-and-consent",
+      "unit": "versioned administrative status",
+      "visibility": "administrative"
+    },
+    {
+      "id": "current_admission_G",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "current_synthetic_assessment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "episode_review_readiness"
+        },
+        {
+          "day_offset": 0,
+          "variable": "current_consent_and_holds"
+        },
+        {
+          "day_offset": 0,
+          "variable": "support_window_counts"
+        }
+      ],
+      "phase": 119,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "none",
+      "visibility": "administrative"
+    },
+    {
+      "id": "eligibility",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "current_consent_and_holds"
+        },
+        {
+          "day_offset": 0,
+          "variable": "current_admission_G"
+        }
+      ],
+      "phase": 120,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "action set",
+      "visibility": "administrative"
+    },
+    {
+      "id": "scheduled_visit_indicator",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "clock_day"
+        },
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 120,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "source_locator": "docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history; G0-DGP must define irregular-visit law",
+      "unit": "indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "visit_assignment",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "eligibility"
+        },
+        {
+          "day_offset": 0,
+          "variable": "X"
+        },
+        {
+          "day_offset": 0,
+          "variable": "U"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        },
+        {
+          "day_offset": 0,
+          "variable": "scheduled_visit_indicator"
+        }
+      ],
+      "phase": 130,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "treatment",
+        "EST-ESC-STRATEGY": "treatment",
+        "EST-INT": "treatment",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "treatment"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "treatment",
+        "EST-ESC-STRATEGY": "treatment",
+        "EST-INT": "treatment",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "covariate",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "treatment"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "behavioral assignment",
+      "visibility": "observed"
+    },
+    {
+      "id": "medication_assignment",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "eligibility"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 140,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "treatment",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "covariate",
+        "EST-MRT-BURDEN": "covariate",
+        "EST-N1": "treatment",
+        "EST-POLICY": "covariate",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "MED_A or MED_B",
+      "visibility": "observed"
+    },
+    {
+      "id": "support_availability",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "eligibility"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 150,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "observation_indicator",
+        "EST-ESC-STRATEGY": "observation_indicator",
+        "EST-INT": "observation_indicator",
+        "EST-MRT": "observation_indicator",
+        "EST-MRT-BURDEN": "observation_indicator",
+        "EST-N1": "observation_indicator",
+        "EST-POLICY": "observation_indicator",
+        "EST-VISIT": "observation_indicator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "support_propensity",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "support_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "available_history"
+        },
+        {
+          "day_offset": 0,
+          "variable": "eligibility"
+        }
+      ],
+      "phase": 160,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "administrative",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "probability",
+      "visibility": "administrative"
+    },
+    {
+      "id": "support_assignment",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "support_propensity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "support_availability"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 170,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "treatment",
+        "EST-MRT-BURDEN": "treatment",
+        "EST-N1": "covariate",
+        "EST-POLICY": "treatment",
+        "EST-VISIT": "covariate"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "covariate",
+        "EST-ESC-STRATEGY": "covariate",
+        "EST-INT": "covariate",
+        "EST-MRT": "treatment",
+        "EST-MRT-BURDEN": "treatment",
+        "EST-N1": "covariate",
+        "EST-POLICY": "treatment",
+        "EST-VISIT": "covariate"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "support action",
+      "visibility": "observed"
+    },
+    {
+      "id": "delivery",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "visit_assignment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 180,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "delivered program",
+      "visibility": "observed"
+    },
+    {
+      "id": "rescue",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "severity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 180,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "intercurrent_event",
+        "EST-ESC-STRATEGY": "intercurrent_event",
+        "EST-INT": "intercurrent_event",
+        "EST-MRT": "intercurrent_event",
+        "EST-MRT-BURDEN": "intercurrent_event",
+        "EST-N1": "intercurrent_event",
+        "EST-POLICY": "intercurrent_event",
+        "EST-VISIT": "intercurrent_event"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "intercurrent_event",
+        "EST-ESC-STRATEGY": "intercurrent_event",
+        "EST-INT": "intercurrent_event",
+        "EST-MRT": "intercurrent_event",
+        "EST-MRT-BURDEN": "intercurrent_event",
+        "EST-N1": "intercurrent_event",
+        "EST-POLICY": "intercurrent_event",
+        "EST-VISIT": "intercurrent_event"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "rescue indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "taken",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "medication_assignment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 180,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "taken medication indicator",
+      "visibility": "observed"
+    },
+    {
+      "id": "support_delivery",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "support_assignment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "intercurrent_events"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 181,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "administrative",
+        "EST-ESC-STRATEGY": "administrative",
+        "EST-INT": "administrative",
+        "EST-MRT": "administrative",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "administrative",
+        "EST-POLICY": "administrative",
+        "EST-VISIT": "administrative"
+      },
+      "source_locator": "docs/spec/dgp-reference-v1.3.md; accepted5409 scientific contract",
+      "unit": "count",
+      "visibility": "observed"
+    },
+    {
+      "id": "carryover",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "carryover"
+        },
+        {
+          "day_offset": 0,
+          "variable": "taken"
+        }
+      ],
+      "phase": 190,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "rebound",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "rebound"
+        },
+        {
+          "day_offset": -1,
+          "variable": "taken"
+        },
+        {
+          "day_offset": 0,
+          "variable": "taken"
+        }
+      ],
+      "phase": 190,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "skills",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "skills"
+        },
+        {
+          "day_offset": 0,
+          "variable": "delivery"
+        }
+      ],
+      "phase": 190,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "observed"
+    },
+    {
+      "id": "severity",
+      "parents": [
+        {
+          "day_offset": -1,
+          "variable": "severity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "X"
+        },
+        {
+          "day_offset": 0,
+          "variable": "U"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "steroid_schedule"
+        },
+        {
+          "day_offset": 0,
+          "variable": "phase_offset"
+        },
+        {
+          "day_offset": 0,
+          "variable": "random_intercept"
+        },
+        {
+          "day_offset": 0,
+          "variable": "skills"
+        },
+        {
+          "day_offset": 0,
+          "variable": "carryover"
+        },
+        {
+          "day_offset": 0,
+          "variable": "rebound"
+        },
+        {
+          "day_offset": 0,
+          "variable": "support_assignment"
+        },
+        {
+          "day_offset": 0,
+          "variable": "rescue"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clock_day"
+        }
+      ],
+      "phase": 200,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "mediator",
+        "EST-ESC-STRATEGY": "mediator",
+        "EST-INT": "mediator",
+        "EST-MRT": "mediator",
+        "EST-MRT-BURDEN": "mediator",
+        "EST-N1": "mediator",
+        "EST-POLICY": "mediator",
+        "EST-VISIT": "mediator"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "dimensionless",
+      "visibility": "evaluator_only"
+    },
+    {
+      "id": "function_next",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "severity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "clinical_L"
+        },
+        {
+          "day_offset": 0,
+          "variable": "carryover"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 210,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "outcome",
+        "EST-ESC-STRATEGY": "outcome",
+        "EST-INT": "outcome",
+        "EST-MRT": "outcome",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "outcome",
+        "EST-POLICY": "outcome",
+        "EST-VISIT": "outcome"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "outcome",
+        "EST-ESC-STRATEGY": "outcome",
+        "EST-INT": "outcome",
+        "EST-MRT": "outcome",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "outcome",
+        "EST-POLICY": "outcome",
+        "EST-VISIT": "outcome"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "function_points",
+      "visibility": "observed"
+    },
+    {
+      "id": "quality_next",
+      "parents": [
+        {
+          "day_offset": 0,
+          "variable": "severity"
+        },
+        {
+          "day_offset": 0,
+          "variable": "innovations"
+        }
+      ],
+      "phase": 210,
+      "postassignment_role_by_estimand": {
+        "EST-ESC-STAGE": "outcome",
+        "EST-ESC-STRATEGY": "outcome",
+        "EST-INT": "outcome",
+        "EST-MRT": "outcome",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "outcome",
+        "EST-POLICY": "outcome",
+        "EST-VISIT": "outcome"
+      },
+      "role_by_estimand": {
+        "EST-ESC-STAGE": "outcome",
+        "EST-ESC-STRATEGY": "outcome",
+        "EST-INT": "outcome",
+        "EST-MRT": "outcome",
+        "EST-MRT-BURDEN": "outcome",
+        "EST-N1": "outcome",
+        "EST-POLICY": "outcome",
+        "EST-VISIT": "outcome"
+      },
+      "source_locator": "docs/spec/dgp-reference.md; docs/spec/01-estimands-and-contracts.md#time-01--daily-ordering-and-history",
+      "unit": "quality_points",
+      "visibility": "observed"
+    }
+  ],
+  "version": "2.1.0"
+}

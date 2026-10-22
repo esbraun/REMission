@@ -1,0 +1,143 @@
+{
+  "empty_production_script": "CONCERN-EMPTY-01",
+  "fixture_entries": [
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "fever-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "fever",
+      "script_id": "CLR-MIXED-01",
+      "status": "unknown"
+    },
+    {
+      "assessment_local_day": 9,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "fever-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "fever",
+      "script_id": "CLR-MIXED-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "concern-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "clinician_concern",
+      "script_id": "CLR-CONCERN-01",
+      "status": "unknown"
+    },
+    {
+      "assessment_local_day": 9,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "concern-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "clinician_concern",
+      "script_id": "CLR-CONCERN-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "concern-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "clinician_concern",
+      "script_id": "CLR-RECURRENCE-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 9,
+      "occurrence_key": [
+        "fixture_concern",
+        9,
+        "concern-2"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "clinician_concern",
+      "script_id": "CLR-RECURRENCE-01",
+      "status": "unknown"
+    },
+    {
+      "assessment_local_day": 10,
+      "occurrence_key": [
+        "fixture_concern",
+        9,
+        "concern-2"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "clinician_concern",
+      "script_id": "CLR-RECURRENCE-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "adverse",
+        7,
+        "bernoulli"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "adverse_symptom",
+      "script_id": "CLR-CF-ABSENT-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "fever-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "fever",
+      "script_id": "CLR-ACUTE-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "confusion-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "confusion",
+      "script_id": "CLR-ACUTE-01",
+      "status": "satisfied"
+    },
+    {
+      "assessment_local_day": 8,
+      "occurrence_key": [
+        "fixture_concern",
+        7,
+        "fall-1"
+      ],
+      "patient_slot": "fixture-patient",
+      "reason": "fall",
+      "script_id": "CLR-ACUTE-01",
+      "status": "satisfied"
+    }
+  ],
+  "regimen_rule": {
+    "first_ack_local_date": "actual_change_date+1",
+    "id": "REGIMEN-ACK-01",
+    "required": "exact current registered schedule and explicit supersession chain"
+  },
+  "unlisted_status": "unknown"
+}

@@ -1,0 +1,49 @@
+import json,hashlib,runpy,math,shutil
+from pathlib import Path
+from fractions import Fraction as F
+from datetime import datetime,timezone,timedelta
+from unittest.mock import patch
+import numpy as np
+from methods.ope.functional import score_rows,patient_bootstrap
+from contracts.artifacts.ope import Decision,Reward,QRow,Targets
+P=Path('/review');ref=json.loads((P/'reference-output.json').read_bytes());now=datetime(2026,10,1,tzinfo=timezone.utc)
+results=[]
+for k,f in enumerate(ref['score_fixtures']):
+ a=f['action'];p=float(F(f['p']));single=f['name']=='singleton';probs=[1-p,p] if a==1 else [p,1-p]
+ d=Decision(row_id='r',patient_id='P',window_id='w',decision_at=now,x=0.,x_available_at=now-timedelta(seconds=1),available_actions=[a] if single else [0,1],logging_probabilities=probs,action=a)
+ t=Targets(schema_version='1.0.0',synthetic=True,policy=dict(schema_version='1.0.0',synthetic=True,policy_id='fixed',version='1.0.0',sealed_at=now,action_order='0=no_prompt,1=approved_prompt',definition_sha256='a'*64,availability_rule='singleton_deterministic_empty_unavailable'),roster_sha256='b'*64,rows=[dict(row_id='r',probabilities=[float(F(x)) for x in f['pi']])])
+ _,v,_=score_rows([d],[Reward(row_id='r',status='observed',value=float(F(f['reward'])))],[t],[QRow(row_id='r',values=[float(F(x)) for x in f['q']])])
+ assert abs(v[0,0]-f['expected']['float'])<1e-12
+ results.append(dict(case=f['name'],actual=float(v[0,0])))
+patients=[];scores=[]
+for g in range(30):
+ n=[1,2,4][g//10]
+ for _ in range(n):patients.append(f'P{g:02d}');scores.append([n,n-2])
+scores=np.asarray(scores,dtype=float);order,draws,ci,paired,checksum=patient_bootstrap(patients,scores,2026102101)
+assert np.allclose(scores.mean(0),[3,1],atol=1e-12);assert np.allclose(draws[:,1]-draws[:,0],-2,atol=1e-12)
+indices=np.random.Generator(np.random.PCG64DXSM(2026102101)).integers(0,30,(2000,30),dtype=np.int64)
+scalar=np.array([sum([1,4,16][int(i)//10] for i in row)/sum([1,2,4][int(i)//10] for i in row) for row in indices])
+assert np.allclose(draws[:,0],scalar,atol=1e-12,rtol=0)
+dist=json.loads((P/'exact-bootstrap-distribution.json').read_bytes());xs=np.array([float(F(x['value'])) for x in dist]);weights=np.array([float(F(x['probability'])) for x in dist]);cdf=np.cumsum(weights)
+emp=np.array([(draws[:,0]<=x).mean() for x in xs]);ks=float(abs(emp-cdf).max());bound=math.sqrt(math.log(200)/4000);assert ks<bound
+# Independently composed public-file failures, with outer hashes and roster bindings resealed.
+suite=runpy.run_path('tests/library/dr/test_dr.py');Case=suite['Provenance'];checks=[]
+for name,mut in [('mixed_boolean_available',lambda r:r[0].update(available_actions=[False,1])),('float_action',lambda r:r[0].update(action=0.0)),('same_daily_outcome_distinct_window',lambda r:r[1].update(patient_id=r[0]['patient_id'],decision_at=r[0]['decision_at'])),('infinite_feature',lambda r:r[0].update(x=float('inf'))),('unsupported_counterfactual',lambda r:r[0].update(logging_probabilities=[1.,0.],action=0))]:
+ c=Case();c.setUp()
+ try:
+  roster=c.read('roster.json');mut(roster);c.rewrite('roster','roster.json',roster);c.reseal();c.assert_reject_before_score();checks.append(name)
+ finally:c.doCleanups()
+# Off-diagonal receipt/target identity swaps and late seal, independent of outer raw hashes.
+for name in ['late_target','late_prediction','wrong_protocol_order']:
+ c=Case();c.setUp()
+ try:
+  if name=='late_target':
+   rr=c.req['targets'][0];v=c.read(rr['path']);v['policy']['sealed_at']='2099-01-01T00:00:00Z';rr['sha256']=c.write(rr['path'],v);c.reseal()
+  elif name=='late_prediction':
+   v=c.read('q.json');v['predicted_at']='1900-01-01T00:00:00Z';c.rewrite('predictions','q.json',v);c.reseal()
+  else:
+   v=c.read('protocol.json');v['target_policy_ids'].reverse();c.rewrite('protocol','protocol.json',v)
+  c.assert_reject_before_score();checks.append(name)
+ finally:c.doCleanups()
+output=dict(fixture=ref['fixture_version'],scores=results,seed=2026102101,generator='PCG64DXSM',replicates=2000,mean=scores.mean(0).tolist(),variance=float(draws[:,0].var()),ci=ci.tolist(),paired=paired.tolist(),exact_cdf_max_error=ks,DKW_99pct_bound=bound,scalar_replay_max_error=float(abs(scalar-draws[:,0]).max()),mutations_rejected_before_score=checks)
+(P/'independent-results.json').write_text(json.dumps(output,indent=2)+'\n');print(json.dumps(output,indent=2))

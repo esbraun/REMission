@@ -1,0 +1,77 @@
+import base64, hashlib, json, pathlib, subprocess, sys
+P=pathlib.Path('.review-artifacts/G1-LIVE-THRESHOLD-POLICY-R1')
+def sha(b): return hashlib.sha256(b).hexdigest()
+def git(*a): return subprocess.check_output(['git',*a])
+def enc(v):return json.dumps(v,sort_keys=True,separators=(',',':')).encode()
+head=git('rev-parse','HEAD').decode().strip();base='0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55'
+assert head=='8041476a6a120c8f1d3a4e0a21d879e4f2f7cb21'
+assert git('merge-base','HEAD',base).decode().strip()==base
+sources=[]
+scopes={
+'implementation-prompt.md':'full', 'plan.md':'navigation lines1-65',
+'docs/execution/delegation.md':'delegation/isolation/review sections; not full templates',
+'docs/execution/runtime-and-workflow.md':'lines1-65 and verification guidance',
+'docs/execution/verification-and-handoff.md':'full',
+'docs/execution/engineering-guidelines.md':'full',
+'docs/spec/00-scope-and-invariants.md':'full',
+'docs/spec/08-gates-and-release.md':'lines1-65',
+'docs/spec/01-estimands-and-contracts.md':'lines1-48',
+'docs/spec/06-service-and-ui.md':'clinical hold context and lines109-130',
+'docs/spec/scenario-catalog.md':'S27/S28/S31 rows',
+'docs/implementation/g1-observed-representation-proposal-r1-20261021.md':'lines31-148 relevant observation/archive/live/clock requirements',
+'docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md':'lines38-132 authority/cutover/journal/export',
+'docs/implementation/g1-live-hold-trigger-binding-supplement-r1-20261021.md':'full',
+'contracts/service/live_safety.py':'full public contract',
+'contracts/service/live_safety_admission.py':'full public admission and fold',
+'docs/implementation/g1-live-threshold-installation-contract-proposal-r1-20261021.md':'full202 lines, recovered with bounded overlapping reads',
+'docs/implementation/evidence/G1-LIVE-THRESHOLD-POLICY-R1/finite-probe.py':'full; inspected not executed',
+'docs/implementation/evidence/G1-LIVE-THRESHOLD-POLICY-R1/sources.json':'full'}
+for path,scope in scopes.items():
+    blob=git('rev-parse',head+':'+path).decode().strip();tree=git('cat-file','blob',blob);raw=pathlib.Path(path).read_bytes()
+    sources.append(dict(path=path,blob=blob,tree_bytes=len(tree),tree_sha256=sha(tree),raw_bytes=len(raw),raw_sha256=sha(raw),read_scope=scope))
+blobs={
+'29548dc448f021b68d7c675882f1d73a8680a2c1':'full R1 author report',
+'204aceb2d86fbc9be314b5e75b6438084320fbb5':'full R1 author manifest',
+'1d09c071db951db960e7164a44f1d2abbdf826fc':'full R1 handoff',
+'39d0f0cc2fdea5b31f8e8ec5a70a2b608a26e09b':'full R0 independent changes-requested report',
+'1f9e23da42a2e63379b5f7f640758b84fe53263c':'full R0 critic manifest',
+'6893ac5f49dd90fc686182f9446dcf087d2b1ca2':'full R0 critic finite probe',
+'e5a67a4ad7e37b82cb591226e6b522d767f59db8':'public scientific plan lines1-82 only',
+'5e020233cb78c30a63f57122cebb5e69f81704fc':'scientific acceptance provenance and first45 lines only; no numerical review claim'}
+for blob,scope in blobs.items():
+    b=git('cat-file','blob',blob);sources.append(dict(blob=blob,bytes=len(b),sha256=sha(b),read_scope=scope))
+manifest=json.loads(git('cat-file','blob','204aceb2d86fbc9be314b5e75b6438084320fbb5'))
+verified=[]
+for f in manifest['files']:
+    for kind in ['raw','tree']:
+        b=git('cat-file','blob',f[kind+'_git_blob'])
+        assert len(b)==f[kind+'_bytes'] and sha(b)==f[kind+'_sha256']
+    assert git('rev-parse',head+':'+f['path']).decode().strip()==f['tree_git_blob']
+    verified.append(f['path'])
+for f in json.loads(git('cat-file','blob','1f9e23da42a2e63379b5f7f640758b84fe53263c'))['files']:
+    b=git('cat-file','blob',f['raw_git_blob']);assert len(b)==f['bytes'] and sha(b)==f['sha256']
+# Byte/sequence/cutoff algebra only, deliberately no application imports or wire validator.
+old=[enc({'v':1,'seq':1,'previous':None,'op':'baseline','R':1})]
+old.append(enc({'v':1,'seq':2,'previous':sha(old[-1]),'op':'open_E1_g1','R':2}))
+old.append(enc({'v':1,'seq':3,'previous':sha(old[-1]),'op':'closed_E2_g1','R':10}))
+suffix=enc({'v':2,'seq':4,'previous':sha(old[-1]),'op':'transition','R':10})
+raw=old+[suffix]
+wrappers=[{'bytes':len(b),'sha256':sha(b),'payload':base64.b64encode(b).decode()} for b in raw]
+assert [base64.b64decode(e['payload'],validate=True) for e in wrappers]==raw
+assert json.loads(suffix)['previous']==sha(old[-1])
+assert sha(enc(wrappers[-2]))!=sha(old[-1]) # wrappers are not hash targets
+assert sha(enc([json.loads(b) for b in old]))!=sha(old[-1]) # whole artifact not fact
+assert [len([b for b in raw if json.loads(b)['R']<k]) for k in [9,10,11]]==[2,2,4]
+trusted=sha(enc(wrappers));forged=wrappers[:-1]
+assert sha(enc(forged))!=trusted # self-consistent uploader cannot replace trusted identity
+probes={'scope':'independent abstract byte/sequence/cutoff algebra only, not application/schema/runtime validator','checks':['raw envelope round-trip','original fact predecessor identity','envelope hash distinct from fact hash','whole-export hash distinct from final fact hash','strict equal-time cutoff prefix','uploader truncated product differs from independent trusted binding'],'no_runtime_tests':True}
+# Retain complete subprocess outputs/errors, including the original wrong scenario path.
+attempts=[]
+for cmd in [['git','diff','--check',base,head],['git','diff','--name-status','2e834d81590dccd8adf16efe214fdb2858b07125',head],['git','status','--porcelain'],['rg','--files','-g','AGENTS.md'],['rg','-n','S27|S28|S31','docs/spec/09-scenarios.md'],['rg','-n','S27|S28|S31','docs/spec/scenario-catalog.md']]:
+    r=subprocess.run(cmd,capture_output=True);attempts.append({'argv':cmd,'exit':r.returncode,'stdout_b64':base64.b64encode(r.stdout).decode(),'stderr_b64':base64.b64encode(r.stderr).decode()})
+assert attempts[0]['exit']==0
+r0paths=git('diff','--name-only',base,'2e834d81590dccd8adf16efe214fdb2858b07125').decode().splitlines()
+assert all(git('rev-parse',head+':'+p)==git('rev-parse','2e834d81590dccd8adf16efe214fdb2858b07125:'+p) for p in r0paths)
+result=dict(head=head,base=base,worktree=str(pathlib.Path.cwd()),python=sys.version,source_inventory=sources,author_files_verified=verified,r0_paths_unchanged=r0paths,probe=probes,attempts=attempts,limitations=['Earlier multi-file tool displays were truncated; full candidate recovered in bounded overlapping reads. Raw source Git blobs retained without normalization.','Original wrong scenario path discovery error retained and corrected to scenario-catalog.md.','No private producer/evaluator access; no application imports, stack, Docker, network, browser, activation or merge.'])
+P.joinpath('checks.json').write_bytes(json.dumps(result,indent=2).encode()+b'\n')
+print(json.dumps({'source_entries':len(sources),'author_files_verified':len(verified),'r0_paths_unchanged':len(r0paths),'probe_checks':len(probes['checks']),'diff_check_exit':0}))

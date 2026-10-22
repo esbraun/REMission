@@ -1,0 +1,72 @@
+{
+  "url": "http://127.0.0.1:8766",
+  "health": "ok",
+  "seed": "foundation-fixture-20261021-v1",
+  "cutoff": "2026-10-21T09:00:00+00:00",
+  "containers": {
+    "remission-g1-foundation-review54-service": {
+      "image": "sha256:ca780cc5d6926e0eecf463f32747a8a28fb656c40f0eb2a4256094c7a043378a",
+      "user": "10001:10001",
+      "readonly_rootfs": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "privileged": false,
+      "pid_mode": "",
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review54-database",
+          "Destination": "/data",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review54-observed",
+          "Destination": "/observed",
+          "RW": false
+        }
+      ],
+      "networks": [
+        "remission-g1-foundation-review54-app"
+      ]
+    },
+    "remission-g1-foundation-review54-evaluator": {
+      "image": "sha256:1c4604224ff299c785f86260d3237a07c9193bc05b1a116abf92d10597a028f9",
+      "user": "20000:20000",
+      "readonly_rootfs": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "privileged": false,
+      "pid_mode": "",
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review54-reports",
+          "Destination": "/reports",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review54-truth",
+          "Destination": "/truth",
+          "RW": false
+        }
+      ],
+      "networks": [
+        "remission-g1-foundation-review54-private"
+      ]
+    }
+  },
+  "limits": [
+    "Hand-authored private canary; longitudinal generator/truth evaluator not implemented",
+    "Foundation observed reader has no statistical engine"
+  ]
+}

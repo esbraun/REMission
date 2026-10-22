@@ -1,0 +1,51 @@
+"""Source identity/document-only checks; not runtime acceptance."""
+import hashlib,json,pathlib,subprocess,sys
+ROOT=pathlib.Path.cwd();OUT=ROOT/'docs/implementation/evidence/G1-LIVE-THRESHOLD-POLICY-R1'
+BASE='0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55';SEED='2e834d81590dccd8adf16efe214fdb2858b07125'
+def git(*args): return subprocess.check_output(['git',*args])
+def sha(b):return hashlib.sha256(b).hexdigest()
+assert ROOT.as_posix()=='C:/Users/erics/Documents/Projects/REMission-worktrees/g1lp-r1-261021'
+assert git('merge-base','HEAD',BASE).decode().strip()==BASE
+files={
+'implementation-prompt.md':'full',
+'plan.md':'navigation through section8',
+'docs/execution/delegation.md':'full; bounded recovery after broad output truncation',
+'docs/execution/verification-and-handoff.md':'full',
+'docs/execution/engineering-guidelines.md':'full',
+'docs/execution/runtime-and-workflow.md':'subagent runtime configuration only',
+'docs/spec/00-scope-and-invariants.md':'first70 lines/SYN-BOUNDARY/clinical context',
+'docs/spec/08-gates-and-release.md':'first65 lines/gates and claim boundary',
+'docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md':'sections2A and3 export/journal/fold/cutover',
+'docs/implementation/g1-live-hold-trigger-binding-supplement-r1-20261021.md':'scope/version, bindings, migration, cutover amendments and products',
+'contracts/service/live_safety.py':'full public contract',
+'contracts/service/live_safety_admission.py':'full public admission/fold',
+}
+rows=[]
+for p,scope in files.items():
+ blob=git('rev-parse',BASE+':'+p).decode().strip(); b=git('cat-file','blob',blob)
+ rows.append(dict(path=p,commit=BASE,git_blob=blob,bytes=len(b),sha256=sha(b),read_scope=scope))
+for p in [*pathlib.Path('docs/implementation/evidence/G1-LIVE-THRESHOLD-POLICY-R0').glob('*'),pathlib.Path('docs/implementation/g1-live-threshold-installation-contract-proposal-r0-20261021.md')]:
+ name=p.as_posix();blob=git('rev-parse',SEED+':'+name).decode().strip();b=git('cat-file','blob',blob)
+ assert git('rev-parse','HEAD:'+name).decode().strip()==blob
+ assert p.read_bytes().replace(b'\r\n',b'\n')==b.replace(b'\r\n',b'\n')
+ rows.append(dict(path=name,commit=SEED,git_blob=blob,bytes=len(b),sha256=sha(b),read_scope='full; JSON evidence compacted losslessly for output'))
+blobs={
+'39d0f0cc2fdea5b31f8e8ec5a70a2b608a26e09b':'full R0 independent changes-requested report',
+'1f9e23da42a2e63379b5f7f640758b84fe53263c':'full R0 critic manifest',
+'04ad2c2be7ffef249464c5b51a17d1635aa6793a':'full R0 critic checks',
+'6893ac5f49dd90fc686182f9446dcf087d2b1ca2':'full R0 critic finite probe',
+'e5a67a4ad7e37b82cb591226e6b522d767f59db8':'public scientific5409 sections1-3.3, lines1-82 only; accepted PLAN per root provenance',
+}
+for blob,scope in blobs.items():
+ b=git('cat-file','blob',blob);rows.append(dict(git_blob=blob,bytes=len(b),sha256=sha(b),read_scope=scope))
+manifest=json.loads(git('cat-file','blob','1f9e23da42a2e63379b5f7f640758b84fe53263c'))
+for item in manifest['files']:
+ b=git('cat-file','blob',item['raw_git_blob']);assert len(b)==item['bytes'] and sha(b)==item['sha256']
+p=pathlib.Path('docs/implementation/g1-live-threshold-installation-contract-proposal-r1-20261021.md')
+s=p.read_text(encoding='utf-8')
+for item in ['CutoverTransition','closed_state_sha256','PolicyProjection','historical_schema_has_no_policy','MIG01','MIG09','T-OBS2-CLEARANCE-POLICY','CLINICAL-CLEARANCE-01']:
+ assert item in s,item
+result={'scope':'document/source identity checks only; no runtime acceptance','python':sys.version,'seed':SEED,'integration_base':BASE,'r0_files_unchanged':5,'critic_manifest_entries_verified':3,'source_entries':len(rows),'read_failures':'Broad output truncated; critical R0, evidence JSON, structural journal/cutover and task sections recovered by bounded reads. No execution failure in finite probe. rg AGENTS.md had no matches. Original R0 cp1252 failure remains in untouched R0 evidence.','private_code_read':False,'runtime_tests_executed':False}
+OUT.joinpath('sources.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
+OUT.joinpath('checks.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+print(json.dumps(result))

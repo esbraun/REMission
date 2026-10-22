@@ -1,0 +1,44 @@
+"""Independent finite probability enumeration and interval equation checks."""
+import itertools,json,math,statistics,subprocess
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'.review-artifacts'
+raw=subprocess.check_output(['git','cat-file','blob','22d124d021bea46d716cd28e89ab8f17e801da27'],cwd=ROOT)
+author=json.loads(raw)
+def sd_enumerated(p,component):
+    # Extension ignores p[0], sets undefined=1-sum(defined), matching simplex tangents.
+    probs=[1-sum(p[1:]),*p[1:]];mass=first=second=0.
+    for row in itertools.product(range(6),repeat=3):
+        w=math.prod(probs[i] for i in row);marks=[i-1 for i in row if i]
+        if not marks:continue
+        y=(sum(marks) if component=='score' else marks.count(4))/len(marks)
+        mass+=w;first+=w*y;second+=w*y*y
+    return math.sqrt(second/mass-(first/mass)**2)
+gradient_checks=[]
+for entry in author['gradient_checks']:
+    p=[.2,.1,.2,.2,.2,.1]; numeric=[]
+    for i in range(6):
+        hi=p.copy();lo=p.copy();hi[i]+=1e-5;lo[i]-=1e-5
+        numeric.append((sd_enumerated(hi,entry['component'])-sd_enumerated(lo,entry['component']))/2e-5)
+    error=max(abs(a-b) for a,b in zip(numeric,entry['analytic_gradient']))
+    assert error<1e-7;gradient_checks.append(dict(component=entry['component'],enumerated_finite_difference_max_error=error))
+rows=[]
+for row in itertools.product((None,None,None,0,4),repeat=3):
+    marks=[v for v in row if v is not None]
+    rows.append(None if not marks else (marks.count(4)/len(marks),sum(marks)/len(marks)))
+rows*=8;rho=sum(v is not None for v in rows)/len(rows);comparisons=[]
+for i,name in enumerate(('category4','score')):
+    ys=[v[i] for v in rows if v is not None];m=statistics.mean(ys);s=statistics.stdev(ys)
+    h=[0 if v is None else ((v[i]-m)**2-s*s)/(2*s*rho) for v in rows]
+    u=statistics.stdev(h)/math.sqrt(1000);a=author['deterministic_1000_row_table']['components'][name]
+    assert abs(s-a['conditional_sample_SD'])<1e-12 and abs(u-a['empirical_SD_MCSE'])<1e-12
+    comparisons.append(dict(component=name,sample_SD=s,influence_MCSE=u,retained_undefined=216))
+def tail(n,k,p,upper):
+    indices=range(k,n+1) if upper else range(k+1)
+    return math.fsum(math.exp(math.lgamma(n+1)-math.lgamma(x+1)-math.lgamma(n-x+1)+x*math.log(p)+(n-x)*math.log1p(-p)) for x in indices)
+interval_checks=[]
+for key,n,k in [('q_CP_box',3000,1200),('theta_CP_box',1200,600)]:
+    lo,hi=author['deterministic_1000_row_table'][key];errors=[abs(tail(n,k,lo,True)-.05/12),abs(tail(n,k,hi,False)-.05/12)]
+    assert max(errors)<1e-9;interval_checks.append(dict(interval=key,tail_equation_errors=errors))
+assert (.25*1+.25*3)/.5==2 and .25*1+.25*3+.5*4==3
+result=dict(gradient_checks=gradient_checks,conditional_dispersion=comparisons,CP_endpoint_equations=interval_checks,availability_means=[2,3],scope='Finite deterministic arithmetic only; no stochastic pilot/engine/clinical acceptance')
+(OUT/'precision-checks.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps(result,indent=2))

@@ -1,0 +1,8 @@
+from pathlib import Path
+import subprocess,runpy
+p=Path('contracts/artifacts/__pycache__/dr-review');p.mkdir(exist_ok=True)
+for name,sha in {'reference.py':'300b5fe79fc3fa35af5ed86a50c4fe0c82e9e5ce','reference-output.json':'5b97e46fbd26b1d50c2c15ef279a73725ebb64a0','exact-bootstrap-distribution.json':'38d36faf4b483aa90ccaf3bf906ce24388e52f42','hashes.json':'b60023a3dbbe71c02b0ed8910d0e5308adb9751b'}.items():
+ (p/name).write_bytes(subprocess.check_output(['git','cat-file','blob',sha]))
+import tooling.library.probe_dr as probe
+probe.WORK=p.resolve()/'execution';probe.EVIDENCE=p.resolve()/'actual-evidence'
+probe.main()

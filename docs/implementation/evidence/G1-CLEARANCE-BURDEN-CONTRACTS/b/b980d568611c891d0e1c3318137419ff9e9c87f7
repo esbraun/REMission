@@ -1,0 +1,9 @@
+# Planning evidence only
+
+Owned writer: `C:/Users/erics/Documents/Projects/REMission-worktrees/g1lp-plan-261021`; branch `launch/g1-live-threshold-policy-proposal-20261021`; accepted base `0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55`. Assigned gpt-6-astra/medium, independent effective-model introspection unavailable. No helpers requested/spawned. No code, activation, browser, runtime or scientific computation was performed.
+
+The proposal is unaccepted and must receive independent critique by a different Astra. It does not approve the author’s own work. Source identities record exact Git and checkout forms, with the accepted public scientific document bound to5409 rather than another worker’s checkout. Sections read were bounded to the applicable instructions, requirements, structural service seams and scientific §§1–3; an inventory entry is not a claim of reading its entire file.
+
+Several discovery tool results were truncated. Applicable threshold/live-boundary, authority, task, current-review and instruction passages were recovered through bounded reads; no full-package read is claimed. One discovery search named nonexistent contracts/domain/models.py and returned an error; subsequent rg discovery identified the actual estimands.py and threshold schema. No missing source was treated as evidence. Historical proposal headers were distinguished from the root-supplied acceptance records.
+
+Checks here verify proposal scope, file identities, whitespace and required decision/test-map presence only. They do not execute the proposed tests or establish scientific, service, UI, source-producer, human or clinical acceptance. All runtime tests in the proposal are future requirements. No numeric clinical value or clearance law was installed. Private generator/evaluator code was not inspected/imported. Root alone controls PR/merge and the next independent reviewer.

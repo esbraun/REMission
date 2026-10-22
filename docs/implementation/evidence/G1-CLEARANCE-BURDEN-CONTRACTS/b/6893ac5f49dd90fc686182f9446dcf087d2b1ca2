@@ -1,0 +1,25 @@
+import hashlib,json,pathlib,subprocess
+p=pathlib.Path('.review-artifacts/G1-LIVE-THRESHOLD-POLICY-R0')
+def git(*a): return subprocess.check_output(['git',*a])
+head=git('rev-parse','HEAD').decode().strip(); base='0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55'
+m=json.loads(git('cat-file','blob','018a0f1ebaf12cd9309a07f60f9dae373408dff6'))
+checks=[]
+for f in m['files']:
+    for kind in ('raw','tree'):
+        b=git('cat-file','blob',f[kind+'_git_blob'])
+        assert len(b)==f[kind+'_bytes'] and hashlib.sha256(b).hexdigest()==f[kind+'_sha256']
+    assert git('rev-parse',head+':'+f['path']).decode().strip()==f['tree_git_blob']
+    checks.append({'path':f['path'],'raw_and_tree_identity':'pass'})
+# Independent finite chain illustration. This is not application execution.
+def enc(v): return json.dumps(v,sort_keys=True,separators=(',',':')).encode()
+def h(v):return hashlib.sha256(enc(v)).hexdigest()
+b={'schema_version':'1.0.0','sequence':1,'previous':None,'op':'baseline'}
+i={'schema_version':'1.0.0','sequence':2,'previous':h(b),'op':'invalidate:E1:g1'}
+a={'schema_version':'2.0.0','sequence':3,'previous':h(i),'op':'authority_changed'}
+converted=dict(i,schema_version='2.0.0',policy=None)
+assert h(converted)!=h(i)
+assert [a][0]['sequence']!=1
+assert len({x['schema_version'] for x in [b,i,a]})==2
+r={'head':head,'base':base,'merge_base':git('merge-base','HEAD',base).decode().strip(),'candidate_identity_checks':checks,'finite_chain_probe':{'kind':'independent illustrative algebra; not service execution','original_prefix':[b,i],'next_fact':a,'rewrite_changes_predecessor_hash':True,'suffix_alone_missing_baseline':True,'preserved_prefix_requires_explicit_mixed_version_dispatch':True},'diff_check_exit':subprocess.run(['git','diff','--check',base,'HEAD'],capture_output=True).returncode,'no_application_runtime_tests':True}
+p.joinpath('checks.json').write_text(json.dumps(r,indent=2)+'\n',encoding='utf-8')
+print(json.dumps({'identity_files':len(checks),'finite_assertions':3,'diff_check_exit':r['diff_check_exit'],'head':head}))

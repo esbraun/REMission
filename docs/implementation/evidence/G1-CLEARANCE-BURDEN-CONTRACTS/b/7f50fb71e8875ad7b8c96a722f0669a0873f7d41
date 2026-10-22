@@ -1,0 +1,37 @@
+"""Reproduce pinned foundation builds/tests with new per-command raw evidence."""
+from datetime import datetime,timezone
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+ROOT=Path('C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-foundation-p3-review-20261021')
+OUT=ROOT/"artifacts/review-p3"
+BASE_IMAGE="sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7"
+
+
+def main():
+    records=[]
+    def run(command):
+        start=datetime.now(timezone.utc).isoformat();result=subprocess.run(command,cwd=ROOT,capture_output=True,text=True,encoding="utf-8")
+        records.append(dict(command=command,started_utc=start,finished_utc=datetime.now(timezone.utc).isoformat(),exit_code=result.returncode,stdout=result.stdout,stderr=result.stderr))
+        (OUT/"build-check-results.json").write_text(json.dumps(records,indent=2)+"\n",encoding="utf-8")
+        if result.returncode:raise RuntimeError(result.stdout+result.stderr)
+        return result.stdout
+    assert run(["docker","image","inspect","remission-python-locked:20261020","--format","{{.Id}}"]).strip()==BASE_IMAGE
+    run(["docker","build","--file","tooling/foundation/runtime.Dockerfile","--tag","remission-foundation-runtime:review3179","."])
+    run(["docker","run","--rm","--network","none","--mount",f"type=bind,source={(ROOT/'tooling/foundation/qualify.py').as_posix()},target=/probe.py,readonly","remission-foundation-runtime:review3179","python","/probe.py"])
+    for target,tag in [("integration-tests","remission-foundation-tests:review3179"),("service","remission-foundation-service:review3179")]:
+        run(["docker","build","--file","artifacts/review-p3/service.Dockerfile","--target",target,"--tag",tag,"."])
+    run(["docker","run","--rm","--network","none","--read-only","--cap-drop","ALL","--security-opt","no-new-privileges:true","--tmpfs","/tmp:rw,noexec,nosuid,size=64m","remission-foundation-tests:review3179"])
+    for role in ["learner","evaluator"]:run(["docker","build","--file",f"artifacts/review-p3/{role}.Dockerfile","--tag",f"remission-foundation-{role}:review3179","."])
+    source={}
+    for directory in ["services","web/src","tests/integration/replay","tooling/foundation"]:
+        for path in (ROOT/directory).rglob("*"):
+            if path.is_file() and "__pycache__" not in path.parts:source[path.relative_to(ROOT).as_posix()]=hashlib.sha256(path.read_bytes()).hexdigest()
+    images={role:run(["docker","image","inspect",f"remission-foundation-{role}:review3179","--format","{{.Id}}"]).strip() for role in ["runtime","service","tests","learner","evaluator"]}
+    (OUT/"build-source-and-images.json").write_text(json.dumps(dict(observed_head=run(["git","rev-parse","HEAD"]).strip(),created_utc=datetime.now(timezone.utc).isoformat(),source_sha256=source,images=images,limits=["Exact current raw source-byte manifest; candidate commit supplied in handoff","Dependency-only accepted numerical image reused; no unchanged expensive fits"]),indent=2)+"\n",encoding="utf-8")
+    print("PASS: qualified locked runtime; Node-container typecheck/context tests/build; curated real-service integration tests; isolated role images")
+
+
+if __name__=="__main__":main()

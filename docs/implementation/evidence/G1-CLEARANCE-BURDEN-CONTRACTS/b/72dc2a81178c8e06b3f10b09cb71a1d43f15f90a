@@ -1,0 +1,1774 @@
+{
+  "version": "1.2.0",
+  "catalog_version": 1,
+  "synthetic": true,
+  "temporal_contract": {
+    "id": "TIME-01",
+    "version": "2.0.0",
+    "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275"
+  },
+  "cells": [
+    {
+      "id": "S01.reference.n60",
+      "family": "S01",
+      "variant": "reference",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S01"
+    },
+    {
+      "id": "S01.reference.n240",
+      "family": "S01",
+      "variant": "reference",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S01"
+    },
+    {
+      "id": "S02.outcome_null.n60",
+      "family": "S02",
+      "variant": "outcome_null",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "z_L": 0,
+        "z_B": 0,
+        "z_prompt": 0,
+        "z_delayed_prompt": 0,
+        "prompt_state_gain": 0
+      },
+      "target": "visit_null",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "N"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S02"
+    },
+    {
+      "id": "S02.outcome_null.n240",
+      "family": "S02",
+      "variant": "outcome_null",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {
+        "z_L": 0,
+        "z_B": 0,
+        "z_prompt": 0,
+        "z_delayed_prompt": 0,
+        "prompt_state_gain": 0
+      },
+      "target": "visit_null",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "N"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S02"
+    },
+    {
+      "id": "S03.constant.n60",
+      "family": "S03",
+      "variant": "constant",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "constant_fixture",
+      "estimand": "FIX-CONSTANT",
+      "outcome": "linear_Y",
+      "unit": "fixture_points",
+      "intervention": "A1",
+      "comparator": "A0",
+      "layer": "analytic",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S03"
+    },
+    {
+      "id": "S03.constant.n240",
+      "family": "S03",
+      "variant": "constant",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "constant_fixture",
+      "estimand": "FIX-CONSTANT",
+      "outcome": "linear_Y",
+      "unit": "fixture_points",
+      "intervention": "A1",
+      "comparator": "A0",
+      "layer": "analytic",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S03"
+    },
+    {
+      "id": "S04.observed_modifier.n60",
+      "family": "S04",
+      "variant": "observed_modifier",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_T_modifier": -0.4
+      },
+      "target": "visit_modifier",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S04"
+    },
+    {
+      "id": "S04.observed_modifier.n240",
+      "family": "S04",
+      "variant": "observed_modifier",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_T_modifier": -0.4
+      },
+      "target": "visit_modifier",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S04"
+    },
+    {
+      "id": "S05.prognostic_null.n60",
+      "family": "S05",
+      "variant": "prognostic_null",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_M": 0.2
+      },
+      "target": "visit_null",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S05"
+    },
+    {
+      "id": "S05.prognostic_null.n240",
+      "family": "S05",
+      "variant": "prognostic_null",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_M": 0.2
+      },
+      "target": "visit_null",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S05"
+    },
+    {
+      "id": "S06.feedback.n60",
+      "family": "S06",
+      "variant": "feedback",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S06"
+    },
+    {
+      "id": "S07.hidden_U.n60",
+      "family": "S07",
+      "variant": "hidden_U",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "export_U": 0
+      },
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S07"
+    },
+    {
+      "id": "S08.floor_020.n60",
+      "family": "S08",
+      "variant": "floor_020",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "assignment_floor": 0.2
+      },
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S08"
+    },
+    {
+      "id": "S08.floor_005.n60",
+      "family": "S08",
+      "variant": "floor_005",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "assignment_floor": 0.05
+      },
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S08"
+    },
+    {
+      "id": "S08.floor_001.n60",
+      "family": "S08",
+      "variant": "floor_001",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "assignment_floor": 0.01
+      },
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S08"
+    },
+    {
+      "id": "S08.structural_zero.n60",
+      "family": "S08",
+      "variant": "structural_zero",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "structural_zero_enabled": 1
+      },
+      "target": "visit_unsupported",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S08"
+    },
+    {
+      "id": "S09.compatible.n60",
+      "family": "S09",
+      "variant": "compatible",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "external_visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S09"
+    },
+    {
+      "id": "S10.shift_1SE.n60",
+      "family": "S10",
+      "variant": "shift_1SE",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "external_shift_SE": 1
+      },
+      "target": "external_visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S10"
+    },
+    {
+      "id": "S10.shift_2SE.n60",
+      "family": "S10",
+      "variant": "shift_2SE",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "external_shift_SE": 2
+      },
+      "target": "external_visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S10"
+    },
+    {
+      "id": "S10.reverse_sign.n60",
+      "family": "S10",
+      "variant": "reverse_sign",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "external_reverse_sign": 1
+      },
+      "target": "external_visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S10"
+    },
+    {
+      "id": "S11.omitted_modifier_shift.n60",
+      "family": "S11",
+      "variant": "omitted_modifier_shift",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "external_modifier_export": 0,
+        "external_X_law": [
+          1,
+          1
+        ],
+        "external_M_probability": 0.8,
+        "L_T": 0,
+        "z_B": 0,
+        "z_T_modifier": -0.4
+      },
+      "target": "external_visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S11"
+    },
+    {
+      "id": "S12.IPD_and_summary.n60",
+      "family": "S12",
+      "variant": "IPD_and_summary",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "lineage",
+      "estimand": "SYSTEM-LINEAGE",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "accept_unique",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S12"
+    },
+    {
+      "id": "S12.duplicated_summary_meta.n60",
+      "family": "S12",
+      "variant": "duplicated_summary_meta",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "lineage",
+      "estimand": "SYSTEM-LINEAGE",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "accept_unique",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S12"
+    },
+    {
+      "id": "S12.repeated_update.n60",
+      "family": "S12",
+      "variant": "repeated_update",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "lineage",
+      "estimand": "SYSTEM-LINEAGE",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "accept_unique",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S12"
+    },
+    {
+      "id": "S13.blocks_2_rho04.n60",
+      "family": "S13",
+      "variant": "blocks_2_rho04",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_blocks": 2
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S13"
+    },
+    {
+      "id": "S13.blocks_4_rho04.n60",
+      "family": "S13",
+      "variant": "blocks_4_rho04",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_blocks": 4
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S13"
+    },
+    {
+      "id": "S13.blocks_8_rho04.n60",
+      "family": "S13",
+      "variant": "blocks_8_rho04",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_blocks": 8
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S13"
+    },
+    {
+      "id": "S13.blocks_4_rho0.n60",
+      "family": "S13",
+      "variant": "blocks_4_rho0",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_blocks": 4,
+        "n1_rho": 0
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S13"
+    },
+    {
+      "id": "S13.blocks_4_rho08.n60",
+      "family": "S13",
+      "variant": "blocks_4_rho08",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_blocks": 4,
+        "n1_rho": 0.8
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S13"
+    },
+    {
+      "id": "S14.half_life_0.n60",
+      "family": "S14",
+      "variant": "half_life_0",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "carry_half_life": 0
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S14"
+    },
+    {
+      "id": "S14.half_life_1.n60",
+      "family": "S14",
+      "variant": "half_life_1",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "carry_half_life": 1
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S14"
+    },
+    {
+      "id": "S14.half_life_3.n60",
+      "family": "S14",
+      "variant": "half_life_3",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "carry_half_life": 3
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S14"
+    },
+    {
+      "id": "S14.rebound_absent.n60",
+      "family": "S14",
+      "variant": "rebound_absent",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "rebound_enabled": 0
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S14"
+    },
+    {
+      "id": "S14.rebound_present.n60",
+      "family": "S14",
+      "variant": "rebound_present",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "rebound_enabled": 1
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S14"
+    },
+    {
+      "id": "S15.phase_aligned.n60",
+      "family": "S15",
+      "variant": "phase_aligned",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_phase_mode": 1
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S15"
+    },
+    {
+      "id": "S15.phase_balanced.n60",
+      "family": "S15",
+      "variant": "phase_balanced",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_phase_mode": 2
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S15"
+    },
+    {
+      "id": "S16.adherence_rescue.n60",
+      "family": "S16",
+      "variant": "adherence_rescue",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "med_taken_probability": 0.7,
+        "rescue_enabled": 1
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S16"
+    },
+    {
+      "id": "S16.outcome_stop.n60",
+      "family": "S16",
+      "variant": "outcome_stop",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_stop_mode": 1
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S16"
+    },
+    {
+      "id": "S16.insufficient_blocks.n60",
+      "family": "S16",
+      "variant": "insufficient_blocks",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "n1_stop_mode": 2
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S16"
+    },
+    {
+      "id": "S17.randomized_tree.n60",
+      "family": "S17",
+      "variant": "randomized_tree",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "randomized_tree",
+      "estimand": "FIX-ESC-RANDOMIZED",
+      "outcome": "linear_Y",
+      "unit": "fixture_points",
+      "intervention": "regime_11",
+      "comparator": "regime_00",
+      "layer": "analytic",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S17"
+    },
+    {
+      "id": "S18.observational_tree.n60",
+      "family": "S18",
+      "variant": "observational_tree",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "observational_tree",
+      "estimand": "FIX-ESC-OBSERVATIONAL",
+      "outcome": "linear_Y",
+      "unit": "fixture_points",
+      "intervention": "regime_11",
+      "comparator": "regime_00",
+      "layer": "analytic",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S18"
+    },
+    {
+      "id": "S19.noisy_response.n60",
+      "family": "S19",
+      "variant": "noisy_response",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "response_flip_probability": 0.2
+      },
+      "target": "randomized_tree",
+      "estimand": "FIX-ESC-RANDOMIZED",
+      "outcome": "linear_Y",
+      "unit": "fixture_points",
+      "intervention": "regime_11",
+      "comparator": "regime_00",
+      "layer": "analytic",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S19"
+    },
+    {
+      "id": "S19.sparse_nonresponders.n60",
+      "family": "S19",
+      "variant": "sparse_nonresponders",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "sparse_response_probability": 0.9
+      },
+      "target": "randomized_tree",
+      "estimand": "FIX-ESC-RANDOMIZED",
+      "outcome": "linear_Y",
+      "unit": "fixture_points",
+      "intervention": "regime_11",
+      "comparator": "regime_00",
+      "layer": "analytic",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S19"
+    },
+    {
+      "id": "S20.prompt_null.n60",
+      "family": "S20",
+      "variant": "prompt_null",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "z_prompt": 0,
+        "z_delayed_prompt": 0,
+        "prompt_state_gain": 0,
+        "habituation_rate": 0
+      },
+      "target": "mrt_null",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "N",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S20"
+    },
+    {
+      "id": "S20.prompt_null.n240",
+      "family": "S20",
+      "variant": "prompt_null",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {
+        "z_prompt": 0,
+        "z_delayed_prompt": 0,
+        "prompt_state_gain": 0,
+        "habituation_rate": 0
+      },
+      "target": "mrt_null",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "N",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S20"
+    },
+    {
+      "id": "S21.immediate.n60",
+      "family": "S21",
+      "variant": "immediate",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S21"
+    },
+    {
+      "id": "S21.immediate.n240",
+      "family": "S21",
+      "variant": "immediate",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S21"
+    },
+    {
+      "id": "S22.habituation.n60",
+      "family": "S22",
+      "variant": "habituation",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "habituation_rate": 0.2
+      },
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S22"
+    },
+    {
+      "id": "S22.habituation.n240",
+      "family": "S22",
+      "variant": "habituation",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {
+        "habituation_rate": 0.2
+      },
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S22"
+    },
+    {
+      "id": "S22.delayed_harm.n60",
+      "family": "S22",
+      "variant": "delayed_harm",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "z_delayed_prompt": 0.15
+      },
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S22"
+    },
+    {
+      "id": "S22.delayed_harm.n240",
+      "family": "S22",
+      "variant": "delayed_harm",
+      "patients": 240,
+      "version": "1.2.0",
+      "overrides": {
+        "z_delayed_prompt": 0.15
+      },
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S22"
+    },
+    {
+      "id": "S23.MCAR_0.n60",
+      "family": "S23",
+      "variant": "MCAR_0",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 1,
+        "missing_fraction": 0
+      },
+      "target": "report_visit_mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S23"
+    },
+    {
+      "id": "S23.MCAR_20.n60",
+      "family": "S23",
+      "variant": "MCAR_20",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 1,
+        "missing_fraction": 0.2
+      },
+      "target": "report_visit_mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S23"
+    },
+    {
+      "id": "S23.MCAR_40.n60",
+      "family": "S23",
+      "variant": "MCAR_40",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 1,
+        "missing_fraction": 0.4
+      },
+      "target": "report_visit_mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S23"
+    },
+    {
+      "id": "S23.MAR_20.n60",
+      "family": "S23",
+      "variant": "MAR_20",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 2,
+        "missing_fraction": 0.2
+      },
+      "target": "report_visit_mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S23"
+    },
+    {
+      "id": "S23.MAR_40.n60",
+      "family": "S23",
+      "variant": "MAR_40",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 2,
+        "missing_fraction": 0.4
+      },
+      "target": "report_visit_mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S23"
+    },
+    {
+      "id": "S24.MNAR_20.n60",
+      "family": "S24",
+      "variant": "MNAR_20",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 3,
+        "missing_fraction": 0.2
+      },
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S24"
+    },
+    {
+      "id": "S24.MNAR_40.n60",
+      "family": "S24",
+      "variant": "MNAR_40",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 3,
+        "missing_fraction": 0.4
+      },
+      "target": "mrt",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S24"
+    },
+    {
+      "id": "S24.action_reporting_equal_rewards.n60",
+      "family": "S24",
+      "variant": "action_reporting_equal_rewards",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "report_mode": 4,
+        "missing_fraction": 0.2,
+        "report_action_quality": 1,
+        "z_prompt": 0,
+        "z_delayed_prompt": 0,
+        "prompt_state_gain": 0
+      },
+      "target": "mrt_null",
+      "estimand": "EST-MRT",
+      "outcome": "proximal_support_reward",
+      "unit": "quality_points",
+      "intervention": "support_prompt",
+      "comparator": "no_prompt",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S24"
+    },
+    {
+      "id": "S25.quiet_wake.n60",
+      "family": "S25",
+      "variant": "quiet_wake",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "wearable_wake_bias": 0.3
+      },
+      "target": "measurement",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S25"
+    },
+    {
+      "id": "S25.device_shift.n60",
+      "family": "S25",
+      "variant": "device_shift",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "device_shift_minutes": 30
+      },
+      "target": "measurement",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S25"
+    },
+    {
+      "id": "S26.correlated_items.n60",
+      "family": "S26",
+      "variant": "correlated_items",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "item_copula_rho": 0.4
+      },
+      "target": "measurement",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S26"
+    },
+    {
+      "id": "S26.overlapping_recall.n60",
+      "family": "S26",
+      "variant": "overlapping_recall",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "measurement",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S26"
+    },
+    {
+      "id": "S26.phase_item_shift.n60",
+      "family": "S26",
+      "variant": "phase_item_shift",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "item_phase_offsets": [
+          0.3,
+          0.2,
+          0.1,
+          0,
+          -0.1,
+          -0.2,
+          -0.3
+        ]
+      },
+      "target": "measurement",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S26"
+    },
+    {
+      "id": "S27.admission.n60",
+      "family": "S27",
+      "variant": "admission",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "admission_enabled": 1
+      },
+      "target": "interruptions",
+      "estimand": "EST-INT",
+      "outcome": "interruption_vector",
+      "unit": "probability_vector",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S27"
+    },
+    {
+      "id": "S27.death.n60",
+      "family": "S27",
+      "variant": "death",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "death_enabled": 1
+      },
+      "target": "interruptions",
+      "estimand": "EST-INT",
+      "outcome": "interruption_vector",
+      "unit": "probability_vector",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S27"
+    },
+    {
+      "id": "S27.discontinuation.n60",
+      "family": "S27",
+      "variant": "discontinuation",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "discontinuation_enabled": 1
+      },
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S27"
+    },
+    {
+      "id": "S27.regimen_change.n60",
+      "family": "S27",
+      "variant": "regimen_change",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "regimen_change_enabled": 1
+      },
+      "target": "visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S27"
+    },
+    {
+      "id": "S28.late_upload.n60",
+      "family": "S28",
+      "variant": "late_upload",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "delay_probabilities": [
+          0.7,
+          0.2,
+          0.1
+        ]
+      },
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S28"
+    },
+    {
+      "id": "S28.correction.n60",
+      "family": "S28",
+      "variant": "correction",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S28"
+    },
+    {
+      "id": "S28.duplicate.n60",
+      "family": "S28",
+      "variant": "duplicate",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S28"
+    },
+    {
+      "id": "S28.stale_approval.n60",
+      "family": "S28",
+      "variant": "stale_approval",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S28"
+    },
+    {
+      "id": "S28.consent_withdrawal.n60",
+      "family": "S28",
+      "variant": "consent_withdrawal",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S28"
+    },
+    {
+      "id": "S29.frozen_support.n60",
+      "family": "S29",
+      "variant": "frozen_support",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "frozen_n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P",
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S29"
+    },
+    {
+      "id": "S29.drifting_global.n60",
+      "family": "S29",
+      "variant": "drifting_global",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "frozen_n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R",
+        "P",
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S29"
+    },
+    {
+      "id": "S30.conflict_sparse_overlap.n60",
+      "family": "S30",
+      "variant": "conflict_sparse_overlap",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "external_shift_SE": 2,
+        "assignment_floor": 0.01
+      },
+      "target": "external_visit",
+      "estimand": "EST-VISIT",
+      "outcome": "ISI",
+      "unit": "ISI_points",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S30"
+    },
+    {
+      "id": "S31.phase_carryover.n60",
+      "family": "S31",
+      "variant": "phase_carryover",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "regimen_change_enabled": 1,
+        "carry_half_life": 3
+      },
+      "target": "n1",
+      "estimand": "EST-N1",
+      "outcome": "daily_sleep_quality",
+      "unit": "quality_points",
+      "intervention": "MED_A",
+      "comparator": "MED_B",
+      "layer": "reference",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S31"
+    },
+    {
+      "id": "S31.admission_reporting.n60",
+      "family": "S31",
+      "variant": "admission_reporting",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {
+        "admission_enabled": 1,
+        "report_mode": 2,
+        "missing_fraction": 0.4
+      },
+      "target": "interruptions",
+      "estimand": "EST-INT",
+      "outcome": "interruption_vector",
+      "unit": "probability_vector",
+      "intervention": "behavioral_continue",
+      "comparator": "usual_care",
+      "layer": "adversarial",
+      "tiers": [
+        "R"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S31"
+    },
+    {
+      "id": "S32.wrong_propensity.n60",
+      "family": "S32",
+      "variant": "wrong_propensity",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S32"
+    },
+    {
+      "id": "S32.infeasible_bounds.n60",
+      "family": "S32",
+      "variant": "infeasible_bounds",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S32"
+    },
+    {
+      "id": "S32.missing_fit.n60",
+      "family": "S32",
+      "variant": "missing_fit",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S32"
+    },
+    {
+      "id": "S32.no_actions.n60",
+      "family": "S32",
+      "variant": "no_actions",
+      "patients": 60,
+      "version": "1.2.0",
+      "overrides": {},
+      "target": "system",
+      "estimand": "SYSTEM-BOUNDARY",
+      "outcome": "rejection",
+      "unit": "none",
+      "intervention": "reject",
+      "comparator": "retain_valid",
+      "layer": "system",
+      "tiers": [
+        "D"
+      ],
+      "source": "docs/spec/scenario-catalog.md#S32"
+    }
+  ]
+}

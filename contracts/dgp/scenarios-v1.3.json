@@ -1,0 +1,3153 @@
+{
+  "catalog_binding": "1.1.0",
+  "catalog_version": 1,
+  "cells": [
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S01",
+      "id": "S01.reference.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S01.reference.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S01",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "reference",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S01",
+      "id": "S01.reference.n240",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {},
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S01.reference.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S01",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "reference",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S02",
+      "id": "S02.outcome_null.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "prompt_state_gain": 0,
+        "z_B": 0,
+        "z_L": 0,
+        "z_delayed_prompt": 0,
+        "z_prompt": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S02.outcome_null.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "prompt_state_gain": 0,
+          "z_B": 0,
+          "z_L": 0,
+          "z_delayed_prompt": 0,
+          "z_prompt": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S02",
+      "target": "visit_null",
+      "tiers": [
+        "R",
+        "N"
+      ],
+      "unit": "ISI_points",
+      "variant": "outcome_null",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S02",
+      "id": "S02.outcome_null.n240",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "prompt_state_gain": 0,
+        "z_B": 0,
+        "z_L": 0,
+        "z_delayed_prompt": 0,
+        "z_prompt": 0
+      },
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S02.outcome_null.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "prompt_state_gain": 0,
+          "z_B": 0,
+          "z_L": 0,
+          "z_delayed_prompt": 0,
+          "z_prompt": 0
+        },
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S02",
+      "target": "visit_null",
+      "tiers": [
+        "R",
+        "N"
+      ],
+      "unit": "ISI_points",
+      "variant": "outcome_null",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "A0",
+      "estimand": "FIX-CONSTANT",
+      "family": "S03",
+      "id": "S03.constant.n60",
+      "intervention": "A1",
+      "layer": "analytic",
+      "outcome": "linear_Y",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "analytic",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S03.constant.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S03",
+      "target": "constant_fixture",
+      "tiers": [
+        "R"
+      ],
+      "unit": "fixture_points",
+      "variant": "constant",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "A0",
+      "estimand": "FIX-CONSTANT",
+      "family": "S03",
+      "id": "S03.constant.n240",
+      "intervention": "A1",
+      "layer": "analytic",
+      "outcome": "linear_Y",
+      "overrides": {},
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "analytic",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S03.constant.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S03",
+      "target": "constant_fixture",
+      "tiers": [
+        "R"
+      ],
+      "unit": "fixture_points",
+      "variant": "constant",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S04",
+      "id": "S04.observed_modifier.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_T_modifier": -0.4
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S04.observed_modifier.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "L_T": 0,
+          "z_B": 0,
+          "z_T_modifier": -0.4
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S04",
+      "target": "visit_modifier",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "ISI_points",
+      "variant": "observed_modifier",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S04",
+      "id": "S04.observed_modifier.n240",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_T_modifier": -0.4
+      },
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S04.observed_modifier.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "L_T": 0,
+          "z_B": 0,
+          "z_T_modifier": -0.4
+        },
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S04",
+      "target": "visit_modifier",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "ISI_points",
+      "variant": "observed_modifier",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S05",
+      "id": "S05.prognostic_null.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_M": 0.2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S05.prognostic_null.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "L_T": 0,
+          "z_B": 0,
+          "z_M": 0.2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S05",
+      "target": "visit_null",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "ISI_points",
+      "variant": "prognostic_null",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S05",
+      "id": "S05.prognostic_null.n240",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "L_T": 0,
+        "z_B": 0,
+        "z_M": 0.2
+      },
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S05.prognostic_null.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "L_T": 0,
+          "z_B": 0,
+          "z_M": 0.2
+        },
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S05",
+      "target": "visit_null",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "ISI_points",
+      "variant": "prognostic_null",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S06",
+      "id": "S06.feedback.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S06.feedback.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S06",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "feedback",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S07",
+      "id": "S07.hidden_U.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "export_U": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S07.hidden_U.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "export_U": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S07",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "hidden_U",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S08",
+      "id": "S08.floor_020.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "assignment_floor": 0.2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S08.floor_020.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "assignment_floor": 0.2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S08",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "floor_020",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S08",
+      "id": "S08.floor_005.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "assignment_floor": 0.05
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S08.floor_005.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "assignment_floor": 0.05
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S08",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "floor_005",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S08",
+      "id": "S08.floor_001.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "assignment_floor": 0.01
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S08.floor_001.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "assignment_floor": 0.01
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S08",
+      "target": "visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "floor_001",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S08",
+      "id": "S08.structural_zero.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "ISI",
+      "overrides": {
+        "structural_zero_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S08.structural_zero.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "structural_zero_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S08",
+      "target": "visit_unsupported",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "structural_zero",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S09",
+      "id": "S09.compatible.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S09.compatible.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S09",
+      "target": "external_visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "compatible",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S10",
+      "id": "S10.shift_1SE.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "external_shift_SE": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S10.shift_1SE.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "external_shift_SE": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S10",
+      "target": "external_visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "shift_1SE",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S10",
+      "id": "S10.shift_2SE.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "external_shift_SE": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S10.shift_2SE.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "external_shift_SE": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S10",
+      "target": "external_visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "shift_2SE",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S10",
+      "id": "S10.reverse_sign.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "external_reverse_sign": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S10.reverse_sign.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "external_reverse_sign": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S10",
+      "target": "external_visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "reverse_sign",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S11",
+      "id": "S11.omitted_modifier_shift.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "L_T": 0,
+        "external_M_probability": 0.8,
+        "external_X_law": [
+          1,
+          1
+        ],
+        "external_modifier_export": 0,
+        "z_B": 0,
+        "z_T_modifier": -0.4
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S11.omitted_modifier_shift.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "L_T": 0,
+          "external_M_probability": 0.8,
+          "external_X_law": [
+            1,
+            1
+          ],
+          "external_modifier_export": 0,
+          "z_B": 0,
+          "z_T_modifier": -0.4
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S11",
+      "target": "external_visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "omitted_modifier_shift",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "accept_unique",
+      "estimand": "SYSTEM-LINEAGE",
+      "family": "S12",
+      "id": "S12.IPD_and_summary.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S12.IPD_and_summary.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S12",
+      "target": "lineage",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "IPD_and_summary",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "accept_unique",
+      "estimand": "SYSTEM-LINEAGE",
+      "family": "S12",
+      "id": "S12.duplicated_summary_meta.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S12.duplicated_summary_meta.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S12",
+      "target": "lineage",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "duplicated_summary_meta",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "accept_unique",
+      "estimand": "SYSTEM-LINEAGE",
+      "family": "S12",
+      "id": "S12.repeated_update.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S12.repeated_update.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S12",
+      "target": "lineage",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "repeated_update",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S13",
+      "id": "S13.blocks_2_rho04.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_blocks": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S13.blocks_2_rho04.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_blocks": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S13",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "blocks_2_rho04",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S13",
+      "id": "S13.blocks_4_rho04.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_blocks": 4
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S13.blocks_4_rho04.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_blocks": 4
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S13",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "blocks_4_rho04",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S13",
+      "id": "S13.blocks_8_rho04.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_blocks": 8
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S13.blocks_8_rho04.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_blocks": 8
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S13",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "blocks_8_rho04",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S13",
+      "id": "S13.blocks_4_rho0.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_blocks": 4,
+        "n1_rho": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S13.blocks_4_rho0.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_blocks": 4,
+          "n1_rho": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S13",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "blocks_4_rho0",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S13",
+      "id": "S13.blocks_4_rho08.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_blocks": 4,
+        "n1_rho": 0.8
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S13.blocks_4_rho08.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_blocks": 4,
+          "n1_rho": 0.8
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S13",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "blocks_4_rho08",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S14",
+      "id": "S14.half_life_0.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "carry_half_life": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S14.half_life_0.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "carry_half_life": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S14",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "half_life_0",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S14",
+      "id": "S14.half_life_1.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "carry_half_life": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S14.half_life_1.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "carry_half_life": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S14",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "half_life_1",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S14",
+      "id": "S14.half_life_3.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "carry_half_life": 3
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S14.half_life_3.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "carry_half_life": 3
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S14",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "half_life_3",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S14",
+      "id": "S14.rebound_absent.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "rebound_enabled": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S14.rebound_absent.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "rebound_enabled": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S14",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "rebound_absent",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S14",
+      "id": "S14.rebound_present.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "rebound_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S14.rebound_present.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "rebound_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S14",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "rebound_present",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S15",
+      "id": "S15.phase_aligned.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_phase_mode": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S15.phase_aligned.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_phase_mode": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S15",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "phase_aligned",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S15",
+      "id": "S15.phase_balanced.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_phase_mode": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S15.phase_balanced.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_phase_mode": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S15",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "phase_balanced",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S16",
+      "id": "S16.adherence_rescue.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "med_taken_probability": 0.7,
+        "rescue_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S16.adherence_rescue.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "med_taken_probability": 0.7,
+          "rescue_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S16",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "adherence_rescue",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S16",
+      "id": "S16.outcome_stop.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_stop_mode": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S16.outcome_stop.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_stop_mode": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S16",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "outcome_stop",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S16",
+      "id": "S16.insufficient_blocks.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "n1_stop_mode": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S16.insufficient_blocks.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "n1_stop_mode": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S16",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "insufficient_blocks",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "regime_00",
+      "estimand": "FIX-ESC-RANDOMIZED",
+      "family": "S17",
+      "id": "S17.randomized_tree.n60",
+      "intervention": "regime_11",
+      "layer": "analytic",
+      "outcome": "linear_Y",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "analytic",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S17.randomized_tree.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S17",
+      "target": "randomized_tree",
+      "tiers": [
+        "R"
+      ],
+      "unit": "fixture_points",
+      "variant": "randomized_tree",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "regime_00",
+      "estimand": "FIX-ESC-OBSERVATIONAL",
+      "family": "S18",
+      "id": "S18.observational_tree.n60",
+      "intervention": "regime_11",
+      "layer": "analytic",
+      "outcome": "linear_Y",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "analytic",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S18.observational_tree.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S18",
+      "target": "observational_tree",
+      "tiers": [
+        "R"
+      ],
+      "unit": "fixture_points",
+      "variant": "observational_tree",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "regime_00",
+      "estimand": "FIX-ESC-RANDOMIZED",
+      "family": "S19",
+      "id": "S19.noisy_response.n60",
+      "intervention": "regime_11",
+      "layer": "analytic",
+      "outcome": "linear_Y",
+      "overrides": {
+        "response_flip_probability": 0.2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "analytic",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S19.noisy_response.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "response_flip_probability": 0.2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S19",
+      "target": "randomized_tree",
+      "tiers": [
+        "R"
+      ],
+      "unit": "fixture_points",
+      "variant": "noisy_response",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "regime_00",
+      "estimand": "FIX-ESC-RANDOMIZED",
+      "family": "S19",
+      "id": "S19.sparse_nonresponders.n60",
+      "intervention": "regime_11",
+      "layer": "analytic",
+      "outcome": "linear_Y",
+      "overrides": {
+        "sparse_response_probability": 0.9
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "analytic",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S19.sparse_nonresponders.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "sparse_response_probability": 0.9
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S19",
+      "target": "randomized_tree",
+      "tiers": [
+        "R"
+      ],
+      "unit": "fixture_points",
+      "variant": "sparse_nonresponders",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S20",
+      "id": "S20.prompt_null.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "habituation_rate": 0,
+        "prompt_state_gain": 0,
+        "z_delayed_prompt": 0,
+        "z_prompt": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S20.prompt_null.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "habituation_rate": 0,
+          "prompt_state_gain": 0,
+          "z_delayed_prompt": 0,
+          "z_prompt": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S20",
+      "target": "mrt_null",
+      "tiers": [
+        "R",
+        "N",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "prompt_null",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S20",
+      "id": "S20.prompt_null.n240",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "habituation_rate": 0,
+        "prompt_state_gain": 0,
+        "z_delayed_prompt": 0,
+        "z_prompt": 0
+      },
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S20.prompt_null.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "habituation_rate": 0,
+          "prompt_state_gain": 0,
+          "z_delayed_prompt": 0,
+          "z_prompt": 0
+        },
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S20",
+      "target": "mrt_null",
+      "tiers": [
+        "R",
+        "N",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "prompt_null",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S21",
+      "id": "S21.immediate.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S21.immediate.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S21",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "immediate",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S21",
+      "id": "S21.immediate.n240",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {},
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S21.immediate.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S21",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "immediate",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S22",
+      "id": "S22.habituation.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "habituation_rate": 0.2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S22.habituation.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "habituation_rate": 0.2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S22",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "habituation",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S22",
+      "id": "S22.habituation.n240",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "habituation_rate": 0.2
+      },
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S22.habituation.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "habituation_rate": 0.2
+        },
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S22",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "habituation",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S22",
+      "id": "S22.delayed_harm.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "z_delayed_prompt": 0.15
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S22.delayed_harm.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "z_delayed_prompt": 0.15
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S22",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "delayed_harm",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S22",
+      "id": "S22.delayed_harm.n240",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "z_delayed_prompt": 0.15
+      },
+      "patients": 240,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S22.delayed_harm.n240",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "z_delayed_prompt": 0.15
+        },
+        "patients": 240,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S22",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "delayed_harm",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S23",
+      "id": "S23.MCAR_0.n60",
+      "intervention": "support_prompt",
+      "layer": "adversarial",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0,
+        "report_mode": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S23.MCAR_0.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0,
+          "report_mode": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S23",
+      "target": "report_visit_mrt",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "MCAR_0",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S23",
+      "id": "S23.MCAR_20.n60",
+      "intervention": "support_prompt",
+      "layer": "adversarial",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.2,
+        "report_mode": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S23.MCAR_20.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.2,
+          "report_mode": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S23",
+      "target": "report_visit_mrt",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "MCAR_20",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S23",
+      "id": "S23.MCAR_40.n60",
+      "intervention": "support_prompt",
+      "layer": "adversarial",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.4,
+        "report_mode": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S23.MCAR_40.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.4,
+          "report_mode": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S23",
+      "target": "report_visit_mrt",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "MCAR_40",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S23",
+      "id": "S23.MAR_20.n60",
+      "intervention": "support_prompt",
+      "layer": "adversarial",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.2,
+        "report_mode": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S23.MAR_20.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.2,
+          "report_mode": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S23",
+      "target": "report_visit_mrt",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "MAR_20",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S23",
+      "id": "S23.MAR_40.n60",
+      "intervention": "support_prompt",
+      "layer": "adversarial",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.4,
+        "report_mode": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S23.MAR_40.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.4,
+          "report_mode": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S23",
+      "target": "report_visit_mrt",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "MAR_40",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S24",
+      "id": "S24.MNAR_20.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.2,
+        "report_mode": 3
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S24.MNAR_20.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.2,
+          "report_mode": 3
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S24",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "MNAR_20",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S24",
+      "id": "S24.MNAR_40.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.4,
+        "report_mode": 3
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S24.MNAR_40.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.4,
+          "report_mode": 3
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S24",
+      "target": "mrt",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "MNAR_40",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "no_prompt",
+      "estimand": "EST-MRT",
+      "family": "S24",
+      "id": "S24.action_reporting_equal_rewards.n60",
+      "intervention": "support_prompt",
+      "layer": "reference",
+      "outcome": "proximal_support_reward",
+      "overrides": {
+        "missing_fraction": 0.2,
+        "prompt_state_gain": 0,
+        "report_action_quality": 1,
+        "report_mode": 4,
+        "z_delayed_prompt": 0,
+        "z_prompt": 0
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S24.action_reporting_equal_rewards.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "missing_fraction": 0.2,
+          "prompt_state_gain": 0,
+          "report_action_quality": 1,
+          "report_mode": 4,
+          "z_delayed_prompt": 0,
+          "z_prompt": 0
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S24",
+      "target": "mrt_null",
+      "tiers": [
+        "R",
+        "P"
+      ],
+      "unit": "quality_points",
+      "variant": "action_reporting_equal_rewards",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S25",
+      "id": "S25.quiet_wake.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "ISI",
+      "overrides": {
+        "wearable_wake_bias": 0.3
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S25.quiet_wake.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "wearable_wake_bias": 0.3
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S25",
+      "target": "measurement",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "quiet_wake",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S25",
+      "id": "S25.device_shift.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "ISI",
+      "overrides": {
+        "device_shift_minutes": 30
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S25.device_shift.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "device_shift_minutes": 30
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S25",
+      "target": "measurement",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "device_shift",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S26",
+      "id": "S26.correlated_items.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "ISI",
+      "overrides": {
+        "item_copula_rho": 0.4
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S26.correlated_items.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "item_copula_rho": 0.4
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S26",
+      "target": "measurement",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "correlated_items",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S26",
+      "id": "S26.overlapping_recall.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "ISI",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S26.overlapping_recall.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S26",
+      "target": "measurement",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "overlapping_recall",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S26",
+      "id": "S26.phase_item_shift.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "ISI",
+      "overrides": {
+        "item_phase_offsets": [
+          0.3,
+          0.2,
+          0.1,
+          0,
+          -0.1,
+          -0.2,
+          -0.3
+        ]
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S26.phase_item_shift.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "item_phase_offsets": [
+            0.3,
+            0.2,
+            0.1,
+            0,
+            -0.1,
+            -0.2,
+            -0.3
+          ]
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S26",
+      "target": "measurement",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "phase_item_shift",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-INT",
+      "family": "S27",
+      "id": "S27.admission.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "interruption_vector",
+      "overrides": {
+        "admission_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S27.admission.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "admission_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S27",
+      "target": "interruptions",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "unit": "probability_vector",
+      "variant": "admission",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-INT",
+      "family": "S27",
+      "id": "S27.death.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "interruption_vector",
+      "overrides": {
+        "death_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S27.death.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "death_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S27",
+      "target": "interruptions",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "unit": "probability_vector",
+      "variant": "death",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S27",
+      "id": "S27.discontinuation.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "discontinuation_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S27.discontinuation.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "discontinuation_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S27",
+      "target": "visit",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "unit": "ISI_points",
+      "variant": "discontinuation",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S27",
+      "id": "S27.regimen_change.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "regimen_change_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S27.regimen_change.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "regimen_change_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 1,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S27",
+      "target": "visit",
+      "tiers": [
+        "R",
+        "D"
+      ],
+      "unit": "ISI_points",
+      "variant": "regimen_change",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S28",
+      "id": "S28.late_upload.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {
+        "delay_probabilities": [
+          0.7,
+          0.2,
+          0.1
+        ]
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S28.late_upload.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "delay_probabilities": [
+            0.7,
+            0.2,
+            0.1
+          ]
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S28",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "late_upload",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S28",
+      "id": "S28.correction.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S28.correction.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S28",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "correction",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S28",
+      "id": "S28.duplicate.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S28.duplicate.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S28",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "duplicate",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S28",
+      "id": "S28.stale_approval.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S28.stale_approval.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S28",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "stale_approval",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S28",
+      "id": "S28.consent_withdrawal.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S28.consent_withdrawal.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S28",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "consent_withdrawal",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S29",
+      "id": "S29.frozen_support.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S29.frozen_support.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S29",
+      "target": "frozen_n1",
+      "tiers": [
+        "R",
+        "P",
+        "D"
+      ],
+      "unit": "quality_points",
+      "variant": "frozen_support",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S29",
+      "id": "S29.drifting_global.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S29.drifting_global.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S29",
+      "target": "frozen_n1",
+      "tiers": [
+        "R",
+        "P",
+        "D"
+      ],
+      "unit": "quality_points",
+      "variant": "drifting_global",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-VISIT",
+      "family": "S30",
+      "id": "S30.conflict_sparse_overlap.n60",
+      "intervention": "behavioral_continue",
+      "layer": "reference",
+      "outcome": "ISI",
+      "overrides": {
+        "assignment_floor": 0.01,
+        "external_shift_SE": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S30.conflict_sparse_overlap.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "assignment_floor": 0.01,
+          "external_shift_SE": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S30",
+      "target": "external_visit",
+      "tiers": [
+        "R"
+      ],
+      "unit": "ISI_points",
+      "variant": "conflict_sparse_overlap",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "MED_B",
+      "estimand": "EST-N1",
+      "family": "S31",
+      "id": "S31.phase_carryover.n60",
+      "intervention": "MED_A",
+      "layer": "reference",
+      "outcome": "daily_sleep_quality",
+      "overrides": {
+        "carry_half_life": 3,
+        "regimen_change_enabled": 1
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S31.phase_carryover.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "carry_half_life": 3,
+          "regimen_change_enabled": 1
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 1,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S31",
+      "target": "n1",
+      "tiers": [
+        "R"
+      ],
+      "unit": "quality_points",
+      "variant": "phase_carryover",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "usual_care",
+      "estimand": "EST-INT",
+      "family": "S31",
+      "id": "S31.admission_reporting.n60",
+      "intervention": "behavioral_continue",
+      "layer": "adversarial",
+      "outcome": "interruption_vector",
+      "overrides": {
+        "admission_enabled": 1,
+        "missing_fraction": 0.4,
+        "report_mode": 2
+      },
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "longitudinal",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S31.admission_reporting.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {
+          "admission_enabled": 1,
+          "missing_fraction": 0.4,
+          "report_mode": 2
+        },
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S31",
+      "target": "interruptions",
+      "tiers": [
+        "R"
+      ],
+      "unit": "probability_vector",
+      "variant": "admission_reporting",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S32",
+      "id": "S32.wrong_propensity.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S32.wrong_propensity.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S32",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "wrong_propensity",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S32",
+      "id": "S32.infeasible_bounds.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S32.infeasible_bounds.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S32",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "infeasible_bounds",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S32",
+      "id": "S32.missing_fit.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S32.missing_fit.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S32",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "missing_fit",
+      "version": "1.3.0"
+    },
+    {
+      "comparator": "retain_valid",
+      "estimand": "SYSTEM-BOUNDARY",
+      "family": "S32",
+      "id": "S32.no_actions.n60",
+      "intervention": "reject",
+      "layer": "system",
+      "outcome": "rejection",
+      "overrides": {},
+      "patients": 60,
+      "scientific_law_binding": {
+        "applicability": "system",
+        "burden_law": "SIM-BURDEN-01/1.0.0-r1",
+        "cell_id": "S32.no_actions.n60",
+        "concern_script": "CONCERN-EMPTY-01",
+        "missing_concern_status": "unknown_through_horizon",
+        "original_overrides": {},
+        "patients": 60,
+        "regimen_ack": "REGIMEN-ACK-01",
+        "regimen_change_enabled": 0,
+        "report_status_law": "REPORT-STATUS-01/1.0.0-r1",
+        "review_law": "SIM-REVIEW-01/1.0.0-r1",
+        "supplemental_fixtures_are_not_production_overrides": true
+      },
+      "source": "docs/spec/scenario-catalog.md#S32",
+      "target": "system",
+      "tiers": [
+        "D"
+      ],
+      "unit": "none",
+      "variant": "no_actions",
+      "version": "1.3.0"
+    }
+  ],
+  "profile": {
+    "catalog": "1.1.0",
+    "cell_laws": {
+      "id": "DGP-CELL-LAWS",
+      "sha256": "017643b46921f9cc1956da13438f6170a1444845a15538a8ff824e3923d11467",
+      "version": "1.1.0"
+    },
+    "dgp": "1.3.0",
+    "laws": {
+      "BURDEN-PRECISION-01": {
+        "id": "BURDEN-PRECISION-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "EST-MRT-BURDEN": {
+        "id": "EST-MRT-BURDEN",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "REPORT-STATUS-01": {
+        "id": "REPORT-STATUS-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "SIM-BURDEN-01": {
+        "id": "SIM-BURDEN-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      },
+      "SIM-REVIEW-01": {
+        "id": "SIM-REVIEW-01",
+        "sha256": "738015d814bdbf6b2152eab5b9c6351ccb53232ffa1cfc5989a42cd9fe54adbe",
+        "version": "1.0.0-r1"
+      }
+    },
+    "observed": "2.1.0",
+    "parameters": "1.3.0",
+    "review_scripts": {
+      "id": "SIM-REVIEW-SCRIPTS",
+      "sha256": "9e5fceb29dd31ee60d5cae5d08088d8539396d7f1d21a6de07c69172dbef222c",
+      "version": "1.0.0-r1"
+    },
+    "scientific_plan": {
+      "id": "G1-CLEARANCE-BURDEN-R1",
+      "sha256": "87e5b95f93f97d2beb19bef9ac159c8293655589c637668b948ff69ac39d17b5",
+      "version": "1.0.0-r1"
+    },
+    "temporal": {
+      "id": "TIME-01",
+      "sha256": "014f43780dcdf761aebc9eecac09b36b1d9bc051cb5b70f7bc77d5606195670f",
+      "version": "2.1.0"
+    }
+  },
+  "synthetic": true,
+  "temporal_contract": {
+    "id": "TIME-01",
+    "sha256": "014f43780dcdf761aebc9eecac09b36b1d9bc051cb5b70f7bc77d5606195670f",
+    "version": "2.1.0"
+  },
+  "version": "1.3.0"
+}

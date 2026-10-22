@@ -1,0 +1,58 @@
+# Synthetic scenario catalog
+
+Version: 1, 2026-10-19. All settings are engineering stresses, not clinical parameter estimates. Use the [DGP contract](02-synthetic-dgp.md), [reference equations](dgp-reference.md) and [validation protocol](07-validation-protocol.md). Nothing here is an executed result.
+
+## Cells and execution
+
+Each row is a mandatory family. The listed perturbations are separate cells unless explicitly combined. Use the reference setting otherwise; do not take an implicit Cartesian product. Recovery tier R means 1,000 independent datasets per relevant estimator/cell; P means 1,000 complete cohort policy runs; N means 2,000 null decision runs; D means deterministic/system checks. Smoke applies to every executable family; development precedes confirmation. SBC is separate prior-predictive generation for each final Bayesian family, not fixed scenario parameters.
+
+Reference prospective n=60; add n=240 only to S01–S05 and S20–S22. Other original presets remain unchanged. Compare methods within each replicate using the same generated observations or paired innovations. Only relevant components run in each row; do not fit all models to every fixture.
+
+| ID | Family and separate cells | Target / required interpretation | Tier; gate |
+|---|---|---|---|
+| S01 | Model-matched reference | Estimation and computational baseline; model matching explicitly labeled | R; G2 |
+| S02 | Outcome sharp null with treatment-affected intermediate state | Remove all causal paths to declared outcome; contrast truth exactly zero, not merely direct coefficient zero | R,N; G2,G6 |
+| S03 | Constant benefit; no treatment heterogeneity | Recovery; compare common strategy with unnecessary personalization | R; G2,G6 |
+| S04 | Observed binary modifier, opposite treatment preferences | Conditional contrast recovery and incremental policy value | R,P; G2,G6 |
+| S05 | No useful heterogeneity despite prognostic differences | Shrinkage and personalization false discovery | R,P; G2,G6 |
+| S06 | Measured treatment-confounder feedback | Longitudinal versus static adjustment, identical estimand | R; G2 |
+| S07 | Hidden common cause removed from export | Bias may persist with narrow intervals; no demand for undetectable-confounder alarm | R; G2 |
+| S08 | Assignment floors 0.2, 0.05, 0.01; separate structural zero | Support-specific estimation and abstention; no clipping into identification | R; G2 |
+| S09 | Compatible external studies | No/complete/robust borrowing, matching marginal target | R; G2 |
+| S10 | External shifts 1 or 2 source SEs; separate sign reversal | Conflict, initial prior dependence, coverage and effective borrowing | R; G2 |
+| S11 | Source modifier omitted; source population shifted | Unsupported conditional effects remain uncertain; transport sensitivity | R; G2 |
+| S12 | IPD plus summary; duplicated summary/meta-analysis; repeated update | Lineage rejection or explicit deduplication, never extra precision | D; G2 |
+| S13 | Blocks 2,4,8 at correlation 0.4; separately correlations 0,0.8 at 4 blocks | N-of-1 assignment effect and informative block count | R; G3 |
+| S14 | Carryover half-life 0,1,3 days at 4 blocks; rebound absent/present | Matched versus omitted carryover/rebound analyses | R; G3 |
+| S15 | Treatment blocks aligned with chemotherapy phase; phase balanced comparator | Distinguish phase trend from treatment | R; G3 |
+| S16 | Adherence/rescue; outcome-dependent early stopping; insufficient blocks | Assignment effect, stopping calibration, inconclusive rates | R; G3 |
+| S17 | Fully randomized two-stage tree | Enumerated strategy values and escalation contrast | R; G3 |
+| S18 | Observational first stage and randomized escalation | Second-stage randomization does not identify all first-stage regimes | R; G3 |
+| S19 | Noisy response classification; sparse nonresponders | Declared response rule, strategy covariance and precision | R; G3 |
+| S20 | Null prompts | WCLS recovery, policy learning noise, false claims | R,N,P; G4,G6 |
+| S21 | Immediate prompt benefit | WCLS versus naive regression; fixed/no/MRT/adaptive policy | R,P; G4,G6 |
+| S22 | Habituation; separately delayed harm | Proximal gain can disagree with distal value; no composite utility | R,P; G4,G6 |
+| S23 | MCAR missingness 0,20,40%; separate MAR 20,40% | Pending/missing distinction; complete-case versus declared MAR method | R; G2,G4 |
+| S24 | MNAR 20,40%; action-dependent reporting at equal true rewards | Selection bias, sensitivity reversal and fixed-support fallback | R,P; G4,G6 |
+| S25 | Quiet-wake bias; device shift on day 42 | Report/wearable disagreement and measurement recovery | R; G2 |
+| S26 | Correlated ISI items; overlapping recall; phase-dependent item shift | Observable probabilities/total recovery; latent identifiability limits | R; G2 |
+| S27 | Informative hospitalization; death; discontinuation; regimen change | Separate event probabilities and conditional symptoms; no post-death ISI | R,D; G2,G5 |
+| S28 | Late upload; correction; duplicate; stale approval; consent withdrawal | Immutable histories, current constraints, atomic approval | D; G1,G5 |
+| S29 | N-of-1 support snapshot versus drifting global model | Freeze includes parameters and policy mapping, not just update exclusion | R,P,D; G3,G4 |
+| S30 | Prior conflict plus sparse overlap | Compounded extrapolation and sensitivity; no unconditional ranking | R; G2,G6 |
+| S31 | Phase change plus carryover; admission plus informative reporting | Compound misspecification and declared target handling | R; G2,G3 |
+| S32 | Wrong logged propensity; infeasible bounds; missing fit; no actions | Faults rejected, unavailable events retained, no successful-looking substitutes | D; G4,G5 |
+
+## Fixed stress controls
+
+Residual correlations: 0, 0.4, 0.8. In N-of-1 fixtures implement error_t=rho*error_(t−1)+sqrt(1−rho^2)*innovation_t with stationary innovation SD 0.4; this is residual dependence in addition to declared treatment/phase mean dynamics, not an accidental change of a treatment coefficient. Reporting targets: 0%, 20%, 40%. Binary assignment floors: 0.2, 0.05, 0.01; structural-zero cell is distinct. Abrupt shifts occur on day 42. External shifts are calibrated relative to the source SE estimated in a separate fixed reference pilot, frozen before generating evaluation datasets; sign reversal is a separate intervention on the true source effect.
+
+For target reporting/event rates, solve the observation/event intercept on a separate large calibration sample with fixed nuisance parameters and seed. Freeze the intercept before development/confirmation; report achieved rate and calibration uncertainty. Do not recalibrate using the fitted estimator or confirmation outcomes. If a target is infeasible, record that rather than silently changing it.
+
+## Comparator and truth rules
+
+Use no/complete/robust borrowing for S09–S11/S30; regularized/flexible longitudinal models for S01–S08; matched BCF only for the single-decision reduction. N-of-1 ablations omit carryover or rebound individually. WCLS is compared with naive mixed regression for matched excursion targets. OPE uses fixed target policies and on-policy truth; unsupported target actions return unsupported.
+
+For S02, retain treatment effects on a diagnostic intermediate variable while removing every outgoing path from that variable to the declared outcome and removing other treatment-to-outcome paths. Verify equality by paired intervention trajectories. This outcome-null differs from a null on every system variable.
+
+Unexpected failure is retained. Hidden confounding, severe nonoverlap and incompatible priors may defeat recovery; their purpose is to expose limits, not certify robustness by construction.

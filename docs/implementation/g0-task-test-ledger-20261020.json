@@ -18483,5 +18483,109 @@
       "blocking_plan_gap": "No complete immutable LIVE-SAFETY1.0-to-2.0 journal-prefix migration/fold defined for an already-held patient; full independent report pending",
       "scientific5409_assignment": "separate independent next implementation; not blocked on this proposal repair"
     }
+  },
+  "scientific_contract_implementation": {
+    "task": "T-G1-CLEARANCE-BURDEN-CONTRACTS",
+    "status": "in_progress_profile_temporal_core_first_boundary",
+    "accepted_plan": "5409d54f570040b435a729769ba2d9353b7daffb",
+    "plan_blob": "e5a67a4ad7e37b82cb591226e6b522d767f59db8",
+    "independent_ready_plan_report": "5e020233cb78c30a63f57122cebb5e69f81704fc",
+    "plan_acceptance": "root_explicit_plan_only_no_code_scientific_acceptance",
+    "seed": "83481b29315b21baa4a7fa29fb8eba6e2658b84f",
+    "target_base": "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55",
+    "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1cb-contracts-sol-261021",
+    "branch": "launch/g1-clearance-burden-contracts-20261021",
+    "assigned_model": "gpt-6.1-sol",
+    "assigned_effort": "xhigh",
+    "effective_model": "not_independently_introspectable_no_substitution",
+    "escalation_reason": "Coordinated DGP/observation/time/catalog/report/burden/precision versions, likelihood and undefinedness boundaries, and strict legacy/source compatibility",
+    "requirement_ids": [
+      "DGP-02",
+      "TIME-01",
+      "OBS-REP-02",
+      "SIM-REVIEW-01",
+      "SIM-BURDEN-01",
+      "REPORT-STATUS-01",
+      "EST-MRT-BURDEN",
+      "BURDEN-PRECISION-01",
+      "TRUTH-02"
+    ],
+    "requirement_to_task_to_test": [
+      {
+        "requirement_ids": [
+          "DGP-02",
+          "SIM-BURDEN-01"
+        ],
+        "task": "T-G1-CLEARANCE-BURDEN-CONTRACTS",
+        "tests": [
+          "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_all82_cells_and_every_legacy_coefficient_are_preserved",
+          "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_missing_unknown_or_legacy_binding_never_falls_back",
+          "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_burden_support_not_clipped_and_no_draw_for_D0",
+          "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_local_07_windows_preserve_DST_23_and25_hours",
+          "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_new_named_seed_is_keyed_without_changing_legacy_keys"
+        ],
+        "status": "finite_contract_core_observed_pass"
+      },
+      {
+        "requirement_ids": [
+          "TIME-01",
+          "REPORT-STATUS-01"
+        ],
+        "task": "T-G1-CLEARANCE-BURDEN-CONTRACTS",
+        "tests": [
+          "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_temporal_graph_rejects_H_G_mix_and_missing_current_factor"
+        ],
+        "status": "graph_core_observed_pass_full_record_likelihood_integration_pending"
+      }
+    ],
+    "versions": {
+      "dgp": "1.3.0",
+      "parameters": "1.3.0",
+      "time": "2.1.0",
+      "observed": "2.1.0",
+      "catalog": "1.1.0",
+      "laws": "1.0.0-r1"
+    },
+    "evidence": "docs/implementation/evidence/G1-CLEARANCE-BURDEN-CONTRACTS/README.md",
+    "current_checks": {
+      "profile_generation": "passed",
+      "profile_export": "passed",
+      "focused_finite_tests": 6,
+      "qualified_runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "source_binding": "raw command-start source snapshots; containing milestone checkpoint supplied separately"
+    },
+    "helper": {
+      "assigned": "gpt-6-luna/high",
+      "source": "83481b",
+      "report": "2361d1d34f27fc220254534e87a459b068e3aabc",
+      "manifest": "d3a4e67ff525284aec30727b3d76c615af40b4f6",
+      "scope": "source_only_no_tests_design_engines",
+      "status": "full_final_report_consumed_full_raw_history_preservation_refreshed"
+    },
+    "live_policy": {
+      "status": "root_accepted_PLAN_ONLY_separate_future_implementation",
+      "accepted_plan": "8041476a6a120c8f1d3a4e0a21d879e4f2f7cb21",
+      "base": "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55",
+      "independent_ready": "ff59eba525091a92c47e83a8efca6fd8426e97e3",
+      "independent_manifest": "d15630a474d519aa0819eb9bf610354a8a705cf1",
+      "source_mapping": "exact2.1 mapping gated; divergence requires independently reviewed revision before LTP implementation",
+      "runtime": "LIVE-HOLD1.0 unchanged; no2.0 installation/adoption/migration",
+      "threshold": "T-OBS2-CLEARANCE-POLICY blocked until separate exact-code/source/activation gates"
+    },
+    "remaining": [
+      "typed OBS/TIME reporting inputs and strict2.1 history",
+      "public/private run coverage/source/execution/authority/schema bindings",
+      "burden precision target/pilot/evidence validation and independent finite probes",
+      "service/learner strict dispatch and actual visible rating/archive review UI",
+      "full affected legacy/schema/source/private-boundary/runtime/MCP verification",
+      "frozen candidate and different Astra exact-head/base code review"
+    ],
+    "nonclaims": [
+      "production stochastic generator/evaluator",
+      "actual calibration/truth/filter execution",
+      "resource feasibility",
+      "scientific fullG1/G2-G7 acceptance",
+      "human or clinical acceptance"
+    ]
   }
 }

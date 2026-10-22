@@ -1,0 +1,14 @@
+from pathlib import Path
+import hashlib,json,subprocess
+r=Path.cwd();p=r/'contracts/artifacts/__pycache__/dr-review';c=p/'fresh-clone';e=Path('docs/implementation/evidence/G0-LIB/DR')
+h=lambda x:hashlib.sha256(x).hexdigest()
+out={}
+for rel in ['methods/ope/nuisance.py','methods/ope/functional.py',str(e/'logging-definition.json'),str(e/'exchange/request.json')]:
+ a=(r/rel).read_bytes();b=(c/rel).read_bytes();out[rel]={'review_sha256':h(a),'LF_clone_sha256':h(b),'review_CRLF':a.count(b'\r\n'),'clone_CRLF':b.count(b'\r\n'),'equal_after_source_LF':a.replace(b'\r\n',b'\n')==b}
+ if 'evidence' in rel:assert a==b
+for source,snap in [('methods/ope/nuisance.py','nuisance-executed-source.py'),('methods/ope/functional.py','functional-executed-source.py'),('tooling/library/dr_stage.py','stage-executed-source.py')]:
+ assert (p/'execution/source'/source).read_bytes()==(r/e/'exchange'/snap).read_bytes()
+for label,sha in [('original-plan','052677a20145fb14f5e1d2f509592a4de4942ef4'),('original-implementation','113f4f258a94ba9cc7fccce4b5fbb74bf0a72a49'),('accepted-plan','bd9eb376680c7225cfdad3c0ac162d1698326063')]:
+ (p/(label+'.md')).write_bytes(subprocess.check_output(['git','cat-file','blob',sha]))
+(p/'byte-identity.json').write_text(json.dumps(out,indent=2)+'\n')
+print(json.dumps(out,indent=2))

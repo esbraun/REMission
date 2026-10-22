@@ -1,0 +1,172 @@
+"""DGP/TIME composition and source/key boundaries, without stochastic rollout."""
+from datetime import timedelta
+import hashlib
+import unittest
+
+from pydantic import ValidationError
+
+from contracts.dgp.parameters import VERSION, reference_parameters, validate_parameters
+from contracts.dgp.calibration import calibration_request
+from contracts.dgp.scenarios import resolve_cell, scenario_manifest, validate_scenarios
+from contracts.dgp.timing import (PAIN_SOURCE, PROCESSES, TEMPORAL, mar_offset,
+                                  process_seed_words, report_decision, timing_manifest,
+                                  verify_temporal_contract)
+from contracts.domain.boundaries import ObservedHistory
+from contracts.domain.common import VersionRef
+from test_domain import ROOT, at, history, parse, record, report
+
+EVENT = at("2026-10-02T07:00:00Z")
+PAIN_AT = EVENT.replace(hour=8)
+DECISION = EVENT.replace(hour=8, minute=1)
+
+
+def pain():
+    value = record("observation", "clinical-pain", PAIN_AT.isoformat())
+    value["source"] = {**PAIN_SOURCE, "raw_sha256": "b" * 64}
+    return {**value, "measure": {"concept": "pain", "value": 1.2, "unit": "dimensionless",
+                                "observed_at": PAIN_AT.isoformat(), "available_at": PAIN_AT.isoformat()},
+            "lab_reference_context": None}
+
+
+def observed(records):
+    return parse(ObservedHistory, history(records))
+
+
+def assess(records, delay=0):
+    return report_decision(observed(records), event_at=EVENT,
+                           pain_record_id="clinical-pain", upload_delay_days=delay)
+
+
+def wearable(delay):
+    arrival = EVENT + timedelta(days=delay)
+    return {**record("oura_like", "wearable", EVENT.isoformat(), arrival.isoformat()),
+            "record_type": "sleep_episode", "episode_start": (EVENT-timedelta(hours=8)).isoformat(),
+            "episode_end": EVENT.isoformat(), "local_date": "2026-10-02", "timezone": "UTC",
+            "device_version": "fixture", "sync_at": arrival.isoformat(),
+            "estimated_sleep_minutes": 400.0, "estimated_wake_minutes": 80.0,
+            "quality_flags": [], "missingness": "observed"}
+
+
+class DGPTimingComposition(unittest.TestCase):
+    def test_accepted_identity_and_all_generated_consumers_bound(self):
+        self.assertEqual(verify_temporal_contract().version, "2.0.0")
+        source = (ROOT/"contracts/domain/temporal-v2.json").read_bytes().replace(b"\r\n", b"\n")
+        self.assertEqual(hashlib.sha256(source).hexdigest(), TEMPORAL["sha256"])
+        self.assertEqual(VERSION, "1.2.0")
+        for manifest in (reference_parameters(), scenario_manifest(), timing_manifest()):
+            self.assertEqual(manifest["temporal_contract"], TEMPORAL)
+        for manifest, validator in ((reference_parameters(), validate_parameters),
+                                    (scenario_manifest(), validate_scenarios)):
+            manifest["temporal_contract"]["version"] = "1.0.0"
+            with self.assertRaises(ValueError): validator(manifest)
+        with self.assertRaisesRegex(ValueError, "current DGP version"):
+            calibration_request(cell_id="S23.MAR_20.n60",
+                                dgp=VersionRef(id="dgp", version="1.1.0", sha256="a"*64))
+
+    def test_mar_uses_actual_separate_observation_with_canonical_coefficients(self):
+        previous = report("previous", "2026-10-01T07:00:00Z", "2026-10-01T08:01:00Z")
+        previous["sleep_quality"] = 6.0
+        decision = assess([previous, pain()])
+        self.assertEqual(decision.mar_predictors(), {"previous_observed_quality": 6.0,
+                         "missing_quality_history": False, "current_observed_pain": 1.2})
+        self.assertAlmostEqual(mar_offset(decision), -1.04)
+        self.assertEqual(decision.report_event_at, EVENT)
+        self.assertEqual(decision.recorded_at, DECISION)
+        # No report exists in the history, yet independent pain is present.
+        missing = assess([pain()])
+        self.assertTrue(missing.mar_predictors()["missing_quality_history"])
+        self.assertAlmostEqual(mar_offset(missing), -.84)
+        changed = pain(); changed["measure"]["value"] = 2.2
+        self.assertAlmostEqual(mar_offset(assess([changed]))-mar_offset(missing), -.2)
+
+    def test_initial_history_and_delayed_previous_report_equal_cutoff(self):
+        old = report("old", "2026-09-30T07:00:00Z", "2026-09-30T08:01:00Z")
+        old["sleep_quality"] = 4.0
+        late = report("late", "2026-10-01T07:00:00Z", DECISION.isoformat())
+        late["sleep_quality"] = 10.0
+        self.assertEqual(assess([old, late, pain()]).mar_predictors()["previous_observed_quality"], 4.0)
+        self.assertEqual(assess([late, pain()]).mar_predictors()["previous_observed_quality"], 7.0)
+        # First generated reporting day -14: initial latent day -15 is no report.
+        first = EVENT-timedelta(days=14)
+        initial_pain = pain()
+        for field in ("event_at", "recorded_at", "available_at"):
+            initial_pain[field] = first.replace(hour=8).isoformat()
+        initial_pain["measure"].update(observed_at=initial_pain["event_at"], available_at=initial_pain["available_at"])
+        result = report_decision(observed([initial_pain]), event_at=first,
+                                 pain_record_id="clinical-pain", upload_delay_days=0)
+        self.assertEqual(result.mar_predictors(), {"previous_observed_quality": 7.0,
+                          "missing_quality_history": True, "current_observed_pain": 1.2})
+
+    def test_source_time_and_self_conditioning_faults_fail_closed(self):
+        for field, value in (("id", "patient-report"), ("adapter", "patient_report"), ("version", "1.1.0")):
+            bad = pain(); bad["source"][field] = value
+            with self.assertRaises(ValueError): assess([bad])
+        for bad in ([], [report("clinical-pain", EVENT.isoformat(), PAIN_AT.isoformat())]):
+            with self.assertRaises(ValueError): assess(bad)
+        for field in ("event_at", "recorded_at", "available_at"):
+            bad = pain(); bad[field] = DECISION.isoformat()
+            with self.assertRaises(ValueError): assess([bad])
+        current = report("current", EVENT.isoformat(), PAIN_AT.isoformat())
+        with self.assertRaisesRegex(ValidationError, "current/future report"):
+            assess([pain(), current])
+        for delay in (True, 2, -1):
+            with self.assertRaises(ValueError): assess([pain()], delay)
+        with self.assertRaises(ValueError):
+            report_decision(observed([pain()]), event_at=EVENT.replace(hour=6),
+                            pain_record_id="clinical-pain", upload_delay_days=0)
+
+    def test_three_clocks_cutoffs_and_independent_wearable_delays(self):
+        # Cross the two delay processes; report delay cannot affect wearable.
+        for report_delay in (0, 1, 3):
+            decision = assess([pain()], report_delay)
+            current = report("current", EVENT.isoformat(), decision.available_at.isoformat())
+            current["recorded_at"] = DECISION.isoformat()
+            for wearable_delay in (0, 1, 3):
+                h = observed([pain(), current, wearable(wearable_delay)])
+                ids = lambda cutoff: {r.record_id for r in h.as_known_at(cutoff)}
+                self.assertEqual(ids(EVENT), set())
+                self.assertNotIn("clinical-pain", ids(EVENT+timedelta(microseconds=1)))
+                self.assertNotIn("current", ids(DECISION))
+                self.assertIn("clinical-pain", ids(DECISION))
+                self.assertEqual("wearable" in ids(DECISION), wearable_delay == 0)
+                self.assertEqual("current" in ids(EVENT.replace(hour=9)), report_delay == 0)
+                self.assertNotIn("current", ids(decision.available_at))
+                self.assertIn("current", ids(decision.available_at+timedelta(microseconds=1)))
+                w_arrival = EVENT+timedelta(days=wearable_delay)
+                self.assertNotIn("wearable", ids(w_arrival))
+                self.assertIn("wearable", ids(w_arrival+timedelta(microseconds=1)))
+
+    def test_reporting_families_preserve_parents_targets_and_null_paths(self):
+        catalog, table = scenario_manifest(), reference_parameters()
+        for cell in catalog["cells"]:
+            if cell["family"] not in ("S23", "S24", "S31"): continue
+            resolved = resolve_cell(table, catalog, cell["id"])["parameters"]
+            self.assertEqual(resolved["report_MAR_coefficients"]["value"], [-.4, -.2])
+            self.assertEqual(resolved["report_MAR_coefficients"]["parents"],
+                             ["previous_observed_Q", "current_observed_pain"])
+            self.assertEqual(resolved["delay_days"]["value"], [0, 1, 3])
+            if resolved["report_mode"]["value"] in (2, 3, 4):
+                request = calibration_request(cell_id=cell["id"],
+                            dgp=VersionRef(id="dgp", version=VERSION, sha256="a"*64))
+                self.assertEqual(request["purpose"], "report_rate")
+                self.assertEqual(request["target"], 1-resolved["missing_fraction"]["value"])
+            if cell["variant"] == "admission_reporting":
+                self.assertEqual(resolved["report_mode"]["value"], 2)
+                self.assertEqual(resolved["missing_fraction"]["value"], .4)
+            if cell["variant"] == "action_reporting_equal_rewards":
+                for symbol in ("z_prompt", "z_delayed_prompt", "prompt_state_gain"):
+                    self.assertEqual(resolved[symbol]["value"], 0)
+
+    def test_separate_keyed_measurement_observation_and_upload_identities(self):
+        key = dict(protocol="report-clock-v1.2.0", phase="calibration", scenario="S23.MAR_20.n60",
+                   replicate=1, patient="P1", time_index=-14, root_seed=20261020)
+        words = {name: process_seed_words(name, **key) for name in PROCESSES}
+        self.assertEqual(len({tuple(w) for w in words.values()}), len(PROCESSES))
+        self.assertEqual(words, {name: process_seed_words(name, **key) for name in reversed(PROCESSES)})
+        for name in PROCESSES:
+            self.assertNotEqual(words[name], process_seed_words(name, **(key | {"phase": "confirmation"})))
+        with self.assertRaises(ValueError): process_seed_words("shared_report_wearable", **key)
+        self.assertEqual(timing_manifest()["process_keys"]["report_observation"]["namespace"], "missingness")
+
+
+if __name__ == "__main__": unittest.main()

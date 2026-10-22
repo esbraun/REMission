@@ -1,0 +1,27 @@
+[
+  {
+    "content": [
+      {
+        "type": "text",
+        "text": "### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8768');\n```\n### Page\n- Page URL: http://127.0.0.1:8768/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-21T17-12-55-508Z.yml)"
+      }
+    ]
+  },
+  {
+    "content": [
+      {
+        "type": "text",
+        "text": "### Result\n[{\"fail\":false,\"generationPreserved\":true,\"principal\":\"Dr Alice (synthetic)\",\"ownedStatus\":200,\"ownedMatches\":true,\"staleNoticeOrError\":false},{\"fail\":true,\"generationPreserved\":true,\"principal\":\"Dr Alice (synthetic)\",\"ownedStatus\":200,\"ownedMatches\":true,\"staleNoticeOrError\":false}]\n### Ran Playwright code\n```js\nawait (async(page)=>{await page.getByLabel('Username',{exact:true}).fill('alice');await page.getByLabel('Password',{exact:true}).fill('Synthetic-Alice-2026!');await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.getByRole('heading',{name:'My panel',exact:true}).waitFor();const results=[];for(const fail of [false,true]){await page.evaluate(fail=>{const native=window.fetch;let release;const gate=new Promise(r=>release=r);window.__reviewLogout={entered:false,release,restore:()=>window.fetch=native};window.fetch=async(...args)=>{const response=await native(...args);if(String(args[0]).endsWith('/api/logout')){const json=response.json.bind(response);response.json=async()=>{const body=await json();window.__reviewLogout.entered=true;await gate;if(fail)throw new Error('review controlled old logout body failure');return body;};}return response;};},fail);await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.waitForFunction(()=>window.__reviewLogout.entered);await page.getByLabel('Username',{exact:true}).fill('alice');await page.getByLabel('Password',{exact:true}).fill('Synthetic-Alice-2026!');await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.getByRole('heading',{name:'My panel',exact:true}).waitFor();await page.getByRole('link',{name:'Synthetic patient 03',exact:true}).click();await page.getByRole('heading',{name:'Synthetic patient 03',exact:true}).waitFor();const before=await page.evaluate(async()=>(await(await fetch('/api/session')).json()).auth_generation);await page.evaluate(()=>window.__reviewLogout.release());await page.waitForLoadState('networkidle');const result=await page.evaluate(async()=>{const s=await(await fetch('/api/session')).json(),r=await fetch('/api/patients/SYN-03'),w=await r.json();return{generation:s.auth_generation,principal:s.principal.name,ownedStatus:r.status,ownedMatches:w.auth_generation===s.auth_generation,text:document.querySelector('main').innerText};});if(result.text.includes('Signed out.')||result.text.includes('review controlled')||result.generation!==before||result.ownedStatus!==200)throw new Error(JSON.stringify(result));results.push({fail,generationPreserved:result.generation===before,principal:result.principal,ownedStatus:result.ownedStatus,ownedMatches:result.ownedMatches,staleNoticeOrError:false});await page.evaluate(()=>window.__reviewLogout.restore());await page.getByRole('link',{name:'My panel',exact:true}).click();await page.getByRole('heading',{name:'My panel',exact:true}).waitFor();}return results;})(page);\n```"
+      }
+    ]
+  },
+  {
+    "content": [
+      {
+        "type": "text",
+        "text": "### Result\n{\"currentGenerationSuccessNotifies\":true,\"signinClearsPriorNotice\":true,\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36\"}\n### Ran Playwright code\n```js\nawait (async(page)=>{await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.getByText('Signed out. Patient content and unsaved input were cleared.',{exact:true}).waitFor();const positiveNotice=true;await page.getByLabel('Username',{exact:true}).fill('alice');await page.getByLabel('Password',{exact:true}).fill('Synthetic-Alice-2026!');await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.getByRole('heading',{name:'My panel',exact:true}).waitFor();const cleared=!(await page.locator('main').innerText()).includes('Signed out.');return{currentGenerationSuccessNotifies:positiveNotice,signinClearsPriorNotice:cleared,userAgent:await page.evaluate(()=>navigator.userAgent)};})(page);\n```"
+      }
+    ]
+  }
+]
+

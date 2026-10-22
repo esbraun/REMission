@@ -1,0 +1,19 @@
+import sys,json
+from datetime import timedelta
+sys.path.insert(0,'/app/tests/integration/replay')
+from test_foundation import FoundationTests,observed
+from services.foundation.workflow import current_safety,history
+from services.foundation.store import instant
+x=FoundationTests();x.setUp()
+try:
+ out=[]
+ for key,payload in [('original',observed('independent-fall',kind='intercurrent_event')),('future-retraction',observed('independent-retract',kind='intercurrent_event',lineage_id='independent-fall',revision=2,supersedes='independent-fall',record_status='retracted',recorded_at='2026-10-21T11:00:00+00:00',available='2026-10-21T13:00:00+00:00'))]:
+  response=x.client.post('/api/patients/SYN-02/events',json=payload,headers=x.headers(key=key));assert response.status_code==200,response.text
+ with x.store.transaction() as db:
+  for time in ['2026-10-21T12:59:59.999999+00:00','2026-10-21T13:00:00+00:00','2026-10-21T13:00:00.000001+00:00']:
+   at=instant(time);out.append({'at':time,'safety':[r.record_id for r in current_safety(db,'SYN-02',at)],'learner':[r.record_id for r in history(db,'SYN-02').project(at).records]})
+  assert out[0]['safety']==['independent-fall'];assert out[1]['safety']==[];assert out[1]['learner']==['independent-fall'];assert out[2]['learner']==[]
+  assert db.execute('SELECT count(*) FROM events').fetchone()[0]==2
+  assert db.execute('SELECT count(*) FROM bundles').fetchone()[0]==0
+ print(json.dumps({'cases':out,'retained_envelopes':2,'new_bundles':0},indent=2))
+finally:x.tearDown()

@@ -1,0 +1,118 @@
+"""G0 clock/source/key contract; no generator, PRNG or missingness draw."""
+from copy import deepcopy
+from datetime import datetime, time, timedelta
+from hashlib import sha256
+from pathlib import Path
+
+from contracts.domain.boundaries import ObservedHistory
+from contracts.domain.temporal import ReportingDecision, TemporalContract
+from .parameters import VERSION, reference_parameters
+from .truth import seed_words
+
+TEMPORAL = {"id": "TIME-01", "version": "2.0.0",
+            "sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275"}
+PAIN_SOURCE = {"id": "dgp-clinical-pain", "version": VERSION,
+               "adapter": "synthetic_fhir_shaped"}
+# A deterministic measurement still has a named identity; no draw is consumed.
+PROCESSES = {
+    "pain_measurement": ("measurement", "clinical_pain", "exact_observation"),
+    "quality_measurement": ("measurement", "morning_quality", "error"),
+    "function_measurement": ("measurement", "morning_function", "error"),
+    "diary_measurement": ("measurement", "diary_sleep", "error"),
+    "isi_measurement": ("measurement", "isi", "recall_and_named_item_errors"),
+    "wearable_measurement": ("measurement", "wearable_sleep", "error"),
+    "report_observation": ("missingness", "report_observation", "bernoulli"),
+    "report_upload": ("missingness", "report_upload", "delay"),
+    "wearable_upload": ("missingness", "wearable_upload", "delay"),
+}
+
+
+def verify_temporal_contract() -> TemporalContract:
+    """Bind exact accepted source bytes, not a JSON-reserialized approximation."""
+    path = Path(__file__).resolve().parents[1] / "domain/temporal-v2.json"
+    source = path.read_bytes().replace(b"\r\n", b"\n")
+    if sha256(source).hexdigest() != TEMPORAL["sha256"]:
+        raise ValueError("accepted TIME-01 source hash mismatch")
+    value = TemporalContract.model_validate_json(source)
+    if value.id != TEMPORAL["id"] or value.version != TEMPORAL["version"]:
+        raise ValueError("accepted TIME-01 identity mismatch")
+    return value
+
+
+def timing_manifest() -> dict:
+    verify_temporal_contract()
+    return {"version": VERSION, "synthetic": True, "wire_schema_version": "1.0.0",
+            "temporal_contract": deepcopy(TEMPORAL),
+            "temporal_source": "contracts/domain/temporal-v2.json",
+            "hash_encoding": "UTF-8 source bytes; CRLF normalized to LF; no JSON reserialization",
+            "local_clocks": {"report_event": "07:00", "wearable_sync": "07:00",
+                             "pain_observed_recorded_available": "08:00",
+                             "report_decision_recording": "08:01", "assignment_cutoff": "09:00"},
+            "pain": {"source": deepcopy(PAIN_SOURCE), "concept": "pain", "unit": "dimensionless",
+                     "law": "exact separate clinical observation of current L pain coordinate; no added error",
+                     "availability": "independent of report observation and report upload, including missing reports",
+                     "fallback": "none; missing/late/wrong-source pain rejects reporting decision"},
+            "report_upload": "08:01 recording plus keyed 0/1/3-day delay; absent report has no upload",
+            "wearable_upload": "07:00 sync plus separate keyed 0/1/3-day delay; no report/pain parent",
+            "previous_quality": "latest active earlier-event report strictly available before 08:01; else 7 plus missing flag",
+            "initial_history": "day -14 first reporting decision has no prior report; day -15 latent initial states are not records",
+            "cutoff": "event <= cutoff; recorded and available strictly before cutoff; equal arrivals excluded",
+            "process_keys": {name: {"namespace": ns, "process": proc, "substream": stream}
+                             for name, (ns, proc, stream) in PROCESSES.items()},
+            "future_obligations": ["G1 emits separate observed clinical record even when report missing",
+                                   "G1 validates raw source provenance and process/storage isolation",
+                                   "G1 qualifies PCG64DXSM and scheduling/draw-count invariance",
+                                   "G1 calibrates reporting rates under this history/clock law"]}
+
+
+def process_seed_words(name: str, *, protocol: str, phase: str, scenario: str,
+                       replicate: int, patient: str, time_index: int, root_seed: int) -> list[int]:
+    if name not in PROCESSES:
+        raise ValueError("unknown reporting/measurement process")
+    namespace, process, stream = PROCESSES[name]
+    return seed_words(protocol=protocol, phase=phase, namespace=namespace, scenario=scenario,
+                      replicate=replicate, patient=patient, time_index=time_index,
+                      process=process, stream=stream, root_seed=root_seed)
+
+
+def report_decision(history: ObservedHistory, *, event_at: datetime,
+                    pain_record_id: str, upload_delay_days: int) -> ReportingDecision:
+    """Compose a validated observed-only snapshot at the synthetic local clock.
+
+    Input records must already exist. This never manufactures pain from latent L
+    or from current report fields. UTC normalization/local-calendar replay is G1.
+    """
+    verify_temporal_contract()
+    if event_at.tzinfo is None or event_at.utcoffset() is None or event_at.timetz().replace(tzinfo=None) != time(7):
+        raise ValueError("timezone-aware local 07:00 report event required")
+    if type(upload_delay_days) is not int or upload_delay_days not in (0, 1, 3):
+        raise ValueError("report upload delay must be 0, 1 or 3 days")
+    # Revalidate an instance too; callers cannot bypass guards via model_construct.
+    history = ObservedHistory.model_validate_json(history.model_dump_json())
+    decision_at = event_at.replace(hour=8, minute=1)
+    snapshot = history.project(decision_at)
+    pain = next((r for r in snapshot.records if r.record_id == pain_record_id), None)
+    pain_at = event_at.replace(hour=8)
+    if (pain is None or pain.kind != "observation"
+            or any(getattr(pain.source, key) != value for key, value in PAIN_SOURCE.items())
+            or pain.event_at != pain_at or pain.recorded_at != pain_at or pain.available_at != pain_at
+            or pain.measure.unit != "dimensionless"):
+        raise ValueError("independent 08:00 clinical pain record/source required")
+    return ReportingDecision(schema_version="1.0.0", synthetic=True, kind="reporting_decision",
+                             temporal_version=TEMPORAL["version"], patient_id=history.patient_id,
+                             report_event_at=event_at, decision_at=decision_at, recorded_at=decision_at,
+                             available_at=decision_at + timedelta(days=upload_delay_days),
+                             upload_delay_days=upload_delay_days, pain_record_id=pain_record_id,
+                             pre_report_history=snapshot)
+
+
+def mar_offset(decision: ReportingDecision) -> float:
+    """Canonical observed MAR term, excluding the independently calibrated a.
+
+    Missing-history flag is retained by mar_predictors; its extra coefficient is
+    zero in the canonical equation. MNAR terms belong to evaluator generation.
+    """
+    decision = ReportingDecision.model_validate_json(decision.model_dump_json())
+    p = decision.mar_predictors()
+    quality, pain = reference_parameters()["parameters"]["report_MAR_coefficients"]["value"]
+    return quality * (10 - p["previous_observed_quality"]) / 2 + pain * p["current_observed_pain"]

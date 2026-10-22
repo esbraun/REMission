@@ -1,0 +1,19 @@
+import hashlib,json,subprocess
+from pathlib import Path
+root=Path.cwd();out=root/'review-evidence'
+prefix='remission-astra-2a7726'
+roles={}
+for role in ['service','learner','tests']:
+ tag=f'{prefix}-{role}:candidate'
+ paths=['contracts/runs/__init__.py','contracts/runs/common.py','contracts/runs/observed.py','contracts/runs/admission.py','contracts/runs/bindings-v1.json']
+ if role in ['service','tests']:paths += [str(p.relative_to(root)).replace('\\','/') for p in (root/'services/foundation').rglob('*.py')]
+ else:paths+=['services/learner/worker.py','services/learner/export_observed.py']
+ code='import hashlib,json,pathlib; paths='+repr(paths)+'; print(json.dumps({p:hashlib.sha256((pathlib.Path("/app")/p).read_bytes()).hexdigest() for p in paths}))'
+ cmd=['docker','run','--rm','--network','none','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true',tag,'python','-c',code]
+ result=subprocess.run(cmd,capture_output=True,text=True,check=True)
+ actual=json.loads(result.stdout);expected={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in paths}
+ if actual!=expected:raise RuntimeError('image/source bytes differ')
+ roles[role]=dict(command=cmd,stdout=result.stdout,exit_code=result.returncode,image_id=subprocess.check_output(['docker','image','inspect',tag,'--format','{{.Id}}'],text=True).strip(),source_sha256=expected,match=True)
+data=dict(head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),origin=subprocess.check_output(['git','remote','get-url','origin'],text=True).strip(),root=str(root),roles=roles,claim='Actual copied public modules match exact reviewer HTTPS clone; no source mount in image byte probe')
+(out/'source-image-binding.json').write_text(json.dumps(data,indent=2)+'\n')
+print('PASS independent image bytes match reviewer exact HTTPS clone for all three images')

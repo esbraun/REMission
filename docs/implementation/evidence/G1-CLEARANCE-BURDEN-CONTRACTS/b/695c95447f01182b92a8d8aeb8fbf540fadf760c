@@ -1,0 +1,82 @@
+"""Independent source identity and finite arithmetic probes; no project imports."""
+import hashlib
+import json
+import math
+from fractions import Fraction
+from pathlib import Path
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / '.review-artifacts'
+
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=ROOT)
+
+head = git('rev-parse', 'HEAD').decode().strip()
+base = 'ec18cb4020ba239710a3fd615e365d5cd72b4d80'
+assert head == '01ffab3a3f55cf4c228648ab28a934aed9f30ec6'
+assert git('merge-base', head, base).decode().strip() == base
+manifest_path = 'docs/implementation/evidence/G1-CLEARANCE-BURDEN-PLAN-20261021/'
+sources = json.loads(git('show', head + ':' + manifest_path + 'source-identities.json'))
+artifacts = json.loads(git('show', head + ':' + manifest_path + 'artifact-manifest.json'))['artifacts']
+checks = []
+for item in sources + artifacts:
+    revision = item.get('base', head)
+    identity = item.get('git_blob', item.get('raw_git_blob'))
+    raw = git('show', revision + ':' + item['path'])
+    actual = git('rev-parse', revision + ':' + item['path']).decode().strip()
+    declared_raw = git('cat-file', 'blob', identity)
+    assert hashlib.sha256(declared_raw).hexdigest() == item['sha256']
+    assert len(declared_raw) == item.get('git_bytes', item.get('bytes'))
+    target = OUT / 'inputs' / identity
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(declared_raw)
+    assert git('hash-object', '-w', '--no-filters', str(target)).decode().strip() == identity
+    assert git('cat-file', 'blob', identity) == declared_raw
+    checks.append({'path': item['path'], 'revision': revision, 'git_blob': identity,
+                   'bytes': len(declared_raw), 'sha256': hashlib.sha256(declared_raw).hexdigest(),
+                   'tree_blob':actual,'tree_matches_declared_blob':actual==identity,
+                   'tree_diff_only_crlf':raw.replace(b'\r\n',b'\n') == declared_raw.replace(b'\r\n',b'\n'),
+                   'verified_raw_object': True})
+
+catalog = json.loads(git('show', base + ':contracts/dgp/scenarios-v1.json'))
+cells = catalog['cells']
+inventory = {'cells': len(cells), 'families': len({c['family'] for c in cells}),
+             'variants': len({(c['family'], c['variant']) for c in cells}),
+             'n240_families': sorted({c['family'] for c in cells if c['patients'] == 240})}
+assert (inventory['cells'], inventory['families'], inventory['variants']) == (82, 32, 73)
+
+arithmetic = []
+for n in range(4):
+    p = Fraction(1, 4) + Fraction(n, 20)
+    probabilities = [math.comb(4,k)*p**k*(1-p)**(4-k) for k in range(5)]
+    assert sum(probabilities) == 1
+    mean = sum(k*probabilities[k] for k in range(5))
+    variance = sum((k-mean)**2*probabilities[k] for k in range(5))
+    assert mean == 4*p and variance == 4*p*(1-p)
+    arithmetic.append({'N':n,'p':str(p),'probabilities':list(map(str,probabilities)),
+                       'mean':str(mean),'variance':str(variance),
+                       'probability_at_least_3':str(sum(probabilities[3:]))})
+
+# Best possible k=4 probability under the proposed support is (.4)^4.
+# With independent arms and complete defined reports, zero-count trials still
+# have positive mass. These are exact finite probabilities, not simulations.
+precision = []
+for n_arm in (30,120):
+    q = Fraction(16,625)
+    zero_trial = (1-q)**n_arm
+    log10_no_zero_in_1000 = 1000*math.log10(1-float(zero_trial))
+    precision.append({'n_arm':n_arm, 'maximum_category4_probability':str(q),
+                      'minimum_zero_category4_trial_probability':float(zero_trial),
+                      'log10_probability_no_zero_trial_in_1000_upper_bound':log10_no_zero_in_1000,
+                      'nonzero_population_indicator_variance':float(q*(1-q))})
+
+diff = subprocess.run(['git','diff','--check',base,head],cwd=ROOT,capture_output=True)
+(OUT/'diff-check.txt').write_bytes(diff.stdout+diff.stderr)
+result = {'head':head,'base':base,'merge_base':base,'source_identity_checks':checks,
+          'catalog':inventory,'exact_burden_enumeration':arithmetic,
+          'precision_feasibility':precision,'whole_candidate_diff_check_exit':diff.returncode,
+          'scope':'source bytes and finite arithmetic only; no engine or runtime execution'}
+(OUT/'source-check-manifest.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+print(json.dumps({'verified_identities':len(checks),'catalog':inventory,'precision':precision,
+                  'diff_check_exit':diff.returncode},indent=2))

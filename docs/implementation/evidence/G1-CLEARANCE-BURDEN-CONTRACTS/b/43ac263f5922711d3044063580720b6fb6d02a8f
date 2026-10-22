@@ -1,0 +1,44 @@
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+root = Path(__file__).resolve().parents[1]
+out = root / '.review-artifacts'
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=root)
+
+supplemental = []
+for name in ('contracts/domain/temporal.py','contracts/domain/common.py',
+             'contracts/domain/boundaries.py','docs/spec/08-gates-and-release.md',
+             'docs/spec/traceability/g1.md','plan.md'):
+    raw = git('show','HEAD:'+name)
+    blob = git('rev-parse','HEAD:'+name).decode().strip()
+    path = out/'inputs'/blob
+    path.write_bytes(raw)
+    assert git('hash-object','-w','--no-filters',str(path)).decode().strip() == blob
+    assert git('cat-file','blob',blob) == raw
+    supplemental.append({'path':name,'git_blob':blob,'bytes':len(raw),
+                         'sha256':hashlib.sha256(raw).hexdigest()})
+
+artifacts = []
+for name in ('review.md','source-check-manifest.json','source_checks.py',
+             'inspection-notes.md','diff-check.txt','finalize.py'):
+    path = out/name
+    raw = path.read_bytes()
+    blob = git('hash-object','-w','--no-filters',str(path)).decode().strip()
+    assert git('cat-file','blob',blob) == raw
+    artifacts.append({'path':str(path),'git_blob':blob,'bytes':len(raw),
+                      'sha256':hashlib.sha256(raw).hexdigest(),'cat_file_verified':True})
+
+manifest = {'disposition':'changes_requested','scope':'PLAN ONLY',
+            'head':git('rev-parse','HEAD').decode().strip(),
+            'base':'ec18cb4020ba239710a3fd615e365d5cd72b4d80',
+            'worktree':str(root),'model':'assigned gpt-6-astra/medium; independent effective-model introspection unavailable',
+            'artifacts':artifacts,'supplemental_sources':supplemental}
+path = out/'artifact-manifest.json'
+raw = (json.dumps(manifest,indent=2)+'\n').encode()
+path.write_bytes(raw)
+blob = git('hash-object','-w','--no-filters',str(path)).decode().strip()
+assert git('cat-file','blob',blob) == raw
+print(json.dumps({'manifest_blob':blob,'artifacts':artifacts},indent=2))

@@ -1,0 +1,20 @@
+"""Reviewer-only command rebinding; preserves candidate runner source."""
+import importlib.util,os
+from pathlib import Path
+root=Path.cwd()
+os.environ['REMISSION_INTERFACE_IMAGE_PREFIX']='remission-astra-95a481'
+p=root/'docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/verify_repair.py'
+spec=importlib.util.spec_from_file_location('candidate_repair_runner',p)
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+original=m.run
+def owned(command):
+ command=list(command)
+ for i,arg in enumerate(command):
+  if 'REMission-worktrees' in arg and 'g1-generator-interfaces-sol-20261021' in arg:
+   assert arg.replace('\\','/').endswith('/docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/preservation.py'),arg
+   replacement=root/'docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/preservation.py'
+   print('REVIEWER_REBIND',arg,'=>',replacement,flush=True)
+   command[i]=str(replacement)
+ return original(command)
+m.run=owned
+m.main()

@@ -1,0 +1,13 @@
+# Acceptance-status correction addendum
+
+This addendum corrects acceptance-status narration in `report.md`. The original report and its source hash manifest remain byte-for-byte unchanged. No source exploration was repeated for this correction; acceptance facts below were supplied by the root orchestrator with the task instruction.
+
+## Corrected status
+
+The canonical G1 technical plan, Git blob `5d46eb071485a9d5f2ed0473880a75fcab181556`, was independently accepted under PR15. The acceptance report is Git blob `51cf9d0c2692bbf5ed18ac269cc00e8893fd047f`. Therefore, the original report's statements that the plan “is a planning candidate pending independent critique” and that its status is “not an accepted implementation” are stale historical labels from inside the plan and must not be used as current acceptance status.
+
+OBS-REP-02 R1 was independently accepted and implemented as a bounded change under PR18 at the current accepted base `ec18cb4020ba239710a3fd615e365d5cd72b4d80`. Its ready report is Git blob `b03e3b54078778d2a7d063ea2cf9cd41e5ccf9a4`. The in-file label “unaccepted replacement candidate” is likewise historical and is not the current acceptance record. The v2 representation/operational burden contract in that bounded implementation is accepted at this base.
+
+These corrected statuses do not supply a subjective patient-burden instrument, scale, assessment window, measurement/reporting law, or source mapping. They do not establish that an actual producer emits those records or that full G1 generator acceptance is complete. The report's bounded source finding remains: operational prompt caps/counts and a distinct operational burden representation are specified, while no subjective rating definition was found in the inspected sources. Full producer and G1 evidence remain open.
+
+The previously disclosed initial primary-checkout status command was read-only and preceded detached-worktree verification. No further primary-checkout commands were run. Original report and manifest bytes were preserved.

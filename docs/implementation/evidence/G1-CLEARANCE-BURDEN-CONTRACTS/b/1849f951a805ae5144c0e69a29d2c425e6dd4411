@@ -1,0 +1,58 @@
+{
+  "scope": "finite abstract planning algebra only; no application imports/runtime acceptance",
+  "cases": [
+    {
+      "case": "original bytes and old export preserved",
+      "result": "pass"
+    },
+    {
+      "case": "held/adopted/unadopted and closed map survive cutover",
+      "result": "pass"
+    },
+    {
+      "case": "closed generation then recurrence g2",
+      "result": "pass"
+    },
+    {
+      "case": "strict before/equal/after cutover and equal-time group",
+      "result": "pass"
+    },
+    {
+      "case": "suffix alone",
+      "result": "expected refusal",
+      "stage": "trusted count"
+    },
+    {
+      "case": "self-consistent truncated prefix",
+      "result": "expected refusal",
+      "stage": "trusted count"
+    },
+    {
+      "case": "rewritten old payload with rehashed envelope",
+      "result": "expected refusal",
+      "stage": "predecessor"
+    },
+    {
+      "case": "forged closed-state transition reaches fold",
+      "result": "expected refusal",
+      "stage": "closed state"
+    },
+    {
+      "case": "reset recurrence reaches fold",
+      "result": "expected refusal",
+      "stage": "recurrence"
+    },
+    {
+      "case": "restored original positive control after faults",
+      "result": "pass"
+    }
+  ],
+  "not_exercised": [
+    "real 1.0 database upgrade",
+    "complete proposed schemas/rosters",
+    "tasks/HTTP/auth/committed closure",
+    "producer qualification",
+    "browser/process/crash behavior",
+    "clinical gates"
+  ]
+}

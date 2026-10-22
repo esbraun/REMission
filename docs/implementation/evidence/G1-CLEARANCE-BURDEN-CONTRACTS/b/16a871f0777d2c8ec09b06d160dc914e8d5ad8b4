@@ -1,0 +1,110 @@
+# G0 legacy requirement traceability
+
+Source: `plan.md` at `b21f00003e3f31866f29f9dc20f0d367d39ab11f`. IDs enumerate original paragraphs, list items and table rows, including explanatory/math units so none is silently omitted. Excerpts are locators, not replacement requirements. Canonical documents retain full text; `revised` entries have explicit revision dispositions in the [history](../revision-history.md). Each mandatory unit receives task/test IDs before implementation. No tests are asserted here.
+
+| ID | Original excerpt | Canonical home | Disposition |
+|---|---|---|---|
+| LEG-01-001 | Build the recommended hybrid workflow: | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-002 | 1. **At outpatient decision points:** a hierarchical Bayesian longitudinal causal model estimates the outcomes of c | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-003 | 2. **For suitable reversible comparisons:** a clinician-approved randomized N-of-1 protocol generates patient-speci | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-004 | 3. **For durable behavioral treatment:** maintain CBT-I or brief behavioral treatment as a continuing intervention; | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-005 | 4. **Between appointments:** first use micro-randomized trials (MRTs) of the delivery of already approved behaviora | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-006 | 5. **Throughout:** clinicians control treatment assignment. Clinical eligibility rules restrict the action set befo | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-007 | This composition connects population evidence, prospective individual learning, and modest online adaptation while  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-008 | The demonstration must show the full loop: ingestion → assessment → eligible choices → posterior estimates → clinic | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-009 | **Cold-start qualification:** previous studies can inform average effects and uncertainty. They cannot establish a  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-010 | ### Alternative compositions | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-011 |  /  Composition  /  How it works  /  Advantages  /  Limitations  /  Decision  /  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-012 |  /  Bayesian population model at visits  /  Borrow study evidence, update with historical EMR and prospective outco | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-013 |  /  N-of-1 centered workflow  /  Each suitable patient completes repeated randomized comparisons with hierarchical  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-014 |  /  **Recommended hybrid**  /  Bayesian visit decisions + selected N-of-1 protocols + sequential behavioral escalat | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-015 |  /  Long-horizon treatment RL  /  Optimize treatment sequences and delayed outcomes across visits  /  Could address | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-01-016 | The contextual bandit is the initial online reinforcement-learning component. It optimizes proximal support deliver | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-001 | Start with clinical assessment, not a sleep score. The cancer insomnia guideline and cancer symptom workflow suppor | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-002 |  /  Step  /  Information and action  /  Representation in the prototype  /  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-003 |  /  Confirm the problem  /  Sleep history, patient goals, insomnia severity, daytime impairment, sleep opportunity, | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-004 |  /  Identify contributors  /  Chemotherapy phase, corticosteroid exposure, pain, nausea, distress, fatigue, naps, o | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-005 |  /  Address contributors  /  Coordinate symptom management and any changes to oncology or supportive medicines with | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-006 |  /  Select behavioral care  /  Offer evidence-based behavioral insomnia care suited to treatment burden and clinica | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-007 |  /  Consider medication  /  Review existing therapy, interactions, contraindications, sedation and fall risk, and c | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-008 |  /  Reassess  /  Review symptoms, function, harms, adherence, goals, and whether the treatment is still appropriate | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-009 | ESMO recommends CBT-I as first-line therapy for insomnia in adults with cancer and distinguishes the role of brief  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-010 | Use leukemia-specific clinical context to determine eligibility and transportability. The cited brief behavioral th | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-011 | **ISI interpretation.** The ISI is a seven-item, 0–28 self-report scale that has been validated in a large mixed-ca | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-012 | **Wearable limits.** Oura measurements are supportive observations. The cited validation study enrolled 96 healthy  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-013 | **Medication demonstration rules.** For the runnable demonstration, use fictional medication identifiers MED_A and  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-014 | **Fall risk.** Sedative-hypnotic use was an independent risk factor for falls among hospitalized patients with hema | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-015 | **Acute concerns.** Acute clinical concerns enter a clinical review/hold pathway. The prototype routes them to a de | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-016 | ### 2.1 Research oversight and consent | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-017 | N-of-1 trials sit on a contested boundary between clinical care and research. A survey reported by Stunnenberg and  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-018 | For the synthetic demonstration, model this explicitly rather than ignoring it: | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-019 | - Each patient carries a per-component consent and oversight record (N-of-1, behavioral escalation randomization, M | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-020 | - The policy controller treats a missing, expired, or withdrawn record as an eligibility exclusion. No randomizatio | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-021 | - Withdrawal stops future assignment and is logged; it does not delete prior assignment records. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-02-022 | The actual oversight determination belongs to the clinical translation project (section 18). | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-001 | Model clinical state, experiment state, data readiness, and the selected historical view separately. A patient can  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-002 | **Clinical state** | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-003 | - Assessment: information gathering and contributor review. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-004 | - Initial assignment: a visit-level plan is being selected. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-005 | - Treatment active: the approved plan is being delivered. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-006 | - Scheduled reassessment: a visit reviews response and the next plan. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-007 | - Maintenance/closeout: continue, taper/review where appropriate, or close the insomnia episode. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-008 | - Clinical hold: reassess safety or a major change before resuming experimental choices. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-009 | **Parallel learning state** | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-010 | - No individual experiment. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-011 | - N-of-1 eligibility/design. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-012 | - N-of-1 block active. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-013 | - N-of-1 interim/final review. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-014 | - Behavioral escalation decision. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-015 | - MRT/bandit support active, frozen, or unavailable. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-016 | The learning state never overrides the clinical state. A medication order, a randomized assignment, and a delivered | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-017 | mermaid flowchart TD A["Assessment"] --> B["Visit assignment"] B --> C["Approved treatment"] C --> D["Between-visit | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-018 | Any state can enter a hold through the clinical controller. The diagram illustrates the principal loop rather than  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-019 | **Ownership:** clinicians select and approve treatment plans; nurses manage designated follow-up tasks; behavioral  | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-020 | ### 3.1 Coordination between concurrent learning components | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-021 | The N-of-1 endpoint (daily reported sleep quality) and the support-prompt reward (next-morning report) are the same | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-022 | - While an N-of-1 block or its washout is active, the support policy for that patient is **frozen** to a fixed, pre | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-023 | - Each estimand contract names the support policy in force (section 4), so the N-of-1 and visit-level effects are i | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-024 | - Pooled bandit updates may continue to use other patients' data. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-03-025 | - A newly randomized escalation assignment likewise records the support policy version in force. | [00-scope-and-invariants.md](../00-scope-and-invariants.md) | preserved |
+| LEG-04-001 | Write an estimand contract for every decision type. Specify the eligible population, intervention version, comparat | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-002 |  /  Decision  /  Primary causal question  /  Endpoint and horizon  /  Data suitable for identification  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-003 |  /  Initial or revised visit plan  /  What is the expected effect of assigning eligible plan A versus B now, under  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-004 |  /  N-of-1 medication comparison  /  For this patient, what is the effect of assigning A versus B during an eligibl | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-005 |  /  Behavioral escalation  /  For eligible nonresponders, what is the effect of continuing versus escalating an ong | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-006 |  /  Support prompt  /  Among available decision points, what is the causal excursion effect of offering a permitted | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-007 | For a visit at time $t$, define: | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | revised |
+| LEG-04-008 | $$ \Delta_t(h; a, b, \pi, K) = E\left[\,Y_{t+K}^{a,\pi} - Y_{t+K}^{b,\pi} \;\middle / \; H_t = h,\ a, b \text{ elig | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-009 | Here $H_t$ contains only information available before assignment. The same continuation policy mapping $\pi$ applie | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-010 | For the demo, a six-week distal outcome and appointment-aligned reassessments are engineering choices. A trial repo | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-011 | **Intercurrent events.** "Censoring" is not an adequate description of what happens to these patients within a six- | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-012 |  /  Intercurrent event  /  Default strategy in the demo  /  Consequence  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-013 |  /  Death  /  While-alive for ISI; death reported as a separate outcome  /  No ISI is imputed after death; do not t | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | revised |
+| LEG-04-014 |  /  Hospital admission / leaving outpatient scope  /  Reported as a separate outcome; ISI contrast defined while in | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | revised |
+| LEG-04-015 |  /  Chemotherapy regimen or steroid schedule change  /  Treatment policy (part of real-world care)  /  Outcome stil | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-016 |  /  Rescue hypnotic use  /  Treatment policy for the primary contrast; reported alongside  /  Do not exclude rescue | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-017 |  /  Discontinuation or clinician override of the assigned plan  /  Treatment policy (effect of assignment)  /  Per- | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-018 | Primary randomized analyses estimate effects of assignment. If a clinician overrides a randomized proposal or a pat | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-019 | **Blinding.** Record for every randomized comparison whether the patient and clinician are blinded. The N-of-1 outc | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-04-020 | CATE is a conditional average effect. A patient-specific posterior incorporating their repeated observations is sti | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-001 | Use versioned contracts and a replay clock. Every clinical or wearable record needs an event time and an availabili | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-002 |  /  Entity  /  Minimum fields  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-003 |  /  Patient  /  Synthetic ID; demographic/clinical covariates; preferences; baseline eligibility; care team  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-004 |  /  Consent/oversight record  /  Component (N-of-1, escalation randomization, MRT/bandit), status, version, date, w | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-005 |  /  Encounter  /  Encounter ID, scheduled/actual time, care setting, chemotherapy phase/cycle, review status  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-006 |  /  Medication order  /  Drug identifier, intended schedule, order/change/stop times, ordering clinician, source  / | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-007 |  /  Medication exposure  /  Actual taken/reported administration, timing, adherence, rescue use, uncertainty  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-008 |  /  Clinical observation  /  Concept, value, unit, event time, available-at time, source, corrected/superseded stat | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-009 |  /  Intercurrent event  /  Type (death, admission, regimen change, discontinuation, rescue), event and available-at | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-010 |  /  Oura-like observation  /  Record type, sleep episode/date, estimated sleep/wake measures, source/device version | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-011 |  /  Patient report  /  Daily diary/function/adverse symptoms; ISI items, instrument version, and recall interval; p | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-012 |  /  External study  /  Population, intervention/comparator, outcome/scale, follow-up, effect/SE or IPD, covariate d | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-013 |  /  Decision snapshot  /  History cutoff, workflow state, eligible actions and reasons, outcome/horizon, posterior/ | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-014 |  /  Assignment event  /  Recommended option, approved option, experimental assignment, assignment probability, blin | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-015 |  /  Delivery event  /  Offered/delivered/taken action, time, adherence, rescue, protocol deviation  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-016 |  /  Follow-up task  /  Owner, due date, trigger, status, escalation destination  /  | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-017 |  /  Audit/model run  /  Actor, change, versions, fit diagnostics, execution time, reproducible seed, data lineage   | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-018 |  /  Simulator truth  /  Latent states, structural parameters, counterfactual outcomes; accessible only to evaluatio | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-019 | Use a FHIR-shaped EMR adapter and a versioned Oura replay adapter. Consult SMART App Launch and Oura's official API | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-020 | Keep units, timezone, overnight episodes crossing midnight, local calendar dates, lab reference context, duplicates | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |
+| LEG-05-021 | Historical EMR lacking insomnia measures, treatment details, or essential confounders cannot supply a trustworthy e | [01-estimands-and-contracts.md](../01-estimands-and-contracts.md) | preserved |

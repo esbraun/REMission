@@ -1,0 +1,72 @@
+{
+  "url": "http://127.0.0.1:8768",
+  "health": "ok",
+  "seed": "foundation-fixture-20261021-v1",
+  "cutoff": "2026-10-21T09:00:00+00:00",
+  "containers": {
+    "remission-g1-foundation-review3179-service": {
+      "image": "sha256:9227c66bc6f801a7ea4c56bef1e503113b2b35c15047a571a70988fd78864765",
+      "user": "10001:10001",
+      "readonly_rootfs": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "privileged": false,
+      "pid_mode": "",
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review3179-database",
+          "Destination": "/data",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review3179-observed",
+          "Destination": "/observed",
+          "RW": false
+        }
+      ],
+      "networks": [
+        "remission-g1-foundation-review3179-app"
+      ]
+    },
+    "remission-g1-foundation-review3179-evaluator": {
+      "image": "sha256:a7ba6a5eef9ad2b6f4608bd9b43f90d206f70941820df315aea03f56064cdff0",
+      "user": "20000:20000",
+      "readonly_rootfs": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "privileged": false,
+      "pid_mode": "",
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review3179-reports",
+          "Destination": "/reports",
+          "RW": true
+        },
+        {
+          "Type": "volume",
+          "Name": "remission-g1-foundation-review3179-truth",
+          "Destination": "/truth",
+          "RW": false
+        }
+      ],
+      "networks": [
+        "remission-g1-foundation-review3179-private"
+      ]
+    }
+  },
+  "limits": [
+    "Hand-authored private canary; longitudinal generator/truth evaluator not implemented",
+    "Foundation observed reader has no statistical engine"
+  ]
+}

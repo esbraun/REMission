@@ -1,0 +1,22 @@
+PASS build service
+PASS build learner
+PASS build tests
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe -m pip check
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe -m contracts.domain.export --check
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe -m contracts.dgp.export --check
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe -m contracts.artifacts.ope_export --check
+PASS discover -s tests/contracts -v
+PASS discover -s tests/library -v
+PASS discover -s tests/library/dr -v
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe docs/implementation/check-ledger-20261020.py
+PASS sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -c import subprocess;subprocess.check_call(['python','-m','pip','check']);subprocess.check_call(['python','-m','tooling.library.check-runtime'])
+PASS sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7 python -m tooling.library.verify_dr
+PASS python -m contracts.runs.export --check
+PASS discover -s tests/run_contracts -v
+PASS discover -s tests/integration/replay -v
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-sol-20261021\docs\implementation\evidence\G1-GENERATOR-INTERFACES-20261021\preservation.py
+PASS git diff --check 69e6ae9dc5bf85ddbf39976d2ce4ce70bce1ea1e
+PASS no-new-privileges:true --tmpfs /tmp:rw,noexec,nosuid,size=64m remission-astra-95a481-tests:candidate
+PASS C:\Users\erics\Documents\Projects\REMission-worktrees\g1-generator-interfaces-r1-review-astra-20261021\review-clone\review-venv\Scripts\python.exe -c import importlib.util,os,pathlib; p=pathlib.Path('docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/verify_consumers.py'); s=importlib.util.spec_from_file_location('owned_consumer_probe',p); m=importlib.util.module_from_spec(s);s.loader.exec_module(m);m.OUT=p.parent/'repair';m.IMAGE_PREFIX='remission-astra-95a481';m.main()
+PASS 2a7726be23864cf9c933295f1d33da3d6fbedd1b -- docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021 :!docs/implementation/evidence/G1-GENERATOR-INTERFACES-20261021/repair/**
+OBSERVED independent-probes-2a.py exit 1

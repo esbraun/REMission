@@ -1,0 +1,66 @@
+{
+  "fixture": "review-dr-reference-1.0.0",
+  "scores": [
+    {
+      "case": "stochastic_nonuniform",
+      "actual": 3.666666666666667
+    },
+    {
+      "case": "negative_residual",
+      "actual": 1.0
+    },
+    {
+      "case": "zero_q_ips",
+      "actual": 2.6666666666666665
+    },
+    {
+      "case": "zero_residual",
+      "actual": 3.0
+    },
+    {
+      "case": "target_zero_factual",
+      "actual": 4.0
+    },
+    {
+      "case": "one_action_deterministic",
+      "actual": 3.0
+    }
+  ],
+  "seed": 2026102101,
+  "generator": "PCG64DXSM",
+  "replicates": 2000,
+  "mean": [
+    3.0,
+    1.0
+  ],
+  "variance": 0.051204058887324,
+  "ci": [
+    [
+      2.4825317604355717,
+      3.3703703703703702
+    ],
+    [
+      0.4825317604355717,
+      1.3703703703703705
+    ]
+  ],
+  "paired": [
+    [
+      -2.0,
+      -1.9999999999999998
+    ]
+  ],
+  "exact_cdf_max_error": 0.012925980751121002,
+  "DKW_99pct_bound": 0.036394770800720934,
+  "scalar_replay_max_error": 0.0,
+  "mutations_rejected_before_score": [
+    "mixed_boolean_available",
+    "float_action",
+    "same_daily_outcome_distinct_window",
+    "infinite_feature",
+    "unsupported_counterfactual",
+    "late_target",
+    "late_prediction",
+    "wrong_protocol_order"
+  ]
+}

@@ -1,0 +1,52 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 1.16kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 165B 0.0s done
+#3 DONE 0.0s
+
+#4 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#4 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 80.35kB 0.1s done
+#5 DONE 0.1s
+
+#6 [client 3/6] COPY web/package.json web/package-lock.json ./
+#6 CACHED
+
+#7 [client 4/6] RUN npm ci --ignore-scripts
+#7 CACHED
+
+#8 [client 5/6] COPY web/ ./
+#8 CACHED
+
+#9 [client 2/6] WORKDIR /client
+#9 CACHED
+
+#10 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 2.5s done
+#11 exporting manifest sha256:e801c6615b485dd8719b92832a99f6e0140a82eeac053f578cf940d1ad4c061c done
+#11 exporting config sha256:6545f21b7389b2b4f7c6002b0665bcbd5ce5e1f08a4393d4d435a78c48d80091 done
+#11 exporting attestation manifest sha256:0d193c3abb35a24a413adee6931991abefebf7075f15ece597b9c13317aa8e3d done
+#11 exporting manifest list sha256:bc3ae667fd6373cb0de9fd0eada0d51216b26126d0ee87a47a6ed0b361d16dc0 done
+#11 naming to docker.io/library/remission-foundation-client:review3179clone done
+#11 unpacking to docker.io/library/remission-foundation-client:review3179clone
+#11 unpacking to docker.io/library/remission-foundation-client:review3179clone 0.5s done
+#11 DONE 3.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/4lyt1x4qf6c5d5e8vl1jt5m55

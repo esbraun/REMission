@@ -1,0 +1,147 @@
+# G5 legacy requirement traceability
+
+Source: `plan.md` at `b21f00003e3f31866f29f9dc20f0d367d39ab11f`. IDs enumerate original paragraphs, list items and table rows, including explanatory/math units so none is silently omitted. Excerpts are locators, not replacement requirements. Canonical documents retain full text; `revised` entries have explicit revision dispositions in the [history](../revision-history.md). Each mandatory unit receives task/test IDs before implementation. No tests are asserted here.
+
+| ID | Original excerpt | Canonical home | Disposition |
+|---|---|---|---|
+| LEG-10-001 | The following sources guide the design process and specific presentation choices. They do not establish that a part | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-002 |  /  Research or guide  /  Relevant finding or requirement  /  Application in this app  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-003 |  /  NIST EHR usability protocol  /  Combine clinical/human-factors review with representative users performing real | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-004 |  /  NIST safety-enhanced usability research  /  Keep patient identification consistent and make outdated/inappropri | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-005 |  /  AHRQ workflow/CDS guidance  /  Match support to the actual decision and team workflow  /  Place actionable comp | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-006 |  /  NHS design system and principles  /  Start from user needs and use consistent, accessible patterns  /  Stable n | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-007 |  /  NHS accessibility guidance; WCAG 2.2  /  Design and test accessible interaction  /  Keyboard operation, visible | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-008 |  /  Government Analysis Function dashboard guidance  /  Choose metrics for user needs; limit clutter; make metadata | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-009 |  /  Guidance on statistical uncertainty  /  Explain uncertainty and limitations prominently and at useful levels of | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-010 |  /  HARVEST formative research  /  Longitudinal record visualization can support point-of-care chart review  /  A l | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-011 |  /  Rheumatology dashboard co-design study  /  Develop longitudinal clinical/patient-report displays with users and | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-012 |  /  FDA CDS guidance, issued January 6, 2026 and superseded by the January 29, 2026 version  /  Enable independent  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-013 | FDA transparency guidance informs this design; the prototype does not claim a non-device classification. Use the Ja | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-014 | ### Interaction principles to implement and test | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-015 | - **Keep the shell stable.** Dashboard, Next treatment assignment, Timeline & history, and Evidence & diagnostics s | [06-service-and-ui.md](../06-service-and-ui.md) | revised: UX presentation; see revision history |
+| LEG-10-016 | - **Show the decision first.** A short clinical context, readiness status, and eligible choices precede technical m | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-017 | - **Reveal detail progressively.** Provide an immediately visible uncertainty/support summary, with deeper prior, o | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-018 | - **Keep urgent clinical information visible.** Holds and action-blocking reasons are inline, specific, and actiona | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-019 | - **Use direct comparisons.** Compare a small eligible choice set against the same reference and horizon. Avoid a d | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-020 | - **Distinguish observations from estimates.** Patient report, wearable estimate, causal estimate, and clinician ju | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-021 | - **Prevent context errors.** Patient, decision date, current versus historical mode, and data cutoff stay visible  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-022 | - **Make action consequences clear.** Approval, experimental enrollment, pause, and completion use different verbs  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-023 | - **Avoid relying on hover.** Critical values/reasons are readable and keyboard-accessible; every chart has a tabul | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-024 | - **Preserve useful customization.** Clinicians can change date range and expand panels, but cannot hide patient id | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-10-025 | These are design requirements derived from the sources and this workflow. Validate the exact labels, density, and p | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-001 | Provide two levels, with an explicit patient selector. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-002 | The demonstration has a persistent "Synthetic demonstration — simulated patients and estimates" label. Reference-st | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-003 | ### 11.1 Clinic dashboard | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-004 | An actionable worklist is the main view. Small summary counts link to the same filtered list; avoid a wall of unrel | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-005 |  /  Column  /  Purpose  /  | [06-service-and-ui.md](../06-service-and-ui.md) | revised: UX presentation and authenticated doctor scope; see revision history |
+| LEG-11-006 |  /  Patient identifiers and appointment  /  Keep identity and outpatient timing clear  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-007 |  /  Clinical/learning stage  /  Show active care and experiment status separately  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-008 |  /  Next task and owner  /  Identify what the team should do next  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-009 |  /  Latest ISI/report trend  /  Show date, recall window, and missingness  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-010 |  /  Relevant safety or review trigger  /  Distinguish a clinical hold from a data issue  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-011 |  /  Data readiness  /  Latest diary/Oura sync and missing required inputs  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-012 |  /  Assignment status  /  Pending review, approved, active block, outcome due, or maintenance  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-013 |  /  Follow-up due  /  Make overdue and upcoming work actionable  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-014 | Default ordering prioritizes configured clinical review tasks and decisions due; document sorting and allow filters | [06-service-and-ui.md](../06-service-and-ui.md) | revised: UX presentation and authenticated doctor scope; see revision history |
+| LEG-11-015 | Counts use denominators and timestamps: for example, "3 of 12 scheduled patients need data review." A patient with  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-016 | ### 11.2 Selected-patient dashboard | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-017 | Use a consistent top-to-bottom hierarchy: | [06-service-and-ui.md](../06-service-and-ui.md) | revised: UX presentation; see revision history |
+| LEG-11-018 | 1. **Patient/context banner:** identity, care team, chemotherapy phase, current/historical mode, selected decision, | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-019 | 2. **Current plan and next task:** approved intervention, clinical/learning stage, next appointment, and the single | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-020 | 3. **Clinical readiness and contributors:** relevant reviewed problems, interaction/stability status, fall-risk rev | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-021 | 4. **Aligned trend panels:** ISI at its assessment dates; daily reported sleep/function; Oura-estimated sleep. Shar | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-022 | 5. **Treatment/phase lanes:** behavioral program, medication order and actual use, N-of-1 blocks and washouts, chem | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-023 | 6. **Evidence summary:** last decision's main comparison, uncertainty, evidence support, and prior dependence. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-024 | 7. **Data and follow-up:** coverage, latest available data, discordance, and owned tasks. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-025 | Graphs show gaps as gaps. Display wearable coverage and device-version changes; distinguish raw observations, any s | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-026 | Use signed treatment-effect dot-and-interval plots with a clearly labeled comparator, scale, direction of benefit,  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-11-027 | For sparse ISI visits, show assessment points and recall windows; a connected line must not imply continuous daily  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-001 | This is a decision workspace, not a generic analytics page. Its title remains stable; its task header changes, for  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-002 | Use five consistent panel slots: | [06-service-and-ui.md](../06-service-and-ui.md) | revised: UX presentation; see revision history |
+| LEG-12-003 | 1. **Decision context:** selected step, clinical question, approved background care, outcome/horizon, and current v | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-004 | 2. **Clinical assessment and readiness:** relevant symptoms/contributors, medication reconciliation, patient goals, | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-005 | 3. **Evidence and diagnostics for this step:** brief clinical summary plus appropriate causal/experimental diagnost | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-006 | 4. **Eligible options:** comparative effects and uncertainty, practical burden, harms, and reasons an option is una | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-007 | 5. **Clinician decision:** choice, rationale, patient preference, follow-up, and approval/hold controls. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-008 | ### Content by patient step | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-009 |  /  Selected step  /  Clinical information  /  Decision/model diagnostics  /  Available decision controls  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-010 |  /  Assessment incomplete  /  Sleep history, ISI/diary, daytime impairment, contributor and alternative-disorder re | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-011 |  /  Initial assignment / cold start  /  Goals, stability, reviewed contributors, current medicines, feasible behavi | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-012 |  /  Treatment active, no decision due  /  Current approved plan, adherence, burden, adverse symptoms, next visit  / | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-013 |  /  N-of-1 eligibility/design  /  Both options acceptable; stable period; rescue plan; fall-risk review; patient ag | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-014 |  /  N-of-1 block active / next block  /  Current block, actual use, adverse symptoms, phase changes, rescue  /  Ass | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-015 |  /  N-of-1 interim/final review  /  Patient function, burden, tolerability, goals  /  Posterior contrast; serial co | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-016 |  /  Behavioral reassessment/escalation  /  Program completion/skills, symptom response, function, and adherence bar | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-017 |  /  MRT/bandit support review  /  Approved behavioral content, availability, patient preferences, burden  /  Prompt | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-018 |  /  Clinical hold or major phase change  /  Reason for hold, responsible team member, changed regimen/state, requir | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-019 |  /  Maintenance/closeout  /  Sustained reports/function, patient preferences, ongoing therapy review  /  Evidence m | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-020 | The step-specific panel chooses diagnostics relevant to the decision. A prompt review does not default to an N-of-1 | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-021 | ### Option card contract | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-022 | Every card shows: | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-023 | - Intervention and comparator in clinical language. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-024 | - Target outcome and time horizon. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-025 | - Expected effect plus interval, with units and benefit direction. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-026 | - Clinically relevant harms/burden and constraints. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-027 | - Evidence status: prior-only, observationally updated, randomized individual evidence (blinded or open-label), or  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-028 | - Applicability/data-support limitations. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-029 | - Patient preference/feasibility. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-030 | - "Inspect basis" link to the exact data and evidence snapshot. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-031 | Display "Insufficient evidence to rank these options" when appropriate. This still permits ordinary clinician care  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-032 | Keep "choose treatment" distinct from "approve randomization." Never preselect a recommended option solely because  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-12-033 | Before approval, show a concise summary of the patient, chosen plan or protocol action, changed elements, follow-up | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-001 | The clinician must be able to change the selected view back to any previous decision. This changes the view context | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-002 | ### Controls | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-003 | - A decision/visit selector and a linked timeline allow selection of a historical step. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-004 | - "Previous decision" and "Next decision" controls preserve the patient and panel layout. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-005 | - A persistent banner says "Historical review — decision on [date/time]", shows the historical stage, and provides  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-006 | - Default historical view is **as known then**: only information available at that decision, its eligible action se | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-007 | - An explicitly separate **retrospective outcomes** section reveals what happened later. Later outcomes do not appe | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-008 | - A comparison view can show "then" versus "now" using matched outcomes/comparators and clear labels when estimates | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-009 | In historical mode, the Next treatment assignment tab renders the component for the historical stage. For example,  | [06-service-and-ui.md](../06-service-and-ui.md) | revised: UX presentation; see revision history |
+| LEG-13-010 | ### Immutable snapshots | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-011 | Store: | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-012 | - Clinical and learning state at decision time. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-013 | - Available-at data cutoff and complete input record references. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-014 | - Eligible/ineligible actions with contemporaneous reasons, including consent status. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-015 | - Original estimates or a versioned stored posterior summary/draw reference. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-016 | - Evidence, prior, feature, model, and policy versions. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-017 | - Recommendation, randomized assignment if any, clinician approval/override, and rationale. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-018 | - Follow-up/stopping plan and subsequent amendments. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-019 | Use event-time and transaction-time records for late or corrected data. An observation collected yesterday but uplo | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-020 | Historical decisions are read-only. Addenda become new audit events; they do not rewrite the original recommendatio | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-13-021 | A replay test must recover the exact displayed historical recommendation and diagnostic summary. New model fits mus | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-001 | ### Suggested demonstration stack | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-002 | These are engineering choices, not findings from clinical studies. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-003 | - **Frontend:** React/TypeScript with an accessible component foundation; design tokens and component behavior info | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-004 | - **Service:** Python/FastAPI with typed validation contracts. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-005 | - **Storage:** immutable events and snapshots in a local database; DuckDB/Parquet for reproducible analytics. Keep  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-006 | - **Bayesian engine:** PyMC or Stan, with ArviZ-style diagnostics; pin dependencies during implementation. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-007 | - **Workers:** batch historical fitting, posterior rollout, incremental new-data jobs, and policy evaluation. Do no | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-008 | - **Adapters:** synthetic FHIR/EMR replay, Oura-like replay, patient-report replay, and literature/evidence registr | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-009 | - **Simulator/evaluator:** separate process and storage permissions for hidden truth. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-010 | - **Policy controller:** independent eligibility masks (clinical, consent, and coordination rules), assignment prot | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-011 | Use one modeling backend initially. Cache versioned posterior summaries for a smooth demo, but expose fit age and f | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-012 | ### Core service capabilities | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-013 |  /  Capability  /  Required behavior  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-014 |  /  Patient overview  /  Return current plan, states, task ownership, dates, and data quality  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-015 |  /  Decision workspace  /  Return stage-specific clinical, diagnostic, and option-panel data  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-016 |  /  History  /  Return immutable selected-decision snapshot and separately requested later outcomes  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-017 |  /  Eligibility  /  Compute allowed actions and explain exclusions before estimation/assignment, including consent  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-018 |  /  Comparison  /  Evaluate a declared estimand using a specified model/policy version  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-019 |  /  Approval  /  Check patient/state version; create approved plan and follow-up atomically  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-020 |  /  Randomization  /  Draw from the approved protocol; record probabilities before delivery  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-021 |  /  Outcome ingestion  /  Deduplicate, preserve timing/corrections, update readiness and model jobs  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-022 |  /  Model registry  /  Track prior/evidence/data versions, diagnostics, deployment status, and sensitivity results  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-023 |  /  Evaluation  /  Access simulator truth only in the research/evaluation surface  /  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-024 | Use role permissions, idempotent ingestion/approval, optimistic concurrency checks, and rollback-safe transactions. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-025 | No real EMR orders, patient messages, live device accounts, or clinical prescribing are part of the synthetic demon | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-026 | ### Frontend state contract | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-027 | Maintain separate values for: | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-028 | - Selected patient. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-029 | - Current clinical and learning states. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-030 | - Selected decision ID. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-031 | - View mode: current, historical as-known-then, or retrospective analysis. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-032 | - Display date range. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-033 | - Active data/model/evidence versions. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-034 | - Readiness/eligibility and action permissions. | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |
+| LEG-14-035 | Obtain stage and permissions from the service; do not infer them from UI tab position. A deep link to a historical  | [06-service-and-ui.md](../06-service-and-ui.md) | preserved |

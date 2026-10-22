@@ -1,0 +1,45 @@
+"""Read-only foundation integration and accepted-source preservation checks."""
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+ROOT = Path('C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-foundation-review-20261021')
+BASE = '8ca67682505d78accc855e92cbfbb6692edf8316'
+OUT = ROOT / 'artifacts/review-foundation'
+
+
+def main():
+    baseline = json.loads((OUT / 'integrated-check-results.json').read_text(encoding='utf-8'))
+    # Original executable commands retain their qualified interpreter and locked image.
+    commands = [r['command'] for r in baseline['checks'][:10]]
+    for command in commands:
+        if command[0].lower().endswith('python.exe'):
+            command[0] = sys.executable
+        if command[0] == 'docker':
+            for index, argument in enumerate(command):
+                if argument.startswith('type=bind,source='):
+                    command[index] = f'type=bind,source={ROOT.as_posix()},target=/workspace,readonly'
+    commands += [['git', 'diff', '--quiet', BASE, '--', 'contracts', 'methods', 'tests/contracts', 'tests/library', 'tooling/library', 'docs/implementation/evidence/G0-LIB', 'docs/implementation/evidence/G0-TIME-R1', 'docs/implementation/evidence/G0-CLOSURE-20261021', 'docs/implementation/g1-technical-plan-20261021.md'], ['git', 'diff', '--check', BASE]]
+    results = []
+    for command in commands:
+        start = datetime.now(timezone.utc).isoformat()
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, encoding='utf-8')
+        results.append(dict(command=command, started_utc=start, finished_utc=datetime.now(timezone.utc).isoformat(), exit_code=result.returncode, stdout=result.stdout, stderr=result.stderr))
+        print('PASS' if not result.returncode else 'FAIL', command[-1], flush=True)
+    old = json.loads(subprocess.check_output(['git', 'show', f'{BASE}:docs/implementation/g0-task-test-ledger-20261020.json'], cwd=ROOT))
+    new = json.loads((ROOT / 'docs/implementation/g0-task-test-ledger-20261020.json').read_text(encoding='utf-8'))
+    # Every coverage row and its full mappings/dependencies must remain byte-semantically identical.
+    guards = {key: old[key] == new[key] for key in ['requirements', 'tests'] if key in old}
+    for key in old:
+        if isinstance(old[key], list) and len(old[key]) == 635:
+            guards[key] = old[key] == new[key]
+    assert guards and all(guards.values()), guards
+    (OUT / 'final-integration-check-results.json').write_text(json.dumps(dict(base=BASE, observed_head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), candidate='Frozen commit supplied in handoff; no self-reference', checks=results, coverage_guards=guards, claim_limit='G0 accepted; bounded foundation pending independent review; generator/statistical/human acceptance deferred'), indent=2)+'\n', encoding='utf-8')
+    if any(row['exit_code'] for row in results):
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()

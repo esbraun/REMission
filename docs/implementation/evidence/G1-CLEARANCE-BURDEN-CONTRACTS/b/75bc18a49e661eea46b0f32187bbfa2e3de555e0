@@ -1,0 +1,132 @@
+"""TIME-01 v2: actual observed inputs and three distinct reporting clocks."""
+import copy
+import json
+import unittest
+from datetime import timedelta
+
+from pydantic import ValidationError
+
+from contracts.domain.boundaries import ObservedHistory
+from contracts.domain.temporal import ReportingDecision, TemporalContract
+from test_domain import ROOT, at, history, parse, record, report
+
+
+EVENT = "2026-10-02T07:00:00Z"
+PAIN = "2026-10-02T08:00:00Z"
+DECISION = "2026-10-02T08:01:00Z"
+
+
+def pain(event=PAIN, available=PAIN):
+    return {**record("observation", "pain-independent", event, available),
+        "measure": {"concept": "pain", "value": 1.2, "unit": "dimensionless",
+                    "observed_at": event, "available_at": available}, "lab_reference_context": None}
+
+
+def wearable():
+    return {**record("oura_like", "wearable-independent", EVENT), "record_type": "sleep_episode",
+        "episode_start": "2026-10-01T23:00:00Z", "episode_end": EVENT,
+        "local_date": "2026-10-02", "timezone": "UTC", "device_version": "fixture",
+        "sync_at": EVENT, "estimated_sleep_minutes": 400.0, "estimated_wake_minutes": 80.0,
+        "quality_flags": [], "missingness": "observed"}
+
+
+def decision(records=None, delay=0, at_decision=DECISION):
+    previous = report("previous", "2026-10-01T07:00:00Z", "2026-10-01T08:01:00Z")
+    previous["sleep_quality"] = 6.0
+    records = [previous, pain()] if records is None else records
+    projection = parse(ObservedHistory, history(records)).project(at(at_decision))
+    return {"schema_version": "1.0.0", "synthetic": True, "kind": "reporting_decision",
+        "temporal_version": "2.0.0", "patient_id": "P1", "report_event_at": EVENT,
+        "decision_at": at_decision, "recorded_at": at_decision,
+        "available_at": (at(at_decision)+timedelta(days=delay)).isoformat(),
+        "upload_delay_days": delay, "pain_record_id": "pain-independent",
+        "pre_report_history": projection.model_dump(mode="json")}
+
+
+class TemporalR1Tests(unittest.TestCase):
+    def test_v1_preserved_and_v2_validates(self):
+        v1 = json.loads((ROOT/"contracts/domain/temporal-v1.json").read_text())
+        v2 = json.loads((ROOT/"contracts/domain/temporal-v2.json").read_text())
+        self.assertEqual(parse(TemporalContract, v1).version, "1.0.0")
+        self.assertEqual(parse(TemporalContract, v2).version, "2.0.0")
+        for raw in [{**v2, "version": "3.0.0"}, {**v2, "reporting": None}, {**v1, "reporting": v2["reporting"]}]:
+            with self.assertRaises(ValidationError): parse(TemporalContract, raw)
+
+    def test_graph_rejects_wrong_order_hidden_predictors_and_wearable_coupling(self):
+        original = json.loads((ROOT/"contracts/domain/temporal-v2.json").read_text())
+        faults = [("observed_pain", "phase", 8), ("observed_pain", "visibility", "evaluator_only")]
+        for variable, field, value in faults:
+            bad = copy.deepcopy(original)
+            next(v for v in bad["variables"] if v["id"] == variable)[field] = value
+            with self.assertRaises(ValidationError): parse(TemporalContract, bad)
+        for target, parent in [("report_observation", "random_intercept"), ("report_observation", "morning_measurements"),
+                               ("wearable_availability", "clinical_L"), ("pre_report_history", "morning_measurements")]:
+            bad = copy.deepcopy(original)
+            next(v for v in bad["variables"] if v["id"] == target)["parents"].append({"variable": parent, "day_offset": 0})
+            with self.assertRaises(ValidationError): parse(TemporalContract, bad)
+
+    def test_observed_only_predictors_roundtrip_and_missing_history(self):
+        value = parse(ReportingDecision, decision())
+        self.assertEqual(value.mar_predictors(), {"previous_observed_quality": 6.0,
+            "missing_quality_history": False, "current_observed_pain": 1.2})
+        self.assertEqual(parse(ReportingDecision, value.model_dump(mode="json")), value)
+        self.assertEqual(parse(ReportingDecision, decision([pain()])).mar_predictors(),
+            {"previous_observed_quality": 7.0, "missing_quality_history": True, "current_observed_pain": 1.2})
+        for field in ["current_quality", "latent_L", "simulator_truth", "current_wearable_reward"]:
+            with self.assertRaises(ValidationError): parse(ReportingDecision, {**decision(), field: 2.0})
+
+    def test_pain_after_or_equal_report_decision_and_missing_report_source_rejected(self):
+        for event, available in [("2026-10-02T08:02:00Z", "2026-10-02T08:02:00Z"),
+                                 (PAIN, DECISION), (EVENT, EVENT),
+                                 ("2026-10-01T08:00:00Z", "2026-10-01T08:00:00Z")]:
+            with self.assertRaises(ValidationError): parse(ReportingDecision, decision([pain(event, available)]))
+        # A report-only pain claim is not an independent clinical observation.
+        bad = decision([pain()]); bad["pain_record_id"] = "missing-report"
+        with self.assertRaises(ValidationError): parse(ReportingDecision, bad)
+        current = report("pain-independent", EVENT, "2026-10-02T08:00:00Z")
+        with self.assertRaises(ValidationError): parse(ReportingDecision, decision([current]))
+
+    def test_three_clock_upload_delays_and_strict_cutoffs(self):
+        # Event time remains 07:00 even when recording/upload is much later.
+        for delay in [0, 1, 3]:
+            value = parse(ReportingDecision, decision(delay=delay))
+            observed = report("current-report", EVENT, value.available_at.isoformat())
+            observed["recorded_at"] = value.recorded_at.isoformat()
+            h = parse(ObservedHistory, history([pain(), observed]))
+            self.assertEqual(h.as_known_at(at(EVENT)), [])
+            self.assertEqual(h.as_known_at(at(PAIN)), [])
+            self.assertEqual([r.record_id for r in h.as_known_at(at(DECISION))], ["pain-independent"])
+            self.assertNotIn("current-report", [r.record_id for r in h.as_known_at(value.available_at)])
+            after = h.as_known_at(value.available_at+timedelta(microseconds=1))
+            self.assertIn("current-report", [r.record_id for r in after])
+            self.assertEqual(next(r for r in after if r.record_id == "current-report").event_at, at(EVENT))
+            bad = decision(delay=delay); bad["available_at"] = EVENT
+            with self.assertRaises(ValidationError): parse(ReportingDecision, bad)
+
+    def test_wearable_available_independently_before_pain_or_report(self):
+        h = parse(ObservedHistory, history([wearable(), pain()]))
+        self.assertEqual(h.as_known_at(at(EVENT)), [])
+        self.assertEqual([r.record_id for r in h.as_known_at(at(EVENT)+timedelta(microseconds=1))], ["wearable-independent"])
+        value = parse(ReportingDecision, decision([wearable(), pain()]))
+        self.assertEqual(value.mar_predictors()["previous_observed_quality"], 7.0)
+
+    def test_delayed_previous_quality_equal_time_and_deterministic_ties(self):
+        old = report("old", "2026-09-30T07:00:00Z", "2026-09-30T08:01:00Z"); old["sleep_quality"] = 4.0
+        recent = report("recent", "2026-10-01T07:00:00Z", DECISION); recent["sleep_quality"] = 8.0
+        value = parse(ReportingDecision, decision([old, recent, pain()]))
+        self.assertEqual(value.mar_predictors()["previous_observed_quality"], 4.0)
+        later = "2026-10-02T08:01:00.000001Z"
+        self.assertEqual(parse(ReportingDecision, decision([old, recent, pain()], at_decision=later)).mar_predictors()["previous_observed_quality"], 8.0)
+        other = copy.deepcopy(old); other.update(record_id="old-z", lineage_id="old-z", sleep_quality=5.0)
+        for records in [[old,other,pain()], [other,pain(),old]]:
+            self.assertEqual(parse(ReportingDecision, decision(records)).mar_predictors()["previous_observed_quality"], 5.0)
+
+    def test_no_reporting_assessment_after_known_death(self):
+        for time in ["2026-10-02T06:59:00Z", "2026-10-02T08:00:30Z"]:
+            death = {**record("intercurrent_event", "death", time),
+                     "event_type": "death", "detail": "synthetic fixture"}
+            with self.assertRaisesRegex(ValidationError, "after known death"):
+                parse(ReportingDecision, decision([death,pain()]))
+
+
+if __name__ == "__main__": unittest.main()

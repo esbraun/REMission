@@ -1,0 +1,734 @@
+{
+  "scope": "documentation only; no executed runtime acceptance",
+  "base": "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55",
+  "proposal_bytes": 33784,
+  "sources": 27,
+  "checks": [
+    "own head/branch",
+    "source identities",
+    "bounded required-content presence",
+    "tracked diff whitespace",
+    "write scope"
+  ],
+  "calls": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "launch/g1-live-threshold-policy-proposal-20261021\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:implementation-prompt.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 8278,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:implementation-prompt.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "c0a7faf4906acb7ae5754f70dcb58df875766c71\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:plan.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 6303,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:plan.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "ada90f8c80697d63bd87b6b1acbdbb31d56e1907\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/execution/delegation.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 22603,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/execution/delegation.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "334f025f671aa435f23d3a0677dc398bf5a47cc2\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/execution/engineering-guidelines.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 8000,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/execution/engineering-guidelines.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "3ce5ccfd346159d59eda9d8b103c08682596a219\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/execution/runtime-and-workflow.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 25781,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/execution/runtime-and-workflow.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "62430ac06dfe52204f646b701a83919a84ab52b7\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/00-scope-and-invariants.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 18687,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/00-scope-and-invariants.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "f50434ae12eda5f76c6d24beaaa37e3f65d9d096\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/01-estimands-and-contracts.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 13924,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/01-estimands-and-contracts.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "de75448e22f788383da4ed626754bd097b9d6302\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/02-synthetic-dgp.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 12087,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/02-synthetic-dgp.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "786bc22dd95a49b916c75429dc7748d3c6bc3bf1\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/04-individual-experiments.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 6656,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/04-individual-experiments.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "5b3b656368db229817a6f6d3771d296562becb9b\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/05-support-learning.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 10823,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/05-support-learning.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "fa06153e49de1f4dd5e512036149d063917f2d5b\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/06-service-and-ui.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 25092,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/06-service-and-ui.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "1c1c9b09e471e3cdbd8e73f4eebfb5981a59ccb0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/08-gates-and-release.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 12514,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/08-gates-and-release.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "712c8f5a33a698b3803347e275dc73cb6ab4bfa9\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/scenario-catalog.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 7723,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/scenario-catalog.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "a5e6b6c5b6fc855090b94ddf86cbe3647a8f2975\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/requirement-map.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 9723,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/requirement-map.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "4e27775e2483f3b49c721dfd8f7ec7de3d2cb2f0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/traceability/g0.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 20629,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/traceability/g0.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "16a871f0777d2c8ec09b06d160dc914e8d5ad8b4\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/traceability/g1.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 7802,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/traceability/g1.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "44cbae611cb14c4b569f3142596022da36eb3fed\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/traceability/g5.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 24787,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/spec/traceability/g5.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "0e294691dde7aa8cf2c9e65df575226570c73d6f\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/dgp/parameters.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 20227,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/dgp/parameters.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "7f7552ae66fd81af09143f5e3feaeb076984e33a\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/domain/estimands.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 11650,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/domain/estimands.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "a22c6a4ce4828ac5c34fefaf84b87084f4d09ec5\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/domain/schemas/threshold.schema.json"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 1596,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/domain/schemas/threshold.schema.json"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "ecac818600a627f38a945b7a135a0357370a539f\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/service/live_hold.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 7274,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/service/live_hold.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "27a899de5af2ef9e4400abef97c62ed523ba37e9\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/service/bindings-v1.json"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 856,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:contracts/service/bindings-v1.json"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "bd1cc5be90811fb024e0c6974fb12d85301c5787\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:services/foundation/live_hold.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 46167,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:services/foundation/live_hold.py"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "1398ff71a7796c84b17c74003e40d172f7aba960\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/implementation/g1-observed-representation-proposal-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 57950,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/implementation/g1-observed-representation-proposal-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "b1cee4c5f371d2603a9c2b0fa3ccd4f935122f85\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 66720,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "e6d39d6a0bce37a554cd768e14ee0916edf5da5c\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/implementation/g1-live-hold-trigger-binding-supplement-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 21199,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55:docs/implementation/g1-live-hold-trigger-binding-supplement-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "a05a2667f62888e5ecb269c545ac70b65fb068bc\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "5409d54f570040b435a729769ba2d9353b7daffb:docs/implementation/g1-clearance-burden-contract-proposal-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": {
+        "bytes": 69488,
+        "note": "source read; exact identity in source inventory, not duplicated here"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "5409d54f570040b435a729769ba2d9353b7daffb:docs/implementation/g1-clearance-burden-contract-proposal-r1-20261021.md"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "e5a67a4ad7e37b82cb591226e6b522d767f59db8\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lp-plan-261021",
+      "exit": 0,
+      "stdout": "?? .review-artifacts/\n?? docs/implementation/evidence/G1-LIVE-THRESHOLD-POLICY-R0/\n?? docs/implementation/g1-live-threshold-installation-contract-proposal-r0-20261021.md\n",
+      "stderr": ""
+    }
+  ]
+}

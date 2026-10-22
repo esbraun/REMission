@@ -1,0 +1,635 @@
+{
+  "title": "G1 scientific current seam source/hash inventory",
+  "inspection": {
+    "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1cb-seams-luna-261021",
+    "head": "83481b29315b21baa4a7fa29fb8eba6e2658b84f",
+    "detached": true,
+    "initial_status": "clean",
+    "assigned_model_effort": "gpt-6-luna/high",
+    "effective_model_effort_introspection": "unavailable",
+    "scope": "read-only source and documentation inventory; no application edits, tests, runtime, Docker, browser, validator, simulator, or evaluator runs"
+  },
+  "current_surface_summary": {
+    "dgp_parameters": "1.2.0",
+    "dgp_scenario_manifest": "1.2.0, catalog_version 1",
+    "dgp_timing": "1.2.0, TIME-01 2.0.0",
+    "domain_temporal": "TIME-01 1.0.0 and 2.0.0 only",
+    "domain_observed": "1.0.0 and 2.0.0 code/schema families; no 2.1 path located",
+    "run_observed": "1.0.0 and 2.0.0 code/schema families; no 2.1 path located",
+    "service_live_hold": "LIVE-HOLD-01/1.0.0",
+    "learner_dispatch": "explicit 2.0.0 branch plus legacy path"
+  },
+  "sources": [
+    {
+      "path": "contracts/dgp/parameters.py",
+      "role": "DGP 1.2.0 authoring source; VERSION, reference_parameters, validate_parameters",
+      "physical_worktree_bytes": 20457,
+      "physical_worktree_sha256": "9d782570a5089a98dcc1af9b189f423f116876e175b96982242506254704297a",
+      "physical_bytes_git_blob_oid": "1b29825a9a32f2df77c4f8341fe52d4fb6796b8f",
+      "git_tree_blob_oid_at_head": "7f7552ae66fd81af09143f5e3feaeb076984e33a",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/dgp/parameters-v1.json",
+      "role": "checked-in DGP parameter artifact 1.2.0; temporal binding 2.0.0",
+      "physical_worktree_bytes": 80431,
+      "physical_worktree_sha256": "b6e2ab2e78b86a3f1c19cad6f67a5092a3f70232d644571b5e24454e8d14de77",
+      "physical_bytes_git_blob_oid": "0dddc2f4472c7ad7c39f8444cde9898557533543",
+      "git_tree_blob_oid_at_head": "9b67acbd5b2e63c952918b29fbe161adf4e208b9",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/dgp/scenarios.py",
+      "role": "Scenario manifest/resolution; catalog_version binding and resolver",
+      "physical_worktree_bytes": 10491,
+      "physical_worktree_sha256": "ba2fed5338fd3c8209d3669f6158443fecc714a150fae4bc693226b4addab575",
+      "physical_bytes_git_blob_oid": "d227279413e44774b23df9fba738e1279e8b2dfe",
+      "git_tree_blob_oid_at_head": "7076d7e8a69f28f2cff4a95c14c4784c5769c705",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/dgp/scenarios-v1.json",
+      "role": "checked-in scenario artifact 1.2.0, catalog_version 1",
+      "physical_worktree_bytes": 45956,
+      "physical_worktree_sha256": "4980fd89c20ce24d83d78f7262730f1dcb5468c655ed0d1a0b6c86ba9c393350",
+      "physical_bytes_git_blob_oid": "72dc2a81178c8e06b3f10b09cb71a1d43f15f90a",
+      "git_tree_blob_oid_at_head": "b5b542bfbb83e970f57af0676b78b9b942f97263",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/dgp/timing.py",
+      "role": "DGP timing authoring; TIME-01 2.0.0 bindings and report_decision",
+      "physical_worktree_bytes": 7632,
+      "physical_worktree_sha256": "d5a815552dee7dfde6611ce3f501f835759dde31f12e7b043c433bb93bfa24df",
+      "physical_bytes_git_blob_oid": "a8011316014363382707f7d5759b89cef600ece1",
+      "git_tree_blob_oid_at_head": "9e2dd0335e1e8de1e62fc3925fd8ac6b754f04a0",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/dgp/timing-v1.json",
+      "role": "checked-in timing artifact 1.2.0 with TIME-01 2.0.0",
+      "physical_worktree_bytes": 3219,
+      "physical_worktree_sha256": "1754b7f5eb104b03dfe0c74dec1c5de83e7fcf723e4a51774ad2742f03dbb5d5",
+      "physical_bytes_git_blob_oid": "13744cb587a11a511bb618522c587a5d0b0425c4",
+      "git_tree_blob_oid_at_head": "e336c9f22a5734fe3a33da3f3f2d4b97a9d4ab7d",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/dgp/calibration-binding-v1.schema.json",
+      "role": "Current calibration binding wire schema used alongside DGP authoring",
+      "physical_worktree_bytes": 4338,
+      "physical_worktree_sha256": "3ac7d12787d800061e2a9d8db99a9e6ff8f80a10fca8b2b3372aafcf67ce5502",
+      "physical_bytes_git_blob_oid": "22e5132bf34db382eecdb56a4a77134a11b7ffa1",
+      "git_tree_blob_oid_at_head": "f2cbfd79e0732cc336a7b0ed9194a8ecdc25b361",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/domain/temporal.py",
+      "role": "ReportingRules/Decision and TemporalContract types (TIME 1.0/2.0)",
+      "physical_worktree_bytes": 9043,
+      "physical_worktree_sha256": "35570fa48ce057110d168e14fdbc5c6c7d135ae512571f10f2d41c9a1230e57d",
+      "physical_bytes_git_blob_oid": "c92a4e5e6f4426b11a79a4c6d401e442ac35a536",
+      "git_tree_blob_oid_at_head": "fe69a29af47d9f1f66a508ca981e78e869e8b8a2",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/domain/temporal-v1.json",
+      "role": "TIME-01 legacy temporal contract artifact",
+      "physical_worktree_bytes": 39238,
+      "physical_worktree_sha256": "7eddf9f4fc9376a2fe4858afd929777f1ed00ded1a90a12b685e5d0e35130603",
+      "physical_bytes_git_blob_oid": "440cfca761d6b3097d7d4f82d6bcfa6588e19fdb",
+      "git_tree_blob_oid_at_head": "2a197d76b938dbda3279a26a6645cada78a89508",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/domain/temporal-v2.json",
+      "role": "TIME-01 temporal 2.0.0 artifact",
+      "physical_worktree_bytes": 45767,
+      "physical_worktree_sha256": "053320ea9f327a984f102bcd2b5563e65c8cc3467dbfedd32914da1f294c246f",
+      "physical_bytes_git_blob_oid": "11d0d2cb747ed1eae03781c072eb96f006627f68",
+      "git_tree_blob_oid_at_head": "ce009c021e65bfca5b8ab6f9b630ab2013767944",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/domain/observed_v2.py",
+      "role": "Observed record/history/learner models and tagged record dispatch",
+      "physical_worktree_bytes": 18246,
+      "physical_worktree_sha256": "b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940",
+      "physical_bytes_git_blob_oid": "166b840341235e00bd229d9739d8928ea9980250",
+      "git_tree_blob_oid_at_head": "166b840341235e00bd229d9739d8928ea9980250",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/domain/dictionary-v1.json",
+      "role": "Frozen domain v1 generated dictionary",
+      "physical_worktree_bytes": 192871,
+      "physical_worktree_sha256": "d1b172c25a583b49ab0d28c94acafa84507330942182bab61cfdde6f0a5d35e7",
+      "physical_bytes_git_blob_oid": "44bf4089cf5bdaa3e262931d7397602338b6a462",
+      "git_tree_blob_oid_at_head": "5a6dcfeabf75a8a262cffeb56e8d20ac9795ff96",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/domain/dictionary-v2.json",
+      "role": "Current OBS2 domain dictionary 2.0.0",
+      "physical_worktree_bytes": 208518,
+      "physical_worktree_sha256": "8522796dd3c31dd1fee1f27d39a9c4e60d135624981dba309f4050418c6501d4",
+      "physical_bytes_git_blob_oid": "a6a52a55c25967343ae231c270ba3ead05f15fb2",
+      "git_tree_blob_oid_at_head": "a6a52a55c25967343ae231c270ba3ead05f15fb2",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/domain/export.py",
+      "role": "Domain v1 generated-product authoring/export entrypoint",
+      "physical_worktree_bytes": 3590,
+      "physical_worktree_sha256": "4ebef8cb2d47624080da092731c714f9a5fd6c5a446404d1569c389f7a25e190",
+      "physical_bytes_git_blob_oid": "256ab1a7c67904988ba7df5d7f913584f8b8d9fb",
+      "git_tree_blob_oid_at_head": "f85fd37897b63173c84429d5e1cfeb6858c7e3c0",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/domain/export_v2.py",
+      "role": "Domain v2 generated-product authoring/export entrypoint",
+      "physical_worktree_bytes": 2826,
+      "physical_worktree_sha256": "d09f57121837617dd4cc465d2d941ff09efb13108304b1c285a4223c3ce0230c",
+      "physical_bytes_git_blob_oid": "a3e3006af59c3c3c34acba6f96f56c0e3281a98d",
+      "git_tree_blob_oid_at_head": "a3e3006af59c3c3c34acba6f96f56c0e3281a98d",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/domain/schemas/v2/schema-set.json",
+      "role": "OBS2-DOMAIN-SCHEMAS 2.0.0 generated schema-set identity",
+      "physical_worktree_bytes": 1337,
+      "physical_worktree_sha256": "5dad5e9de7e99b6d2b9ae330b944ac32e6dc11a5ec7886bbeb1d6f5dbe63d983",
+      "physical_bytes_git_blob_oid": "4db324b0be551d2b29f0e225d016c04bd7dc0094",
+      "git_tree_blob_oid_at_head": "4db324b0be551d2b29f0e225d016c04bd7dc0094",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/domain/schemas/temporal.schema.json",
+      "role": "TIME schema used by legacy domain export path",
+      "physical_worktree_bytes": 8186,
+      "physical_worktree_sha256": "cc076973b5a3939c29aab71fdd8ea489e320d4a81f6e3667049af6594a1d0f38",
+      "physical_bytes_git_blob_oid": "6d6c51b4bbf50db3c4bc1f2f4568c66d8b7f6676",
+      "git_tree_blob_oid_at_head": "70e092df9c35b9895d73972d343f5180d2bd9975",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "contracts/runs/observed.py",
+      "role": "Legacy public run/export types",
+      "physical_worktree_bytes": 7465,
+      "physical_worktree_sha256": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+      "physical_bytes_git_blob_oid": "f2651fd4948e1ad53ed376174da0a7e46757a1b6",
+      "git_tree_blob_oid_at_head": "f2651fd4948e1ad53ed376174da0a7e46757a1b6",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/observed_v2.py",
+      "role": "Observed run 2.0.0 public export, replay and authority models",
+      "physical_worktree_bytes": 7887,
+      "physical_worktree_sha256": "3213d7da7650378c4224889e7011f03b4d7751c2925a85152c13059dafe5555f",
+      "physical_bytes_git_blob_oid": "691246e17011fc5b6b594e391ae548dc821cbfce",
+      "git_tree_blob_oid_at_head": "691246e17011fc5b6b594e391ae548dc821cbfce",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/admission.py",
+      "role": "Legacy run/export admission",
+      "physical_worktree_bytes": 3928,
+      "physical_worktree_sha256": "00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba",
+      "physical_bytes_git_blob_oid": "9f6808fd41f3d76fbb92185d6823c6461105c135",
+      "git_tree_blob_oid_at_head": "9f6808fd41f3d76fbb92185d6823c6461105c135",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/admission_v2.py",
+      "role": "2.0 public export and partition admission/validation",
+      "physical_worktree_bytes": 23280,
+      "physical_worktree_sha256": "11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb",
+      "physical_bytes_git_blob_oid": "e6775a444b559aefbf3401be64365372c5f1eed3",
+      "git_tree_blob_oid_at_head": "e6775a444b559aefbf3401be64365372c5f1eed3",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/bindings-v1.json",
+      "role": "Frozen run v1 source-binding registry",
+      "physical_worktree_bytes": 1718,
+      "physical_worktree_sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+      "physical_bytes_git_blob_oid": "02a49d4594e035af3f0e44a520d05434c73b6058",
+      "git_tree_blob_oid_at_head": "02a49d4594e035af3f0e44a520d05434c73b6058",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/bindings-v2.json",
+      "role": "Current run v2 source-binding registry",
+      "physical_worktree_bytes": 2213,
+      "physical_worktree_sha256": "40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7",
+      "physical_bytes_git_blob_oid": "9fc17598b269f5d1bc36f1a4edaf7e5e05e53897",
+      "git_tree_blob_oid_at_head": "9fc17598b269f5d1bc36f1a4edaf7e5e05e53897",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/dictionary-v1.json",
+      "role": "Frozen run v1 generated dictionary",
+      "physical_worktree_bytes": 230561,
+      "physical_worktree_sha256": "81637308dbc9eee63bddb3fca54db4f8f21d84fd598774804013af8189d7f8b3",
+      "physical_bytes_git_blob_oid": "4cb0f65c26cc7c6cb21cd9352e70a34491386365",
+      "git_tree_blob_oid_at_head": "4cb0f65c26cc7c6cb21cd9352e70a34491386365",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/dictionary-v2.json",
+      "role": "Current run 2.0.0 generated dictionary",
+      "physical_worktree_bytes": 274380,
+      "physical_worktree_sha256": "f92fd890e9324d7177ad9932cf08d1c26eddddda500776ad8a704572e84d0f32",
+      "physical_bytes_git_blob_oid": "b2c087737e4e5dab444ba8e5fa87658896a767bf",
+      "git_tree_blob_oid_at_head": "b2c087737e4e5dab444ba8e5fa87658896a767bf",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/export.py",
+      "role": "Run v1 generated-product authoring/export entrypoint",
+      "physical_worktree_bytes": 4357,
+      "physical_worktree_sha256": "23ac6f562760c27daced78be7bd46c85d6f69b0313280f3a1ede3de8ec929172",
+      "physical_bytes_git_blob_oid": "77ce4223c0cc346086ae92656766751726908160",
+      "git_tree_blob_oid_at_head": "77ce4223c0cc346086ae92656766751726908160",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/export_v2.py",
+      "role": "Run v2 generated-product authoring/export entrypoint",
+      "physical_worktree_bytes": 3579,
+      "physical_worktree_sha256": "4c5ed73454d02722e9c319cb548d17a4169d3eb9d2890190d4917301ef85bf1b",
+      "physical_bytes_git_blob_oid": "e399a98f6eec8ac26f7877b23661d3d5198ef03c",
+      "git_tree_blob_oid_at_head": "e399a98f6eec8ac26f7877b23661d3d5198ef03c",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/schemas/v2/schema-set.json",
+      "role": "OBS2-RUN-SCHEMAS 2.0.0 generated schema-set identity",
+      "physical_worktree_bytes": 1795,
+      "physical_worktree_sha256": "8bc5f6dd7001d10a41ef1042df94d80a6ed8aff4dc47429107abb9edab0d753d",
+      "physical_bytes_git_blob_oid": "dde181cbec7cabb0788f307c90238c6e9f4540fd",
+      "git_tree_blob_oid_at_head": "dde181cbec7cabb0788f307c90238c6e9f4540fd",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/foundation/replay.py",
+      "role": "Current service record parser and run replay/public-profile dispatch",
+      "physical_worktree_bytes": 12417,
+      "physical_worktree_sha256": "64fdf49bc4850003f19da826731b1d04c232ff5eddef9c38842deed57b8348d9",
+      "physical_bytes_git_blob_oid": "bc16cf3e4ed02d711711dbc2b7c35c498d965114",
+      "git_tree_blob_oid_at_head": "bc16cf3e4ed02d711711dbc2b7c35c498d965114",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/foundation/archive.py",
+      "role": "Archive verify/persist/current-import seam; calls run admission",
+      "physical_worktree_bytes": 8265,
+      "physical_worktree_sha256": "2ebd6c72a6a11a53cfefbfe03f07e92e49f583946842ee69c684de3a22587234",
+      "physical_bytes_git_blob_oid": "879298abdd7f939074b662dfbd3f53f206ba4dc3",
+      "git_tree_blob_oid_at_head": "879298abdd7f939074b662dfbd3f53f206ba4dc3",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/foundation/workflow.py",
+      "role": "Current workflow/history model selection by observed schema",
+      "physical_worktree_bytes": 7883,
+      "physical_worktree_sha256": "f1eddc2968b4e8d01c74fd4ad70acb2cf48e55ddfaa1550b97f64ddfa839409b",
+      "physical_bytes_git_blob_oid": "b16f928f08f688cb5c452bb640149798a01f0b49",
+      "git_tree_blob_oid_at_head": "b16f928f08f688cb5c452bb640149798a01f0b49",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/foundation/live_hold.py",
+      "role": "LIVE-HOLD current-review/invalidation and archive-history seams",
+      "physical_worktree_bytes": 46167,
+      "physical_worktree_sha256": "b142f54e71eb949217c81c42856beac12df5701c19dc411973cb324149d25044",
+      "physical_bytes_git_blob_oid": "1398ff71a7796c84b17c74003e40d172f7aba960",
+      "git_tree_blob_oid_at_head": "1398ff71a7796c84b17c74003e40d172f7aba960",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/foundation/live_coordinator.py",
+      "role": "LIVE-HOLD projection coordination and receipt version seam",
+      "physical_worktree_bytes": 8775,
+      "physical_worktree_sha256": "cecd615392b865b2b0806845d75a92441a3f497414a19e111330ec1ab9f4a4df",
+      "physical_bytes_git_blob_oid": "652a45fab28d47d99f8a1aa17e8ed3b4c01232c4",
+      "git_tree_blob_oid_at_head": "652a45fab28d47d99f8a1aa17e8ed3b4c01232c4",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/foundation/live_safety_export.py",
+      "role": "Consumer-safe live-safety projection/export seam",
+      "physical_worktree_bytes": 9227,
+      "physical_worktree_sha256": "41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87",
+      "physical_bytes_git_blob_oid": "7e42f154368931bd8c37e1d3b2035d5fdf2db1d4",
+      "git_tree_blob_oid_at_head": "7e42f154368931bd8c37e1d3b2035d5fdf2db1d4",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/learner/export_observed.py",
+      "role": "Learner public observed/run/live-safety admission dispatch",
+      "physical_worktree_bytes": 2156,
+      "physical_worktree_sha256": "c46c643b6790d2abf519293e8c66675eae33b1cd645685c86f8c3e8487675ef1",
+      "physical_bytes_git_blob_oid": "6a8d8305be2717bbd980acba1e5434cb970b0ee3",
+      "git_tree_blob_oid_at_head": "6a8d8305be2717bbd980acba1e5434cb970b0ee3",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "services/learner/live_product.py",
+      "role": "Learner live product consumer boundary",
+      "physical_worktree_bytes": 1177,
+      "physical_worktree_sha256": "fce839ca39c2c5f3d4143947ace2fd1d8a51aa25ddfbffbb43db98bd1c48cc1c",
+      "physical_bytes_git_blob_oid": "23123ab86402a5be3d939b12bb244223e7f3d00b",
+      "git_tree_blob_oid_at_head": "23123ab86402a5be3d939b12bb244223e7f3d00b",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tooling/foundation/build_live.py",
+      "role": "LIVE service image build entrypoint",
+      "physical_worktree_bytes": 3313,
+      "physical_worktree_sha256": "cd99bd52b1633c1c29b97bf3eb08c4834fe49da9fc6204a575fefb32cfb32794",
+      "physical_bytes_git_blob_oid": "5e1793bf1b4503e0ff82cba190518f15822b985a",
+      "git_tree_blob_oid_at_head": "5e1793bf1b4503e0ff82cba190518f15822b985a",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tooling/foundation/live_stack.py",
+      "role": "LIVE-HOLD-01/1.0.0 stack/startup and health entrypoint",
+      "physical_worktree_bytes": 7944,
+      "physical_worktree_sha256": "65bd52fb0b63f2a0bafb62c4efa04034af55d30d9e25c85431b522ca90d217c6",
+      "physical_bytes_git_blob_oid": "6b81ae394dcfadb22ebba50dbc0c15efc2c0199c",
+      "git_tree_blob_oid_at_head": "6b81ae394dcfadb22ebba50dbc0c15efc2c0199c",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "contracts/runs/README.md",
+      "role": "Run contract path/version catalog",
+      "physical_worktree_bytes": 8969,
+      "physical_worktree_sha256": "3893680e39bd7d40aa2fd7f4e0e54b878992f026eb33442f3db4ca0183f1044c",
+      "physical_bytes_git_blob_oid": "546bbf041603fc92d9d63d72717a3366909e8c2f",
+      "git_tree_blob_oid_at_head": "546bbf041603fc92d9d63d72717a3366909e8c2f",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/dgp-decisions.md",
+      "role": "Current DGP 1.2.0 decisions/artifact locator",
+      "physical_worktree_bytes": 34917,
+      "physical_worktree_sha256": "b471f4b76e9f7994f4cbf190d07368cfa717bede0546a9a50376d3473c3a4174",
+      "physical_bytes_git_blob_oid": "31c9f07cdd0e71221a03c4c2891b97ed16bed0f3",
+      "git_tree_blob_oid_at_head": "375600cdc2d201d8086de1cbfa8a178b24be5117",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "docs/implementation/contracts.md",
+      "role": "Current contract, archive, and LIVE-HOLD status locator",
+      "physical_worktree_bytes": 21705,
+      "physical_worktree_sha256": "b16372ba840a64b5ccb7d1a4156087c4ad5dc3631edbb08145e7ae0e6aaa9aab",
+      "physical_bytes_git_blob_oid": "a37ef1f2ad9dc15c56295e11c10092c8ee685050",
+      "git_tree_blob_oid_at_head": "69ef23fba435ca956a96b4c367dbc507f0038d69",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "docs/implementation/g1-technical-plan-20261021.md",
+      "role": "G1 source/precision/burden plan context; no new law inferred here",
+      "physical_worktree_bytes": 47609,
+      "physical_worktree_sha256": "dadf564d58e91b49ee30da764870dd9c14bb094f22e8d6630edffc3dcfc815d3",
+      "physical_bytes_git_blob_oid": "40b3a4468cfd942cd42b669aa3ec65917939271b",
+      "git_tree_blob_oid_at_head": "5d46eb071485a9d5f2ed0473880a75fcab181556",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/contracts/test_dgp_contracts.py",
+      "role": "DGP input/cell contract refusal and positive test entrypoints",
+      "physical_worktree_bytes": 17707,
+      "physical_worktree_sha256": "0bd6cbc80f68cadd9ffd4f3180493b36e58dcff8ed816a2690ebdeb73b9fbea3",
+      "physical_bytes_git_blob_oid": "7f27fb35b7cb6fb0ff8d917e2fbb746a1c33607f",
+      "git_tree_blob_oid_at_head": "45f28edf4590a01f2a9cfe2c818577935f81b77d",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/contracts/test_dgp_timing.py",
+      "role": "DGP timing/parameter binding and historical cutoff test entrypoints",
+      "physical_worktree_bytes": 10561,
+      "physical_worktree_sha256": "3bc3e5e4a740aaa53eb5030292020341c5fc39ee36e3a9ccd088c84d45030f8d",
+      "physical_bytes_git_blob_oid": "e3ab636ff55ae689e573aaea426ff76655b3bf55",
+      "git_tree_blob_oid_at_head": "24992da8b51e63549f43a60c4035d35e6e11b1ff",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/contracts/test_temporal_r1.py",
+      "role": "TIME v1/v2 identity, version rejection and reporting clock tests",
+      "physical_worktree_bytes": 8431,
+      "physical_worktree_sha256": "33d884242ebc995b369fa455b8b05eb79be6ffa5b41b6a51a2c905890d48b816",
+      "physical_bytes_git_blob_oid": "75bc18a49e661eea46b0f32187bbfa2e3de555e0",
+      "git_tree_blob_oid_at_head": "24d3861022c2ad1dc759f058a59d4d020046eb17",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/contracts/test_observed_v2.py",
+      "role": "Domain v2 positive, unsupported-version, lineage and cross-version refusal tests",
+      "physical_worktree_bytes": 13973,
+      "physical_worktree_sha256": "201ba9645b9366d75208836e0edece84f120a8b76158e3039e87561b3e44e1f7",
+      "physical_bytes_git_blob_oid": "301323ce822d517c4816b2459cd7f2560947ca29",
+      "git_tree_blob_oid_at_head": "301323ce822d517c4816b2459cd7f2560947ca29",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/run_contracts/observed_v2_fixtures.py",
+      "role": "Current public v2 run fixture builder",
+      "physical_worktree_bytes": 32148,
+      "physical_worktree_sha256": "ffa4f2dea4119472e81b2b527586407baf308a4b9c56ba4fd279056cd68cf671",
+      "physical_bytes_git_blob_oid": "ba5f771884d831ae54a9f9e78d2207a922c67e21",
+      "git_tree_blob_oid_at_head": "ba5f771884d831ae54a9f9e78d2207a922c67e21",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/run_contracts/test_observed_v2.py",
+      "role": "Public run v2 positive/admission/rejection/historical behavior tests",
+      "physical_worktree_bytes": 17946,
+      "physical_worktree_sha256": "3a13789461e1e4b703c987298c93a0705ff4a466822ab655bd60b4c41ef5e561",
+      "physical_bytes_git_blob_oid": "b6c9cd0e6aaf63d369a4247b8e47c3f519609924",
+      "git_tree_blob_oid_at_head": "b6c9cd0e6aaf63d369a4247b8e47c3f519609924",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/run_contracts/test_observed_v2_repair.py",
+      "role": "Public run v2 refusal and replay-boundary regression tests",
+      "physical_worktree_bytes": 12886,
+      "physical_worktree_sha256": "767efc3ec4b1b19ee03f8f79c61c4532340ea14e14152fd0397e758e2c3650ff",
+      "physical_bytes_git_blob_oid": "4914d0275bc912338cca6aaee59abd387a894e07",
+      "git_tree_blob_oid_at_head": "4914d0275bc912338cca6aaee59abd387a894e07",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/integration/replay/test_observed_v2_archive.py",
+      "role": "Archive/live boundary positive, historical, and whole-partition refusal tests",
+      "physical_worktree_bytes": 8986,
+      "physical_worktree_sha256": "cb01746abbbf3b630e2baee495a596a8a52d627776013235c44b730e0b4fc6bf",
+      "physical_bytes_git_blob_oid": "3b02443e6046050783beec31e177b766ef49b6f4",
+      "git_tree_blob_oid_at_head": "3b02443e6046050783beec31e177b766ef49b6f4",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/integration/replay/test_foundation.py",
+      "role": "Foundation replay/history integration fixture entrypoint",
+      "physical_worktree_bytes": 29812,
+      "physical_worktree_sha256": "406fe77ddee100987f586e910f87fc90cdb525962dcaef4ec9f4c4f1eabe803f",
+      "physical_bytes_git_blob_oid": "25816a8068098d3697bd8c9859a422388a8ebedc",
+      "git_tree_blob_oid_at_head": "25816a8068098d3697bd8c9859a422388a8ebedc",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/contracts/fixtures/observed-entities-v1.json",
+      "role": "Frozen v1 domain fixture identified by baseline inventory",
+      "physical_worktree_bytes": 17737,
+      "physical_worktree_sha256": "39a8038f2eeb7cc2d9df57a7738adb255ad1d32dd91915201283b51981522b9f",
+      "physical_bytes_git_blob_oid": "bd547a5e728c89fdb206de02ed5bf0dcd04e2f26",
+      "git_tree_blob_oid_at_head": "9a4c6c941667ac6f6fb164443c81b285804d29a2",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/contracts/fixtures/estimands-v1.json",
+      "role": "Frozen v1 estimand fixture identified by baseline inventory",
+      "physical_worktree_bytes": 27861,
+      "physical_worktree_sha256": "e77a265b28ca54db8b99a90d3d284aa87c3a84d97299d60e26cca509d9812dcf",
+      "physical_bytes_git_blob_oid": "50108cd1ec43f7688eedcc83b35b2774ab893ca6",
+      "git_tree_blob_oid_at_head": "92c9d25c9d4c40347bed75bdb237c7634f465903",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/integration/replay/checkpoint003-source.json",
+      "role": "Frozen legacy replay source fixture in current integration test tree",
+      "physical_worktree_bytes": 684059,
+      "physical_worktree_sha256": "9a544b9cac13873812012251b2609a2c4f001f732d044d23222e874030b3ed0b",
+      "physical_bytes_git_blob_oid": "cac25e8451bf73a0847bd0f5809e08107cd34e8a",
+      "git_tree_blob_oid_at_head": "cac25e8451bf73a0847bd0f5809e08107cd34e8a",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "tests/integration/replay/build_checkpoint003.py",
+      "role": "Frozen legacy checkpoint construction entrypoint",
+      "physical_worktree_bytes": 4145,
+      "physical_worktree_sha256": "3f8be97df46838aeb411afd20ad2802801f86c1f137c95b8cebc14be64b8ae44",
+      "physical_bytes_git_blob_oid": "0159554abdf74455beac20c5426186dedb32ae05",
+      "git_tree_blob_oid_at_head": "0159554abdf74455beac20c5426186dedb32ae05",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/evidence/G1-OBS-REP/implementation/v1-byte-inventory-raw.md",
+      "role": "Prior accepted source-only 53-file v1 generated-product/raw-fixture inventory (full human-readable list)",
+      "physical_worktree_bytes": 16009,
+      "physical_worktree_sha256": "980552e7a7e551e6952cb62ca0cd4e52ddd7ba80a6547a6fd690f5d643e42284",
+      "physical_bytes_git_blob_oid": "93a085248d5dad398237df1c32428c251ac4cc9d",
+      "git_tree_blob_oid_at_head": "93a085248d5dad398237df1c32428c251ac4cc9d",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/evidence/G1-OBS-REP/implementation/v1-byte-inventory-raw.json",
+      "role": "Prior accepted machine-readable 53-file v1 inventory with Git/raw file hash records",
+      "physical_worktree_bytes": 37237,
+      "physical_worktree_sha256": "832e65b7b3af5744f83b279393c83fe88843e4a179e2e7399fc05b5442c543b9",
+      "physical_bytes_git_blob_oid": "451c68a3e1777dc8a47b320564622a2c0ed86ffe",
+      "git_tree_blob_oid_at_head": "451c68a3e1777dc8a47b320564622a2c0ed86ffe",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/evidence/G1-OBS-REP/implementation/accepted-source-manifest.json",
+      "role": "Manifest freezing identities of accepted proposal, critique, v1 baseline and map artifacts",
+      "physical_worktree_bytes": 1808,
+      "physical_worktree_sha256": "7a5fe811989b4f8471514bfb7cc489d10f494ba8664934329a173b481e937cc7",
+      "physical_bytes_git_blob_oid": "87303c44bce88b7f15366504151008cb6366e2ea",
+      "git_tree_blob_oid_at_head": "87303c44bce88b7f15366504151008cb6366e2ea",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/evidence/G1-LIVE-HOLD/release-source-manifest.json",
+      "role": "Current runtime image source roster and source byte identities",
+      "physical_worktree_bytes": 71863,
+      "physical_worktree_sha256": "d1186a02f618891f615138f7721f8e23fbff46aec0014929be73acd88d4d4b20",
+      "physical_bytes_git_blob_oid": "aebcc79c3fcfc6e1e6011fedd141cd8ce923d23b",
+      "git_tree_blob_oid_at_head": "aebcc79c3fcfc6e1e6011fedd141cd8ce923d23b",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/evidence/G1-LIVE-HOLD/release-manifest.json",
+      "role": "Current LIVE release artifact manifest locator",
+      "physical_worktree_bytes": 312544,
+      "physical_worktree_sha256": "af6dff14ee22604f9c98d501de34434b4e939723d54172a68a89b7d016ec6316",
+      "physical_bytes_git_blob_oid": "8d6781964b215078d297e0f023f3ce56a709952a",
+      "git_tree_blob_oid_at_head": "8d6781964b215078d297e0f023f3ce56a709952a",
+      "physical_equals_head_git_blob": true
+    },
+    {
+      "path": "docs/implementation/evidence/G1-LIVE-HOLD-PLAN/R1/safety-product.md",
+      "role": "Plan-only LIVE-SAFETY-EXPORT/1.0.0 consumer-safe product boundary",
+      "physical_worktree_bytes": 14695,
+      "physical_worktree_sha256": "b940e935bd8bedd2b0962a39ed6c970922cc7732fef00485ed2b7c95d95484a7",
+      "physical_bytes_git_blob_oid": "b2df908fe6b877e8bda21f9278a939b2c6106673",
+      "git_tree_blob_oid_at_head": "eba19e0d2f3d79a05be7ff9b75ec266b8efc27aa",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "docs/implementation/evidence/G1-LIVE-HOLD-PLAN/R1/authority-cutover.md",
+      "role": "Plan-only LIVE-HOLD authority/version cutover description",
+      "physical_worktree_bytes": 6875,
+      "physical_worktree_sha256": "1fc3e02627c9291ede60756ae5bc6a51bc442629f8724ea74ddc14e697adc3ad",
+      "physical_bytes_git_blob_oid": "bd57a87bdf03139701fd73a571c6c0642fa5a45d",
+      "git_tree_blob_oid_at_head": "6cf4f12877cbac724cdf5012daee7997f38fc498",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "docs/spec/scenario-catalog.md",
+      "role": "Current scenario catalog documentation and catalog version references",
+      "physical_worktree_bytes": 7781,
+      "physical_worktree_sha256": "1f1c179c0c15efae01c79d0d898eb4ed3cdd6c3ff6ebb9fa2c412c7fe34caa1d",
+      "physical_bytes_git_blob_oid": "0a64ad92d609aabb460bb4c556b308116df80351",
+      "git_tree_blob_oid_at_head": "a5e6b6c5b6fc855090b94ddf86cbe3647a8f2975",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/contracts/run_checks.py",
+      "role": "Contract test runner entrypoint",
+      "physical_worktree_bytes": 3195,
+      "physical_worktree_sha256": "97402e41cac393fdf960b732c19b033d011030a68f02b3bbd7eb87e84b9c7d50",
+      "physical_bytes_git_blob_oid": "29521a74b68bf6c08c525a412bdda680ac9c18dc",
+      "git_tree_blob_oid_at_head": "31d92e72c85a80998caa4fb33012239ff82299a4",
+      "physical_equals_head_git_blob": false
+    },
+    {
+      "path": "tests/run_contracts/test_interfaces.py",
+      "role": "Run contract source identity and refusal test entrypoint",
+      "physical_worktree_bytes": 15191,
+      "physical_worktree_sha256": "a91067a46c8bcdbf5c588c17e2d0de2574c5568b2f5ecd187456a35447af283b",
+      "physical_bytes_git_blob_oid": "f7c9629c92f5c8908e6d9d7eaacdfcc83f5652c9",
+      "git_tree_blob_oid_at_head": "f7c9629c92f5c8908e6d9d7eaacdfcc83f5652c9",
+      "physical_equals_head_git_blob": true
+    }
+  ],
+  "frozen_legacy_inventory": {
+    "baseline_human_path": "docs/implementation/evidence/G1-OBS-REP/implementation/v1-byte-inventory-raw.md",
+    "baseline_machine_path": "docs/implementation/evidence/G1-OBS-REP/implementation/v1-byte-inventory-raw.json",
+    "machine_inventory_file_count": 53,
+    "scope": "All generated outputs from domain/run v1 exporters, v1 run-binding sources, and checked-in raw v1 contract fixtures; prior report says no tests/exports/code generation were run for that inventory.",
+    "physical_checkout_note": "Prior inventory recorded core.autocrlf=true and 30/53 physical checkout files differing from base Git bytes solely through CRLF conversion; its JSON keeps Git byte counts/SHA-256 and working byte counts/SHA-256 separately. This report does not normalize those files.",
+    "accepted_manifest_path": "docs/implementation/evidence/G1-OBS-REP/implementation/accepted-source-manifest.json",
+    "prior_report_blob": "4b52a422a7172b73faed5664e5e47668ab17c5b2",
+    "prior_correction_blob": "040fd1b139dac4ac1fcde00b4d48d8bad4d8de57",
+    "accepted_proposal_commit": "5409d54f570040b435a729769ba2d9353b7daffb",
+    "proposal_blob_from_assignment": "e5a67a4ad7e37b82cb591226e6b522d767f59db0",
+    "proposal_blob_lookup": "unavailable in this checkout object database (git cat-file -t failed); no alternate proposal blob search beyond current tree and named object was run"
+  },
+  "generated_artifact_commands_present_but_not_run": [
+    "python -m contracts.dgp.export --check",
+    "python -m contracts.domain.export --check",
+    "python -m contracts.domain.export_v2 --check",
+    "python -m contracts.runs.export --check",
+    "python -m contracts.runs.export_v2 --check"
+  ],
+  "limitations": [
+    "Source locators and declared versions only; no runtime behavior established.",
+    "No source/test check was executed.",
+    "No scientific acceptance, runtime readiness, or G1 acceptance claim.",
+    "LIVE-HOLD remains 1.0; live threshold clearance remains out of scope and any unsupported threshold exit remains named blocked."
+  ]
+}

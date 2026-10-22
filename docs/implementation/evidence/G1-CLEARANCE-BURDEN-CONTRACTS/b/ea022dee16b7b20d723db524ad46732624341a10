@@ -1,0 +1,111 @@
+{
+  "head": "2a7726be23864cf9c933295f1d33da3d6fbedd1b",
+  "origin": "https://github.com/esbraun/REMission.git",
+  "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-generator-interfaces-review-astra-20261021\\review-clone",
+  "roles": {
+    "service": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "remission-astra-2a7726-service:candidate",
+        "python",
+        "-c",
+        "import hashlib,json,pathlib; paths=['contracts/runs/__init__.py', 'contracts/runs/common.py', 'contracts/runs/observed.py', 'contracts/runs/admission.py', 'contracts/runs/bindings-v1.json', 'services/foundation/app.py', 'services/foundation/cli.py', 'services/foundation/replay.py', 'services/foundation/server.py', 'services/foundation/store.py', 'services/foundation/workflow.py', 'services/foundation/__init__.py']; print(json.dumps({p:hashlib.sha256((pathlib.Path(\"/app\")/p).read_bytes()).hexdigest() for p in paths}))"
+      ],
+      "stdout": "{\"contracts/runs/__init__.py\": \"97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f\", \"contracts/runs/common.py\": \"be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef\", \"contracts/runs/observed.py\": \"53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760\", \"contracts/runs/admission.py\": \"c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde\", \"contracts/runs/bindings-v1.json\": \"0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d\", \"services/foundation/app.py\": \"5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c\", \"services/foundation/cli.py\": \"a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e\", \"services/foundation/replay.py\": \"0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58\", \"services/foundation/server.py\": \"42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d\", \"services/foundation/store.py\": \"775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3\", \"services/foundation/workflow.py\": \"147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7\", \"services/foundation/__init__.py\": \"a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481\"}\n",
+      "exit_code": 0,
+      "image_id": "sha256:740f1a1ef17cbb2702c433ad5007a47a40fc2a1b766a4d61141e8390494477b8",
+      "source_sha256": {
+        "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+        "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+        "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+        "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+        "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+        "services/foundation/app.py": "5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c",
+        "services/foundation/cli.py": "a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e",
+        "services/foundation/replay.py": "0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58",
+        "services/foundation/server.py": "42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d",
+        "services/foundation/store.py": "775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3",
+        "services/foundation/workflow.py": "147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7",
+        "services/foundation/__init__.py": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481"
+      },
+      "match": true
+    },
+    "learner": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "remission-astra-2a7726-learner:candidate",
+        "python",
+        "-c",
+        "import hashlib,json,pathlib; paths=['contracts/runs/__init__.py', 'contracts/runs/common.py', 'contracts/runs/observed.py', 'contracts/runs/admission.py', 'contracts/runs/bindings-v1.json', 'services/learner/worker.py', 'services/learner/export_observed.py']; print(json.dumps({p:hashlib.sha256((pathlib.Path(\"/app\")/p).read_bytes()).hexdigest() for p in paths}))"
+      ],
+      "stdout": "{\"contracts/runs/__init__.py\": \"97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f\", \"contracts/runs/common.py\": \"be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef\", \"contracts/runs/observed.py\": \"53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760\", \"contracts/runs/admission.py\": \"c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde\", \"contracts/runs/bindings-v1.json\": \"0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d\", \"services/learner/worker.py\": \"3ddf6743567489d9cd6bf924ddfd4e2f0870b61732fba66cdd3667294f960dc6\", \"services/learner/export_observed.py\": \"13d178e20c7d82eb930dc638c51e6779ebfd05790725cf7b05fcfe461ad301ab\"}\n",
+      "exit_code": 0,
+      "image_id": "sha256:e5af6f2c9d431d373c97af01b90264d793fe091a31a47402533b963ce78984f5",
+      "source_sha256": {
+        "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+        "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+        "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+        "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+        "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+        "services/learner/worker.py": "3ddf6743567489d9cd6bf924ddfd4e2f0870b61732fba66cdd3667294f960dc6",
+        "services/learner/export_observed.py": "13d178e20c7d82eb930dc638c51e6779ebfd05790725cf7b05fcfe461ad301ab"
+      },
+      "match": true
+    },
+    "tests": {
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges:true",
+        "remission-astra-2a7726-tests:candidate",
+        "python",
+        "-c",
+        "import hashlib,json,pathlib; paths=['contracts/runs/__init__.py', 'contracts/runs/common.py', 'contracts/runs/observed.py', 'contracts/runs/admission.py', 'contracts/runs/bindings-v1.json', 'services/foundation/app.py', 'services/foundation/cli.py', 'services/foundation/replay.py', 'services/foundation/server.py', 'services/foundation/store.py', 'services/foundation/workflow.py', 'services/foundation/__init__.py']; print(json.dumps({p:hashlib.sha256((pathlib.Path(\"/app\")/p).read_bytes()).hexdigest() for p in paths}))"
+      ],
+      "stdout": "{\"contracts/runs/__init__.py\": \"97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f\", \"contracts/runs/common.py\": \"be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef\", \"contracts/runs/observed.py\": \"53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760\", \"contracts/runs/admission.py\": \"c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde\", \"contracts/runs/bindings-v1.json\": \"0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d\", \"services/foundation/app.py\": \"5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c\", \"services/foundation/cli.py\": \"a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e\", \"services/foundation/replay.py\": \"0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58\", \"services/foundation/server.py\": \"42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d\", \"services/foundation/store.py\": \"775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3\", \"services/foundation/workflow.py\": \"147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7\", \"services/foundation/__init__.py\": \"a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481\"}\n",
+      "exit_code": 0,
+      "image_id": "sha256:9f7675689ed228ffdf1ea538c8f61373f6589d23aae0d62c6e87c45d9ce2b1e8",
+      "source_sha256": {
+        "contracts/runs/__init__.py": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+        "contracts/runs/common.py": "be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef",
+        "contracts/runs/observed.py": "53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760",
+        "contracts/runs/admission.py": "c3ccadd3a99364fde85bed8bc24fbe57072e099ddb6c0ecf76ceebba4cc0edde",
+        "contracts/runs/bindings-v1.json": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+        "services/foundation/app.py": "5a2b38b38204b1677b278b744250af3ec15bec8006dca5ac57cbfa508a84bd2c",
+        "services/foundation/cli.py": "a1cadc7f13a0ba288f7cfea9a52d2df65e257ca58f3fcb395de68302efa0a41e",
+        "services/foundation/replay.py": "0216f0bf571b55d71ed5ec107984ffb8902e5de0edc3922c4d6b6c7e6bfa6f58",
+        "services/foundation/server.py": "42aa19cac02aabae0f0086a0d7e2fa29b2bdebb7e7fea8addefa74be7536e96d",
+        "services/foundation/store.py": "775f083ba3a1cccd46c4d024549cb1505e9aeda67c66ec1547267dd979bc82e3",
+        "services/foundation/workflow.py": "147ea736aa205daa8ced9538108204fbaed1d36e628321f7c9480b9090dfc5b7",
+        "services/foundation/__init__.py": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481"
+      },
+      "match": true
+    }
+  },
+  "claim": "Actual copied public modules match exact reviewer HTTPS clone; no source mount in image byte probe"
+}
