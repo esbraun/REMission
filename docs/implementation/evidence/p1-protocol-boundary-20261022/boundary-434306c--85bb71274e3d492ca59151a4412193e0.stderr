@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/app/protocol_probe.py", line 37, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/app/protocol_probe.py", line 15, in main
+    assert importlib.util.find_spec('services.generator') is None and not Path('/app/services/generator').exists(),'private source exposed'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: private source exposed

@@ -1,0 +1,49 @@
+/source/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/source/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+test_2_1_only_dispatch_unknown_versions_and_cross_version_lineage (test_protocol_boundary.ProtocolBoundaryTests.test_2_1_only_dispatch_unknown_versions_and_cross_version_lineage) ... ok
+test_assignment_approval_must_be_available_by_assignment_full_and_reduced (test_protocol_boundary.ProtocolBoundaryTests.test_assignment_approval_must_be_available_by_assignment_full_and_reduced) ... /source/contracts/domain/common.py:62: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x701a534409a0>
+  @model_validator(mode="after")
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+FAIL
+test_closed_purposes_real_prior_sentinel_and_no_execution (test_protocol_boundary.ProtocolBoundaryTests.test_closed_purposes_real_prior_sentinel_and_no_execution) ... ok
+test_exact_hash_owner_temporal_and_stale_lineage_negatives (test_protocol_boundary.ProtocolBoundaryTests.test_exact_hash_owner_temporal_and_stale_lineage_negatives) ... ok
+test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi (test_protocol_boundary.ProtocolBoundaryTests.test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi) ... ok
+test_policy_snapshot_must_be_available_at_support_decision_full_and_reduced (test_protocol_boundary.ProtocolBoundaryTests.test_policy_snapshot_must_be_available_at_support_decision_full_and_reduced) ... FAIL
+test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar (test_protocol_boundary.ProtocolBoundaryTests.test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar) ... ok
+test_snapshot_approval_consent_background_and_freeze_refs (test_protocol_boundary.ProtocolBoundaryTests.test_snapshot_approval_consent_background_and_freeze_refs) ... ok
+test_snapshot_cannot_omit_newer_withdrawal_or_retraction (test_protocol_boundary.ProtocolBoundaryTests.test_snapshot_cannot_omit_newer_withdrawal_or_retraction) ... FAIL
+test_support_clinical_intersection_policy_and_canonical_mrt_probability (test_protocol_boundary.ProtocolBoundaryTests.test_support_clinical_intersection_policy_and_canonical_mrt_probability) ... ok
+
+======================================================================
+FAIL: test_assignment_approval_must_be_available_by_assignment_full_and_reduced (test_protocol_boundary.ProtocolBoundaryTests.test_assignment_approval_must_be_available_by_assignment_full_and_reduced)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_protocol_boundary.py", line 84, in test_assignment_approval_must_be_available_by_assignment_full_and_reduced
+    with self.assertRaises(ValueError):project_protocol(history(values),ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_policy_snapshot_must_be_available_at_support_decision_full_and_reduced (test_protocol_boundary.ProtocolBoundaryTests.test_policy_snapshot_must_be_available_at_support_decision_full_and_reduced)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_protocol_boundary.py", line 71, in test_policy_snapshot_must_be_available_at_support_decision_full_and_reduced
+    with self.assertRaises(ValueError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_snapshot_cannot_omit_newer_withdrawal_or_retraction (test_protocol_boundary.ProtocolBoundaryTests.test_snapshot_cannot_omit_newer_withdrawal_or_retraction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_protocol_boundary.py", line 66, in test_snapshot_cannot_omit_newer_withdrawal_or_retraction
+    with self.assertRaises(ValueError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.290s
+
+FAILED (failures=3)
