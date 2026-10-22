@@ -66,9 +66,10 @@ class ActualProfileControls(unittest.TestCase):
                 elif argv[:2]==['docker','kill']:
                     killed.append(argv[2]);running[0]=False
                 elif argv[:2]==['docker','inspect']:
-                    text=json.dumps([dict(Id='owned-control',Image='sha256:OWNED-PROFILE-CONTROL',Config=dict(User='10002:10002'),
+                    self.assertEqual(argv[3:],['--format',runner.CONTAINER_FORMAT])
+                    text=json.dumps(dict(Id='owned-control',Image='sha256:OWNED-PROFILE-CONTROL',Config=dict(User='10002:10002'),
                         State=dict(Running=running[0],ExitCode=0 if running[0] else 137,OOMKilled=False),
-                        HostConfig=dict(Memory=2147483648,NanoCpus=2000000000,NetworkMode='none',ReadonlyRootfs=True),Mounts=[])])
+                        HostConfig=dict(Memory=2147483648,NanoCpus=2000000000,NetworkMode='none',ReadonlyRootfs=True),Mounts=[]))
                 elif argv[:2]==['docker','cp'] and argv[2].endswith(':/output'):
                     target=Path(argv[3]);target.mkdir();(target/'partial-marker.json').write_text('{"stage":"control-hang"}')
                 return subprocess.CompletedProcess(argv,124 if timeout else 0,text.encode(),b''),dict(timed_out=timeout,streams={'stderr':{'path':'RETAINED-CONTROL'}})
