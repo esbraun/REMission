@@ -1,6 +1,19 @@
 """Exact numerical reference for clipped, .001-rounded reported quality."""
 import numpy as np
-from scipy.special import ndtr
+from scipy.special import ndtr, log_ndtr
+
+
+def bin_logprob(value, mean, sd, step, maximum):
+    """Independent SciPy reference for the rounded/clipped likelihood."""
+    value, mean, sd = np.broadcast_arrays(value, mean, sd)
+    if np.any(sd <= 0) or not np.all(np.isfinite(sd)):
+        raise ValueError("finite positive likelihood SD required")
+    lo, hi = (value - step / 2 - mean) / sd, (value + step / 2 - mean) / sd
+    a = np.where(lo > 0, log_ndtr(-lo), log_ndtr(hi))
+    b = np.where(lo > 0, log_ndtr(-hi), log_ndtr(lo))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        interior = a + np.log(-np.expm1(b - a))
+    return np.where(value == 0, log_ndtr(hi), np.where(value == maximum, log_ndtr(-lo), interior))
 
 
 def rounded_quality(value):
