@@ -13,6 +13,8 @@ from live_process_helpers import CONTEXT
 NOW=datetime(2026,10,21,12,tzinfo=timezone.utc)
 
 
+@unittest.skipUnless(os.environ.get('REMISSION_SCHEMA4_TEST_ENV')=='1',
+    'Historical003→004 suite requires complete pinned schema4 SERVICE environment; see poc-analysis-runbook.md and chained migration evidence')
 class StoppedUpgradeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

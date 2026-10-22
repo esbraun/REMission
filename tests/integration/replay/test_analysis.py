@@ -113,7 +113,7 @@ class NumericalTests(unittest.TestCase):
         self.assertEqual(d['qindex'],[t+13 for t in range(1,15) if t!=3])
         self.assertEqual(d['deliveries'],14)
         self.assertAlmostEqual(d['c'][-1],1-.65**14)
-        model=build(d)
+        model=build(d,guide=False)
         point=model.initial_point();logp=model.compile_logp()(point)
         gradient=model.compile_dlogp()
         for rho in [0.,-.94,.94]:
@@ -121,9 +121,26 @@ class NumericalTests(unittest.TestCase):
             checked['rho_interval__']=np.log((rho+.95)/(.95-rho))
             self.assertTrue(np.isfinite(gradient(checked)).all())
         changed=copy.deepcopy(d);changed['quality']=d['quality']+1
-        self.assertNotAlmostEqual(logp,build(changed).compile_logp()(point))
+        self.assertNotAlmostEqual(logp,build(changed,guide=False).compile_logp()(point))
         changed=copy.deepcopy(d);changed['isi']=d['isi']-3
-        self.assertNotAlmostEqual(logp,build(changed).compile_logp()(point))
+        self.assertNotAlmostEqual(logp,build(changed,guide=False).compile_logp()(point))
+
+    def test_exact_guide_density_and_valid_gradients(self):
+        data=inputs(reduced())
+        guided=build(data);original=build(data,guide=False)
+        gp=guided.initial_point();base=original.initial_point()
+        transformed=guided.compile_fn(guided.replace_rvs_by_values([guided['prior_normal_coordinates'],guided['guide_log_jacobian']]),
+            inputs=guided.value_vars,on_unused_input='ignore')
+        glog=guided.compile_logp();olog=original.compile_logp();gradient=guided.compile_dlogp()
+        for rho in [0.,-.94,.94]:
+            point=copy.deepcopy(gp);point['rho_interval__']=np.log((rho+.95)/(.95-rho))
+            point['guide_innovation']=np.linspace(-.2,.2,len(data['nights'])+7)
+            u,logjac=transformed(point)
+            op=copy.deepcopy(base)
+            op.update({k:v for k,v in point.items() if k in op})
+            op.update(mu_b=19+5*u[0],b_raw=u[1],population_beta=4*u[2:4],beta_raw=u[4:6],a=u[6],innovation=u[7:])
+            self.assertAlmostEqual(float(glog(point)),float(olog(op))+np.log(80)+float(logjac),places=7)
+            self.assertTrue(np.isfinite(gradient(point)).all())
 
     def test_hstar_exclusion_tamper_duplicate_future_and_delivery(self):
         h=reduced().model_dump(mode='json')

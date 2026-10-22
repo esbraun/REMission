@@ -45,18 +45,33 @@ def log_bin(value, mean, sd, step, maximum):
                      pt.switch(pt.eq(value,maximum),pm.logcdf(normal,-lo),interior))
 
 
-def build(data):
+def gaussian_guide(design, variance, centered, eta):
+    """Exact coordinate change; the guide is never the observation likelihood.
+
+    Prior u~N(0,I), pseudo-data y|u~N(Au,R). Sample independent eta and
+    u=m+chol(I+A'R^-1 A)^-T eta. The exact prior-density ratio plus Jacobian
+    equals -logL_guide+logZ_guide; this algebra avoids subtracting Gaussian
+    pseudo-likelihood terms. Use one identity, never both corrections.
+    """
+    dimension=design.shape[1]
+    precision=pt.eye(dimension)+pt.dot(design.T/variance,design)
+    cholesky=pt.linalg.cholesky(precision)
+    h=pt.dot(design.T,centered/variance)
+    intermediate=pt.linalg.solve_triangular(cholesky,h,lower=True)
+    mean=pt.linalg.solve_triangular(cholesky.T,intermediate,lower=False)
+    u=mean+pt.linalg.solve_triangular(cholesky.T,eta,lower=False)
+    log_jacobian=-pt.log(pt.diag(cholesky)).sum()
+    correction=-.5*(pt.sum(u**2)-pt.sum(eta**2))+log_jacobian
+    return u,correction,log_jacobian
+
+
+def build(data, *, guide=True):
     if pytensor.config.floatX != "float64":
         raise ValueError("float64 required")
     n = len(data["nights"])
-    with pm.Model(coords={"night":data["nights"],"arm":["continue","escalate"]}) as model:
-        mu_b = pm.Normal("mu_b",19,5)
+    with pm.Model(coords={"night":data["nights"],"arm":["continue","escalate"],"latent":np.arange(n+7)}) as model:
         sd_b = pm.HalfNormal("sd_b",3)
-        b = pm.Deterministic("b",mu_b+sd_b*pm.Normal("b_raw",0,1))
-        beta = pm.Normal("population_beta",0,4,dims="arm")
         sd_beta = pm.HalfNormal("sd_beta",1,dims="arm")
-        individual = pm.Deterministic("patient_beta",beta+sd_beta*pm.Normal("beta_raw",0,1,dims="arm"),dims="arm")
-        a = pm.Normal("a",0,1)
         rho = pm.Uniform("rho",-.95,.95)
         sigma_e = pm.HalfNormal("sigma_e",2)
         sigma_isi = pm.HalfNormal("sigma_isi",2)
@@ -68,7 +83,42 @@ def build(data):
         for _ in range(1,n):
             powers.append(powers[-1]*rho)
         transition = (lag>=0)*pt.stack(powers)[np.maximum(lag,0)]
-        error = pm.Deterministic("error", sigma_e*pt.dot(transition,pm.Normal("innovation",0,1,dims="night")),dims="night")
+        if guide:
+            # Original independent normal coordinates, including BOTH hierarchy
+            # levels. No marginal-prior or population simplification is made.
+            basis=pt.concatenate([pt.stack([pt.full((n,),5.),pt.ones(n)*sd_b,
+                -4*data['c'],-4*data['e'],-sd_beta[0]*data['c'],-sd_beta[1]*data['e'],
+                np.sin(2*np.pi*data['nights']/21)],axis=1),sigma_e*transition],axis=1)
+            isi_design=pt.mean(basis[data['recall']],axis=1)
+            quality_design=-basis[data['qindex']]/3
+            design=pt.concatenate([isi_design,quality_design],axis=0)
+            centered=pt.as_tensor_variable(np.concatenate([data['isi']-19.,data['quality']-(10-19/3)]))
+            variance=pt.concatenate([pt.ones(len(data['isi']))*(sigma_isi**2+CONFIG['guide_isi_variance_floor']),
+                pt.ones(len(data['quality']))*(sigma_quality**2+CONFIG['guide_quality_variance_floor'])])
+            eta=pm.Normal('guide_innovation',0,1,dims='latent')
+            u,correction,log_jacobian=gaussian_guide(design,variance,centered,eta)
+            pm.Deterministic('prior_normal_coordinates',u,dims='latent')
+            pm.Deterministic('guide_log_jacobian',log_jacobian)
+            pm.Potential('exact_guide_correction',correction)
+            mu_b=pm.Deterministic('mu_b',19+5*u[0])
+            b_raw=pm.Deterministic('b_raw',u[1])
+            beta=pm.Deterministic('population_beta',4*u[2:4],dims='arm')
+            beta_raw=pm.Deterministic('beta_raw',u[4:6],dims='arm')
+            a=pm.Deterministic('a',u[6])
+            innovation=pm.Deterministic('innovation',u[7:],dims='night')
+        else:
+            # Prior predictive must use this ORIGINAL parameterization. PyMC
+            # ignores Potentials in sample_prior_predictive, so the guide's
+            # uncorrected eta draws would instead be data-conditioned draws.
+            mu_b=pm.Normal('mu_b',19,5)
+            b_raw=pm.Normal('b_raw',0,1)
+            beta=pm.Normal('population_beta',0,4,dims='arm')
+            beta_raw=pm.Normal('beta_raw',0,1,dims='arm')
+            a=pm.Normal('a',0,1)
+            innovation=pm.Normal('innovation',0,1,dims='night')
+        b=pm.Deterministic('b',mu_b+sd_b*b_raw)
+        individual=pm.Deterministic('patient_beta',beta+sd_beta*beta_raw,dims='arm')
+        error = pm.Deterministic("error", sigma_e*pt.dot(transition,innovation),dims="night")
         z = pm.Deterministic("burden",b+a*np.sin(2*np.pi*data["nights"]/21)+error-individual[0]*data["c"]-individual[1]*data["e"],dims="night")
         pm.Potential("isi_likelihood",log_bin(data["isi"],pt.mean(z[data["recall"]],axis=1),sigma_isi,1.,28.).sum())
         if len(data["quality"]):

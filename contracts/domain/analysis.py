@@ -24,7 +24,9 @@ CONFIG = dict(id="poc-visit-v1", chains=4, tune=1000, draws=1000, extension_tune
               mean_se=.05, sd_floor=.10, absolute_stability=.01,
               relative_variance=.01, relative_stability=.02,
               cpu=2, memory_gib=2, model="rounded-clipped-state-space-v1",
-              gaussian_integration="exact-conditional-on-adherence-v1")
+              gaussian_integration="exact-conditional-on-adherence-v1",
+              parameterization="exact-gaussian-guide-v1",guide_isi_variance_floor=1/12,
+              guide_quality_variance_floor=.001**2/12)
 
 
 def reference(identifier, value):
@@ -32,6 +34,7 @@ def reference(identifier, value):
 
 
 CONFIG_REF = reference("poc-visit-v1", CONFIG)
+CONFIG_REF['version']='1.1.0'
 HISTORY_REF = reference("poc-analysis-history-v1", "quality/ISI/indicators/assignments/deliveries/reduced-lineage-v1")
 ESTIMAND_REF = reference("EST-VISIT:poc-hstar-v1", "Expected ISI at 42 future days: escalate minus continue conditional on reduced H*; retain plans; no prompt")
 MODEL_REF = reference(CONFIG["model"], "contract 20261021: b hierarchy; independent beta hierarchy; sinusoid; AR; rounded clipped total ISI and quality")

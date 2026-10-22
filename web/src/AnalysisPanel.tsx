@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AnalysisAttempt, Workspace } from './types';
+import { analysisMessage, definitiveRejection } from './analysis-state.mjs';
 
 type Request = <T>(url: string, options?: RequestInit) => Promise<T>;
 const date = (value: string) => new Date(value).toLocaleString();
@@ -15,17 +16,18 @@ function Result({ attempt }: { attempt: AnalysisAttempt }) {
     {attempt.previous_attempt ? <p>Deliberate retry of {attempt.previous_attempt}.</p> : null}
     {attempt.failure_reason ? <p className="error">{attempt.failure_reason}. No accepted effect interval is available.</p> : null}
     {result?.effect ? <><p><strong>Expected 42-day ISI difference: {number(result.effect.mean)} points</strong> (escalation minus continuation).</p><p>95% posterior interval {number(result.effect.lower)} to {number(result.effect.upper)} points; posterior SD {number(result.effect.sd)}. Negative values predict lower ISI under escalation. The endpoint averages future nights 29–42, retaining each assigned plan.</p><p>This interval describes uncertainty in the conditional expected effect after integrating future adherence, process and measurement randomness. It is separate from a future outcome predictive interval.</p></> : null}
-    {result ? <><ul>{result.limitations.map(text => <li key={text}>{text}</li>)}</ul><details><summary>Actual computation and diagnostics</summary><pre className="source-json">{JSON.stringify(result.diagnostics, null, 2)}</pre></details></> : <p role="status">{attempt.status === 'queued' ? 'Waiting for the local isolated learner dispatcher.' : 'The isolated learner is working. You can review and approve ordinary care while analysis runs.'}</p>}
+    {result ? <><ul>{result.limitations.map(text => <li key={text}>{text}</li>)}</ul><details><summary>Actual computation and diagnostics</summary><pre className="source-json">{JSON.stringify(result.diagnostics, null, 2)}</pre></details></> : <p role="status">{analysisMessage(attempt.status)}</p>}
     <details><summary>Frozen input and configuration identity</summary><p className="hash">H* SHA256 {attempt.history_sha256}</p><p className="hash">Input SHA256 {attempt.input_sha256}</p><p className="hash">Configuration SHA256 {attempt.configuration.sha256}</p><p>EST-VISIT:poc-hstar-v1 · quality/ISI, reporting indicators and typed treatment/delivery history only. Function and diary are excluded from fitting.</p></details>
   </article>;
 }
 
-export function AnalysisPanel({ workspace, request }: { workspace: Workspace; request: Request }) {
+export function AnalysisPanel({ workspace, request, refresh }: { workspace: Workspace; request: Request; refresh: () => void }) {
   const [attempts, setAttempts] = useState<AnalysisAttempt[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [failure, setFailure] = useState('');
   const [revision, setRevision] = useState(0);
+  const [needsRefresh, setNeedsRefresh] = useState(false);
   const submitted = useRef<{ key: string; payload: { expected_version: number; previous_attempt: string | null } } | null>(null);
   const generation = useRef(0);
   const currentRequest = useRef(request);
@@ -58,13 +60,19 @@ export function AnalysisPanel({ workspace, request }: { workspace: Workspace; re
       // A context switch unmounts this component. The new patient's component
       // has independent requests/drafts and never receives this response.
       if (generation.current === epoch) { submitted.current = null; setRevision(value => value + 1); }
-    } catch (error) { if (generation.current === epoch) setFailure(`${String(error)}. Retry resolves the original request and key.`); }
+    } catch (error) { if (generation.current === epoch) {
+      if (definitiveRejection(error)) {
+        submitted.current = null; setNeedsRefresh(true);
+        setFailure(`${String(error)}. The request was rejected. Refresh patient information before submitting a new intent.`);
+      } else setFailure(`${String(error)}. Retry resolves the original request and key.`);
+    } }
     finally { if (generation.current === epoch) setSubmitting(false); }
   }
   const pending = attempts.some(item => ['queued', 'running'].includes(item.status));
   const allowed = Boolean(workspace.simulation && workspace.simulation.day >= 14);
   return <section aria-labelledby="analysis-title"><p className="eyebrow">Observed-only synthetic analysis</p><h2 id="analysis-title">Visit analysis</h2><p>Fit the actual native PyMC model to cumulative available observations. V0 uses the declared prior and this patient only, without external borrowing. Future behavior contrasts two retained plans with fixed no-prompt support. No treatment is selected automatically.</p>
-    <button disabled={!allowed || pending || submitting || loading} onClick={() => void submit()}>{submitting ? 'Submitting analysis…' : submitted.current ? 'Retry original analysis request' : attempts.length ? 'Run a new analysis at current cutoff' : 'Run V0 visit analysis'}</button>
+    <button disabled={!allowed || pending || submitting || loading || needsRefresh} onClick={() => void submit()}>{submitting ? 'Submitting analysis…' : submitted.current ? 'Retry original analysis request' : attempts.length ? 'Run a new analysis at current cutoff' : 'Run V0 visit analysis'}</button>
+    {needsRefresh ? <button className="secondary" onClick={refresh}>Refresh patient information</button> : null}
     {!allowed ? <p>Generate a v1 patient, choose a behavioral plan and advance to day14 to run this representative.</p> : null}
     {loading ? <p role="status">Loading saved analysis attempts…</p> : null}
     {failure ? <p role="alert" className="error">{failure}</p> : null}

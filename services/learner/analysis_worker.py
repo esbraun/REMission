@@ -49,7 +49,8 @@ def run(source, out):
         if len(data["arms"])<2:
             result["limitations"].append("Only one or zero local treatment arms observed; the other arm relies on the declared prior.")
         model = build(data)
-        with model:
+        # Retain the original generative prior, not the data-conditioned guide.
+        with build(data,guide=False):
             prior=pm.sample_prior_predictive(draws=64,random_seed=seed+313, var_names=['burden','sigma_isi','sigma_quality'])
         def observed_predictive(group,seed_suffix):
             rng=np.random.default_rng(np.random.SeedSequence([seed,seed_suffix]))
