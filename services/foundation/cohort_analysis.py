@@ -45,7 +45,7 @@ def view(row, current_cutoff, *, current_versions=None, current_information=None
         stale=stale,staleness_reason=reason,member_information=member_status,
         serving=metadata(row,stale=stale,reason=reason,result=result,result_error=result_error),configuration=json.loads(row['configuration_json']),
         previous_attempt=row['previous_attempt'],created_at=row['created_at'],started_at=row['started_at'],
-        finished_at=row['finished_at'],failure_reason=row['failure_reason'],progress=public_summary(json.loads(row['progress_json'])),
+        finished_at=row['finished_at'],failure_reason=public_summary(row['failure_reason']),progress=public_summary(json.loads(row['progress_json'])),
         result=result,input_sha256=row['input_sha256'],
         history_sha256=row['history_sha256'],sources=product.sources.model_dump(mode='json') if product.sources else None,
         source_set_sha256=product.source_set_sha256,cutoff_day=day,forecast_endpoint_day=day+42,

@@ -105,7 +105,7 @@ def view(row, cutoff, *, current=None):
     return dict(id=row['job_id'],kind='visit_analysis',patient_id=row['patient_id'],status=row['status'],stage=row['stage'],
         cutoff=row['cutoff'],stale=stale,staleness_reason=reason,configuration=json.loads(row['configuration_json']),
         cohort=json.loads(row['cohort_json']),previous_attempt=row['previous_attempt'],created_at=row['created_at'],
-        started_at=row['started_at'],finished_at=row['finished_at'],failure_reason=row['failure_reason'],
+        started_at=row['started_at'],finished_at=row['finished_at'],failure_reason=public_summary(row['failure_reason']),
         progress=public_summary(json.loads(row['progress_json'])),result=result,
         serving=metadata(row,stale=stale,reason=reason,result=result,result_error=result_error,current=current),
         input_sha256=row['input_sha256'],history_sha256=row['history_sha256'],sources=frozen.get('sources'),

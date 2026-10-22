@@ -106,17 +106,31 @@ class AppointmentRoutes(unittest.TestCase):
         job,result=self.saved_fixture()
         newer=self.submit('new-refresh').json();work=claim(self.store)
         self.assertEqual(work['attempt_id'],newer['id'])
-        fail(self.store,newer['id'],work['claim_token'],'bounded refresh failure')
+        fail(self.store,newer['id'],work['claim_token'],'bounded refresh failure at /tmp/private/posterior.nc')
         attempts=self.client.get('/api/patients/POC-TEST/analyses').json()['attempts']
         self.assertEqual(attempts[0]['serving']['status'],'failed')
+        self.assertNotIn('/tmp/private',canonical(attempts[0]))
+        with self.store.transaction() as db:
+            self.assertIn('/tmp/private',db.execute('SELECT failure_reason FROM analysis_attempts WHERE job_id=?',(newer['id'],)).fetchone()[0])
         prior=next(a for a in attempts if a['id']==job['id'])
         self.assertEqual(prior['result']['effect'],result['effect']);self.assertEqual(prior['forecast_endpoint_day'],56)
         self.assertEqual(prior['serving']['status'],'current')
+
+    def test_changed_current_support_policy_cannot_reuse_summary_as_current(self):
+        job,result=self.saved_fixture()
+        with self.store.transaction(write=True) as db:
+            state=json.loads(db.execute("SELECT state_json FROM patients WHERE id='POC-TEST'").fetchone()[0])
+            state['workflow']['support_policy']['version']='2.0.0'
+            db.execute("UPDATE patients SET state_json=? WHERE id='POC-TEST'",(canonical(state),))
+        value=self.get(job)
+        self.assertEqual(value['serving']['status'],'dated');self.assertEqual(value['serving']['reason'],'current_history_unsupported')
+        self.assertEqual(value['result']['effect'],result['effect'])
 
     def test_corrupt_summary_hash_config_and_rejected_diagnostics_fail_closed(self):
         variants=[lambda r:r.update(input_sha256='f'*64),
             lambda r:r['configuration'].update(version='99.0.0'),
             lambda r:r['diagnostics']['effect_mcmc'].update(accepted=False),
+            lambda r:r['diagnostics'].update(fits=[dict(diagnostics='invalid-diagnostic-shape')]),
             lambda r:r.update(artifacts=[])]
         for index,transform in enumerate(variants):
             with self.subTest(variant=index):

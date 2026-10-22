@@ -4,6 +4,7 @@ No posterior is loaded and no model/dispatcher is invoked by this module.
 """
 import json
 import math
+import re
 
 from contracts.domain.analysis import FIXED_SUPPORT_REF, project_history, sha
 from contracts.domain.borrowing import parse_input, parse_result
@@ -31,9 +32,12 @@ def public_summary(value):
     if isinstance(value, dict):
         return {key: public_summary(item) for key, item in value.items()
             if key not in {'seed', 'seeds', 'fit_seed', 'fit_seeds', 'numerical_seeds',
-                'artifact_root', 'posterior', 'posterior_path'}}
+                'artifact_root', 'posterior', 'posterior_path', 'truth', 'private_parameters'}
+                and not key.endswith(('_seed', '_seeds'))}
     if isinstance(value, list):
         return [public_summary(item) for item in value]
+    if isinstance(value,str) and re.search(r'(?<!\w)(?:[A-Za-z]:[\\/]|/(?:app|source|tmp|data|home|root|opt|workspace)/)',value):
+        return 'Private worker detail withheld; the original is retained with the attempt.'
     return value
 
 

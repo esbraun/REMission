@@ -108,6 +108,8 @@ export function AnalysisPanel({ workspace, request, refresh }: { workspace: Work
     finally { if (generation.current === epoch) setSubmitting(false); }
   }
   const pending = attempts.some(item => ['queued', 'running'].includes(item.status));
+  const pendingAttempt = attempts.find(item => ['queued', 'running'].includes(item.status));
+  const latest = attempts[0];
   const allowed = Boolean(workspace.simulation && workspace.simulation.day >= 14);
   const selectedBundle = bundles.find(bundle => bundle.bundle_id === source);
   const config = mode === 'v0' ? 'poc-visit-v1' : mode === 'tau2' ? 'poc-visit-borrow-tau2-v1' : 'poc-visit-borrow-v1';
@@ -128,7 +130,7 @@ export function AnalysisPanel({ workspace, request, refresh }: { workspace: Work
     <details><summary>Joint visit analysis of twelve explicitly selected patients</summary><CohortSetup workspace={workspace} request={request} bundles={bundles} refresh={refresh} submitted={() => setRevision(value => value + 1)}/></details>
     {loading ? <p role="status">Loading saved analysis attempts…</p> : null}
     {failure ? <p role="alert" className="error">{failure}</p> : null}
-    <div aria-live="polite">{pending ? <p>Analysis {attempts.find(item => ['queued', 'running'].includes(item.status))?.stage}. Ordinary approval remains available.</p> : null}</div>
+    <div aria-live="polite">{pendingAttempt ? <p>Analysis {pendingAttempt.stage} for data through {date(pendingAttempt.cutoff)}. Ordinary approval and simulation remain available when eligible.</p> : latest && ['failed', 'abstained'].includes(latest.status) ? <p className="warning">Latest refresh {latest.status}: {latest.failure_reason ?? 'No accepted effect interval'}. Earlier saved results retain their original cutoff.</p> : null}</div>
     {!loading ? <section aria-labelledby="saved-analysis-title"><h3 id="saved-analysis-title">Saved result for this configuration</h3>{saved ? <><p>{saved.serving.status === 'current' ? 'Current available H* matches this accepted stored summary.' : 'Only dated accepted information is available. Current model advice is unavailable.'} A pending or failed refresh does not replace this saved result.</p><AnalysisResultView attempt={saved}/></> : <p>No compatible accepted stored summary is available. Refresh analysis can queue a new attempt; it does not provide immediate model advice.</p>}</section> : null}
     {attempts.length ? <details><summary>All saved analysis attempts ({attempts.length})</summary>{attempts.filter(attempt => attempt.id !== saved?.id).map(attempt => <AnalysisResultView key={attempt.id} attempt={attempt}/>)}</details> : null}
     {!loading && !attempts.length ? <p>No saved analysis attempts at this patient yet.</p> : null}
