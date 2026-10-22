@@ -1,5 +1,7 @@
 # Runtime And Workflow
 
+**Immediate PoC precedence (2026-10-21):** the [PoC amendment](../spec/poc-amendment-20261021.md) controls active scope, sequencing and acceptance over conflicting full-program requirements below. Execute POC-1 through POC-6 and POC-VAL; retain relevant invariants and independent review. Exhaustive G0-G7 counts, deferred engines and human/clinical gates are later work, not prerequisites for synthetic PoC operation. Existing historical evidence retains its original scope.
+
 Read [execution entry point](../../implementation-prompt.md) and your assigned gate bundle first. This document governs future application implementation, not the documentation migration.
 
 ## Research basis and model configuration
@@ -99,7 +101,7 @@ Read the [methods library decisions](../plans/methods/00-library-decisions.md) f
 2. Verify role-specific model/effort, the two-non-Luna worker limit, and separate total runtime capacity for Luna helpers under [subagent runtime configuration](#subagent-runtime-configuration). Confirm delegation, thread lifecycle controls, separate Git worktree provisioning, and worker access to required files and tools. Use the existing primary thread as the sole orchestrator; no additional orchestrator thread is needed.
 3. Delegate Playwright MCP setup and browser availability checks using [browser validation](browser-validation.md). Record tool or environment blockers before depending on them.
 4. Give the orchestrator the launch prompt in the next section. Use the task template for each delegated package; use the browser template for UI checks.
-5. Continue through phases 0–7 with persisted gates. If the run is interrupted, resume unfinished task IDs from the ledger. A bounded session can end with a precise checkpoint but must not label the complete app done.
+5. Continue through the PoC amendment queue with persisted acceptance checks. If the run is interrupted, resume unfinished task IDs from the ledger. A bounded session can end with a precise checkpoint but must not label the complete app done.
 
 The implementation run should create `docs/implementation/` for the task ledger, requirement mapping, contracts, decisions, validation manifests, and handoff. These paths are proposed outputs, not existing files. Keep bulky fits, screenshots, traces, and generated datasets in documented artifact storage rather than committing all of them by default.
 
@@ -185,12 +187,13 @@ Do not invent completed clinician review, participant testing, ethics approval,
 clinical evidence, or model results. Implement provisional synthetic settings
 and keep real stakeholder review explicitly outstanding where unavailable.
 
-Follow phases 0–7 and the dependency gates in this playbook. Parallelize only
+Follow the PoC amendment implementation queue and POC-1 through POC-6, with
+the bounded POC-VAL study. The full phases 0-7 below are later scope. Parallelize only
 independent tasks in separate worktrees with bounded writes. Start with contracts
-and a minimal vertical replay; expand to the full hybrid workflow rather than stopping at
-static screens or a mock recommendation engine. Use actual Bayesian fitting,
-randomization, WCLS analysis, and bounded policy logic for their respective
-gates. Cached outputs must originate from reproducible, versioned real runs.
+and the generated-panel, physician-decision and simulation-advance loop.
+Do not stop at static screens or a mock recommendation engine. Use actual Bayesian
+fitting, N-of-1 analysis, MRT/WCLS and bounded support computation for the
+minimal representatives and selected ablations; defer generalized protocols. Cached outputs must originate from reproducible, versioned real runs.
 
 Require frontend workers to deliver intentional, accessible, responsive screens
 within the stable clinical shell, including all error and missing-data states.
@@ -226,7 +229,7 @@ retain unfinished project task IDs for resumption. Give brief meaningful
 progress updates under the runtime's communication policy. Continue authorized
 work without repeated confirmation for routine implementation choices.
 
-Deliver a clean-checkout runnable demo, seeded cases from plan.md section 17,
+Deliver a clean-checkout runnable PoC satisfying the amendment functional cases,
 reproducible evaluation outputs, source-to-requirement traceability, and an
 honest report of unresolved gates. You are authorized to open PRs and merge
 worktree branches into assigned integration targets without repeated user

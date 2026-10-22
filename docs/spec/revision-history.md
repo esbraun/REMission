@@ -1,5 +1,9 @@
 # Revision history
 
+## October 21 2026 functioning PoC and bounded ablation
+
+Per user direction, the [PoC amendment](poc-amendment-20261021.md) replaces immediate exhaustive full-hybrid acceptance with a generated patient-panel and interactive physician simulation loop, actual analysis and a selected ablation study. Broad method/protocol engines, large confirmation suites and human/clinical work remain later scope. Existing scientific invariants and independent engineering review remain. This is a scope change only; no new runtime, fit or validation result is asserted.
+
 ## October 20 2026 Luna helper concurrency clarification
 
 Per user direction, the two-worker limit applies only to non-Luna subagents: GPT-6 Luna (`gpt-6-luna`) exploration and summary helpers are exempt and may run alongside two Astra/Sol workers. The orchestrator separately tracks the project worker count and the runtime's total spawned-thread count. Replaced the global-cap-of-two example with illustrative total capacity for workers plus helpers; Luna requests are queued for actual runtime capacity, resources, or dependencies rather than occupied non-Luna slots. Every helper still uses its own worktree. Model assignments, independent review, and merge acceptance remain unchanged.
