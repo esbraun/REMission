@@ -15,11 +15,14 @@ ASSERTIONS=['both_options_acceptable','stable_regimen_reviewed','interactions_re
 
 
 class Nof1LoopTests(prior.SimulationServiceTests):
-    def patient(self):
+    def panel_v2(self):
         r=self.client.post('/api/panels/generate',json=dict(schema_version='2.0.0',kind='poc_protocol_panel',
             seed=1245,count=2,family='nof1_med',law=LAW_REF,protocol=NOF1_REF),headers=self.headers())
         self.assertEqual(r.status_code,200,r.text)
-        return r.json()['patient_ids'][0]
+        return r.json()['patient_ids']
+
+    def patient(self):
+        return self.panel_v2()[0]
 
     def payload(self,patient,action):
         s=self.workspace(patient)['snapshot']
@@ -149,3 +152,39 @@ class Nof1LoopTests(prior.SimulationServiceTests):
         self.assertEqual(after['simulation']['day'],14);self.assertEqual(len(after['nof1']['loop']['draws']),2)
         for identifier,sha in saved.items():
             self.assertEqual(self.client.get(f'/api/patients/{p}/history/'+identifier).json()['display_sha256'],sha)
+
+    def test_fresh_approval_or_start_cannot_reset_an_active_protocol(self):
+        for day in (0,1):
+            with self.subTest(protocol_day=day):
+                p=self.patient();self.prepare(p)
+                start=self.payload(p,'start')
+                first=self.command(p,'start',key='initial-start-'+str(day),payload=start)
+                if day:self.assertEqual(self.step(p,'day').status_code,200)
+                before=self.workspace(p)
+                response=self.client.post(f'/api/patients/{p}/nof1',json=self.payload(p,'approve'),headers=self.headers())
+                fresh_start=self.client.post(f'/api/patients/{p}/nof1',json=self.payload(p,'start'),headers=self.headers())
+                after=self.workspace(p)
+                self.assertEqual([response.status_code,fresh_start.status_code],[409,409],
+                    dict(approval=response.status_code,start=fresh_start.status_code,
+                         before=before['nof1']['loop']['start_day'],after=after['nof1']['loop']['start_day'],
+                         draws_before=len(before['nof1']['loop']['draws']),draws_after=len(after['nof1']['loop']['draws'])))
+                self.assertEqual(after['simulation'],before['simulation'])
+                self.assertEqual(after['snapshot'],before['snapshot'])
+                self.assertEqual(self.command(p,'start',key='initial-start-'+str(day),payload=start).json(),first.json())
+
+    def test_regenerated_panel_replays_eight_assignment_uniforms_and_outcomes(self):
+        first=self.panel_v2();second=self.panel_v2()
+        self.assertEqual(len(set(first+second)),4)
+        histories=[]
+        for patient in (first[0],second[0]):
+            self.prepare(patient);self.command(patient,'start')
+            for _ in range(6):self.assertEqual(self.step(patient).status_code,200)
+            w=self.workspace(patient);histories.append((w['nof1']['loop']['draws'],self.outcomes(patient)))
+        self.assertEqual([d['uniform'] for d in histories[0][0]],[d['uniform'] for d in histories[1][0]])
+        self.assertEqual([d['option'] for d in histories[0][0]],[d['option'] for d in histories[1][0]])
+        self.assertEqual(histories[0][1],histories[1][1])
+        self.prepare(first[1]);self.command(first[1],'start')
+        other=self.workspace(first[1])['nof1']['loop']['draws'][0]
+        self.assertNotEqual(other['uniform'],histories[0][0][0]['uniform'])
+        self.assertEqual(other['seed']['namespace'],'assignment')
+        self.assertNotEqual(other['seed']['patient'],first[1])

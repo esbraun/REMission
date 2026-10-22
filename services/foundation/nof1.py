@@ -184,8 +184,12 @@ def noon(db,settings,patient_id,state,day,received_at):
             audit(db,patient_id,loop['actor'],received_at,'nof1_washout',day=day,block=relative//9+1)
         elif boundary=='block_start':
             import numpy as np
+            # Replay uses the reproducible panel unit, not a fresh service UUID.
+            # Domain separation keeps assignment RNG distinct from generator
+            # outcomes; the full replay seed/index never enters reduced H*.
+            unit=digest(canonical(['poc-nof1-assignment-unit-v1',simulation['seed'],simulation['index']]))
             seed=dict(namespace='assignment',protocol=NOF1_REF['id'],scenario='interactive-synthetic',replicate=0,
-                patient=patient_id,time_index=relative//9+1,process='nof1-block')
+                patient='assignment-unit-'+unit[:32],time_index=relative//9+1,process='nof1-block-v1')
             uniform=float(np.random.default_rng(int(digest(canonical(seed)),16)).random())
             option='MED_A' if uniform<.5 else 'MED_B'
             full=history(db,patient_id)
@@ -209,6 +213,8 @@ def transition(db,settings,patient,actor,data,received_at):
     if data.decision_id!=patient['current_decision'] or any(getattr(data,'expected_'+k)!=patient[k] for k in VERSIONS):
         raise SimulationError('stale_protocol','Refresh and explicitly review this patient before continuing.')
     loop=simulation.setdefault('nof1',dict(status='design',draws=[],reviews=[],deviations=[],uninterrupted=True))
+    if loop['status']=='active' and data.action in ('approve','start'):
+        raise SimulationError('protocol_active','An active protocol retains its original approval, start and draw history. It cannot be approved or started again.')
     if loop['status'] in ('stopped','completed'):
         raise SimulationError('protocol_closed','History is retained. This protocol cannot restart automatically.')
     if data.action=='withdraw':
