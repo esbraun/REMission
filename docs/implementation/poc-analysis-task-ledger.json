@@ -105,5 +105,49 @@
     "frozen c081/1fa computational reproduction07a75b15e30167091d5a72227b140bc4b61429f1",
     "copied migratione703a67794bbbc9a71ddc870163fe4058ca66cc9"
   ],
-  "actual_fit_image_source_head": "bc9723722e22ab08d4eb20c605ea49d666b1d107"
+  "actual_fit_image_source_head": "bc9723722e22ab08d4eb20c605ea49d666b1d107",
+  "next_pa3_plan": {
+    "id": "PA3-PLAN",
+    "status": "proposed-independent-critique-pending",
+    "owner": "/root/poc_borrowing_plan_astra",
+    "assigned_model": "gpt-6-astra",
+    "assigned_reasoning_effort": "medium",
+    "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/poc-borrow-plan-astra-261021",
+    "branch": "launch/poc-borrowing-plan-20261021",
+    "starting_candidate": "8091da528b22fa786aa9398d127b50aef1fef221",
+    "accepted_integration_base": "045b373a18ad067a3ecd1281d445076aae423a80",
+    "dependency_status": "PA1/thin-PA2 accepted PR22 during planning; starting8091da5 and accepted045b373 trees match bb1768358e2335129dae59de1d2c74607b4849ee; PA3 implementation still requires independent plan critique",
+    "dependency_review": "3dd6b27b8d59e1b13b9d98e4c9f0a0c4694eaab1",
+    "dependency_pr": "https://github.com/esbraun/REMission/pull/22",
+    "dependency_merge": "045b373a18ad067a3ecd1281d445076aae423a80",
+    "plan": "poc-borrowing-plan-20261021.md",
+    "estimand": "EST-VISIT:poc-hstar-v1",
+    "history": "poc-analysis-history-v1",
+    "preserved_v0": "poc-visit-v1/1.1.1 original Bayesian model, exact guide, native NUTS and diagnostic/integration gates",
+    "proposed_v1": "poc-visit-borrow-v1/1.0.0; normalized joint mixture on marginal source contrast; no imported MAP",
+    "requirements": ["PA3", "BORROW-01", "BAYES-02", "EST-VISIT", "POC-4", "bounded POC-5 seam", "POC-VAL prerequisites"],
+    "tasks": [
+      {"id":"PA3-A","tests":["PA3-STUDY"],"status":"planned","output":"six noisy synthetic randomized datasets; three frozen summary bundles"},
+      {"id":"PA3-B","tests":["PA3-BRIDGE"],"status":"planned","output":"marginal bridge, independent precision and gradient qualification"},
+      {"id":"PA3-C","tests":["PA3-FIT"],"status":"planned","output":"actual V0/V1 native fits with unchanged expected-effect gates"},
+      {"id":"PA3-D","tests":["PA3-BOUNDARY"],"status":"planned","output":"versioned source-only inputs and immutable isolated jobs"},
+      {"id":"PA3-E","tests":["PA3-APP"],"status":"planned","output":"existing-shell actual comparison/refit and narrow error wrapping"},
+      {"id":"PA3-F","tests":["PA3-REPORT"],"status":"planned","output":"measured feasibility, artifacts and independent exact-head review"}
+    ],
+    "outstanding_cohort_requirement": {
+      "canonical_owner": "PA1 observed-only cohort export and shared visit model; PA2 consumed job/UI integration",
+      "status": "unsatisfied by current single-patient milestone",
+      "acceptance": "12 owned common-cutoff reduced histories, one shared-hyperparameter fit, unique local likelihood ownership, patient-specific expected contrasts and observed cohort resource/diagnostic gates",
+      "dependency": "required before PA6 cohort V0/V1 exploration/confirmation; do not reinterpret canonical 54 initial cohort fits as single-patient fits"
+    },
+    "failure_policy": "invalid sources fail before fitting; NUTS/effect/bridge precision failures abstain with no accepted interval; retain every attempt and no silent V0 fallback",
+    "truth": "PA3 bridge reference uses public fitted-model draws only; PA6 independent H*-conditional evaluator truth remains unimplemented",
+    "seeds": "poc-pa3-seeds-v1 recipe in plan; actual derived values/artifact hashes pending implementation",
+    "resource_strategy": "serial 2 CPU/2 GiB; bounded bridge qualification and actual same-model Q/2Q/reference/conflict/null sensitivity; no planning benchmarks executed",
+    "review_disposition": "pending separate Astra critique",
+    "reviewed_head": null,
+    "reviewed_base": null,
+    "implementation_accepted": false,
+    "later_pending": ["PA1 cohort completion and PA2 consumption", "PA4", "PA5", "PA6", "PA7", "human factors", "clinical review", "clinical validation"]
+  }
 }
