@@ -44,6 +44,23 @@ class CohortMember(StrictModel):
     provenance_sha256: Sha256
 
 
+class CohortSubmission(StrictModel):
+    """Explicit cohort intent; does not widen legacy request1.0 or protocol2.0."""
+    cohort_id: Identifier
+    patient_versions: dict[Identifier, Annotated[int, Field(ge=1)]]
+    cutoff: AwareDatetime
+    approved_manifest_sha256: Sha256
+    previous_attempt: Identifier | None = None
+    source_bundle_id: Identifier | None = None
+    research_run_id: Identifier | None = None
+
+    @model_validator(mode='after')
+    def complete(self):
+        if len(self.patient_versions)!=12:
+            raise ValueError('Exactly twelve distinct current owned versions required.')
+        return self
+
+
 class CohortManifest(StrictModel):
     schema: Literal['poc-cohort-manifest-v1/1.0.0']
     cohort_id: Identifier
@@ -51,6 +68,7 @@ class CohortManifest(StrictModel):
     panel_id: Identifier
     scope: Literal['interactive', 'research']
     research_run_id: Identifier | None
+    research_execution: Literal['engine_run', 'contract_fixture'] | None = None
     cutoff: AwareDatetime
     origin: AwareDatetime
     protocol: VersionRef
@@ -64,6 +82,8 @@ class CohortManifest(StrictModel):
             raise ValueError('cohort requires twelve distinct canonically ordered patients')
         if (self.scope == 'research') != (self.research_run_id is not None):
             raise ValueError('research run binding required only for research cohorts')
+        if (self.scope == 'research') != (self.research_execution is not None):
+            raise ValueError('research execution provenance required only for research cohorts')
         if self.protocol.model_dump() != PROTOCOL_REF or self.coordinates.model_dump() != COORDINATE_REF:
             raise ValueError('unsupported cohort protocol/coordinates')
         return self
@@ -223,4 +243,8 @@ class CohortResult(StrictModel):
 
 def require_executable(product):
     """No success fixture or new configuration enters the native allowlist."""
+    cohort=getattr(product,'cohort',None)
+    manifest=cohort.manifest if cohort is not None else getattr(product,'manifest',None)
+    if manifest is not None and manifest.research_execution=='contract_fixture':
+        raise ValueError('contract fixture cohort is never executable or acceptable fit evidence')
     raise ValueError('cohort execution unavailable pending independent numerical and role qualification')

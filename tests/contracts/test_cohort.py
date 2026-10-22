@@ -40,7 +40,7 @@ def database():
     db.row_factory = sqlite3.Row
     db.executescript('CREATE TABLE patients(id TEXT,owner_id TEXT,version INTEGER,state_json TEXT,cutoff TEXT);'
         'CREATE TABLE events(id TEXT,patient_id TEXT,payload TEXT,available_at TEXT,phase INTEGER);'
-        'CREATE TABLE state_changes(id TEXT PRIMARY KEY,patient_id TEXT,owner_id TEXT,at TEXT,payload TEXT);')
+        'CREATE TABLE state_changes(id TEXT PRIMARY KEY,patient_id TEXT,actor_id TEXT,created_at TEXT,payload TEXT);')
     for h in histories():
         db.execute('INSERT INTO patients VALUES(?,?,?,?,?)', (h.patient_id, 'owner-a', 3,
             canonical(dict(simulation=dict(law_version='poc-longitudinal-v1', panel_id='panel-a'))), h.cutoff.isoformat()))

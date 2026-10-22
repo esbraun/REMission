@@ -88,6 +88,9 @@ def prepare_cohort(db, owner, patient_versions, cutoff, *, cohort_id, source_bun
 
 
 def view(row, cutoff):
+    if json.loads(row['request_json']).get('kind')=='poc_visit_cohort_input':
+        from .cohort_analysis import view as cohort_view
+        return cohort_view(row,cutoff)
     frozen=json.loads(row['request_json']);h=frozen['history'];day=(instant(h['cutoff'])-instant(h['origin'])).days
     return dict(id=row['job_id'],kind='visit_analysis',patient_id=row['patient_id'],status=row['status'],stage=row['stage'],
         cutoff=row['cutoff'],stale=instant(row['cutoff']) != instant(cutoff),configuration=json.loads(row['configuration_json']),
@@ -111,7 +114,8 @@ def submit(db, patient, owner, expected_version, previous, now, *, mode='v0',sou
         old=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND patient_id=? AND owner_id=?',(previous,patient['id'],owner)).fetchone()
         if old is None or old['status'] in ('queued','running'):
             raise AnalysisError('Retry requires a finished owned attempt.')
-    if db.execute("SELECT 1 FROM analysis_attempts WHERE patient_id=? AND status IN ('queued','running')",(patient['id'],)).fetchone():
+    from .cohort_analysis import active_overlap
+    if active_overlap(db,[patient['id']]):
         raise AnalysisError('An analysis is already pending for this patient.')
     reduced=project_history(history(db,patient['id']).project(instant(patient['cutoff'])))
     value=reduced.model_dump(mode='json')
@@ -182,9 +186,14 @@ def bind_execution(store,job,token,origin):
     except ValueError as error:raise AnalysisError('Invalid trusted host origin') from error
     with store.transaction(write=True) as db:
         row=running(db,job,token);product=parse_input(row['request_json'])
-        if not isinstance(product,BorrowAnalysisInput):
+        if product.kind=='poc_visit_cohort_input':
+            from contracts.domain.cohort import require_executable
+            from contracts.domain.cohort_runtime import execution_binding as cohort_binding
+            require_executable(product)
+            binding=cohort_binding(product,origin)
+        elif not isinstance(product,BorrowAnalysisInput):
             raise AnalysisError('V0 does not select borrowing execution binding')
-        binding=execution_binding(product,origin)
+        else:binding=execution_binding(product,origin)
         saved=json.loads(row['progress_json']);previous=saved.get('trusted_launch')
         if previous is None and row['stage']!='preparing':raise AnalysisError('Host launch must be frozen before fitting')
         if previous is not None and previous!=binding:raise AnalysisError('Immutable host launch already bound')
@@ -219,6 +228,7 @@ def ingest(store,job,token,directory):
     if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
         raise AnalysisError('Invalid result file')
     result=parse_result(result_path.read_bytes())
+    cohort_result=result.kind=='poc_visit_cohort_result'
     if result.kind=='poc_visit_cohort_result':
         from contracts.domain.cohort import require_executable
         require_executable(result)
@@ -240,7 +250,7 @@ def ingest(store,job,token,directory):
                 h.update(chunk)
         if h.hexdigest()!=ref['sha256']:
             raise AnalysisError('Artifact hash mismatch')
-    if result.status=='completed':
+    if result.status=='completed' and not cohort_result:
         d=result.diagnostics
         if not d.get('fits') or not d['fits'][-1]['diagnostics'].get('accepted') or not d.get('effect_mcmc',{}).get('accepted') or d.get('integration',{}).get('status')!='accepted' or 'expected-effect.npz' not in names:
             raise AnalysisError('Completed result lacks accepted computational diagnostics')
@@ -248,7 +258,10 @@ def ingest(store,job,token,directory):
             raise AnalysisError('Completed borrowing result lacks accepted bridge precision')
     with store.transaction(write=True) as db:
         row=running(db,job,token)
-        if (result.attempt_id!=job or result.input_sha256!=row['input_sha256'] or result.history_sha256!=row['history_sha256']
+        if cohort_result:
+            from .cohort_analysis import validate_result
+            validate_result(result,row,names)
+        elif (result.attempt_id!=job or result.input_sha256!=row['input_sha256'] or result.history_sha256!=row['history_sha256']
             or result.cutoff!=instant(row['cutoff']) or result.configuration.model_dump()!=json.loads(row['configuration_json'])):
             raise AnalysisError('Frozen result identity/hash/cutoff mismatch')
         source_hash=json.loads(row['request_json']).get('source_set_sha256')
@@ -275,6 +288,13 @@ def compare(db,patient,owner,left,right,root):
     if any(row is None for row in rows):raise AnalysisError('Comparison attempt is unavailable.')
     if any(row['status'] in ('queued','running') for row in rows):raise AnalysisError('Both attempts must finish before freezing a comparison.')
     inputs=[json.loads(row['request_json']) for row in rows]
+    if any(p.get('kind')=='poc_visit_cohort_input' for p in inputs):
+        if not all(p.get('kind')=='poc_visit_cohort_input' for p in inputs):
+            raise AnalysisError('Cannot pair a cohort posterior with a single-patient fit.')
+        from .cohort_analysis import comparison
+        manifest=comparison(rows)
+        manifest.update(patient_id=patient,owner_id=owner)
+        return publish_comparison(manifest,root,owner,patient)
     contexts=[v['request']['context'] for v in inputs]
     if len({row['history_sha256'] for row in rows})!=1 or len({row['cutoff'] for row in rows})!=1:
         raise AnalysisError('Pairing requires identical patient H* and observation cutoff.')
@@ -300,6 +320,10 @@ def compare(db,patient,owner,left,right,root):
         limitations=['Same H*/cutoff, distinct original-prior fits; source studies contribute once only in V1.',
             'Estimates, interval widths and observed latency only; PA6 independent conditional truth and accuracy are unavailable.',
             'No beneficial direction or clinical superiority is required or established.'])
+    return publish_comparison(manifest,root,owner,patient)
+
+
+def publish_comparison(manifest,root,owner,patient):
     identifier='comparison-'+sha(manifest);manifest['id']=identifier
     destination=comparison_root(root,owner,patient);destination.mkdir(parents=True,exist_ok=True)
     path=destination/(identifier+'.json');encoded=canonical(manifest)+'\n'
