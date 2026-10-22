@@ -58,7 +58,7 @@ def source_history(*, day=7, status='observed', prior=True, missing_prior=False,
         delivery = record('delivery', f'delivery{index}', when, assignment_id=assigned.record_id,
                           option='support_prompt', stage='delivered', adherence=None, rescue=False, protocol_deviations=[])
         records.extend([assigned, delivery])
-        if offset >= -6:
+        if -6 <= offset < 0:
             context.append(ref(delivery))
     snapshot = record('decision_snapshot', 'snapshot', at, cutoff=at, eligibility=[],
         workflow=dict(clinical='treatment_active', learning='support_active', data_readiness='ready',
@@ -119,6 +119,8 @@ class PublicFeatureTests(unittest.TestCase):
         self.assertEqual(data.rows[0].controls, (1., 3., 0., 2., 8/84))
         self.assertEqual(data.rows[0].reward, 6.)
         self.assertEqual(data.rows[0].source_ids, ('delivery1', 'delivery2', 'prior'))
+        with_current_delivery = build_features([source_history(delivery_offsets=(-7, -6, -1, 0))])
+        self.assertEqual(with_current_delivery.rows[0].controls[3], 2.)
 
     def test_no_history_and_equal_time_report_unavailable(self):
         for history in (source_history(prior=False), source_history(late_prior=True)):
@@ -278,6 +280,16 @@ class SensitivityTests(unittest.TestCase):
         self.assertGreater(positive.shift, 0)
         self.assertNotEqual(abs(negative.shift), abs(positive.shift))
         self.assertTrue(all(c.direction == 'positive' for c in cells))
+
+    def test_missing_context_affects_average_without_changing_primary(self):
+        data = numerical_data()
+        # This missing context changes the finite sensitivity average only.
+        missing = replace(data.rows[0], decision_id='UNIT-missing-boundary', controls=(1., 10., 0., 0., 1.), reward=None)
+        augmented = replace(data, rows=(*data.rows, missing))
+        baseline, result = fit(data, provenance_seed=SEED), fit(augmented, provenance_seed=SEED)
+        self.assertEqual(result.coefficients, baseline.coefficients)
+        expected = sensitivity(result.coefficients, [r.controls for r in augmented.rows])
+        self.assertEqual(result.sensitivity, expected)
 
 
 if __name__ == '__main__':

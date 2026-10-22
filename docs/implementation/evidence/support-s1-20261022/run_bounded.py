@@ -48,6 +48,9 @@ MANIFEST['source_sha256'] = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.re
 image, _ = command(['docker', 'image', 'inspect', IMAGE, '--format', '{{.Id}}'])
 if image.returncode or image.stdout.decode().strip() != IMAGE:
     raise RuntimeError('pinned G0 library image unavailable')
+r_image, _ = command(['docker', 'image', 'inspect', R_IMAGE, '--format', '{{.Id}}'])
+if r_image.returncode or r_image.stdout.decode().strip() != R_IMAGE:
+    raise RuntimeError('pinned G0 R reference image unavailable; no image pull is permitted')
 name = 'remission-s1-unit-'+uuid.uuid4().hex[:12]
 script = """import csv,json,platform,sys,numpy,scipy,statsmodels,unittest
 print(json.dumps(dict(python=platform.python_version(),numpy=numpy.__version__,scipy=scipy.__version__,statsmodels=statsmodels.__version__)),flush=True)
@@ -65,7 +68,7 @@ with open('/output/unit-fixture.csv','w',newline='') as stream:
     writer.writerows([[r.patient_id,r.reward,r.action,r.probability,.5,1,*r.controls[1:]] for r in data.rows])
 with open('/output/python-result.json','w') as stream: json.dump(asdict(fit(data,provenance_seed=SEED)),stream,indent=2)
 """
-created, _ = command(['docker', 'create', '--name', name, '--network', 'none', '--read-only',
+created, _ = command(['docker', 'create', '--pull', 'never', '--name', name, '--network', 'none', '--read-only',
     '--cpus', '2', '--memory', '2g', '--pids-limit', '64', '--user', '10002:10002',
     '--tmpfs', '/tmp:rw,noexec,nosuid,size=128m,uid=10002,gid=10002',
     '--mount', f'type=bind,source={ROOT.as_posix()},target=/workspace,readonly',
@@ -85,7 +88,7 @@ MANIFEST['container'] = name
 MANIFEST['selected_inspection'] = inspection.stdout.decode().strip()
 if result.returncode == 0 and not timed_out:
     r_name = name+'-r'
-    r_created, _ = command(['docker', 'create', '--name', r_name, '--network', 'none', '--read-only',
+    r_created, _ = command(['docker', 'create', '--pull', 'never', '--name', r_name, '--network', 'none', '--read-only',
         '--cpus', '2', '--memory', '2g', '--pids-limit', '64', '--user', '10002:10002',
         '--tmpfs', '/tmp:rw,noexec,nosuid,size=128m,uid=10002,gid=10002',
         '--mount', f'type=bind,source={ROOT.as_posix()},target=/workspace,readonly',
