@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\poc-panel-sim-sol-261021\tooling\foundation\poc_boundary.py", line 102, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\poc-panel-sim-sol-261021\tooling\foundation\poc_boundary.py", line 64, in main
+    command(['docker','run','--rm','--network','none',*COMMON,'--cap-add','CHOWN','--user','0:0',
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             '--mount','type=volume,source='+deployment['volumes']['exports']+',target=/export-source,readonly',
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             '--mount','type=volume,source='+public+',target=/observed',build['runtime'],'python','-c',stage])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\poc-panel-sim-sol-261021\tooling\foundation\poc_boundary.py", line 29, in command
+    if result.returncode != expected: raise RuntimeError('boundary probe failed; inspect commands.json')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: boundary probe failed; inspect commands.json

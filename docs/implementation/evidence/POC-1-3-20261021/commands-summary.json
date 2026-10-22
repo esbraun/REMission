@@ -1,0 +1,2925 @@
+[
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641275.56698,
+    "elapsed_seconds": 0.17666196823120117,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build/c/2bb61c2370654ee8a1ce365888121df0.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build/c/2bb61c2370654ee8a1ce365888121df0.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "67cf21c87b0e75171e79e8b175fef9971d29de50",
+    "capture": "build/c/2bb61c2370654ee8a1ce365888121df0.json",
+    "source_snapshot_sha256": "8d653fa3beb66af3e70939eda5fedaa9ad3ce1fecf31db6f58c000ef6ee48c25"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-6ed4e1229f55-service:candidate",
+      "--target",
+      "service",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641276.2808378,
+    "elapsed_seconds": 71.47464895248413,
+    "exit": 1,
+    "streams": {
+      "stdout": {
+        "path": "build/c/406a996b455f4a1c98b5e0651c0d5c83.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build/c/406a996b455f4a1c98b5e0651c0d5c83.stderr",
+        "bytes": 4036,
+        "sha256": "7ba115c5a87e49d36ecc8c249603fbe60d5af26a60a604c0f6aac6b330a373ec"
+      }
+    },
+    "source_head": "67cf21c87b0e75171e79e8b175fef9971d29de50",
+    "capture": "build/c/406a996b455f4a1c98b5e0651c0d5c83.json",
+    "source_snapshot_sha256": "8d653fa3beb66af3e70939eda5fedaa9ad3ce1fecf31db6f58c000ef6ee48c25"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641276.0196395,
+    "elapsed_seconds": 0.16757631301879883,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build/c/6efd8c0b6ef94aeabef548f7ff164656.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build/c/6efd8c0b6ef94aeabef548f7ff164656.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "67cf21c87b0e75171e79e8b175fef9971d29de50",
+    "capture": "build/c/6efd8c0b6ef94aeabef548f7ff164656.json",
+    "source_snapshot_sha256": "8d653fa3beb66af3e70939eda5fedaa9ad3ce1fecf31db6f58c000ef6ee48c25"
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641275.8426247,
+    "elapsed_seconds": 0.031208038330078125,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build/c/b1e573ea48cf43f0a6a07efec8a04b77.stdout",
+        "bytes": 41,
+        "sha256": "96faa9c5062e9258590e60dfbbcde4ca2b722dfdb21c468480d009a218da7eed"
+      },
+      "stderr": {
+        "path": "build/c/b1e573ea48cf43f0a6a07efec8a04b77.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "67cf21c87b0e75171e79e8b175fef9971d29de50",
+    "capture": "build/c/b1e573ea48cf43f0a6a07efec8a04b77.json",
+    "source_snapshot_sha256": "8d653fa3beb66af3e70939eda5fedaa9ad3ce1fecf31db6f58c000ef6ee48c25"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "default",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-service:candidate",
+      "--target",
+      "service",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641569.4864528,
+    "elapsed_seconds": 2.9262466430664062,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/039c060ef7394446bb10acea4379f14c.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/039c060ef7394446bb10acea4379f14c.stderr",
+        "bytes": 5071,
+        "sha256": "9285530884c4921ddbd5e79bf5a5263847e676420f8a2dede386dab1074a70f8"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/039c060ef7394446bb10acea4379f14c.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "default",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-tests:candidate",
+      "--target",
+      "integration-tests",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641644.8164191,
+    "elapsed_seconds": 1.2595274448394775,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/1355a6f4a37b445896a3c2564c16f63e.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/1355a6f4a37b445896a3c2564c16f63e.stderr",
+        "bytes": 4074,
+        "sha256": "1059c2c466ef9bf49a6bf6abfd054107735bffa0afc0571c68a5ba44558e39c9"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/1355a6f4a37b445896a3c2564c16f63e.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/evaluator.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-evaluator:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641648.8513033,
+    "elapsed_seconds": 0.845318078994751,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/19eea6563b5c49398403cd83de3ba100.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/19eea6563b5c49398403cd83de3ba100.stderr",
+        "bytes": 1785,
+        "sha256": "d63a6e6959dbe8b273e475c4d37c51dd1a19960a3bfb76e2e78f375e23676ba1"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/19eea6563b5c49398403cd83de3ba100.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641646.573401,
+    "elapsed_seconds": 0.2597784996032715,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/213abafdea4d413fb9c04994959491e6.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/213abafdea4d413fb9c04994959491e6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/213abafdea4d413fb9c04994959491e6.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-01811b467ff6-service:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641572.5978763,
+    "elapsed_seconds": 0.19335603713989258,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/41eebcb83cfd4cf08083d2d039ab19d7.stdout",
+        "bytes": 72,
+        "sha256": "43e26ab7ae567bbe9359c6091f76364fd5614ff0bd09abd5fab8aa13d2b7324b"
+      },
+      "stderr": {
+        "path": "build-r1/c/41eebcb83cfd4cf08083d2d039ab19d7.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/41eebcb83cfd4cf08083d2d039ab19d7.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641652.148465,
+    "elapsed_seconds": 0.17258930206298828,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/4d398a0d8c91454ead5c42aea61d7e51.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/4d398a0d8c91454ead5c42aea61d7e51.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/4d398a0d8c91454ead5c42aea61d7e51.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-01811b467ff6-generator:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641651.7830415,
+    "elapsed_seconds": 0.2562899589538574,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/52cc23a67da641a1b6b83c4d37e19a16.stdout",
+        "bytes": 72,
+        "sha256": "171c06ee11e5e496e9da87072bb0b0d6a004c612de7493c6f2ec114e80df2187"
+      },
+      "stderr": {
+        "path": "build-r1/c/52cc23a67da641a1b6b83c4d37e19a16.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/52cc23a67da641a1b6b83c4d37e19a16.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-service:candidate",
+      "--target",
+      "service",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641497.9961207,
+    "elapsed_seconds": 71.39002990722656,
+    "exit": 1,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/7df19e852e99447bab7ab5c0d78eb691.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/7df19e852e99447bab7ab5c0d78eb691.stderr",
+        "bytes": 4035,
+        "sha256": "22872ae17078d66344ffec890d8b157acf92e6ff4ed343753595208bbcd5b79c"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/7df19e852e99447bab7ab5c0d78eb691.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641497.5727828,
+    "elapsed_seconds": 0.03186821937561035,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/a3bc36b596204e7386af2c044f3be6e3.stdout",
+        "bytes": 41,
+        "sha256": "1ae418b1427356c3ef12e798c4e164e840872d59f27200e0f6fc587706a4c7cd"
+      },
+      "stderr": {
+        "path": "build-r1/c/a3bc36b596204e7386af2c044f3be6e3.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/a3bc36b596204e7386af2c044f3be6e3.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641497.7224615,
+    "elapsed_seconds": 0.17521381378173828,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/a7678716c09d47d982b7e06a67b7e565.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/a7678716c09d47d982b7e06a67b7e565.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/a7678716c09d47d982b7e06a67b7e565.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/generator.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-generator:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641650.6360946,
+    "elapsed_seconds": 0.9629051685333252,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/ace930c7bbf24fceb8ab32fcd382bdcf.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/ace930c7bbf24fceb8ab32fcd382bdcf.stderr",
+        "bytes": 1579,
+        "sha256": "7d52fd372e78fcd9ec366abac915b4da59db9618b9f159bdcb340effaed498a8"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/ace930c7bbf24fceb8ab32fcd382bdcf.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641650.2674093,
+    "elapsed_seconds": 0.1867992877960205,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/ae1b2bfdd13342e089ee242579fa65b7.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/ae1b2bfdd13342e089ee242579fa65b7.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/ae1b2bfdd13342e089ee242579fa65b7.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-01811b467ff6-evaluator:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641649.8865595,
+    "elapsed_seconds": 0.27750325202941895,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/b37f0528a99d496390315951b1d511af.stdout",
+        "bytes": 72,
+        "sha256": "4e4a6ff006e40229af7e056a9b75ae5183c04728ec0eb1678d9124577c4eb3a8"
+      },
+      "stderr": {
+        "path": "build-r1/c/b37f0528a99d496390315951b1d511af.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/b37f0528a99d496390315951b1d511af.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-01811b467ff6-learner:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641648.1087534,
+    "elapsed_seconds": 0.22835779190063477,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/b659edb107e249db94082d313c97c8ff.stdout",
+        "bytes": 72,
+        "sha256": "41f4d59936ae2ced314e6322365f7883cddc9d3de71235e1ced55f25ba1615e9"
+      },
+      "stderr": {
+        "path": "build-r1/c/b659edb107e249db94082d313c97c8ff.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/b659edb107e249db94082d313c97c8ff.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-01811b467ff6-tests:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641646.2287457,
+    "elapsed_seconds": 0.19502568244934082,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/ba699c45c2214ce1843fc2a5bf816e1a.stdout",
+        "bytes": 72,
+        "sha256": "3bf44d952a9e4a66e785754987b58a64063c0229d6fbd75a33eaf7ff9bd8cdf4"
+      },
+      "stderr": {
+        "path": "build-r1/c/ba699c45c2214ce1843fc2a5bf816e1a.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/ba699c45c2214ce1843fc2a5bf816e1a.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641572.9036458,
+    "elapsed_seconds": 0.2523031234741211,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/bfd60f14a0e949ca8caa7df31b19baa6.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/bfd60f14a0e949ca8caa7df31b19baa6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/bfd60f14a0e949ca8caa7df31b19baa6.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641497.2864738,
+    "elapsed_seconds": 0.17450642585754395,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/d56191cb056042b3b04415101301c39e.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/d56191cb056042b3b04415101301c39e.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/d56191cb056042b3b04415101301c39e.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/learner.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-learner:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641647.0155098,
+    "elapsed_seconds": 0.9202513694763184,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/e9df2d7b7eac4569ad4dab5dc0e3a28c.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/e9df2d7b7eac4569ad4dab5dc0e3a28c.stderr",
+        "bytes": 3020,
+        "sha256": "83bad4e4d243ad22d5981f64f1eca55d835be2527fa6ed161c570cea04c55227"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/e9df2d7b7eac4569ad4dab5dc0e3a28c.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641648.4428732,
+    "elapsed_seconds": 0.236663818359375,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/f28a34acb45442549772010acd17c81b.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r1/c/f28a34acb45442549772010acd17c81b.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/f28a34acb45442549772010acd17c81b.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-01811b467ff6-tests:candidate",
+      "--target",
+      "integration-tests",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641573.3450594,
+    "elapsed_seconds": 71.36516785621643,
+    "exit": 1,
+    "streams": {
+      "stdout": {
+        "path": "build-r1/c/f80c7deb8def475b9b1422efe65d0dc0.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r1/c/f80c7deb8def475b9b1422efe65d0dc0.stderr",
+        "bytes": 2845,
+        "sha256": "d5117e483709f7e80ad9bdb6a9a5048759a7944cb05e552283ef508db0332f26"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "build-r1/c/f80c7deb8def475b9b1422efe65d0dc0.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642071.5734828,
+    "elapsed_seconds": 0.03212141990661621,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/138fdd66ad6e41f88056cb6858c96d7f.stdout",
+        "bytes": 41,
+        "sha256": "64441083790b3132a945eb51391b271f7a2b02939238e5efafef5c6a9d570715"
+      },
+      "stderr": {
+        "path": "build-r2/c/138fdd66ad6e41f88056cb6858c96d7f.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/138fdd66ad6e41f88056cb6858c96d7f.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642071.2922053,
+    "elapsed_seconds": 0.17717528343200684,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/1dcd418f5f17464e9f47c955b68980de.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/1dcd418f5f17464e9f47c955b68980de.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/1dcd418f5f17464e9f47c955b68980de.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-927c34934716-learner:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642220.9350436,
+    "elapsed_seconds": 0.19100022315979004,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/218e3bd1ca6d4de5932effd68b32869b.stdout",
+        "bytes": 72,
+        "sha256": "5df19fbe40179e6284b4880ce65dbe27e07ab81738ce07f78306357955f72ec6"
+      },
+      "stderr": {
+        "path": "build-r2/c/218e3bd1ca6d4de5932effd68b32869b.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/218e3bd1ca6d4de5932effd68b32869b.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642222.906916,
+    "elapsed_seconds": 0.17977547645568848,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/29e61518bd0b49159d607108fec9896b.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/29e61518bd0b49159d607108fec9896b.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/29e61518bd0b49159d607108fec9896b.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/learner.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-learner:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642219.8155823,
+    "elapsed_seconds": 0.9492917060852051,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/39ab98ddab324e06b82c71fdf8472db9.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/39ab98ddab324e06b82c71fdf8472db9.stderr",
+        "bytes": 3025,
+        "sha256": "72e04d0c4371b445128e998776e7fb0e0c9f644f6a01f1ea2d9d8d78256dd73f"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/39ab98ddab324e06b82c71fdf8472db9.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642071.7195084,
+    "elapsed_seconds": 0.16686797142028809,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/3edf309ee5024561be13ea483d97f783.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/3edf309ee5024561be13ea483d97f783.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/3edf309ee5024561be13ea483d97f783.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-927c34934716-service:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642145.76044,
+    "elapsed_seconds": 0.1863107681274414,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/4e2464608cde4832abe2085cb31b86f6.stdout",
+        "bytes": 72,
+        "sha256": "c84f78e90c861af041007c3279630d1ca27adcb831189ff89f7c5b07dd3a04d5"
+      },
+      "stderr": {
+        "path": "build-r2/c/4e2464608cde4832abe2085cb31b86f6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/4e2464608cde4832abe2085cb31b86f6.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-927c34934716-tests:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642219.1243536,
+    "elapsed_seconds": 0.18722915649414062,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/5268cd3079614a228f44f4a38b68f243.stdout",
+        "bytes": 72,
+        "sha256": "476d99969035890eb034c635cf2eaf0cd6196d3f115bee40542be6778fa4e448"
+      },
+      "stderr": {
+        "path": "build-r2/c/5268cd3079614a228f44f4a38b68f243.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/5268cd3079614a228f44f4a38b68f243.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/evaluator.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-evaluator:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642221.6325219,
+    "elapsed_seconds": 0.7633695602416992,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/54bcb771147a4f29953dab3141268021.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/54bcb771147a4f29953dab3141268021.stderr",
+        "bytes": 1588,
+        "sha256": "216f1f15854c643a2d4ace594cbad2fcfe4f66f894dfbfa8403d54dfcb93066b"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/54bcb771147a4f29953dab3141268021.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-service:candidate",
+      "--target",
+      "service",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642071.9771447,
+    "elapsed_seconds": 71.17238712310791,
+    "exit": 1,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/568305c2ac134eec81730e17feca217b.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/568305c2ac134eec81730e17feca217b.stderr",
+        "bytes": 4036,
+        "sha256": "aec5ea3a3d91e1974c5a5f25a46731d8edc08073cb1c99abd0fe2fe0560f515d"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/568305c2ac134eec81730e17feca217b.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642221.2384746,
+    "elapsed_seconds": 0.22634005546569824,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/761f74bd76664c378a3fd216082a53b3.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/761f74bd76664c378a3fd216082a53b3.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/761f74bd76664c378a3fd216082a53b3.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "default",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-service:candidate",
+      "--target",
+      "service",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642143.2528229,
+    "elapsed_seconds": 2.3549320697784424,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/7d2e32e990bf4bc1b456badfe681d3c0.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/7d2e32e990bf4bc1b456badfe681d3c0.stderr",
+        "bytes": 5068,
+        "sha256": "b64dc5ef3e6055ab3ca84987f72bac0058aeddcadfec40bba0ec22a53a596b69"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/7d2e32e990bf4bc1b456badfe681d3c0.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "default",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-tests:candidate",
+      "--target",
+      "integration-tests",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642217.796345,
+    "elapsed_seconds": 1.1797914505004883,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/7ddc75e7cf3f48419d74f21d84b1f8cc.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/7ddc75e7cf3f48419d74f21d84b1f8cc.stderr",
+        "bytes": 4074,
+        "sha256": "719e254edd2e793f3db29934f0b5cfa728bbe125cda0ac6ebe521a17b7264005"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/7ddc75e7cf3f48419d74f21d84b1f8cc.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-tests:candidate",
+      "--target",
+      "integration-tests",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642146.472474,
+    "elapsed_seconds": 71.22154426574707,
+    "exit": 1,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/7fad98cf62ca4c05a168f18b37da3431.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/7fad98cf62ca4c05a168f18b37da3431.stderr",
+        "bytes": 2771,
+        "sha256": "52dc712b985a207611c64fd86a6c6784b1271d2da41c53be3e2baca707aa2ca9"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/7fad98cf62ca4c05a168f18b37da3431.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "tooling/foundation/generator.Dockerfile",
+      "--tag",
+      "remission-lh-927c34934716-generator:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642223.2577846,
+    "elapsed_seconds": 0.7799324989318848,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/a5267836466344148927ebb3581a261e.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "build-r2/c/a5267836466344148927ebb3581a261e.stderr",
+        "bytes": 1569,
+        "sha256": "813540eee329ae0d40d088fb464fec35ab88222817d9b4556e6abb75d1310a36"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/a5267836466344148927ebb3581a261e.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642224.5601418,
+    "elapsed_seconds": 0.1669328212738037,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/e255a3c0adad4aa986c22771c86cc505.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/e255a3c0adad4aa986c22771c86cc505.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/e255a3c0adad4aa986c22771c86cc505.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642219.4221091,
+    "elapsed_seconds": 0.2323131561279297,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/f1f10311b6a546cfbd2bebd3210d0547.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/f1f10311b6a546cfbd2bebd3210d0547.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/f1f10311b6a546cfbd2bebd3210d0547.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642146.055576,
+    "elapsed_seconds": 0.23307085037231445,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/f3e7d7ad8760471bba50813b2298944f.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "build-r2/c/f3e7d7ad8760471bba50813b2298944f.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/f3e7d7ad8760471bba50813b2298944f.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-927c34934716-generator:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642224.2055364,
+    "elapsed_seconds": 0.26130032539367676,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/f8bcda1419bb43ea91ae4c587a24c2bf.stdout",
+        "bytes": 72,
+        "sha256": "0c6c98420ce616e0d3184d547c9e41ccc864db27e76bd512dc95f0a666c11bf1"
+      },
+      "stderr": {
+        "path": "build-r2/c/f8bcda1419bb43ea91ae4c587a24c2bf.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/f8bcda1419bb43ea91ae4c587a24c2bf.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-lh-927c34934716-evaluator:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642222.5618947,
+    "elapsed_seconds": 0.24401640892028809,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "build-r2/c/fd66e2d33a5544339ca0d456b2cbd3ba.stdout",
+        "bytes": 72,
+        "sha256": "aa8f3ea5828d562ab19fd374c170266d02fa62bd406204e6b596530d63ed794e"
+      },
+      "stderr": {
+        "path": "build-r2/c/fd66e2d33a5544339ca0d456b2cbd3ba.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "build-r2/c/fd66e2d33a5544339ca0d456b2cbd3ba.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "sha256:e908450f9dedeeed38d195ee010bdc200be51e59346fec7c95be816afabec28c"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642284.8693578,
+    "elapsed_seconds": 61.163334369659424,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "copied-tests/0b37d6360ca242fa97bbb33089b6ed87.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "copied-tests/0b37d6360ca242fa97bbb33089b6ed87.stderr",
+        "bytes": 14980,
+        "sha256": "214ec47aa488d40d48847a6fb47ac4429eb152b362c81fa9628522b60e7fecf3"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "copied-tests/0b37d6360ca242fa97bbb33089b6ed87.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "remission-poc13-6061066b-historical"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642268.983705,
+    "elapsed_seconds": 0.16170740127563477,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/01792523b47d4104bbd570a452f0b330.stdout",
+        "bytes": 36,
+        "sha256": "12d6de32492cc711f383c40498da6f0561ac7b0038b0ecc5c64d09a20b492172"
+      },
+      "stderr": {
+        "path": "deployment/c/01792523b47d4104bbd570a452f0b330.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/01792523b47d4104bbd570a452f0b330.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "remission-poc13-6061066b-fixtures"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642270.437958,
+    "elapsed_seconds": 0.16554951667785645,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/06772f1998b54f53a3bb6a0e0bcc55b9.stdout",
+        "bytes": 34,
+        "sha256": "fb85578495ccd31823c6f609e4f1dbdf1b987681c18ca53d6c51bdb9d9fb9b32"
+      },
+      "stderr": {
+        "path": "deployment/c/06772f1998b54f53a3bb6a0e0bcc55b9.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/06772f1998b54f53a3bb6a0e0bcc55b9.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "ps",
+      "--quiet",
+      "--filter",
+      "volume=remission-poc13-6061066b-historical"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642275.9715836,
+    "elapsed_seconds": 0.1718885898590088,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/1053b81f28394114ad928906710b5b55.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "deployment/c/1053b81f28394114ad928906710b5b55.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/1053b81f28394114ad928906710b5b55.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "update",
+      "--restart=no",
+      "remission-poc13-6061066b-old"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642274.6623876,
+    "elapsed_seconds": 0.17445158958435059,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/1df595dfe8444d3c9c737eaa61076d06.stdout",
+        "bytes": 29,
+        "sha256": "f2888d28babc3d7fd6347d71ec5d2338342415dcffd51b4eb34bcf23d122b5bd"
+      },
+      "stderr": {
+        "path": "deployment/c/1df595dfe8444d3c9c737eaa61076d06.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/1df595dfe8444d3c9c737eaa61076d06.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-6061066b-old"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642275.7019825,
+    "elapsed_seconds": 0.15421843528747559,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/28b048faea2f4bf294fac6f0624c9fe6.stdout",
+        "bytes": 8864,
+        "sha256": "d96061f0d7ea281f1577aa79e577e7def55aac4ff9eb608820e2d864b489833d"
+      },
+      "stderr": {
+        "path": "deployment/c/28b048faea2f4bf294fac6f0624c9fe6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/28b048faea2f4bf294fac6f0624c9fe6.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-6061066b-service"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642283.0725253,
+    "elapsed_seconds": 0.15496373176574707,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/304a6406068a4e8a8e9ac7112247bb95.stdout",
+        "bytes": 10837,
+        "sha256": "f19d27c19d7ba5ff62e2891f1ae6d544540754f2760e883b8468b2e2b3922e02"
+      },
+      "stderr": {
+        "path": "deployment/c/304a6406068a4e8a8e9ac7112247bb95.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/304a6406068a4e8a8e9ac7112247bb95.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--cap-add",
+      "CHOWN",
+      "--user",
+      "0:0",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-fixtures,target=/owned",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-c",
+      "import os;os.chmod('/owned',0o700);os.chown('/owned',10001,10001)"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642270.709514,
+    "elapsed_seconds": 0.4011504650115967,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/3b9954d3be2443a29a300f558d45c4e6.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "deployment/c/3b9954d3be2443a29a300f558d45c4e6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/3b9954d3be2443a29a300f558d45c4e6.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642267.331549,
+    "elapsed_seconds": 0.17736339569091797,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/4b77ebdcdbdd435fbe62e46f952595e6.stdout",
+        "bytes": 3495,
+        "sha256": "9cc81392a48b8e6acdbdb9bcadf645b06b0c45c9233246e52a44fa64ee5c3b16"
+      },
+      "stderr": {
+        "path": "deployment/c/4b77ebdcdbdd435fbe62e46f952595e6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/4b77ebdcdbdd435fbe62e46f952595e6.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "stop",
+      "--time",
+      "10",
+      "remission-poc13-6061066b-old"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642274.9329038,
+    "elapsed_seconds": 0.6536786556243896,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/4fa167bff20042dd88aae7a54e46c279.stdout",
+        "bytes": 84,
+        "sha256": "47ed63c319cdbbbc37d135cd71675f2539287e5c237923c8d842a658dc14a4d8"
+      },
+      "stderr": {
+        "path": "deployment/c/4fa167bff20042dd88aae7a54e46c279.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/4fa167bff20042dd88aae7a54e46c279.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-6061066b-old"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642274.4089904,
+    "elapsed_seconds": 0.1567091941833496,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/511cdfa8795f4246ace4017774590dfa.stdout",
+        "bytes": 9257,
+        "sha256": "e4578ffb9d8b4fdb2230d9dc13cd8781711c5705928da9b9ae05c4942dd195ed"
+      },
+      "stderr": {
+        "path": "deployment/c/511cdfa8795f4246ace4017774590dfa.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/511cdfa8795f4246ace4017774590dfa.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "remission-poc13-6061066b-database"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642269.7104049,
+    "elapsed_seconds": 0.17073822021484375,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/566cfe071090400b9518aa7e7aba5ab3.stdout",
+        "bytes": 34,
+        "sha256": "66b7c916894095a52bb21b6cb17ddadb58572a10e1f0a868b401b8ae07888520"
+      },
+      "stderr": {
+        "path": "deployment/c/566cfe071090400b9518aa7e7aba5ab3.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/566cfe071090400b9518aa7e7aba5ab3.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--detach",
+      "--name",
+      "remission-poc13-6061066b-old",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "--network",
+      "remission-poc13-6061066b-app",
+      "--publish",
+      "127.0.0.1:8774:8765",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-historical,target=/data",
+      "--env",
+      "REMISSION_ORIGIN=http://127.0.0.1:8774",
+      "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8",
+      "python",
+      "-m",
+      "uvicorn",
+      "services.foundation.server:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8765",
+      "--no-access-log"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642273.2439556,
+    "elapsed_seconds": 0.39116740226745605,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/5f13fc9b100541ad8b8352a611a26053.stdout",
+        "bytes": 65,
+        "sha256": "3d1c0f1afcb52d2292918653636ffd95603dea9f98b9ead85cbd1dfbfd79ec09"
+      },
+      "stderr": {
+        "path": "deployment/c/5f13fc9b100541ad8b8352a611a26053.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/5f13fc9b100541ad8b8352a611a26053.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--user",
+      "10001:10001",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "PYTHONPATH=/source",
+      "--mount",
+      "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-historical,target=/historical",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-database,target=/data",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-fixtures,target=/fixtures",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "tooling/foundation/prepare_live_demo.py",
+      "--fixture-root",
+      "/fixtures",
+      "--database",
+      "/data/remission.sqlite",
+      "--historical-source",
+      "/historical/remission.sqlite",
+      "--source-commit",
+      "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642276.2666576,
+    "elapsed_seconds": 3.0595500469207764,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/77c885ef58be429ba7ef5d6b7b333a03.stdout",
+        "bytes": 3971,
+        "sha256": "ed817e660c690547ee8e8358a02acff19989a183a472fced1ac0043573b63de4"
+      },
+      "stderr": {
+        "path": "deployment/c/77c885ef58be429ba7ef5d6b7b333a03.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/77c885ef58be429ba7ef5d6b7b333a03.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "network",
+      "create",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "remission-poc13-6061066b-app"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642268.6973712,
+    "elapsed_seconds": 0.1940922737121582,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/7fb6d3fc87594e11b75c2783706ba956.stdout",
+        "bytes": 65,
+        "sha256": "3983972bb56a7c7f79f6c94e65ea2afe4c40be89a53b2297d3924a33b5e55f08"
+      },
+      "stderr": {
+        "path": "deployment/c/7fb6d3fc87594e11b75c2783706ba956.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/7fb6d3fc87594e11b75c2783706ba956.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "start",
+      "remission-poc13-6061066b-old"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642281.7658458,
+    "elapsed_seconds": 0.3613400459289551,
+    "exit": 1,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/8336d33ec65341238f6fe7255c25c8dc.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "deployment/c/8336d33ec65341238f6fe7255c25c8dc.stderr",
+        "bytes": 339,
+        "sha256": "ff529b0657963cd1e0ff5679375381aaa9c399b2d36b315ec28b5114f6e21742"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/8336d33ec65341238f6fe7255c25c8dc.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--cap-add",
+      "CHOWN",
+      "--user",
+      "0:0",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-database,target=/owned",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-c",
+      "import os;os.chmod('/owned',0o700);os.chown('/owned',10001,10001)"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642269.9738572,
+    "elapsed_seconds": 0.35563111305236816,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/89994d7f20b04fdcb21b97a62c0e43f9.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "deployment/c/89994d7f20b04fdcb21b97a62c0e43f9.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/89994d7f20b04fdcb21b97a62c0e43f9.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-historical,target=/data,readonly",
+      "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8",
+      "python",
+      "-c",
+      "from pathlib import Path; import os,json; assert not Path('/data/remission.sqlite.admission.lock').exists(); assert not Path('/current/remission.sqlite').exists(); print(json.dumps({'uid':os.getuid(),'new_authority_volume_access':False,'current_route':False}))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642282.4977386,
+    "elapsed_seconds": 0.44870424270629883,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/90f6e7595e2147aa8bdee946b77b12d8.stdout",
+        "bytes": 77,
+        "sha256": "9a79590928a7c253e62667cdbaab843bb6d5b8764d55310f1501628384dd7394"
+      },
+      "stderr": {
+        "path": "deployment/c/90f6e7595e2147aa8bdee946b77b12d8.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/90f6e7595e2147aa8bdee946b77b12d8.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:26d9ae6d43e983cac56d8d7bf5ced29a81ba64f101b16cc707d107e011a12280"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642267.8704298,
+    "elapsed_seconds": 0.1786198616027832,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/a42dcb8b54b74157a15188931d94d35e.stdout",
+        "bytes": 4640,
+        "sha256": "a4aa2e445e71cda5c6b913c1f156bb7dba7b4e74799ed28253aa714900fc8514"
+      },
+      "stderr": {
+        "path": "deployment/c/a42dcb8b54b74157a15188931d94d35e.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/a42dcb8b54b74157a15188931d94d35e.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--detach",
+      "--name",
+      "remission-poc13-6061066b-generator",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "--network",
+      "remission-poc13-6061066b-app",
+      "--network-alias",
+      "generator",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642279.9886792,
+    "elapsed_seconds": 0.3258647918701172,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/ab9c0a00d7d24beb806ed7d00237c5f6.stdout",
+        "bytes": 65,
+        "sha256": "95bfb235f4612b72d2973e717f93c107d2784d30800e1c020337e35346353693"
+      },
+      "stderr": {
+        "path": "deployment/c/ab9c0a00d7d24beb806ed7d00237c5f6.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/ab9c0a00d7d24beb806ed7d00237c5f6.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642267.1988738,
+    "elapsed_seconds": 0.0336153507232666,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/b02a2dd706ef467099a74337bc304633.stdout",
+        "bytes": 41,
+        "sha256": "2cc3d879bbdb2f2c23bd518a70ee6cf092db2009b5a4a9d875d699185ce2c29b"
+      },
+      "stderr": {
+        "path": "deployment/c/b02a2dd706ef467099a74337bc304633.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/b02a2dd706ef467099a74337bc304633.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-6061066b-old"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642282.2367713,
+    "elapsed_seconds": 0.15114784240722656,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/b14335e0ca0a41afa42612db52c37f54.stdout",
+        "bytes": 8281,
+        "sha256": "7bbcdd725c68a3ba31e5f4a105638d8c0be1bcca16a50ae835c57cfa017a6f36"
+      },
+      "stderr": {
+        "path": "deployment/c/b14335e0ca0a41afa42612db52c37f54.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/b14335e0ca0a41afa42612db52c37f54.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--cap-add",
+      "CHOWN",
+      "--user",
+      "0:0",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-historical,target=/owned",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-c",
+      "import os;os.chmod('/owned',0o700);os.chown('/owned',10001,10001)"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642269.2404306,
+    "elapsed_seconds": 0.3730905055999756,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/b536ee6e40f749a8bcc45cf2521175e3.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "deployment/c/b536ee6e40f749a8bcc45cf2521175e3.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/b536ee6e40f749a8bcc45cf2521175e3.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642267.6002479,
+    "elapsed_seconds": 0.18093252182006836,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/bf559dadfac3409c8fc5211a94fea99a.stdout",
+        "bytes": 4682,
+        "sha256": "819c78d5a0fa8797c0942ae0885620664031172424a31e6843ae99404000d640"
+      },
+      "stderr": {
+        "path": "deployment/c/bf559dadfac3409c8fc5211a94fea99a.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/bf559dadfac3409c8fc5211a94fea99a.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642268.4239004,
+    "elapsed_seconds": 0.18847203254699707,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/d2fcfbf9f8b140649a948760e357edd0.stdout",
+        "bytes": 3579,
+        "sha256": "0ec6f2b8e8eebcc59da70dd4456ed647c025af8cc4ffac13893e4b14dd1bd36b"
+      },
+      "stderr": {
+        "path": "deployment/c/d2fcfbf9f8b140649a948760e357edd0.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/d2fcfbf9f8b140649a948760e357edd0.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:24f061faf5d692cc0a47128cf4c82b9437e5ca9cb5d6edac3479805f80e28d6c"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642268.1449327,
+    "elapsed_seconds": 0.1799626350402832,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/dba71d6159c8485dbf984972f5c0fd19.stdout",
+        "bytes": 4392,
+        "sha256": "b78f7a7e884a562bc2f17bac6d15833817dd0260718fe9a0ea5063831da9715c"
+      },
+      "stderr": {
+        "path": "deployment/c/dba71d6159c8485dbf984972f5c0fd19.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/dba71d6159c8485dbf984972f5c0fd19.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-historical,target=/data",
+      "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8",
+      "python",
+      "-m",
+      "services.foundation.cli",
+      "seed",
+      "--database",
+      "/data/remission.sqlite"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642271.9898384,
+    "elapsed_seconds": 1.1529157161712646,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/dc65b477c992475e8ec89f87f4b5b53d.stdout",
+        "bytes": 132,
+        "sha256": "32110047e90424bf7a95eb547d3206a15037f641512bc88f981b9f06d2960260"
+      },
+      "stderr": {
+        "path": "deployment/c/dc65b477c992475e8ec89f87f4b5b53d.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/dc65b477c992475e8ec89f87f4b5b53d.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--cap-add",
+      "CHOWN",
+      "--user",
+      "0:0",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-exports,target=/owned",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-c",
+      "import os;os.chmod('/owned',0o700);os.chown('/owned',10001,10001)"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642271.5067396,
+    "elapsed_seconds": 0.3790171146392822,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/dda7b5506be94f9b8a75dfa731872316.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "deployment/c/dda7b5506be94f9b8a75dfa731872316.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/dda7b5506be94f9b8a75dfa731872316.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "remission-poc13-6061066b-exports"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642271.2200236,
+    "elapsed_seconds": 0.164306640625,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/e2d03bf0463d47cd86b2272781bf626b.stdout",
+        "bytes": 33,
+        "sha256": "955149d3c526be947a8bb8a8a28563c490648f4498a0bf84ec151b8cd22d5df0"
+      },
+      "stderr": {
+        "path": "deployment/c/e2d03bf0463d47cd86b2272781bf626b.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/e2d03bf0463d47cd86b2272781bf626b.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--env",
+      "EXPECTED_HASHES={\"services/foundation/admission.py\": \"619b5de040c6990f339a1d755dc07f41c201e3ad3303efc0c2602cc21bed1d47\", \"services/foundation/app.py\": \"dc2e777c0db9bf7f777ec7743711f93e08dbdd962be23ae68cc4043366972899\", \"services/foundation/archive.py\": \"2ebd6c72a6a11a53cfefbfe03f07e92e49f583946842ee69c684de3a22587234\", \"services/foundation/cli.py\": \"df00bf9fcbeb55c0ec787b408d82a9ad4072f8b4fc13ec07a26368305e3670b6\", \"services/foundation/configuration.py\": \"df049fdc0342483449e676a0be93ed69350282f9e82041b1e1c5ba1b9c729dbf\", \"services/foundation/cutover.py\": \"acb5322f3d80d2b04c33636148bafa80d309c3f9bb22fc7f44722792cf3b9b1b\", \"services/foundation/followup_cutover.py\": \"2667c5e996486cebfce9a054b51b6df13ce2aed8b7371d5f7e97c10a512c50e7\", \"services/foundation/live_coordinator.py\": \"cecd615392b865b2b0806845d75a92441a3f497414a19e111330ec1ab9f4a4df\", \"services/foundation/live_hold.py\": \"1849284f3b1bd4c72d416e35af0b9d16a33c739354c3c8b4889f23294fefa00c\", \"services/foundation/live_journal.py\": \"3362a295cd41fe04ccd75aad467606463460755c7a8fb65921bf34171a2a5df6\", \"services/foundation/live_safety_export.py\": \"41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87\", \"services/foundation/live_tasks.py\": \"edbac613209c736743b2f394b66bb0f2809526db8dbe284e9941302481b5ef46\", \"services/foundation/replay.py\": \"9a5ad1d1359325e1263a06b2a6af6c9b5c9298e6d4d7389eeec28de2c6d0f0dc\", \"services/foundation/server.py\": \"ae1736a22f03c2b5d3044d1a45a8263526f5f9fb249eb7d2f25e6f3961468448\", \"services/foundation/simulation.py\": \"94b1d2c7be234e951f022025ab1e177b189cde0d3ad01c1c0970027540db5490\", \"services/foundation/store.py\": \"47405eec220e15d6a1107e83df7872e32a96fb5ce4a7765aa3af41852489eab4\", \"services/foundation/upgrade003.py\": \"0e5fb407c2bc3fe7bb59149bdccec29c23a78261eeb2242b5cb3b728796eda9d\", \"services/foundation/workflow.py\": \"d43f5ee55926709621efb6033e97acbc93b879f413f132a856af47b7ed98cdeb\", \"services/foundation/__init__.py\": \"a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481\", \"services/foundation/migrations/001_foundation.sql\": \"b76b1af7f41080c83f1ac736655ca4bdca6ed03310b29e8196f4638894d0c93d\", \"services/foundation/migrations/002_observed_archive.sql\": \"3e7660781b2aac3e5dcfa071831f9fc6d02997347b9aae3af73290133f6439ca\", \"services/foundation/migrations/003_live_hold.sql\": \"896105c407e13fcd91edb15b924e87a589e6e7e84d35340dbb4dbf2d118def2c\", \"services/foundation/migrations/004_live_hold_followups.sql\": \"af9e77dcb205e95b9bf448bd07c315d042182ccda205d264ebb3883f58673134\", \"contracts/service/__init__.py\": \"5f5aad3865db7aba1b7b36ffc5e84ca1896e79ac8dfed97e9ccefbd9dd5fa33c\", \"contracts/service/live_hold.py\": \"930ce55193d5a43ad955992d239857f4000b0f8a28cd4a2f0fa3f75b0b4943d9\", \"contracts/service/live_safety.py\": \"462de6d11716a1d8b2052fa567d31186b0aa9b7fac05edfe70eb1007f8f22451\", \"contracts/service/live_safety_admission.py\": \"15e6cbe34a4d9d26f644eda45a12097f1be07f281875579fb85cae214aa4fca1\", \"contracts/service/bindings-v1.json\": \"59699927e7ac045db1b4ebe08402101fe20f172d992aa92052d25881999c44bb\", \"contracts/service/spec-v1.json\": \"9086f3ec8237ccef5696cd9099b880e2d725fabbabe7a364f9186e5ea19ff0f0\"}",
+      "sha256:26d9ae6d43e983cac56d8d7bf5ced29a81ba64f101b16cc707d107e011a12280",
+      "python",
+      "-c",
+      "import hashlib,json,os,pathlib; expected=json.loads(os.environ['EXPECTED_HASHES']); actual={p:hashlib.sha256(pathlib.Path('/app',p).read_bytes()).hexdigest() for p in expected}; assert actual==expected,(actual,expected); print(json.dumps({'uid':os.getuid(),'source_sha256':actual},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642279.4288697,
+    "elapsed_seconds": 0.4487931728363037,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/e99309bd5df04d8fb731e689f6f13d28.stdout",
+        "bytes": 3142,
+        "sha256": "695ed0b3969224845928fce93ced8284d35f8a5f2668c387c8e11754d06c6510"
+      },
+      "stderr": {
+        "path": "deployment/c/e99309bd5df04d8fb731e689f6f13d28.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/e99309bd5df04d8fb731e689f6f13d28.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--detach",
+      "--name",
+      "remission-poc13-6061066b-service",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "--network",
+      "remission-poc13-6061066b-app",
+      "--publish",
+      "127.0.0.1:8774:8765",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-database,target=/data",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-fixtures,target=/fixtures,readonly",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-exports,target=/exports",
+      "--env",
+      "REMISSION_ORIGIN=http://127.0.0.1:8774",
+      "--env",
+      "REMISSION_CONTROL_BUNDLE=/fixtures/bundle.json",
+      "--env",
+      "REMISSION_ARCHIVE_CONFIG=/fixtures/archives.json",
+      "--env",
+      "REMISSION_LIVE_EXPORT_ROOT=/exports",
+      "--env",
+      "REMISSION_RUNTIME_REF=/fixtures/runtime.json",
+      "--env",
+      "REMISSION_SOURCE_COMMIT=e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+      "--env",
+      "REMISSION_GENERATOR_URL=http://generator:8780",
+      "sha256:26d9ae6d43e983cac56d8d7bf5ced29a81ba64f101b16cc707d107e011a12280"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642280.422897,
+    "elapsed_seconds": 0.3734145164489746,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "deployment/c/f95320a07e174033a85a1509961c5f5c.stdout",
+        "bytes": 65,
+        "sha256": "83283c58ecaa2036c33c5d45145d9dc39c6be14ff3f152dd84765dd199ec4ce0"
+      },
+      "stderr": {
+        "path": "deployment/c/f95320a07e174033a85a1509961c5f5c.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "e14a00c1e86b11d9bb7dde8924ef7dec32918dc8",
+    "capture": "deployment/c/f95320a07e174033a85a1509961c5f5c.json",
+    "source_snapshot_sha256": "d427908454b90568744f1bda19b36e9559c9f8f0c5831498543063ce9699b306"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "remission-lh-check-d0602ad49f4a",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "PYTHONPATH=/source",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-panel-sim-sol-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/run_contracts",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641539.5752282,
+    "elapsed_seconds": 77.63204169273376,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "regression/142385bff11045c08eb0d22ce575c5f5.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "regression/142385bff11045c08eb0d22ce575c5f5.stderr",
+        "bytes": 9926,
+        "sha256": "0082c46d0def9cc924068a08e913333a76ceb44d033c27be5ddd6e8e095ec9d9"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "regression/142385bff11045c08eb0d22ce575c5f5.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "remission-lh-check-d1ae65dcbfe6",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "PYTHONPATH=/source",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-panel-sim-sol-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/integration/replay",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641617.3295958,
+    "elapsed_seconds": 190.91400909423828,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "regression/17a6d24660d44da498606e8e9778d640.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "regression/17a6d24660d44da498606e8e9778d640.stderr",
+        "bytes": 14981,
+        "sha256": "9eb00b82b5ec431fbdb8d2e4b49b6a7b321e4cbf539ed19a89fbc28267612dc0"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "regression/17a6d24660d44da498606e8e9778d640.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "remission-lh-check-d2f989f38491",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "PYTHONPATH=/source",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-panel-sim-sol-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/contracts",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792641537.2142456,
+    "elapsed_seconds": 2.252018690109253,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "regression/8f575c24aa3248e99a21966f22c2b2c7.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "regression/8f575c24aa3248e99a21966f22c2b2c7.stderr",
+        "bytes": 10904,
+        "sha256": "05cea85379b313a09f3d1b1575798071c6f5fc3cafcc536c220e2392c0ee8383"
+      }
+    },
+    "source_head": "56a6a7eded91cf0db26b6031659a41a4fa659775",
+    "capture": "regression/8f575c24aa3248e99a21966f22c2b2c7.json",
+    "source_snapshot_sha256": "ead0b92d055e087e366b0672a1b6a1a37de590e4862d3c012359ecd400294551"
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "default",
+      "--file",
+      "tooling/foundation/service.Dockerfile",
+      "--target",
+      "service",
+      "--tag",
+      "remission-poc13-responsive-20261021:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642829.2292836,
+    "elapsed_seconds": 2.4035112857818604,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "responsive-build/cea76eab6e0b4403b4195cd35b728da0.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "responsive-build/cea76eab6e0b4403b4195cd35b728da0.stderr",
+        "bytes": 5093,
+        "sha256": "99951cfb254d95521dd6383ec008f9a3667a1486fee7cd2873ff405baee67817"
+      }
+    },
+    "source_head": "ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+    "capture": "responsive-build/cea76eab6e0b4403b4195cd35b728da0.json",
+    "source_snapshot_sha256": "89d749bd77ef9d6531eaa784fe2a5bbac59a954f412573770e0ce8a9183af7c1"
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-poc13-responsive-20261021:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642866.942567,
+    "elapsed_seconds": 0.18098115921020508,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "responsive-deployment/c/194fea481de8431fbef6d80b6a04316e.stdout",
+        "bytes": 72,
+        "sha256": "bec736817acc6d964fd62cc7620a41d394cfa9c0c7c71a66c03568b2fe724e8f"
+      },
+      "stderr": {
+        "path": "responsive-deployment/c/194fea481de8431fbef6d80b6a04316e.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+    "capture": "responsive-deployment/c/194fea481de8431fbef6d80b6a04316e.json",
+    "source_snapshot_sha256": "89d749bd77ef9d6531eaa784fe2a5bbac59a954f412573770e0ce8a9183af7c1"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--detach",
+      "--name",
+      "remission-poc13-6061066b-service-responsive",
+      "--label",
+      "remission.task=remission-poc13-6061066b",
+      "--network",
+      "remission-poc13-6061066b-app",
+      "--publish",
+      "127.0.0.1:8774:8765",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-database,target=/data",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-fixtures,target=/fixtures,readonly",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-exports,target=/exports",
+      "--env",
+      "REMISSION_ORIGIN=http://127.0.0.1:8774",
+      "--env",
+      "REMISSION_CONTROL_BUNDLE=/fixtures/bundle.json",
+      "--env",
+      "REMISSION_ARCHIVE_CONFIG=/fixtures/archives.json",
+      "--env",
+      "REMISSION_LIVE_EXPORT_ROOT=/exports",
+      "--env",
+      "REMISSION_RUNTIME_REF=/fixtures/runtime.json",
+      "--env",
+      "REMISSION_SOURCE_COMMIT=ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+      "--env",
+      "REMISSION_GENERATOR_URL=http://generator:8780",
+      "sha256:a92d7bda327ce7eb06a1d8ee03193d4090f148f48034bee63655d3cd8402dbcb"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642867.9554958,
+    "elapsed_seconds": 0.3893735408782959,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "responsive-deployment/c/442d575b12ca4f748c69f33aa836546c.stdout",
+        "bytes": 65,
+        "sha256": "bfa3075116d817ced7f7f9cff715af1e76e25f1a2ffee0d005ca1ffbcdcead0c"
+      },
+      "stderr": {
+        "path": "responsive-deployment/c/442d575b12ca4f748c69f33aa836546c.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+    "capture": "responsive-deployment/c/442d575b12ca4f748c69f33aa836546c.json",
+    "source_snapshot_sha256": "89d749bd77ef9d6531eaa784fe2a5bbac59a954f412573770e0ce8a9183af7c1"
+  },
+  {
+    "command": [
+      "docker",
+      "stop",
+      "--timeout",
+      "5",
+      "remission-poc13-6061066b-service"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642867.22516,
+    "elapsed_seconds": 0.6386454105377197,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "responsive-deployment/c/75461ccc244e4a688ab8812c9e34fd2a.stdout",
+        "bytes": 33,
+        "sha256": "f65c844ded9c851aabfd4ba6eb26506db736104d4cfbebc29d7ee4bbb8df82d8"
+      },
+      "stderr": {
+        "path": "responsive-deployment/c/75461ccc244e4a688ab8812c9e34fd2a.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+    "capture": "responsive-deployment/c/75461ccc244e4a688ab8812c9e34fd2a.json",
+    "source_snapshot_sha256": "89d749bd77ef9d6531eaa784fe2a5bbac59a954f412573770e0ce8a9183af7c1"
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "remission-poc13-6061066b-service-responsive",
+      "python",
+      "-c",
+      "import json,hashlib;from pathlib import Path;print(json.dumps({str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('/app/web/dist').rglob('*') if p.is_file()}))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642869.1759353,
+    "elapsed_seconds": 0.2722656726837158,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "responsive-deployment/c/915e55884f7f4a8ba4204a1ab20b3dec.stdout",
+        "bytes": 318,
+        "sha256": "801337597efe117141392e14e51dc417ce7a1e9f0fd6e7146d8e0ad161106988"
+      },
+      "stderr": {
+        "path": "responsive-deployment/c/915e55884f7f4a8ba4204a1ab20b3dec.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+    "capture": "responsive-deployment/c/915e55884f7f4a8ba4204a1ab20b3dec.json",
+    "source_snapshot_sha256": "89d749bd77ef9d6531eaa784fe2a5bbac59a954f412573770e0ce8a9183af7c1"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "remission-lh-check-f07fb8f06687",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "PYTHONPATH=/source",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-panel-sim-sol-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642104.752741,
+    "elapsed_seconds": 1.3846869468688965,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "runtime/9e567fda5519476b98d98c071bba215a.stdout",
+        "bytes": 30,
+        "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+      },
+      "stderr": {
+        "path": "runtime/9e567fda5519476b98d98c071bba215a.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "runtime/9e567fda5519476b98d98c071bba215a.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--name",
+      "remission-lh-check-339a2adfa1ee",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=256m",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "PYTHONPATH=/source",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-panel-sim-sol-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "tooling/foundation/qualify.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-panel-sim-sol-261021",
+    "started_unix": 1792642106.23595,
+    "elapsed_seconds": 1.528111457824707,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "runtime/c4751b591ad54808b07f65ea00d67089.stdout",
+        "bytes": 502,
+        "sha256": "a0d6a9539ee81762130e2af60e367d95ee141bfde4ce31cd15d66c1f56fe1ab5"
+      },
+      "stderr": {
+        "path": "runtime/c4751b591ad54808b07f65ea00d67089.stderr",
+        "bytes": 245,
+        "sha256": "55b0d39c54fc60d5a7e1f2cb796972bd93872b12ff8f0780f75b20252766ff53"
+      }
+    },
+    "source_head": "a4b3d593b9c39efe8f56e26b1a4dffff631fcc60",
+    "capture": "runtime/c4751b591ad54808b07f65ea00d67089.json",
+    "source_snapshot_sha256": "fd48e4c9ead6a37922342872878e6c14ab6e2ed04883b007150596f27396b54d"
+  }
+]

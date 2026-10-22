@@ -1,0 +1,77 @@
+[
+    {
+        "Id": "sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de",
+        "RepoTags": [
+            "remission-lh-927c34934716-generator:candidate"
+        ],
+        "RepoDigests": [
+            "remission-lh-927c34934716-generator@sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-22T04:00:51.258026254Z",
+        "Config": {
+            "User": "20000:20000",
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "-m",
+                "services.generator.server"
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 2095366480,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+                "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+                "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+                "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+                "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+                "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+                "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+                "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+                "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+                "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+                "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+                "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+                "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+                "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:7b000aabc9d51a9f256a6b27344da10bd371f7e579671288d3d515f03513a269"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-22T04:10:23.818917839Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "ssovg9bzzds9khqjj4kg6wd9x",
+                    "CreatedAt": "2026-10-22T04:10:23.833901428Z"
+                }
+            ]
+        }
+    }
+]

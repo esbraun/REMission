@@ -1,0 +1,143 @@
+[
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "sha256:26d9ae6d43e983cac56d8d7bf5ced29a81ba64f101b16cc707d107e011a12280",
+      "python",
+      "-c",
+      "import os,json,hashlib;from pathlib import Path;expected={'/app/contracts/domain/__init__.py': '5504df41242c69e464fd08d7743a039c0259594cded2df0b0fb08566722340f2', '/app/contracts/domain/common.py': 'a08da301acc4b831854ca216111c43bb1b09d975e07b50ca1efdb7feff206784', '/app/contracts/domain/entities.py': '4e456effd627850955b35fed12178f89fd25de3e02b49c9c9e6d07086b241ab5', '/app/contracts/domain/boundaries.py': '0671f401265d65e586976127cf68f4e9250fd92916297725d6a0b2016605ef72', '/app/contracts/domain/estimands.py': 'b7dc316db651be228c6290112c9b7dcdd61d84e258b4d8fd784de73b7eb4772f', '/app/contracts/runs/__init__.py': '97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f', '/app/contracts/runs/common.py': 'be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef', '/app/contracts/runs/observed.py': '53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760', '/app/contracts/runs/admission.py': '00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba', '/app/contracts/runs/bindings-v1.json': '0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d', '/app/contracts/domain/observed_v2.py': 'b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940', '/app/contracts/domain/evidence_v2.py': '921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1', '/app/contracts/runs/observed_v2.py': '3213d7da7650378c4224889e7011f03b4d7751c2925a85152c13059dafe5555f', '/app/contracts/runs/coverage_v2.py': '38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf', '/app/contracts/runs/admission_v2.py': '11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb', '/app/contracts/runs/bindings-v2.json': '40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7', '/app/contracts/service/__init__.py': '5f5aad3865db7aba1b7b36ffc5e84ca1896e79ac8dfed97e9ccefbd9dd5fa33c', '/app/contracts/service/live_hold.py': '930ce55193d5a43ad955992d239857f4000b0f8a28cd4a2f0fa3f75b0b4943d9', '/app/contracts/service/live_safety.py': '462de6d11716a1d8b2052fa567d31186b0aa9b7fac05edfe70eb1007f8f22451', '/app/contracts/service/live_safety_admission.py': '15e6cbe34a4d9d26f644eda45a12097f1be07f281875579fb85cae214aa4fca1', '/app/contracts/service/bindings-v1.json': '59699927e7ac045db1b4ebe08402101fe20f172d992aa92052d25881999c44bb', '/app/contracts/service/spec-v1.json': '9086f3ec8237ccef5696cd9099b880e2d725fabbabe7a364f9186e5ea19ff0f0', '/app/services/foundation/admission.py': '619b5de040c6990f339a1d755dc07f41c201e3ad3303efc0c2602cc21bed1d47', '/app/services/foundation/app.py': 'dc2e777c0db9bf7f777ec7743711f93e08dbdd962be23ae68cc4043366972899', '/app/services/foundation/archive.py': '2ebd6c72a6a11a53cfefbfe03f07e92e49f583946842ee69c684de3a22587234', '/app/services/foundation/cli.py': 'df00bf9fcbeb55c0ec787b408d82a9ad4072f8b4fc13ec07a26368305e3670b6', '/app/services/foundation/configuration.py': 'df049fdc0342483449e676a0be93ed69350282f9e82041b1e1c5ba1b9c729dbf', '/app/services/foundation/cutover.py': 'acb5322f3d80d2b04c33636148bafa80d309c3f9bb22fc7f44722792cf3b9b1b', '/app/services/foundation/followup_cutover.py': '2667c5e996486cebfce9a054b51b6df13ce2aed8b7371d5f7e97c10a512c50e7', '/app/services/foundation/live_coordinator.py': 'cecd615392b865b2b0806845d75a92441a3f497414a19e111330ec1ab9f4a4df', '/app/services/foundation/live_hold.py': '1849284f3b1bd4c72d416e35af0b9d16a33c739354c3c8b4889f23294fefa00c', '/app/services/foundation/live_journal.py': '3362a295cd41fe04ccd75aad467606463460755c7a8fb65921bf34171a2a5df6', '/app/services/foundation/live_safety_export.py': '41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87', '/app/services/foundation/live_tasks.py': 'edbac613209c736743b2f394b66bb0f2809526db8dbe284e9941302481b5ef46', '/app/services/foundation/README.md': '3dd7ca8490d9ae773af49342d9cd53323308fde149cbd2a34a43a09317cb9814', '/app/services/foundation/replay.py': '9a5ad1d1359325e1263a06b2a6af6c9b5c9298e6d4d7389eeec28de2c6d0f0dc', '/app/services/foundation/server.py': 'ae1736a22f03c2b5d3044d1a45a8263526f5f9fb249eb7d2f25e6f3961468448', '/app/services/foundation/simulation.py': '94b1d2c7be234e951f022025ab1e177b189cde0d3ad01c1c0970027540db5490', '/app/services/foundation/store.py': '47405eec220e15d6a1107e83df7872e32a96fb5ce4a7765aa3af41852489eab4', '/app/services/foundation/upgrade003.py': '0e5fb407c2bc3fe7bb59149bdccec29c23a78261eeb2242b5cb3b728796eda9d', '/app/services/foundation/workflow.py': 'd43f5ee55926709621efb6033e97acbc93b879f413f132a856af47b7ed98cdeb', '/app/services/foundation/__init__.py': 'a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481', '/app/services/foundation/migrations/001_foundation.sql': 'b76b1af7f41080c83f1ac736655ca4bdca6ed03310b29e8196f4638894d0c93d', '/app/services/foundation/migrations/002_observed_archive.sql': '3e7660781b2aac3e5dcfa071831f9fc6d02997347b9aae3af73290133f6439ca', '/app/services/foundation/migrations/003_live_hold.sql': '896105c407e13fcd91edb15b924e87a589e6e7e84d35340dbb4dbf2d118def2c', '/app/services/foundation/migrations/004_live_hold_followups.sql': 'af9e77dcb205e95b9bf448bd07c315d042182ccda205d264ebb3883f58673134', '/app/boundary_probe.py': '4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671', '/app/observed_v2_probe.py': 'dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41'};assert os.getuid()==10001;assert {p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in expected}==expected;print(json.dumps(dict(uid=os.getuid(),copied_files=len(expected))))"
+    ],
+    "exit": 0,
+    "seconds": 0.4771198999369517,
+    "stdout": "{\"uid\": 10001, \"copied_files\": 48}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "sha256:24f061faf5d692cc0a47128cf4c82b9437e5ca9cb5d6edac3479805f80e28d6c",
+      "python",
+      "-c",
+      "import os,json,hashlib;from pathlib import Path;expected={'/app/contracts/domain/__init__.py': '5504df41242c69e464fd08d7743a039c0259594cded2df0b0fb08566722340f2', '/app/contracts/domain/common.py': 'a08da301acc4b831854ca216111c43bb1b09d975e07b50ca1efdb7feff206784', '/app/contracts/domain/entities.py': '4e456effd627850955b35fed12178f89fd25de3e02b49c9c9e6d07086b241ab5', '/app/contracts/domain/boundaries.py': '0671f401265d65e586976127cf68f4e9250fd92916297725d6a0b2016605ef72', '/app/contracts/domain/estimands.py': 'b7dc316db651be228c6290112c9b7dcdd61d84e258b4d8fd784de73b7eb4772f', '/app/contracts/runs/__init__.py': '97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f', '/app/contracts/runs/common.py': 'be6920ffca5f1cbfc9adc3fc6dfa1161943020c274b0f43a64ea967cf3a4b2ef', '/app/contracts/runs/observed.py': '53b2188d37134cad0c65ea034919d32d57af64c09397395509004eea5c5b8760', '/app/contracts/runs/admission.py': '00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba', '/app/contracts/runs/bindings-v1.json': '0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d', '/app/contracts/domain/observed_v2.py': 'b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940', '/app/contracts/domain/evidence_v2.py': '921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1', '/app/contracts/runs/observed_v2.py': '3213d7da7650378c4224889e7011f03b4d7751c2925a85152c13059dafe5555f', '/app/contracts/runs/coverage_v2.py': '38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf', '/app/contracts/runs/admission_v2.py': '11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb', '/app/contracts/runs/bindings-v2.json': '40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7', '/app/contracts/service/__init__.py': '5f5aad3865db7aba1b7b36ffc5e84ca1896e79ac8dfed97e9ccefbd9dd5fa33c', '/app/contracts/service/live_hold.py': '930ce55193d5a43ad955992d239857f4000b0f8a28cd4a2f0fa3f75b0b4943d9', '/app/contracts/service/live_safety.py': '462de6d11716a1d8b2052fa567d31186b0aa9b7fac05edfe70eb1007f8f22451', '/app/contracts/service/live_safety_admission.py': '15e6cbe34a4d9d26f644eda45a12097f1be07f281875579fb85cae214aa4fca1', '/app/contracts/service/bindings-v1.json': '59699927e7ac045db1b4ebe08402101fe20f172d992aa92052d25881999c44bb', '/app/contracts/service/spec-v1.json': '9086f3ec8237ccef5696cd9099b880e2d725fabbabe7a364f9186e5ea19ff0f0', '/app/services/learner/worker.py': '2ec7a6fc9bd3a125ab91a9c36d9f10fff06e84bffd61c191e65a1e8c20993ab4', '/app/services/learner/export_observed.py': 'c46c643b6790d2abf519293e8c66675eae33b1cd645685c86f8c3e8487675ef1', '/app/services/learner/live_product.py': 'fce839ca39c2c5f3d4143947ace2fd1d8a51aa25ddfbffbb43db98bd1c48cc1c', '/app/boundary_probe.py': '4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671', '/app/observed_v2_probe.py': 'dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41'};assert os.getuid()==10002;assert {p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in expected}==expected;print(json.dumps(dict(uid=os.getuid(),copied_files=len(expected))))"
+    ],
+    "exit": 0,
+    "seconds": 0.45213089999742806,
+    "stdout": "{\"uid\": 10002, \"copied_files\": 27}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de",
+      "python",
+      "-c",
+      "import os,json,hashlib;from pathlib import Path;expected={'/app/services/generator/restricted.py': '62b518ac4561d32a9e01c8cdb23fccb2be4060000289e8587544528f920f25ef', '/app/services/generator/server.py': '3ec446d75849b6549f8bacfabb46dda3dc3a63aaf18378652ab4a2be2318cb7b', '/app/services/generator/__init__.py': '27d6e2bb0d7d639245eacb6898e10b9cbe4bf92f2754bc1af3cefd3cf05510b5'};assert os.getuid()==20000;assert {p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in expected}==expected;print(json.dumps(dict(uid=os.getuid(),copied_files=len(expected))))"
+    ],
+    "exit": 0,
+    "seconds": 0.4612635000376031,
+    "stdout": "{\"uid\": 20000, \"copied_files\": 3}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-6061066b-generator"
+    ],
+    "exit": 0,
+    "seconds": 0.15841139992699027,
+    "stdout": "[\n    {\n        \"Id\": \"f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772\",\n        \"Created\": \"2026-10-22T04:11:20.053425949Z\",\n        \"Path\": \"python\",\n        \"Args\": [\n            \"-m\",\n            \"services.generator.server\"\n        ],\n        \"State\": {\n            \"Status\": \"running\",\n            \"Running\": true,\n            \"Paused\": false,\n            \"Restarting\": false,\n            \"OOMKilled\": false,\n            \"Dead\": false,\n            \"Pid\": 98241,\n            \"ExitCode\": 0,\n            \"Error\": \"\",\n            \"StartedAt\": \"2026-10-22T04:11:20.125482331Z\",\n            \"FinishedAt\": \"0001-01-01T00:00:00Z\"\n        },\n        \"Image\": \"sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de\",\n        \"ResolvConfPath\": \"/var/lib/docker/containers/f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772/resolv.conf\",\n        \"HostnamePath\": \"/var/lib/docker/containers/f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772/hostname\",\n        \"HostsPath\": \"/var/lib/docker/containers/f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772/hosts\",\n        \"LogPath\": \"/var/lib/docker/containers/f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772/f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772-json.log\",\n        \"Name\": \"/remission-poc13-6061066b-generator\",\n        \"RestartCount\": 0,\n        \"Driver\": \"overlayfs\",\n        \"Platform\": \"linux\",\n        \"MountLabel\": \"\",\n        \"ProcessLabel\": \"\",\n        \"AppArmorProfile\": \"\",\n        \"ExecIDs\": null,\n        \"HostConfig\": {\n            \"Binds\": null,\n            \"ContainerIDFile\": \"\",\n            \"LogConfig\": {\n                \"Type\": \"json-file\",\n                \"Config\": {}\n            },\n            \"NetworkMode\": \"remission-poc13-6061066b-app\",\n            \"PortBindings\": {},\n            \"RestartPolicy\": {\n                \"Name\": \"no\",\n                \"MaximumRetryCount\": 0\n            },\n            \"AutoRemove\": false,\n            \"VolumeDriver\": \"\",\n            \"VolumesFrom\": null,\n            \"ConsoleSize\": [\n                0,\n                0\n            ],\n            \"CapAdd\": null,\n            \"CapDrop\": [\n                \"ALL\"\n            ],\n            \"CgroupnsMode\": \"private\",\n            \"Dns\": null,\n            \"DnsOptions\": [],\n            \"DnsSearch\": [],\n            \"ExtraHosts\": null,\n            \"GroupAdd\": null,\n            \"IpcMode\": \"private\",\n            \"Cgroup\": \"\",\n            \"Links\": null,\n            \"OomScoreAdj\": 0,\n            \"PidMode\": \"\",\n            \"Privileged\": false,\n            \"PublishAllPorts\": false,\n            \"ReadonlyRootfs\": true,\n            \"SecurityOpt\": [\n                \"no-new-privileges\"\n            ],\n            \"Tmpfs\": {\n                \"/tmp\": \"rw,noexec,nosuid,size=128m\"\n            },\n            \"UTSMode\": \"\",\n            \"UsernsMode\": \"\",\n            \"ShmSize\": 67108864,\n            \"Runtime\": \"runc\",\n            \"Isolation\": \"\",\n            \"CpuShares\": 0,\n            \"Memory\": 2147483648,\n            \"NanoCpus\": 2000000000,\n            \"CgroupParent\": \"\",\n            \"BlkioWeight\": 0,\n            \"BlkioWeightDevice\": [],\n            \"BlkioDeviceReadBps\": [],\n            \"BlkioDeviceWriteBps\": [],\n            \"BlkioDeviceReadIOps\": [],\n            \"BlkioDeviceWriteIOps\": [],\n            \"CpuPeriod\": 0,\n            \"CpuQuota\": 0,\n            \"CpuRealtimePeriod\": 0,\n            \"CpuRealtimeRuntime\": 0,\n            \"CpusetCpus\": \"\",\n            \"CpusetMems\": \"\",\n            \"Devices\": [],\n            \"DeviceCgroupRules\": null,\n            \"DeviceRequests\": null,\n            \"MemoryReservation\": 0,\n            \"MemorySwap\": 4294967296,\n            \"MemorySwappiness\": null,\n            \"OomKillDisable\": null,\n            \"PidsLimit\": null,\n            \"Ulimits\": null,\n            \"CpuCount\": 0,\n            \"CpuPercent\": 0,\n            \"IOMaximumIOps\": 0,\n            \"IOMaximumBandwidth\": 0,\n            \"MaskedPaths\": [\n                \"/proc/acpi\",\n                \"/proc/asound\",\n                \"/proc/interrupts\",\n                \"/proc/kcore\",\n                \"/proc/keys\",\n                \"/proc/latency_stats\",\n                \"/proc/sched_debug\",\n                \"/proc/scsi\",\n                \"/proc/timer_list\",\n                \"/proc/timer_stats\",\n                \"/sys/devices/virtual/powercap\",\n                \"/sys/firmware\"\n            ],\n            \"ReadonlyPaths\": [\n                \"/proc/bus\",\n                \"/proc/fs\",\n                \"/proc/irq\",\n                \"/proc/sys\",\n                \"/proc/sysrq-trigger\"\n            ]\n        },\n        \"Storage\": {\n            \"RootFS\": {\n                \"Snapshot\": {\n                    \"Name\": \"overlayfs\"\n                }\n            }\n        },\n        \"Mounts\": [],\n        \"Config\": {\n            \"Hostname\": \"f7da2f440abe\",\n            \"Domainname\": \"\",\n            \"User\": \"20000:20000\",\n            \"AttachStdin\": false,\n            \"AttachStdout\": false,\n            \"AttachStderr\": false,\n            \"Tty\": false,\n            \"OpenStdin\": false,\n            \"StdinOnce\": false,\n            \"Env\": [\n                \"PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                \"GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305\",\n                \"PYTHON_VERSION=3.13.7\",\n                \"PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a\",\n                \"PYTHONDONTWRITEBYTECODE=1\",\n                \"PYTHONUNBUFFERED=1\",\n                \"OMP_NUM_THREADS=1\",\n                \"OPENBLAS_NUM_THREADS=1\",\n                \"MKL_NUM_THREADS=1\",\n                \"PYTENSOR_FLAGS=floatX=float64\",\n                \"LD_LIBRARY_PATH=/opt/foundation/sqlite\",\n                \"PYTHONPATH=/app\"\n            ],\n            \"Cmd\": [\n                \"python\",\n                \"-m\",\n                \"services.generator.server\"\n            ],\n            \"Image\": \"sha256:2f70d99ca90d8ecb159aba3ed338a2d8266830b49bdb80bbf539908d9f2ef7de\",\n            \"Volumes\": null,\n            \"WorkingDir\": \"/app\",\n            \"Entrypoint\": null,\n            \"Labels\": {\n                \"remission.task\": \"remission-poc13-6061066b\"\n            }\n        },\n        \"NetworkSettings\": {\n            \"SandboxID\": \"ba5d7c2a4d4a057b921f959d4b547a7ebdb2efc4c3aa49c3a422ad8c25256ce4\",\n            \"SandboxKey\": \"/var/run/docker/netns/ba5d7c2a4d4a\",\n            \"Ports\": {},\n            \"Networks\": {\n                \"remission-poc13-6061066b-app\": {\n                    \"IPAMConfig\": null,\n                    \"Links\": null,\n                    \"Aliases\": [\n                        \"generator\"\n                    ],\n                    \"DriverOpts\": null,\n                    \"GwPriority\": 0,\n                    \"NetworkID\": \"90f7255b2ed6e4c35a80d48ab08da4e39da84a2272662ed7c0f754d59f0f329b\",\n                    \"EndpointID\": \"798df1bd1589019e004ed3f345fb7dc38d391ab0fde7ec818336802f9a896301\",\n                    \"Gateway\": \"192.168.32.1\",\n                    \"IPAddress\": \"192.168.32.2\",\n                    \"MacAddress\": \"c2:9e:c9:17:83:13\",\n                    \"IPPrefixLen\": 20,\n                    \"IPv6Gateway\": \"\",\n                    \"GlobalIPv6Address\": \"\",\n                    \"GlobalIPv6PrefixLen\": 0,\n                    \"DNSNames\": [\n                        \"remission-poc13-6061066b-generator\",\n                        \"generator\",\n                        \"f7da2f440abe\"\n                    ]\n                }\n            }\n        },\n        \"ImageManifestDescriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.manifest.v1+json\",\n            \"digest\": \"sha256:a08a1ffdd6b9d8f1471a11ef3b28c5acda1d3d93240f7a7937efbb2b7b9b4524\",\n            \"size\": 3330,\n            \"platform\": {\n                \"architecture\": \"amd64\",\n                \"os\": \"linux\"\n            }\n        }\n    }\n]\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "remission-poc13-6061066b-service",
+      "python",
+      "-c",
+      "import json,sqlite3,urllib.request\nfrom pathlib import Path\nfrom services.foundation.workflow import history,patient_clock\nfrom services.foundation.store import instant,canonical\nassert not Path('/app/services/generator').exists()\ndb=sqlite3.connect('file:/data/remission.sqlite?mode=ro',uri=True);db.row_factory=sqlite3.Row\npatients=[r for r in db.execute('SELECT * FROM patients') if 'simulation' in json.loads(r['state_json'])]\nassert patients,'generate a panel through the app before probing'\np=max(patients,key=lambda r:json.loads(r['state_json'])['simulation']['day'])\nprojection=history(db,p['id']).project(patient_clock(p,instant(p['cutoff']))).model_dump(mode='json')\nassert all(r.get('seed') is None for r in projection['records']) and 'simulation' not in projection\nPath('/exports/poc-boundary-observed.json').write_text(canonical(projection))\npayload=dict(seed=1,index=0,patient_id='boundary-positive',through_day=0,actions=[])\nrequest=urllib.request.Request('http://generator:8780/generate',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})\nwith urllib.request.urlopen(request,timeout=3) as response: product=json.load(response)\nassert set(product)=={'name','records'} and len(product['records'])==2\nprint(json.dumps(dict(service_generator_rpc=True,observed_records=len(projection['records']),day=json.loads(p['state_json'])['simulation']['day'])))\n"
+    ],
+    "exit": 0,
+    "seconds": 0.6077682999894023,
+    "stdout": "{\"service_generator_rpc\": true, \"observed_records\": 32, \"day\": 14}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "remission-poc13-6061066b-app",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--env",
+      "GENERATOR_URL=http://192.168.32.2:8780/generate",
+      "--mount",
+      "type=volume,source=remission-poc13-6061066b-exports,target=/observed,readonly",
+      "sha256:24f061faf5d692cc0a47128cf4c82b9437e5ca9cb5d6edac3479805f80e28d6c",
+      "python",
+      "-c",
+      "import importlib.util,json,os,urllib.request,urllib.error\nfrom pathlib import Path\nfrom contracts.domain.boundaries import LearnerHistory\nassert os.getuid()==10002 and importlib.util.find_spec('services.generator') is None\nassert not Path('/app/services/generator').exists() and not Path('/data/remission.sqlite').exists()\nprojection=LearnerHistory.model_validate_json(Path('/observed/poc-boundary-observed.json').read_bytes())\nassert all(getattr(r,'seed',None) is None for r in projection.records)\nrequest=urllib.request.Request(os.environ['GENERATOR_URL'],data=json.dumps(dict(seed=1,index=0,patient_id='boundary-positive',through_day=0,actions=[])).encode(),headers={'Content-Type':'application/json'})\ntry:\n with urllib.request.urlopen(request,timeout=1) as response:\n  reached=True;status=response.status\nexcept urllib.error.HTTPError as error:\n reached=True;status=error.code\nexcept (urllib.error.URLError,TimeoutError,ConnectionError) as error:\n reached=False;status=type(error).__name__\nassert not reached,'private generator reached HTTP '+str(status)\nprint(json.dumps(dict(uid=os.getuid(),generator_rpc_denied=True,transport_failure=status,generator_source=False,service_database=False,typed_observed_records=len(projection.records))))\n"
+    ],
+    "exit": 1,
+    "seconds": 0.8469311000080779,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\n    projection=LearnerHistory.model_validate_json(Path('/observed/poc-boundary-observed.json').read_bytes())\n                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/usr/local/lib/python3.13/pathlib/_abc.py\", line 625, in read_bytes\n    with self.open(mode='rb') as f:\n         ~~~~~~~~~^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/pathlib/_local.py\", line 537, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: '/observed/poc-boundary-observed.json'\n"
+  }
+]

@@ -1,0 +1,39 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from evaluator.Dockerfile
+#1 DONE 0.0s
+
+#1 [internal] load build definition from evaluator.Dockerfile
+#1 transferring dockerfile: 229B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 178B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 1.52kB done
+#4 DONE 0.0s
+
+#5 [1/2] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#5 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#5 DONE 0.0s
+
+#6 [2/2] COPY tooling/foundation/evaluator_canary.py /app/evaluator_canary.py
+#6 CACHED
+
+#7 exporting to image
+#7 exporting layers done
+#7 exporting manifest sha256:80bcf59499869bcea6f7ec756ab56622eb6650e2c1aa294e23d89dda6a9cf399 done
+#7 exporting config sha256:f04696d7c80323a7352fffb1689394c2ca7348cf395382df0708a1b0e1b6f708 done
+#7 exporting attestation manifest sha256:fbe688f7c4ac157e2e8b8f58230103a496f06cc308adefaa6f67eb07fa73a966
+#7 exporting attestation manifest sha256:fbe688f7c4ac157e2e8b8f58230103a496f06cc308adefaa6f67eb07fa73a966 done
+#7 exporting manifest list sha256:24922e3a4adeb0dc634f9f701a8d7063c39572f17dba686c807c6db2afba9d52 0.0s done
+#7 naming to docker.io/library/remission-lh-01811b467ff6-evaluator:candidate done
+#7 unpacking to docker.io/library/remission-lh-01811b467ff6-evaluator:candidate 0.0s done
+#7 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/rqhopvwdxhc2zu6mmgh2v5zeu
