@@ -72,10 +72,12 @@ class BorrowExecutionTests(unittest.TestCase):
     def test_worker_saves_and_releases_prior_before_posterior_graph(self):
         from services.learner import analysis_worker as worker
         from methods.visit import borrow_model
-        source = Path('/app/docs/implementation/evidence/pa3-v1-boundary-20261022/input.json')
-        if not source.exists():
-            source = Path('docs/implementation/evidence/pa3-v1-boundary-20261022/input.json')
-        product = worker.parse_input(source.read_bytes())
+        from contracts.domain.borrowing import make_borrow_input
+        from services.foundation.analysis_sources import load_source
+        source = Path('tests/integration/replay/fixtures/pa3-legacy-v0-input.json')
+        legacy = worker.parse_input(source.read_bytes())
+        # A named unit-control intent, not the actual queued4ff attempt/profile.
+        product = make_borrow_input(legacy.history, 'analysis-prior-lifetime-control', load_source('source-7c97862d', legacy.history.cutoff))
         data = worker.inputs(product.history)
         n = len(data['nights'])
         group = {name:SimpleNamespace(values=value) for name,value in dict(
@@ -101,14 +103,16 @@ class BorrowExecutionTests(unittest.TestCase):
                 patch.object(pm, 'sample_prior_predictive', return_value={'prior':group}) as prior, \
                 patch.object(execution, 'compilation_options', return_value={}), \
                 patch.dict('os.environ', dict(REMISSION_LEARNER_IMAGE='sha256:'+'a'*64, REMISSION_SOURCE_COMMIT='b'*40)):
-            result = worker.run(source, Path(directory))
+            source = Path(directory)/'input.json'
+            source.write_text(product.model_dump_json())
+            result = worker.run(source, Path(directory)/'output')
             self.assertEqual(result['status'], 'failed')
             self.assertIn('after-prior-release-control', result['reason'])
             self.assertTrue(result['diagnostics']['execution']['prior_released_before_posterior'])
             self.assertEqual(prior.call_args.kwargs['random_seed'], product.numerical_seeds.prior_check)
-            self.assertTrue((Path(directory)/'source-prior-predictive.npz').is_file())
-            self.assertTrue((Path(directory)/'prior-predictive.npz').is_file())
-            self.assertTrue((Path(directory)/'failure.log').is_file())
+            self.assertTrue((Path(directory)/'output/source-prior-predictive.npz').is_file())
+            self.assertTrue((Path(directory)/'output/prior-predictive.npz').is_file())
+            self.assertTrue((Path(directory)/'output/failure.log').is_file())
             self.assertEqual(len(calls), 2)
 
 
