@@ -34,6 +34,9 @@ def run(source, out):
     out.mkdir(parents=True,exist_ok=True)
     raw = source.read_bytes()
     product = parse_input(raw)
+    if product.kind=='poc_visit_cohort_input':
+        from contracts.domain.cohort import require_executable
+        require_executable(product)
     if product.kind=='poc_protocol_input':
         from contracts.domain.protocol_request import require_executable
         require_executable(product)

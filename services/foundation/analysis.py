@@ -19,6 +19,62 @@ class AnalysisError(ValueError):
     pass
 
 
+def export_cohort(db, owner, patient_versions, cutoff, *, cohort_id, research_run_id=None):
+    """CORE export inside the caller's transaction; no private state leaves it.
+
+    Membership is resolved against owned rows and their persisted panel ID.
+    Registered research-run membership still needs its artifact admission seam;
+    a caller-provided string never authorizes research mixing.
+    """
+    from contracts.domain.cohort import CohortHistory, CohortManifest, COORDINATE_REF
+    if research_run_id is not None:
+        raise AnalysisError('Registered research-run membership is not implemented; cohort export rejected.')
+    if len(patient_versions) != 12:
+        raise AnalysisError('Select exactly twelve distinct owned patients.')
+    histories, members, panels = [], [], set()
+    cutoff = instant(cutoff)
+    for patient_id in sorted(patient_versions):
+        row = db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?', (patient_id, owner)).fetchone()
+        if row is None:
+            raise AnalysisError('Cohort member unavailable for this owner.')
+        if row['version'] != patient_versions[patient_id]:
+            raise AnalysisError('Cohort member changed. Refresh the whole manifest.')
+        simulation = json.loads(row['state_json']).get('simulation', {})
+        if simulation.get('law_version') != 'poc-longitudinal-v1' or 'panel_id' not in simulation:
+            raise AnalysisError('Every cohort member must use the compatible v1 panel.')
+        if simulation.get('research_run_id') is not None:
+            raise AnalysisError('Research members require registered run membership; interactive export rejected.')
+        if cutoff > instant(row['cutoff']):
+            raise AnalysisError('Every cohort member must have reached the common cutoff.')
+        panels.add(simulation['panel_id'])
+        reduced = project_history(history(db, patient_id).project(cutoff))
+        if (reduced.cutoff-reduced.origin).days < 14:
+            raise AnalysisError('Every cohort member requires at least day14.')
+        value = reduced.model_dump(mode='json')
+        histories.append(value)
+        members.append(dict(patient_id=patient_id, patient_version=row['version'], history_sha256=sha(value),
+            provenance_sha256=sha([r.model_dump(mode='json') for r in reduced.provenance])))
+    if len(panels) != 1:
+        raise AnalysisError('Cohort members must belong to one persisted owned panel.')
+    manifest = dict(schema='poc-cohort-manifest-v1/1.0.0', cohort_id=cohort_id, owner_id=owner,
+        panel_id=next(iter(panels)), scope='interactive', research_run_id=None, cutoff=cutoff.isoformat(),
+        origin=histories[0]['origin'], protocol=PROTOCOL_REF, coordinates=COORDINATE_REF, members=members)
+    manifest = CohortManifest.model_validate_json(canonical(manifest)).model_dump(mode='json')
+    return CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',
+        manifest=manifest, manifest_sha256=sha(manifest), histories=histories)))
+
+
+def prepare_cohort(db, owner, patient_versions, cutoff, *, cohort_id, source_bundle_id=None, research_run_id=None):
+    """Freeze reviewable input without enqueueing an unqualified native job."""
+    from contracts.domain.cohort import make_cohort_input
+    cohort = export_cohort(db, owner, patient_versions, cutoff, cohort_id=cohort_id, research_run_id=research_run_id)
+    sources = None
+    if source_bundle_id is not None:
+        from .analysis_sources import load_source
+        sources = load_source(source_bundle_id, cohort.manifest.cutoff)
+    return make_cohort_input(cohort, 'analysis-'+uuid.uuid4().hex, sources)
+
+
 def view(row, cutoff):
     frozen=json.loads(row['request_json']);h=frozen['history'];day=(instant(h['cutoff'])-instant(h['origin'])).days
     return dict(id=row['job_id'],kind='visit_analysis',patient_id=row['patient_id'],status=row['status'],stage=row['stage'],
@@ -71,6 +127,9 @@ def claim(store):
         if row is None:
             return None
         product=json.loads(row['request_json'])
+        if product.get('kind')=='poc_visit_cohort_input':
+            from contracts.domain.cohort import CohortInput,require_executable
+            require_executable(CohortInput.model_validate_json(row['request_json']))
         if product.get('kind')=='poc_protocol_input':
             from contracts.domain.protocol_request import ProtocolInput,require_executable
             require_executable(ProtocolInput.model_validate_json(row['request_json']))
@@ -148,6 +207,9 @@ def ingest(store,job,token,directory):
     if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
         raise AnalysisError('Invalid result file')
     result=parse_result(result_path.read_bytes())
+    if result.kind=='poc_visit_cohort_result':
+        from contracts.domain.cohort import require_executable
+        require_executable(result)
     if result.kind=='poc_protocol_result':
         from contracts.domain.protocol_request import require_executable
         require_executable(result)
