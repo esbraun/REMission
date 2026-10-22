@@ -1,0 +1,386 @@
+{
+  "id": "PA1-COHORT-NOMINAL-SINGLETON-CHECKPOINT-20261022",
+  "status": "author nominal-law probe PASS; independent execution review pending; production admission CLOSED",
+  "probe_source": "8aeebf554cb4dbc1e3305c6e46d7775db19459e1",
+  "source_review_blob": "a3a5f20db9e1fbd46956de53eef14422f05c6ae8",
+  "source_manifest": {
+    "bytes": 56350,
+    "sha256": "0bd11af79cccb2d7f8bc8c4704312f6910ce095fdfcda61a20d73480f6f6862c"
+  },
+  "probe": {
+    "bytes": 9445,
+    "sha256": "bc52d503fbe9f17ad368c6d43297f76ac0d9f34f07fed8fc5713f9d5bef4d149"
+  },
+  "observer_source": "32ad084b8dcde6e3872e71676bd6de723273dbf1",
+  "container": {
+    "container_id": "8c3c6a0df77b1dd8ec80c21ce6868d0f3c8a18746ba4b2573f12766cfbe0fbf3",
+    "name": "remission-cohort-sol-nominal-r1",
+    "source_head": "8aeebf554cb4dbc1e3305c6e46d7775db19459e1",
+    "source_manifest_sha256": "0bd11af79cccb2d7f8bc8c4704312f6910ce095fdfcda61a20d73480f6f6862c",
+    "qualification_seconds_cap": 1800,
+    "no_fit": true
+  },
+  "terminal": {
+    "Id": "8c3c6a0df77b1dd8ec80c21ce6868d0f3c8a18746ba4b2573f12766cfbe0fbf3",
+    "Image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "2026-10-22T17:47:01.795596514Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 0,
+      "Restarting": false,
+      "Running": false,
+      "StartedAt": "2026-10-22T17:45:06.055654549Z",
+      "Status": "exited"
+    },
+    "Path": "python",
+    "Args": [
+      "-u",
+      "tooling/foundation/qualify_cohort_nominal_singleton.py",
+      "--output",
+      "/out/result.json"
+    ],
+    "Config": {
+      "User": "10002:10002",
+      "Labels": {}
+    },
+    "HostConfig": {
+      "Memory": 2147483648,
+      "NanoCpus": 2000000000,
+      "NetworkMode": "none",
+      "ReadonlyRootfs": true,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,exec,nosuid,nodev,size=512m"
+      }
+    },
+    "Mounts": [
+      {
+        "Destination": "/cohort",
+        "Mode": "",
+        "Propagation": "rprivate",
+        "RW": false,
+        "Source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\nominal-r1\\source",
+        "Type": "bind"
+      },
+      {
+        "Destination": "/out",
+        "Mode": "",
+        "Propagation": "rprivate",
+        "RW": true,
+        "Source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\nominal-r1\\output",
+        "Type": "bind"
+      }
+    ]
+  },
+  "watchdog": {
+    "pid": 1256,
+    "container_id": "8c3c6a0df77b1dd8ec80c21ce6868d0f3c8a18746ba4b2573f12766cfbe0fbf3",
+    "deadline": "2026-10-22T18:15:05.709402+00:00",
+    "armed_at": "2026-10-22T17:45:05.821075+00:00"
+  },
+  "watchdog_terminal": {
+    "observed_at": "2026-10-22T17:47:01.983957+00:00",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-22T17:45:06.055654549Z",
+      "FinishedAt": "2026-10-22T17:47:01.795596514Z"
+    },
+    "deadline_reached": false
+  },
+  "owner_exec_session": 35629,
+  "host_exit": 0,
+  "host_seconds": 116.46210010000505,
+  "cases": [
+    {
+      "design": "archived_observed_contract_fixture",
+      "point_index": 0,
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -129.30970141233507,
+      "independent_joint": -129.3097014123489,
+      "density_error": 1.3812950783176348e-11,
+      "max_absolute_factor_error": 1.3798739928461146e-11,
+      "gradient": {
+        "autodiff": 2.060653414979298,
+        "independent_finite_difference": 2.0606533695399776,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -129.98427919481244,
+        "correct_reference": -129.3097014123489,
+        "signed_residual": -0.6745777824635582,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -129.98427919482498
+      },
+      "raw_legacy": {
+        "joint": -129.3097029501163,
+        "delta_to_cohort": 1.537781230354085e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 2.2629776275095992e-08,
+          "quality_likelihood": 8.114966476568952e-10
+        }
+      }
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "point_index": 1,
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -131.6907571074103,
+      "independent_joint": -131.6907571074241,
+      "density_error": 1.3812950783176348e-11,
+      "max_absolute_factor_error": 1.3784529073745944e-11,
+      "gradient": {
+        "autodiff": 5.580411773814866,
+        "independent_finite_difference": 5.5804117579327785,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -134.27785423993993,
+        "correct_reference": -131.6907571074241,
+        "signed_residual": -2.5870971325158223,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -134.27785423995297
+      },
+      "raw_legacy": {
+        "joint": -131.6907586338031,
+        "delta_to_cohort": 1.5263928219155787e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 1.1463971105740711e-08,
+          "quality_likelihood": 1.0341096867705346e-09
+        }
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "point_index": 0,
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -127.86043442833034,
+      "independent_joint": -127.86043442834396,
+      "density_error": 1.3628209671878722e-11,
+      "max_absolute_factor_error": 1.3770318219030742e-11,
+      "gradient": {
+        "autodiff": 3.0048595945242598,
+        "independent_finite_difference": 3.004859573962903,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -131.12946298661217,
+        "correct_reference": -127.86043442834396,
+        "signed_residual": -3.2690285582682037,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -131.12946298662501
+      },
+      "raw_legacy": {
+        "joint": -127.86043594213871,
+        "delta_to_cohort": 1.5138083711008221e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 2.1545936590428028e-08,
+          "quality_likelihood": 2.370047980093659e-08
+        }
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "point_index": 1,
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -130.28185340220034,
+      "independent_joint": -130.28185340221413,
+      "density_error": 1.3784529073745944e-11,
+      "max_absolute_factor_error": 1.3841372492606752e-11,
+      "gradient": {
+        "autodiff": 3.164231936025003,
+        "independent_finite_difference": 3.1642319385127844,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -135.1475291963913,
+        "correct_reference": -130.28185340221413,
+        "signed_residual": -4.865675794177179,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -135.14752919640415
+      },
+      "raw_legacy": {
+        "joint": -130.281854922486,
+        "delta_to_cohort": 1.5202856502583018e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 2.8575495747418245e-08,
+          "quality_likelihood": 2.4252855723716493e-08
+        }
+      }
+    }
+  ],
+  "compiled_functions": 10,
+  "all_actual_CVM_and_native_optimizer_equal": true,
+  "expected_optimizer": {
+    "type": "RewriteDatabaseQuery",
+    "name": null,
+    "include": [
+      "fast_run",
+      "local_check_parameter_to_ninf_switch",
+      "random_make_inplace"
+    ],
+    "exclude": [],
+    "require": [],
+    "subquery": {},
+    "position_cutoff": "inf",
+    "extra_rewrites": []
+  },
+  "events": 24,
+  "raw_manifest": {
+    "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\nominal-checkpoint-r1\\manifest.json",
+    "bytes": 66160,
+    "sha256": "d6f1986b6771419a5535b2e45069c4f3ecdd0be98384475dc81761cda810ff50"
+  },
+  "curated_manifest": {
+    "path": "docs/implementation/evidence/pa1-cohort-core-20261022/nominal-r1/manifest.json",
+    "bytes": 2024,
+    "sha256": "c079789d5761602b5298e435c3ee36ff383ee6107d0f556bec02ecbaa0463e91"
+  },
+  "light_source": "32ad084b8dcde6e3872e71676bd6de723273dbf1",
+  "lightweight_checks": [
+    {
+      "tests": 9,
+      "seconds": 23.068,
+      "stderr": "artifacts\\cohort\\light-r7\\commands\\632928920105498ca0273642d0e0d15b.stderr",
+      "bytes": 2929,
+      "sha256": "1a48ae7f237f86bb7d6fb5f1a5c4b8811dffdda9daa6d174dc06edfce7fc6ae2"
+    },
+    {
+      "tests": 6,
+      "seconds": 3.577,
+      "stderr": "artifacts\\cohort\\light-r7\\commands\\dc91a18989124ff9868f0ec2845224a9.stderr",
+      "bytes": 1736,
+      "sha256": "92cdd555e9b4355c66225a140ff70bb121b08b296966a644ad6ca4fb22e7cb37"
+    },
+    {
+      "tests": 6,
+      "seconds": 19.85,
+      "stderr": "artifacts\\cohort\\light-r7\\commands\\eeb1417bbe544ab793cd510761cf1a5d.stderr",
+      "bytes": 2181,
+      "sha256": "34361962e2a647b11def5faf1f399118711f89ca913e75d034f9e87ece0b866b"
+    }
+  ],
+  "frontend_checks": {
+    "typecheck": "PASS",
+    "existing_node_controls": 6,
+    "node_status": "PASS",
+    "build": "not yet run"
+  },
+  "timing_context": "Root authorized concurrent bounded N qualification. This nominal run overlaps peer N9a487; no exclusive benchmark or fit-timeliness claim.",
+  "limitations": [
+    "No NUTS or fitted cohort results; renamed historical contract fixture and algebraic stress design are not genuine generated research input.",
+    "Raw legacy compatibility FAIL is retained, unchanged 1e-8 threshold and legacy source; no relabeling of original full suite failure.",
+    "Whole production initialization/backend custody remains unproven; nominal explicit-point VM proof is not initialization qualification.",
+    "Independent exact-source/math/roles, production COPY, genuine12 input, actual V0/V1 fits and completed positive per-patient comparison remain required.",
+    "Browser/production roles, studies/reproduction and human/clinical gates remain open."
+  ],
+  "production_executable": false
+}

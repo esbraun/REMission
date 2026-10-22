@@ -1,0 +1,954 @@
+{
+  "kind": "proposed_nominal_singleton_qualification",
+  "no_fit": true,
+  "preflight": {
+    "optimizer": {
+      "type": "RewriteDatabaseQuery",
+      "name": "OPT_FAST_RUN",
+      "include": [
+        "fast_run"
+      ],
+      "exclude": [],
+      "require": [],
+      "subquery": {},
+      "position_cutoff": "inf",
+      "extra_rewrites": []
+    },
+    "guard_pass": true
+  },
+  "cases": [
+    {
+      "design": "archived_observed_contract_fixture",
+      "point_index": 0,
+      "point": {
+        "sd_b_log__": 0.3364722366212129,
+        "sd_beta_log__": [
+          -0.2231435513142097,
+          0.09531017980432493
+        ],
+        "rho_interval__": 0.4274440148269396,
+        "sigma_e_log__": 0.09531017980432493,
+        "sigma_isi_log__": 0.26236426446749106,
+        "sigma_quality_log__": -0.5108256237659907,
+        "mu_b": 18.2,
+        "population_beta": [
+          1.0,
+          2.0
+        ],
+        "a": 0.4,
+        "b_raw": [
+          -0.2
+        ],
+        "beta_raw": [
+          [
+            -0.3,
+            0.2
+          ]
+        ],
+        "innovation": [
+          [
+            0.0,
+            0.08414709848078966,
+            0.09092974268256818,
+            0.014112000805986721,
+            -0.07568024953079283,
+            -0.09589242746631385,
+            -0.027941549819892587,
+            0.06569865987187891,
+            0.09893582466233819,
+            0.041211848524175664,
+            -0.05440211108893698,
+            -0.09999902065507035,
+            -0.0536572918000435,
+            0.042016703682664094,
+            0.09906073556948704,
+            0.06502878401571169,
+            -0.028790331666506533,
+            -0.09613974918795569,
+            -0.0750987246771676,
+            0.014987720966295234,
+            0.09129452507276277,
+            0.08366556385360562,
+            -0.0008851309290403876,
+            -0.08462204041751707,
+            -0.09055783620066239,
+            -0.013235175009777304,
+            0.07625584504796028,
+            0.09563759284045031
+          ]
+        ],
+        "p_adherence_logodds__": 0.8472978603872034,
+        "observation_rate_logodds__": 1.3862943611198908
+      },
+      "phase": "complete",
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -129.30970141233507,
+      "independent_joint": -129.3097014123489,
+      "nominal_factor_residuals": {
+        "sd_b": 0.0,
+        "sd_beta": 0.0,
+        "rho": 0.0,
+        "sigma_e": 0.0,
+        "sigma_isi": 2.220446049250313e-16,
+        "sigma_quality": 5.551115123125783e-17,
+        "mu_b": 4.440892098500626e-16,
+        "population_beta": 0.0,
+        "a": 0.0,
+        "b_raw": 0.0,
+        "beta_raw": 0.0,
+        "innovation": 0.0,
+        "p_adherence": 4.440892098500626e-15,
+        "observation_rate": 0.0,
+        "isi_likelihood_0": 0.0,
+        "quality_likelihood_0": 1.3798739928461146e-11
+      },
+      "gradient": {
+        "autodiff": 2.060653414979298,
+        "independent_finite_difference": 2.0606533695399776,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -129.98427919481244,
+        "correct_reference": -129.3097014123489,
+        "signed_residual": -0.6745777824635582,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -129.98427919482498
+      },
+      "raw_legacy": {
+        "joint": -129.3097029501163,
+        "delta_to_cohort": 1.537781230354085e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 2.2629776275095992e-08,
+          "quality_likelihood": 8.114966476568952e-10
+        }
+      }
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "point_index": 1,
+      "point": {
+        "sd_b_log__": 0.3364722366212129,
+        "sd_beta_log__": [
+          -0.2231435513142097,
+          0.09531017980432493
+        ],
+        "rho_interval__": -0.6773988235918061,
+        "sigma_e_log__": 0.09531017980432493,
+        "sigma_isi_log__": 0.26236426446749106,
+        "sigma_quality_log__": -0.5108256237659907,
+        "mu_b": 17.4,
+        "population_beta": [
+          1.3,
+          2.4
+        ],
+        "a": -0.3,
+        "b_raw": [
+          0.4
+        ],
+        "beta_raw": [
+          [
+            -0.25,
+            0.35
+          ]
+        ],
+        "innovation": [
+          [
+            0.16,
+            0.10023929976285817,
+            -0.024099088751128518,
+            -0.0986990245580579,
+            -0.05497367071226955,
+            0.06687608411021942,
+            0.15482213726454758,
+            0.1280072930646296,
+            0.01108499560488024,
+            -0.088446934045008,
+            -0.07907929877993883,
+            0.030575340738446602,
+            0.139701014635224,
+            0.1479680815885255,
+            0.04777583836701837,
+            -0.06875942867164678,
+            -0.09449573244204001,
+            -0.005771233946707602,
+            0.11584117207173042,
+            0.158531600364267,
+            0.08305066803574096,
+            -0.041204803829154896,
+            -0.09999490743130282,
+            -0.03926829264334168,
+            0.08514327095380961,
+            0.15885636554225158,
+            0.11409951190272324,
+            -0.00797804513539871
+          ]
+        ],
+        "p_adherence_logodds__": 0.8472978603872034,
+        "observation_rate_logodds__": 1.3862943611198908
+      },
+      "phase": "complete",
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -131.6907571074103,
+      "independent_joint": -131.6907571074241,
+      "nominal_factor_residuals": {
+        "sd_b": 0.0,
+        "sd_beta": 0.0,
+        "rho": 0.0,
+        "sigma_e": 0.0,
+        "sigma_isi": 2.220446049250313e-16,
+        "sigma_quality": 5.551115123125783e-17,
+        "mu_b": 4.440892098500626e-16,
+        "population_beta": 4.440892098500626e-16,
+        "a": 0.0,
+        "b_raw": 0.0,
+        "beta_raw": 0.0,
+        "innovation": 0.0,
+        "p_adherence": 4.440892098500626e-15,
+        "observation_rate": 0.0,
+        "isi_likelihood_0": 6.217248937900877e-15,
+        "quality_likelihood_0": 1.3784529073745944e-11
+      },
+      "gradient": {
+        "autodiff": 5.580411773814866,
+        "independent_finite_difference": 5.5804117579327785,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -134.27785423993993,
+        "correct_reference": -131.6907571074241,
+        "signed_residual": -2.5870971325158223,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -134.27785423995297
+      },
+      "raw_legacy": {
+        "joint": -131.6907586338031,
+        "delta_to_cohort": 1.5263928219155787e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 1.1463971105740711e-08,
+          "quality_likelihood": 1.0341096867705346e-09
+        }
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "point_index": 0,
+      "point": {
+        "sd_b_log__": 0.3364722366212129,
+        "sd_beta_log__": [
+          -0.2231435513142097,
+          0.09531017980432493
+        ],
+        "rho_interval__": 0.4274440148269396,
+        "sigma_e_log__": 0.09531017980432493,
+        "sigma_isi_log__": 0.26236426446749106,
+        "sigma_quality_log__": -0.5108256237659907,
+        "mu_b": 18.2,
+        "population_beta": [
+          1.0,
+          2.0
+        ],
+        "a": 0.4,
+        "b_raw": [
+          -0.2
+        ],
+        "beta_raw": [
+          [
+            -0.3,
+            0.2
+          ]
+        ],
+        "innovation": [
+          [
+            0.0,
+            0.08414709848078966,
+            0.09092974268256818,
+            0.014112000805986721,
+            -0.07568024953079283,
+            -0.09589242746631385,
+            -0.027941549819892587,
+            0.06569865987187891,
+            0.09893582466233819,
+            0.041211848524175664,
+            -0.05440211108893698,
+            -0.09999902065507035,
+            -0.0536572918000435,
+            0.042016703682664094,
+            0.09906073556948704,
+            0.06502878401571169,
+            -0.028790331666506533,
+            -0.09613974918795569,
+            -0.0750987246771676,
+            0.014987720966295234,
+            0.09129452507276277,
+            0.08366556385360562,
+            -0.0008851309290403876,
+            -0.08462204041751707,
+            -0.09055783620066239,
+            -0.013235175009777304,
+            0.07625584504796028,
+            0.09563759284045031
+          ]
+        ],
+        "p_adherence_logodds__": 0.8472978603872034,
+        "observation_rate_logodds__": 1.3862943611198908
+      },
+      "phase": "complete",
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -127.86043442833034,
+      "independent_joint": -127.86043442834396,
+      "nominal_factor_residuals": {
+        "sd_b": 0.0,
+        "sd_beta": 0.0,
+        "rho": 0.0,
+        "sigma_e": 0.0,
+        "sigma_isi": 2.220446049250313e-16,
+        "sigma_quality": 5.551115123125783e-17,
+        "mu_b": 4.440892098500626e-16,
+        "population_beta": 0.0,
+        "a": 0.0,
+        "b_raw": 0.0,
+        "beta_raw": 0.0,
+        "innovation": 0.0,
+        "p_adherence": 4.440892098500626e-15,
+        "observation_rate": 0.0,
+        "isi_likelihood_0": 0.0,
+        "quality_likelihood_0": 1.3770318219030742e-11
+      },
+      "gradient": {
+        "autodiff": 3.0048595945242598,
+        "independent_finite_difference": 3.004859573962903,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -131.12946298661217,
+        "correct_reference": -127.86043442834396,
+        "signed_residual": -3.2690285582682037,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -131.12946298662501
+      },
+      "raw_legacy": {
+        "joint": -127.86043594213871,
+        "delta_to_cohort": 1.5138083711008221e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 2.1545936590428028e-08,
+          "quality_likelihood": 2.370047980093659e-08
+        }
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "point_index": 1,
+      "point": {
+        "sd_b_log__": 0.3364722366212129,
+        "sd_beta_log__": [
+          -0.2231435513142097,
+          0.09531017980432493
+        ],
+        "rho_interval__": -0.6773988235918061,
+        "sigma_e_log__": 0.09531017980432493,
+        "sigma_isi_log__": 0.26236426446749106,
+        "sigma_quality_log__": -0.5108256237659907,
+        "mu_b": 17.4,
+        "population_beta": [
+          1.3,
+          2.4
+        ],
+        "a": -0.3,
+        "b_raw": [
+          0.4
+        ],
+        "beta_raw": [
+          [
+            -0.25,
+            0.35
+          ]
+        ],
+        "innovation": [
+          [
+            0.16,
+            0.10023929976285817,
+            -0.024099088751128518,
+            -0.0986990245580579,
+            -0.05497367071226955,
+            0.06687608411021942,
+            0.15482213726454758,
+            0.1280072930646296,
+            0.01108499560488024,
+            -0.088446934045008,
+            -0.07907929877993883,
+            0.030575340738446602,
+            0.139701014635224,
+            0.1479680815885255,
+            0.04777583836701837,
+            -0.06875942867164678,
+            -0.09449573244204001,
+            -0.005771233946707602,
+            0.11584117207173042,
+            0.158531600364267,
+            0.08305066803574096,
+            -0.041204803829154896,
+            -0.09999490743130282,
+            -0.03926829264334168,
+            0.08514327095380961,
+            0.15885636554225158,
+            0.11409951190272324,
+            -0.00797804513539871
+          ]
+        ],
+        "p_adherence_logodds__": 0.8472978603872034,
+        "observation_rate_logodds__": 1.3862943611198908
+      },
+      "phase": "complete",
+      "gates": {
+        "nominal_density_absolute_1e_8": true,
+        "nominal_factors_absolute_1e_8": true,
+        "mapped_directional_gradient": true,
+        "reference_wrong_arm_sensitivity": true,
+        "actual_wrong_arm_mapping_rejected": true
+      },
+      "nominal_joint": -130.28185340220034,
+      "independent_joint": -130.28185340221413,
+      "nominal_factor_residuals": {
+        "sd_b": 0.0,
+        "sd_beta": 0.0,
+        "rho": 0.0,
+        "sigma_e": 0.0,
+        "sigma_isi": 2.220446049250313e-16,
+        "sigma_quality": 5.551115123125783e-17,
+        "mu_b": 4.440892098500626e-16,
+        "population_beta": 4.440892098500626e-16,
+        "a": 0.0,
+        "b_raw": 0.0,
+        "beta_raw": 0.0,
+        "innovation": 0.0,
+        "p_adherence": 4.440892098500626e-15,
+        "observation_rate": 0.0,
+        "isi_likelihood_0": 1.7763568394002505e-15,
+        "quality_likelihood_0": 1.3841372492606752e-11
+      },
+      "gradient": {
+        "autodiff": 3.164231936025003,
+        "independent_finite_difference": 3.1642319385127844,
+        "epsilon": 1e-05
+      },
+      "negative_control": {
+        "wrong_actual_joint": -135.1475291963913,
+        "correct_reference": -130.28185340221413,
+        "signed_residual": -4.865675794177179,
+        "absolute_density_threshold": 1e-08,
+        "expected_result": "FAIL",
+        "wrong_reference_joint": -135.14752919640415
+      },
+      "raw_legacy": {
+        "joint": -130.281854922486,
+        "delta_to_cohort": 1.5202856502583018e-06,
+        "absolute_tolerance": 1e-08,
+        "passed": false,
+        "factor_residuals": {
+          "sd_b": 1.9834087261472177e-08,
+          "sd_beta": 0.0,
+          "rho": 0.0,
+          "sigma_e": 1.9046542121259336e-09,
+          "sigma_isi": 1.9046542121259336e-09,
+          "sigma_quality": 5.551115123125783e-17,
+          "mu_b": 3.007078230865545e-08,
+          "b_raw": 0.0,
+          "population_beta": 3.809308868341077e-09,
+          "beta_raw": 0.0,
+          "a": 0.0,
+          "innovation": 0.0,
+          "p_adherence": 5.971237184709821e-07,
+          "observation_rate": 8.574926262383542e-07,
+          "isi_likelihood": 2.8575495747418245e-08,
+          "quality_likelihood": 2.4252855723716493e-08
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "design": "archived_observed_contract_fixture",
+      "event": "model_build_start",
+      "seconds": 0.22925020393449813
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "event": "model_build_complete",
+      "seconds": 0.4448248279513791
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_factors",
+      "event": "compile_start",
+      "seconds": 0.45132950495462865
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_factors",
+      "event": "compile_complete",
+      "seconds": 16.54354306694586
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_joint",
+      "event": "compile_start",
+      "seconds": 16.54669498594012
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_joint",
+      "event": "compile_complete",
+      "seconds": 23.076761761913076
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_gradient",
+      "event": "compile_start",
+      "seconds": 23.08274546393659
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_gradient",
+      "event": "compile_complete",
+      "seconds": 66.6010597369168
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "raw_legacy_factors",
+      "event": "compile_start",
+      "seconds": 66.60407671297435
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "raw_legacy_factors",
+      "event": "compile_complete",
+      "seconds": 73.40365086798556
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "raw_legacy_joint",
+      "event": "compile_start",
+      "seconds": 73.40972257591784
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "raw_legacy_joint",
+      "event": "compile_complete",
+      "seconds": 76.59798545390368
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "event": "model_build_start",
+      "seconds": 76.71959588699974
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "event": "model_build_complete",
+      "seconds": 76.91625206090976
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_factors",
+      "event": "compile_start",
+      "seconds": 76.91973793890793
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_factors",
+      "event": "compile_complete",
+      "seconds": 80.76599544496275
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_joint",
+      "event": "compile_start",
+      "seconds": 80.77358129492495
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_joint",
+      "event": "compile_complete",
+      "seconds": 83.11823538690805
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_gradient",
+      "event": "compile_start",
+      "seconds": 83.12232464796398
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_gradient",
+      "event": "compile_complete",
+      "seconds": 105.27778710296843
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "raw_legacy_factors",
+      "event": "compile_start",
+      "seconds": 105.28085278195795
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "raw_legacy_factors",
+      "event": "compile_complete",
+      "seconds": 108.0745326669421
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "raw_legacy_joint",
+      "event": "compile_start",
+      "seconds": 108.07995907997247
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "raw_legacy_joint",
+      "event": "compile_complete",
+      "seconds": 110.66818659589626
+    }
+  ],
+  "compilations": [
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_factors",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_joint",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "nominal_gradient",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "raw_legacy_factors",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "archived_observed_contract_fixture",
+      "function": "raw_legacy_joint",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_factors",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_joint",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "nominal_gradient",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "raw_legacy_factors",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    },
+    {
+      "design": "algebraic_both_arm_exposure_stress_NOT_observed_job",
+      "function": "raw_legacy_joint",
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "actual_optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": null,
+        "include": [
+          "fast_run",
+          "local_check_parameter_to_ninf_switch",
+          "random_make_inplace"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      }
+    }
+  ],
+  "nominal_singleton_passed": true,
+  "raw_legacy_compatibility_passed": false,
+  "production_executable": false
+}
