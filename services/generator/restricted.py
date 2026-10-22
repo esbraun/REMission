@@ -29,6 +29,11 @@ def clip(value, low, high):
 
 
 def generate(request):
+    return _generate(request, (2, 4))
+
+
+def _generate(request, coefficients):
+    """Private preparation seam; ordinary RPC accepts only generate's v1 request."""
     if set(request) != {'seed', 'index', 'patient_id', 'through_day', 'actions'}:
         raise ValueError('invalid_generator_request')
     seed, index, through = (request[k] for k in ('seed', 'index', 'through_day'))
@@ -75,7 +80,7 @@ def generate(request):
         carry_continue = .65 * carry_continue + .35 * int(taken and action['option'] == 'behavioral_continue')
         carry_escalate = .8 * carry_escalate + .2 * int(taken and action['option'] == 'behavioral_escalate')
         error = .55 * error + .8 * normal(seed, index, day, 'process')
-        burden = baseline + .55 * math.sin(2 * math.pi * day / 21) + error - 2 * response * carry_continue - 4 * response * carry_escalate
+        burden = baseline + .55 * math.sin(2 * math.pi * day / 21) + error - coefficients[0] * response * carry_continue - coefficients[1] * response * carry_escalate
         burdens.append(burden)
         if day > 0:
             if action:
