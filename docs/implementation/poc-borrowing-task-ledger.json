@@ -160,10 +160,10 @@
     "plan_ready": "25fcdbcac757c017f65b3a94cce7d45046892823",
     "executable_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
     "session": 41904,
-    "status": "NOT QUALIFIED: compile returned222.199s then first gradient evaluation timed out; verified terminal137/notOOM at600s cap, total663.586s",
+    "status": "NOT QUALIFIED: compile interval220.437526s (phase elapsed222.199184s at return), then first ordinary-linker gradient evaluation timed out; verified terminal137/notOOM at600s cap, total663.586s",
     "scope": "One model per phase, frozen public H*/points/Q64, persistent stages,600s phase/1800s suite, unchanged target/optimizer; final Dockerfile delta review runs in parallel and execution timing is explicit",
     "evidence_commit": "8f6515cb066a50070829a62e8cbab1313ee75cfa",
-    "next": "Bounded node-execution MonitorMode proposal awaits independent review; no implementation or fit"
+    "next": "New diagnostic MonitorMode run returned and141FD checks passed; independent handoff review pending, ordinary linker/full target/fit remain unqualified"
   },
   "ui_source_review": {
     "head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
@@ -193,7 +193,8 @@
     "first_attempt": {
       "session": 36279,
       "state": "terminal1/notOOM C-module ImportError before inventory/evaluation; zero callback events",
-      "evidence": "evidence/pa3-monitor-loader-failure-20261022"
+      "evidence": "evidence/pa3-monitor-loader-failure-20261022",
+      "stream_packaging_correction": "5643429763db4f6aa00d67d97f399ca94b77d0af preserves old empty artifacts and binds exact retained1779B stdout/7181B stderr; no execution change"
     },
     "scratch_repair": {
       "source": "b88c2366c78b8fa66615d79481ac0bbf564b4214",
@@ -203,7 +204,13 @@
     "new_attempt": {
       "session": 63157,
       "container": "98272c307f8e3dbebdea167c616e9335a6767eedfb1147828d6aef89bbc81081",
-      "status": "running; no result or acceptance assumed"
+      "status": "terminal0/notOOM; diagnostic gradient141/141 FD pass, independent evidence review pending",
+      "evidence": "evidence/pa3-monitor-gradient-20261022",
+      "elapsed_seconds": 474.0628134999424,
+      "compile_seconds": 463.47507809696253,
+      "trace_truncated": true,
+      "localization_allowed": false,
+      "cgroup_memory_peak_bytes": 2147483648
     },
     "scope": "Diagnostic linker gradient only; no ordinary NumbaLinker timeliness/production adoption/native fit acceptance"
   },

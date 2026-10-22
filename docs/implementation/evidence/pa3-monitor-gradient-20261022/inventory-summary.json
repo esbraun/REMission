@@ -1,0 +1,74 @@
+{
+  "cgroup_memory_peak_bytes": 2147483648,
+  "compiled_optimizer": {
+    "exclude": [],
+    "extra_rewrites": [],
+    "include": [
+      "fast_run",
+      "local_check_parameter_to_ninf_switch",
+      "random_make_inplace"
+    ],
+    "name": null,
+    "position_cutoff": "inf",
+    "require": [],
+    "subquery": {},
+    "type": "RewriteDatabaseQuery"
+  },
+  "interpretation": "Diagnostic linker and callbacks only; truncated trace permits no last-node localization. Peak cgroup memory equals the 2GiB limit; no production resource headroom or timeliness established.",
+  "inventory_file": {
+    "bytes": 659844,
+    "sha256": "c7fdcec41a18dbcf67e15864e1b297b146bd01d1e2f010b8dc405440c9706bfa"
+  },
+  "max_observed_peak_rss_kib": 344652,
+  "nodes": 1988,
+  "operation_classes": {
+    "pytensor.compile.builders.OpFromGraph": 2,
+    "pytensor.tensor.basic.ARange": 1,
+    "pytensor.tensor.basic.Alloc": 10,
+    "pytensor.tensor.basic.AllocDiag": 2,
+    "pytensor.tensor.basic.AllocEmpty": 3,
+    "pytensor.tensor.basic.ExtractDiag": 3,
+    "pytensor.tensor.basic.Join": 5,
+    "pytensor.tensor.basic.MakeVector": 2,
+    "pytensor.tensor.basic.Split": 4,
+    "pytensor.tensor.blas.gemm.Dot22": 2,
+    "pytensor.tensor.blas.gemm.Dot22Scalar": 1,
+    "pytensor.tensor.blas.gemm.Gemm": 2,
+    "pytensor.tensor.blas.gemv.Gemv": 4,
+    "pytensor.tensor.blas.ger.Ger": 5,
+    "pytensor.tensor.elemwise.CAReduce": 1,
+    "pytensor.tensor.elemwise.DimShuffle": 1684,
+    "pytensor.tensor.elemwise.Elemwise": 81,
+    "pytensor.tensor.linalg.decomposition.cholesky.Cholesky": 1,
+    "pytensor.tensor.linalg.solvers.psd.CholeskySolve": 2,
+    "pytensor.tensor.linalg.solvers.triangular.SolveTriangular": 5,
+    "pytensor.tensor.math.Sum": 50,
+    "pytensor.tensor.shape.Shape_i": 1,
+    "pytensor.tensor.subtensor.AdvancedIncSubtensor": 6,
+    "pytensor.tensor.subtensor.AdvancedSubtensor": 5,
+    "pytensor.tensor.subtensor.IncSubtensor": 12,
+    "pytensor.tensor.subtensor.Subtensor": 94
+  },
+  "point_observations": [
+    {
+      "index": 0,
+      "marker_interval_seconds": 0.6785381069639698,
+      "trace_events": 3976
+    },
+    {
+      "index": 1,
+      "marker_interval_seconds": 0.3151354870060459,
+      "trace_events": 3976
+    },
+    {
+      "index": 2,
+      "marker_interval_seconds": 0.1599303170805797,
+      "trace_events": 2048
+    }
+  ],
+  "trace_file": {
+    "bytes": 4060959,
+    "sha256": "c81901550e1ba5f9fd174356c1f3d83c896520fc6dec0dea2cc6f76df1db97de"
+  },
+  "warning_scope": "Stderr retains loop-fusion warning and a nonfatal ofg_inner_graph NotImplementedError for WrapLinker; same optimizer query is not proof of identical realized rewrites."
+}
