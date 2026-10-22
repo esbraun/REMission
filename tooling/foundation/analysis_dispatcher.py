@@ -35,6 +35,10 @@ def exclusive(path):
     return stream
 
 
+def check_deadline(deadline):
+    if time.monotonic()>deadline:raise TimeoutError('fit-watchdog-deadline-exceeded')
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--deployment',type=Path,required=True);parser.add_argument('--once',action='store_true')
     args=parser.parse_args()
@@ -70,6 +74,7 @@ def main():
             time.sleep(2)
             continue
         identifier=job['attempt_id'];token=job['claim_token'];directory=root/identifier
+        attempt_started=time.monotonic()
         directory.mkdir(exist_ok=False)
         (directory/'input.json').write_text(json.dumps(job['input'],sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
         # Claim token stays with the host supervisor, never with the learner.
@@ -80,6 +85,7 @@ def main():
         def save():
             (directory/'dispatch.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
         save()
+        launched=False
         try:
             for volume in (input_volume,output_volume):
                 command(['docker','volume','create','--label','remission.task='+prefix,volume])
@@ -94,22 +100,21 @@ def main():
                 '--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
                 '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
                 image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
+            launched=True
             manifest.update(status='running',inventory=json.loads(command(['docker','inspect',learner]).stdout)[0])
             save()
             last=None
             borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
             watchdog_seconds=7200 if borrowing else 4*3600
             manifest['watchdog_seconds']=watchdog_seconds
-            deadline=time.monotonic()+watchdog_seconds
+            deadline=(attempt_started if borrowing else time.monotonic())+watchdog_seconds
             while True:
                 inventory=json.loads(command(['docker','inspect',learner]).stdout)[0]
+                # Check BEFORE trusting terminal state: completion between polls
+                # after the cap cannot escape the same frozen deadline.
+                check_deadline(deadline)
                 if not inventory['State']['Running']:
                     break
-                if time.monotonic()>deadline:
-                    command(['docker','stop','--time','10',learner])
-                    stopped=json.loads(command(['docker','inspect',learner]).stdout)[0]
-                    if stopped['State']['Running']:raise RuntimeError('fit-watchdog-stop-unconfirmed')
-                    raise RuntimeError('fit-watchdog-exceeded-'+str(watchdog_seconds)+'s')
                 copied=command(['docker','cp',learner+':/output/progress.json',str(directory/'progress.json')],check=False)
                 if copied.returncode==0:
                     value=json.loads((directory/'progress.json').read_bytes())
@@ -128,10 +133,22 @@ def main():
             dest='/exports/analyses/'+identifier
             command(['docker','exec',service,'mkdir','-p',dest])
             command(['docker','cp',str(directory/'output')+'/.',service+':'+dest])
+            check_deadline(deadline)
             response=cli('ingest','--job',identifier,'--token',token,'--directory',dest)
             manifest.update(status=response['status'],exit=inventory['State']['ExitCode'],oom_killed=inventory['State']['OOMKilled'])
         except Exception as error:
             command(['docker','stop','--time','10',learner],check=False)
+            if launched:
+                stopped=command(['docker','inspect',learner],check=False)
+                confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)[0]['State']['Running']
+                if not confirmed:
+                    command(['docker','kill',learner],check=False)
+                    stopped=command(['docker','inspect',learner],check=False)
+                    confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)[0]['State']['Running']
+                if not confirmed:
+                    manifest.update(status='worker-stop-unconfirmed',failure=str(error));save()
+                    raise RuntimeError('Owned worker termination unconfirmed; retain live handle '+learner) from error
+                manifest['worker_stop_verified']=True
             logs=command(['docker','logs',learner],check=False)
             (directory/'failure-worker.stdout').write_bytes(logs.stdout);(directory/'failure-worker.stderr').write_bytes(logs.stderr)
             command(['docker','cp',learner+':/output/.',str(directory/'failure-output')],check=False)

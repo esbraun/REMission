@@ -10,7 +10,7 @@ import pymc as pm
 from scipy.stats import norm,halfnorm
 from contracts.domain.analysis import AnalysisInput,AnalysisResult,CONFIG_REF,canonical,sha
 from contracts.domain.borrowing import (BORROW_CONFIG,BORROW_CONFIG_REF,BRIDGE_REF,BORROW_MODEL_REF,
-    BorrowAnalysisInput,make_borrow_input,parse_input,APPROVED_BUNDLES)
+    BorrowAnalysisInput,make_borrow_input,parse_input,parse_result,APPROVED_BUNDLES)
 from methods.visit.borrow_model import build_joint
 from methods.visit.borrowing import marginal
 from methods.visit.model import build,inputs
@@ -22,6 +22,20 @@ import test_analysis as analysis_cases
 
 
 class JointTargetTests(unittest.TestCase):
+    def test_real_frozen_pre_v1_input_result_canonical_identity(self):
+        import hashlib
+        root=Path(__file__).with_name('fixtures')
+        raw=(root/'pa3-legacy-v0-input.json').read_bytes();output=(root/'pa3-legacy-v0-result.json').read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'74139ac2dfdc945dd1eb0be1e176f2ec66386dee39a09717c1f5a0b8da8551ac')
+        self.assertEqual(hashlib.sha256(output).hexdigest(),'9f4bc1ce5ddf921fea3de714b86bb9d8c8826f2b8b1109365190d6d5a6434efd')
+        product=parse_input(raw);result=parse_result(output)
+        self.assertEqual(product.model_dump(mode='json'),json.loads(raw))
+        self.assertEqual(result.model_dump(mode='json'),json.loads(output))
+        self.assertEqual(sha(product.model_dump(mode='json')),result.input_sha256)
+        self.assertEqual(result.configuration.model_dump(),CONFIG_REF)
+        self.assertEqual(result.status,'completed');self.assertIsNotNone(result.effect)
+        self.assertEqual(result.attempt_id,'analysis-5746f0fea4964d77b5a1cf5aeb552f01')
+
     def test_joint_minus_original_exact_normalized_terms_and_new_priors(self):
         data=inputs(reduced());sources=load_source('source-7c97862d',reduced().cutoff)
         original=build(data,guide=False);joint=build_joint(data,sources,BORROW_CONFIG,guide=False)
@@ -61,10 +75,21 @@ class JointTargetTests(unittest.TestCase):
             self.assertAlmostEqual(float(glog(point)),float(olog(op))+np.log(80)+float(jac),places=7)
             self.assertTrue(np.isfinite(gradient(point)).all())
         self.assertNotIn('guide_innovation',original.named_vars)
-        with original:
+        with build_joint(data,sources,BORROW_CONFIG,guide=False,prior_predictive=True):
             prior=pm.sample_prior_predictive(draws=32,random_seed=37198,var_names=['mu_b','population_beta','source_g'])
         self.assertEqual(prior['prior']['source_g'].shape,(1,32))
         self.assertTrue(np.isfinite(prior['prior']['source_g']).all())
+
+    def test_unconditioned_source_prior_is_invariant_to_local_adherence_counts(self):
+        data=inputs(reduced());sources=load_source('source-7c97862d',reduced().cutoff)
+        values=[]
+        for taken,deliveries in [(0,0),(0,28),(28,28)]:
+            with build_joint(dict(data,taken=taken,deliveries=deliveries),sources,BORROW_CONFIG,guide=False,prior_predictive=True):
+                prior=pm.sample_prior_predictive(draws=64,random_seed=317482,var_names=['p_adherence','source_g'])
+            values.append((prior['prior']['p_adherence'].values,prior['prior']['source_g'].values))
+        for observed in values[1:]:
+            np.testing.assert_array_equal(observed[0],values[0][0]);np.testing.assert_array_equal(observed[1],values[0][1])
+        self.assertGreater(float(values[0][0].std()),.2)
 
     def test_frozen_source_identity_old_reader_and_seed_intents(self):
         h=reduced();sources=load_source('source-7c97862d',h.cutoff)

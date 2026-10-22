@@ -29,4 +29,5 @@ COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
 COPY services/learner/worker.py services/learner/export_observed.py services/learner/live_product.py /app/services/learner/
 COPY methods/visit/ /app/methods/visit/
 COPY services/learner/analysis_worker.py /app/services/learner/
+COPY tooling/foundation/analysis_dispatcher.py /app/analysis_dispatcher.py
 CMD ["python","-m","unittest","discover","-s","tests/integration/replay","-v"]

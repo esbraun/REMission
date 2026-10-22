@@ -68,8 +68,8 @@ def run(source, out):
             from methods.visit.borrow_model import build_joint
             from methods.visit.source_precision import validate as validate_bridge
             model=build_joint(data,product.sources,configuration)
-            prior_model=build_joint(data,product.sources,configuration,guide=False)
-            prior_variables=['burden','sigma_isi','sigma_quality','source_g','source_bias','source_tau']
+            prior_model=build_joint(data,product.sources,configuration,guide=False,prior_predictive=True)
+            prior_variables=['burden','sigma_isi','sigma_quality','source_g','source_bias','source_tau','p_adherence']
             initial=model.initial_point();profile={}
             for name,compile_fn in [('logp',model.compile_logp),('gradient',model.compile_dlogp)]:
                 begin=time.monotonic();fn=compile_fn();compiled=time.monotonic()-begin
@@ -88,9 +88,9 @@ def run(source, out):
             prior=pm.sample_prior_predictive(draws=64,random_seed=product.numerical_seeds.prior_check if borrowed else seed+313,var_names=prior_variables)
         if borrowed:
             induced=np.asarray(prior['prior']['source_g'].values)
-            np.savez_compressed(out/'source-prior-predictive.npz',g=induced)
+            np.savez_compressed(out/'source-prior-predictive.npz',g=induced,p_adherence=prior['prior']['p_adherence'].values)
             result['diagnostics']['source_prior_predictive']=dict(draws=64,mean=float(induced.mean()),sd=float(induced.std(ddof=1)),
-                interval=np.quantile(induced,[.025,.975]).tolist(),note='Original unconditioned population prior induced marginal; no guide pseudo-prior or source likelihood in prior simulation')
+                interval=np.quantile(induced,[.025,.975]).tolist(),note='Original unconditioned population prior and Beta(1,1) adherence induced marginal; no local adherence conditioning, guide pseudo-prior or source likelihood in prior simulation')
         def observed_predictive(group,seed_suffix):
             rng=np.random.default_rng(np.random.SeedSequence([seed,seed_suffix]))
             burden=np.asarray(group['burden'].values)

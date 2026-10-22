@@ -6,8 +6,13 @@ from .model import build
 from .borrowing import tensor_marginal,tensor_mixture
 
 
-def build_joint(data,sources,configuration,*,guide=True):
-    model=build(data,guide=guide)
+def build_joint(data,sources,configuration,*,guide=True,prior_predictive=False):
+    if prior_predictive and guide:raise ValueError('Unconditioned prior simulation requires the original coordinates.')
+    # The original model analytically updates adherence through Beta counts.
+    # For source PRIOR simulation alone restore its declared Beta(1,1), while
+    # keeping all observed grids/exposures and every posterior path unchanged.
+    prior_data=dict(data,taken=0,deliveries=0) if prior_predictive else data
+    model=build(prior_data,guide=guide)
     with model:
         model.add_coord('source',[s.study_id for s in sources.studies])
         theta=dict(mu_b=model['mu_b'],beta_c=model['population_beta'][0],beta_e=model['population_beta'][1],
