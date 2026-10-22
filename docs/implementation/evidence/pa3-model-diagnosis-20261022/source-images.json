@@ -1,0 +1,63 @@
+{
+  "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+  "actual_image": "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+  "actual_base_image": "sha256:74f7a18d41bf2dad73558165087da4996092c0b8a120a2c4f668257a6b29ad46",
+  "base_origin_source_head": "b295285a2b421a996aa66cf0ef4d373a61cd93c1",
+  "base_build_manifest": "artifacts/pa3/model-build/source-images.json",
+  "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "source": {
+    "tooling/foundation/pa3-compile.Dockerfile": {
+      "bytes": 503,
+      "sha256": "7f940970ee45e03561ee448e57bc0334d728efe2d31fffb8d1e1726135f757cf"
+    },
+    "tooling/foundation/pa3_compile_probe.py": {
+      "bytes": 8922,
+      "sha256": "3ccf2134571113ca81d0e7742f9d7d6bcb3f3a2d7517b2eb38356533b16b51fb"
+    },
+    "tooling/foundation/run_pa3_compile.py": {
+      "bytes": 9163,
+      "sha256": "ad9458e4c83ece2f8a0cdff1b2b419d8024b277e8e53d5bdaa69bf2541cfb610"
+    },
+    "tooling/foundation/pa3-compile-points.json": {
+      "bytes": 5542,
+      "sha256": "dd561b80f8dfa7fcdd6d89d2d82cc32856db6eba07c7be7f765daab2503b9fc3"
+    },
+    "contracts/domain/analysis.py": {
+      "bytes": 15493,
+      "sha256": "8bee1124d4b420d1aa1f34d24558d008f18141f8c830736408b0bc6180d1253c"
+    },
+    "contracts/domain/borrowing.py": {
+      "bytes": 11559,
+      "sha256": "f8ab6ec2648fa6d2423af995ecd673e285af7fd7fe4b5a0f6aa175c1f63e4b7f"
+    },
+    "methods/visit/borrowing.py": {
+      "bytes": 4512,
+      "sha256": "dd9138677c56b4f5a66508287a3e23916fa41272878a158b7ab4393867ac9fb2"
+    },
+    "methods/visit/borrow_model.py": {
+      "bytes": 1859,
+      "sha256": "6216ab008f5dcbe97452465440e283d19b5f6f0a94f4ee6702f9431e8438edd3"
+    },
+    "methods/visit/model.py": {
+      "bytes": 9668,
+      "sha256": "134ee7ae5fb85b153d0455fb4594fa6807d77d6bc3d53af89a8f38f7c2914a72"
+    },
+    "methods/visit/numerics.py": {
+      "bytes": 8693,
+      "sha256": "41136d48bd7d40d70ee17f33f271f42ec6ad9f2cfbd3d6314dbb3dd13d7c9d96"
+    },
+    "methods/visit/source_precision.py": {
+      "bytes": 6090,
+      "sha256": "3a28403cb61b9b2c60a3e16e91cf16da067568deb52f45afe513fbecd5537d4b"
+    },
+    "methods/visit/source_reference.py": {
+      "bytes": 1349,
+      "sha256": "ad8bb1ade95e80c6640af75c2b1ebb505f2868b7595798d872d502873c9b104a"
+    },
+    "methods/visit/__init__.py": {
+      "bytes": 71,
+      "sha256": "15ac8ea78d69da6f55c7f00fd9845cadac6c13bbeac8d4c854b07251bcdc56f4"
+    }
+  },
+  "boundary": "Only explicit diagnostic Docker COPY allowlist overlays retained actual b295 copied-test image. UI/comparison WIP neither copied nor executed. Base origin remains b295; contract/method/probe overlay is current committed source. First ID-shaped FROM failed and is retained; verified local tag retry succeeded without dependencies or network changes."
+}
