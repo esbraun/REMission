@@ -1,0 +1,199 @@
+{
+  "id": "poc-restricted-research-reference-v1",
+  "version": "1.0.0",
+  "producer": {
+    "id": "poc-restricted-research-producer-v1",
+    "version": "1.0.0",
+    "role": "generator"
+  },
+  "execution": "engine_run",
+  "source": [
+    {
+      "id": "poc-longitudinal-v1",
+      "version": "1.0.0",
+      "adapter": "simulation"
+    }
+  ],
+  "historical_assignment_source": {
+    "id": "poc-restricted-research-assignment-v1",
+    "version": "1.0.0",
+    "adapter": "simulation"
+  },
+  "bindings": {
+    "protocol": {
+      "id": "poc-restricted-research-retain-v1",
+      "version": "1.0.0",
+      "sha256": "e4eb07f0538f0658b117bf46ff1dc87ba346e0c11d6c9fca17cfefa7ee930349"
+    },
+    "dgp": {
+      "id": "poc-restricted-observed-law-v1",
+      "version": "1.0.0",
+      "sha256": "d7d76ef6803be17b39374011522e19d149130e57b5eb4d74563ea44b232360f0"
+    },
+    "parameters": {
+      "id": "poc-restricted-reference-parameter-binding-v1",
+      "version": "1.0.0",
+      "sha256": "fbd71acf2f540b6e6d011096e42ca0620726b6a54a7a95f635a4bef4d9acbbdf"
+    },
+    "equations": {
+      "id": "poc-restricted-reference-equations-v1",
+      "version": "1.0.0",
+      "sha256": "f26ab8966f24d3dd1d730d38248b189efbf4e1f27720926e8c43e6cdf926141e"
+    },
+    "scenarios": {
+      "id": "poc-restricted-reference-scenario-v1",
+      "version": "1.0.0",
+      "sha256": "68837cdcf42366823002713f9b5997933edc490b7c0d9471173359dff53bbcaa"
+    },
+    "catalog": {
+      "id": "poc-restricted-evaluation-cell-v1",
+      "version": "1.0.0",
+      "sha256": "413cc8647a5eab620160a0427a0d52c4b52584c08cfe9fa75d2f26ec2a0a0e0d"
+    },
+    "timing": {
+      "id": "poc-restricted-research-timing-v1",
+      "version": "1.0.0",
+      "sha256": "0c40e9f66b95825ad3b647b457d71c4f948f89976c9af5578408879ae6d9b6a7"
+    },
+    "temporal": {
+      "id": "poc-restricted-research-temporal-v1",
+      "version": "1.0.0",
+      "sha256": "bb92f52ea9f2b149939cbee7bbbaa9c841341e5ddf18e48df0ee3c50ade7cbb6"
+    },
+    "calibration_schema": {
+      "id": "poc-restricted-calibration-unexecuted-v1",
+      "version": "1.0.0",
+      "sha256": "628f83ee56be1a79aafe9b2792092aa71ba57c71216e844c03a793510d9f9ab7"
+    },
+    "analytic_fixtures": {
+      "id": "poc-restricted-analytic-evidence-scope-v1",
+      "version": "1.0.0",
+      "sha256": "f7d3359bd7bd04c9ec8ee1ca177044d3fb2c7b6adb8f31b7393836d9428d38cf"
+    },
+    "probability_precision": {
+      "id": "poc-restricted-keyed-uniform-precision-v1",
+      "version": "1.0.0",
+      "sha256": "3185ead7893867057c43571dd28b94eab2dee46c1471b05b5211c7c0ae81be80"
+    }
+  },
+  "binding_descriptors": {
+    "protocol": {
+      "id": "poc-restricted-research-retain-v1",
+      "law": "poc-longitudinal-v1/1.0.0",
+      "initial": "independent Bernoulli(.5) behavioral_continue/escalate per member",
+      "retain_days": [
+        14,
+        28
+      ],
+      "support": "fixed no_prompt",
+      "estimand": "next42day ISI endpoint mean nights29..42; escalation minus continuation"
+    },
+    "dgp": {
+      "id": "poc-restricted-observed-law-v1",
+      "generator_blob": "98412e5b3789abfa974d004adec28ff5eda8a293",
+      "generator_source_sha256": "67798d59360623e757dfb3ae7d0726570448831e840a2838835bb5d3ddf5fa1c",
+      "law_unchanged": true
+    },
+    "parameters": {
+      "id": "poc-restricted-reference-parameter-binding-v1",
+      "definition": "Exact unchanged frozen restricted.py reference parameters; no private parameter payload is public",
+      "generator_source_sha256": "67798d59360623e757dfb3ae7d0726570448831e840a2838835bb5d3ddf5fa1c"
+    },
+    "equations": {
+      "id": "poc-restricted-reference-equations-v1",
+      "definition": "Exact unchanged restricted.py state, observation, carryover, missingness and clipping equations",
+      "generator_source_sha256": "67798d59360623e757dfb3ae7d0726570448831e840a2838835bb5d3ddf5fa1c"
+    },
+    "scenarios": {
+      "id": "poc-restricted-reference-scenario-v1",
+      "cell": "poc-restricted-reference-n12-v1",
+      "target": "behavioral_escalate minus behavioral_continue",
+      "scope": "reference only; no sharp-null/conflict or canonical-catalog execution claim"
+    },
+    "catalog": {
+      "id": "poc-restricted-evaluation-cell-v1",
+      "cells": [
+        "poc-restricted-reference-n12-v1"
+      ],
+      "canonical_catalog": false
+    },
+    "timing": {
+      "id": "poc-restricted-research-timing-v1",
+      "origin": "2026-01-01T12:00:00+00:00",
+      "initial_assignment_day": 0,
+      "retention_days": [
+        14,
+        28
+      ],
+      "delivery": "existing restricted generator next-night 20:00UTC; observations next-noon minus1minute",
+      "cutoffs": [
+        14,
+        42
+      ],
+      "visibility": "event/recorded/available strictly before export cutoff"
+    },
+    "temporal": {
+      "id": "poc-restricted-research-temporal-v1",
+      "rule": "Existing strict three-clock cutoff, correction lineage and duplicate rules; one through42 trajectory then separate14/42 projections"
+    },
+    "calibration_schema": {
+      "id": "poc-restricted-calibration-unexecuted-v1",
+      "status": "No calibration result produced or admitted by this profile; no claim for full canonical DGP calibration"
+    },
+    "analytic_fixtures": {
+      "id": "poc-restricted-analytic-evidence-scope-v1",
+      "status": "Contract fixtures remain explicitly nonexecutable; actual engine input distinct from analytic-law qualification"
+    },
+    "probability_precision": {
+      "id": "poc-restricted-keyed-uniform-precision-v1",
+      "uniform": "(top53bits(SHA256(key))+.5)/2**53",
+      "normal": "existing Box-Muller cosine with keyed process-u/process-v",
+      "precision": "float64"
+    }
+  },
+  "runtime_profile": {
+    "prng": "keyed-SHA256-53bit-BoxMuller-v1",
+    "seed_derivation": "poc-restricted-adapter-map-v1",
+    "precision": "float64",
+    "numpy_version": "2.5.4",
+    "numerical_lock_sha256": "3dc1c9632e4fc413f8c9224268c41d795e5b1c1ed348a528a53f44db82f2bc3e",
+    "service_lock_sha256": "9f80395cb237560fa9c8b240f544a3f21b28ad148cc1a65df05d0c2378b77f68",
+    "image_python_source": "Actual accepted producer image/Python/source pins must be frozen after implementation; no placeholder authority or current UI image is approved as producer."
+  },
+  "evaluation_configuration": {
+    "reference": {
+      "id": "poc-restricted-reference-evaluation-v1",
+      "version": "1.0.0",
+      "sha256": "492ff74d4fe000c1f015e430b98dd10ad48ed317180ab4ad7eea7afe10aa8f45"
+    },
+    "payload": {
+      "id": "poc-restricted-reference-evaluation-v1",
+      "version": "1.0.0",
+      "profile": "poc-restricted-research-reference-v1",
+      "cell_id": "poc-restricted-reference-n12-v1",
+      "preset": "evaluation",
+      "cohorts": [
+        {
+          "role": "prospective",
+          "patients": 12
+        }
+      ],
+      "repetitions": 1,
+      "phase": "development",
+      "scope": "preset",
+      "through_day": 42,
+      "export_days": [
+        14,
+        42
+      ],
+      "assignment_probability": 0.5,
+      "retention_days": [
+        14,
+        28
+      ],
+      "support": "no_prompt",
+      "external_study_generation": false,
+      "study_acceptance": false
+    }
+  }
+}

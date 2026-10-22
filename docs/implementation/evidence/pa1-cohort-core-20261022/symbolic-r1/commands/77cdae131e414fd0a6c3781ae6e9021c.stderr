@@ -1,0 +1,37 @@
+/cohort/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/cohort/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/cohort/contracts/domain/cohort.py:47: UserWarning: Field name "schema" in "CohortManifest" shadows an attribute in parent "StrictModel"
+  class CohortManifest(StrictModel):
+/cohort/contracts/domain/cohort.py:72: UserWarning: Field name "schema" in "CohortHistory" shadows an attribute in parent "StrictModel"
+  class CohortHistory(StrictModel):
+Traceback (most recent call last):
+  File "/cohort/tooling/foundation/qualify_cohort_symbolic.py", line 148, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/cohort/tooling/foundation/qualify_cohort_symbolic.py", line 76, in main
+    actual=float(lp(point));expected=density(data,point);assert abs(actual-expected)<1e-8,(actual,expected)
+                 ~~^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pymc/pytensorf.py", line 621, in __call__
+    return self.f(**state)
+           ~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/executor.py", line 693, in __call__
+    outputs = self.vm()
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/utils.py", line 209, in streamline_default_f
+    raise_with_op(fgraph, node, thunk)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/utils.py", line 330, in raise_with_op
+    raise exc_value.with_traceback(exc_trace)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/utils.py", line 204, in streamline_default_f
+    thunk()
+    ~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/graph/op.py", line 599, in rval
+    r = p(n, [x[0] for x in i], o)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/tensor/elemwise.py", line 760, in perform
+    raise NotImplementedError(
+    ...<2 lines>...
+    )
+NotImplementedError: Elemwise.perform (Python mode) does not support more than 32 operands. Use the C backend or disable Elemwise fusion.
+
+HINT: Set PyTensor `config.exception_verbosity` to `medium` or `high` for more information about the source of the error.

@@ -7,7 +7,7 @@ from pydantic import AwareDatetime, Field, TypeAdapter, model_validator
 from contracts.domain.boundaries import ObservedHistory
 from contracts.domain.common import Identifier, Sha256, Source, StrictModel, Versioned, VersionRef
 from contracts.domain.entities import ObservedRecord
-from .common import Artifact, Bindings, Commit, Producer, Runtime, Token, canonical, sha256, unique
+from .common import Artifact, Bindings, Commit, Producer, RuntimeProfile, Token, canonical, sha256, unique, RESTRICTED, RESTRICTED_CELL, restricted_profile, restricted_producer
 
 ADAPTER=TypeAdapter(ObservedRecord)
 INGESTIBLE={'patient','consent','encounter','medication_order','medication_exposure','observation','intercurrent_event','oura_like','daily_report','isi'}
@@ -100,8 +100,9 @@ class ObservedExport(Versioned):
     producer: Producer
     execution: Literal['contract_fixture','engine_run']
     source_commit: Commit
-    runtime: Runtime
+    runtime: RuntimeProfile
     bindings: Bindings
+    evaluation_configuration: VersionRef | None = None
     cutoff: AwareDatetime
     created_at: AwareDatetime
     status: Literal['partial','complete']
@@ -109,6 +110,18 @@ class ObservedExport(Versioned):
 
     @model_validator(mode='after')
     def safe_export(self):
+        restricted=restricted_profile(self.bindings,self.runtime)
+        if restricted:
+            restricted_producer(self.producer,self.execution)
+            if (self.evaluation_configuration is None or self.evaluation_configuration.model_dump(mode='json')!=RESTRICTED['evaluation_configuration']['reference']
+                    or len(self.partitions)!=12 or len({(p.unit_id,p.cohort_id,p.replicate) for p in self.partitions})!=1
+                    or any(p.cell_id!=RESTRICTED_CELL or p.preset!='evaluation' or p.replicate!=0 for p in self.partitions)):
+                raise ValueError('restricted export requires exact twelve-member evaluation association')
+            sources=[*RESTRICTED['source'],RESTRICTED['historical_assignment_source']]
+            if any(r.source.model_dump(exclude={'raw_sha256'}) not in sources or r.seed_key_sha256 is not None for p in self.partitions for r in p.records):
+                raise ValueError('restricted export source mismatch or private seed key')
+        elif self.evaluation_configuration is not None or any(p.cell_id==RESTRICTED_CELL for p in self.partitions):
+            raise ValueError('restricted evaluation association requires restricted profile')
         if self.producer.role not in ('generator','contract_fixture') or (self.execution=='contract_fixture')!=(self.producer.role=='contract_fixture'):
             raise ValueError('observed export must have a matching generator/fixture producer')
         if self.created_at<self.cutoff or self.run_manifest.id!=self.run_id or self.run_manifest.version!='1.0.0':
@@ -134,6 +147,12 @@ def verify_partition(manifest: ObservedExport, partition: Partition, history: Ob
     replay_ids=set()
     for link in partition.records:
         record=validate_observation(by_id[link.record_id])
+        if restricted_profile(manifest.bindings,manifest.runtime):
+            expected=RESTRICTED['historical_assignment_source'] if record.kind=='assignment' else RESTRICTED['source'][0]
+            if record.source.model_dump(exclude={'raw_sha256'})!=expected or record.kind not in {'patient','daily_report','isi','delivery','assignment'}:
+                raise ValueError('restricted record/source role mismatch')
+            if max(record.event_at,record.recorded_at,record.available_at)>=manifest.cutoff:
+                raise ValueError('restricted export requires strict three-clock cutoff')
         if sha256(canonical(record.model_dump(mode='json')))!=link.payload_sha256 or record.source!=link.source:
             raise ValueError('record payload/source provenance mismatch')
         if record.available_at>manifest.cutoff or record.recorded_at>manifest.cutoff or record.event_at>manifest.cutoff:
@@ -148,4 +167,15 @@ def verify_partition(manifest: ObservedExport, partition: Partition, history: Ob
         if entry.record!=by_id[entry.record.record_id]:
             raise ValueError('replay/history record disagreement')
     # A replay partition must retain its own complete correction/duplicate lineage.
-    return history.project(manifest.cutoff)
+    projection=history.project(manifest.cutoff)
+    if restricted_profile(manifest.bindings,manifest.runtime):
+        from contracts.domain.analysis import project_history
+        reduced=project_history(projection)
+        from datetime import datetime, timedelta
+        origin=datetime.fromisoformat(RESTRICTED['binding_descriptors']['timing']['origin'])
+        if reduced.origin!=origin or manifest.cutoff not in (origin+timedelta(days=14),origin+timedelta(days=42)):
+            raise ValueError('restricted research origin/cutoff mismatch')
+        expected=[origin+timedelta(days=d) for d in (0,14,28) if origin+timedelta(days=d)<manifest.cutoff]
+        if sorted(r.event_at for r in reduced.records if r.kind=='assignment')!=expected:
+            raise ValueError('restricted research requires complete initial/retention assignment history')
+    return projection

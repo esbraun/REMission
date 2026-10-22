@@ -1,0 +1,42 @@
+{
+  "Id": "3e49a3c8d369b1101ad3e36badd699114724e280d730634049fd4a77cb341ca7",
+  "Image": "sha256:9127af9d2dec1d29751ca1b7425016afad35d7dabde94c9776a32c4aa760c73e",
+  "State": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "0001-01-01T00:00:00Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "0001-01-01T00:00:00Z",
+    "Status": "created"
+  },
+  "Path": "python",
+  "Args": [
+    "-c",
+    "import json,os,urllib.request,urllib.error\nassert os.getuid()==10002\nrequest=urllib.request.Request('http://10.245.84.2:8780/generate',data=json.dumps(dict(seed=1,index=0,patient_id='own-network-control',through_day=0,actions=[])).encode(),headers={'Content-Type':'application/json'})\nreachable=False;count=None\ntry:\n    with urllib.request.urlopen(request,timeout=2) as response:count=len(json.load(response)['records']);reachable=True\nexcept (urllib.error.URLError,TimeoutError,ConnectionError):pass\nprint(json.dumps(dict(reachable=reachable,observed_records=count)),flush=True)\nassert not reachable,'private generator reachable'\n"
+  ],
+  "Config": {
+    "User": "10002:10002",
+    "Labels": {}
+  },
+  "HostConfig": {
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "remission-cohort-sol-16347ca849-app",
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": {
+      "/tmp": "rw,noexec,nosuid,nodev,size=256m"
+    }
+  },
+  "Mounts": []
+}

@@ -1,0 +1,371 @@
+{
+  "id": "PA1-COHORT-FULL-MATH-CHECKPOINT-20261022",
+  "owner": "/root/poc_native_run_sol",
+  "source": "0c641d110d746ddde338c6c0daa3ad6d8eac5aad",
+  "frozen_source_manifest_sha256": "21795d369d561910e4988b3c581a43c279fa2dea7f496109038a5e99d8580ec6",
+  "container": "a12298b212ae9b41b9483b77c571f3bbb27f20d47bbb59677902aa9eb37c4822",
+  "terminal": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 1,
+    "FinishedAt": "2026-10-22T17:24:38.69439343Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "2026-10-22T17:08:43.514313857Z",
+    "Status": "exited"
+  },
+  "status": "completed-diagnostic-attempt-overall-FAILED-raw-legacy-singleton",
+  "source_blobs": {
+    "methods/measurement.py": "595eabdb2260b3318effe405fd93d44ab427069e",
+    "methods/visit/model.py": "5e33008e36809b78f182993a88f1e09bdf641c78",
+    "methods/visit/cohort_model.py": "99b4f2e0a986870f92ed9d29ed744c2619321d56",
+    "methods/visit/cohort_geometry.py": "48071b30923292eff17cef435179e94c8710c228",
+    "methods/visit/borrow_execution.py": "c757d5a8685369b07e7fe8a790703cbb4b798ffa",
+    "tooling/foundation/qualify_cohort_symbolic.py": "4989407d5a9482afbdec6d56756cbf757ab91c51",
+    "tests/contracts/test_cohort.py": "230adc6a73bdce1d7d2abddfb47b769d8ae0a318",
+    "tests/integration/replay/fixtures/pa3-legacy-v0-input.json": "0753af07260fe6f6890f5807f8491a11d83e7335"
+  },
+  "observed_gates": {
+    "independent_joint_density_gradient": "PASS",
+    "patient_permutation": "PASS",
+    "guide_original_jacobian": "PASS",
+    "external_two_terms_once": "PASS",
+    "original_prior_simulation": "PASS",
+    "actual_native_coordinates_VM_and_finite_gradient": "PASS",
+    "raw_legacy_singleton": "FAIL",
+    "full_qualification": false
+  },
+  "result": {
+    "preflight": {
+      "guard_pass": true,
+      "optimizer": {
+        "type": "RewriteDatabaseQuery",
+        "name": "OPT_FAST_RUN",
+        "include": [
+          "fast_run"
+        ],
+        "exclude": [],
+        "require": [],
+        "subquery": {},
+        "position_cutoff": "inf",
+        "extra_rewrites": []
+      },
+      "linker": "VMLinker",
+      "full_qualification": false
+    },
+    "independent_joint_density_gradient": {
+      "logp": -1423.4377974060524,
+      "scalar_logp": -1423.437797406213,
+      "directional_autodiff": 34.98884484424853,
+      "directional_finite_difference": 34.98884479995468,
+      "patients": 12
+    },
+    "patient_permutation": true,
+    "singleton_equivalence": {
+      "cohort": -129.3097014123351,
+      "legacy": -129.3097029501161,
+      "absolute_tolerance": 1e-08,
+      "signed_difference": 1.5377810029804095e-06,
+      "passed": false,
+      "independent_singleton": -129.3097014123489
+    },
+    "guide_original_jacobian": {
+      "difference": 0.0,
+      "shared_natural_scale_jacobian": 4.382026634673881,
+      "guide_log_jacobian": -38.87778452193151
+    },
+    "external_terms_once": {
+      "terms": [
+        -1.952620472521109,
+        -2.1033938364130957
+      ],
+      "count": 2,
+      "density_difference": -5.078388366707941,
+      "independent_terms_plus_new_priors": -5.078388366868387
+    },
+    "original_prior_simulation": {
+      "draws": 64,
+      "patient_shape": [
+        1,
+        64,
+        12
+      ],
+      "p_range": [
+        0.008228482237753037,
+        0.9768154427977699
+      ],
+      "observation_range": [
+        0.0020107076207616158,
+        0.9916595992716536
+      ]
+    },
+    "native_combined": {
+      "seconds": 719.1027470598929,
+      "actual_vm": {
+        "vm_type": "pytensor.link.c.cvm.CVM",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Whole VM checked; individual operations may use ordinary Python thunks."
+      },
+      "coordinate_map": [
+        {
+          "name": "sd_b_log__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 0,
+          "stop": 1
+        },
+        {
+          "name": "sd_beta_log__",
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "start": 1,
+          "stop": 3
+        },
+        {
+          "name": "rho_interval__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 3,
+          "stop": 4
+        },
+        {
+          "name": "sigma_e_log__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 4,
+          "stop": 5
+        },
+        {
+          "name": "sigma_isi_log__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 5,
+          "stop": 6
+        },
+        {
+          "name": "sigma_quality_log__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 6,
+          "stop": 7
+        },
+        {
+          "name": "guide_innovation",
+          "shape": [
+            376
+          ],
+          "dtype": "float64",
+          "start": 7,
+          "stop": 383
+        },
+        {
+          "name": "p_adherence_logodds__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 383,
+          "stop": 384
+        },
+        {
+          "name": "observation_rate_logodds__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 384,
+          "stop": 385
+        },
+        {
+          "name": "source_bias",
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "start": 385,
+          "stop": 387
+        },
+        {
+          "name": "source_tau_log__",
+          "shape": [],
+          "dtype": "float64",
+          "start": 387,
+          "stop": 388
+        }
+      ],
+      "logp": -1405.9813191900232,
+      "gradient_finite": true,
+      "dimension": 388
+    },
+    "seconds": 942.0465657600434,
+    "no_fit": true,
+    "fixture": "12 renamed observed contract histories, not independently generated/qualified job input",
+    "full_qualification": false
+  },
+  "resources": {
+    "image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+    "cpus": 2,
+    "memory_gib": 2,
+    "user": "10002:10002",
+    "network": "none",
+    "read_only_root": true,
+    "source_read_only": true,
+    "output_writable_only": true,
+    "scratch": "512MiB exec,nosuid,nodev",
+    "cap_drop": "ALL",
+    "no_new_privileges": true,
+    "blas_threads": 1,
+    "seconds_cap": 1800
+  },
+  "concurrency": "Root authorized another bounded N qualification at17:22UTC based on observed16CPU/23.47GiB host capacity. Actual peer start was not locally witnessed; duration is not an exclusive-host benchmark.",
+  "limitations": [
+    "Renamed historical observed contract fixture, not genuine generated12patient job input or productionCOPY.",
+    "No NUTS/posterior fit or completed V0/V1 comparison; cohort admission remains closed.",
+    "Raw legacy source unchanged, exact4a340 model blob5e33008e36809b78f182993a88f1e09bdf641c78.",
+    "Nominal singleton criterion requires explicit independently reviewed amendment and separate execution; no raw compatibility pass relabel."
+  ],
+  "original_deadline": "2026-10-22T17:38:43.514313857Z",
+  "no_fit": true,
+  "no_heavy_active_for_this_worker": true,
+  "raw_files": [
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\347f9c0b1f3d4ddba9e26e2ac8d4d351.json",
+      "bytes": 61258,
+      "sha256": "412c53825db8c143fa6e2036d5c0b561d45de3b0eeacabd83eb6f1e52bb72bf5"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\347f9c0b1f3d4ddba9e26e2ac8d4d351.stderr",
+      "bytes": 2169,
+      "sha256": "e8c45cf96a0c74d1fda21494d85c5f877765dbcc71c14208d63acf2145311279"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\347f9c0b1f3d4ddba9e26e2ac8d4d351.stdout",
+      "bytes": 3909,
+      "sha256": "1af0f104e58b4e629f10b1f95d263193af10568c43d5a07a702ac1f0c42d7506"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\606a295b8a80413aae8f05c387092a4c.json",
+      "bytes": 62077,
+      "sha256": "93800d13df15239ea337002b2dacc752fb7f7932f7eaca04405b6860b0566e8d"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\606a295b8a80413aae8f05c387092a4c.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\606a295b8a80413aae8f05c387092a4c.stdout",
+      "bytes": 1196,
+      "sha256": "825c283c101c59062d6ddcdf34441471bebafb9c2ee574d77466e7c2f6e3c460"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\bd9eb6bfd8904b12bd3d80c88a70fce0.json",
+      "bytes": 61291,
+      "sha256": "adf2010d03615a09a647536c21233d22925a46684f470f9be2e2f4bf8df0fdd6"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\bd9eb6bfd8904b12bd3d80c88a70fce0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\bd9eb6bfd8904b12bd3d80c88a70fce0.stdout",
+      "bytes": 72,
+      "sha256": "9d7fd194870b95609be4d5cea8d6023dff278cbca81580e459b26633d7da0179"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\f1167ccabc8043ff89a5fd28f142e39d.json",
+      "bytes": 62077,
+      "sha256": "6f91f73b7f03232558cf1cdf12808f44db7a7b3153727456abd7050ce4e4a912"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\f1167ccabc8043ff89a5fd28f142e39d.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\f1167ccabc8043ff89a5fd28f142e39d.stdout",
+      "bytes": 1214,
+      "sha256": "b5e04ebbfe471e317dbdec705d01e5ce802105bd312245501874d9f3f4bb11ff"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\fd3bce2f7eec4cf88d8babe00efb161d.json",
+      "bytes": 62298,
+      "sha256": "db8823ba334c8d76df41eab869f85c7d76055120c779a725ca656d06295f13ac"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\fd3bce2f7eec4cf88d8babe00efb161d.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\commands\\fd3bce2f7eec4cf88d8babe00efb161d.stdout",
+      "bytes": 65,
+      "sha256": "e75bd966247009d22eacc81eb20ec163e51fb2d352536f92489d85bc6a1ffbbc"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\created-state.json",
+      "bytes": 1603,
+      "sha256": "4dffc28b1162a0e683bd183f971676ec3ea4d88f73f1817fc4011ef5e388290a"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\created.json",
+      "bytes": 351,
+      "sha256": "f905bfa0f6dea5728f95e74f21fe9678c06297a05ae7f377a928279043d3d192"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\helper.py",
+      "bytes": 3492,
+      "sha256": "4ad06280c4429d7e8c1cd893e8f68dc69abb789546755700775a362112a06c69"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\observation-01.json",
+      "bytes": 213,
+      "sha256": "adcd3861291e8fb7aa42b350031e2e8e25814e4de2d9a2a410fbd92b3853a772"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\observation-02.json",
+      "bytes": 213,
+      "sha256": "65c34ec230cdb77e66f87781c5ef3b2a95a76d338609ceb36093b136c0ad841f"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\output\\result.json",
+      "bytes": 3849,
+      "sha256": "976f98c1e182a09a54e616d0590932dbb66497766b300741039841544cfcfe41"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\run-status.json",
+      "bytes": 64357,
+      "sha256": "f2422c769958d88c580b153b225bf9e83ce24d7b42443c2a873a63f0545835d9"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\source-manifest.json",
+      "bytes": 56179,
+      "sha256": "21795d369d561910e4988b3c581a43c279fa2dea7f496109038a5e99d8580ec6"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\started-witness.json",
+      "bytes": 222,
+      "sha256": "b6641702409dc3112567f2bb61ac6a20d54034784c15de9d8ee517bac7610a3c"
+    },
+    {
+      "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\symbolic-r3\\terminal-state.json",
+      "bytes": 1621,
+      "sha256": "3745271060d9300f71b4ca11eb2e2f45baec3033d7e46459af5ce6a404907b6d"
+    }
+  ],
+  "concurrency_confirmation": {
+    "source": "Root forwarded independently selected actual container timestamps.",
+    "peer_container_prefix": "9a487",
+    "peer_started": "2026-10-22T17:24:08.256190482Z",
+    "cohort_finished": "2026-10-22T17:24:38.69439343Z",
+    "overlap_seconds_approx": 30.438203,
+    "interpretation": "17:22 was the scheduling decision; actual peer overlap was approximately30.44seconds. Not an exclusive-host benchmark.",
+    "original_frozen_manifest_sha256": "c49b57f03f3081843652c7872a9d82a1b4674b677e0136e7aa6d25bdcf209101"
+  }
+}

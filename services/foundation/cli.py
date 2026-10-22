@@ -41,10 +41,11 @@ def reset_password(store: Store, username: str, password: str):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument("command",choices=["activate-new","upgrade-003","upgrade-004","change-authority","seed","reset-password","replay","replay-export"])
+    parser=argparse.ArgumentParser();parser.add_argument("command",choices=["activate-new","upgrade-003","upgrade-004","change-authority","seed","reset-password","replay","replay-export","research-enroll"])
     parser.add_argument("--database",type=Path,required=True);parser.add_argument("--username");parser.add_argument("--password")
     parser.add_argument("--manifest",type=Path);parser.add_argument("--run-id");parser.add_argument("--cutoff")
     parser.add_argument("--artifact-root",type=Path);parser.add_argument("--authority",type=Path)
+    parser.add_argument('--owner-id');parser.add_argument('--cohort-id')
     parser.add_argument('--bundle',type=Path,required=True);parser.add_argument('--next-bundle',type=Path)
     parser.add_argument('--historical-source',type=Path)
     parser.add_argument('--archive-config',type=Path)
@@ -74,12 +75,17 @@ def main():
     elif args.command=="reset-password":
         if not args.username or not args.password:parser.error("username/password required")
         reset_password(store,args.username,args.password);print(json.dumps({"status":"password_reset_sessions_revoked"}))
-    elif args.command=="replay-export":
+    elif args.command in ("replay-export","research-enroll"):
         if not args.manifest or not args.artifact_root or not args.authority:parser.error('manifest/artifact-root/trusted authority required')
         from contracts.runs.common import ExportAuthority
         from .replay import replay_export
         authority=ExportAuthority.model_validate_json(args.authority.read_bytes())
-        print(json.dumps(replay_export(store,args.manifest.read_bytes(),args.artifact_root,authority)))
+        if args.command=='research-enroll':
+            if not args.owner_id or not args.cohort_id:parser.error('existing owner-id/cohort-id required')
+            from .research_enrollment import enroll_replay_register
+            result=enroll_replay_register(store,args.owner_id,args.manifest.read_bytes(),args.artifact_root,authority,cohort_id=args.cohort_id)
+        else:result=replay_export(store,args.manifest.read_bytes(),args.artifact_root,authority)
+        print(json.dumps(result))
     else:
         if not args.manifest or not args.run_id or not args.cutoff:parser.error("manifest/run-id/cutoff required")
         print(json.dumps(replay(store,args.run_id,json.loads(args.manifest.read_text(encoding="utf-8")),args.cutoff)))

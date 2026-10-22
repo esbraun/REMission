@@ -1,0 +1,61 @@
+{
+  "Id": "7a84d73a9ac6b1fd9d5e08b10d893677d0ab7d4e7b7ae031b89423fcb7d53e47",
+  "Image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+  "State": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 1,
+    "FinishedAt": "2026-10-22T16:11:37.755456174Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "2026-10-22T16:11:33.566661444Z",
+    "Status": "exited"
+  },
+  "Path": "python",
+  "Args": [
+    "-u",
+    "tooling/foundation/diagnose_cohort_factors.py",
+    "--output",
+    "/out/result.json"
+  ],
+  "Config": {
+    "User": "10002:10002",
+    "Labels": {}
+  },
+  "HostConfig": {
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": {
+      "/tmp": "rw,exec,nosuid,nodev,size=512m"
+    }
+  },
+  "Mounts": [
+    {
+      "Destination": "/cohort",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r1\\source",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/out",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\factors-r1\\output",
+      "Type": "bind"
+    }
+  ]
+}

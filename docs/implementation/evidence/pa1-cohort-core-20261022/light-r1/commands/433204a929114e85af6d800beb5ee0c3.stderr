@@ -1,0 +1,32 @@
+/cohort/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/cohort/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/cohort/contracts/domain/cohort.py:64: UserWarning: Field name "schema" in "CohortManifest" shadows an attribute in parent "StrictModel"
+  class CohortManifest(StrictModel):
+/cohort/contracts/domain/cohort.py:89: UserWarning: Field name "schema" in "CohortHistory" shadows an attribute in parent "StrictModel"
+  class CohortHistory(StrictModel):
+test_owned_manifest_and_failclosed_submission_claim_rollback (test_cohort_service.CohortStoreTests.test_owned_manifest_and_failclosed_submission_claim_rollback) ... ok
+test_research_requires_trusted_artifact_membership_and_owner (test_cohort_service.CohortStoreTests.test_research_requires_trusted_artifact_membership_and_owner) ... FAIL
+
+======================================================================
+FAIL: test_research_requires_trusted_artifact_membership_and_owner (test_cohort_service.CohortStoreTests.test_research_requires_trusted_artifact_membership_and_owner)
+----------------------------------------------------------------------
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/cohort/tests/integration/replay/test_cohort_service.py", line 102, in test_research_requires_trusted_artifact_membership_and_owner
+    with self.assertRaisesRegex(ValueError,'Interactive'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Interactive" does not match "1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.226s
+
+FAILED (failures=1)

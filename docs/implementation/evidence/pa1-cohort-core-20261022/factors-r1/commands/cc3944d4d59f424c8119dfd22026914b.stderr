@@ -1,0 +1,18 @@
+/cohort/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/cohort/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/cohort/contracts/domain/cohort.py:47: UserWarning: Field name "schema" in "CohortManifest" shadows an attribute in parent "StrictModel"
+  class CohortManifest(StrictModel):
+/cohort/contracts/domain/cohort.py:72: UserWarning: Field name "schema" in "CohortHistory" shadows an attribute in parent "StrictModel"
+  class CohortHistory(StrictModel):
+Traceback (most recent call last):
+  File "/cohort/tooling/foundation/diagnose_cohort_factors.py", line 82, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/cohort/tooling/foundation/diagnose_cohort_factors.py", line 62, in main
+    for name,mode in [('diagnostic_fast_compile_cvm',MODE),('production_unchanged_cvm',compilation_options()['mode'])]:
+                                                                                       ~~~~~~~~~~~~~~~~~~~^^
+  File "/cohort/methods/visit/borrow_execution.py", line 24, in compilation_options
+    raise ValueError('borrow compile default/optimizer/float64 differs from qualification')
+ValueError: borrow compile default/optimizer/float64 differs from qualification

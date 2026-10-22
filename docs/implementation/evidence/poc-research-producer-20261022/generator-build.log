@@ -1,0 +1,40 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from generator.Dockerfile
+#1 transferring dockerfile: 935B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 178B done
+#3 DONE 0.0s
+
+#4 [1/6] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#4 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 278.47kB 0.0s done
+#5 DONE 0.0s
+
+#6 [2/6] COPY services/generator/ /app/services/generator/
+#6 CACHED
+
+#7 [3/6] COPY contracts/__init__.py /app/contracts/
+#7 ERROR: failed to calculate checksum of ref qonf4k3crg4izua79t9pltrcx::om0nzltxgbzq1col7dk0py6g0: "/contracts/__init__.py": not found
+------
+ > [3/6] COPY contracts/__init__.py /app/contracts/:
+------
+generator.Dockerfile:3
+--------------------
+   1 |     FROM remission-foundation-runtime:candidate
+   2 |     COPY services/generator/ /app/services/generator/
+   3 | >>> COPY contracts/__init__.py /app/contracts/
+   4 |     COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py contracts/domain/evaluation.py contracts/domain/analysis.py contracts/domain/temporal.py contracts/domain/temporal-v2.json /app/contracts/domain/
+   5 |     COPY contracts/dgp/__init__.py contracts/dgp/calibration.py contracts/dgp/parameters.py contracts/dgp/scenarios.py contracts/dgp/timing.py contracts/dgp/truth.py /app/contracts/dgp/
+--------------------
+ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref qonf4k3crg4izua79t9pltrcx::om0nzltxgbzq1col7dk0py6g0: "/contracts/__init__.py": not found
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/wep9vl29ljgg223mxsztjo25n

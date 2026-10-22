@@ -38,6 +38,28 @@ def coordinate_layout(history):
     return layout
 
 
+def cohort_coordinate_layout(cohort, *, borrowed):
+    """Separate v1 cohort ordering; never weakens the legacy native guard.
+
+    This describes source coordinates only. It does not admit cohort execution
+    to the qualified native policy or validate_execution.
+    """
+    from .cohort import CohortHistory
+    cohort=CohortHistory.model_validate_json(cohort.model_dump_json())
+    nights=(cohort.manifest.cutoff-cohort.manifest.origin).days+14
+    shapes=[('sd_b_log__',[]),('sd_beta_log__',[2]),('rho_interval__',[]),('sigma_e_log__',[]),
+        ('sigma_isi_log__',[]),('sigma_quality_log__',[]),
+        ('guide_innovation',[4+len(cohort.histories)*(nights+3)]),
+        ('p_adherence_logodds__',[]),('observation_rate_logodds__',[])]
+    if borrowed:shapes.extend([('source_bias',[2]),('source_tau_log__',[])])
+    layout=[];offset=0
+    for name,shape in shapes:
+        size=math.prod(shape)
+        layout.append(dict(name=name,shape=shape,dtype='float64',start=offset,stop=offset+size));offset+=size
+    return dict(schema='poc-cohort-native-layout-v1/1.0.0',
+        manifest_sha256=cohort.manifest_sha256,coordinates=cohort.manifest.coordinates.model_dump(),layout=layout)
+
+
 def validate_execution(execution, product, trusted):
     # trusted is loaded from the service-owned attempt, NEVER from result.json.
     if not isinstance(execution,dict) or not isinstance(trusted,dict) or not trusted:

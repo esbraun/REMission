@@ -108,7 +108,7 @@ def append_event(db, record, raw: bytes, *, received_at: datetime | None = None)
     return True
 
 
-def apply_current_state(db, patient_id: str, at: datetime, *, advance_by: int = 1):
+def apply_current_state(db, patient_id: str, at: datetime, *, advance_by: int = 1, preserve_cutoff: bool = False):
     row = db.execute("SELECT * FROM patients WHERE id=?", (patient_id,)).fetchone()
     # Known safety/consent arrivals also invalidate immediately at equal time;
     # symptom/learner projections retain strict-before availability.
@@ -120,11 +120,11 @@ def apply_current_state(db, patient_id: str, at: datetime, *, advance_by: int = 
     consent_version=1+db.execute("SELECT count(*) FROM events WHERE patient_id=? AND kind='consent'",(patient_id,)).fetchone()[0]
     db.execute("UPDATE patients SET version=version+?,state_version=state_version+?,eligibility_version=eligibility_version+?,consent_version=?,state_json=? WHERE id=?",
                (advance_by,advance_by,advance_by,consent_version,canonical(state),patient_id))
-    create_decision(db, patient_id, at)
+    create_decision(db, patient_id, instant(row['cutoff']) if preserve_cutoff else at)
     db.execute("INSERT INTO pending_work VALUES(?,?,?,?)", ("work-"+digest(canonical([patient_id,row["version"],timestamp(at)]))[:32],patient_id,"unavailable","New observed data; statistical worker unavailable"))
 
 
-def replay(store: Store, run_id: str, entries: list[dict], cutoff: str, *, batch_size: int = 100, fault=None):
+def replay(store: Store, run_id: str, entries: list[dict], cutoff: str, *, batch_size: int = 100, fault=None, preserve_cutoff: bool = False):
     preflight_current([e['record'] for e in entries])
     at = instant(cutoff)
     prepared = [(parse_observed(canonical(e["record"]).encode()), e["raw_source"].encode()) for e in entries]
@@ -154,10 +154,20 @@ def replay(store: Store, run_id: str, entries: list[dict], cutoff: str, *, batch
                     ready=next(((record,raw) for record,raw in remaining if not ({record.supersedes,record.duplicate_of}-{None}) & pending_ids),remaining[0])
                     record,raw=ready;failed_record=ready
                     inserted=append_event(db,record,raw)
-                    db.execute("INSERT INTO ingestion_receipts VALUES(?,?,?,?,?)",(run_id,record.record_id,digest(raw),"accepted" if inserted else "repeated","validated"))
+                    receipt_key=record.record_id
+                    receipt=db.execute('SELECT payload_sha256,status FROM ingestion_receipts WHERE run_id=? AND transport_key=?',(run_id,receipt_key)).fetchone()
+                    if receipt is not None:
+                        if receipt['payload_sha256']!=digest(raw):raise ValueError('replay_receipt_payload_conflict')
+                        # Receipts are append-only. Retain the failed attempt and
+                        # record its successful unchanged retry separately.
+                        if receipt['status']=='rejected':receipt_key+=':validated-retry'
+                    prior=db.execute('SELECT payload_sha256,status FROM ingestion_receipts WHERE run_id=? AND transport_key=?',(run_id,receipt_key)).fetchone()
+                    if prior is not None:
+                        if prior['payload_sha256']!=digest(raw) or prior['status'] not in ('accepted','repeated'):raise ValueError('replay_receipt_payload_conflict')
+                    else:db.execute('INSERT INTO ingestion_receipts VALUES(?,?,?,?,?)',(run_id,receipt_key,digest(raw),'accepted' if inserted else 'repeated','validated'))
                     if inserted:changed[record.patient_id]=changed.get(record.patient_id,0)+1
                     remaining.remove(ready)
-                for patient_id in sorted(changed):apply_current_state(db,patient_id,at,advance_by=changed[patient_id])
+                for patient_id in sorted(changed):apply_current_state(db,patient_id,at,advance_by=changed[patient_id],preserve_cutoff=preserve_cutoff)
                 db.execute("UPDATE replay_runs SET cursor=? WHERE id=?",(end,run_id))
                 if fault:fault("before_replay_commit")
         except ValueError as error:
@@ -171,7 +181,7 @@ def replay(store: Store, run_id: str, entries: list[dict], cutoff: str, *, batch
     return {"run_id":run_id,"source_sha256":source_hash,"records":len(prepared),"status":"completed"}
 
 
-def replay_export(store: Store, manifest: bytes, artifact_root, authority, *, batch_size: int = 100, fault=None):
+def replay_export(store: Store, manifest: bytes, artifact_root, authority, *, batch_size: int = 100, fault=None, preserve_cutoff: bool = False):
     """Import an externally authorized observed export, never an arbitrary path.
 
     Administrative simulation channels remain in the observed history export;
@@ -188,4 +198,4 @@ def replay_export(store: Store, manifest: bytes, artifact_root, authority, *, ba
             if db.execute('SELECT 1 FROM patients WHERE id=?',(partition.patient_id,)).fetchone() is None:
                 raise ValueError('replay patient requires preexisting administrative ownership')
     entries=[entry.model_dump(mode='json') for _,_,batch,_,_,_ in partitions for entry in batch.entries if entry.record.kind != 'consent']
-    return replay(store,f'{public.run_id}:{public.id}',entries,timestamp(public.cutoff),batch_size=batch_size,fault=fault)
+    return replay(store,f'{public.run_id}:{public.id}',entries,timestamp(public.cutoff),batch_size=batch_size,fault=fault,preserve_cutoff=preserve_cutoff)

@@ -149,5 +149,133 @@
     "reviewed_base": null,
     "implementation_accepted": false,
     "later_pending": ["PA1 cohort completion and PA2 consumption", "PA4", "PA5", "PA6", "PA7", "human factors", "clinical review", "clinical validation"]
+  },
+  "appointment_inference_20261022": {
+    "status": "accepted-plan-not-started",
+    "plan_review_blob": "e64614862337a8c219eaaafcc88e9cee3c505757",
+    "proposal_head": "fcb032ef97c8e432bd798383ce3ea8fa82ab292e",
+    "proposal_base": "3ab331dd09cb0676ae327c8f0d03e107c826148f",
+    "canonical_docs": [
+      "docs/spec/poc-amendment-20261021.md#appt-0105--background-refresh-and-appointment-prediction",
+      "docs/spec/07-validation-protocol.md#appt-04--appointment-timeliness-and-freshness",
+      "docs/implementation/poc-analytics-contract-20261021.md#appointment-integration-seams",
+      "docs/spec/06-service-and-ui.md#ui-validation--rendering-verified-research-evidence"
+    ],
+    "owner": "future orchestrator-assigned isolated Sol worker",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "independent_reviewer": "separate gpt-6-astra/medium exact implementation head/base; not assigned",
+    "implementation_accepted": false,
+    "tasks": [
+      {
+        "id": "A1",
+        "requirements": [
+          "APPT-01",
+          "APPT-02"
+        ],
+        "status": "not_started",
+        "seam": "existing analysis.submit/view/ingest, Store attempts and typed result metadata",
+        "depends_on": [
+          "accepted APPT plan and existing artifact/result contracts"
+        ],
+        "acceptance": [
+          "same-time correction/lineage hash makes result stale; future record excluded",
+          "wrong owner/hash/version rejected; failed later refresh preserves labeled historical result",
+          "immutable history preserved; appointment reads/navigation/approval do not dispatch fit or compilation"
+        ]
+      },
+      {
+        "id": "A2",
+        "requirements": [
+          "APPT-02",
+          "APPT-03"
+        ],
+        "status": "not_started",
+        "seam": "existing posterior/result artifacts and rollout functions; background eligible-pair precomputation",
+        "depends_on": [
+          "A1",
+          "independently accepted numerical posterior/rollout source and compatible artifacts"
+        ],
+        "acceptance": [
+          "saved-posterior completeness and exact round-trip reproduces expected-effect summaries within existing tolerance/MC error",
+          "reject missing/corrupt/incomplete/wrong-owner artifacts and unsupported new patient/group/covariates/policy",
+          "no fitting or future data in scenario path; insufficient artifacts remain unavailable with smallest background export change routed for review"
+        ]
+      },
+      {
+        "id": "A3",
+        "requirements": [
+          "APPT-01",
+          "APPT-02",
+          "APPT-03",
+          "APPT-05"
+        ],
+        "status": "not_started",
+        "seam": "existing patient analysis/research views and decision/advance controls",
+        "depends_on": [
+          "A1",
+          "A2 only for new scenarios"
+        ],
+        "acceptance": [
+          "browser and persistent state: eligible physician choice/confirmation, actual subsequent outcomes, historical reload",
+          "show data-through/generation times, provenance, freshness and missing/stale/pending/failed states",
+          "no automatic selection or fit on navigation; stale approval rejection, keyboard and chart/table access"
+        ]
+      },
+      {
+        "id": "A4",
+        "requirements": [
+          "APPT-04",
+          "APPT-05",
+          "POC-VAL"
+        ],
+        "status": "not_started",
+        "seam": "existing run manifests/report and paired scientific metrics",
+        "depends_on": [
+          "A1",
+          "A2",
+          "A3",
+          "independently accepted actual methods and genuine cohort inputs",
+          "independent evaluator truth and diagnostic gates"
+        ],
+        "acceptance": [
+          "freeze resources/load/sample counts and provisional budgets before runs",
+          "separate queue, background fitting/conditioning, artifact load/validation, scenario rollout, publication, foreground response and UI rendering; cold/warm distributions, memory, failures and yield",
+          "paired accuracy/coverage/width and freshness impact across existing selected cells; no p95 claim from insufficient samples or clinical SLA"
+        ]
+      }
+    ],
+    "provisional_hypotheses": {
+      "summary_status_seconds": 2,
+      "refresh_acknowledgement_seconds": 2,
+      "uncached_bounded_scenario_seconds": 15,
+      "background_completion_hours": 8,
+      "status": "unmeasured engineering hypotheses; POC-VAL is canonical; no clinical SLA or smoke-run p95 claim"
+    },
+    "preserved": [
+      "seven V0/V1 N0/N1 S0/S1/S2 configurations",
+      "default12 and existing exploration/confirmation counts/cutoffs",
+      "selected PyMC/native NUTS backend",
+      "physician choice, causal simulation response and actual required fits/studies",
+      "no appointment-path fitting; manual pre-appointment refresh sufficient"
+    ],
+    "A5": {
+      "status": "conditional_deferred",
+      "install": false,
+      "comparator_enabled": false,
+      "backend_exception": false,
+      "depends_on": [
+        "separate matched scientific contract",
+        "independent Astra critique",
+        "explicit PoC/backend-policy exception"
+      ]
+    },
+    "open_evidence": [
+      "posterior hydration/roundtrip",
+      "same-time H* freshness implementation",
+      "foreground/freshness measurements",
+      "genuine joint12 throughput",
+      "N fitting/activation and unexecuted study cells remain open; inactive N source accepted separately"
+    ]
   }
 }

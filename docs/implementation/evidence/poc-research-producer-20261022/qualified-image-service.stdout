@@ -1,0 +1,100 @@
+[
+    {
+        "Id": "sha256:f1b4ded0626b82d83fc60f29649475ffb0b5422be38d898d1bf6ae7ed499fec3",
+        "RepoTags": [
+            "remission-research-prod-sol-service:20261022"
+        ],
+        "RepoDigests": [
+            "remission-research-prod-sol-service@sha256:f1b4ded0626b82d83fc60f29649475ffb0b5422be38d898d1bf6ae7ed499fec3"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-22T19:04:44.178402115Z",
+        "Config": {
+            "User": "10001:10001",
+            "ExposedPorts": {
+                "8765/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "-m",
+                "uvicorn",
+                "services.foundation.server:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8765",
+                "--no-access-log"
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 2096925873,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+                "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+                "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+                "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+                "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+                "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+                "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+                "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+                "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+                "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+                "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+                "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+                "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+                "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:a1cf2f53f38529aaf6e4f22e8a594d086a14f97121080adfc97b9e3d80c8b8be",
+                "sha256:5a5bc90088cb4bdf749e85804d271f30f586a5feb180366b991c9a56b4a2a76c",
+                "sha256:3bfa368ccdf22bea132c3b409661bcf26a547a8bcd89501d231a7fa29f7a666b",
+                "sha256:2ffd4f946ffba4af0d9d392c83a819b0b0528ae9a1f4e5f9d264a7327b008bef",
+                "sha256:17574af9590f5659856b42a70684ba060acbcc2cfe358cda7cdfcc4c574c3cfa",
+                "sha256:19dd65d01dcccbbed32fd36a76b94e68845207a52b6d301d9dd9ff23ec017b29",
+                "sha256:bf019f52550d8a58bfb3bd578d71e239e66e4eefecfa650a1225b3230e0ce123",
+                "sha256:8ec464136061a9e9226b34d52b8f1784df29e6721a58da18b9ee5d943b477936",
+                "sha256:af5bb12d1b1602bb63f806525f3390a805e6ff6717c4b7a133ddba7a4acb5ae8",
+                "sha256:864020f66084aab2b0dce273f917b09cd35db65e84d3523ee1124d893e7fa0c3",
+                "sha256:7ca851bfb4161ceb1ec604bb1232364117eafbb72f6802357f2f70cc865810b7",
+                "sha256:c18978520e5876311aaf4219ee48561adbfa917ef28f6b923208fe3dc106ecdf",
+                "sha256:89baadf3047996b3e87243f08782ea1b4fb67ec84f0a1c8e1782654557f1a682",
+                "sha256:f7fbb8b2762eabedf501200254217766708672398ffa09874b5924a8cc4bfd95",
+                "sha256:6466767a974acb862c67b2ba3b59b2f3b7b632ec8e27f16400776c9637688ea4"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-22T19:06:02.063792165Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:f1b4ded0626b82d83fc60f29649475ffb0b5422be38d898d1bf6ae7ed499fec3",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "srbo45bkm79vlpcs0wqt8jwj9",
+                    "CreatedAt": "2026-10-22T19:06:02.087683557Z"
+                }
+            ]
+        }
+    }
+]

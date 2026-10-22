@@ -1,0 +1,398 @@
+{
+  "id": "PA1-PA2-COHORT-UI-ROLE-SOURCE-CHECKPOINT-20261022",
+  "status": "Author source/nonfitting role/API/browser checkpoint; independent review pending; cohort admission CLOSED",
+  "candidate_parent": "46353b828f155cce458ac3084eb0dd9dd669059e",
+  "main_base": "3ab331dd09cb0676ae327c8f0d03e107c826148f",
+  "source_blobs": {
+    "methods/measurement.py": "595eabdb2260b3318effe405fd93d44ab427069e",
+    "methods/visit/model.py": "5e33008e36809b78f182993a88f1e09bdf641c78",
+    "methods/visit/cohort_model.py": "99b4f2e0a986870f92ed9d29ed744c2619321d56",
+    "methods/visit/cohort_geometry.py": "48071b30923292eff17cef435179e94c8710c228",
+    "methods/visit/borrow_execution.py": "c757d5a8685369b07e7fe8a790703cbb4b798ffa",
+    "contracts/domain/cohort.py": "e9891510cb97153f807b07e7ff3a3c08b2ab8bee",
+    "contracts/domain/cohort_runtime.py": "819533cbc4f1771a27ef17fd1812a1fa51ced679",
+    "services/learner/cohort_worker.py": "d14e21fc20918a025cf0d1851406a2e9f296f200",
+    "services/foundation/app.py": "6044f83d22e465089e9b387f0fca608e38f481ee",
+    "services/foundation/cohort_analysis.py": "b18b135187d4385c8110449492fa5e4b7bef109c",
+    "services/foundation/cohort_registration.py": "dabe586f8c65b1def181b4cbbc73db0bf75e6cb1",
+    "web/src/AnalysisPanel.tsx": "1190c99b487d049052856a45dc9aa315bda6ac19",
+    "web/src/ResearchPanel.tsx": "4cdce64d0f37eb9047fc3609b2c3858a75739214"
+  },
+  "methods_tree": "404fe1810d19e2ba95cdc6084bddd8da8249bac9",
+  "methods_tree_equal_frozen_fullmath_0c641": true,
+  "source_origins": {
+    "full_math": "0c641d110d746ddde338c6c0daa3ad6d8eac5aad",
+    "nominal_probe": "8aeebf554cb4dbc1e3305c6e46d7775db19459e1",
+    "original_api_ui": "32ad084b8dcde6e3872e71676bd6de723273dbf1",
+    "role_copies": "45d35071036ca3b635ae60e97ca04e924d98f74e",
+    "final_service_ui": "78c01ca6fe1dc46ec6a2e2afcce6ce297d573fdc",
+    "producer_doc_only": "a8c2240e3901a8aa0d51ad13aaab449cd49af5ef"
+  },
+  "accepted_nominal_review_blob": "73a6cb01c870241b85487e006aa47e8f48d29e1e",
+  "producer_critique_blob": "1efec5371fc6a448c7cbfd032012b0c308d2d65c",
+  "producer_source": "HOLD; exact a8c profile proposal awaits independent refresh",
+  "deployment": {
+    "prefix": "remission-cohort-sol-16347ca849",
+    "source_commit": "45d35071036ca3b635ae60e97ca04e924d98f74e",
+    "images": {
+      "service": "sha256:536d3e7ea4fac1daf53bd1dcd5b5d9514b3e745d9a90124000b5d5ac595f95a0",
+      "learner": "sha256:9127af9d2dec1d29751ca1b7425016afad35d7dabde94c9776a32c4aa760c73e",
+      "generator": "sha256:7f1e4c43b98ecd79b174ceb397b5f1a7f8d46b2bc330daf9f9dea7c1e61ef981"
+    },
+    "service_container": "1920168dc746a2a1b09b9bf0110e32863531710d6da494fca78291c08b76d883",
+    "generator_container": "863be1690471b7aa5e80068bbfcce626b74a26357244ce520dd8c76d8f7f68d3",
+    "port": 8784,
+    "url": "http://127.0.0.1:8784",
+    "network": "remission-cohort-sol-16347ca849-app",
+    "volumes": {
+      "database": "remission-cohort-sol-16347ca849-database",
+      "fixtures": "remission-cohort-sol-16347ca849-fixtures",
+      "exports": "remission-cohort-sol-16347ca849-exports"
+    },
+    "analysis_dispatcher": false,
+    "fixture_claim": "Fresh existing synthetic auth/control fixture only. Interactive generator panel is not a trusted research cohort.",
+    "frontend_network": "remission-cohort-sol-16347ca849-frontend",
+    "current_health": {
+      "status": "ok",
+      "synthetic": true,
+      "runtime": "foundation-live-hold-v1",
+      "capability": "LIVE-HOLD-01/1.0.0",
+      "database_instance_id": "2cb3af32-c3d9-4297-b06d-56c3254f323a",
+      "authority_generation": 1
+    },
+    "repair": "Service-only additional frontend bridge; original container, DB, control and internal generator retained unchanged.",
+    "retained_old_service": "e68ae1e9451cdc05fb3cda7db2770f2e68250016535df98dab330e54a68b5759",
+    "service_source": "78c01ca6fe1dc46ec6a2e2afcce6ce297d573fdc"
+  },
+  "role_checks": {
+    "source": "45d35071036ca3b635ae60e97ca04e924d98f74e",
+    "images": {
+      "service": "sha256:7b1262209e4961875ac6ab03e4a74b9520c9b30dfb6f7b6677363e3903d3253d",
+      "learner": "sha256:9127af9d2dec1d29751ca1b7425016afad35d7dabde94c9776a32c4aa760c73e",
+      "generator": "sha256:7f1e4c43b98ecd79b174ceb397b5f1a7f8d46b2bc330daf9f9dea7c1e61ef981"
+    },
+    "results": {
+      "service": {
+        "container": "1de0e4948fe28bbcdda93b1694ee3bb4b3bb5ab857fedc7a9ff95884355ca990",
+        "output": {
+          "role": "service",
+          "uid": 10001,
+          "copied_files": 69,
+          "private_sources_absent": true
+        }
+      },
+      "learner": {
+        "container": "027ee88eae37dc0f280950418df38698423bcfff924b767fab7abd5cda6227b4",
+        "output": {
+          "role": "learner",
+          "uid": 10002,
+          "copied_files": 48,
+          "private_sources_absent": true
+        }
+      },
+      "closed_boundary": {
+        "typed_inputs": 2,
+        "denials": [
+          {
+            "input": "interactive",
+            "stage": "contract",
+            "reason": "cohort execution unavailable pending independent numerical and role qualification"
+          },
+          {
+            "input": "interactive",
+            "stage": "dispatch",
+            "reason": "cohort execution unavailable pending independent numerical and role qualification"
+          },
+          {
+            "input": "interactive",
+            "stage": "worker",
+            "reason": "cohort execution unavailable pending independent numerical and role qualification"
+          },
+          {
+            "input": "fixture",
+            "stage": "contract",
+            "reason": "contract fixture cohort is never executable or acceptable fit evidence"
+          },
+          {
+            "input": "fixture",
+            "stage": "dispatch",
+            "reason": "contract fixture cohort is never executable or acceptable fit evidence"
+          },
+          {
+            "input": "fixture",
+            "stage": "worker",
+            "reason": "contract fixture cohort is never executable or acceptable fit evidence"
+          }
+        ],
+        "results_written": 0,
+        "models_built": 0
+      },
+      "source-exposed": "Expected actual denial control failed as required",
+      "input-writeable": "Expected actual denial control failed as required"
+    },
+    "no_fit": true
+  },
+  "network_checks": {
+    "image": "sha256:9127af9d2dec1d29751ca1b7425016afad35d7dabde94c9776a32c4aa760c73e",
+    "results": {
+      "actual-none": {
+        "reachable": false,
+        "observed_records": null
+      },
+      "positive-network-exposure": {
+        "reachable": true,
+        "observed_records": 2
+      }
+    }
+  },
+  "final_service_custody": {
+    "uid": 10001,
+    "source_files": 69,
+    "assets": {
+      "index.html": "2280a7f236b776e6b086e608932574a5b6bf60bab7aa2b3615c83f37cd569209",
+      "assets/index-QgxjhSog.css": "e3b4e9fbd23fc7878a008871051139cd1bb8b4efe3fc8e9902ca662251d83ff5",
+      "assets/index-CDzDUbGt.js": "48bcd21279ebf8f0ca90b62083a3086a94b8437b9e330a3d842633105aefa885"
+    }
+  },
+  "owned_db_readonly": {
+    "device": 2096,
+    "inode": 551159,
+    "lock_inode": 551160,
+    "counts": {
+      "patients": 23,
+      "events": 386,
+      "bundles": 12,
+      "analysis_attempts": 0
+    },
+    "cohort_receipts": 0,
+    "query_only": 1,
+    "total_changes": 0
+  },
+  "author_light_checks": {
+    "contracts": {
+      "tests": 6,
+      "seconds": 3.577
+    },
+    "store_routes": {
+      "tests": 9,
+      "seconds": 23.068
+    },
+    "legacy": {
+      "tests": 6,
+      "seconds": 19.85
+    },
+    "source": "32ad084b8dcde6e3872e71676bd6de723273dbf1; later backend/test blobs unchanged",
+    "frontend": "Actual Docker service build at frozen78c ran TypeScript, six existing Node controls and Vite build; no model compilation."
+  },
+  "browser": {
+    "tool": "Official Microsoft Playwright MCP",
+    "closed": true,
+    "viewports": [
+      [
+        1440,
+        1000
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "fixture_seed": 20261022,
+    "current_asset": "/assets/index-CDzDUbGt.js",
+    "package_browser_version": "Not independently read in this scoped session; no version invented.",
+    "results": [
+      "Explicit ordinary option initially unselected, keyboard review, confirmation persisted.",
+      "Day14 advance:13/14 reports,1 missing,14 deliveries,ISI19\u219222. Historical reload retains original day0/ISI19 and no mutation controls.",
+      "Final78c refresh retains same owned historical bundle/session. Exact ordinary main/simulation/backend source unchanged from initial flow.",
+      "Twelve members initially unchecked; explicit selection and V0/V1 same-H review; source bundle bound; submission unavailable/disabled.",
+      "Actual ordinary API member advance v3\u2192v4 makes current preview409; refresh removes prior approval, loads v4 and requires new closed review.",
+      "Patient switch clears cohort selection; Tab+Space toggles member with actual4px solid focus outline.",
+      "Narrow document does not overflow; screenshot inspected. Research remains empty with disabled comparison save; no fabricated result."
+    ],
+    "expected_console_errors": "Two intentionally induced stale-preview409 resource errors; no other observed console errors/warnings.",
+    "preserved_harness_failure": "First stale browser assertion expected word version; actual correct detail says Cohort member changed. Aborted before refresh; downstream wait timed out. Corrected semantic assertion passed; failed snapshot remains."
+  },
+  "failures_preserved": [
+    "R1 offline npm EAI_AGAIN; approved R2 pinned acquisition succeeded.",
+    "First stack default address pool exhausted; explicit nonoverlap84/29 internal subnet used.",
+    "Internal-only published ingress timed out despite app health; service-only85/29 frontend bridge restored host health. Generator remains internal only.",
+    "Physical worktree versus git-archive checkout line-ending hashes differed for two files; inventory now binds actual archive bytes.",
+    "Learner noexec light scratch blocked CVM import; same unchanged image with required512MiB exec scratch importsCVM and guardPASS.",
+    "UI checkbox layout reused existing choice styling at78c; earlier screenshots retained.",
+    "UI R3 offline npm failure preserved; approved R4 pinned acquisition succeeded; original service retained and same authority files verified.",
+    "Earlier light-r6 duplicate own container-name failure preserved; corrected unique light-r7 groups passed."
+  ],
+  "raw_roots": {
+    "roles-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\roles-r1",
+      "files": 323,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\roles-r1-manifest.json",
+      "bytes": 55361,
+      "sha256": "706f0e36c047a45a4f39c5fd29d7fc6c81862722a3dcc498ef2224b2488f5a0a"
+    },
+    "roles-r2": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\roles-r2",
+      "files": 26,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\roles-r2-manifest.json",
+      "bytes": 4453,
+      "sha256": "dc3a12a48e98cc372187fba99470ec0f57a693f0699336769770a87dfa27bf2a"
+    },
+    "stack-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\stack-r1",
+      "files": 359,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\stack-r1-manifest.json",
+      "bytes": 65547,
+      "sha256": "9b97f39668131170165f0c53af5f047c022a5477e854a2fc56866f54a025cbc4"
+    },
+    "stack-network-preflight-r2": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\stack-network-preflight-r2",
+      "files": 1,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\stack-network-preflight-r2-manifest.json",
+      "bytes": 329,
+      "sha256": "69968960f2780aceff5d7ac0419d78509a4c171e7d3babdb261ea90c90793476"
+    },
+    "stack-r2": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\stack-r2",
+      "files": 395,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\stack-r2-manifest.json",
+      "bytes": 71639,
+      "sha256": "059540cb675ab24827dc4b021852cab2c84fe94806fc081165e3bac79710fb92"
+    },
+    "frontbridge-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\frontbridge-r1",
+      "files": 129,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\frontbridge-r1-manifest.json",
+      "bytes": 22079,
+      "sha256": "19ab47caefb9921eb3df636647f5d13dbaa1d25342a7524b810a2b20a90e37c8"
+    },
+    "role-checks-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-checks-r1",
+      "files": 15,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\role-checks-r1-manifest.json",
+      "bytes": 2663,
+      "sha256": "86ec5e37d55016a1cc49685c0644ea9f54455ff6f0867c01e04570f2730ed2b7"
+    },
+    "role-checks-r2": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-checks-r2",
+      "files": 28,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\role-checks-r2-manifest.json",
+      "bytes": 4867,
+      "sha256": "e182e4e51977b2be45a48e67ed48a22a6cfa31629bd1e95a659279836fd12ccf"
+    },
+    "role-cvm-preflight-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-cvm-preflight-r1",
+      "files": 11,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\role-cvm-preflight-r1-manifest.json",
+      "bytes": 1984,
+      "sha256": "1508a3589b27dce450f374b5dd8e402b847d034a215b232d0918aacae09a2484"
+    },
+    "role-checks-r3": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-checks-r3",
+      "files": 75,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\role-checks-r3-manifest.json",
+      "bytes": 12737,
+      "sha256": "6edcd71f4644af2ee85f4b18390dfc50075348cee3eec5763aa4c335ac438895"
+    },
+    "role-network-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-network-r1",
+      "files": 32,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\role-network-r1-manifest.json",
+      "bytes": 5552,
+      "sha256": "31b6aa01f83ac564a7a04dec4eefd09c55b82f1164fddfefd5d8c978f765f3cf"
+    },
+    "ui-fixture-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-fixture-r1",
+      "files": 1,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\ui-fixture-r1-manifest.json",
+      "bytes": 304,
+      "sha256": "74417d3a5cb323647126a016ffaaa590d923c50e5758f6a83c954757042d2422"
+    },
+    "ui-build-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-build-r1",
+      "files": 5,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\ui-build-r1-manifest.json",
+      "bytes": 967,
+      "sha256": "42876b790a1ba77f6bca480ad8698b21ef3dcee60399d66b48952c8a47d70b86"
+    },
+    "ui-light-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-light-r1",
+      "files": 6,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\ui-light-r1-manifest.json",
+      "bytes": 1178,
+      "sha256": "40345d75388430ac2e452eb13615a87eabbe176ced2ef9975d1a08b4152a20fc"
+    },
+    "light-r6": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\light-r6",
+      "files": 7,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\light-r6-manifest.json",
+      "bytes": 1328,
+      "sha256": "e12311c654c44342c1860884ca2796ece589bad64d80ab2ce721dece5a5a7d78"
+    },
+    "light-r7": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\light-r7",
+      "files": 21,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\light-r7-manifest.json",
+      "bytes": 3670,
+      "sha256": "5fa89dfbf589991b685b2ce5139e9aa3e91da2b8d329c2711656bffa83524f47"
+    },
+    "service-ui-r3": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\service-ui-r3",
+      "files": 323,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\service-ui-r3-manifest.json",
+      "bytes": 55366,
+      "sha256": "d6de9957c64fabe517e1d872efd5755429a28a42321608386c69b432764bd762"
+    },
+    "service-ui-r4": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\service-ui-r4",
+      "files": 359,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\service-ui-r4-manifest.json",
+      "bytes": 61378,
+      "sha256": "bf042e345189f8c17298de2e284e5550e7af0e562cf99ee425931b01720be075"
+    },
+    "live-api-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\live-api-r1",
+      "files": 1,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\live-api-r1-manifest.json",
+      "bytes": 295,
+      "sha256": "6975ef86a73800a717781a9d066b625f2d476c75cef340380c5e038faa775ebe"
+    },
+    "browser-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\browser-r1",
+      "files": 35,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\browser-r1-manifest.json",
+      "bytes": 5728,
+      "sha256": "f838f8d6e786806947ed4129ae49ea568ed38d9c07161eece7cc6a35e76a5fcd"
+    },
+    "final-ui-custody-r1": {
+      "root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\final-ui-custody-r1",
+      "files": 27,
+      "manifest": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\final-ui-custody-r1-manifest.json",
+      "bytes": 4645,
+      "sha256": "6f00577c638d02e5ddf54f998373437204cabd1ecfe55d9f3569f1f239ad7c78"
+    }
+  },
+  "raw_manifest": {
+    "path": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\ui-checkpoint-r1\\manifest.json",
+    "bytes": 9692,
+    "sha256": "363b1941747066f6355baf37ea1220c1669514ec8582ea0396e2b3f895a900be"
+  },
+  "curated_manifest": {
+    "path": "docs/implementation/evidence/pa1-cohort-core-20261022/ui-role-checkpoint-r1/manifest.json",
+    "bytes": 22919,
+    "sha256": "837cb2d3ae8284d10276c1749802bc615cf32dfe9f9c09d996798a50519c0486"
+  },
+  "remaining": [
+    "Independent exact-head source/API/UI/copied-role review, clean reproduction and full production initialization/backend custody.",
+    "Producer exact-profile critique and source implementation, truthful runtime/source pins, genuine12 research enrollment/replay/export14/42 and actual input qualification.",
+    "No actual joint12 V0/V1 fit or accepted patient effect/bridge/PPC/precision result; completed positive per-patient comparison remains required.",
+    "Existing fullmath raw legacy singletonFAIL remainsFAIL; nominal-law criterion accepted separately, not whole production qualification.",
+    "N0/N1 and P3\u2013P5 methods/activation, accuracy/timeliness/ablation/PA6 studies, reproduction and human/clinical gates remain open.",
+    "Appointment-time inference/StochTree assessment and any scientific/model amendment belong to independent reviewed next work; nothing adopted here."
+  ],
+  "production_executable": false,
+  "appointment_intent": {
+    "user_intent": "Background fitting/conditioning, then appointment-time prediction from versioned fitted artifacts.",
+    "proposal": "fcb032ef (root-routed proposal under independent review; not integrated or adopted)",
+    "scope": "No new model/backend/scientific source changes in this checkpoint; StochTree assessment is separate future work."
+  }
+}
