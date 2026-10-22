@@ -18,7 +18,7 @@ from contracts.domain.borrowing import SourceBundle
 from contracts.domain.borrow_runtime import cohort_coordinate_layout
 from methods.visit.cohort_model import build_cohort, build_cohort_borrow, cohort_inputs
 from methods.visit.model import build
-from methods.visit.borrow_execution import compilation_options, verify_cvm, native_call
+from methods.visit.borrow_execution import compilation_options, verify_cvm, native_call, optimizer_identity
 from tests.contracts.test_cohort import database, export
 
 
@@ -70,6 +70,15 @@ def original_point(model, count, nights):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);parser.add_argument('--native',action='store_true')
     args=parser.parse_args();started=time.monotonic();results={}
+    args.output.parent.mkdir(parents=True,exist_ok=True)
+    def save():args.output.write_text(json.dumps(results,indent=2)+'\n')
+    # Preserve every completed gate if a subsequent gate fails or the external
+    # whole-run watchdog terminates compilation. Qualification thresholds stay
+    # unchanged; a partial record never denotes full acceptance.
+    options=compilation_options()
+    results['preflight']=dict(guard_pass=True,optimizer=optimizer_identity(options['mode'].provided_optimizer),
+        linker=type(options['mode'].linker).__name__,full_qualification=False)
+    save()
     db=database();cohort=export(db);db.close();data=cohort_inputs(cohort);n=len(data[0][1]['nights'])
     original=build_cohort(data,guide=False);point=original_point(original,12,n)
     lp=original.compile_logp(jacobian=False,mode=MODE);grad=original.compile_dlogp(jacobian=False,mode=MODE)
@@ -80,16 +89,19 @@ def main():
     flat=np.concatenate([np.asarray(direction[v.name]).reshape(-1) for v in original.continuous_value_vars])
     autodiff=float(np.dot(grad(point),flat));assert abs(autodiff-finite)<1e-5+1e-4*abs(finite),(autodiff,finite)
     results['independent_joint_density_gradient']=dict(logp=actual,scalar_logp=expected,directional_autodiff=autodiff,directional_finite_difference=finite,patients=12)
+    save()
     swapped=[(p,data[-1-i][1]) for i,(p,_) in enumerate(data)]
     reverse={k:(v[::-1] if k in ('b_raw','beta_raw','innovation') else v) for k,v in point.items()}
     reverse_model=build_cohort(swapped,guide=False);reverse_lp=reverse_model.compile_logp(jacobian=False,mode=MODE)
     assert abs(float(reverse_lp(reverse))-actual)<1e-8
     results['patient_permutation']=True
+    save()
     del reverse_model,reverse_lp;gc.collect()
     singleton=build_cohort(data[:1],guide=False);single=build(data[0][1],guide=False)
     sp=original_point(singleton,1,n);op=dict(sp,b_raw=sp['b_raw'][0],beta_raw=sp['beta_raw'][0],innovation=sp['innovation'][0])
     sl=float(singleton.compile_logp(jacobian=False,mode=MODE)(sp));ol=float(single.compile_logp(jacobian=False,mode=MODE)(op))
     assert abs(sl-ol)<1e-8,(sl,ol);results['singleton_equivalence']=dict(cohort=sl,legacy=ol)
+    save()
     del singleton,single;gc.collect()
     guided=build_cohort(data);gp=guided.initial_point()
     for key in gp:
@@ -103,6 +115,7 @@ def main():
     mapped_lp=float(lp(mapped));difference=guide_lp-(mapped_lp+float(jac)+np.log(80.))
     assert abs(difference)<1e-7,difference
     results['guide_original_jacobian']=dict(difference=difference,shared_natural_scale_jacobian=float(np.log(80.)),guide_log_jacobian=float(jac))
+    save()
     del values,guided,original,lp,grad;gc.collect()
     root=Path(__file__).resolve().parents[2]
     sources=SourceBundle.model_validate_json((root/'services/foundation/studies/source-7c97862d.json').read_bytes())
@@ -119,6 +132,7 @@ def main():
     extra=float(np.sum(scalar)+norm.logpdf(bp['source_bias'],0,.5).sum()+halfnorm.logpdf(.7,scale=1))
     assert abs(joint-density(data,point)-extra)<1e-7
     results['external_terms_once']=dict(terms=np.asarray(terms).tolist(),count=len(terms),density_difference=joint-density(data,point),independent_terms_plus_new_priors=extra)
+    save()
     del borrowed,marginal_fn;gc.collect()
     # Original unconditioned prior must not acquire local adherence/report counts.
     prior=build_cohort(data,guide=False,prior_predictive=True)
