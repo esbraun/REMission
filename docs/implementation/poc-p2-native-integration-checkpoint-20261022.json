@@ -1,0 +1,172 @@
+{
+  "status": "Frozen combined integration CANDIDATE; independent exact-head/main045 review required; no main merge or PR authorization",
+  "assigned_model": "gpt-6.1-sol",
+  "assigned_effort": "high",
+  "branch": "launch/poc-p2-native-integration-20261022",
+  "frozen_p2": "5cd3d9de821ac6921ec7f9013708349843ee9530",
+  "p2_source": "75fcd542907646314afebb70848523bccb516236",
+  "native_evidence": "0060c874fe20b31613b5ca2ee45f7239e09ef9af",
+  "native_base": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+  "merge_checkpoint": "8db1d61354c01506ca36f8e85fd21b971d20f9b0",
+  "review_base": "045b373a18ad067a3ecd1281d445076aae423a80",
+  "origin_main": "045b373a18ad067a3ecd1281d445076aae423a80",
+  "local_main": "b21f00003e3f31866f29f9dc20f0d367d39ab11f",
+  "local_main_ancestor_of_base": true,
+  "merge_conflict": "Only .gitattributes appended rules; all valid P2/native/earlier rules retained; no source conflicts",
+  "changed_from_p2": [
+    ".gitattributes",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/bridge-precision.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/commands-selected-index.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/curated-manifest.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/diagnostics.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/dispatch.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/helper.py",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/original-stack-selected.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/raw-manifest.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/raw-root.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/result.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/summary.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/terminal-database-readonly.json",
+    "docs/implementation/evidence/pa3-native-terminal-20261022/worker-terminal-selected.json",
+    "docs/implementation/poc-borrowing-native-terminal-20261022.md",
+    "docs/implementation/poc-borrowing-task-ledger.json"
+  ],
+  "main_base_diff": {
+    "changed_paths": 811,
+    "top_level_counts": {
+      ".gitattributes": 1,
+      "contracts": 5,
+      "docs": 710,
+      "methods": 5,
+      "services": 20,
+      "tests": 24,
+      "tooling": 39,
+      "web": 7
+    },
+    "path_inventory": "poc-p2-native-main045-paths-20261022.txt",
+    "merge_checkpoint_changed_paths": 809
+  },
+  "checks": {
+    "native_docs_exact_0060": true,
+    "source_trees_exact_frozen_p2": true,
+    "both_parent_ancestry": true,
+    "frozen_p1_p2_refs_preserved": true,
+    "curated_manifests": [
+      {
+        "path": "docs/implementation/evidence/p2-physician-loop-20261022/curated-manifest.json",
+        "payload_files": 160,
+        "sha256": "f400c4176d25585fe53cd834ab460ac899d90dec9e691da645bebac7a5528b91"
+      },
+      {
+        "path": "docs/implementation/evidence/pa3-native-terminal-20261022/curated-manifest.json",
+        "payload_files": 12,
+        "sha256": "3f0e2cda9e46f8df8187ea77a43d06f1e6e5bd0b2488ac9b982c709dd8c96e08"
+      }
+    ],
+    "model_build_runtime_db_execution": "none for integration",
+    "diff_check": {
+      "frozen_p2": {
+        "exit_code": 2,
+        "output_bytes": 2665273,
+        "sha256": "54285e47d517119e8506777710e52df020afa02502fc2a75d2e5a474e1980bec",
+        "diagnostic_lines": 17205,
+        "affected_paths": 97
+      },
+      "candidate": {
+        "exit_code": 2,
+        "output_bytes": 2665273,
+        "sha256": "54285e47d517119e8506777710e52df020afa02502fc2a75d2e5a474e1980bec",
+        "diagnostic_lines": 17205,
+        "affected_paths": 97
+      },
+      "candidate_diagnostics_exact_frozen_p2": true,
+      "integration_delta": {
+        "exit_code": 0,
+        "output_bytes": 0
+      }
+    },
+    "diff_check_disposition": "Integration delta clean. Main045 default check reports preexisting byte-preserved raw CRLF/evidence whitespace; exact output equals frozen5cd3 baseline. No historical artifacts normalized."
+  },
+  "review_objects": [
+    {
+      "package": "actual4ff profile source/numerical",
+      "git_object": "d84ee0abf847212446b62f8eb36c824728094ae4",
+      "git_type": "blob",
+      "sha256": "9386b707d1f9b7551152de4ecbf758b473baf65bcff6cb7f414fc121337874fc",
+      "scope": "accepted bounded profile, not a new fit"
+    },
+    {
+      "package": "service overlay SOURCE/COPY",
+      "git_object": "2a1c20b19279d0d6ce3e185e07ce041a934748ea",
+      "git_type": "blob",
+      "sha256": "8b00e971fb4464158e41f82c39894072081a6dc3ded87b93e459ce17ee0a6148",
+      "scope": "accepted exact service overlay"
+    },
+    {
+      "package": "host dispatcher SOURCE/COPY",
+      "git_object": "c3233437b0b0f12c01a90d10e6e0bbf18f7ec898",
+      "git_type": "blob",
+      "sha256": "e1b340006a20536610f814264cbabf6ef4b09596d0848b5055240919e720d130",
+      "scope": "accepted host55c package"
+    },
+    {
+      "package": "service maintenance",
+      "git_object": "f832bf3f5fb96051b457c2fe9d2f8ecc24773b7e",
+      "git_type": "blob",
+      "sha256": "9cdf6d7c5415f319c42b2ef407526d1c94a76b3feba20da8096db68d0dbefa2d",
+      "scope": "accepted actual original authority/continuity"
+    },
+    {
+      "package": "P1 typed boundary/roles",
+      "git_object": "3934c5b2ae621328dadf5343e88558fe05c77943",
+      "git_type": "blob",
+      "sha256": "78a577538e6999ece6cbc583fdadcd2bf1df83b9f57140b7f557705d6531e1fa",
+      "scope": "accepted5c95; executable protocol allowlist remains empty"
+    },
+    {
+      "package": "diagnostic inspect repair",
+      "git_object": "6446ee0693ca3ce207b2617ea8099a0b71516b5e",
+      "git_type": "blob",
+      "sha256": "2ea2933157385ca13df6c4026ed4df9fca7a2ea02e6787952ac59d945b1c7225",
+      "scope": "accepted90dc; no new diagnostic run"
+    },
+    {
+      "package": "P2 copied runtime",
+      "git_object": "b243bffa4c058d94e91fb187c1c77b26588ca300",
+      "git_type": "blob",
+      "sha256": "2d06f957db66f62a9e2f388761c7c838c4a614af006a40c8ee3b9887f922fac3",
+      "scope": "40checks/inventories/layers/build/purity pass; final package approval pending"
+    },
+    {
+      "package": "P2 independent browser",
+      "git_object": "f66eda136675f10a18ffc7a5a3e656f89c3e4938",
+      "git_type": "blob",
+      "sha256": "447bcc0528b1e1bd93b575e477292bf79921e2a35d20921896784bbe7b2cbfcd",
+      "scope": "own8783 UI pass; final exact5cd3 package and continuity disposition pending"
+    },
+    {
+      "package": "native terminal package",
+      "git_object": "4e5db97ec9a646317d1d665f1d0f99e0e9a47c29",
+      "git_type": "blob",
+      "sha256": "e0003c5d54ac54ae2bbf3407743b7d7848e96efc1a6518c5ce1f7c2a1472ddd8",
+      "scope": "accepted0060/base90dc bounded single actual day14 fit/ingestion; not combined approval"
+    }
+  ],
+  "terminology": "Review IDs listed here are verified Git blobs, not commits; historical ledger keys named *_commit refer to report identities and do not establish commit ancestry.",
+  "numerical_identity": {
+    "source": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3",
+    "learner": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+    "operator": "3c6fb8be7aea4f3eb7634d030607fb829bd76a7a",
+    "host_dispatcher": "55c07c8ac15d5b55d4d7acdff273570422cd3b01",
+    "host_dispatcher_sha256": "e4befae1c1b9d1684430f3d375308cee059504799a8087683d117e28766c5e1b"
+  },
+  "open_gates": [
+    "P2 final5cd3 package and user-requested existing-app continuity disposition",
+    "Combined final exact-head against main045 independent review including inherited PA3 implementation/historical diagnostics and P1/P2 packages",
+    "Full cohort/PA2 not completed; unreviewed72f not integrated",
+    "P3 N actual fits/P4 WCLS/P5 selector execution and complete reviewed purpose/prior/config/estimand admission",
+    "PA6/PA7 ablation accuracy/timeliness, study/calibration/fresh clean-environment reproduction",
+    "Human clinical and comprehensive accessibility/human-factors gates"
+  ],
+  "native_scope": "Exactly one actual owned day14 borrowing fit completed/ingested; interval spans zero, no superiority/efficacy claim; peak cgroup memory exactly2GiB cap, no headroom claim."
+}
