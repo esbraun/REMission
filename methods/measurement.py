@@ -10,7 +10,7 @@ import pymc as pm
 import pytensor
 import pytensor.tensor as pt
 from pytensor.graph.basic import Constant
-from pytensor.graph.replace import clone_replace
+from pytensor.graph.replace import clone_replace,graph_replace
 from pytensor.graph.traversal import graph_inputs
 
 
@@ -23,14 +23,17 @@ def normal_logcdf(value):
     # model expression. Upstream constants belong to that model's own policy.
     placeholder=value.type()
     expression=pm.logcdf(pm.Normal.dist(np.float64(0),np.float64(1)),placeholder)
-    replacements={placeholder:value}
+    replacements={}
     for variable in graph_inputs([expression]):
         if isinstance(variable,Constant) and getattr(variable,'dtype',None)=='float32':
             scalar=np.asarray(variable.data)
             if scalar.ndim!=0 or float(scalar) not in (2.,-1.):
                 raise ValueError('Unexpected float32 constant in pinned Normal log-CDF')
             replacements[variable]=pt.as_tensor_variable(np.float64(scalar))
-    return clone_replace(expression,replace=replacements,rebuild_strict=False)
+    promoted=clone_replace(expression,replace=replacements,rebuild_strict=False)
+    # clone_replace rebuilds replacement ancestors too. Insert the caller's
+    # expression only after template promotion, without cloning registered RVs.
+    return graph_replace(promoted,replace={placeholder:value})
 
 
 def log_bin(value,mean,sd,step,maximum):

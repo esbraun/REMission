@@ -1,10 +1,12 @@
 """Independent scalar Normal CDF/bin densities and derivatives; no model fit."""
 import unittest
 import numpy as np
+import pymc as pm
 import pytensor
 import pytensor.tensor as pt
 from pytensor.graph.basic import Constant
-from pytensor.graph.traversal import graph_inputs
+from pytensor.graph.traversal import graph_inputs,ancestors
+from pytensor.tensor.random.op import RandomVariable
 from scipy.special import log_ndtr
 from scipy.stats import norm
 from methods.measurement import normal_logcdf,log_bin
@@ -26,6 +28,26 @@ def reference(value,mean,sd,step,maximum):
 
 
 class MeasurementControls(unittest.TestCase):
+    def test_model_random_variables_remain_registered_and_density_repeatable(self):
+        with pm.Model() as model:
+            mean=pm.Normal('mean',np.float64(5),np.float64(2))
+            sd=pm.HalfNormal('sd',np.float64(1))
+            expression=log_bin(np.float64(5.321),mean,sd,.001,10.)
+            pm.Potential('measurement',expression)
+        random_variables={v for v in ancestors([expression]) if v.owner is not None
+                          and isinstance(v.owner.op,RandomVariable)}
+        self.assertEqual(random_variables,{mean,sd},'Likelihood must bind exactly the registered model RVs.')
+        options=compilation_options()
+        logp=model.compile_logp(jacobian=False,**options)
+        gradient=model.compile_dlogp(jacobian=False,**options)
+        point=dict(mean=np.array(6.2),sd_log__=np.array(np.log(.8)))
+        mass,dm,ds=reference(5.321,6.2,.8,.001,10.)
+        expected=norm.logpdf(6.2,5,2)+norm.logpdf(.8)+np.log(2)+mass
+        first=float(logp(point));second=float(logp(point))
+        self.assertEqual(first,second)
+        self.assertAlmostEqual(first,float(expected),delta=1e-10)
+        np.testing.assert_allclose(gradient(point),[-(6.2-5)/4+dm,(-.8+ds)*.8],rtol=1e-8,atol=1e-8)
+
     def test_composed_caller_constants_and_gradient_are_preserved(self):
         x=pt.dscalar('x')
         caller_constant=pt.constant(np.float32(3))
