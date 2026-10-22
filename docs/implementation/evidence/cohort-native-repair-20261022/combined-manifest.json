@@ -1,0 +1,128 @@
+{
+  "kind": "ordinary_APPT_integration_affected_checks",
+  "accepted_base": "a4eb446ef0f74567a4ae7bb31b0728876c752ab5",
+  "native_source_parent": "359f9a383f8ed150c827ef2ed2082e8c9a62dec9",
+  "conflicts": false,
+  "source_files": {
+    "contracts/domain/cohort_runtime.py": {
+      "tested_sha256": "e2030de1206efbff92052cd034c52b28e91d16b1c9d47261bd3994c4816be7cd",
+      "canonical_git_blob": "56e674c3904f08b1d18fb987d18f78d7d73f3c64"
+    },
+    "methods/visit/borrow_execution.py": {
+      "tested_sha256": "f7ec71be7c71aa4ba2d93a6c9c0fa79dc8f9062f800897485718ba69ccd88c33",
+      "canonical_git_blob": "c1ac38730f00f2f6e9c4b84ff05d51f0cdc4be87"
+    },
+    "methods/visit/cohort_execution.py": {
+      "tested_sha256": "105244de6909ffe063ef989b2dda9dd54b1fc6351305e16d300dbfc7f71721df",
+      "canonical_git_blob": "ebf947e6b96bf58ed023a9020816aa8d4c7035bc"
+    },
+    "services/foundation/analysis.py": {
+      "tested_sha256": "52a55ffd565f377ab3a4a980fa5724f505fcb8970593f493bab8d2e23480691e",
+      "canonical_git_blob": "0b0641dfe621f637ec54c15d18a5c9440e651bf7"
+    },
+    "services/learner/cohort_worker.py": {
+      "tested_sha256": "f967e26866657d2aa23da7a5b92c686109fc8e9fa12049ba01208f04c8ce6b1f",
+      "canonical_git_blob": "8701f2d0663e3f9c27c9491afe76fca4b82a2ede"
+    },
+    "tests/contracts/test_cohort_runtime.py": {
+      "tested_sha256": "7cd5187e433e7dd18fb0610ca38c1c7be9f39cf136d30dc4a7b345c621188b05",
+      "canonical_git_blob": "bd45033b0b6b0b5a82bc601df7e0fc3dd7f8b7b2"
+    },
+    "tests/integration/replay/test_borrowing_dispatcher.py": {
+      "tested_sha256": "bf74db0a52e8fab93d999d42b73aba7f50e64d52c367f673a3ab553c80ed2c64",
+      "canonical_git_blob": "5afdbfdf9271909413d917a5fba43caf1cd65ccd"
+    },
+    "tests/integration/replay/test_cohort_completion_deadline.py": {
+      "tested_sha256": "eaa4c0d54750c9f001f7f040d29bf2a0a90ba3e11ff36831e19daa44381c0400",
+      "canonical_git_blob": "e92eeb659b5b3613acd88a269e4606f8d64687be"
+    },
+    "tests/methods/test_cohort_execution.py": {
+      "tested_sha256": "321c0615f03b009875279a287bd0d6fbbac348b0d6aa6a96eef25963053e7d4b",
+      "canonical_git_blob": "2bfccdc7851b5d3d3fb199e3f7d1aa5a33b47745"
+    },
+    "tooling/foundation/analysis_dispatcher.py": {
+      "tested_sha256": "db5ff30c982deb65f0fe2e9d8f6594c3d3c14dbaa4e5b922119cab638e022992",
+      "canonical_git_blob": "d23e2a5f9aa6d48f5c13bbc68141a30dbcbb85ef"
+    }
+  },
+  "preserved_APPT_math_config_dependency_blobs": {
+    "services/foundation/cohort_analysis.py": "3c7a2a18dcd9e37c26c0bc0532fa8ead6cd8456e",
+    "services/foundation/appointment.py": "b42bdcbc265f34482ef0281ba013fd1473645ea2",
+    "services/foundation/app.py": "c2553b0ce0e57e85f9fb055436aea1fc7401d6d7",
+    "web/src/AnalysisPanel.tsx": "e2481c0d3311e231bb761ffd7461bdc5b1d43a84",
+    "web/src/ResearchPanel.tsx": "82eea1dcc50684d855f949d3bbc20d46dd3fb528",
+    "web/src/types.ts": "63b72b3158a8ab8cb7a25130db69c805af5d5bd4",
+    "methods/visit/cohort_model.py": "99b4f2e0a986870f92ed9d29ed744c2619321d56",
+    "methods/visit/cohort_geometry.py": "48071b30923292eff17cef435179e94c8710c228",
+    "methods/visit/model.py": "5e33008e36809b78f182993a88f1e09bdf641c78",
+    "methods/visit/numerics.py": "5c1ac014eb12822c6b21a430ba8dcf2c32cd64cf",
+    "methods/visit/source_precision.py": "1d7ae82b011432a26c902a56817877fcdd0e7df0",
+    "methods/measurement.py": "595eabdb2260b3318effe405fd93d44ab427069e",
+    "contracts/domain/cohort.py": "e9891510cb97153f807b07e7ff3a3c08b2ab8bee",
+    "tooling/foundation/requirements.lock": "4e454d1c406f28382b33f6ce5751166b9273ed96",
+    "tooling/library/requirements.lock": "1e5b7b63d2cdd69f4e929379c17263186f430237"
+  },
+  "analysis_functions_changed_only": [
+    "ingest"
+  ],
+  "tests": {
+    "count": 40,
+    "seconds": 46.641,
+    "exit": 0,
+    "scope": "24 native controls plus16 additional APPT/auth/legacy routes; numerical-model test classes excluded"
+  },
+  "files": {
+    "artifacts/native-tests/combined-run4/armed.json": {
+      "bytes": 145,
+      "sha256": "e10f6467f18ee68d2919aeadccec8323a6822eee82bad1d9c7398072ac65a075",
+      "git_blob": "d15d0bf651eaf571e9812887e1f5476a7ab636ef"
+    },
+    "artifacts/native-tests/combined-run4/created.json": {
+      "bytes": 3408,
+      "sha256": "0a9ac02084b8e4edfed3c69fbbc90ab354496426ba8bc1ac344e2f8de27b83e2",
+      "git_blob": "7c9174ab3cf08fc781a339c1d8efaff50e2a89e7"
+    },
+    "artifacts/native-tests/combined-run4/selected.txt": {
+      "bytes": 524,
+      "sha256": "1ac91053c94220baa4e2ba577884b5f49f638789bf58fa412d671af10bf0676a",
+      "git_blob": "c9b60cb76e22418534c79871be2f674aeb788e85"
+    },
+    "artifacts/native-tests/combined-run4/stderr.bin": {
+      "bytes": 8648,
+      "sha256": "2601ba3fb0a7283d1ac9688b1f25932c430461aba675c0a57f859684706145f4",
+      "git_blob": "435d610213beee4365c096d41c84fa6ea5711b7f"
+    },
+    "artifacts/native-tests/combined-run4/stdout.bin": {
+      "bytes": 13150,
+      "sha256": "6635ab8c22132d1200db12b80934ec2f5e74f281c9fecc045aac89906d70199e",
+      "git_blob": "eb026241f876a315557e43a1d5579c7cb9773c61"
+    },
+    "artifacts/native-tests/combined-run4/watch.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    "artifacts/native-tests/combined-run4/watch.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    "artifacts/native-tests/combined-run4/watchdog-terminal.json": {
+      "bytes": 330,
+      "sha256": "3c6c17c5271769ba077306618334bce3467982022d19f2b3a08f95ffc6175bcb",
+      "git_blob": "22cf47edc9357c7c8459de0f50cbc56eb1e01ac5"
+    },
+    "artifacts/native-tests/combined-run4/watchdog.py": {
+      "bytes": 881,
+      "sha256": "f6cdf81c2c269ebfacdd85cd36d4ff5bb38d02c75170e71501a1c0e9253ceac5",
+      "git_blob": "0596a3c4d3c184b8357186ca36c01342b87ecbfe"
+    },
+    "artifacts/native-tests/run_bounded_combined_r4.py": {
+      "bytes": 3947,
+      "sha256": "a4516336421f9c124ee3dbf54e8a038c4ec49d77ac5433195ec4ff62cec98ec5",
+      "git_blob": "ef2f5cecd37a843f055eaa3e95614eee7aa5665d"
+    }
+  },
+  "git_diff_check_against_accepted_a4": "PASS",
+  "limits": "No actual native model/point/fit or repaired image qualification. Existing source closure remains."
+}

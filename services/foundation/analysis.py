@@ -240,9 +240,6 @@ def ingest(store,job,token,directory):
         raise AnalysisError('Invalid result file')
     result=parse_result(result_path.read_bytes())
     cohort_result=result.kind=='poc_visit_cohort_result'
-    if result.kind=='poc_visit_cohort_result':
-        from contracts.domain.cohort import require_executable
-        require_executable(result)
     if result.kind=='poc_protocol_result':
         from contracts.domain.protocol_request import require_executable
         require_executable(result)
@@ -270,6 +267,8 @@ def ingest(store,job,token,directory):
     with store.transaction(write=True) as db:
         row=running(db,job,token)
         if cohort_result:
+            from contracts.domain.cohort import CohortInput,require_executable
+            require_executable(CohortInput.model_validate_json(row['request_json']))
             from .cohort_analysis import validate_result
             validate_result(result,row,names)
         elif (result.attempt_id!=job or result.input_sha256!=row['input_sha256'] or result.history_sha256!=row['history_sha256']
@@ -282,8 +281,16 @@ def ingest(store,job,token,directory):
             from contracts.domain.borrow_runtime import validate_execution
             try:validate_execution(result.diagnostics.get('execution',{}),parse_input(row['request_json']),json.loads(row['progress_json']).get('trusted_launch'))
             except ValueError as error:raise AnalysisError('Completed borrowing result lacks qualified execution binding') from error
+        frozen_result=result.model_dump_json()
+        completed_at=store.clock()
+        if cohort_result and result.status=='completed':
+            if row['started_at'] is None:
+                raise AnalysisError('Cohort completion lacks authoritative start time.')
+            elapsed=(completed_at-instant(row['started_at'])).total_seconds()
+            if not 0<=elapsed<7200:
+                raise AnalysisError('Cohort completion exceeds persisted claim deadline.')
         db.execute('UPDATE analysis_attempts SET status=?,stage=?,failure_reason=?,result_json=?,artifact_root=?,finished_at=? WHERE job_id=?',
-            (result.status,'complete' if result.status=='completed' else result.status,result.reason,result.model_dump_json(),str(directory),timestamp(store.clock()),job))
+            (result.status,'complete' if result.status=='completed' else result.status,result.reason,frozen_result,str(directory),timestamp(completed_at),job))
         db.execute('UPDATE pending_work SET status=?,reason=? WHERE id=?',(result.status,result.reason or 'Visit analysis complete',job))
     return dict(id=job,status=result.status)
 
