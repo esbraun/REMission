@@ -39,25 +39,39 @@ def main():
     expected=copied('learner')
     probe="""import hashlib,importlib.util,json,os,urllib.request,urllib.error
 from pathlib import Path
-from contracts.domain.analysis import AnalysisInput
+from contracts.domain.analysis import sha
+from contracts.domain.borrowing import BorrowAnalysisInput,parse_input,APPROVED_BUNDLES,admitted_configuration
 assert os.getuid()==10002
 assert not Path('/app/services/generator').exists(),'private source exposed'
 assert importlib.util.find_spec('services.generator') is None and importlib.util.find_spec('services.foundation') is None
 assert not Path('/data/remission.sqlite').exists() and not Path('/var/run/docker.sock').exists()
 mounts=[line.split() for line in Path('/proc/self/mountinfo').read_text().splitlines()]
 assert any(p[4]=='/input' and 'ro' in p[5].split(',') for p in mounts),'public input is not read-only'
-value=AnalysisInput.model_validate_json(Path('/input/input.json').read_bytes())
+value=parse_input(Path('/input/input.json').read_bytes())
+source_identity=None
+if isinstance(value,BorrowAnalysisInput):
+ configuration=admitted_configuration(value.request.configuration)
+ assert configuration['quadrature_order']==64 and not configuration['diagnostic_only'],'not a production source configuration'
+ artifact_sha=sha(value.sources.model_dump(mode='json'))
+ assert artifact_sha==APPROVED_BUNDLES[value.sources.bundle_id],'unapproved public source artifact'
+ assert value.source_set_sha256==value.sources.source_set_sha256,'source set identity mismatch'
+ value.sources.at_cutoff(value.cutoff)
+ source_identity=dict(bundle_id=value.sources.bundle_id,source_set_sha256=value.source_set_sha256,
+  approved_artifact_sha256=artifact_sha,study_ids=[s.study_id for s in value.sources.studies],quadrature_order=configuration['quadrature_order'])
 history=json.dumps(value.history.model_dump(mode='json'))
 assert all(('"'+key+'"') not in history for key in ['function','diary_sleep_minutes','source','raw_sha256','state_json','simulation','seed','index','truth','replay'])
 expected=json.loads(os.environ['EXPECTED_FILES'])
 assert {p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in expected}==expected
 request=urllib.request.Request(os.environ['GENERATOR_URL'],data=json.dumps(dict(seed=1,index=0,patient_id='analysis-boundary',through_day=0,actions=[])).encode(),headers={'Content-Type':'application/json'})
+network=dict(reachable=False,http_status=None)
 try:
- with urllib.request.urlopen(request,timeout=1) as response:reached=True
-except urllib.error.HTTPError:reached=True
-except (urllib.error.URLError,TimeoutError,ConnectionError):reached=False
-assert not reached,'private generator reached'
-print(json.dumps(dict(status='passed',uid=os.getuid(),input_hash=value.history_sha256,configuration=value.request.configuration.model_dump(),reduced_history_only=True,source_files=len(expected))))
+ with urllib.request.urlopen(request,timeout=1) as response:network.update(reachable=True,http_status=response.status)
+except urllib.error.HTTPError as error:network.update(reachable=True,http_status=error.code)
+except (urllib.error.URLError,TimeoutError,ConnectionError) as error:network['denial_type']=type(error).__name__
+print(json.dumps(dict(generator_reachability=network)),flush=True)
+assert not network['reachable'],'private generator reached'
+print(json.dumps(dict(status='passed',uid=os.getuid(),input_hash=value.history_sha256,product_sha256=sha(value.model_dump(mode='json')),
+ configuration=value.request.configuration.model_dump(),sources=source_identity,reduced_history_only=True,source_files=len(expected),generator_network=network)))
 """
     def probe_run(network='none',readonly=True,source=False,exit=0):
         mount=f'type=volume,source={volume},target=/input'+(',readonly' if readonly else '')
@@ -67,10 +81,17 @@ print(json.dumps(dict(status='passed',uid=os.getuid(),input_hash=value.history_s
     probe_run(source=True,exit=1);assert 'private source exposed' in records[-1]['stderr']
     probe_run(readonly=False,exit=1);assert 'public input is not read-only' in records[-1]['stderr']
     probe_run(network=state['network'],exit=1);assert 'private generator reached' in records[-1]['stderr']
-    summary=json.loads(probe_run())
+    summary=json.loads(probe_run().decode().splitlines()[-1])
     summary.update(source_commit=state['source_commit'],learner_image=image,positive_controls=['source','mount-readonly','network'])
     (args.evidence/'result.json').write_text(json.dumps(summary,indent=2)+'\n')
-    run(['docker','volume','rm',volume]);print(json.dumps(summary))
+    if summary['sources'] is None:
+        run(['docker','volume','rm',volume])
+    else:
+        # New V1 input is retained for independent physical/hash review; the
+        # legacy cleanup path and all probe permission denials stay unchanged.
+        summary['retained_public_input_volume']=volume
+        (args.evidence/'result.json').write_text(json.dumps(summary,indent=2)+'\n')
+    print(json.dumps(summary))
 
 
 if __name__=='__main__':main()
