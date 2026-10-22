@@ -135,7 +135,8 @@ class LiveWorkflowTests(unittest.TestCase):
             tables=['observed_archives','observed_archive_entries','observed_archive_artifacts','events','decisions','state_changes',
                 'live_hold_operations','live_hold_episodes','live_hold_reviews','live_hold_tasks','live_hold_task_events','live_hold_keys',
                 'live_safety_facts','live_projection_receipts','live_hold_additional_tasks','live_hold_task_bindings',
-                'live_hold_additional_task_events','service_control','live_authority_history','live_activation_receipts','drafts']
+                'live_hold_additional_task_events','service_control','live_authority_history','live_activation_receipts','drafts',
+                'bundles','tasks','receipts','ingestion_receipts','live_export_receipts','schema_migrations']
             return {table:[tuple(r) for r in db.execute('SELECT * FROM '+table+' ORDER BY rowid')] for table in tables}|{
                 'patient':tuple(db.execute("SELECT * FROM patients WHERE id='SYN-02'").fetchone())}
 
@@ -661,6 +662,41 @@ class LiveWorkflowTests(unittest.TestCase):
         request['items'][0]['evidence_refs']=[dict(store='archive',namespace_id=command['archive_id'],partition_id=command['partition_id'],**command['trigger_refs'][0])]
         before=self.safety_state();result=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=request,headers=self.headers('foreign-episode-review'))
         self.assertEqual(result.status_code,409,result.text);self.assertEqual(result.json()['code'],'hold_requirement_evidence_mismatch');self.assertEqual(before,self.safety_state())
+
+    def test_committed_registered_correction_refuses_direct_and_coordinator_without_any_partial_commit(self):
+        self.stale_registered_source()
+
+    def test_committed_registered_retraction_refuses_direct_and_coordinator_without_any_partial_commit(self):
+        self.stale_registered_source(retracted=True)
+
+    def stale_registered_source(self,*,retracted=False):
+        fixture,archive_authority,addition,_=live_fixture(self.root/'before-hold-correction',late_trigger_correction_at=NOW,late_trigger_retracted=retracted,export_name='before-hold-correction')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority);self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'correction':(fixture['raw'],self.root/'before-hold-correction/staging',archive_authority)})
+        self.restart_client();response=self.client.post('/api/observed-archives/correction',json={'mode':'archive_only'},headers=self.headers('correction-first'));self.assertEqual(response.status_code,200,response.text)
+        before=self.safety_state()
+        direct=self.client.post('/api/patients/SYN-02/live-holds',json=self.command,headers=self.headers('stale-direct'))
+        self.assertEqual(direct.status_code,409,direct.text);self.assertEqual(direct.json()['code'],'hold_evidence_stale');self.assertEqual(before,self.safety_state())
+        projected=self.client.post('/api/observed-archives/fixture-export',json={'mode':'clinical_observation_import'},headers=self.headers('stale-coordinator'))
+        self.assertEqual(projected.status_code,409,projected.text);self.assertEqual(projected.json()['code'],'hold_evidence_stale');self.assertEqual(before,self.safety_state())
+
+    def test_provisional_whole_verified_new_package_commits_atomically_after_rollback_retry(self):
+        fixture,archive_authority,addition,_=live_fixture(self.root/'provisional',run_name='new-provisional-run')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority);self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'provisional':(fixture['raw'],self.root/'provisional/staging',archive_authority)})
+        self.restart_client();before=self.safety_state()
+        def fail(point):
+            if point=='before_projection_commit':raise RuntimeError('new provisional package beforecommit')
+        with TestClient(create_app(replace(self.settings,fault=fail)),base_url=ORIGIN,raise_server_exceptions=False) as client:
+            self.login(client);result=client.post('/api/observed-archives/provisional',json={'mode':'clinical_observation_import'},headers=self.headers('new-package',client));self.assertEqual(result.status_code,500,result.text)
+        self.assertEqual(before,self.safety_state())
+        result=self.client.post('/api/observed-archives/provisional',json={'mode':'clinical_observation_import'},headers=self.headers('new-package'));self.assertEqual(result.status_code,200,result.text)
+        receipt=result.json();patient=receipt['patients']['SYN-02'];self.assertEqual(patient['novel_hold_transitions'],1)
+        self.assertEqual(patient['after_versions']['version'],patient['before_versions']['version']+patient['clinical_insertions']+1)
+        state=self.safety_state();repeat=self.client.post('/api/observed-archives/provisional',json={'mode':'clinical_observation_import'},headers=self.headers('new-package'));self.assertEqual(repeat.status_code,200,repeat.text);self.assertEqual(repeat.json(),receipt);self.assertEqual(state,self.safety_state())
+        alias=self.client.post('/api/observed-archives/provisional',json={'mode':'clinical_observation_import'},headers=self.headers('new-package-alias'));self.assertEqual(alias.status_code,200,alias.text);self.assertEqual(alias.json(),receipt)
+        after=self.safety_state();self.assertEqual(len(after['live_hold_keys']),len(state['live_hold_keys'])+1)
+        self.assertEqual({k:v for k,v in state.items() if k!='live_hold_keys'},{k:v for k,v in after.items() if k!='live_hold_keys'})
 
     def restart_client(self):
         self.client.close();self.client=TestClient(create_app(self.settings),base_url=ORIGIN);self.login()

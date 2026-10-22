@@ -1,0 +1,93 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 2.06kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 178B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 4.28kB done
+#5 DONE 0.0s
+
+#6 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#6 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#6 DONE 0.0s
+
+#7 [service  1/11] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#7 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#7 DONE 0.0s
+
+#8 [client 5/6] COPY web/ ./
+#8 CACHED
+
+#9 [service 10/11] COPY --from=client /client/dist/ /app/web/dist/
+#9 CACHED
+
+#10 [service  2/11] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#10 CACHED
+
+#11 [service  9/11] COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
+#11 CACHED
+
+#12 [client 4/6] RUN npm ci --ignore-scripts
+#12 CACHED
+
+#13 [service  7/11] COPY services/foundation/ /app/services/foundation/
+#13 CACHED
+
+#14 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#14 CACHED
+
+#15 [service  6/11] COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/service/live_safety.py contracts/service/live_safety_admission.py contracts/service/bindings-v1.json contracts/service/spec-v1.json /app/contracts/service/
+#15 CACHED
+
+#16 [service  3/11] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+#16 CACHED
+
+#17 [service  5/11] COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
+#17 CACHED
+
+#18 [client 3/6] COPY web/package.json web/package-lock.json ./
+#18 CACHED
+
+#19 [client 2/6] WORKDIR /client
+#19 CACHED
+
+#20 [service  4/11] COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
+#20 CACHED
+
+#21 [service  8/11] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#21 CACHED
+
+#22 [service 11/11] RUN mkdir /data && chown 10001:10001 /data
+#22 CACHED
+
+#23 [integration-tests 1/3] COPY tests/integration/replay/ /app/tests/integration/replay/
+#23 DONE 0.0s
+
+#24 [integration-tests 2/3] COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
+#24 DONE 0.0s
+
+#25 [integration-tests 3/3] COPY services/learner/worker.py services/learner/export_observed.py services/learner/live_product.py /app/services/learner/
+#25 DONE 0.0s
+
+#26 exporting to image
+#26 exporting layers 0.1s done
+#26 exporting manifest sha256:76fd82c9191de86debac60dfeacc522d9c7abd6105b2f080335d34f914fe4e52 done
+#26 exporting config sha256:a52e0da826c496b07d5b9da3eeea79dc38beb2cf510c0db1fd58400d5aef825e done
+#26 exporting attestation manifest sha256:6936b8808e75d793d7fc91b122a95fa0238aedce535ab961492656005f45c9b5 done
+#26 exporting manifest list sha256:da04e7e44120df050bc647981e59c820f3637d716ab40240a2abe764ebcc5caa 0.0s done
+#26 naming to docker.io/library/remission-lh-2d343042570d-tests:candidate done
+#26 unpacking to docker.io/library/remission-lh-2d343042570d-tests:candidate 0.1s done
+#26 DONE 0.3s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/om4zedzg52x75gw86ntwlgmer

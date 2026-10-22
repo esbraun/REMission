@@ -98,10 +98,15 @@ def archive_history(db, archive_id, partition_id, patient_id):
         kind='observed_history',patient_id=patient_id,records=[json.loads(r[0]) for r in rows])))
 
 
-def current_archive_history(settings,db,archive_id,partition_id,patient_id):
-    """Resolve exact heads across only installed, stored package revisions."""
+def current_archive_history(settings,db,archive_id,partition_id,patient_id,*,provisional=None):
+    """Registered committed heads plus a whole verified provisional partition.
+
+    Provisional bytes permit one-transaction new-package admission; they never
+    hide a committed correction/retraction from another registered package.
+    Exact live grant/source qualification is still mandatory in the caller.
+    """
     selected=[g for g in settings.installed.authority.grants if g.archive_id==archive_id and g.partition_id==partition_id and g.service_patient_id==patient_id]
-    if not selected:return archive_history(db,archive_id,partition_id,patient_id)
+    if not selected and provisional is None:return archive_history(db,archive_id,partition_id,patient_id)
     origins={(g.run_id,g.partition_id,g.source_id,g.source_version,g.account_id) for g in selected}
     records={}
     for grant in settings.installed.authority.grants:
@@ -114,6 +119,13 @@ def current_archive_history(settings,db,archive_id,partition_id,patient_id):
             if row['record_id'] in records and records[row['record_id']]!=value:
                 raise LiveError('hold_evidence_stale')
             records[row['record_id']]=value
+    if provisional is not None:
+        for partition,history,*_ in provisional.partitions:
+            if (partition.id,partition.patient_id)!=(partition_id,patient_id):continue
+            for record in history.records:
+                value=record.model_dump(mode='json')
+                if record.record_id in records and records[record.record_id]!=value:raise LiveError('hold_evidence_stale')
+                records[record.record_id]=value
     return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0',synthetic=True,kind='observed_history',patient_id=patient_id,records=list(records.values()))))
 
 
@@ -142,9 +154,9 @@ def prepare_invalidation(settings, db, owner, patient_id, data, at, *, _verified
     else:
         stored=dict(export_sha256=digest(_verified_package.raw))
         manifest,partitions,archive_authority=_verified_package.manifest,_verified_package.partitions,_verified_package.authority
-        history=next((h for p,h,*_ in partitions if p.id==data.partition_id and p.patient_id==patient_id),None)
-        if history is None or manifest.run_id+':'+manifest.id!=data.archive_id:
+        if not any(p.id==data.partition_id and p.patient_id==patient_id for p,*_ in partitions) or manifest.run_id+':'+manifest.id!=data.archive_id:
             raise LiveError('hold_dependencies_unavailable')
+        history=current_archive_history(settings,db,data.archive_id,data.partition_id,patient_id,provisional=_verified_package)
     if manifest.cutoff>at:
         raise LiveError('future_hold_evidence',422)
     if installed.authority.execution!='contract_fixture' and (manifest.execution=='contract_fixture'

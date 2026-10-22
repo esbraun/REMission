@@ -118,3 +118,22 @@ passed in da14e42f. Those command-start source maps precede the four later targe
 cases and final full-source rerun remains required. Complete independent45 repaired
 review0a0d527/execution/manifest and source-only compatibility0636e576 chain are
 preserved byte-exact. No new whole-package independent acceptance is implied.
+
+Independent c93 review found a second P1: coordinator provisional validation used
+only incoming history and could admit an old positive after a registered correction.
+Full report308baee2, failing HTTP reproduction f90095ea, valid control ca10b413 and
+manifest are preserved in the raw envelope. The repaired shared history merges all
+registered committed package heads with the verified provisional partition; the
+coordinator repeats this merged validation after writer admission before any write.
+30b14602 passes correction and retraction through both direct/coordinator routes
+(409 stale, complete safety/legacy table/version/task/cursor equality), plus a truly
+unarchived new-package positive, injected whole-transaction rollback and exact retry.
+Initial d536f3a8 retained a test assertion failure: a distinct transport alias properly
+adds one key. The corrected oracle distinguishes identical-key no-change from an
+alias-only insertion; no runtime change was needed for that behavior.
+
+The unique94 image build/final-checks directory is now historical because this
+repair changes runtime source. It passed67 domain,54 run,69 affected service,11
+artifact and11 DR cases/all6 exporters/pip/runtime on per-command captured source
+bytes. No browser cases are attributed to those images. Repaired images, affected
+full service rerun, copied UID/private boundary audit and official MCP are pending.
