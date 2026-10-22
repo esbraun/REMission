@@ -18,3 +18,7 @@ Added the root [README](../../../readme.md) as an engineer and physician-super-u
 - No app code, runtime, dependency, or infrastructure files changed. No builds, tests, containers, or fits were run for this documentation-only change.
 
 The runtime guide remains the source of truth for the full supported local launch procedure. This README intentionally links to it instead of presenting a partial command sequence as a complete application launch.
+
+## Independent review repair
+
+Independent Astra documentation review of candidate `89061ab346d885a29686f425690dad1b94ac146d` requested clarification that the base `live_stack.py` example does not enable the optional generator or analysis dispatcher (report object `61e0b00ced9654b87e3a1445bc683fb16e69b986`). This revision states the required `--generator-image $images.images.generator` option for generated panels, the additional `--analysis-dispatcher` option for asynchronous V0 fitting, and links to the runbook's complete launch recipe. It also identifies the pinned service and historical runtime images as pre-existing prerequisites checked by the build/launcher, not bootstrapped by the README command.

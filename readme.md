@@ -19,7 +19,7 @@ $evidence = 'docs/implementation/evidence/local-live-' + [guid]::NewGuid().ToStr
 python tooling/foundation/build_live.py --evidence "$evidence/build"
 ```
 
-The guide then shows how to run the checks and launch `live_stack.py` with the image IDs produced by the build. Choose a fresh evidence directory and an unused local port; use an isolated demo stack with a fresh synthetic database. For the V0 analysis workflow, see the [analysis runbook](docs/implementation/poc-analysis-runbook.md).
+The pinned service-runtime and historical-runtime images are pre-existing prerequisites: the build validates the service image and the launcher inspects the historical image; this build command does not bootstrap them on a fresh machine. Choose a fresh evidence directory and an unused local port, then use an isolated demo stack with a fresh synthetic database. To enable generated panels, pass the built generator image with `--generator-image $images.images.generator` to `live_stack.py`. To enable asynchronous V0 fitting as well, include `--analysis-dispatcher`. The [analysis runbook](docs/implementation/poc-analysis-runbook.md) provides the complete launch recipe with these options.
 
 For web-only development checks, the scripts below are declared in [`web/package.json`](web/package.json). They typecheck, test, and build the React/Vite client; they do not start the API or the complete application.
 
