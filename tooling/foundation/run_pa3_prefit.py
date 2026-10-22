@@ -4,6 +4,7 @@ No source bind mounts. Each invocation gets new preserved task-private volumes.
 The qualifier sees only a separate public-summary volume, never private rows.
 """
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import uuid
@@ -23,6 +24,15 @@ def bounded_container(argv, name, evidence, seconds):
     return outcome,metadata
 
 
+def reuse_origin(original, requested_producer, actual_producer):
+    if original['images']['producer']!=actual_producer:
+        raise ValueError('original producer container/image binding mismatch')
+    return dict(image=actual_producer,container=original['containers']['producer'],
+        original_host_source_head=original['source_head'],
+        requested_unused_producer_image=requested_producer,
+        origin_rule='reuse original producer identity; new producer argument is unused and cannot relabel original bytes')
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--evidence',type=Path,required=True)
     parser.add_argument('--producer-image',required=True);parser.add_argument('--bridge-image',required=True)
@@ -39,6 +49,11 @@ def main():
     images={name:command(['docker','image','inspect',tag,'--format','{{.Id}}'])
             for name,tag in [('producer',args.producer_image),('bridge',args.bridge_image)]}
     original=json.loads(args.existing_preparation.read_text()) if args.existing_preparation else None
+    producer_origin=None
+    if original:
+        actual=command(['docker','inspect',original['containers']['producer'],'--format','{{.Image}}'])
+        producer_origin=reuse_origin(original,images['producer'],actual)
+        images['producer']=producer_origin['image']
     volumes={name:(original['volumes'][name] if original and name!='bridge-output' else prefix+'-'+name)
              for name in ('private-preparation','public-input','bridge-output')}
     for name,volume in volumes.items():
@@ -64,11 +79,16 @@ def main():
         source_bundle='source-7c97862d',order=args.order,containers=dict(producer=producer,bridge=bridge),
         boundary='private producer output transferred once to distinct summary-only input volume; input mounted read-only; no source binds')
     manifest['existing_preparation']=str(args.existing_preparation) if original else None
+    manifest['existing_preparation_sha256']=hashlib.sha256(args.existing_preparation.read_bytes()).hexdigest() if original else None
+    manifest['producer_origin']=producer_origin
     manifest['watchdog_seconds']=1860
     (args.evidence/'deployment.json').write_text(json.dumps(manifest,indent=2)+'\n')
     # Copy the frozen private/public evidence before the numerical stage. These
     # immutable named volumes remain the authoritative originals.
     command(['docker','cp',producer+':/output/studies',str(args.evidence/'studies')])
+    manifest['public_summary_files']={p.name:hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted((args.evidence/'studies/public').glob('*.json'))}
+    (args.evidence/'deployment.json').write_text(json.dumps(manifest,indent=2)+'\n')
     argv=['docker','run','--name',bridge,*limits,*mounts('public-input','/input',True),
         *mounts('bridge-output','/output'),images['bridge'],'--sources','/input/source-7c97862d.json',
         '--output','/output/prefit','--order',str(args.order)]

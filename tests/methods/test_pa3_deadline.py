@@ -10,9 +10,18 @@ from unittest.mock import patch
 import numpy as np
 from qualify_pa3_bridge import diagnosis, freeze, run
 from capture import run as capture_run
+from run_pa3_prefit import reuse_origin
 
 
 class DeadlineTests(unittest.TestCase):
+    def test_reuse_preserves_original_producer_and_rejects_contradictory_image(self):
+        original=dict(images=dict(producer='old-image'),containers=dict(producer='original-container'),source_head='original-host-head')
+        origin=reuse_origin(original,'new-unused-image','old-image')
+        self.assertEqual(origin['image'],'old-image')
+        self.assertEqual(origin['requested_unused_producer_image'],'new-unused-image')
+        self.assertEqual(origin['container'],'original-container')
+        with self.assertRaises(ValueError):reuse_origin(original,'new-image','contradictory-image')
+
     def test_external_command_timeout_retains_streams(self):
         with tempfile.TemporaryDirectory() as directory,patch('capture.subprocess.check_output',side_effect=[b'',b'fixture-head\n']):
             result,metadata=capture_run([sys.executable,'-c',"import time;print('before-timeout',flush=True);time.sleep(10)"],Path(directory),timeout_seconds=.2)
