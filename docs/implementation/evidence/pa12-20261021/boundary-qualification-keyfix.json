@@ -1,0 +1,39 @@
+{
+  "analysis": {
+    "status": "passed",
+    "uid": 10002,
+    "input_hash": "fa7a1aebb7b1737d8afdfe7f7324835d0a04e9725ab25f7337dcd7898dd7bb4d",
+    "configuration": {
+      "id": "poc-visit-v1",
+      "version": "1.1.1",
+      "sha256": "b3c3e4c7b3cad7a231ae677407a34d0d0b93ca8e588f27d7dc82b75ab717a3d6"
+    },
+    "reduced_history_only": true,
+    "source_files": 32,
+    "source_commit": "62e35f45c7e11354ded6a13ae0a9cc779444075a",
+    "learner_image": "sha256:2dd7e54271a25ef587bcef17f0878df5417d5735587ab6b5d4278dc37110d2ae",
+    "positive_controls": [
+      "source",
+      "mount-readonly",
+      "network"
+    ]
+  },
+  "poc": {
+    "status": "passed",
+    "source_head": "62e35f45c7e11354ded6a13ae0a9cc779444075a",
+    "images": {
+      "service": "sha256:074cb83cca303e4bb54df0e904c4c52da8fa9650b5de3b5c3b04f676e4dfc614",
+      "tests": "sha256:eb6e35e15a2dd77e52b18a8e4e788ede5d7b795741aa1f27cd424c2d1815c25b",
+      "learner": "sha256:2dd7e54271a25ef587bcef17f0878df5417d5735587ab6b5d4278dc37110d2ae",
+      "evaluator": "sha256:76183eb3eab3e3f9f807d437e53c50c09a83183932de17db04aacdf42393fb70",
+      "generator": "sha256:a657e6e920e97af3e401bbebf1b8d45daede8da8878ec248a0ff81eeab8cb55f"
+    },
+    "url": "http://127.0.0.1:8777",
+    "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "generator_no_mount_or_host_port": true,
+    "service_rpc": true,
+    "reachable_misconfiguration_rejected": true,
+    "learner_network": "none",
+    "learner_public_projection_only": true
+  }
+}

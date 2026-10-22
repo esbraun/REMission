@@ -1,0 +1,1436 @@
+{
+  "volume": "remission-pa12-chain-copied-sol261021",
+  "frozen": true,
+  "consume": {
+    "uid": 10001,
+    "network": "none",
+    "mount": "read-only"
+  },
+  "phase4": {
+    "status": "three-actual-003-to004-intermediates",
+    "source_sha256": "9d1a5169c717d02f440bb9dbb3be55776fe6036ace8c8a30e382fd231fa054bf",
+    "pinned_service_image": "sha256:a92d7bda327ce7eb06a1d8ee03193d4090f148f48034bee63655d3cd8402dbcb",
+    "source_head": "ef71ae01953462e65be5d1bd7d6c6359c84a3139",
+    "generation": 2,
+    "original_task_ids": [
+      "hold-review-dc49e56453d74f03bcaa742830e44304"
+    ]
+  },
+  "phase5": {
+    "status": "passed",
+    "cases": [
+      {
+        "case": "normal",
+        "status": "passed",
+        "physical_identity_preserved": true,
+        "existing_table_bytes_preserved": true,
+        "authority_generation": 2
+      },
+      {
+        "case": "before-commit",
+        "status": "passed",
+        "physical_identity_preserved": true,
+        "existing_table_bytes_preserved": true,
+        "authority_generation": 2
+      },
+      {
+        "case": "after-commit",
+        "status": "passed",
+        "physical_identity_preserved": true,
+        "existing_table_bytes_preserved": true,
+        "authority_generation": 2
+      }
+    ],
+    "old_cli_refuses_before_mutation": true,
+    "source004_generation_effects_not_replayed": true
+  },
+  "files": {
+    "volume": "remission-pa12-chain-copied-sol261021",
+    "frozen": true,
+    "files": [
+      {
+        "path": "new-bundle.json",
+        "sha256": "64460e414944e14a1d7b38426b912a5717881540a216af293d4ac59af60992db",
+        "size": 3729
+      },
+      {
+        "path": "phase4.json",
+        "sha256": "f7458be988a22a73e01956a9f3baf3be830ef3233777c6138b3fc0e571f9e8c1",
+        "size": 404
+      },
+      {
+        "path": "phase5.json",
+        "sha256": "b0e7d6fb316b01c10eec99979fefcdc229b10ad61e722d0afe3fa0bd448f15a3",
+        "size": 703
+      },
+      {
+        "path": "reader-create.json",
+        "sha256": "e46ab7ff0b9cf0c1c4f9df1c9f49ae231adfbfb5402a078e3f4446610e41ff98",
+        "size": 571
+      },
+      {
+        "path": "after-commit\\after005.json",
+        "sha256": "8d965ed7d559f3ddb21f06c669c44ce93316f4df16570bb3f248884a9ff537c0",
+        "size": 4980
+      },
+      {
+        "path": "after-commit\\before005.json",
+        "sha256": "31163882bc9fd8948322d13d7709332b4a1573cee8df8db82d336aafc87417e7",
+        "size": 6441
+      },
+      {
+        "path": "before-commit\\after005.json",
+        "sha256": "892d02910adc76a745eff040e004abe734262b67f7e645449071bb4cbc8e769e",
+        "size": 4981
+      },
+      {
+        "path": "before-commit\\before005.json",
+        "sha256": "9c136e98617e75b848c6f8c60fafe65fcb83f951446758e3df9da7535b768ca8",
+        "size": 6441
+      },
+      {
+        "path": "normal\\after005.json",
+        "sha256": "eeb549975bd7b50fbbb6bcf16f7501563ed4c9cee979378ec47480b7645226a6",
+        "size": 4974
+      },
+      {
+        "path": "normal\\before005.json",
+        "sha256": "11ead2c558b9985e00f153fcb1ce21f85a5633bb3806dfedfccfaebb4ba4a2fe",
+        "size": 6441
+      }
+    ]
+  },
+  "cases": {
+    "normal": {
+      "before005": {
+        "tables": {
+          "accounts": {
+            "rows": 2,
+            "sha256": "5d28d1f4f493f8b85a07397018fafa3143a1521ea9cfefeea8b25c3165541013"
+          },
+          "bundles": {
+            "rows": 1,
+            "sha256": "df57980d2523d00bd8a6a34892d4d3d70fc30115493436cf01a1354d8d25fd2c"
+          },
+          "decisions": {
+            "rows": 15,
+            "sha256": "cc890f4f478aa00a390735fab98c5665cb60ab2c1716e7ff90a0e4bc7c53a098"
+          },
+          "drafts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "ingestion_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_activation_receipts": {
+            "rows": 2,
+            "sha256": "7e9a3de0c06af402fd280294ba790343e4514701393f349712228a1aa7323675"
+          },
+          "live_authority_history": {
+            "rows": 2,
+            "sha256": "7f4c9fdd5f6b4534143d93b465d2709e31216cebde6c5c20ae47e195df81d2d3"
+          },
+          "live_export_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_task_events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_tasks": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_episodes": {
+            "rows": 1,
+            "sha256": "22ad4d5e2eb2cc1c19e3912be985b539dec9f8678b582153ae20ba3e9ca29a0b"
+          },
+          "live_hold_keys": {
+            "rows": 2,
+            "sha256": "909a6c54c7495952a3bf8f39ab89a889c741dda047536544665e66fba0cd45cb"
+          },
+          "live_hold_operations": {
+            "rows": 3,
+            "sha256": "71fb9be73be8c2fda0935ab06c76fec76d9e11dae3c5f0804238cace8656e0f3"
+          },
+          "live_hold_reviews": {
+            "rows": 1,
+            "sha256": "7d345c4376871a2c260f9297f46674c5e3d9be53c1da9b7282e4434fa1e9c570"
+          },
+          "live_hold_task_bindings": {
+            "rows": 1,
+            "sha256": "54fc847bca6d719a5388b926d947f36170fb5729724afc2f933a68bdeff4579c"
+          },
+          "live_hold_task_events": {
+            "rows": 2,
+            "sha256": "a7079f8c6a126271c852e6e229902b047d6d77bce150ce11375d50cbdc94745e"
+          },
+          "live_hold_tasks": {
+            "rows": 1,
+            "sha256": "217e470c10a5df2fcdcfc9eeaafecbd7ca6e50f4904164eceb10136db3ec6da2"
+          },
+          "live_patient_journals": {
+            "rows": 11,
+            "sha256": "16cc5de2d38f05e85c61451f9281a147d15f92658b0e891d4777f561925a8d79"
+          },
+          "live_projection_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_safety_facts": {
+            "rows": 14,
+            "sha256": "9e4b5fb486fc14a7d9052c217b8d009f440d201ff542cedadae5eb238597e9b7"
+          },
+          "login_attempts": {
+            "rows": 1,
+            "sha256": "0cc08f47e168afec4526fd5160214bf2942ba450562078f531539fd7b06db6c9"
+          },
+          "observed_archive_artifacts": {
+            "rows": 8,
+            "sha256": "cc6eea3761b58b9927a97330543d50ede9524229fe2480e042429dfb39acb0ed"
+          },
+          "observed_archive_entries": {
+            "rows": 17,
+            "sha256": "4c98de2a12b0588b5f176064242255af0973651a0bc0b48ea37a60ae0a81c240"
+          },
+          "observed_archives": {
+            "rows": 1,
+            "sha256": "97e2f97a552814f8041104d6be3632a0096c7477a48db2b20a06bc1f3d5fea15"
+          },
+          "patients": {
+            "rows": 11,
+            "sha256": "31604493bcb6d6fecf4cb2ede8667434faf782ade5815df545f1259542396cf0"
+          },
+          "pending_work": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "receipts": {
+            "rows": 1,
+            "sha256": "269795bcbb7524bed527659a4380353ae3015842e5e07b5f546bb4d3715be2c3"
+          },
+          "replay_runs": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "schema_migrations": {
+            "rows": 4,
+            "sha256": "693cb228e8f7f6821b9e3f603f883b2e243c31e4d6f6fb27aca2f6ade9cc0594"
+          },
+          "service_control": {
+            "rows": 1,
+            "sha256": "3b55d5f23837adb165c57f9645aab155f46ae7d8f383d3e92c4270a310fb881e"
+          },
+          "sessions": {
+            "rows": 2,
+            "sha256": "d4f4842cb5841ae35eec20abf5216fdf837bc16447158ae7ef43153eb3da5ca3"
+          },
+          "sqlite_sequence": {
+            "rows": 1,
+            "sha256": "4e389898f927972b95a85ea5b95766a14d9ec292716a0f3d38a38fd10f96f834"
+          },
+          "state_changes": {
+            "rows": 4,
+            "sha256": "0a86fe8d95e04e4edfff3db6d06fedd47ca8a764a191a3314920f9028b72318f"
+          },
+          "tasks": {
+            "rows": 1,
+            "sha256": "d9af9b9325f5e1ee92f7f2d0c09f8c1b357b4089168a06822522723006973d9b"
+          }
+        },
+        "control": {
+          "singleton": 1,
+          "database_instance_id": "1a23e94b-eb3a-4ca5-bba0-0b06f343a3e6",
+          "capability": "LIVE-HOLD-01/1.0.0",
+          "minimum_reader_writer_capability": "LIVE-HOLD-01/1.0.0",
+          "authority_generation": 2,
+          "authority_sha256": "35e9943e5e2e5f1f928e0a7d236d64f6dc269924d369dd720b32fdbcbcb6f071",
+          "review_rules_sha256": "7dcc7e8eb5704ce4b60b11adfc3b2c084b2adb9583966d6694f85f33c9435a88",
+          "enabled": 1,
+          "activation_id": "activation-63cfdb93e7304e6abf6aebbf4ebe5416",
+          "activated_at": "2026-10-21T12:00:00+00:00",
+          "last_receipt_at": "2026-10-21T12:00:00+00:00",
+          "database_device": 2096,
+          "database_inode": 535325,
+          "lock_device": 2096,
+          "lock_inode": 535326
+        },
+        "migrations": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "patient_versions": [
+          [
+            "SYN-01",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-02",
+            5,
+            5,
+            1,
+            5
+          ],
+          [
+            "SYN-03",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-04",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-05",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-06",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-07",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-08",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-09",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-10",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-B01",
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "task_ids": [
+          "hold-review-dc49e56453d74f03bcaa742830e44304"
+        ],
+        "review_ids": [
+          "review-35507d9b7ac54ac5a1be06fe1d4c5b50"
+        ],
+        "foreign_keys": [],
+        "database_sha256": "1df5f80522cd5aff8215ee1765fe44fa1e4b148eee25e1036fa9a1fe8785b967"
+      },
+      "after005": {
+        "case": "normal",
+        "status": "passed",
+        "physical_identity_preserved": true,
+        "existing_table_bytes_preserved": true,
+        "authority_generation": 2,
+        "after_tables": {
+          "accounts": {
+            "rows": 2,
+            "sha256": "5d28d1f4f493f8b85a07397018fafa3143a1521ea9cfefeea8b25c3165541013"
+          },
+          "analysis_attempts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "bundles": {
+            "rows": 1,
+            "sha256": "df57980d2523d00bd8a6a34892d4d3d70fc30115493436cf01a1354d8d25fd2c"
+          },
+          "decisions": {
+            "rows": 15,
+            "sha256": "cc890f4f478aa00a390735fab98c5665cb60ab2c1716e7ff90a0e4bc7c53a098"
+          },
+          "drafts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "ingestion_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_activation_receipts": {
+            "rows": 2,
+            "sha256": "7e9a3de0c06af402fd280294ba790343e4514701393f349712228a1aa7323675"
+          },
+          "live_authority_history": {
+            "rows": 2,
+            "sha256": "7f4c9fdd5f6b4534143d93b465d2709e31216cebde6c5c20ae47e195df81d2d3"
+          },
+          "live_export_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_task_events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_tasks": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_episodes": {
+            "rows": 1,
+            "sha256": "22ad4d5e2eb2cc1c19e3912be985b539dec9f8678b582153ae20ba3e9ca29a0b"
+          },
+          "live_hold_keys": {
+            "rows": 2,
+            "sha256": "909a6c54c7495952a3bf8f39ab89a889c741dda047536544665e66fba0cd45cb"
+          },
+          "live_hold_operations": {
+            "rows": 3,
+            "sha256": "71fb9be73be8c2fda0935ab06c76fec76d9e11dae3c5f0804238cace8656e0f3"
+          },
+          "live_hold_reviews": {
+            "rows": 1,
+            "sha256": "7d345c4376871a2c260f9297f46674c5e3d9be53c1da9b7282e4434fa1e9c570"
+          },
+          "live_hold_task_bindings": {
+            "rows": 1,
+            "sha256": "54fc847bca6d719a5388b926d947f36170fb5729724afc2f933a68bdeff4579c"
+          },
+          "live_hold_task_events": {
+            "rows": 2,
+            "sha256": "a7079f8c6a126271c852e6e229902b047d6d77bce150ce11375d50cbdc94745e"
+          },
+          "live_hold_tasks": {
+            "rows": 1,
+            "sha256": "217e470c10a5df2fcdcfc9eeaafecbd7ca6e50f4904164eceb10136db3ec6da2"
+          },
+          "live_patient_journals": {
+            "rows": 11,
+            "sha256": "16cc5de2d38f05e85c61451f9281a147d15f92658b0e891d4777f561925a8d79"
+          },
+          "live_projection_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_safety_facts": {
+            "rows": 14,
+            "sha256": "9e4b5fb486fc14a7d9052c217b8d009f440d201ff542cedadae5eb238597e9b7"
+          },
+          "login_attempts": {
+            "rows": 1,
+            "sha256": "0cc08f47e168afec4526fd5160214bf2942ba450562078f531539fd7b06db6c9"
+          },
+          "observed_archive_artifacts": {
+            "rows": 8,
+            "sha256": "cc6eea3761b58b9927a97330543d50ede9524229fe2480e042429dfb39acb0ed"
+          },
+          "observed_archive_entries": {
+            "rows": 17,
+            "sha256": "4c98de2a12b0588b5f176064242255af0973651a0bc0b48ea37a60ae0a81c240"
+          },
+          "observed_archives": {
+            "rows": 1,
+            "sha256": "97e2f97a552814f8041104d6be3632a0096c7477a48db2b20a06bc1f3d5fea15"
+          },
+          "patients": {
+            "rows": 11,
+            "sha256": "31604493bcb6d6fecf4cb2ede8667434faf782ade5815df545f1259542396cf0"
+          },
+          "pending_work": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "receipts": {
+            "rows": 1,
+            "sha256": "269795bcbb7524bed527659a4380353ae3015842e5e07b5f546bb4d3715be2c3"
+          },
+          "replay_runs": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "schema_migrations": {
+            "rows": 5,
+            "sha256": "510d473050cf9b22f564968a6a1b4ecd1a9052d9cdb6fb70795ffd012b4c7205"
+          },
+          "service_control": {
+            "rows": 1,
+            "sha256": "3b55d5f23837adb165c57f9645aab155f46ae7d8f383d3e92c4270a310fb881e"
+          },
+          "sessions": {
+            "rows": 2,
+            "sha256": "d4f4842cb5841ae35eec20abf5216fdf837bc16447158ae7ef43153eb3da5ca3"
+          },
+          "sqlite_sequence": {
+            "rows": 1,
+            "sha256": "4e389898f927972b95a85ea5b95766a14d9ec292716a0f3d38a38fd10f96f834"
+          },
+          "state_changes": {
+            "rows": 4,
+            "sha256": "0a86fe8d95e04e4edfff3db6d06fedd47ca8a764a191a3314920f9028b72318f"
+          },
+          "tasks": {
+            "rows": 1,
+            "sha256": "d9af9b9325f5e1ee92f7f2d0c09f8c1b357b4089168a06822522723006973d9b"
+          }
+        }
+      }
+    },
+    "before-commit": {
+      "before005": {
+        "tables": {
+          "accounts": {
+            "rows": 2,
+            "sha256": "5d28d1f4f493f8b85a07397018fafa3143a1521ea9cfefeea8b25c3165541013"
+          },
+          "bundles": {
+            "rows": 1,
+            "sha256": "df57980d2523d00bd8a6a34892d4d3d70fc30115493436cf01a1354d8d25fd2c"
+          },
+          "decisions": {
+            "rows": 15,
+            "sha256": "cc890f4f478aa00a390735fab98c5665cb60ab2c1716e7ff90a0e4bc7c53a098"
+          },
+          "drafts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "ingestion_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_activation_receipts": {
+            "rows": 2,
+            "sha256": "7e9a3de0c06af402fd280294ba790343e4514701393f349712228a1aa7323675"
+          },
+          "live_authority_history": {
+            "rows": 2,
+            "sha256": "7f4c9fdd5f6b4534143d93b465d2709e31216cebde6c5c20ae47e195df81d2d3"
+          },
+          "live_export_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_task_events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_tasks": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_episodes": {
+            "rows": 1,
+            "sha256": "80ab65eb20bddf4fd906af6847d246557f6b0328458e7bb8f0df3061d16898db"
+          },
+          "live_hold_keys": {
+            "rows": 2,
+            "sha256": "909a6c54c7495952a3bf8f39ab89a889c741dda047536544665e66fba0cd45cb"
+          },
+          "live_hold_operations": {
+            "rows": 3,
+            "sha256": "7e31499a604dbbd0671e75d5661c4dec50ddf068209ee2a64cd60be9bd84d9d1"
+          },
+          "live_hold_reviews": {
+            "rows": 1,
+            "sha256": "7d345c4376871a2c260f9297f46674c5e3d9be53c1da9b7282e4434fa1e9c570"
+          },
+          "live_hold_task_bindings": {
+            "rows": 1,
+            "sha256": "54fc847bca6d719a5388b926d947f36170fb5729724afc2f933a68bdeff4579c"
+          },
+          "live_hold_task_events": {
+            "rows": 2,
+            "sha256": "595cc9780802141a71992ec320ce592d19b7c46e1492e3621cf9494dbd01ce2f"
+          },
+          "live_hold_tasks": {
+            "rows": 1,
+            "sha256": "217e470c10a5df2fcdcfc9eeaafecbd7ca6e50f4904164eceb10136db3ec6da2"
+          },
+          "live_patient_journals": {
+            "rows": 11,
+            "sha256": "16cc5de2d38f05e85c61451f9281a147d15f92658b0e891d4777f561925a8d79"
+          },
+          "live_projection_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_safety_facts": {
+            "rows": 14,
+            "sha256": "f2006ca7ee2f531a32bbb98322c92cee131c2fb486dfa7247c59b9705bed953f"
+          },
+          "login_attempts": {
+            "rows": 1,
+            "sha256": "0cc08f47e168afec4526fd5160214bf2942ba450562078f531539fd7b06db6c9"
+          },
+          "observed_archive_artifacts": {
+            "rows": 8,
+            "sha256": "cc6eea3761b58b9927a97330543d50ede9524229fe2480e042429dfb39acb0ed"
+          },
+          "observed_archive_entries": {
+            "rows": 17,
+            "sha256": "4c98de2a12b0588b5f176064242255af0973651a0bc0b48ea37a60ae0a81c240"
+          },
+          "observed_archives": {
+            "rows": 1,
+            "sha256": "97e2f97a552814f8041104d6be3632a0096c7477a48db2b20a06bc1f3d5fea15"
+          },
+          "patients": {
+            "rows": 11,
+            "sha256": "31604493bcb6d6fecf4cb2ede8667434faf782ade5815df545f1259542396cf0"
+          },
+          "pending_work": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "receipts": {
+            "rows": 1,
+            "sha256": "269795bcbb7524bed527659a4380353ae3015842e5e07b5f546bb4d3715be2c3"
+          },
+          "replay_runs": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "schema_migrations": {
+            "rows": 4,
+            "sha256": "693cb228e8f7f6821b9e3f603f883b2e243c31e4d6f6fb27aca2f6ade9cc0594"
+          },
+          "service_control": {
+            "rows": 1,
+            "sha256": "1bda580d6e895b9003224031790a9b9ffc180a654882f0dcb9b0241135d826d5"
+          },
+          "sessions": {
+            "rows": 2,
+            "sha256": "d4f4842cb5841ae35eec20abf5216fdf837bc16447158ae7ef43153eb3da5ca3"
+          },
+          "sqlite_sequence": {
+            "rows": 1,
+            "sha256": "4e389898f927972b95a85ea5b95766a14d9ec292716a0f3d38a38fd10f96f834"
+          },
+          "state_changes": {
+            "rows": 4,
+            "sha256": "7b19c063259fd28f832eb994668fb7498cad52d6bebf8c34421092266fd5ea19"
+          },
+          "tasks": {
+            "rows": 1,
+            "sha256": "d9af9b9325f5e1ee92f7f2d0c09f8c1b357b4089168a06822522723006973d9b"
+          }
+        },
+        "control": {
+          "singleton": 1,
+          "database_instance_id": "1a23e94b-eb3a-4ca5-bba0-0b06f343a3e6",
+          "capability": "LIVE-HOLD-01/1.0.0",
+          "minimum_reader_writer_capability": "LIVE-HOLD-01/1.0.0",
+          "authority_generation": 2,
+          "authority_sha256": "35e9943e5e2e5f1f928e0a7d236d64f6dc269924d369dd720b32fdbcbcb6f071",
+          "review_rules_sha256": "7dcc7e8eb5704ce4b60b11adfc3b2c084b2adb9583966d6694f85f33c9435a88",
+          "enabled": 1,
+          "activation_id": "activation-63cfdb93e7304e6abf6aebbf4ebe5416",
+          "activated_at": "2026-10-21T12:00:00+00:00",
+          "last_receipt_at": "2026-10-21T12:00:00+00:00",
+          "database_device": 2096,
+          "database_inode": 535330,
+          "lock_device": 2096,
+          "lock_inode": 535331
+        },
+        "migrations": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "patient_versions": [
+          [
+            "SYN-01",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-02",
+            5,
+            5,
+            1,
+            5
+          ],
+          [
+            "SYN-03",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-04",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-05",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-06",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-07",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-08",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-09",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-10",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-B01",
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "task_ids": [
+          "hold-review-dc49e56453d74f03bcaa742830e44304"
+        ],
+        "review_ids": [
+          "review-35507d9b7ac54ac5a1be06fe1d4c5b50"
+        ],
+        "foreign_keys": [],
+        "database_sha256": "e85ab21d4712739750b1b4f3b054dad78de66f289f844abb915cebe5aa651af2"
+      },
+      "after005": {
+        "case": "before-commit",
+        "status": "passed",
+        "physical_identity_preserved": true,
+        "existing_table_bytes_preserved": true,
+        "authority_generation": 2,
+        "after_tables": {
+          "accounts": {
+            "rows": 2,
+            "sha256": "5d28d1f4f493f8b85a07397018fafa3143a1521ea9cfefeea8b25c3165541013"
+          },
+          "analysis_attempts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "bundles": {
+            "rows": 1,
+            "sha256": "df57980d2523d00bd8a6a34892d4d3d70fc30115493436cf01a1354d8d25fd2c"
+          },
+          "decisions": {
+            "rows": 15,
+            "sha256": "cc890f4f478aa00a390735fab98c5665cb60ab2c1716e7ff90a0e4bc7c53a098"
+          },
+          "drafts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "ingestion_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_activation_receipts": {
+            "rows": 2,
+            "sha256": "7e9a3de0c06af402fd280294ba790343e4514701393f349712228a1aa7323675"
+          },
+          "live_authority_history": {
+            "rows": 2,
+            "sha256": "7f4c9fdd5f6b4534143d93b465d2709e31216cebde6c5c20ae47e195df81d2d3"
+          },
+          "live_export_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_task_events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_tasks": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_episodes": {
+            "rows": 1,
+            "sha256": "80ab65eb20bddf4fd906af6847d246557f6b0328458e7bb8f0df3061d16898db"
+          },
+          "live_hold_keys": {
+            "rows": 2,
+            "sha256": "909a6c54c7495952a3bf8f39ab89a889c741dda047536544665e66fba0cd45cb"
+          },
+          "live_hold_operations": {
+            "rows": 3,
+            "sha256": "7e31499a604dbbd0671e75d5661c4dec50ddf068209ee2a64cd60be9bd84d9d1"
+          },
+          "live_hold_reviews": {
+            "rows": 1,
+            "sha256": "7d345c4376871a2c260f9297f46674c5e3d9be53c1da9b7282e4434fa1e9c570"
+          },
+          "live_hold_task_bindings": {
+            "rows": 1,
+            "sha256": "54fc847bca6d719a5388b926d947f36170fb5729724afc2f933a68bdeff4579c"
+          },
+          "live_hold_task_events": {
+            "rows": 2,
+            "sha256": "595cc9780802141a71992ec320ce592d19b7c46e1492e3621cf9494dbd01ce2f"
+          },
+          "live_hold_tasks": {
+            "rows": 1,
+            "sha256": "217e470c10a5df2fcdcfc9eeaafecbd7ca6e50f4904164eceb10136db3ec6da2"
+          },
+          "live_patient_journals": {
+            "rows": 11,
+            "sha256": "16cc5de2d38f05e85c61451f9281a147d15f92658b0e891d4777f561925a8d79"
+          },
+          "live_projection_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_safety_facts": {
+            "rows": 14,
+            "sha256": "f2006ca7ee2f531a32bbb98322c92cee131c2fb486dfa7247c59b9705bed953f"
+          },
+          "login_attempts": {
+            "rows": 1,
+            "sha256": "0cc08f47e168afec4526fd5160214bf2942ba450562078f531539fd7b06db6c9"
+          },
+          "observed_archive_artifacts": {
+            "rows": 8,
+            "sha256": "cc6eea3761b58b9927a97330543d50ede9524229fe2480e042429dfb39acb0ed"
+          },
+          "observed_archive_entries": {
+            "rows": 17,
+            "sha256": "4c98de2a12b0588b5f176064242255af0973651a0bc0b48ea37a60ae0a81c240"
+          },
+          "observed_archives": {
+            "rows": 1,
+            "sha256": "97e2f97a552814f8041104d6be3632a0096c7477a48db2b20a06bc1f3d5fea15"
+          },
+          "patients": {
+            "rows": 11,
+            "sha256": "31604493bcb6d6fecf4cb2ede8667434faf782ade5815df545f1259542396cf0"
+          },
+          "pending_work": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "receipts": {
+            "rows": 1,
+            "sha256": "269795bcbb7524bed527659a4380353ae3015842e5e07b5f546bb4d3715be2c3"
+          },
+          "replay_runs": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "schema_migrations": {
+            "rows": 5,
+            "sha256": "510d473050cf9b22f564968a6a1b4ecd1a9052d9cdb6fb70795ffd012b4c7205"
+          },
+          "service_control": {
+            "rows": 1,
+            "sha256": "1bda580d6e895b9003224031790a9b9ffc180a654882f0dcb9b0241135d826d5"
+          },
+          "sessions": {
+            "rows": 2,
+            "sha256": "d4f4842cb5841ae35eec20abf5216fdf837bc16447158ae7ef43153eb3da5ca3"
+          },
+          "sqlite_sequence": {
+            "rows": 1,
+            "sha256": "4e389898f927972b95a85ea5b95766a14d9ec292716a0f3d38a38fd10f96f834"
+          },
+          "state_changes": {
+            "rows": 4,
+            "sha256": "7b19c063259fd28f832eb994668fb7498cad52d6bebf8c34421092266fd5ea19"
+          },
+          "tasks": {
+            "rows": 1,
+            "sha256": "d9af9b9325f5e1ee92f7f2d0c09f8c1b357b4089168a06822522723006973d9b"
+          }
+        }
+      }
+    },
+    "after-commit": {
+      "before005": {
+        "tables": {
+          "accounts": {
+            "rows": 2,
+            "sha256": "5d28d1f4f493f8b85a07397018fafa3143a1521ea9cfefeea8b25c3165541013"
+          },
+          "bundles": {
+            "rows": 1,
+            "sha256": "df57980d2523d00bd8a6a34892d4d3d70fc30115493436cf01a1354d8d25fd2c"
+          },
+          "decisions": {
+            "rows": 15,
+            "sha256": "cc890f4f478aa00a390735fab98c5665cb60ab2c1716e7ff90a0e4bc7c53a098"
+          },
+          "drafts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "ingestion_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_activation_receipts": {
+            "rows": 2,
+            "sha256": "7e9a3de0c06af402fd280294ba790343e4514701393f349712228a1aa7323675"
+          },
+          "live_authority_history": {
+            "rows": 2,
+            "sha256": "7f4c9fdd5f6b4534143d93b465d2709e31216cebde6c5c20ae47e195df81d2d3"
+          },
+          "live_export_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_task_events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_tasks": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_episodes": {
+            "rows": 1,
+            "sha256": "1a4a055c4c717e21469bf2768b7c33d7a603b9d8dbe5a0916a9290d26e1fee1d"
+          },
+          "live_hold_keys": {
+            "rows": 2,
+            "sha256": "909a6c54c7495952a3bf8f39ab89a889c741dda047536544665e66fba0cd45cb"
+          },
+          "live_hold_operations": {
+            "rows": 3,
+            "sha256": "19df7a88f7428707e15bd8b5f3f48f0cb3f9ebd416957b433f750bd8cd6749a5"
+          },
+          "live_hold_reviews": {
+            "rows": 1,
+            "sha256": "7d345c4376871a2c260f9297f46674c5e3d9be53c1da9b7282e4434fa1e9c570"
+          },
+          "live_hold_task_bindings": {
+            "rows": 1,
+            "sha256": "54fc847bca6d719a5388b926d947f36170fb5729724afc2f933a68bdeff4579c"
+          },
+          "live_hold_task_events": {
+            "rows": 2,
+            "sha256": "c300b7a2a19b171fe4c8145f48b0bc42552ae2164282bf74ffc95dbd749ee63f"
+          },
+          "live_hold_tasks": {
+            "rows": 1,
+            "sha256": "217e470c10a5df2fcdcfc9eeaafecbd7ca6e50f4904164eceb10136db3ec6da2"
+          },
+          "live_patient_journals": {
+            "rows": 11,
+            "sha256": "16cc5de2d38f05e85c61451f9281a147d15f92658b0e891d4777f561925a8d79"
+          },
+          "live_projection_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_safety_facts": {
+            "rows": 14,
+            "sha256": "63097096ac45b5ec796659eacf422c1a21532b705c4065e20408ff37358c7aa6"
+          },
+          "login_attempts": {
+            "rows": 1,
+            "sha256": "0cc08f47e168afec4526fd5160214bf2942ba450562078f531539fd7b06db6c9"
+          },
+          "observed_archive_artifacts": {
+            "rows": 8,
+            "sha256": "cc6eea3761b58b9927a97330543d50ede9524229fe2480e042429dfb39acb0ed"
+          },
+          "observed_archive_entries": {
+            "rows": 17,
+            "sha256": "4c98de2a12b0588b5f176064242255af0973651a0bc0b48ea37a60ae0a81c240"
+          },
+          "observed_archives": {
+            "rows": 1,
+            "sha256": "97e2f97a552814f8041104d6be3632a0096c7477a48db2b20a06bc1f3d5fea15"
+          },
+          "patients": {
+            "rows": 11,
+            "sha256": "31604493bcb6d6fecf4cb2ede8667434faf782ade5815df545f1259542396cf0"
+          },
+          "pending_work": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "receipts": {
+            "rows": 1,
+            "sha256": "269795bcbb7524bed527659a4380353ae3015842e5e07b5f546bb4d3715be2c3"
+          },
+          "replay_runs": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "schema_migrations": {
+            "rows": 4,
+            "sha256": "693cb228e8f7f6821b9e3f603f883b2e243c31e4d6f6fb27aca2f6ade9cc0594"
+          },
+          "service_control": {
+            "rows": 1,
+            "sha256": "3da43e3b131f6ce3ad15aae9efb75cb6a42ed0c75be2098bede68d265b8b7582"
+          },
+          "sessions": {
+            "rows": 2,
+            "sha256": "d4f4842cb5841ae35eec20abf5216fdf837bc16447158ae7ef43153eb3da5ca3"
+          },
+          "sqlite_sequence": {
+            "rows": 1,
+            "sha256": "4e389898f927972b95a85ea5b95766a14d9ec292716a0f3d38a38fd10f96f834"
+          },
+          "state_changes": {
+            "rows": 4,
+            "sha256": "421226739cfb03620b7b27155cd7778b5ed6b43b0e779bf349158b6affff2478"
+          },
+          "tasks": {
+            "rows": 1,
+            "sha256": "d9af9b9325f5e1ee92f7f2d0c09f8c1b357b4089168a06822522723006973d9b"
+          }
+        },
+        "control": {
+          "singleton": 1,
+          "database_instance_id": "1a23e94b-eb3a-4ca5-bba0-0b06f343a3e6",
+          "capability": "LIVE-HOLD-01/1.0.0",
+          "minimum_reader_writer_capability": "LIVE-HOLD-01/1.0.0",
+          "authority_generation": 2,
+          "authority_sha256": "35e9943e5e2e5f1f928e0a7d236d64f6dc269924d369dd720b32fdbcbcb6f071",
+          "review_rules_sha256": "7dcc7e8eb5704ce4b60b11adfc3b2c084b2adb9583966d6694f85f33c9435a88",
+          "enabled": 1,
+          "activation_id": "activation-63cfdb93e7304e6abf6aebbf4ebe5416",
+          "activated_at": "2026-10-21T12:00:00+00:00",
+          "last_receipt_at": "2026-10-21T12:00:00+00:00",
+          "database_device": 2096,
+          "database_inode": 535335,
+          "lock_device": 2096,
+          "lock_inode": 535336
+        },
+        "migrations": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "patient_versions": [
+          [
+            "SYN-01",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-02",
+            5,
+            5,
+            1,
+            5
+          ],
+          [
+            "SYN-03",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-04",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-05",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-06",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-07",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-08",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-09",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-10",
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            "SYN-B01",
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "task_ids": [
+          "hold-review-dc49e56453d74f03bcaa742830e44304"
+        ],
+        "review_ids": [
+          "review-35507d9b7ac54ac5a1be06fe1d4c5b50"
+        ],
+        "foreign_keys": [],
+        "database_sha256": "d12f3dcb7dd2402d379a793eee0d815b583583a191d02f66d835a53b4998a1d4"
+      },
+      "after005": {
+        "case": "after-commit",
+        "status": "passed",
+        "physical_identity_preserved": true,
+        "existing_table_bytes_preserved": true,
+        "authority_generation": 2,
+        "after_tables": {
+          "accounts": {
+            "rows": 2,
+            "sha256": "5d28d1f4f493f8b85a07397018fafa3143a1521ea9cfefeea8b25c3165541013"
+          },
+          "analysis_attempts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "bundles": {
+            "rows": 1,
+            "sha256": "df57980d2523d00bd8a6a34892d4d3d70fc30115493436cf01a1354d8d25fd2c"
+          },
+          "decisions": {
+            "rows": 15,
+            "sha256": "cc890f4f478aa00a390735fab98c5665cb60ab2c1716e7ff90a0e4bc7c53a098"
+          },
+          "drafts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "ingestion_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_activation_receipts": {
+            "rows": 2,
+            "sha256": "7e9a3de0c06af402fd280294ba790343e4514701393f349712228a1aa7323675"
+          },
+          "live_authority_history": {
+            "rows": 2,
+            "sha256": "7f4c9fdd5f6b4534143d93b465d2709e31216cebde6c5c20ae47e195df81d2d3"
+          },
+          "live_export_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_task_events": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_additional_tasks": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_hold_episodes": {
+            "rows": 1,
+            "sha256": "1a4a055c4c717e21469bf2768b7c33d7a603b9d8dbe5a0916a9290d26e1fee1d"
+          },
+          "live_hold_keys": {
+            "rows": 2,
+            "sha256": "909a6c54c7495952a3bf8f39ab89a889c741dda047536544665e66fba0cd45cb"
+          },
+          "live_hold_operations": {
+            "rows": 3,
+            "sha256": "19df7a88f7428707e15bd8b5f3f48f0cb3f9ebd416957b433f750bd8cd6749a5"
+          },
+          "live_hold_reviews": {
+            "rows": 1,
+            "sha256": "7d345c4376871a2c260f9297f46674c5e3d9be53c1da9b7282e4434fa1e9c570"
+          },
+          "live_hold_task_bindings": {
+            "rows": 1,
+            "sha256": "54fc847bca6d719a5388b926d947f36170fb5729724afc2f933a68bdeff4579c"
+          },
+          "live_hold_task_events": {
+            "rows": 2,
+            "sha256": "c300b7a2a19b171fe4c8145f48b0bc42552ae2164282bf74ffc95dbd749ee63f"
+          },
+          "live_hold_tasks": {
+            "rows": 1,
+            "sha256": "217e470c10a5df2fcdcfc9eeaafecbd7ca6e50f4904164eceb10136db3ec6da2"
+          },
+          "live_patient_journals": {
+            "rows": 11,
+            "sha256": "16cc5de2d38f05e85c61451f9281a147d15f92658b0e891d4777f561925a8d79"
+          },
+          "live_projection_receipts": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "live_safety_facts": {
+            "rows": 14,
+            "sha256": "63097096ac45b5ec796659eacf422c1a21532b705c4065e20408ff37358c7aa6"
+          },
+          "login_attempts": {
+            "rows": 1,
+            "sha256": "0cc08f47e168afec4526fd5160214bf2942ba450562078f531539fd7b06db6c9"
+          },
+          "observed_archive_artifacts": {
+            "rows": 8,
+            "sha256": "cc6eea3761b58b9927a97330543d50ede9524229fe2480e042429dfb39acb0ed"
+          },
+          "observed_archive_entries": {
+            "rows": 17,
+            "sha256": "4c98de2a12b0588b5f176064242255af0973651a0bc0b48ea37a60ae0a81c240"
+          },
+          "observed_archives": {
+            "rows": 1,
+            "sha256": "97e2f97a552814f8041104d6be3632a0096c7477a48db2b20a06bc1f3d5fea15"
+          },
+          "patients": {
+            "rows": 11,
+            "sha256": "31604493bcb6d6fecf4cb2ede8667434faf782ade5815df545f1259542396cf0"
+          },
+          "pending_work": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "receipts": {
+            "rows": 1,
+            "sha256": "269795bcbb7524bed527659a4380353ae3015842e5e07b5f546bb4d3715be2c3"
+          },
+          "replay_runs": {
+            "rows": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "schema_migrations": {
+            "rows": 5,
+            "sha256": "510d473050cf9b22f564968a6a1b4ecd1a9052d9cdb6fb70795ffd012b4c7205"
+          },
+          "service_control": {
+            "rows": 1,
+            "sha256": "3da43e3b131f6ce3ad15aae9efb75cb6a42ed0c75be2098bede68d265b8b7582"
+          },
+          "sessions": {
+            "rows": 2,
+            "sha256": "d4f4842cb5841ae35eec20abf5216fdf837bc16447158ae7ef43153eb3da5ca3"
+          },
+          "sqlite_sequence": {
+            "rows": 1,
+            "sha256": "4e389898f927972b95a85ea5b95766a14d9ec292716a0f3d38a38fd10f96f834"
+          },
+          "state_changes": {
+            "rows": 4,
+            "sha256": "421226739cfb03620b7b27155cd7778b5ed6b43b0e779bf349158b6affff2478"
+          },
+          "tasks": {
+            "rows": 1,
+            "sha256": "d9af9b9325f5e1ee92f7f2d0c09f8c1b357b4089168a06822522723006973d9b"
+          }
+        }
+      }
+    }
+  },
+  "command4": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,size=256m",
+      "--user",
+      "10001:10001",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-v0x-sol-261021/tests/integration/replay,target=/historical/replay,readonly",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-v0x-sol-261021/tests/run_contracts,target=/historical/run_contracts,readonly",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-v0x-sol-261021/tooling/foundation,target=/reference,readonly",
+      "--mount",
+      "type=volume,source=remission-pa12-chain-copied-sol261021,target=/chain",
+      "-e",
+      "PYTHONPATH=/app:/historical/replay:/historical/run_contracts:/reference",
+      "-e",
+      "REMISSION_SCHEMA4_TEST_ENV=1",
+      "sha256:a92d7bda327ce7eb06a1d8ee03193d4090f148f48034bee63655d3cd8402dbcb",
+      "python",
+      "/reference/schema4_chain.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-v0x-sol-261021",
+    "started_unix": 1792648729.462135,
+    "elapsed_seconds": 3.6565706729888916,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "43ef93ba87274a90a8c597aeff9292a1.stdout",
+        "bytes": 405,
+        "sha256": "06dd155f0d6e5f28109302089325f784c8df065f496d3e2862f6fbee96eaceb7"
+      },
+      "stderr": {
+        "path": "43ef93ba87274a90a8c597aeff9292a1.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "dcd6a958b59f619a6b473160442ca16639a40259"
+  },
+  "command5": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,size=256m",
+      "--user",
+      "10001:10001",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-v0x-sol-261021/tooling/foundation,target=/reference,readonly",
+      "--mount",
+      "type=volume,source=remission-pa12-chain-copied-sol261021,target=/chain",
+      "-w",
+      "/app",
+      "-e",
+      "PYTHONPATH=/app:/reference",
+      "sha256:c10e3544b8951bf517bbcfed3f5f70e65d39c3c8525164a9bcdb7c22c498c94e",
+      "python",
+      "/reference/verify_schema5_chain.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-v0x-sol-261021",
+    "started_unix": 1792648733.3253353,
+    "elapsed_seconds": 2.914254903793335,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "ea5bc3bcba6a4348a254783d9ee0af9e.stdout",
+        "bytes": 569,
+        "sha256": "52ec447280ea54c40adfd466d871df7bf92dc7d4e7ddabe0515aaa3380c0c63a"
+      },
+      "stderr": {
+        "path": "ea5bc3bcba6a4348a254783d9ee0af9e.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "dcd6a958b59f619a6b473160442ca16639a40259"
+  }
+}
