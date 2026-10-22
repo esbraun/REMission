@@ -1,0 +1,62 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from learner.Dockerfile
+#1 transferring dockerfile: 1.32kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 178B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 1.63kB done
+#4 DONE 0.0s
+
+#5 [ 1/11] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#5 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#5 DONE 0.0s
+
+#6 [ 4/11] COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
+#6 CACHED
+
+#7 [ 5/11] COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
+#7 CACHED
+
+#8 [10/11] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#8 CACHED
+
+#9 [ 7/11] COPY services/learner/worker.py /app/services/learner/worker.py
+#9 CACHED
+
+#10 [ 2/11] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#10 CACHED
+
+#11 [ 8/11] COPY services/learner/export_observed.py /app/services/learner/export_observed.py
+#11 CACHED
+
+#12 [ 9/11] COPY services/learner/live_product.py /app/services/learner/live_product.py
+#12 CACHED
+
+#13 [ 6/11] COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/service/live_safety.py contracts/service/live_safety_admission.py contracts/service/bindings-v1.json contracts/service/spec-v1.json /app/contracts/service/
+#13 CACHED
+
+#14 [ 3/11] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+#14 CACHED
+
+#15 [11/11] COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
+#15 CACHED
+
+#16 exporting to image
+#16 exporting layers 0.0s done
+#16 exporting manifest sha256:d8280f430a855ca7fd735453c8d02cb3d9a1e565a776b843450811aa07d4a81e done
+#16 exporting config sha256:e9ebea08faa5fbf61ba1049881c0b390413be1903cfa874b3df23ac423b5ef8f done
+#16 exporting attestation manifest sha256:1dcfbc6320b48e74c570c9ce1847e320700d29e703322b6fda30ef485a36660d done
+#16 exporting manifest list sha256:b76f055acf89a53b583a020e9b553a4eee99673bf7abd0cc97ebd4729e8a88a3 done
+#16 naming to docker.io/library/remission-lh-e93d5c83c982-learner:candidate done
+#16 unpacking to docker.io/library/remission-lh-e93d5c83c982-learner:candidate 0.0s done
+#16 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/g7b28lt456sjctjmb8os0ad76

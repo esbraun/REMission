@@ -1,0 +1,60 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 2.06kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 178B done
+#4 DONE 0.0s
+
+#5 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#5 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#5 DONE 0.0s
+
+#6 [service  1/11] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#6 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 877.97kB 0.1s done
+#7 DONE 0.1s
+
+#8 [client 2/6] WORKDIR /client
+#8 CACHED
+
+#9 [client 3/6] COPY web/package.json web/package-lock.json ./
+#9 CACHED
+
+#10 [client 4/6] RUN npm ci --ignore-scripts
+#10 70.42 npm error code EAI_AGAIN
+#10 70.42 npm error syscall getaddrinfo
+#10 70.42 npm error errno EAI_AGAIN
+#10 70.42 npm error request to https://registry.npmjs.org/vite/-/vite-8.3.5.tgz failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org
+#10 70.42 npm error A complete log of this run can be found in: /root/.npm/_logs/2026-10-22T00_42_11_719Z-debug-0.log
+#10 ERROR: process "/bin/sh -c npm ci --ignore-scripts" did not complete successfully: exit code: 1
+------
+ > [client 4/6] RUN npm ci --ignore-scripts:
+70.42 npm error code EAI_AGAIN
+70.42 npm error syscall getaddrinfo
+70.42 npm error errno EAI_AGAIN
+70.42 npm error request to https://registry.npmjs.org/vite/-/vite-8.3.5.tgz failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org
+70.42 npm error A complete log of this run can be found in: /root/.npm/_logs/2026-10-22T00_42_11_719Z-debug-0.log
+------
+service.Dockerfile:4
+--------------------
+   2 |     WORKDIR /client
+   3 |     COPY web/package.json web/package-lock.json ./
+   4 | >>> RUN npm ci --ignore-scripts
+   5 |     COPY web/ ./
+   6 |     RUN npm run typecheck && npm run test && npm run build
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm ci --ignore-scripts" did not complete successfully: exit code: 1
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/9voo77kotzv8mmpw4ube5dmpv

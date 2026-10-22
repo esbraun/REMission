@@ -167,3 +167,22 @@ already refused by whole-archive cutoff admission before any review. The correct
 end-to-end oracle asserts that actual early refusal and zero publication; it does
 not claim a future dependency reached manual review. Copied-role harness permission
 ordering was corrected prospectively before execution; no role results yet exist.
+
+Remaining retry-family P2: independent report3bbbc044/raw82a329ff showed9ea
+invalidation/coordinator revalidated new-admission heads before historical success.
+Full chain and independent clearance/review controls8169c99 are preserved. These
+controls found no additional clearance repair necessary. The current repair uses
+read-only authorized committed-invalidation lookup, checks the original recorded
+source grant remains current/monotone and exact configured package/authority/raw
+provenance, then aliases only under the writer. A novel admission still performs
+the full current-head proof. Coordinator retries perform current ownership/source
+authorization and receipt lookup before novel discovery, repeated under the writer.
+
+a3a17ac0 passes5 families: four independent direct/coordinator × correction/retraction
+histories have exact original-key no-op and new-key alias-only original receipts,
+remain held/unready, reject same-key changed intent and foreign owner, reject old
+control and revoked same/new-key access without mutation. The novel stale correction
+and retraction counterexamples still refuse; genuinely unarchived package atomic
+rollback/retry and actual post003-upgrade plural/original-receipt control still pass.
+The9ea image/build and full77-case affected run are historical after this source
+repair. Final affected/image/copied-role/browser qualification remains pending.

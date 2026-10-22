@@ -793,6 +793,35 @@ class LiveWorkflowTests(unittest.TestCase):
                 self.assertEqual(expected,self.safety_state())
             finally:writer.rollback();writer.close()
 
+    def test_historical_invalidation_and_coordinator_retry_after_correction_or_retraction(self):
+        for index,(family,retracted) in enumerate([('invalidate',False),('invalidate',True),('import',False),('import',True)]):
+            if index:self.tearDown();self.setUp()
+            with self.subTest(family=family,retracted=retracted):
+                fixture,archive_authority,addition,_=live_fixture(self.root/'retry-correction',late_trigger_correction_at=NOW,late_trigger_retracted=retracted,export_name='retry-correction')
+                authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+                self.install_next(authority);self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'retry-correction':(fixture['raw'],self.root/'retry-correction/staging',archive_authority)})
+                self.restart_client()
+                url='/api/patients/SYN-02/live-holds' if family=='invalidate' else '/api/observed-archives/fixture-export'
+                body=self.command if family=='invalidate' else {'mode':'clinical_observation_import'}
+                first=self.client.post(url,json=body,headers=self.headers('historical-original'));self.assertEqual(first.status_code,200,first.text);original=first.json()
+                correction=self.client.post('/api/observed-archives/retry-correction',json={'mode':'archive_only'},headers=self.headers('retry-correction'));self.assertEqual(correction.status_code,200,correction.text)
+                before=self.safety_state();same=self.client.post(url,json=body,headers=self.headers('historical-original'));self.assertEqual(same.status_code,200,same.text);self.assertEqual(same.json(),original);self.assertEqual(before,self.safety_state())
+                alias=self.client.post(url,json=body,headers=self.headers('historical-alias'));self.assertEqual(alias.status_code,200,alias.text);self.assertEqual(alias.json(),original)
+                after=self.safety_state();self.assertEqual(len(after['live_hold_keys']),len(before['live_hold_keys'])+1);self.assertEqual({k:v for k,v in before.items() if k!='live_hold_keys'},{k:v for k,v in after.items() if k!='live_hold_keys'})
+                current=self.client.get('/api/patients/SYN-02').json();self.assertEqual(current['stage'],'ASSIGN-09');self.assertFalse(current['permissions']['approve_ordinary'])
+                if family=='invalidate':
+                    changed=copy.deepcopy(body);changed['bundle_ref']['payload_sha256']='f'*64
+                    result=self.client.post(url,json=changed,headers=self.headers('historical-original'));self.assertEqual(result.status_code,409,result.text);self.assertEqual(result.json()['code'],'idempotency_conflict');self.assertEqual(after,self.safety_state())
+                with TestClient(create_app(self.settings),base_url=ORIGIN) as foreign:
+                    self.login(foreign,user='bob');result=foreign.post(url,json=body,headers=self.headers('foreign-retry',foreign));self.assertEqual(result.status_code,404,result.text)
+                stale_headers=self.headers('historical-original');old_client=self.client
+                revoked=self.settings.installed.authority.model_copy(update={'grants':[g for g in self.settings.installed.authority.grants if g.archive_id!=self.command['archive_id']]})
+                self.install_next(revoked)
+                result=old_client.post(url,json=body,headers=stale_headers);self.assertEqual(result.status_code,503,result.text)
+                self.restart_client();before=self.safety_state()
+                for key in ['historical-original','revoked-alias']:
+                    result=self.client.post(url,json=body,headers=self.headers(key));self.assertEqual(result.status_code,409,result.text);self.assertEqual(result.json()['code'],'live_source_grant_unavailable');self.assertEqual(before,self.safety_state())
+
     def restart_client(self):
         self.client.close();self.client=TestClient(create_app(self.settings),base_url=ORIGIN);self.login()
 

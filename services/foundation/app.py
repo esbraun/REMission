@@ -207,8 +207,8 @@ def create_app(settings: Settings) -> FastAPI:
             prepared['prior']=prior
             semantic_prior=family=='review' and db.execute('SELECT 1 FROM live_hold_operations WHERE semantic_sha256=?',(live.review_semantic(patient_id,episode_id,data),)).fetchone() is not None
             if family=='invalidate':
-                # Source authorization precedes retry lookup and is repeated after writer wait.
-                initial=live.prepare_invalidation(settings,db,owner,patient_id,data,settings.clock())
+                retry=live.authorized_invalidation_retry(db,settings,owner,patient_id,data)
+                initial=None if retry else live.prepare_invalidation(settings,db,owner,patient_id,data,settings.clock())
             elif family=='review' and not prior and not semantic_prior:
                 initial=live.prepare_review(db,settings,owner,patient_id,episode_id,data,settings.clock())
             else:
@@ -227,8 +227,13 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction(write=True,prepare=prepare,authorize=authorize) as db:
             owner=prepared['owner'];at=prepared['at']
             if family=='invalidate':
-                value=live.prepare_invalidation(settings,db,owner,patient_id,data,at)
-                result=live.invalidate(db,settings,owner,patient_id,data,key,at,value)
+                retry=live.authorized_invalidation_retry(db,settings,owner,patient_id,data)
+                if retry:
+                    result=live.committed_key(db,owner,patient_id,family,key,intent)
+                    if result is None:result=live.semantic_retry(db,retry[0],owner,patient_id,family,key,intent)
+                else:
+                    value=live.prepare_invalidation(settings,db,owner,patient_id,data,at)
+                    result=live.invalidate(db,settings,owner,patient_id,data,key,at,value)
             elif prepared['prior']:
                 result=prepared['prior']
             elif family=='review':

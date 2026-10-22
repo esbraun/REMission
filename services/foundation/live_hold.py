@@ -103,6 +103,52 @@ def episode_grants_current(settings,e):
     return True
 
 
+def authorize_historical_invalidation(db,settings,owner,patient_id,response):
+    """Authorize an immutable receipt without treating it as current admission."""
+    patient_row(db,patient_id,owner)
+    if not settings.installed.control.enabled or not settings.installed.authority.enabled:raise LiveError('independent_hold_live_integration_required')
+    row=db.execute('SELECT payload FROM live_hold_episodes WHERE id=? AND generation=? AND patient_id=?',
+        (response['episode_id'],response['episode_generation'],patient_id)).fetchone()
+    if row is None:raise LiveError('live_source_grant_unavailable')
+    recorded=json.loads(row[0])
+    grants=[g for g in recorded['grants'] if g['archive_id']==response['archive_id'] and g['package_sha256']==response['package_sha256']]
+    if not grants or not episode_grants_current(settings,dict(grants=grants)):raise LiveError('live_source_grant_unavailable')
+    stored,_,_,authority=configured_archive(settings,db,response['archive_id'],owner)
+    if stored['export_sha256']!=response['package_sha256'] or any(g['archive_authority_sha256']!=object_hash(authority.model_dump(mode='json')) for g in grants):raise LiveError('live_source_grant_unavailable')
+
+
+def authorized_invalidation_retry(db,settings,owner,patient_id,data):
+    """Return only an existing fact's authorized receipt; never prepare a write.
+
+    Aggregate current heads are intentionally for NEW admission. Original exact
+    bytes/namespace, current grant/package ownership and original receipt access
+    still qualify a historical retry after a correction or retraction.
+    """
+    patient_row(db,patient_id,owner)
+    if not settings.installed.control.enabled or not settings.installed.authority.enabled:raise LiveError('independent_hold_live_integration_required')
+    stored,manifest,_,authority=configured_archive(settings,db,data.archive_id,owner)
+    h=archive_history(db,data.archive_id,data.partition_id,patient_id)
+    bundle=next((r for r in h.records if r.record_id==data.bundle_ref.record_id and exact_ref(r)==data.bundle_ref),None)
+    if bundle is None or bundle.kind!='hold_transition_bundle':return None
+    if refs(data.trigger_refs)!=refs(bundle.trigger_refs):raise LiveError('hold_evidence_stale')
+    grant=next((g for g in settings.installed.authority.grants if
+        (g.account_id,g.service_patient_id,g.archive_patient_id,g.run_id,g.partition_id,g.archive_id,g.package_sha256,g.source_id,g.source_version,g.archive_authority_sha256)==
+        (owner,patient_id,patient_id,bundle.run_id,data.partition_id,data.archive_id,stored['export_sha256'],bundle.source.id,bundle.source.version,object_hash(authority.model_dump(mode='json')))),None)
+    if grant is None or 'invalidate' not in grant.allowed_operations or grant.ownership_ref!=bundle.ownership_ref or bundle.owner_id!=owner or bundle.owner_role!='doctor':raise LiveError('live_source_grant_unavailable')
+    if settings.installed.authority.execution!='contract_fixture' and (manifest.execution=='contract_fixture' or authority.allow_contract_fixture or authority.producer_qualification is None):raise LiveError('actual_live_producer_qualification_required')
+    semantic=object_hash([patient_id,grant.episode_namespace,bundle.run_id,data.partition_id,bundle.hold_episode_id,bundle.lineage_id,bundle.revision,exact_ref(bundle).payload_sha256])
+    prior=db.execute('SELECT response FROM live_hold_operations WHERE semantic_sha256=?',(semantic,)).fetchone()
+    if prior is None:return None
+    # The source package has already passed whole immutable verification. This
+    # historical source check never substitutes a newer dependency into it.
+    for reference in bundle.trigger_refs:
+        trigger=next((r for r in h.records if exact_ref(r)==reference),None)
+        binding=next((b for b in grant.trigger_bindings if trigger is not None and b.trigger_rule==trigger.rule),None)
+        if binding is None or any(f not in [b.reference for b in binding.follow_ups] for f in trigger.follow_up_refs):raise LiveError('live_source_grant_unavailable')
+    response=json.loads(prior[0]);authorize_historical_invalidation(db,settings,owner,patient_id,response)
+    return semantic,response
+
+
 def archive_history(db, archive_id, partition_id, patient_id):
     rows=db.execute('SELECT payload FROM observed_archive_entries WHERE archive_id=? AND partition_id=? AND patient_id=? ORDER BY ordinal',
         (archive_id,partition_id,patient_id)).fetchall()

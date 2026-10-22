@@ -5,7 +5,7 @@ from contracts.domain.evidence_v2 import exact_ref
 from contracts.runs.observed_v2 import CLINICAL_KINDS
 from contracts.service.live_hold import InvalidationInput
 from .archive import persist_archive,verify_archive
-from .live_hold import LiveError,alias,committed_key,invalidate,object_hash,patient_row,prepare_invalidation,versions
+from .live_hold import LiveError,alias,committed_key,invalidate,object_hash,patient_row,prepare_invalidation,versions,authorized_invalidation_retry
 from .live_journal import receive
 from .replay import append_event
 from .store import canonical,digest,instant,timestamp
@@ -19,6 +19,20 @@ def project_archive(store,settings,raw,root,authority,*,owner_id,key,authorize):
     if not patients:
         raise LiveError('hold_dependencies_unavailable')
     prepared={}
+    def historical(db):
+        for patient_id in patients:patient_row(db,patient_id,owner_id)
+        prior=committed_key(db,owner_id,patients[0],'import',key,intent)
+        saved=db.execute('SELECT payload FROM live_projection_receipts WHERE archive_id=? AND manifest_sha256=? AND projection_version=?',(archive_id,digest(raw),'LIVE-HOLD-01/1.0.0')).fetchone()
+        response=prior or (json.loads(saved[0]) if saved else None)
+        if response is None:return None
+        if not settings.installed.control.enabled or not settings.installed.authority.enabled:raise LiveError('independent_hold_live_integration_required')
+        for partition,history,*_ in package.partitions:
+            for bundle in history.records:
+                if bundle.kind!='hold_transition_bundle' or bundle.transition_type not in ('enter','change_reason'):continue
+                command=InvalidationInput.model_validate_json(canonical(dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,
+                    archive_id=archive_id,partition_id=partition.id,bundle_ref=exact_ref(bundle).model_dump(mode='json'),trigger_refs=[r.model_dump(mode='json') for r in bundle.trigger_refs])))
+                if authorized_invalidation_retry(db,settings,owner_id,partition.patient_id,command) is None:raise LiveError('live_source_grant_unavailable')
+        return response,bool(prior)
     def discover(db,at):
         if package.manifest.cutoff>at:
             raise LiveError('future_hold_evidence',422)
@@ -40,20 +54,19 @@ def project_archive(store,settings,raw,root,authority,*,owner_id,key,authorize):
         return commands
     def prepare(db):
         authorize(db)
-        prepared['commands']=discover(db,settings.clock())
+        prepared['history']=historical(db)
+        prepared['commands']=[] if prepared['history'] else discover(db,settings.clock())
         prepared['at']=settings.clock()
         if prepared['at']<instant(store.validate_control(db)['last_receipt_at']):
             raise LiveError('service_clock_regression')
     with store.transaction(write=True,prepare=prepare,authorize=authorize) as db:
-        at=prepared['at'];commands=discover(db,at)
-        prior=committed_key(db,owner_id,patients[0],'import',key,intent)
+        at=prepared['at'];prior=historical(db)
         if prior:
-            return prior
-        prior=db.execute('SELECT * FROM live_projection_receipts WHERE archive_id=? AND manifest_sha256=? AND projection_version=?',(archive_id,digest(raw),'LIVE-HOLD-01/1.0.0')).fetchone()
-        if prior:
-            response=json.loads(prior['payload'])
-            for patient_id in patients:alias(db,owner_id,patient_id,'import',key,intent,response['operation_id'])
+            response,key_exists=prior
+            if not key_exists:
+                for patient_id in patients:alias(db,owner_id,patient_id,'import',key,intent,response['operation_id'])
             return response
+        commands=discover(db,at)
         before={pid:versions(patient_row(db,pid,owner_id)) for pid in patients}
         persist_archive(db,package,owner_id=owner_id,received_at=at,installed=settings.installed)
         clinical_counts={pid:0 for pid in patients}
