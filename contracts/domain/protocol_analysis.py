@@ -1,5 +1,6 @@
 """Reduced protocol wire types. Full ExactRef/source hashes never enter H*."""
 from typing import Annotated, Literal
+from datetime import timedelta
 from pydantic import AwareDatetime, BaseModel, Field, model_validator
 from .analysis import canonical, sha
 from .common import Action, Identifier, Name, Sha256, StrictModel, VersionRef
@@ -276,4 +277,18 @@ class ProtocolHistory(StrictModel):
                     raise ValueError('unresolved or changed reduced dependency')
         if len({(r.assignment_id, r.event_at, r.stage) for r in self.records if r.kind == 'delivery'}) != sum(r.kind == 'delivery' for r in self.records):
             raise ValueError('duplicate delivery ownership')
+        elapsed=(self.cutoff-self.origin).total_seconds()/86400
+        if elapsed!=int(elapsed) or not 0<=elapsed<=84:raise ValueError('protocol fictional noon cutoff required')
+        day=int(elapsed)
+        if sorted(r.event_at for r in self.records if r.kind=='daily_report')!=[self.origin+timedelta(days=t,minutes=-1) for t in range(1,day+1)]:
+            raise ValueError('one quality/missingness indicator per night required')
+        isi=[r for r in self.records if r.kind=='isi']
+        if sorted(r.recall_end for r in isi)!=[self.origin+timedelta(days=t,hours=-1) for t in range(0,day+1,14)]:
+            raise ValueError('scheduled unique cumulative ISI required')
+        if any(r.recall_end-r.recall_start!=timedelta(days=14) or r.event_at!=r.recall_end+timedelta(minutes=59) for r in isi):
+            raise ValueError('ISI recall/assessment mismatch')
+        for delivery in (r for r in self.records if r.kind=='delivery'):
+            assignment=active.get(delivery.assignment_id)
+            if assignment is None or assignment.kind!='assignment' or assignment.option!=delivery.option or assignment.event_at>delivery.event_at:
+                raise ValueError('unowned/inconsistent delivery assignment')
         return self
