@@ -50,6 +50,10 @@ ARTIFACT_SCHEMA = dict(id="poc-nof1-artifacts-v1", posterior="NetCDF: chain/draw
 DIAGNOSTIC_REF = reference(DIAGNOSTIC_SCHEMA["id"], DIAGNOSTIC_SCHEMA)
 ARTIFACT_REF = reference(ARTIFACT_SCHEMA["id"], ARTIFACT_SCHEMA)
 SETTINGS = dict(family="poc-n1-v1", executable=False, backend="pymc", sampler="native_nuts", precision="float64",
+    measurement_kernel=dict(id="poc-library-normal-f64-constants-v1",
+        source_git_blob="a0f1fdeddb87c639b6f0a4c0d9aecd923aa5ece4",
+        expression="pinned PyMC standard-Normal logcdf, unchanged tail algorithm; promote exact internal float32 constants2/-1 tofloat64 before folding; reject unexpected float32 constants",
+        law="unchanged rounded/clipped Normal interval mass, survival differences in right tail"),
     fixed_constant_policy="explicit np.float64 prior parameters/scales, interval constants and count-derived Beta shapes; verify library density normalizers independently",
     parameterization="noncentered-original-independent-prior-v1; no guide or extra potential",
     chains=4, cores=1, tune=1000, draws=1000, extension_tune=2000, extension_draws=2000,

@@ -5,21 +5,10 @@ import pytensor
 import pytensor.tensor as pt
 
 from contracts.domain.nof1_config import configuration
+from methods.measurement import log_bin
 from .data import CohortData, Unavailable
 
 F = np.float64
-
-
-def log_bin(value, mean, sd, step, maximum):
-    """Rounded/clipped normal likelihood with survival differences in right tail."""
-    value, step, maximum = np.asarray(value, dtype=np.float64), F(step), F(maximum)
-    lo, hi = (value - step / F(2.) - mean) / sd, (value + step / F(2.) - mean) / sd
-    normal = pm.Normal.dist(F(0.), F(1.))
-    a = pt.switch(lo > 0, pm.logcdf(normal, -lo), pm.logcdf(normal, hi))
-    b = pt.switch(lo > 0, pm.logcdf(normal, -hi), pm.logcdf(normal, lo))
-    interior = a + pt.log(-pt.expm1(b - a))
-    return pt.switch(pt.eq(value, 0), pm.logcdf(normal, hi),
-        pt.switch(pt.eq(value, maximum), pm.logcdf(normal, -lo), interior))
 
 
 def build(data):

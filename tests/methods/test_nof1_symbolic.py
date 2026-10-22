@@ -4,6 +4,8 @@ Default discovery skips this class before importing PyMC or building a graph.
 Choose one N purpose and J at a time to keep each qualification bounded.
 """
 import os
+import json
+from pathlib import Path
 import unittest
 
 import numpy as np
@@ -13,6 +15,38 @@ from scipy.stats import beta, halfnorm, norm, uniform
 from methods.nof1.data import prepare
 from methods.nof1.observation import bin_logprob
 from test_nof1_data import fixture
+
+
+def frozen_point(data):
+    """Explicit finite point from the failed f941 J1/N0 causal qualification.
+
+    No initial-point or default-linker compilation is needed to define it.
+    J>1 repeats the same independent patient coordinates without changing the
+    hierarchy or priors. Each probability is at its own conjugate mean.
+    """
+    count = len(data.patients)
+    scalar = lambda x: np.asarray(x, dtype=np.float64)
+    point = dict(mu_b=scalar(19.), sd_b_log__=scalar(np.log(3.)), b_raw=np.zeros(count),
+        population_amplitude=np.array([1., -.2, 1.5, 2.5, .7]), sd_amplitude_log__=np.zeros(5),
+        amplitude_raw=np.zeros((count, 5)), a=scalar(0.), rho_interval__=scalar(.4),
+        sigma_e_log__=scalar(np.log(2.)), sigma_isi_log__=scalar(np.log(2.)), sigma_quality_log__=scalar(0.))
+    for i, patient in enumerate(data.patients):
+        point["innovation_" + str(i)] = np.zeros(len(patient.nights), dtype=np.float64)
+    for name, success, total in (("p_C", "C_success", "C_total"), ("p_M", "M_success", "M_total"),
+                                  ("q", "observed", None)):
+        alpha = np.array([1. + p.counts[success] for p in data.patients], dtype=np.float64)
+        beta_shape = np.array([1. + (p.counts[total] - p.counts[success] if total else p.counts["missing"])
+                               for p in data.patients], dtype=np.float64)
+        point[name + "_logodds__"] = np.log(alpha / beta_shape)
+    return point
+
+
+def compile_options():
+    """Diagnostic-only CVM, preserving the pinned default optimizer query."""
+    from tooling.foundation.pa3_monitor import compilation_options
+    policy = json.loads((Path(__file__).resolve().parents[2] / "tooling/foundation/pa3-cvm-policy.json").read_bytes())
+    options, _ = compilation_options(policy)
+    return options
 
 
 def independent_logp(point, data):
@@ -52,8 +86,39 @@ def independent_logp(point, data):
 
 @unittest.skipUnless(os.environ.get("NOF1_SYMBOLIC_QUALIFY") == "1", "requires explicit exclusive heavy-resource lease")
 class SymbolicTests(unittest.TestCase):
+    def test_frozen_point_measurement_factors_against_reference(self):
+        import pytensor
+        import pytensor.tensor as pt
+        from tooling.foundation.pa3_monitor import verify_cvm
+        from methods.nof1.model import log_bin
+
+        purpose = os.environ.get("NOF1_SYMBOLIC_PURPOSE", "N1")
+        h = fixture("N-PATIENT-0", start=10, review=72)
+        data = prepare([h], purpose=purpose, target_id=h.patient_id, seed_patient=h.patient_id)
+        patient, point = data.patients[0], frozen_point(data)
+        # All innovations/deviations and phase are zero at the fixed causal
+        # point. This independent forward mean uses the public fixed designs.
+        amp = point["population_amplitude"]
+        z = (19. - amp[0] * patient.c - amp[2] * patient.medication[:, 0]
+             - amp[3] * patient.medication[:, 1] + amp[4] * patient.path.rebound)
+        total_difference = 0.
+        for values, means, sigma, step, maximum in [
+            (patient.isi, z[patient.recall].mean(axis=1), 2., 1., 28.),
+            (patient.quality, 10. - z[patient.qindex] / 3., 1., .001, 10.)]:
+            mean, sd = pt.dvector("mean"), pt.dscalar("sd")
+            graph = log_bin(values, mean, sd, step, maximum).sum()
+            function = pytensor.function([mean, sd], graph, **compile_options())
+            verify_cvm(function)
+            observed = float(function(means, sigma))
+            expected = float(bin_logprob(values, means, sigma, step, maximum).sum())
+            self.assertTrue(np.isfinite(observed))
+            self.assertAlmostEqual(observed, expected, delta=1e-8)
+            total_difference += observed - expected
+        self.assertLessEqual(abs(total_difference), 1e-8)
+
     def test_original_density_and_directional_gradient_independent_reference(self):
         from methods.nof1.model import build
+        from tooling.foundation.pa3_monitor import verify_cvm
 
         count = int(os.environ.get("NOF1_SYMBOLIC_PATIENTS", "1"))
         purpose = os.environ.get("NOF1_SYMBOLIC_PURPOSE", "N1")
@@ -61,13 +126,14 @@ class SymbolicTests(unittest.TestCase):
         histories = [fixture("N-PATIENT-" + str(i), start=10, review=72) for i in range(count)]
         data = prepare(histories, purpose=purpose, target_id=histories[-1].patient_id, seed_patient=histories[-1].patient_id)
         model = build(data)
-        point = model.initial_point()
-        point["population_amplitude"] = np.array([1., -.2, 1.5, 2.5, .7])
-        point["rho_interval__"] = np.array(.4)
-        logp, gradient = model.compile_logp(jacobian=False), model.compile_dlogp(jacobian=False)
+        point = frozen_point(data)
+        logp = model.compile_logp(jacobian=False, **compile_options())
+        verify_cvm(logp.f)
         observed, expected = float(logp(point)), independent_logp(point, data)
         self.assertTrue(np.isfinite(observed))
         self.assertAlmostEqual(observed, expected, delta=1e-8)
+        gradient = model.compile_dlogp(jacobian=False, **compile_options())
+        verify_cvm(gradient.f)
         names = [value.name for value in model.value_vars]
         rng = np.random.default_rng(761)
         direction = {name: rng.normal(size=point[name].shape) * .1 for name in names}
@@ -85,7 +151,8 @@ class SymbolicTests(unittest.TestCase):
             value = model[name]
             for argument in value.owner.inputs[-2:]:
                 self.assertEqual(argument.dtype, "float64")
-            factor = model.compile_logp(vars=[value], jacobian=False)
+            factor = model.compile_logp(vars=[value], jacobian=False, **compile_options())
+            verify_cvm(factor.f)
             reference = 0.
             for i, patient in enumerate(data.patients):
                 c = patient.counts
