@@ -698,6 +698,101 @@ class LiveWorkflowTests(unittest.TestCase):
         after=self.safety_state();self.assertEqual(len(after['live_hold_keys']),len(state['live_hold_keys'])+1)
         self.assertEqual({k:v for k,v in state.items() if k!='live_hold_keys'},{k:v for k,v in after.items() if k!='live_hold_keys'})
 
+    def test_semantic_review_retry_after_restart_and_reference_reorder_only_adds_alias(self):
+        second=self.install_extra_transition_fixture();first=self.enter()
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=second,headers=self.headers('retry-strengthen'));self.assertEqual(response.status_code,200,response.text)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];request=self.review_input(episode)
+        url='/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews'
+        response=self.client.post(url,json=request,headers=self.headers('review-original'));self.assertEqual(response.status_code,200,response.text);original=response.json()
+        before=self.safety_state();self.restart_client()
+        reordered=copy.deepcopy(request);reordered['review_rules'].reverse();reordered['items'][0]['evidence_refs'].reverse()
+        response=self.client.post(url,json=reordered,headers=self.headers('review-new-alias'));self.assertEqual(response.status_code,200,response.text);self.assertEqual(response.json(),original)
+        after=self.safety_state();self.assertEqual(len(after['live_hold_keys']),len(before['live_hold_keys'])+1)
+        self.assertEqual({k:v for k,v in before.items() if k!='live_hold_keys'},{k:v for k,v in after.items() if k!='live_hold_keys'})
+        changed=copy.deepcopy(request);changed['rationale']+=' changed intent'
+        for key,code in [('review-original','idempotency_conflict'),('changed-review','stale_live_hold_review')]:
+            response=self.client.post(url,json=changed,headers=self.headers(key));self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],code)
+        self.assertEqual(after,self.safety_state())
+        revoked=self.settings.installed.authority.model_copy(update={'grants':[]})
+        self.install_next(revoked);self.restart_client();before=self.safety_state()
+        response=self.client.post(url,json=request,headers=self.headers('revoked-review-alias'));self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],'live_source_grant_unavailable');self.assertEqual(before,self.safety_state())
+
+    def install_review_revision(self,*,nested=False,retracted=False,refresh=False):
+        options=dict(late_followup_correction_at=NOW,refresh_trigger_closure=refresh) if nested else dict(late_trigger_correction_at=NOW)
+        fixture,archive_authority,addition,_=live_fixture(self.root/'review-revision',late_trigger_retracted=retracted,export_name='review-revision',**options)
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority);self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'review-revision':(fixture['raw'],self.root/'review-revision/staging',archive_authority)})
+        self.restart_client()
+        return fixture,addition
+
+    def test_nested_followup_correction_and_retraction_refuse_review_without_partial_effects(self):
+        # Separate fresh databases keep both negatives independent of earlier mutation.
+        for retracted in [False,True]:
+            if retracted:self.tearDown();self.setUp()
+            first=self.enter();self.install_review_revision(nested=True,retracted=retracted)
+            response=self.client.post('/api/observed-archives/review-revision',json={'mode':'archive_only'},headers=self.headers('nested-revision'));self.assertEqual(response.status_code,200,response.text)
+            episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];before=self.safety_state()
+            response=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=self.review_input(episode),headers=self.headers('nested-stale-review'))
+            self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],'hold_evidence_stale');self.assertEqual(before,self.safety_state())
+
+    def test_review_named_package_membership_and_fresh_recursive_closure_positive(self):
+        from contracts.domain.evidence_v2 import exact_ref
+        first=self.enter();fixture,addition=self.install_review_revision(nested=True,refresh=True)
+        response=self.client.post('/api/observed-archives/review-revision',json={'mode':'archive_only'},headers=self.headers('fresh-closure-archive'));self.assertEqual(response.status_code,200,response.text)
+        revised=next(r for r in fixture['history'].records if r.kind=='hold_review_evidence' and r.revision==2)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];request=self.review_input(episode)
+        selected=dict(store='archive',namespace_id=self.command['archive_id'],partition_id=self.command['partition_id'],**exact_ref(revised).model_dump(mode='json'))
+        request['items'][0]['evidence_refs']=[selected];before=self.safety_state();url='/api/patients/SYN-02/live-holds/'+first['episode_id']
+        response=self.client.post(url+'/reviews',json=request,headers=self.headers('wrong-membership'));self.assertEqual(response.status_code,409,response.text);self.assertEqual(before,self.safety_state())
+        selected['namespace_id']=addition.authority.grants[0].archive_id
+        response=self.client.post(url+'/reviews',json=request,headers=self.headers('correct-membership'));self.assertEqual(response.status_code,200,response.text);review=response.json()
+        with self.store.transaction() as db:
+            saved=__import__('json').loads(db.execute('SELECT payload FROM live_hold_reviews WHERE id=?',(review['review_id'],)).fetchone()[0])
+            dependencies=saved['proofs'][0]['dependencies'];self.assertEqual({d['kind'] for d in dependencies},{'hold_review_evidence','follow_up','patient'})
+            self.assertTrue(all(d['committed_object_id']==selected['namespace_id'] for d in dependencies));self.assertTrue(all(d['verified_visible_at']==saved['current_review_at'] for d in dependencies))
+        clear=self.review_input(episode)
+        for key in ['items','rationale','current_assessment_attested']:clear.pop(key)
+        clear.update(review_id=review['review_id'],review_sha256=review['review_sha256'])
+        response=self.client.post(url+'/clearance',json=clear,headers=self.headers('fresh-closure-clear'));self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(self.client.get('/api/patients/SYN-02').json()['stage'],'ASSIGN-01')
+
+    def test_archive_refuses_future_dependency_bytes_before_any_review_publication(self):
+        from datetime import timedelta
+        from contracts.domain.evidence_v2 import exact_ref
+        first=self.enter();fixture,archive_authority,addition,_=live_fixture(self.root/'future-dependency',late_followup_correction_at=NOW+timedelta(hours=1),refresh_trigger_closure=True,refreshed_trigger_at=NOW,fixture_cutoff=NOW,export_name='future-dependency')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority);self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'future-dependency':(fixture['raw'],self.root/'future-dependency/staging',archive_authority)})
+        self.restart_client();before=self.safety_state()
+        response=self.client.post('/api/observed-archives/future-dependency',json={'mode':'archive_only'},headers=self.headers('future-dependency-archive'))
+        self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],'archive_admission_rejected');self.assertEqual(before,self.safety_state())
+
+    def test_uncommitted_nested_correction_not_read_then_writer_recheck_refuses(self):
+        import threading
+        from services.foundation.archive import verify_archive,persist_archive
+        first=self.enter();fixture,addition=self.install_review_revision(nested=True)
+        raw,root,authority=self.settings.observed_archives['review-revision'];package=verify_archive(raw,root,authority)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];request=self.review_input(episode)
+        admitted=threading.Event()
+        def boundary(point):
+            if point=='after_hold_admission':admitted.set()
+        with TestClient(create_app(replace(self.settings,fault=boundary)),base_url=ORIGIN) as client:
+            self.login(client);headers=self.headers('nested-writer-wait',client);before=self.safety_state()
+            writer=sqlite3.connect(self.store.path,isolation_level=None);writer.row_factory=sqlite3.Row
+            try:
+                writer.execute('PRAGMA foreign_keys=ON');writer.execute('BEGIN IMMEDIATE')
+                # Explicit unrelated SQLite-writer fixture, outside service gate,
+                # exercises committed-read visibility and BEGIN revalidation.
+                persist_archive(writer,package,owner_id='alice',received_at=NOW,installed=self.settings.installed)
+                expected={table:[tuple(r) for r in writer.execute('SELECT * FROM '+table+' ORDER BY rowid')] for table in before if table!='patient'}
+                expected['patient']=tuple(writer.execute("SELECT * FROM patients WHERE id='SYN-02'").fetchone())
+                with ThreadPoolExecutor(max_workers=1) as executor:
+                    future=executor.submit(client.post,'/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=request,headers=headers)
+                    self.assertTrue(admitted.wait(10),'committed-only evidence did not reach admission barrier')
+                    writer.commit();response=future.result(15)
+                self.assertEqual(response.status_code,409,response.text);self.assertEqual(response.json()['code'],'hold_evidence_stale')
+                self.assertEqual(expected,self.safety_state())
+            finally:writer.rollback();writer.close()
+
     def restart_client(self):
         self.client.close();self.client=TestClient(create_app(self.settings),base_url=ORIGIN);self.login()
 

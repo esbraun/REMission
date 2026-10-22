@@ -1,0 +1,18 @@
+/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_review_nested_future_dependency_refuses_even_when_selected_root_is_current (test_live_hold.LiveWorkflowTests.test_review_nested_future_dependency_refuses_even_when_selected_root_is_current) ... FAIL
+test_uncommitted_nested_correction_not_read_then_writer_recheck_refuses (test_live_hold.LiveWorkflowTests.test_uncommitted_nested_correction_not_read_then_writer_recheck_refuses) ... ok
+
+======================================================================
+FAIL: test_review_nested_future_dependency_refuses_even_when_selected_root_is_current (test_live_hold.LiveWorkflowTests.test_review_nested_future_dependency_refuses_even_when_selected_root_is_current)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/integration/replay/test_live_hold.py", line 765, in test_review_nested_future_dependency_refuses_even_when_selected_root_is_current
+    self.restart_client();response=self.client.post('/api/observed-archives/future-dependency',json={'mode':'archive_only'},headers=self.headers('future-dependency-archive'));self.assertEqual(response.status_code,200,response.text)
+                                                                                                                                                                               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"code":"archive_admission_rejected","detail":"archive includes bytes beyond receipt cutoff"}
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.909s
+
+FAILED (failures=1)

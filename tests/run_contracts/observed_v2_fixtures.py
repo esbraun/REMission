@@ -20,7 +20,7 @@ def ref(identifier, version='2.0.0', digest=ZERO):
 
 
 def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None, complete=False, service_owner=None,
-          run_name='obs2-fixture-run',threshold_concern=False,extra_hold=False,extra_threshold=False,multi_followup=False,same_followup_due=False,archive_resolution=False,late_trigger_correction_at=None,late_trigger_retracted=False,export_name='fixture-export'):
+          run_name='obs2-fixture-run',threshold_concern=False,extra_hold=False,extra_threshold=False,multi_followup=False,same_followup_due=False,archive_resolution=False,late_trigger_correction_at=None,late_trigger_retracted=False,late_followup_correction_at=None,refresh_trigger_closure=False,refreshed_trigger_at=None,export_name='fixture-export'):
     root.mkdir(parents=True, exist_ok=True)
     owner=service_owner or 'sim-owner'
     owner_role='doctor' if service_owner else 'simulated_clinician'
@@ -199,6 +199,21 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
         for key in ['schema_version','synthetic','kind','record_id','patient_id','event_at','source']:fields.pop(key)
         fields.update(lineage_id=prior.lineage_id,revision=2,supersedes=prior.record_id,recorded_at=late_trigger_correction_at.isoformat(),available_at=late_trigger_correction_at.isoformat(),record_status='retracted' if late_trigger_retracted else 'active',finding='Late structural concern correction; retains hold')
         add('hold_review_evidence',prior.event_at,version='2.0.0',process='hold_review',**fields)
+    if late_followup_correction_at is not None:
+        assert hold and not complete and not extra_hold
+        prior=next(r for r in history().records if r.record_id=='hold-task-1')
+        fields=prior.model_dump(mode='json')
+        for key in ['schema_version','synthetic','kind','record_id','patient_id','event_at','source']:fields.pop(key)
+        fields.update(lineage_id=prior.lineage_id,revision=2,supersedes=prior.record_id,recorded_at=late_followup_correction_at.isoformat(),available_at=late_followup_correction_at.isoformat(),record_status='retracted' if late_trigger_retracted else 'active',trigger='Corrected explicit follow-up instruction')
+        revised=add('follow_up',prior.event_at,identifier='hold-task-1-r2',**fields)
+        if refresh_trigger_closure:
+            assert not late_trigger_retracted
+            old=next(r for r in history().records if r.kind=='hold_review_evidence')
+            fields=old.model_dump(mode='json')
+            for key in ['schema_version','synthetic','kind','record_id','patient_id','event_at','source']:fields.pop(key)
+            root_at=refreshed_trigger_at or late_followup_correction_at
+            fields.update(lineage_id=old.lineage_id,revision=2,supersedes=old.record_id,recorded_at=root_at.isoformat(),available_at=root_at.isoformat(),follow_up_refs=[exact_ref(revised).model_dump()])
+            add('hold_review_evidence',old.event_at,version='2.0.0',process='hold_review',**fields)
     if complete:
         cutoff = cutoff or ORIGIN + timedelta(days=85, hours=10)
     cutoff = cutoff or ORIGIN + timedelta(days=1, hours=10)

@@ -29,14 +29,14 @@ def fresh_store(path, installed=None):
     return store
 
 
-def live_fixture(root,*,run_name='obs2-fixture-run',threshold=False,extra_hold=False,extra_threshold=False,multi_followup=False,same_followup_due=False,archive_resolution=False,late_trigger_correction_at=None,late_trigger_retracted=False,export_name='fixture-export'):
+def live_fixture(root,*,run_name='obs2-fixture-run',threshold=False,extra_hold=False,extra_threshold=False,multi_followup=False,same_followup_due=False,archive_resolution=False,late_trigger_correction_at=None,late_trigger_retracted=False,late_followup_correction_at=None,refresh_trigger_closure=False,refreshed_trigger_at=None,fixture_cutoff=None,export_name='fixture-export'):
     import sys
     sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'run_contracts'))
     from observed_v2_fixtures import build
     from contracts.domain.evidence_v2 import exact_ref
     from contracts.runs.observed_v2 import ExportAuthorityV2
     from services.foundation.store import digest
-    fixture=build(root/'staging',hold=True,service_owner='alice',run_name=run_name,threshold_concern=threshold,extra_hold=extra_hold,extra_threshold=extra_threshold,multi_followup=multi_followup,same_followup_due=same_followup_due,archive_resolution=archive_resolution,late_trigger_correction_at=late_trigger_correction_at,late_trigger_retracted=late_trigger_retracted,cutoff=late_trigger_correction_at,export_name=export_name)
+    fixture=build(root/'staging',hold=True,service_owner='alice',run_name=run_name,threshold_concern=threshold,extra_hold=extra_hold,extra_threshold=extra_threshold,multi_followup=multi_followup,same_followup_due=same_followup_due,archive_resolution=archive_resolution,late_trigger_correction_at=late_trigger_correction_at,late_trigger_retracted=late_trigger_retracted,late_followup_correction_at=late_followup_correction_at,refresh_trigger_closure=refresh_trigger_closure,refreshed_trigger_at=refreshed_trigger_at,cutoff=fixture_cutoff or late_trigger_correction_at or late_followup_correction_at,export_name=export_name)
     authority=ExportAuthorityV2.model_validate_json(canonical(fixture['authority']))
     entries=[entry['record'] for entry in fixture['entries']]
     bundle=next(r for r in entries if r['kind']=='hold_transition_bundle' and r['transition_type']=='enter')

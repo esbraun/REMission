@@ -137,3 +137,33 @@ repair changes runtime source. It passed67 domain,54 run,69 affected service,11
 artifact and11 DR cases/all6 exporters/pip/runtime on per-command captured source
 bytes. No browser cases are attributed to those images. Repaired images, affected
 full service rerun, copied UID/private boundary audit and official MCP are pending.
+
+The next independent5e pass confirmed nested evidence-closure P1, named-package
+provenance extension P1, and semantic review retry P2. Full reports6ee11a69,
+c0816106 and918e7066, all raw failures/positive controls/oracles/manifests, coordinator
+repair execution, supplemental b501f08 and Luna5e compatibility are preserved in
+the complete envelope. Broad72/checks and repaired-build at5e remain historical.
+
+The repair now verifies every recursive archive/event dependency's current head,
+clocks and applicable patient/source/episode/owner scope; each archive item proves
+exact committed row/canonical/raw membership in its actual qualified supplying
+package/receipt. The selected root must exist in its named namespace. Root evidence
+eligibility remains separate from dependency kinds. Current review stores the full
+committed closure and identity hash at C, repeats after writer wait, and clearance
+revalidates that same closure. Prior live-review evidence recursively revalidates
+its own proof chain with cycle refusal. No old proof without the required closure
+identity is silently promoted.
+
+Authorized identical review semantic lookup precedes new-operation stale checks;
+the alias is committed only after writer/auth/control/grant rechecks. Reference/rule
+and item sets are canonicalized. b05104a8 passes6 discriminating cases, including
+restart/reorder exact receipt/alias-only effects, changed-intent/key conflict and
+revoked access, nested correction/retraction no-effects, wrong namespace no-effects,
+revised exact closure positive review/clearance and three dependency kinds with
+their own committed proofs, actual unrelated SQLite writer/uncommitted publication
+barrier followed by stale-head refusal, and ordinary unchanged-closure positive.
+Initial8556b8 retained a test assumption failure: future dependency bytes were
+already refused by whole-archive cutoff admission before any review. The corrected
+end-to-end oracle asserts that actual early refusal and zero publication; it does
+not claim a future dependency reached manual review. Copied-role harness permission
+ordering was corrected prospectively before execution; no role results yet exist.

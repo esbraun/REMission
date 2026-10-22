@@ -186,7 +186,7 @@ def create_app(settings: Settings) -> FastAPI:
 
     def live_operation(patient_id,episode_id,request,data,family):
         from . import live_hold as live
-        key=live_key(request);prepared={};intent=live.object_hash(data.model_dump(mode='json'))
+        key=live_key(request);prepared={};intent=live.object_hash(live.canonical_intent(data))
         def authorize(db):
             principal=session(db,request,mutation=True)
             live.patient_row(db,patient_id,principal['account_id'])
@@ -205,17 +205,17 @@ def create_app(settings: Settings) -> FastAPI:
             prepared['owner']=owner
             prior=live.committed_key(db,owner,patient_id,family,key,intent)
             prepared['prior']=prior
+            semantic_prior=family=='review' and db.execute('SELECT 1 FROM live_hold_operations WHERE semantic_sha256=?',(live.review_semantic(patient_id,episode_id,data),)).fetchone() is not None
             if family=='invalidate':
                 # Source authorization precedes retry lookup and is repeated after writer wait.
                 initial=live.prepare_invalidation(settings,db,owner,patient_id,data,settings.clock())
-            elif family=='review' and not prior:
+            elif family=='review' and not prior and not semantic_prior:
                 initial=live.prepare_review(db,settings,owner,patient_id,episode_id,data,settings.clock())
             else:
                 initial=None
             prepared['at']=settings.clock()
             if family=='review' and initial is not None:
-                for proof in initial['proofs']:
-                    proof['verified_visible_at']=timestamp(prepared['at'])
+                live.stamp_proofs(initial['proofs'],prepared['at'])
                 initial['evidence_head_sha256']=live.object_hash(initial['proofs'])
             prepared['value']=initial
             if prepared['at']<instant(store.validate_control(db)['last_receipt_at']):
@@ -232,11 +232,13 @@ def create_app(settings: Settings) -> FastAPI:
             elif prepared['prior']:
                 result=prepared['prior']
             elif family=='review':
-                # Revalidate heads after SQLite writer wait; proofs retain the earlier committed read at C.
-                latest=live.prepare_review(db,settings,owner,patient_id,episode_id,data,at)
-                if latest!=prepared['value']:
-                    raise LiveError('hold_evidence_stale')
-                result=live.record_review(db,settings,owner,patient_id,episode_id,data,key,at,prepared['value'])
+                # Historical semantic success aliases only after current control,
+                # account/patient/grant authorization and the writer recheck.
+                result=live.semantic_retry(db,live.review_semantic(patient_id,episode_id,data),owner,patient_id,family,key,intent)
+                if result is None:
+                    latest=live.prepare_review(db,settings,owner,patient_id,episode_id,data,at)
+                    if latest!=prepared['value']:raise LiveError('hold_evidence_stale')
+                    result=live.record_review(db,settings,owner,patient_id,episode_id,data,key,at,prepared['value'])
             else:
                 result=live.clear_episode(db,settings,owner,patient_id,episode_id,data,key,at)
         if settings.fault:
