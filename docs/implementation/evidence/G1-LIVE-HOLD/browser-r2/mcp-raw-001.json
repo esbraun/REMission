@@ -1,0 +1,255 @@
+[
+  {
+    "step": "R2-001 navigate exact801 new private deployment",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8769');\n```\n### Page\n- Page URL: http://127.0.0.1:8769/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-58-17-714Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-002 actual browser metadata and deployment health",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36\",\n  \"platform\": \"Win32\",\n  \"language\": \"en-US\",\n  \"viewport\": {\n    \"width\": 1280,\n    \"height\": 720\n  },\n  \"health\": {\n    \"status\": \"ok\",\n    \"synthetic\": true,\n    \"runtime\": \"foundation-live-hold-v1\",\n    \"capability\": \"LIVE-HOLD-01/1.0.0\",\n    \"database_instance_id\": \"d56f9769-61ae-49d6-92ef-0693f6cba2eb\",\n    \"authority_generation\": 1\n  },\n  \"mcpPackageVersion\": \"not exposed by official tool\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => ({userAgent:navigator.userAgent,platform:navigator.platform,language:navigator.language,viewport:{width:innerWidth,height:innerHeight},health:await (await fetch(\\'/health\\')).json(),mcpPackageVersion:\\'not exposed by official tool\\'})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-003 desktop viewport",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 1280, height: 720 });\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-004 login snapshot",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Page\n- Page URL: http://127.0.0.1:8769/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - generic [ref=e9]:\n      - paragraph [ref=e10]: Research demonstration\n      - heading \"Sign in to your synthetic panel\" [level=1] [ref=e11]\n      - paragraph [ref=e12]: Ordinary clinician choices and immutable history. Statistical engines and real clinical systems are unavailable.\n      - generic [ref=e13]:\n        - generic [ref=e14]: Username\n        - textbox \"Username\" [ref=e15]\n        - generic [ref=e16]: Password\n        - textbox \"Password\" [ref=e17]\n        - button \"Sign in\" [ref=e18] [cursor=pointer]\n    - generic [ref=e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-005 public synthetic Alice login",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('textbox', { name: 'Username' }).fill('alice');\nawait page.getByRole('textbox', { name: 'Password' }).fill('Synthetic-Alice-2026!');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-006 sign in",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Sign in' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-58-37-239Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-007 authenticated owned panel",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Page\n- Page URL: http://127.0.0.1:8769/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e20]:\n      - generic [ref=e21]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e22] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e23]:\n      - link \"My panel\" [ref=e24] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e25]: 10 owned synthetic patients\n    - paragraph [ref=e26]: Your clinical workspace\n    - heading \"My panel\" [level=1] [ref=e27]\n    - paragraph [ref=e28]: Choose a synthetic patient. State and permissions come from the service; opening a workspace never assigns a treatment.\n    - generic [ref=e29]:\n      - article [ref=e30]:\n        - paragraph [ref=e31]: SYN-01\n        - heading [level=2] [ref=e32]:\n          - link \"Synthetic patient 01\" [ref=e33] [cursor=pointer]:\n            - /url: /patients/SYN-01/overview\n        - paragraph [ref=e34]: ASSIGN-01 · assessment\n        - paragraph [ref=e35]: \"Learning: none\"\n        - text: incomplete\n      - article [ref=e36]:\n        - paragraph [ref=e37]: SYN-02\n        - heading [level=2] [ref=e38]:\n          - link \"Synthetic patient 02\" [ref=e39] [cursor=pointer]:\n            - /url: /patients/SYN-02/overview\n        - paragraph [ref=e40]: ASSIGN-02 · initial assignment\n        - paragraph [ref=e41]: \"Learning: none\"\n        - text: ready\n      - article [ref=e42]:\n        - paragraph [ref=e43]: SYN-03\n        - heading [level=2] [ref=e44]:\n          - link \"Synthetic patient 03\" [ref=e45] [cursor=pointer]:\n            - /url: /patients/SYN-03/overview\n        - paragraph [ref=e46]: ASSIGN-03 · treatment active\n        - paragraph [ref=e47]: \"Learning: none\"\n        - text: ready\n      - article [ref=e48]:\n        - paragraph [ref=e49]: SYN-04\n        - heading [level=2] [ref=e50]:\n          - link \"Synthetic patient 04\" [ref=e51] [cursor=pointer]:\n            - /url: /patients/SYN-04/overview\n        - paragraph [ref=e52]: ASSIGN-04 · treatment active\n        - paragraph [ref=e53]: \"Learning: nof1 design\"\n        - text: ready\n      - article [ref=e54]:\n        - paragraph [ref=e55]: SYN-05\n        - heading [level=2] [ref=e56]:\n          - link \"Synthetic patient 05\" [ref=e57] [cursor=pointer]:\n            - /url: /patients/SYN-05/overview\n        - paragraph [ref=e58]: ASSIGN-05 · treatment active\n        - paragraph [ref=e59]: \"Learning: nof1 block\"\n        - text: ready\n      - article [ref=e60]:\n        - paragraph [ref=e61]: SYN-06\n        - heading [level=2] [ref=e62]:\n          - link \"Synthetic patient 06\" [ref=e63] [cursor=pointer]:\n            - /url: /patients/SYN-06/overview\n        - paragraph [ref=e64]: ASSIGN-06 · scheduled reassessment\n        - paragraph [ref=e65]: \"Learning: nof1 review\"\n        - text: ready\n      - article [ref=e66]:\n        - paragraph [ref=e67]: SYN-07\n        - heading [level=2] [ref=e68]:\n          - link \"Synthetic patient 07\" [ref=e69] [cursor=pointer]:\n            - /url: /patients/SYN-07/overview\n        - paragraph [ref=e70]: ASSIGN-07 · scheduled reassessment\n        - paragraph [ref=e71]: \"Learning: escalation decision\"\n        - text: ready\n      - article [ref=e72]:\n        - paragraph [ref=e73]: SYN-08\n        - heading [level=2] [ref=e74]:\n          - link \"Synthetic patient 08\" [ref=e75] [cursor=pointer]:\n            - /url: /patients/SYN-08/overview\n        - paragraph [ref=e76]: ASSIGN-08 · treatment active\n        - paragraph [ref=e77]: \"Learning: support unavailable\"\n        - text: ready\n      - article [ref=e78]:\n        - paragraph [ref=e79]: SYN-09\n        - heading [level=2] [ref=e80]:\n          - link \"Synthetic patient 09\" [ref=e81] [cursor=pointer]:\n            - /url: /patients/SYN-09/overview\n        - paragraph [ref=e82]: ASSIGN-09 · clinical hold\n        - paragraph [ref=e83]: \"Learning: none\"\n        - text: ready\n      - article [ref=e84]:\n        - paragraph [ref=e85]: SYN-10\n        - heading [level=2] [ref=e86]:\n          - link \"Synthetic patient 10\" [ref=e87] [cursor=pointer]:\n            - /url: /patients/SYN-10/overview\n        - paragraph [ref=e88]: ASSIGN-10 · maintenance closeout\n        - paragraph [ref=e89]: \"Learning: none\"\n        - text: ready\n    - generic [ref=e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-008 select SYN02 identity",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('link', { name: 'Synthetic patient 02' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/overview\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-58-48-611Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-009 open explicit decision route",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/current\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-58-49-697Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-010 current no-preselection baseline",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e20]:\n      - generic [ref=e21]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e22] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e23]:\n      - link \"My panel\" [ref=e24] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e25]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=e123]:\n      - generic [ref=e124]:\n        - paragraph [ref=e125]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=e126]\n        - paragraph [ref=e127]: \"ASSIGN-02: Initial ordinary choice\"\n      - generic [ref=e128]:\n        - generic [ref=e129]:\n          - term [ref=e130]: Clinical\n          - definition [ref=e131]: initial assignment\n        - generic [ref=e132]:\n          - term [ref=e133]: Learning\n          - definition [ref=e134]: none\n        - generic [ref=e135]:\n          - term [ref=e136]: Data readiness\n          - definition [ref=e137]: ready\n        - generic [ref=e138]:\n          - term [ref=e139]: Observation cutoff\n          - definition [ref=e140]: Oct 21, 2026, 2:00 AM PDT\n    - navigation \"Patient views\" [ref=e141]:\n      - link \"Overview\" [ref=e142] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=e143] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=e144] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=e145] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=e146]:\n      - heading \"Independent safety review\" [level=2] [ref=e147]\n      - paragraph [ref=e148]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - paragraph [ref=e149]: No independent live episode is active. Ordinary eligibility and other clinical holds are checked separately.\n      - generic [ref=e150]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=e151]\n        - paragraph [ref=e152]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=e153]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=e154]:\n          - option \"Choose a configured concern\" [selected]\n          - option \"Synthetic clinician_concern · source 1\"\n          - option \"Synthetic experimental_stability_review · source 2\"\n          - option \"Synthetic clinician_concern · source 3\"\n          - option \"Synthetic clinician_concern · source 4\"\n          - option \"Synthetic clinician_concern · source 5\"\n          - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n        - button \"Record selected concern and hold\" [disabled] [ref=e155]\n    - generic [ref=e156]:\n      - paragraph [ref=e157]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=e158]\n      - paragraph [ref=e159]: \"Clinical: initial assignment. Learning: none. Data: ready.\"\n      - paragraph [ref=e160]: Support is fixed; policy fixed-approved-support version 1.0.0.\n      - button \"Request clinical hold\" [ref=e162] [cursor=pointer]\n    - generic [ref=e163]:\n      - paragraph [ref=e164]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=e165]\n      - generic [ref=e166]:\n        - strong [ref=e167]: No statistical comparison is available\n        - paragraph [ref=e168]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=e169]:\n        - generic \"Inspect basis and engine status\" [ref=e170] [cursor=pointer]\n    - generic [ref=e171]:\n      - paragraph [ref=e172]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=e173]\n      - group \"Choose an eligible option · none is preselected\" [ref=e175]:\n        - generic [ref=e177]:\n          - radio \"MED A\" [ref=e178]\n          - text: MED A\n        - generic [ref=e179]:\n          - radio \"MED B\" [ref=e180]\n          - text: MED B\n        - generic [ref=e181]:\n          - radio \"behavioral continue\" [ref=e182]\n          - text: behavioral continue\n        - generic [ref=e183]:\n          - radio \"behavioral escalate\" [ref=e184]\n          - text: behavioral escalate\n        - generic [ref=e185]:\n          - radio \"usual care\" [ref=e186]\n          - text: usual care\n        - generic [ref=e187]: Preference and rationale\n        - textbox \"Preference and rationale\" [ref=e188]\n        - generic [ref=e189]: Follow-up date and time\n        - textbox \"Follow-up date and time\" [ref=e190]\n        - generic [ref=e191]:\n          - button \"Review ordinary choice\" [ref=e192] [cursor=pointer]\n          - button \"Save draft\" [ref=e193] [cursor=pointer]\n    - generic [ref=e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-011 baseline input and workspace identity",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"radioChecks\": [\n    {\n      \"name\": \"option\",\n      \"checked\": false\n    },\n    {\n      \"name\": \"option\",\n      \"checked\": false\n    },\n    {\n      \"name\": \"option\",\n      \"checked\": false\n    },\n    {\n      \"name\": \"option\",\n      \"checked\": false\n    },\n    {\n      \"name\": \"option\",\n      \"checked\": false\n    }\n  ],\n  \"selectedConcern\": \"\",\n  \"workspace\": {\n    \"engines\": {\n      \"bayesian\": \"unavailable\",\n      \"escalation\": \"unavailable\",\n      \"nof1\": \"unavailable\",\n      \"support\": \"unavailable\"\n    },\n    \"estimates\": {\n      \"reason\": \"Statistical engines are not implemented; no treatment ranking is available\",\n      \"status\": \"pending\"\n    },\n    \"labels\": [\n      \"Synthetic demonstration\",\n      \"No acute clinical monitoring\"\n    ],\n    \"name\": \"Synthetic patient 02\",\n    \"options\": [\n      {\n        \"action\": \"MED_A\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"MED_B\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"behavioral_continue\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"behavioral_escalate\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"usual_care\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      }\n    ],\n    \"patient_id\": \"SYN-02\",\n    \"permissions\": {\n      \"approve_ordinary\": true,\n      \"estimate\": false,\n      \"randomize\": false,\n      \"request_review\": true\n    },\n    \"plan\": null,\n    \"projection\": {\n      \"cutoff\": \"2026-10-21T09:00:00Z\",\n      \"kind\": \"learner_history\",\n      \"patient_id\": \"SYN-02\",\n      \"provenance\": [],\n      \"records\": [],\n      \"schema_version\": \"1.0.0\",\n      \"synthetic\": true\n    },\n    \"snapshot\": {\n      \"available_at\": \"2026-10-21T09:00:00Z\",\n      \"consent_version\": 1,\n      \"cutoff\": \"2026-10-21T09:00:00Z\",\n      \"duplicate_of\": null,\n      \"eligibility\": [\n        {\n          \"action\": \"MED_A\",\n          \"reasons\": [],\n          \"status\": \"eligible\"\n        },\n        {\n          \"action\": \"MED_B\",\n          \"reasons\": [],\n          \"status\": \"eligible\"\n        },\n        {\n          \"action\": \"behavioral_continue\",\n          \"reasons\": [],\n          \"status\": \"eligible\"\n        },\n        {\n          \"action\": \"behavioral_escalate\",\n          \"reasons\": [],\n          \"status\": \"eligible\"\n        },\n        {\n          \"action\": \"usual_care\",\n          \"reasons\": [],\n          \"status\": \"eligible\"\n        }\n      ],\n      \"eligibility_version\": 1,\n      \"estimand\": {\n        \"id\": \"EST-VISIT\",\n        \"sha256\": \"7cb083146962e9cd07b404d0cd24f2b251977a4c99bc0b83e71a9b743224a63c\",\n        \"version\": \"1.0.0\"\n      },\n      \"event_at\": \"2026-10-21T09:00:00Z\",\n      \"evidence\": [],\n      \"horizon_days\": 42,\n      \"kind\": \"decision_snapshot\",\n      \"lineage_id\": \"decision-242aedd53f2b31577c79078d2a46ee5d\",\n      \"model\": {\n        \"id\": \"foundation-no-estimator\",\n        \"sha256\": \"dc45e5812ab508cd9e18593554b3f3f2999974046fe6645e79cdd1f9f5c6dc8e\",\n        \"version\": \"1.0.0\"\n      },\n      \"outcome\": \"Ordinary synthetic care; statistical estimates unavailable\",\n      \"patient_id\": \"SYN-02\",\n      \"patient_version\": 1,\n      \"policy\": {\n        \"id\": \"fixed-approved-support\",\n        \"sha256\": \"096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639\",\n        \"version\": \"1.0.0\"\n      },\n      \"posterior\": null,\n      \"record_id\": \"decision-242aedd53f2b31577c79078d2a46ee5d\",\n      \"record_status\": \"active\",\n      \"recorded_at\": \"2026-10-21T09:00:00Z\",\n      \"revision\": 1,\n      \"schema_version\": \"1.0.0\",\n      \"source\": {\n        \"adapter\": \"research_configuration\",\n        \"id\": \"foundation-synthetic\",\n        \"raw_sha256\": \"152e46c8b883465a8d4646a90ed619e76b6aa6d00a89435009e5b7364c25e253\",\n        \"version\": \"1.0.0\"\n      },\n      \"state_version\": 1,\n      \"supersedes\": null,\n      \"synthetic\": true,\n      \"view\": {\n        \"mode\": \"current\",\n        \"patient_id\": \"SYN-02\",\n        \"snapshot_id\": null\n      },\n      \"workflow\": {\n        \"clinical\": \"initial_assignment\",\n        \"data_readiness\": \"ready\",\n        \"hold_reasons\": [],\n        \"learning\": \"none\",\n        \"support_mode\": \"fixed\",\n        \"support_policy\": {\n          \"id\": \"fixed-approved-support\",\n          \"sha256\": \"096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639\",\n          \"version\": \"1.0.0\"\n        }\n      }\n    },\n    \"stage\": \"ASSIGN-02\",\n    \"stage_label\": \"Initial ordinary choice\",\n    \"version_status\": \"Foundation contract consumer; downstream G2-G5 engines pending\",\n    \"live_safety_summary\": {\n      \"contract\": \"LIVE-HOLD-01\",\n      \"schema_version\": \"1.0.0\",\n      \"authority_generation\": 1,\n      \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n      \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n      \"patient_sequence\": 1,\n      \"active_episodes\": []\n    },\n    \"tasks\": [],\n    \"history\": [],\n    \"mode\": \"current\",\n    \"auth_generation\": \"b09ead8ee24622bb49a332dec99dd7ca358baa013df068049521b4489b49bd7a\"\n  }\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => ({radioChecks:[...document.querySelectorAll(\\'input[type=radio]\\')].map(e=>({name:e.name,checked:e.checked})),selectedConcern:document.querySelector(\\'#configured-concern\\')?.value,workspace:await(await fetch(\\'/api/patients/SYN-02\\')).json()})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-012 choose explicit ordinary fixture option",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('radio', { name: 'MED A' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-02-315Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-013 type patient draft",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#rationale').fill('R2 unsaved patient02 draft must clear on switch');\nawait page.locator('#follow-up').fill('2026-10-29T09:00');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-014 navigate with unsaved data",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-02-925Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-015 inspect explicit draft navigation prompt",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e20]:\n      - generic [ref=e21]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e22] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e23]:\n      - link \"My panel\" [active] [ref=e24] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e25]: 10 owned synthetic patients\n    - region \"Unsaved draft\" [ref=e194]:\n      - heading \"Unsaved draft\" [level=2] [ref=e195]\n      - paragraph [ref=e196]: Save, discard or cancel before leaving this patient and decision.\n      - generic [ref=e197]:\n        - button \"Save draft and leave\" [ref=e198] [cursor=pointer]\n        - button \"Discard and leave\" [ref=e199] [cursor=pointer]\n        - button \"Cancel\" [ref=e200] [cursor=pointer]\n    - region \"Patient context\" [ref=e123]:\n      - generic [ref=e124]:\n        - paragraph [ref=e125]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=e126]\n        - paragraph [ref=e127]: \"ASSIGN-02: Initial ordinary choice\"\n      - generic [ref=e128]:\n        - generic [ref=e129]:\n          - term [ref=e130]: Clinical\n          - definition [ref=e131]: initial assignment\n        - generic [ref=e132]:\n          - term [ref=e133]: Learning\n          - definition [ref=e134]: none\n        - generic [ref=e135]:\n          - term [ref=e136]: Data readiness\n          - definition [ref=e137]: ready\n        - generic [ref=e138]:\n          - term [ref=e139]: Observation cutoff\n          - definition [ref=e140]: Oct 21, 2026, 2:00 AM PDT\n    - navigation \"Patient views\" [ref=e141]:\n      - link \"Overview\" [ref=e142] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=e143] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=e144] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=e145] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=e146]:\n      - heading \"Independent safety review\" [level=2] [ref=e147]\n      - paragraph [ref=e148]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - paragraph [ref=e149]: No independent live episode is active. Ordinary eligibility and other clinical holds are checked separately.\n      - generic [ref=e150]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=e151]\n        - paragraph [ref=e152]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=e153]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=e154]:\n          - option \"Choose a configured concern\" [selected]\n          - option \"Synthetic clinician_concern · source 1\"\n          - option \"Synthetic experimental_stability_review · source 2\"\n          - option \"Synthetic clinician_concern · source 3\"\n          - option \"Synthetic clinician_concern · source 4\"\n          - option \"Synthetic clinician_concern · source 5\"\n          - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n        - button \"Record selected concern and hold\" [disabled] [ref=e155]\n    - generic [ref=e156]:\n      - paragraph [ref=e157]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=e158]\n      - paragraph [ref=e159]: \"Clinical: initial assignment. Learning: none. Data: ready.\"\n      - paragraph [ref=e160]: Support is fixed; policy fixed-approved-support version 1.0.0.\n      - button \"Request clinical hold\" [ref=e162] [cursor=pointer]\n    - generic [ref=e163]:\n      - paragraph [ref=e164]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=e165]\n      - generic [ref=e166]:\n        - strong [ref=e167]: No statistical comparison is available\n        - paragraph [ref=e168]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=e169]:\n        - generic \"Inspect basis and engine status\" [ref=e170] [cursor=pointer]\n    - generic [ref=e171]:\n      - paragraph [ref=e172]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=e173]\n      - group \"Choose an eligible option · none is preselected\" [ref=e175]:\n        - generic [ref=e177]:\n          - radio \"MED A\" [checked] [ref=e178]\n          - text: MED A\n        - generic [ref=e179]:\n          - radio \"MED B\" [ref=e180]\n          - text: MED B\n        - generic [ref=e181]:\n          - radio \"behavioral continue\" [ref=e182]\n          - text: behavioral continue\n        - generic [ref=e183]:\n          - radio \"behavioral escalate\" [ref=e184]\n          - text: behavioral escalate\n        - generic [ref=e185]:\n          - radio \"usual care\" [ref=e186]\n          - text: usual care\n        - generic [ref=e187]: Preference and rationale\n        - textbox \"Preference and rationale\" [ref=e188]: R2 unsaved patient02 draft must clear on switch\n        - generic [ref=e189]: Follow-up date and time\n        - textbox \"Follow-up date and time\" [ref=e190]: 2026-10-29T09:00\n        - generic [ref=e191]:\n          - button \"Review ordinary choice\" [ref=e192] [cursor=pointer]\n          - button \"Save draft\" [ref=e193] [cursor=pointer]\n    - generic [ref=e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-016 explicit discard",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Discard and leave' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-13-524Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-017 switch other patient",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-03/overview\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-03/overview\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-14-608Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-018 switch to patient03 decision",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-03/current\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-03/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-15-705Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-019 verify patient switch cleared content",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"identity\": \"Synthetic patient 03\",\n  \"priorDraftLeaked\": false,\n  \"rationale\": null,\n  \"selected\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({identity:document.querySelector(\\'h1\\')?.textContent,priorDraftLeaked:document.body.innerText.includes(\\'R2 unsaved patient02 draft\\'),rationale:document.querySelector(\\'#rationale\\')?.value??null,selected:[...document.querySelectorAll(\\'input[type=radio]:checked\\')].length})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-020 return panel",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-17-319Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-021 return02",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/overview\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/overview\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-18-382Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-022 return02decision",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/current\\']').click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T00-59-19-456Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-023 verify02 draft discarded",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"identity\": \"Synthetic patient 02\",\n  \"rationale\": \"\",\n  \"selected\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({identity:document.querySelector(\\'h1\\')?.textContent,rationale:document.querySelector(\\'#rationale\\')?.value,selected:[...document.querySelectorAll(\\'input[type=radio]:checked\\')].length})');\n```"
+        }
+      ]
+    }
+  }
+]

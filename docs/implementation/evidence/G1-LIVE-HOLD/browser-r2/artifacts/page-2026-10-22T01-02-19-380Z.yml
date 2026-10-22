@@ -1,0 +1,87 @@
+- generic [ref=e2]:
+  - link "Skip to main content" [ref=e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - text: REMission
+      - generic [ref=e6]: Synthetic care workspace
+    - generic [ref=e20]:
+      - generic [ref=e21]: Dr Alice (synthetic)
+      - button "Sign out" [ref=e22] [cursor=pointer]
+  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [ref=e8]:
+    - navigation "Workspace" [ref=e23]:
+      - link "My panel" [ref=e24] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e25]: 10 owned synthetic patients
+    - region "Patient context" [ref=e1102]:
+      - generic [ref=e1103]:
+        - paragraph [ref=e1104]: SYN-02 · Current workspace
+        - heading "Synthetic patient 02" [level=1] [ref=e1105]
+        - paragraph [ref=e1106]: "ASSIGN-01: Assessment incomplete"
+      - generic [ref=e1107]:
+        - generic [ref=e1108]:
+          - term [ref=e1109]: Clinical
+          - definition [ref=e1110]: assessment
+        - generic [ref=e1111]:
+          - term [ref=e1112]: Learning
+          - definition [ref=e1113]: none
+        - generic [ref=e1114]:
+          - term [ref=e1115]: Data readiness
+          - definition [ref=e1116]: incomplete
+        - generic [ref=e1117]:
+          - term [ref=e1118]: Observation cutoff
+          - definition [ref=e1119]: Oct 21, 2026, 6:02 PM PDT
+    - navigation "Patient views" [ref=e1120]:
+      - link "Overview" [ref=e1121] [cursor=pointer]:
+        - /url: /patients/SYN-02/overview
+      - link "Current decision" [ref=e1122] [cursor=pointer]:
+        - /url: /patients/SYN-02/current
+      - link "Monitoring" [ref=e1123] [cursor=pointer]:
+        - /url: /patients/SYN-02/monitoring
+      - link "History" [ref=e1124] [cursor=pointer]:
+        - /url: /patients/SYN-02/history
+    - region [ref=e1125]:
+      - heading "Independent safety review" [level=2] [ref=e1126]
+      - paragraph [ref=e1127]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.
+      - paragraph [ref=e1128]: No independent live episode is active. Ordinary eligibility and other clinical holds are checked separately.
+      - generic [ref=e1129]:
+        - heading "Record a configured synthetic concern" [level=3] [ref=e1130]
+        - paragraph [ref=e1131]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.
+        - generic [ref=e1132]: Authorized source concern · none preselected
+        - combobox "Authorized source concern · none preselected" [ref=e1133]:
+          - option "Choose a configured concern" [selected]
+          - option "Synthetic clinician_concern · source 1"
+          - option "Synthetic experimental_stability_review · source 2"
+          - option "Synthetic clinician_concern · source 3"
+          - option "Synthetic clinician_concern · source 4"
+          - option "Synthetic clinician_concern · source 5"
+          - option "Synthetic clinician_concern, experimental_stability_review · source 6"
+        - button "Record selected concern and hold" [disabled] [ref=e1134]
+    - generic [ref=e1135]:
+      - paragraph [ref=e1136]: 1 · Assess
+      - heading "Readiness and clinical review" [level=2] [ref=e1137]
+      - paragraph [ref=e1138]: "Clinical: assessment. Learning: none. Data: incomplete."
+      - paragraph [ref=e1139]: Support is paused; policy fixed-approved-support version 1.0.0.
+      - generic [ref=e1140]:
+        - button "Request clinical hold" [ref=e1141] [cursor=pointer]
+        - button "Record prerequisite review" [ref=e1142] [cursor=pointer]
+    - generic [ref=e1143]:
+      - paragraph [ref=e1144]: 2 · Compare
+      - heading "Eligible ordinary options" [level=2] [ref=e1145]
+      - generic [ref=e1146]:
+        - strong [ref=e1147]: No statistical comparison is available
+        - paragraph [ref=e1148]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.
+      - group [ref=e1149]:
+        - generic "Inspect basis and engine status" [ref=e1150] [cursor=pointer]
+    - generic [ref=e1151]:
+      - paragraph [ref=e1152]: 3 · Decide and follow up
+      - heading "Explicit ordinary synthetic choice" [level=2] [ref=e1153]
+      - paragraph [ref=e1154]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.
+    - generic [ref=e1155]:
+      - heading "Saved decisions" [level=2] [ref=e1156]
+      - list [ref=e1157]:
+        - listitem [ref=e1158]:
+          - link "Ordinary choice · Oct 21, 2026, 5:59 PM PDT" [ref=e1159] [cursor=pointer]:
+            - /url: /patients/SYN-02/history/approval-cb7a6f88f02a482d95e67e1566ade17a
+    - generic [ref=e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.

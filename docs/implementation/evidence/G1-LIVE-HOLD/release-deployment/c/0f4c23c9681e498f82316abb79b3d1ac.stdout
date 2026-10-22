@@ -1,0 +1,86 @@
+[
+    {
+        "Id": "sha256:22ed44bd20e16754972d29adaaa8cf61875fef061335280610ed93ae4fd58070",
+        "RepoTags": [
+            "remission-lh-d78c037db179-learner:candidate"
+        ],
+        "RepoDigests": [
+            "remission-lh-d78c037db179-learner@sha256:22ed44bd20e16754972d29adaaa8cf61875fef061335280610ed93ae4fd58070"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-22T00:23:34.387721324Z",
+        "Config": {
+            "User": "10002:10002",
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "-m",
+                "services.learner.worker"
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 2095774161,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+                "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+                "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+                "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+                "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+                "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+                "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+                "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+                "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+                "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+                "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+                "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+                "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+                "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:a1cf2f53f38529aaf6e4f22e8a594d086a14f97121080adfc97b9e3d80c8b8be",
+                "sha256:0aa51d5ba4071d7d0acc0812119407985b7217301f11b830c5f69c946c7c1d32",
+                "sha256:490686b1f7eaba5cde9762af266e3c14c88dcf22d36500f62de89ac076702778",
+                "sha256:f7e3ca525192969201336bad34733200e1e2764e8f6c46c07da689c44531deb4",
+                "sha256:bfa7f339b3045ee15248c9ee5ae3f75719a1ada7311453143bcaf47e9c8e97dd",
+                "sha256:91c01b50d405780528b554fe5f0d407c77c2e678701b7fb2ba588052d195470c",
+                "sha256:2ce9c7854244e89cefb6ec1045bfc934e729d9d662ef546cebe82fa81701a86a",
+                "sha256:882d9db0a0dff141daf7919b5c6895e24167ef33d7c1985cef683861b1db8c56",
+                "sha256:a32b9143150f5edb7c5810beb51ab241cae716fa7880ceb2575c58e693a51546",
+                "sha256:498f45e7bd1306d1e9e20fe0dd93b4370a1ed1a308d3d2f305b2335258457d9e"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-22T00:53:31.122345941Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:22ed44bd20e16754972d29adaaa8cf61875fef061335280610ed93ae4fd58070",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "qmp69llrrb6s8t3jia9p5f8js",
+                    "CreatedAt": "2026-10-22T00:53:31.157048409Z"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,36 @@
+# Current structural browser qualification
+
+Implementer observations on runtime source **8019314fb3ef7640339f2b0bbb3d70de93913239**, accepted base ec18cb4020ba239710a3fd615e365d5cd72b4d80. This is distinct from historical1096 browser evidence and documentation-only47da. No runtime or JSX changed during this run. Official Playwright MCP produced177 retained calls and61 unique copied generated artifacts, including5 screenshots. The complete sequence is authoritative; incremental parts are checkpoints and may overlap.
+
+URL http://127.0.0.1:8769; own deployment prefix remission-g1-live-hold-20261021-ad03a90c; database instance d56f9769-61ae-49d6-92ef-0693f6cba2eb / authority generation1. Service image sha256:e334c0858816144df14a00b659bb231e2e8b29964193b204d384a28412c8b8e7; learner sha256:22ed44bd20e16754972d29adaaa8cf61875fef061335280610ed93ae4fd58070. Exact copied code/probe/assets and deployment command manifests live in ../release-build, ../release-roles and ../release-deployment. The previously running own799f deployment was stopped and retained;8765–8768 stacks were untouched.
+
+Actual browser: HeadlessChrome155.0.0.0, Windows NT10 Win64 / Win32, en-US. Official MCP package/build version is not exposed and is **unavailable**, not pinned. Desktop1280×720 and narrow390×844. Public fixture account alice / Synthetic-Alice-2026!; bob / Synthetic-Bob-2026! is the separate owner fixture. These are structural synthetic accounts, not clinician participation.
+
+| Case | Observed outcome | Sequence labels |
+| --- | --- | --- |
+| R2-B01 identity/defaults | Owned Alice panel; explicit SYN02 identity; zero ordinary radios selected and no concern selected. |001–011|
+| R2-B02 drafts/patient switch | Unsaved prompt; explicit discard; SYN03 shows no SYN02 draft; returning SYN02 has empty rationale/zero selected radios. |012–023|
+| R2-B03 ordinary history | Explicit option/rationale/follow-up and separate confirmation save ordinary MED_A; saved immutable display and read-only history. |024–030|
+| R2-B04 hold before fit/tasks/evidence/rule | Installed source1 enters ASSIGN09/stale/paused before refit; two distinct owned task deadlines/escalations; exact archived source and installed rule inspected. |036–044|
+| R2-B05 review is separate | Exact evidence selection, current finding/rationale/attestation; saved satisfied review keeps hold and both tasks pending. |045–047|
+| R2-B06 explicit assessment re-entry/keyboard | Separate clearance closes selected tasks; ASSIGN01 assessment/incomplete/paused, ordinary approval false. At390px Tab→Space attests, Tab→Enter saves; actual Tab traversal reaches explicit clearance, Enter clears. |048–069|
+| R2-B07 stale review/refresh | Real second tab adds threshold; stale first-tab clearance returns409 stale_live_hold_review; refresh loads changed episodes and removes old current review; new supported concern review permits only its own clearance. |077–097|
+| R2-B08 separate episodes/named missing rule | Clearing supported generation2 closes its task only; separate threshold task stays pending at ASSIGN09/stale/paused, named T-OBS2-CLEARANCE-POLICY and no clearance control. |094–097|
+| R2-B09 history reload | Deep-link reload retains original display SHA601340f214e884eb76e398803a30952f4729f411d855e16ec20e19b2ca869de3; snapshot says Historical/read only; zero editable inputs. |115–122|
+| R2-B10 expiry/reauth | Controlled server-side expiry of the one Alice session in this own fixture DB; real evidence GET401 clears patient identity and unsaved review input; reauth restores held state with empty local inputs. No30-minute wall-clock wait is claimed. |123–132 + setup/a9a91eb0|
+| R2-B11 persistence | Actual Docker service-process restart retains decision/version17, active episode/task/review IDs/statuses and original display hash; current reload shows persisted pending review. |133–137 + setup/83045f15|
+| R2-B12 process admission busy | Separate process obtains actual flock, explicit READY is observed; evidence GET503 and current refresh503 have refresh actions/no success; explicit RELEASE then refresh recovers same version17, held/unready. Polling only observes barrier files, not a timed winner. |138–144 + setup/25b72e7e/576717e5/03e3f166|
+| R2-B13 selected generation/recurrence | Source3 generation1 review/clearance followed by previously unadmitted source4 opens generation2/new pending task; old task remains closed/current review null. Original historical clearance retry returns original operation/generation and leaves version9/hold unchanged. |056–078|
+| R2-B14 strengthening | Mixed source5 review followed by source6 strengthens same generation with both reasons,2 tasks/2 obligations; old current review invalidated. |098–106|
+| R2-B15 all obligations/mixed review | Native required threshold finding prevents incomplete submit (request count stays10, focus moves to missing finding). Complete concern-satisfied/threshold-pending review commits pending;2 tasks remain held, named policy blocker/no Clear. Evidence is explicitly selected separately for each requirement. |107–114|
+| R2-B16 narrow/disabled reasons |390px document/body widths390; long exact refs wrap,2 held episodes/named blockers and no clearance buttons; screenshots reviewed at desktop/narrow. |145–149|
+
+Observed limits and retained harness failures:
+
+-032/033 attempted concern controls on the overview returned by “Return to current”; no elements existed and no operation occurred. Correct Current-decision navigation precedes036–040.080/081 tried second-tab controls before render; selection failed and disabled button timed out.085 snapshot then086–090 prove actual successful setup and stale refusal.
+-073 compared JSON insertion order and returned receiptExact=false;076 explicitly canonicalized both objects, proving equal content/operation/generation. This browser probe does not establish wire-byte ordering equality. SQLite receipt-byte tests provide the separate byte proof.
+-118/120 case-sensitive innerText label diagnostics returned false; retained snapshots030/119 show the historical identity and read-only display and zero editable controls. No claim relies on that diagnostic boolean.
+-The first host busy-process command failed PowerShell parsing before Python/Docker because backslash quoting was unsuitable. The corrected here-string command has its own UUID capture and actual READY/RELEASE process output. Ancillary read-only source locators also encountered missing App.tsx/setup.json and Windows literal-wildcard rg errors; these did not execute application operations.
+-Console errors are expected actual409,401 and503 negatives, retained with full console/network evidence. No unexpected runtime browser error was observed in this run. Historical1096 startup ERR_EMPTY_RESPONSE remains historical; the current801 restart succeeded and is not relabeled as that old failure.
+
+The fixtures have explicit old synthetic deadlines and installed structural concern rules; these are not a clinical freshness law or an accepted threshold clearance criterion. No scientific producer qualification, human-factors, clinical review or clinical validation is established. Exclusive official MCP ownership was explicitly released to root after complete raw/artifact capture.

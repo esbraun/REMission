@@ -14,7 +14,21 @@ Integrated OBS2 verification bc0c81f2410fb1c42ba60b75cf38cd12d8322e78 was cherry
 as d82b015. These historical evidence bytes do not establish this implementation.
 The full plan review and source-only helper chains are preserved in raw-inputs.json.
 
-Status: implementation in progress. No LIVE-HOLD runtime or browser acceptance yet.
+Current status: implementer qualification complete, independent final exact-head
+review pending. Runtime source8019314 passed78 affected service tests,67 domain,
+54 run,11 artifact and11 DR checks,6 exporters and pip/runtime qualification.
+Its exact copied integration image independently passed78; actual copied UID/private
+boundary/product probes and new-private-volume cutover passed. The current official
+MCP rerun has177 retained calls/61 generated artifacts/5 screenshots, with full
+amended task/obligation/generation/mixed-review flow. See [release handoff](release-handoff.md),
+[current browser report](browser-r2/report.md), and release-manifest.json. Documentation-only
+47da5ae differs in the copied README;801 image results are never relabeled47da.
+No final independent whole-package, scientific producer/law, human or clinical
+acceptance is claimed. Root scientific plan5409 remains queued for separate code
+integration after structural review/merge; threshold clearance remains named blocked.
+
+The following chronology preserves earlier incomplete checkpoints and failures;
+their source bindings remain historical, not statements of current coverage.
 Source checkpoint 1096d6da86048e7a53f98ed70abdd85f6f497aed has an actual isolated
 old-stack drain/new-private-volume cutover in deployment-r4, with exact image and
 copied-source byte checks. The browser/ record preserves 105 official MCP entries,

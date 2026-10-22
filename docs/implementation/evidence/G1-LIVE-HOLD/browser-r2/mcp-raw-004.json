@@ -1,0 +1,235 @@
+[
+  {
+    "step": "R2-073 historical original clearance retry cannot clear generation2",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"status\": 200,\n  \"receiptExact\": false,\n  \"before\": 9,\n  \"after\": 9,\n  \"stage\": \"ASSIGN-09\",\n  \"episodes\": [\n    {\n      \"episode_id\": \"episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82\",\n      \"generation\": 2,\n      \"trigger_set_sha256\": \"d3edb630f27722ba724e5f39328f86f289298b01001a606765836ba4a3324e06\",\n      \"obligation_set_sha256\": \"487758c2ca8d2f49ddc4226239ab8b59ae5a6b66ce1b8357ea029d7d61ba05d7\",\n      \"task_ids\": [\n        \"hold-review-628b3f4f08ed7e3400353ff29e2123582fea549c\"\n      ]\n    }\n  ]\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const before=await(await fetch(\\'/api/patients/SYN-02\\')).json();const s=await(await fetch(\\'/api/session\\')).json();const old=window.r2G1Clear;const r=await fetch(old.url,{method:\\'POST\\',headers:{\\'Content-Type\\':\\'application/json\\',\\'X-CSRF-Token\\':s.csrf,\\'Idempotency-Key\\':old.key},body:JSON.stringify(old.request)});const receipt=await r.json();const after=await(await fetch(\\'/api/patients/SYN-02\\')).json();return {status:r.status,receiptExact:JSON.stringify(receipt)===JSON.stringify(old.response),before:before.snapshot.patient_version,after:after.snapshot.patient_version,stage:after.stage,episodes:after.live_safety_summary.active_episodes};}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-074 current generation2 form",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- region [ref=e1186]:\n  - heading \"Independent safety review\" [level=2] [ref=e1187]\n  - paragraph [ref=e1188]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n  - article [ref=e1189]:\n    - heading \"clinician concern · episode generation 2\" [level=3] [ref=e1190]\n    - paragraph [ref=e1191]:\n      - strong [ref=e1192]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:02 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e1193]\n    - list [ref=e1194]:\n      - listitem [ref=e1195]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e1196]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e1197]\n    - list [ref=e1198]:\n      - listitem [ref=e1199]:\n        - button \"Inspect obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1200] [cursor=pointer]\n        - generic [ref=e1201]: SHA256 d73d2e05e182d4bf54ce491a93824fd0236d533e18421bd07c9315165d72648b\n    - group [ref=e1202]:\n      - generic \"Installed review rules and all active obligations\" [ref=e1203] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e1205]:\n      - generic [ref=e1207]:\n        - generic [ref=e1208]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e1209]'\n        - generic [ref=e1210]: Requirement result\n        - combobox \"Requirement result\" [ref=e1211]:\n          - option \"Pending review\" [selected]\n          - option \"Satisfied under the installed rule\"\n        - paragraph [ref=e1212]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e1213]:\n          - checkbox \"obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1214]\n          - generic [ref=e1215]: obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\n      - generic [ref=e1216]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e1217]\n      - generic [ref=e1218]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e1219]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e1220] [cursor=pointer]\n  - generic [ref=e1221]:\n    - heading \"Record a configured synthetic concern\" [level=3] [ref=e1222]\n    - paragraph [ref=e1223]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n    - generic [ref=e1224]: Authorized source concern · none preselected\n    - combobox \"Authorized source concern · none preselected\" [ref=e1225]:\n      - option \"Choose a configured concern\" [selected]\n      - option \"Synthetic clinician_concern · source 1\"\n      - option \"Synthetic experimental_stability_review · source 2\"\n      - option \"Synthetic clinician_concern · source 3\"\n      - option \"Synthetic clinician_concern · source 4\"\n      - option \"Synthetic clinician_concern · source 5\"\n      - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n    - button \"Record selected concern and hold\" [disabled] [ref=e1226]\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-075 restore desktop",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 1280, height: 720 });\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-076 correct object-order receipt comparison and retain raw transport",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"sameCanonicalReceipt\": true,\n  \"originalKeyOrder\": [\n    \"schema_version\",\n    \"contract\",\n    \"synthetic\",\n    \"status\",\n    \"operation_id\",\n    \"operation_type\",\n    \"semantic_sha256\",\n    \"patient_id\",\n    \"owner_id\",\n    \"actor_id\",\n    \"authority_generation\",\n    \"authority_sha256\",\n    \"review_rules_sha256\",\n    \"live_received_at\",\n    \"operation_sequence\",\n    \"patient_sequence\",\n    \"before_versions\",\n    \"after_versions\",\n    \"decision_id\",\n    \"audit_id\",\n    \"episode_id\",\n    \"episode_generation\",\n    \"task_ids\",\n    \"review_id\"\n  ],\n  \"retryKeyOrder\": [\n    \"actor_id\",\n    \"after_versions\",\n    \"audit_id\",\n    \"authority_generation\",\n    \"authority_sha256\",\n    \"before_versions\",\n    \"contract\",\n    \"decision_id\",\n    \"episode_generation\",\n    \"episode_id\",\n    \"live_received_at\",\n    \"operation_id\",\n    \"operation_sequence\",\n    \"operation_type\",\n    \"owner_id\",\n    \"patient_id\",\n    \"patient_sequence\",\n    \"review_id\",\n    \"review_rules_sha256\",\n    \"schema_version\",\n    \"semantic_sha256\",\n    \"status\",\n    \"synthetic\",\n    \"task_ids\"\n  ],\n  \"sameOperation\": true,\n  \"sameGeneration\": 1\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const old=window.r2G1Clear;const r=window.r2Requests.at(-1);const canon=v=>JSON.stringify(v&&typeof v===\\'object\\'?Array.isArray(v)?v.map(x=>JSON.parse(canon(x))):Object.fromEntries(Object.keys(v).sort().map(k=>[k,JSON.parse(canon(v[k]))])):v);return {sameCanonicalReceipt:canon(r.response)===canon(old.response),originalKeyOrder:Object.keys(old.response),retryKeyOrder:Object.keys(r.response),sameOperation:old.response.operation_id===r.response.operation_id,sameGeneration:r.response.episode_generation};}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-077 fill new generation2 review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('textbox', { name: 'review-concern: finding and' }).fill('R2 new generation2 concern requires new owned current assessment');\nawait page.getByLabel('Requirement result').selectOption('Satisfied under the installed rule');\nawait page.getByRole('checkbox', { name: 'obs2-' }).check();\nawait page.getByRole('textbox', { name: 'Current assessment rationale' }).fill('R2 generation2 review before another episode changes input');\nawait page.getByRole('checkbox', { name: 'I have reviewed the entire' }).check();\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-078 save generation2 review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Save current review; keep' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-02-46-258Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-079 open second tab for concurrent new episode",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8769/patients/SYN-02/current');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-02-46-749Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-080 second tab choose separate unsupported threshold source",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nError: \"#configured-concern\" does not match any elements."
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "step": "R2-081 second tab record new threshold episode",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nTimeoutError: browserBackend.callTool: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\\'Record selected concern and hold\\')')\u001b[22m\n\u001b[2m    - locator resolved to <button disabled>Record selected concern and hold</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "step": "R2-082 return stale first tab",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-083 stale visible review remains displayed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- region [ref=e1278]:\n  - heading \"Independent safety review\" [level=2] [ref=e1279]\n  - paragraph [ref=e1280]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n  - article [ref=e1281]:\n    - heading \"clinician concern · episode generation 2\" [level=3] [ref=e1282]\n    - paragraph [ref=e1283]:\n      - strong [ref=e1284]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:02 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e1285]\n    - list [ref=e1286]:\n      - listitem [ref=e1287]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e1288]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e1289]\n    - list [ref=e1290]:\n      - listitem [ref=e1291]:\n        - button \"Inspect obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1292] [cursor=pointer]\n        - generic [ref=e1293]: SHA256 d73d2e05e182d4bf54ce491a93824fd0236d533e18421bd07c9315165d72648b\n    - group [ref=e1294]:\n      - generic \"Installed review rules and all active obligations\" [ref=e1295] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e1297]:\n      - generic [ref=e1299]:\n        - generic [ref=e1300]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e1301]'\n        - generic [ref=e1302]: Requirement result\n        - combobox \"Requirement result\" [ref=e1303]:\n          - option \"Pending review\" [selected]\n          - option \"Satisfied under the installed rule\"\n        - paragraph [ref=e1304]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e1305]:\n          - checkbox \"obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1306]\n          - generic [ref=e1307]: obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\n      - generic [ref=e1308]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e1309]\n      - generic [ref=e1310]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e1311]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e1312] [cursor=pointer]\n    - generic [ref=e1313]:\n      - heading \"Saved authenticated review\" [level=4] [ref=e1314]\n      - paragraph [ref=e1315]: Oct 21, 2026, 6:02 PM · satisfied. R2 generation2 review before another episode changes input\n      - paragraph [ref=e1316]: Explicit clearance closes this episode generation and requests re-entry through assessment. Other active episodes remain held.\n      - button \"Clear this episode and re-enter assessment\" [ref=e1317] [cursor=pointer]\n  - generic [ref=e1318]:\n    - heading \"Record a configured synthetic concern\" [level=3] [ref=e1319]\n    - paragraph [ref=e1320]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n    - generic [ref=e1321]: Authorized source concern · none preselected\n    - combobox \"Authorized source concern · none preselected\" [ref=e1322]:\n      - option \"Choose a configured concern\" [selected]\n      - option \"Synthetic clinician_concern · source 1\"\n      - option \"Synthetic experimental_stability_review · source 2\"\n      - option \"Synthetic clinician_concern · source 3\"\n      - option \"Synthetic clinician_concern · source 4\"\n      - option \"Synthetic clinician_concern · source 5\"\n      - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n    - button \"Record selected concern and hold\" [disabled] [ref=e1323]\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-084 second tab loaded before controls",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-085 observe second tab rendered current state",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e11]:\n      - generic [ref=e12]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e13] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e14]:\n      - link \"My panel\" [ref=e15] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e16]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=e17]:\n      - generic [ref=e18]:\n        - paragraph [ref=e19]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=e20]\n        - paragraph [ref=e21]: \"ASSIGN-09: Clinical hold or major phase change\"\n      - generic [ref=e22]:\n        - generic [ref=e23]\n        - generic [ref=e26]\n        - generic [ref=e29]\n        - generic [ref=e32]\n      - status [ref=e35]:\n        - strong [ref=e36]: Clinical hold\n        - paragraph [ref=e37]: clinician_concern\n    - navigation \"Patient views\" [ref=e38]:\n      - link \"Overview\" [ref=e39] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=e40] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=e41] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=e42] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=e43]:\n      - heading \"Independent safety review\" [level=2] [ref=e44]\n      - paragraph [ref=e45]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - article [ref=e46]:\n        - heading \"clinician concern · episode generation 2\" [level=3] [ref=e47]\n        - paragraph [ref=e48]\n        - heading \"Owned review follow-ups\" [level=4] [ref=e50]\n        - list [ref=e51]\n        - paragraph [ref=e53]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n        - heading \"Exact triggering evidence\" [level=4] [ref=e54]\n        - list [ref=e55]\n        - group [ref=e59]\n        - group \"Record a current authenticated assessment\" [ref=e62]\n        - generic [ref=e78]\n      - generic [ref=e83]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=e84]\n        - paragraph [ref=e85]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=e86]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=e87]\n        - button \"Record selected concern and hold\" [disabled] [ref=e88]\n    - generic [ref=e89]:\n      - paragraph [ref=e90]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=e91]\n      - paragraph [ref=e92]: \"Clinical: clinical hold. Learning: none. Data: stale.\"\n      - paragraph [ref=e93]: Support is paused; policy fixed-approved-support version 1.0.0.\n      - generic [ref=e94]:\n        - button \"Request clinical hold\" [ref=e95] [cursor=pointer]\n        - button \"Record prerequisite review\" [ref=e96] [cursor=pointer]\n    - generic [ref=e97]:\n      - paragraph [ref=e98]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=e99]\n      - generic [ref=e100]:\n        - strong [ref=e101]: No statistical comparison is available\n        - paragraph [ref=e102]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=e103]:\n        - generic \"Inspect basis and engine status\" [ref=e104] [cursor=pointer]\n    - generic [ref=e105]:\n      - paragraph [ref=e106]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=e107]\n      - paragraph [ref=e108]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\n    - generic [ref=e109]:\n      - heading \"Saved decisions\" [level=2] [ref=e110]\n      - list [ref=e111]:\n        - listitem [ref=e112]\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-086 select threshold after loaded",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic experimental_stability_review · source 2');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-087 actually commit second-tab threshold",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-03-00-051Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-088 return stale reviewed first tab",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-089 stale first-tab explicit clearance refused",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Clear this episode and re-enter assessment\\')').click();\n```\n### Open tabs\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-03-01-185Z.yml)\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T00-58-17-611Z.log#L1"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-090 stale error visible with refresh action",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- region [ref=e1278]:\n  - heading \"Independent safety review\" [level=2] [ref=e1279]\n  - paragraph [ref=e1280]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n  - alert [ref=e1349]:\n    - paragraph [ref=e1350]: \"Error: stale live hold review. Refresh current information and review changed facts. Retry uses the original operation key.\"\n    - button \"Refresh safety information\" [ref=e1351] [cursor=pointer]\n    - button \"Retry original safety operation\" [ref=e1352] [cursor=pointer]\n  - article [ref=e1281]:\n    - heading \"clinician concern · episode generation 2\" [level=3] [ref=e1282]\n    - paragraph [ref=e1283]:\n      - strong [ref=e1284]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:02 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e1285]\n    - list [ref=e1286]:\n      - listitem [ref=e1287]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e1288]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e1289]\n    - list [ref=e1290]:\n      - listitem [ref=e1291]:\n        - button \"Inspect obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1292] [cursor=pointer]\n        - generic [ref=e1293]: SHA256 d73d2e05e182d4bf54ce491a93824fd0236d533e18421bd07c9315165d72648b\n    - group [ref=e1294]:\n      - generic \"Installed review rules and all active obligations\" [ref=e1295] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e1297]:\n      - generic [ref=e1299]:\n        - generic [ref=e1300]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [disabled] [ref=e1301]'\n        - generic [ref=e1302]: Requirement result\n        - combobox \"Requirement result\" [disabled] [ref=e1303]:\n          - option \"Pending review\" [disabled] [selected]\n          - option \"Satisfied under the installed rule\" [disabled]\n        - paragraph [ref=e1304]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e1305]:\n          - checkbox \"obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [disabled] [ref=e1306]\n          - generic [ref=e1307]: obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\n      - generic [ref=e1308]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [disabled] [ref=e1309]\n      - generic [ref=e1310]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [disabled] [ref=e1311]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [disabled] [ref=e1312]\n    - generic [ref=e1313]:\n      - heading \"Saved authenticated review\" [level=4] [ref=e1314]\n      - paragraph [ref=e1315]: Oct 21, 2026, 6:02 PM · satisfied. R2 generation2 review before another episode changes input\n      - paragraph [ref=e1316]: Explicit clearance closes this episode generation and requests re-entry through assessment. Other active episodes remain held.\n      - button \"Clear this episode and re-enter assessment\" [disabled] [ref=e1317]\n  - generic [ref=e1318]:\n    - heading \"Record a configured synthetic concern\" [level=3] [ref=e1319]\n    - paragraph [ref=e1320]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n    - generic [ref=e1321]: Authorized source concern · none preselected\n    - combobox \"Authorized source concern · none preselected\" [ref=e1322]:\n      - option \"Choose a configured concern\" [selected]\n      - option \"Synthetic clinician_concern · source 1\"\n      - option \"Synthetic experimental_stability_review · source 2\"\n      - option \"Synthetic clinician_concern · source 3\"\n      - option \"Synthetic clinician_concern · source 4\"\n      - option \"Synthetic clinician_concern · source 5\"\n      - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n    - button \"Record selected concern and hold\" [disabled] [ref=e1323]\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-091 record actual stale HTTP refusal and current state",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"lastRequest\": {\n    \"url\": \"/api/patients/SYN-02/live-holds/episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82/clearance\",\n    \"request\": {\n      \"schema_version\": \"1.0.0\",\n      \"contract\": \"LIVE-HOLD-01\",\n      \"synthetic\": true,\n      \"mode\": \"current\",\n      \"decision_id\": \"decision-9c34929cd66d58ddc0d4b0f0b7895473\",\n      \"expected_patient_version\": 10,\n      \"expected_state_version\": 10,\n      \"expected_consent_version\": 1,\n      \"expected_eligibility_version\": 10,\n      \"expected_episode_generation\": 2,\n      \"trigger_set_sha256\": \"d3edb630f27722ba724e5f39328f86f289298b01001a606765836ba4a3324e06\",\n      \"review_rules\": [\n        {\n          \"id\": \"MANUAL-HOLD-REVIEW-2\",\n          \"version\": \"1.0.0\",\n          \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n        }\n      ],\n      \"review_id\": \"review-774a287072ec4d0aa41c729f1ee64a91\",\n      \"review_sha256\": \"792b6c377ff852425f8f37775294c57d8f5a0c73b368611996195b1a72158114\"\n    },\n    \"key\": \"9f4d48b6-db57-4688-a492-2ce77f106f3f\",\n    \"status\": 409,\n    \"response\": {\n      \"code\": \"stale_live_hold_review\",\n      \"detail\": \"stale live hold review\"\n    }\n  },\n  \"stage\": \"ASSIGN-09\",\n  \"active\": [\n    {\n      \"episode_id\": \"episode-caf87cbe76f5f343359ee8bbe4b0265bfe2a6b8a\",\n      \"generation\": 1,\n      \"trigger_set_sha256\": \"83d7ef7a8e6fa6227b8283aba5df2ff2b93659f93fa34799375ac096546e4f5d\",\n      \"obligation_set_sha256\": \"c79ae587c7fc2d0fbd659b5f7e48e48775076c6862f06a017d6f8eb022b837b3\",\n      \"task_ids\": [\n        \"hold-review-46ae12340c0dca26ba8bf169b931d059ad99821d\"\n      ]\n    },\n    {\n      \"episode_id\": \"episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82\",\n      \"generation\": 2,\n      \"trigger_set_sha256\": \"d3edb630f27722ba724e5f39328f86f289298b01001a606765836ba4a3324e06\",\n      \"obligation_set_sha256\": \"487758c2ca8d2f49ddc4226239ab8b59ae5a6b66ce1b8357ea029d7d61ba05d7\",\n      \"task_ids\": [\n        \"hold-review-628b3f4f08ed7e3400353ff29e2123582fea549c\"\n      ]\n    }\n  ]\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const w=await(await fetch(\\'/api/patients/SYN-02\\')).json();return {lastRequest:window.r2Requests.at(-1),stage:w.stage,active:w.live_safety_summary.active_episodes};}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-092 refresh current safety after stale refusal",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Refresh safety information' }).click();\n```\n### Open tabs\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-03-11-708Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "R2-093 refreshed multi-episode snapshot",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8769/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- region [ref=e1379]:\n  - heading \"Independent safety review\" [level=2] [ref=e1380]\n  - paragraph [ref=e1381]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n  - article [ref=e1382]:\n    - heading \"experimental stability review · episode generation 1\" [level=3] [ref=e1383]\n    - paragraph [ref=e1384]:\n      - strong [ref=e1385]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:02 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e1386]\n    - list [ref=e1387]:\n      - listitem [ref=e1388]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e1389]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e1390]\n    - list [ref=e1391]:\n      - listitem [ref=e1392]:\n        - button \"Inspect obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9\" [ref=e1393] [cursor=pointer]\n        - generic [ref=e1394]: SHA256 74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d\n    - paragraph [ref=e1395]:\n      - strong [ref=e1396]: T-OBS2-CLEARANCE-POLICY\n      - text: \": an accepted clearance criterion is unavailable for one or more active obligations. The whole episode remains held; there is no timer or default clearance.\"\n    - group [ref=e1397]:\n      - generic \"Installed review rules and all active obligations\" [ref=e1398] [cursor=pointer]\n  - article [ref=e1399]:\n    - heading \"clinician concern · episode generation 2\" [level=3] [ref=e1400]\n    - paragraph [ref=e1401]:\n      - strong [ref=e1402]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:02 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e1403]\n    - list [ref=e1404]:\n      - listitem [ref=e1405]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e1406]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e1407]\n    - list [ref=e1408]:\n      - listitem [ref=e1409]:\n        - button \"Inspect obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1410] [cursor=pointer]\n        - generic [ref=e1411]: SHA256 d73d2e05e182d4bf54ce491a93824fd0236d533e18421bd07c9315165d72648b\n    - group [ref=e1412]:\n      - generic \"Installed review rules and all active obligations\" [ref=e1413] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e1415]:\n      - generic [ref=e1417]:\n        - generic [ref=e1418]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e1419]'\n        - generic [ref=e1420]: Requirement result\n        - combobox \"Requirement result\" [ref=e1421]:\n          - option \"Pending review\" [selected]\n          - option \"Satisfied under the installed rule\"\n        - paragraph [ref=e1422]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e1423]:\n          - checkbox \"obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e1424]\n          - generic [ref=e1425]: obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\n      - generic [ref=e1426]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e1427]\n      - generic [ref=e1428]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e1429]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e1430] [cursor=pointer]\n  - generic [ref=e1431]:\n    - heading \"Record a configured synthetic concern\" [level=3] [ref=e1432]\n    - paragraph [ref=e1433]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n    - generic [ref=e1434]: Authorized source concern · none preselected\n    - combobox \"Authorized source concern · none preselected\" [ref=e1435]:\n      - option \"Choose a configured concern\" [selected]\n      - option \"Synthetic clinician_concern · source 1\"\n      - option \"Synthetic experimental_stability_review · source 2\"\n      - option \"Synthetic clinician_concern · source 3\"\n      - option \"Synthetic clinician_concern · source 4\"\n      - option \"Synthetic clinician_concern · source 5\"\n      - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n    - button \"Record selected concern and hold\" [disabled] [ref=e1436]\n```"
+        }
+      ]
+    }
+  }
+]

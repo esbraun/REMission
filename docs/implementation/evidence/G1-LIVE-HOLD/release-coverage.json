@@ -1,0 +1,340 @@
+{
+  "runtime_source": "8019314fb3ef7640339f2b0bbb3d70de93913239",
+  "groups": [
+    {
+      "contract_cases": "LH01-LH02",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_independent_entry_is_atomic_and_retry_cross_session"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_two_independent_episodes_clear_one_and_threshold_rule_remains_named_blocked"
+        },
+        {
+          "path": "tests/integration/replay/test_foundation.py",
+          "test": "test_current_death_before_equal_after_and_strict_learner_boundary"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH03-LH05",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_real_auth_csrf_foreign_owner_and_exact_reference_denials"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_authentication_rechecked_after_unrelated_sqlite_writer_wait"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_configured_mandatory_followup_subset_refuses_without_any_commit"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_explicit_activation_normal_start_and_real_login"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH06-LH08",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_missing_archive_then_same_key_succeeds_after_exact_dependencies_commit"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_committed_registered_correction_refuses_direct_and_coordinator_without_any_partial_commit"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_committed_registered_retraction_refuses_direct_and_coordinator_without_any_partial_commit"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_semantic_review_retry_after_restart_and_reference_reorder_only_adds_alias"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_historical_invalidation_and_coordinator_retry_after_correction_or_retraction"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH09-LH10",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_precommit_faults_rollback_every_unit_and_response_loss_recovers_once"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_actual_process_death_precommit_and_aftercommit_release_os_gate"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_whole_archive_coordinator_atomic_aggregate_and_retry"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH11-LH13",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_LH13_real_two_process_received_writer_blocked_gate_prevents_ready_or_approval"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_reverse_equal_clock_two_process_approval_commits_then_hold_preserves_history"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_authentication_rechecked_after_unrelated_sqlite_writer_wait"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH14-LH15",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_generic_state_and_reports_cannot_clear_latch_or_restore_draft"
+        },
+        {
+          "path": "tests/integration/replay/test_observed_v2_archive.py",
+          "test": "test_entire_hold_partition_rejected_before_any_current_publication_including_v1"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_whole_archive_multiple_transitions_commit_one_final_decision"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH16-LH18",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_owned_review_separate_clearance_returns_assessment_only"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_review_missing_stale_future_and_equal_committed_event_proofs"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_uncommitted_event_is_not_review_evidence_then_same_key_can_retry"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_owned_foreign_episode_archive_review_fact_cannot_satisfy_current_episode"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_mixed_one_episode_requires_all_obligations_and_named_threshold_block"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH19-LH20",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_current_review_rejects_caller_clock_and_stales_on_context_change"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_distinct_same_episode_transition_strengthens_and_stales_review"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_first_seen_distinct_old_trigger_reopens_after_clear_but_old_retry_does_not"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_generation_cutover_revocation_disable_rollback_to_old_bytes_and_stale_worker"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_nested_followup_correction_and_retraction_refuse_review_without_partial_effects"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_review_named_package_membership_and_fresh_recursive_closure_positive"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "LH21-LH23",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_foundation.py",
+          "test": "test_approval_atomic_history_idempotency_and_immutability"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_before_baseline_is_unknown_and_receipt_equality_is_strict"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_actual_service_export_and_new_consumer_strict_equality"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_late_registered_correction_disputes_review_retains_latch_and_exact_strict_prefix"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_late_registered_retraction_disputes_review_without_removing_latch_or_history"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "sections2A-3A-deployment",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_database_leaf_alias_hardlink_and_copied_identity_refuse_startup"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_actual_generation_cutover_process_death_before_and_after_commit"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_generation_cutover_revocation_disable_rollback_to_old_bytes_and_stale_worker"
+        },
+        {
+          "path": "tests/integration/replay/test_live_upgrade.py",
+          "test": "test_actual_process_death_before004_commit_rolls_back_and_after_commit_recovers"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "section6-committed-proof",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_review_named_package_membership_and_fresh_recursive_closure_positive"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_uncommitted_nested_correction_not_read_then_writer_recheck_refuses"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_archive_refuses_future_dependency_bytes_before_any_review_publication"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "section8-coordinator",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_provisional_whole_verified_new_package_commits_atomically_after_rollback_retry"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_whole_archive_multiple_transitions_commit_one_final_decision"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_historical_invalidation_and_coordinator_retry_after_correction_or_retraction"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "amendment004",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_upgrade.py",
+          "test": "test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once"
+        },
+        {
+          "path": "tests/integration/replay/test_live_upgrade.py",
+          "test": "test_actual003_ambiguous_two_exact_followups_refuses_without_guessing"
+        },
+        {
+          "path": "tests/integration/replay/test_live_upgrade.py",
+          "test": "test_actual_upgraded_anchor_accepts_new_plural_transition_and_preserves_old_receipt"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_amendment_cannot_consume_an_unadmitted_positive_transition"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_actual_amendment_process_death_rolls_back_or_recovers_complete_task_set"
+        },
+        {
+          "path": "tests/integration/replay/test_live_hold.py",
+          "test": "test_complete_two_followup_binding_creates_distinct_deadlines_and_closes_both"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    },
+    {
+      "contract_cases": "product-publication-consumers",
+      "tests": [
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_strict_structure_rejects_gap_duplicate_future_foreign_and_wrong_fold"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_fold_rejects_authority_jump_while_active_and_weakened_reasons"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_whole_manifest_hash_and_exact_three_file_roster_fail_closed"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_export_commit_faults_and_response_loss_recover_original_three_files"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_actual_consumer_admit_worker_cli_and_dispatcher"
+        },
+        {
+          "path": "tests/integration/replay/test_live_safety_product.py",
+          "test": "test_consumer_private_copy_reverified_and_actual_death_never_publishes_partial"
+        }
+      ],
+      "execution": "release-checks/1c418e9a00834c6fb588ed06b656b9b4.stderr; all78 passed; repeated copied install ef7e6a52 passed78"
+    }
+  ],
+  "additional_actual_proofs": [
+    "release-deployment actual offline ec18 drain/current route/new privatevolume",
+    "release-launch-refusals actual nativeWindows/retired/missingbundle refusal",
+    "release-roles real copied UID/private/public/full85/liveproduct boundaries",
+    "browser-r2/report.md R2-B01 through R2-B16"
+  ],
+  "limits": [
+    "Future package dependency bytes are rejected at archive cutoff before manual review; this case does not claim future dependency entered manualreview.",
+    "Controlled server expiry, not elapsed30minute wallclock.",
+    "Manual concern positive is explicit structural fixture; threshold/scientific policy remains namedblocked."
+  ]
+}

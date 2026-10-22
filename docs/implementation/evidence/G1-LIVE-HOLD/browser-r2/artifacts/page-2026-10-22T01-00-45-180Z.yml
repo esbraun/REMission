@@ -1,0 +1,129 @@
+- generic [ref=e2]:
+  - link "Skip to main content" [ref=e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - text: REMission
+      - generic [ref=e6]: Synthetic care workspace
+    - generic [ref=e20]:
+      - generic [ref=e21]: Dr Alice (synthetic)
+      - button "Sign out" [ref=e22] [cursor=pointer]
+  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [active] [ref=e8]:
+    - navigation "Workspace" [ref=e23]:
+      - link "My panel" [ref=e24] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e25]: 10 owned synthetic patients
+    - region "Patient context" [ref=e757]:
+      - generic [ref=e758]:
+        - paragraph [ref=e759]: SYN-02 · Current workspace
+        - heading "Synthetic patient 02" [level=1] [ref=e760]
+        - paragraph [ref=e761]: "ASSIGN-09: Clinical hold or major phase change"
+      - generic [ref=e762]:
+        - generic [ref=e763]:
+          - term [ref=e764]: Clinical
+          - definition [ref=e765]: clinical hold
+        - generic [ref=e766]:
+          - term [ref=e767]: Learning
+          - definition [ref=e768]: none
+        - generic [ref=e769]:
+          - term [ref=e770]: Data readiness
+          - definition [ref=e771]: stale
+        - generic [ref=e772]:
+          - term [ref=e773]: Observation cutoff
+          - definition [ref=e774]: Oct 21, 2026, 6:00 PM PDT
+      - status [ref=e775]:
+        - strong [ref=e776]: Clinical hold
+        - paragraph [ref=e777]: clinician_concern
+    - navigation "Patient views" [ref=e778]:
+      - link "Overview" [ref=e779] [cursor=pointer]:
+        - /url: /patients/SYN-02/overview
+      - link "Current decision" [ref=e780] [cursor=pointer]:
+        - /url: /patients/SYN-02/current
+      - link "Monitoring" [ref=e781] [cursor=pointer]:
+        - /url: /patients/SYN-02/monitoring
+      - link "History" [ref=e782] [cursor=pointer]:
+        - /url: /patients/SYN-02/history
+    - region [ref=e783]:
+      - heading "Independent safety review" [level=2] [ref=e784]
+      - paragraph [ref=e785]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.
+      - article [ref=e786]:
+        - heading "clinician concern · episode generation 1" [level=3] [ref=e787]
+        - paragraph [ref=e788]:
+          - strong [ref=e789]: Hold remains active.
+          - text: Entered Oct 21, 2026, 5:59 PM.
+        - heading "Owned review follow-ups" [level=4] [ref=e790]
+        - list [ref=e791]:
+          - listitem [ref=e792]: "Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team."
+          - listitem [ref=e793]: "Review owner: alice; due Jan 3, 2026, 2:00 AM. Status: pending. Escalation: sim-second-team."
+        - paragraph [ref=e794]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.
+        - heading "Exact triggering evidence" [level=4] [ref=e795]
+        - list [ref=e796]:
+          - listitem [ref=e797]:
+            - button "Inspect obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f" [ref=e798] [cursor=pointer]
+            - generic [ref=e799]: SHA256 1832f642f94a1596c707d5d8fa95ce773534f51eeab4017e342dcdb421cd7a78
+        - group [ref=e800]:
+          - generic "Installed review rules and all active obligations" [ref=e801] [cursor=pointer]
+        - group "Record a current authenticated assessment" [ref=e803]:
+          - generic [ref=e805]:
+            - generic [ref=e806]: "review-concern: finding and changed facts"
+            - 'textbox "review-concern: finding and changed facts" [ref=e807]'
+            - generic [ref=e808]: Requirement result
+            - combobox "Requirement result" [ref=e809]:
+              - option "Pending review" [selected]
+              - option "Satisfied under the installed rule"
+            - paragraph [ref=e810]: "Select the exact evidence supporting this requirement:"
+            - generic [ref=e811]:
+              - checkbox "obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f" [ref=e812]
+              - generic [ref=e813]: obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f
+          - generic [ref=e814]: Current assessment rationale and documented follow-up
+          - textbox "Current assessment rationale and documented follow-up" [ref=e815]
+          - generic [ref=e816]:
+            - checkbox "I have reviewed the entire active trigger and obligation set and attest this current assessment." [ref=e817]
+            - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.
+          - button "Save current review; keep hold active" [ref=e818] [cursor=pointer]
+        - generic [ref=e819]:
+          - heading "Saved authenticated review" [level=4] [ref=e820]
+          - paragraph [ref=e821]: Oct 21, 2026, 6:00 PM · satisfied. R2 current owned structural assessment of entire active concern set; explicit clearance remains separate
+          - paragraph [ref=e822]: Explicit clearance closes this episode generation and requests re-entry through assessment. Other active episodes remain held.
+          - button "Clear this episode and re-enter assessment" [ref=e823] [cursor=pointer]
+      - generic [ref=e824]:
+        - heading "Record a configured synthetic concern" [level=3] [ref=e825]
+        - paragraph [ref=e826]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.
+        - generic [ref=e827]: Authorized source concern · none preselected
+        - combobox "Authorized source concern · none preselected" [ref=e828]:
+          - option "Choose a configured concern" [selected]
+          - option "Synthetic clinician_concern · source 1"
+          - option "Synthetic experimental_stability_review · source 2"
+          - option "Synthetic clinician_concern · source 3"
+          - option "Synthetic clinician_concern · source 4"
+          - option "Synthetic clinician_concern · source 5"
+          - option "Synthetic clinician_concern, experimental_stability_review · source 6"
+        - button "Record selected concern and hold" [disabled] [ref=e829]
+    - generic [ref=e830]:
+      - paragraph [ref=e831]: 1 · Assess
+      - heading "Readiness and clinical review" [level=2] [ref=e832]
+      - paragraph [ref=e833]: "Clinical: clinical hold. Learning: none. Data: stale."
+      - paragraph [ref=e834]: Support is paused; policy fixed-approved-support version 1.0.0.
+      - generic [ref=e835]:
+        - button "Request clinical hold" [ref=e836] [cursor=pointer]
+        - button "Record prerequisite review" [ref=e837] [cursor=pointer]
+    - generic [ref=e838]:
+      - paragraph [ref=e839]: 2 · Compare
+      - heading "Eligible ordinary options" [level=2] [ref=e840]
+      - generic [ref=e841]:
+        - strong [ref=e842]: No statistical comparison is available
+        - paragraph [ref=e843]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.
+      - group [ref=e844]:
+        - generic "Inspect basis and engine status" [ref=e845] [cursor=pointer]
+    - generic [ref=e846]:
+      - paragraph [ref=e847]: 3 · Decide and follow up
+      - heading "Explicit ordinary synthetic choice" [level=2] [ref=e848]
+      - paragraph [ref=e849]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.
+    - generic [ref=e850]:
+      - heading "Saved decisions" [level=2] [ref=e851]
+      - list [ref=e852]:
+        - listitem [ref=e853]:
+          - link "Ordinary choice · Oct 21, 2026, 5:59 PM PDT" [ref=e854] [cursor=pointer]:
+            - /url: /patients/SYN-02/history/approval-cb7a6f88f02a482d95e67e1566ade17a
+    - generic [ref=e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.
