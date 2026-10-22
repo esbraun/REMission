@@ -23,9 +23,11 @@ class LiveSafetyProductTests(unittest.TestCase):
     headers=workflow.LiveWorkflowTests.headers
     enter=workflow.LiveWorkflowTests.enter
     review_input=workflow.LiveWorkflowTests.review_input
+    install_next=workflow.LiveWorkflowTests.install_next
+    restart_client=workflow.LiveWorkflowTests.restart_client
 
-    def export(self,key='product',cutoff=NOW+timedelta(microseconds=1),fault=None):
-        settings=replace(self.settings,clock=lambda:NOW+timedelta(hours=1),fault=fault)
+    def export(self,key='product',cutoff=NOW+timedelta(microseconds=1),fault=None,captured_at=NOW+timedelta(hours=1)):
+        settings=replace(self.settings,clock=lambda:captured_at,fault=fault)
         with TestClient(create_app(settings),base_url=workflow.ORIGIN,raise_server_exceptions=False) as client:
             self.login(client)
             result=client.post('/api/patients/SYN-02/live-safety-exports',json=dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,cutoff=cutoff.isoformat()),headers=self.headers(key,client))
@@ -152,6 +154,62 @@ class LiveSafetyProductTests(unittest.TestCase):
         self.assertEqual(dispatch_product(required_product=('LIVE-SAFETY-EXPORT','1.0.0'),worker_capabilities=[('LIVE-SAFETY-EXPORT','1.0.0')],root=admitted,authority=authority).independent_hold_status,'held')
         for capabilities,source,trust in [([],root,authority),([('LIVE-SAFETY-EXPORT','1.0.0')],None,authority),([('LIVE-SAFETY-EXPORT','1.0.0')],root,None)]:
             with self.assertRaises(ValueError):dispatch_product(required_product=('LIVE-SAFETY-EXPORT','1.0.0'),worker_capabilities=capabilities,root=source,authority=trust)
+
+    def test_consumer_private_copy_reverified_and_actual_death_never_publishes_partial(self):
+        from services.learner.live_product import publish_product
+        from live_process_helpers import CONTEXT
+        self.enter();_,root,authority=self.export()
+        manifest=(root/'manifest.json').read_bytes();observed=(root/'observed-projection.json').read_bytes();facts=(root/'live-hold-facts.json').read_bytes()
+        validate=lambda private:verify_live_safety(manifest,private,authority)
+        for point in ['after_observed-projection.json','after_manifest.json','before_product_rename']:
+            destination=self.root/point
+            def child():
+                def fault(name):
+                    if name==point:os._exit(87)
+                publish_product(destination,manifest,observed,facts,validate=validate,fault=fault)
+            process=CONTEXT.Process(target=child);process.start();process.join(10)
+            self.assertEqual(process.exitcode,87);self.assertFalse(destination.exists())
+        # A copy changed after initial staging verification is never visible at
+        # the final product path, even if the initial staging was valid.
+        destination=self.root/'changed-copy'
+        with self.assertRaises(ValueError):publish_product(destination,manifest,observed,facts+b' ',validate=validate)
+        self.assertFalse(destination.exists())
+        context=publish_product(destination,manifest,observed,facts,validate=validate)
+        self.assertEqual(context.independent_hold_status,'held')
+        self.assertEqual({p.name:p.read_bytes() for p in destination.iterdir()},{p.name:p.read_bytes() for p in root.iterdir()})
+
+    def test_late_registered_correction_disputes_review_retains_latch_and_exact_strict_prefix(self):
+        self.late_archive_dispute()
+
+    def test_late_registered_retraction_disputes_review_without_removing_latch_or_history(self):
+        self.late_archive_dispute(retracted=True)
+
+    def late_archive_dispute(self,*,retracted=False):
+        from live_helpers import live_fixture
+        first=self.enter();late=NOW+timedelta(hours=2)
+        fixture,archive_authority,addition,_=live_fixture(self.root/'correction',late_trigger_correction_at=late,late_trigger_retracted=retracted,export_name='correction-export')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority)
+        self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'correction':(fixture['raw'],self.root/'correction/staging',archive_authority)})
+        self.restart_client();episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        review=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=self.review_input(episode),headers=self.headers('pre-correction-review'))
+        self.assertEqual(review.status_code,200,review.text)
+        response,old_root,old_authority=self.export('before-correction',NOW+timedelta(minutes=1));self.assertEqual(response.status_code,200,response.text)
+        original={p.name:p.read_bytes() for p in old_root.iterdir()}
+        self.settings=replace(self.settings,clock=lambda:late);self.restart_client()
+        response=self.client.post('/api/observed-archives/correction',json={'mode':'archive_only'},headers=self.headers('late-correction'))
+        self.assertEqual(response.status_code,200,response.text)
+        current=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        self.assertEqual(current['task_ids'],first['task_ids']);self.assertIsNone(current['current_review'])
+        self.assertEqual(self.client.get('/api/patients/SYN-02').json()['stage'],'ASSIGN-09')
+        for name,cutoff in [('old-K',NOW+timedelta(minutes=1)),('equal-L',late),('after-L',late+timedelta(microseconds=1))]:
+            response,root,trust=self.export(name,cutoff,captured_at=late+timedelta(hours=1));self.assertEqual(response.status_code,200,response.text)
+            context=read_live_safety_export(root,trust);self.assertEqual(context.independent_hold_status,'held')
+            facts=json.loads((root/'live-hold-facts.json').read_bytes())
+            if name!='after-L':self.assertEqual((root/'live-hold-facts.json').read_bytes(),original['live-hold-facts.json'])
+            else:self.assertEqual(facts[-1]['operation']['type'],'evidence_disputed');self.assertEqual(facts[-1]['operation']['reason'],'retracted' if retracted else 'corrected')
+        self.assertEqual(original,{p.name:p.read_bytes() for p in old_root.iterdir()})
+        self.assertEqual(read_live_safety_export(old_root,old_authority).independent_hold_status,'held')
 
 
 if __name__=='__main__':unittest.main()

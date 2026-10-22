@@ -361,6 +361,16 @@ def evidence_access(db, settings, patient_id, owner, episode_id, ref, at,require
         grant=next((g for g in settings.installed.authority.grants if g.archive_id==ref.namespace_id and g.partition_id==ref.partition_id and g.service_patient_id==patient_id and g.account_id==owner and g.package_sha256==stored['export_sha256']),None)
         if grant is None:
             raise LiveError('live_source_grant_unavailable')
+        if (value.source.id,value.source.version)!=(grant.source_id,grant.source_version):
+            raise LiveError('hold_requirement_evidence_mismatch')
+        if value.kind=='hold_review_evidence':
+            target=db.execute('SELECT source_key FROM live_hold_episodes WHERE id=? AND patient_id=? ORDER BY generation DESC LIMIT 1',(episode_id,patient_id)).fetchone()
+            if target is None:raise LiveError('active_episode_unavailable')
+            key=json.loads(target[0])
+            if ((value.run_id,value.partition_id,value.hold_episode_id,value.actor_id,value.actor_role,value.ownership_ref)!=
+                    (key[1],key[2],key[3],owner,'doctor',grant.ownership_ref)
+                    or requirement is not None and value.requirement.model_dump(mode='json')!=requirement['definition']):
+                raise LiveError('hold_requirement_evidence_mismatch')
         source=value.model_dump(mode='json')
     elif ref.store=='event':
         if ref.namespace_id!=patient_id:

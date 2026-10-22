@@ -21,7 +21,7 @@ def verify_archive(raw,root,authority):
     return VerifiedArchive(raw,root,authority,manifest,tuple(partitions))
 
 
-def persist_archive(db,package,*,owner_id,received_at):
+def persist_archive(db,package,*,owner_id,received_at,installed):
     """Private coordinator staging, always an unchanged read-only archive receipt."""
     from contracts.runs.common import read_artifact
     manifest,partitions=package.manifest,package.partitions
@@ -48,6 +48,8 @@ def persist_archive(db,package,*,owner_id,received_at):
         for artifact in [partition.history,partition.replay,partition.coverage,*partition.stage_ledgers,*partition.completion_receipts,*partition.mechanisms]:
             payload=read_artifact(package.root,artifact,artifact.role)
             db.execute('INSERT INTO observed_archive_artifacts VALUES(?,?,?,?)',(identifier,artifact.path,payload,digest(payload)))
+    from .live_journal import dispute_archive
+    dispute_archive(db,installed,package,received_at)
     return identifier
 
 
@@ -99,6 +101,8 @@ def archive_export(store, raw, artifact_root, authority, *, owner_id, received_a
             for artifact in [partition.history, partition.replay, partition.coverage, *partition.stage_ledgers, *partition.completion_receipts, *partition.mechanisms]:
                 payload = read_artifact(artifact_root, artifact, artifact.role)
                 db.execute('INSERT INTO observed_archive_artifacts VALUES(?,?,?,?)', (identifier, artifact.path, payload, digest(payload)))
+        from .live_journal import dispute_archive
+        dispute_archive(db,store.installed,VerifiedArchive(raw,artifact_root,authority,manifest,tuple(partitions)),received_at)
         if mode == 'clinical_observation_import':
             remaining = [entry for _, entry in entries if entry.record.kind in CLINICAL_KINDS]
             remaining.sort(key=lambda e: (e.record.available_at, e.record.recorded_at, e.record.record_id))

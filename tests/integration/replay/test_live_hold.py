@@ -134,7 +134,8 @@ class LiveWorkflowTests(unittest.TestCase):
         with self.store.transaction() as db:
             tables=['observed_archives','observed_archive_entries','observed_archive_artifacts','events','decisions','state_changes',
                 'live_hold_operations','live_hold_episodes','live_hold_reviews','live_hold_tasks','live_hold_task_events','live_hold_keys',
-                'live_safety_facts','live_projection_receipts']
+                'live_safety_facts','live_projection_receipts','live_hold_additional_tasks','live_hold_task_bindings',
+                'live_hold_additional_task_events','service_control','live_authority_history','live_activation_receipts','drafts']
             return {table:[tuple(r) for r in db.execute('SELECT * FROM '+table+' ORDER BY rowid')] for table in tables}|{
                 'patient':tuple(db.execute("SELECT * FROM patients WHERE id='SYN-02'").fetchone())}
 
@@ -436,9 +437,9 @@ class LiveWorkflowTests(unittest.TestCase):
         Path(str(copy_path)+'.admission.lock').touch()
         with self.assertRaisesRegex(AdmissionError,'service_generation_mismatch'):Store(copy_path,self.settings.installed)
 
-    def install_extra_transition_fixture(self,*,multi_followup=False):
+    def install_extra_transition_fixture(self,*,multi_followup=False,mixed=False):
         from contracts.domain.evidence_v2 import exact_ref
-        fixture,archive_authority,addition,command=live_fixture(self.root/'extra',run_name='extra-concern-run',extra_hold=not multi_followup,multi_followup=multi_followup)
+        fixture,archive_authority,addition,command=live_fixture(self.root/'extra',run_name='extra-concern-run',extra_hold=not multi_followup,extra_threshold=mixed,multi_followup=multi_followup)
         authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
         rules=self.settings.installed.review_rules.model_copy(deep=True)
         rules.rules.extend(r for r in addition.review_rules.rules if all(r.trigger_rule!=old.trigger_rule for old in rules.rules))
@@ -548,6 +549,118 @@ class LiveWorkflowTests(unittest.TestCase):
         store=change_generation(self.store,bundle,fault=fault,settings=self.settings)
         self.store=store;self.settings=replace(self.settings,installed=bundle)
         return bundle
+
+    def prepare_exact_amendment(self,*,unadmitted_positive=False):
+        from contracts.domain.evidence_v2 import exact_ref
+        from contracts.service.live_hold import FollowUpAmendment,FollowUpBinding
+        first=self.enter()
+        fixture,archive_authority,addition,_=live_fixture(self.root/'amendment',archive_resolution=not unadmitted_positive,
+            extra_hold=unadmitted_positive,export_name='amendment-export')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority)
+        self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'amendment':(fixture['raw'],self.root/'amendment/staging',archive_authority)})
+        self.restart_client()
+        response=self.client.post('/api/observed-archives/amendment',json={'mode':'archive_only'},headers=self.headers('amendment-archive'))
+        self.assertEqual(response.status_code,200,response.text)
+        bundle=next(r for r in reversed(fixture['history'].records) if r.kind=='hold_transition_bundle')
+        follow=next(r for r in fixture['history'].records if r.record_id==bundle.follow_up_refs[0].record_id)
+        with self.store.transaction() as db:
+            row=db.execute('SELECT * FROM live_hold_episodes WHERE id=?',(first['episode_id'],)).fetchone();e=__import__('json').loads(row['payload'])
+        old=self.settings.installed.control;grant=addition.authority.grants[0]
+        amendment=FollowUpAmendment(service_patient_id='SYN-02',episode_id=row['id'],episode_generation=row['generation'],
+            prior_authority_generation=old.authority_generation,prior_authority_sha256=old.authority_sha256,prior_review_rules_sha256=old.review_rules_sha256,
+            prior_trigger_set_sha256=e['trigger_set_sha256'],prior_obligation_set_sha256=e['obligation_set_sha256'],source_key=tuple(__import__('json').loads(row['source_key'])),
+            source_id=grant.source_id,source_version=grant.source_version,owner_id='alice',grant=grant,source_bundle_ref=exact_ref(bundle),
+            follow_up=FollowUpBinding(reference=exact_ref(follow),owner_id='alice',policy=ref('explicit-cutover-followup'),due_at=follow.due_at,escalation_destination=follow.escalation_destination),authorization=ref('explicit-installed-offline-amendment'))
+        return amendment,first
+
+    def test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution(self):
+        from services.foundation.live_hold import LiveError
+        amendment,first=self.prepare_exact_amendment()
+        original=self.safety_state()
+        def install(value,*,fault=None):
+            authority=self.settings.installed.authority.model_copy(update={'follow_up_amendments':[value]})
+            return self.install_next(authority,fault=fault)
+        cases=[dict(prior_trigger_set_sha256='f'*64),dict(prior_obligation_set_sha256='f'*64),dict(prior_authority_generation=1),
+            dict(episode_generation=2),dict(source_key=[*amendment.source_key[:3],'foreign-episode']),dict(source_id='foreign-source'),dict(owner_id='bob'),
+            dict(source_bundle_ref=__import__('contracts.domain.observed_v2',fromlist=['ExactRef']).ExactRef.model_validate(self.command['bundle_ref'])),
+            dict(follow_up=amendment.follow_up.model_copy(update={'due_at':NOW})),dict(follow_up=amendment.follow_up.model_copy(update={'owner_id':'bob'}))]
+        for changes in cases:
+            with self.assertRaises((LiveError,ValueError),msg=str(changes)):install(amendment.model_copy(update=changes))
+            self.assertEqual(self.safety_state(),original)
+        def fail(point):
+            if point=='before_generation_commit':raise RuntimeError('amendment rollback beforecommit')
+        with self.assertRaises(RuntimeError):install(amendment,fault=fail)
+        self.assertEqual(self.safety_state(),original)
+        prior_versions=self.client.get('/api/patients/SYN-02').json()['snapshot']
+        install(amendment);self.restart_client()
+        current=self.client.get('/api/patients/SYN-02').json();self.assertEqual(current['stage'],'ASSIGN-09')
+        self.assertEqual(current['snapshot']['patient_version'],prior_versions['patient_version']+1)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        self.assertEqual(episode['generation'],1);self.assertEqual(len(episode['task_ids']),2);self.assertIsNone(episode['current_review'])
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM live_hold_task_bindings').fetchone()[0],2)
+            self.assertEqual(db.execute('PRAGMA foreign_key_check').fetchall(),[])
+            response=__import__('json').loads(db.execute("SELECT response FROM live_hold_operations WHERE family='authority_changed' ORDER BY sequence DESC LIMIT 1").fetchone()[0])
+            self.assertEqual(response['task_sets'][0]['amendments'][0]['amendment'],amendment.model_dump(mode='json'))
+        # Original retry remains byte-exact, with its original one-task roster.
+        self.assertEqual(first,self.enter('old-receipt-after-amendment'))
+
+    def test_amendment_cannot_consume_an_unadmitted_positive_transition(self):
+        from services.foundation.live_hold import LiveError
+        amendment,_=self.prepare_exact_amendment(unadmitted_positive=True);before=self.safety_state()
+        authority=self.settings.installed.authority.model_copy(update={'follow_up_amendments':[amendment]})
+        with self.assertRaisesRegex(LiveError,'followup_amendment_unadmitted_positive'):self.install_next(authority)
+        self.assertEqual(before,self.safety_state())
+
+    def test_actual_amendment_process_death_rolls_back_or_recovers_complete_task_set(self):
+        amendment,first=self.prepare_exact_amendment();current=self.settings.installed
+        authority=current.authority.model_copy(update={'follow_up_amendments':[amendment]})
+        next_bundle=bundle_for(authority,current.review_rules,generation=current.control.authority_generation+1,instance=current.control.database_instance_id)
+        before=self.safety_state()
+        def child(point):
+            child_store=Store(self.store.path,current,clock=lambda:NOW)
+            def crash(name):
+                if name==point:os._exit(89)
+            change_generation(child_store,next_bundle,fault=crash,settings=self.settings)
+        for point in ['before_generation_commit','after_generation_commit']:
+            process=CONTEXT.Process(target=child,args=(point,));process.start();process.join(15);self.assertEqual(process.exitcode,89)
+            if point=='before_generation_commit':self.assertEqual(self.safety_state(),before)
+        self.assertEqual(self.client.get('/api/patients/SYN-02').status_code,503)
+        self.store=Store(self.store.path,next_bundle,clock=lambda:NOW);self.settings=replace(self.settings,installed=next_bundle);self.restart_client()
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        self.assertEqual(len(episode['task_ids']),2);self.assertEqual(first,self.enter('crash-original-retry'))
+        with self.store.transaction() as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM live_hold_task_bindings').fetchone()[0],2)
+            self.assertEqual(db.execute('PRAGMA foreign_key_check').fetchall(),[])
+
+    def test_mixed_one_episode_requires_all_obligations_and_named_threshold_block(self):
+        addition=self.install_extra_transition_fixture(mixed=True);first=self.enter()
+        result=self.client.post('/api/patients/SYN-02/live-holds',json=addition,headers=self.headers('mixed-strengthen'));self.assertEqual(result.status_code,200,result.text)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+        self.assertEqual(len(episode['obligations']),2);self.assertEqual(len(episode['task_ids']),2)
+        self.assertFalse(episode['clearance_supported']);self.assertEqual(episode['blocker'],'T-OBS2-CLEARANCE-POLICY')
+        request=self.review_input(episode);request['items']=[i for i in request['items'] if i['requirement_id']=='review-concern']
+        result=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=request,headers=self.headers('omit-threshold'));self.assertEqual(result.status_code,409,result.text);self.assertEqual(result.json()['code'],'all_active_obligations_required')
+        request=self.review_input(episode)
+        for item in request['items']:
+            item['evidence_refs']=[r for r in episode['trigger_refs'] if r['record_id'] in ({self.command['trigger_refs'][0]['record_id']} if item['requirement_id']=='review-concern' else {addition['trigger_refs'][0]['record_id']})]
+            if item['requirement_id']=='review-threshold':item.update(result='pending',evidence_refs=[],finding='Named scientific clearance policy is unavailable')
+        result=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=request,headers=self.headers('complete-mixed-review'));self.assertEqual(result.status_code,200,result.text)
+        with self.store.transaction() as db:
+            review=__import__('json').loads(db.execute('SELECT payload FROM live_hold_reviews WHERE id=?',(result.json()['review_id'],)).fetchone()[0]);self.assertEqual(review['result'],'pending')
+            self.assertEqual({r[0] for r in db.execute('SELECT status FROM live_hold_episodes')},{'active'})
+        self.assertEqual(self.client.get('/api/patients/SYN-02').json()['stage'],'ASSIGN-09')
+
+    def test_owned_foreign_episode_archive_review_fact_cannot_satisfy_current_episode(self):
+        first=self.enter();fixture,archive_authority,addition,command=live_fixture(self.root/'foreign',run_name='foreign-episode-run')
+        authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+        self.install_next(authority);self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'foreign':(fixture['raw'],self.root/'foreign/staging',archive_authority)})
+        self.restart_client();result=self.client.post('/api/observed-archives/foreign',json={'mode':'archive_only'},headers=self.headers('foreign-archive'));self.assertEqual(result.status_code,200,result.text)
+        episode=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];request=self.review_input(episode)
+        request['items'][0]['evidence_refs']=[dict(store='archive',namespace_id=command['archive_id'],partition_id=command['partition_id'],**command['trigger_refs'][0])]
+        before=self.safety_state();result=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=request,headers=self.headers('foreign-episode-review'))
+        self.assertEqual(result.status_code,409,result.text);self.assertEqual(result.json()['code'],'hold_requirement_evidence_mismatch');self.assertEqual(before,self.safety_state())
 
     def restart_client(self):
         self.client.close();self.client=TestClient(create_app(self.settings),base_url=ORIGIN);self.login()

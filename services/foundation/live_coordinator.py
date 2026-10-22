@@ -55,7 +55,7 @@ def project_archive(store,settings,raw,root,authority,*,owner_id,key,authorize):
             for patient_id in patients:alias(db,owner_id,patient_id,'import',key,intent,response['operation_id'])
             return response
         before={pid:versions(patient_row(db,pid,owner_id)) for pid in patients}
-        persist_archive(db,package,owner_id=owner_id,received_at=at)
+        persist_archive(db,package,owner_id=owner_id,received_at=at,installed=settings.installed)
         clinical_counts={pid:0 for pid in patients}
         remaining=[e for _,_,batch,*_ in package.partitions for e in batch.entries if e.record.kind in CLINICAL_KINDS]
         remaining.sort(key=lambda e:(e.record.available_at,e.record.recorded_at,e.record.record_id))

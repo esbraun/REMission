@@ -89,3 +89,32 @@ its complete positive/negative/fault matrix and upgrade ambiguity/after-upgrade
 plural proofs remain pending, alongside final image/copy/role/broad/MCP qualification.
 The full independent bounded pass2 report33deca2/execution/manifest is preserved;
 it is historical4f mechanics evidence and does not accept the repaired candidate.
+
+Next coherent source boundary: exact amendment validation/cutover positive and ten
+scope/prior-hash/owner/deadline negatives passed45acb6d4; a package with an unadmitted
+positive refuses atomically. Initial d8e6248 retained strict tuple fixture construction
+failure before any amendment; corrected in test only. Actual amendment os._exit89
+before/after generation commit now proves whole-unit rollback or complete two-task
+recovery. Raw cdacd956 also passes same-episode mixed concern/threshold obligations
+(all items required, threshold pending/named block), foreign owned archive-episode
+evidence refusal, and late retraction dispute with latch/history retained.
+
+Stopped003 upgrade84f88313 passed4 cases, adding a real frozen003 service that
+accepts two indistinguishable legacy follow-ups: upgrade refuses the ambiguous map
+unrouted without guessing; another upgraded anchor accepts a new plural transition,
+retains original ID/FKs, advances once and returns the old semantic receipt exactly.
+Consumer07cdaeec passed8 including os._exit87 at three private-copy publication
+boundaries. Copied bytes are reverified under the trusted authority before atomic
+directory publication; malformed copied data never appears at a final product path.
+
+Registered archive correction/retraction now appends explicit non-clearing dispute
+fact/operation/audit and invalidates the current review. Task/trigger/obligation and
+raw/history bytes remain. d0770acf proves correction, cdacd956 proves retraction:
+K<L and K=L retain exact prior fact-prefix bytes, K>L includes the dispute; original
+complete products remain immutable. Current archive review proofs additionally bind
+exact source version, owning actor, archived episode/run/partition and requirement.
+The full affected service run eb409b5d passed66; all6 exporter checks plus pip/runtime
+passed in da14e42f. Those command-start source maps precede the four later targeted
+cases and final full-source rerun remains required. Complete independent45 repaired
+review0a0d527/execution/manifest and source-only compatibility0636e576 chain are
+preserved byte-exact. No new whole-package independent acceptance is implied.

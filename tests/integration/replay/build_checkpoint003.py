@@ -3,7 +3,7 @@ import json,sys
 from pathlib import Path
 from datetime import datetime,timezone
 
-frozen,root=map(Path,sys.argv[1:3])
+frozen,root=map(Path,sys.argv[1:3]);supplied=Path(sys.argv[3]) if len(sys.argv)>3 else None
 sys.path[:0]=[str(frozen),str(frozen/'tests/integration/replay')]
 from live_helpers import live_fixture,fresh_store
 from services.foundation.app import Settings,create_app
@@ -13,8 +13,15 @@ from fastapi.testclient import TestClient
 
 now=datetime(2026,10,21,12,tzinfo=timezone.utc)
 fixture,authority,installed,command=live_fixture(root)
+artifact_root=root/'staging'
+if supplied is not None:
+    from live_helpers import fixture_bundle
+    from contracts.runs.observed_v2 import ExportAuthorityV2
+    spec=json.loads(supplied.read_bytes())
+    fixture={'raw':bytes.fromhex(spec['raw_hex'])};authority=ExportAuthorityV2.model_validate_json(canonical(spec['authority']))
+    installed=fixture_bundle(spec['grants'],spec['rules']);command=spec['command'];artifact_root=Path(spec['artifact_root'])
 store=fresh_store(root/'old.sqlite',installed);seed(store)
-settings=Settings(store.path,installed,clock=lambda:now,observed_archives={'fixture':(fixture['raw'],root/'staging',authority)})
+settings=Settings(store.path,installed,clock=lambda:now,observed_archives={'fixture':(fixture['raw'],artifact_root,authority)})
 origin='http://127.0.0.1:8765'
 with TestClient(create_app(settings),base_url=origin) as client:
     csrf=client.get('/api/session').json()['csrf']
