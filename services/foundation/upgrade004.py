@@ -7,7 +7,7 @@ from .cutover import assert_quiescent
 from .store import Store, validate_bundle
 
 
-def upgrade004(database, installed, *, clock=None):
+def upgrade004(database, installed, *, clock=None, fault=None):
     database = Path(database).resolve(strict=True)
     validate_bundle(installed)
     assert_quiescent(database)
@@ -27,8 +27,12 @@ def upgrade004(database, installed, *, clock=None):
             db.executescript('BEGIN IMMEDIATE;\n'+sql)
             if db.execute('PRAGMA foreign_key_check').fetchall():
                 raise ValueError('upgrade_foreign_key_failure')
+            if fault:
+                fault('before_005_upgrade_commit')
             db.commit()
         except BaseException:
             db.rollback()
             raise
+    if fault:
+        fault('after_005_upgrade_commit')
     return Store(database,installed,**({'clock':clock} if clock else {}))
