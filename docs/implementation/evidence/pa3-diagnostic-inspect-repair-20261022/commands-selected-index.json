@@ -1,0 +1,139 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.04361891746520996,
+    "exit": 0,
+    "source_head": "1014cbee6a19857f588f5d19e6ebb58e903ad23d",
+    "started_unix": 1792678925.7113764,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "7ee4c87b8d0940f3b300400650201ee6.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "7ee4c87b8d0940f3b300400650201ee6.stdout",
+        "sha256": "62e57abefde0b56d92afb4f1849ca7db100d348ca896474214990cd9ef7e6a19"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-c",
+      "import sys,types,unittest;sys.modules['resource']=types.ModuleType('resource');s=unittest.defaultTestLoader.loadTestsFromNames(['tests.methods.test_pa3_numba.NumbaContrastTests.test_missing_first_fd_stops_before_native_phase','tests.methods.test_pa3_numba.NumbaContrastTests.test_finished_between_polls_after_deadline_cannot_qualify']);r=unittest.TextTestRunner(verbosity=2).run(s);sys.exit(not r.wasSuccessful())"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 1.363119125366211,
+    "exit": 0,
+    "source_head": "1014cbee6a19857f588f5d19e6ebb58e903ad23d",
+    "started_unix": 1792678923.6901898,
+    "streams": {
+      "stderr": {
+        "bytes": 431,
+        "path": "98e11e4171d541e2a6728c1cd076a8ae.stderr",
+        "sha256": "5fc26430e975b1180427a0eaa4e6a42808587f78c2f729317cd30f4bd48d2019"
+      },
+      "stdout": {
+        "bytes": 880,
+        "path": "98e11e4171d541e2a6728c1cd076a8ae.stdout",
+        "sha256": "796d488b6cb4996e125e97f4274cb8755ce807803cfa8abd0d79322d03f83aeb"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "unittest",
+      "tests.methods.test_pa3_borrow_profile",
+      "tests.methods.test_pa3_compile_deadline",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.3352065086364746,
+    "exit": 0,
+    "source_head": "1014cbee6a19857f588f5d19e6ebb58e903ad23d",
+    "started_unix": 1792678923.2465093,
+    "streams": {
+      "stderr": {
+        "bytes": 999,
+        "path": "ad9ab11345ca4696acb5f5ffe2136526.stderr",
+        "sha256": "4ef713f42176b8b059bb9cd1189698832349e361e27377aa6e4d57a4d8dae93a"
+      },
+      "stdout": {
+        "bytes": 391,
+        "path": "ad9ab11345ca4696acb5f5ffe2136526.stdout",
+        "sha256": "a80a562bd6597b240fc1916f88f880d582bf380b3cc7552ffc55e1629109e18b"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-controls-7c20",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Config\":{\"User\":{{json (index .Config \"__missing_capture_control_User\")}}},\"HostConfig\":{\"Memory\":{{json (index .HostConfig \"__missing_capture_control_Memory\")}},\"NanoCpus\":{{json (index .HostConfig \"__missing_capture_control_NanoCpus\")}},\"NetworkMode\":{{json (index .HostConfig \"__missing_capture_control_NetworkMode\")}},\"ReadonlyRootfs\":{{json (index .HostConfig \"__missing_capture_control_ReadonlyRootfs\")}}},\"Mounts\":{{json .Mounts}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.15529918670654297,
+    "exit": 0,
+    "source_head": "1014cbee6a19857f588f5d19e6ebb58e903ad23d",
+    "started_unix": 1792678925.420978,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "bbe7cf372ca141d99f4fbba277ad3f5c.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 509,
+        "path": "bbe7cf372ca141d99f4fbba277ad3f5c.stdout",
+        "sha256": "c203b38e13da623686753336c99781ffa5fc53526d02f496875438961ee4674e"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-controls-7c20",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Config\":{\"User\":{{json (index .Config \"User\")}}},\"HostConfig\":{\"Memory\":{{json (index .HostConfig \"Memory\")}},\"NanoCpus\":{{json (index .HostConfig \"NanoCpus\")}},\"NetworkMode\":{{json (index .HostConfig \"NetworkMode\")}},\"ReadonlyRootfs\":{{json (index .HostConfig \"ReadonlyRootfs\")}}},\"Mounts\":{{json .Mounts}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.15680336952209473,
+    "exit": 0,
+    "source_head": "1014cbee6a19857f588f5d19e6ebb58e903ad23d",
+    "started_unix": 1792678925.161387,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "e6329301fd4946b0b1f8dcdad0b5a7ef.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 531,
+        "path": "e6329301fd4946b0b1f8dcdad0b5a7ef.stdout",
+        "sha256": "00c28b1728a6f40139b821f1d155f7b9b9589ca27462653abd2f3bc847086473"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  }
+]
