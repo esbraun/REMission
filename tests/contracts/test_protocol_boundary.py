@@ -1,5 +1,8 @@
 """P1 recursive isolation, strict purpose identities and admission negatives."""
 import copy
+import json
+import sqlite3
+import tempfile
 from datetime import timedelta
 from pathlib import Path
 import sys
@@ -95,6 +98,28 @@ class ProtocolBoundaryTests(unittest.TestCase):
                         fixed|dict(policy_constraint=randomized['policy_constraint']),
                         fixed|dict(eligibility=excluded),fixed|dict(availability='randomized')]:
             with self.assertRaises(ValueError):typed(changed)
+
+    def test_2_1_only_dispatch_unknown_versions_and_cross_version_lineage(self):
+        from services.foundation.workflow import history as stored_history
+        from services.learner.export_observed import admit
+        record=next(r for r in full_history().records if r.kind=='support_decision').model_dump(mode='json')
+        with sqlite3.connect(':memory:') as db:
+            db.execute('CREATE TABLE events(patient_id TEXT,payload TEXT,available_at TEXT,phase INTEGER,id TEXT)')
+            db.execute('INSERT INTO events VALUES(?,?,?,?,?)',(PATIENT,canonical(record),record['available_at'],0,record['record_id']))
+            parsed=stored_history(db,PATIENT)
+            self.assertEqual(parsed.schema_version,'2.1.0')
+            with tempfile.TemporaryDirectory() as directory:
+                source=Path(directory)/'source.json';destination=Path(directory)/'observed.json'
+                source.write_text(canonical(parsed.model_dump(mode='json')))
+                admit(source,destination)
+                self.assertEqual(json.loads(destination.read_bytes())['schema_version'],'2.1.0')
+            bad=copy.deepcopy(record);bad['schema_version']='2.2.0'
+            db.execute('UPDATE events SET payload=?',(canonical(bad),))
+            with self.assertRaises(ValueError):stored_history(db,PATIENT)
+        old=copy.deepcopy(record);old['schema_version']='2.0.0';old.pop('policy_constraint')
+        new=copy.deepcopy(record);new.update(record_id='support-v21-correction',supersedes=old['record_id'],revision=2,record_status='corrected',
+            recorded_at=(ORIGIN+timedelta(days=1,seconds=1)).isoformat(),available_at=(ORIGIN+timedelta(days=1,seconds=1)).isoformat())
+        with self.assertRaisesRegex(ValueError,'cross-version'):history([old,new])
 
     def test_closed_purposes_real_prior_sentinel_and_no_execution(self):
         self.assertEqual(EXECUTABLE_CONFIGURATIONS,frozenset())
