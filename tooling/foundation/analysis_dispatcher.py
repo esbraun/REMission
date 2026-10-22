@@ -11,12 +11,27 @@ import time
 COMMON=['--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
         '--tmpfs','/tmp:rw,nosuid,size=256m']
 
+# Docker selects the whitelist before subprocess capture or manifest persistence.
+# Optional map keys use index; no environment or unrelated labels are requested.
+CONTAINER_FORMAT=(' {"Id":{{json .Id}},"Image":{{json .Image}},"State":{{json .State}},'
+    '"Path":{{json .Path}},"Args":{{json .Args}},"Config":{"User":{{json (index .Config "User")}},'
+    '"Labels":{{with index .Config "Labels"}}{"remission.attempt":{{json (index . "remission.attempt")}},'
+    '"remission.analysis":{{json (index . "remission.analysis")}}}{{else}}{}{{end}}},'
+    '"HostConfig":{"Memory":{{json (index .HostConfig "Memory")}},"NanoCpus":{{json (index .HostConfig "NanoCpus")}},'
+    '"NetworkMode":{{json (index .HostConfig "NetworkMode")}},"ReadonlyRootfs":{{json (index .HostConfig "ReadonlyRootfs")}},'
+    '"CapDrop":{{json (index .HostConfig "CapDrop")}},"SecurityOpt":{{json (index .HostConfig "SecurityOpt")}},'
+    '"Tmpfs":{{json (index .HostConfig "Tmpfs")}}},"Mounts":{{json .Mounts}}}')
+
 
 def command(argv, *, check=True):
     result=subprocess.run(argv,capture_output=True)
     if check and result.returncode:
         raise RuntimeError(result.stderr.decode(errors='replace')[:2000])
     return result
+
+
+def inspect_container(name, *, check=True):
+    return command(['docker','inspect',name,'--format',CONTAINER_FORMAT],check=check)
 
 
 def exclusive(path):
@@ -60,7 +75,7 @@ def main():
     prior=command(['docker','ps','-aq','--filter','label=remission.analysis='+prefix]).stdout.decode().split()
     for name in prior:
         command(['docker','stop','--time','10',name],check=False)
-        inventory=json.loads(command(['docker','inspect',name]).stdout)[0]
+        inventory=json.loads(inspect_container(name).stdout)
         identifier=inventory['Config']['Labels'].get('remission.attempt')
         if identifier and identifier.startswith('analysis-') and Path(identifier).name==identifier:
             saved=root/identifier
@@ -120,7 +135,7 @@ def main():
                 '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+execution_image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
                 execution_image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
             launched=True
-            manifest.update(status='running',inventory=json.loads(command(['docker','inspect',learner]).stdout)[0])
+            manifest.update(status='running',inventory=json.loads(inspect_container(learner).stdout))
             if borrowing and manifest['inventory']['Image']!=execution_image:raise RuntimeError('borrow actual image differs from frozen launch identity')
             save()
             last=None
@@ -128,7 +143,7 @@ def main():
             manifest['watchdog_seconds']=watchdog_seconds
             deadline=(attempt_started if borrowing else time.monotonic())+watchdog_seconds
             while True:
-                inventory=json.loads(command(['docker','inspect',learner]).stdout)[0]
+                inventory=json.loads(inspect_container(learner).stdout)
                 # Check BEFORE trusting terminal state: completion between polls
                 # after the cap cannot escape the same frozen deadline.
                 check_deadline(deadline)
@@ -158,26 +173,26 @@ def main():
         except Exception as error:
             command(['docker','stop','--time','10',learner],check=False)
             if launched:
-                stopped=command(['docker','inspect',learner],check=False)
-                confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)[0]['State']['Running']
+                stopped=inspect_container(learner,check=False)
+                confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)['State']['Running']
                 if not confirmed:
                     command(['docker','kill',learner],check=False)
-                    stopped=command(['docker','inspect',learner],check=False)
-                    confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)[0]['State']['Running']
+                    stopped=inspect_container(learner,check=False)
+                    confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)['State']['Running']
                 if not confirmed:
-                    manifest.update(status='worker-stop-unconfirmed',failure=str(error));save()
+                    manifest.update(status='worker-stop-unconfirmed',failure=str(error).replace(token,'[claim-token-redacted]'));save()
                     raise RuntimeError('Owned worker termination unconfirmed; retain live handle '+learner) from error
                 manifest['worker_stop_verified']=True
             logs=command(['docker','logs',learner],check=False)
             (directory/'failure-worker.stdout').write_bytes(logs.stdout);(directory/'failure-worker.stderr').write_bytes(logs.stderr)
             command(['docker','cp',learner+':/output/.',str(directory/'failure-output')],check=False)
-            message=str(error)
+            message=str(error).replace(token,'[claim-token-redacted]')
             manifest.update(status='failed',failure=message)
             (directory/'dispatcher-failure.log').write_text(message,encoding='utf-8')
             try:
                 cli('fail','--job',identifier,'--token',token,'--value',message)
             except Exception as failed:
-                manifest['ingestion_failure']=str(failed)
+                manifest['ingestion_failure']=str(failed).replace(token,'[claim-token-redacted]')
         manifest['finished_unix']=time.time()
         save()
         print(json.dumps({k:v for k,v in manifest.items() if k!='inventory'}),flush=True)
