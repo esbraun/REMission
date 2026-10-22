@@ -68,7 +68,7 @@
       "/app/contracts/domain/borrowing.py": "d335792f6eed89d4962bdd458695c8f5d2530dddf7571ca493157be91dda758f",
       "/app/contracts/domain/borrow_runtime.py": "5c73048e4be585c2f0d3833bb4126cc195ea1643bc00d22d90ac376032b4c6af",
       "/app/contracts/domain/cohort.py": "e4ec890a1b04ead7e155ea977524d1e714bdb09be51131a5ee5b033fa883df65",
-      "/app/contracts/domain/cohort_runtime.py": "dbcd1053fbc6b57ca0564643f0566a638d829a8a1b69d1af05f61c387149433c",
+      "/app/contracts/domain/cohort_runtime.py": "880eebfc2cec03b39de628367570e5362ea2df7d8b5beaf66261604819f1ae71",
       "/app/contracts/domain/protocol.py": "631a29ee6097e2e3c1ba2069f30e6fff69f58d0be70d3f6b28a3982bccf7ce53",
       "/app/contracts/domain/protocol_analysis.py": "192d20c82bb4c01452614f9c24130c8e532d822f4c25e8c910351f6ccc4c3f3c",
       "/app/contracts/domain/protocol_request.py": "2037a65440a53d154b0d08b6e9b1e685dcdae40c815dfe94f799957888dd0855",
@@ -105,7 +105,7 @@
       "/app/contracts/domain/borrowing.py": "d335792f6eed89d4962bdd458695c8f5d2530dddf7571ca493157be91dda758f",
       "/app/contracts/domain/borrow_runtime.py": "5c73048e4be585c2f0d3833bb4126cc195ea1643bc00d22d90ac376032b4c6af",
       "/app/contracts/domain/cohort.py": "e4ec890a1b04ead7e155ea977524d1e714bdb09be51131a5ee5b033fa883df65",
-      "/app/contracts/domain/cohort_runtime.py": "dbcd1053fbc6b57ca0564643f0566a638d829a8a1b69d1af05f61c387149433c",
+      "/app/contracts/domain/cohort_runtime.py": "880eebfc2cec03b39de628367570e5362ea2df7d8b5beaf66261604819f1ae71",
       "/app/contracts/domain/protocol.py": "631a29ee6097e2e3c1ba2069f30e6fff69f58d0be70d3f6b28a3982bccf7ce53",
       "/app/contracts/domain/protocol_analysis.py": "192d20c82bb4c01452614f9c24130c8e532d822f4c25e8c910351f6ccc4c3f3c",
       "/app/contracts/domain/protocol_request.py": "2037a65440a53d154b0d08b6e9b1e685dcdae40c815dfe94f799957888dd0855",
@@ -119,7 +119,7 @@
       "/app/methods/visit/source_precision.py": "1bee77b3664e7e19b854bd851a4dafd24874d1fb0bb8fbdd2ff3998a583c4163",
       "/app/methods/visit/source_reference.py": "96af62e0deb7f91adbd709a0a591a29e4be6fe256cb774b9421d19c27e2a37fb",
       "/app/methods/visit/__init__.py": "15ac8ea78d69da6f55c7f00fd9845cadac6c13bbeac8d4c854b07251bcdc56f4",
-      "/app/methods/measurement.py": "fbcc3adac1be85712a00934707d490b5528ad68dad73dbedea0c12f480be73ef",
+      "/app/methods/measurement.py": "c4f8849a13ff8d9f23ab3ab26f063227b306de92f005564bbe01f95de8eb370c",
       "/app/services/learner/analysis_worker.py": "41133e5d8ed7deb7aeb43285ea55e72cb2c6fdc5bb345f65dc146d4153cd7aad",
       "/app/services/learner/cohort_worker.py": "0ac2b6582aa505cd80dc69e6b82b9076e8ba01c013b9ec98d3514c6595126f27",
       "/app/boundary_probe.py": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
@@ -133,5 +133,16 @@
     "sha256": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234"
   },
   "permissions": "Explicit existing Dockerfile COPY additions only; no private generator/evaluator/truth/DB/socket added.",
-  "limits": "Source inventory, not actual built-image proof or production execution qualification."
+  "limits": "Source inventory, not actual built-image proof or production execution qualification.",
+  "source_binding": "Exact git archive 45d35071036ca3b635ae60e97ca04e924d98f74e; build uses committed Git bytes, not Windows worktree newline expansion.",
+  "retained_control_failure": "role-checks-r1 expected physical-worktree hashes for cohort_runtime.py and measurement.py; actual Git archive has LF. No code/image/model change; correct custody reference to archived source.",
+  "inventory_repair": {
+    "service": [
+      "/app/contracts/domain/cohort_runtime.py"
+    ],
+    "learner": [
+      "/app/contracts/domain/cohort_runtime.py",
+      "/app/methods/measurement.py"
+    ]
+  }
 }
