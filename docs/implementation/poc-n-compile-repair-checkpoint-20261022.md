@@ -1,0 +1,49 @@
+# N compile representation checkpoint
+
+Sol/xhigh, 2026-10-22. **Awaiting independent exact-head/base readiness review and the required full four-case qualification.** No repaired full-model density, gradient, fit, executable admission or speedup is claimed.
+
+Owned checkout `C:/Users/erics/Documents/Projects/REMission-worktrees/poc-n-compile-repair-sol-261022`, branch `launch/poc-n-compile-repair-20261022`, started clean at `e6d5f4ae94793e25e76f3ecf5368420849066916`. Difficult implementation uses xhigh because original96-night J1/N0 gradient construction/compile exceeded1800s and the repair must preserve the scientific law. Root remains sole orchestrator; no helper was spawned. Consumed the entry point, runtime/delegation/engineering guidance, N/method-library contracts, source-seam note `01570a9f7e38c4feffff7b2734221fdcd2f44011`, prior independent report blob `584b27f85e059e8b401b3a64c917450419844044`, and raw-manifest blob `9248709bf09a293db3a1e206911caeeeee80020c`.
+
+## Measured original-source profile
+
+One explicitly authorized profiling attempt used immutable Git archive e6d5, SHA256 `5531c79e08046d4c11962cfce1e544139695ef4fff0b6c955741e49ff3a37da6`. All21 original manifest entries were verified before start. Only the enumerated prior raw files and four enumerated original history/point files were copied from the reviewer's checkout. The original probe remained byte-identical, SHA256 `170795862e4a5892e88b1f24f380acbc899c2cadd57234f205fd3bc8a9dd2f33`; original input manifest SHA256 `e400c6dba11fe887531f801f3e5089012142f1d4b022c382d614df17277cb4db`. Transparent timing wrappers around the existing PyMC methods/core functions and15-second Python stack snapshots were the only execution instrumentation. No graph, options, point, history or optimizer was patched.
+
+| Phase | Measured observation |
+|---|---|
+| Factor/full-density compile_fn |96.534594s; returned18:42:35.083401Z |
+| Original J1/N0 density | -777.2208826452525 versus independent -777.2208826453802; error1.2778400559909642e-10 < unchanged1e-8 |
+| Gradient logp construction |0.104840s |
+| rewrite_pregrad |133.133441s;18:42:35.300412Z–18:44:48.423999Z |
+| Symbolic gradient |6.892245s; returned18:44:55.319094Z |
+| Gradient downstream compile_fn |Entered18:44:55.350171Z; unfinished41.339510s until termination |
+
+All9 pregrad stack samples were in `local_greedy_distributor` / multiplication canonicalization. The downstream samples show FunctionGraph import followed by `MergeOptimizer` replacement/client removal, at wrapper elapsed241.514/257.122/272.573s. No downstream C compilation was sampled. This localizes substantial cost to algebraic and structural graph processing; it does not establish what consumed the entire historical1800s call. There was no compiled-gradient identity or gradient value. The short profile is not a replacement qualification.
+
+Profile container `47111f0e6cb1441d33191a87ae4aeb0e4fe935e45990548fa3f49c59bdd64533`; hidden host watchdog PID5592. Monitor start18:40:36.3804216Z; watchdog armed18:40:37.3173224Z, before actual container start18:40:54.612658104Z. Fixed deadline18:45:36.3804216Z; kill event18:45:36.6032686Z; FinishedAt18:45:36.689681193Z. Terminal137, not OOM, Running=false, PID0. Watcher absent at own18:46:17.7173801Z check. Poll/kill latency was0.309260s beyond the nominal deadline; actual container lifetime was282.077023s, below300s. No restart or automatic retry.
+
+Raw profile is `artifacts/user-reports/poc-n-compile-profile-e6d5/`, with `raw-manifest.json`, complete original/raw probe, phase events/stacks, full container log, selected runtime/caps, literal watchdog source/events and terminal/absence records. The archive is reconstructible from Git and the committed original-input package; extracted source/archive files remain preserved in this owned checkout.
+
+## Minimal proposed representation repair
+
+Source checkpoint `8464c8f1d047be31fdb2ee3ec6767fcb477dca07` changes only `methods/nof1/model.py` and `tests/methods/test_nof1_symbolic.py`. `_ar_error` replaces the repeated scalar chain forming rho^1 through rho^(n-1) with one positive-integer exponent vector plus literal lag-zero1. The same lower-triangular lag matrix and dense dot product remain. At the original96-night size this removes95 chained scalar multiplication expressions from graph construction. Their contribution to the observed rewrite costs is a hypothesis to test, not a proven exclusive hotspot or speedup.
+
+The finite convolution is still `e_t = sigma_e * sum(rho**(t-s) * innovation_s, s<=t)`, equivalent to the configured recurrence from zero at public night-14. Positive integer exponents retain negative-rho behavior. Separating the literal lag-zero1 avoids differentiating exponent0 as `0 * rho**(-1)` at rho=0. The rho support/prior, innovation prior, public-origin initial state, hierarchy/shared priors, parameterization, likelihoods, rounded/clipped Normal/ISI overlap law, Beta ownership, treatment designs/carryover/rebound, axes and time cutoffs are unchanged. This is no marginalization, backend, optimizer, draw-count, tolerance or resource change. Shared `methods/measurement.py` is unchanged.
+
+## Completed light checks
+
+- Host NumPy algebra:25 cases, lengths1/2/50/96/98 crossed with rho=-.949999/-.4/0/.4/.949999. Independent recurrence/adjoint versus finite-polynomial values/pullbacks passed1e-10; maximum value error6.217248937900877e-15 and pullback error6.821210263296962e-13. This is algebra-only evidence.
+- Pinned-image pure discovery:27 tests,24 passes and3 opt-in symbolic skips; no PyMC/PyTensor import. Initial host discovery had8 passes and4 import errors because host Pydantic/Xarray were absent; the failure remains recorded in the tool transcript and is not reported as a pass.
+- Actual isolated AR-helper symbolic unit: one test,15 supported-rho/length cases including zero, negative and near-boundary rho, lengths1/96/98 covering all public lags0..97. Values and gradients with respect to rho, sigma and every innovation passed independent recurrence/adjoint references at absolute1e-10. Three actual raw-PyTensor CVM compilations verified unchanged FAST_RUN optimizer identity, use_cloop/c_thunks, and empty callbacks. The driver forbade whole `build()` calls. Test10.749s; helper subprocess13.505835s. These are unit results, not full-model gradients.
+-15 Python source files parsed without heavy imports. ASTs of `frozen_point`, `compile_options`, and `independent_logp` are unchanged. `git diff --check` passed.
+
+The helper-only job used immutable8464 archive SHA256 `ac5e9e303b873c639419ab733844c560fc8d122cb1843bb528e755620f817ca5`, container `67f473bfd3c42e0a82956aa8b02c7dc4cf478828d2cd2cb605dbe5dd3a121484`, watchdog PID26920. Monitor start18:49:37.3607117Z; armed18:49:37.7316557Z, actual start18:49:57.506553781Z, fixed120s deadline18:51:37.3607117Z. Natural finish18:50:15.640321202Z, exit0/notOOM/Running=false/PID0; watcher absent18:50:59.5493607Z. No retries. Raw helper records/manifests are `artifacts/user-reports/poc-n-ar-helper-8464/`.
+
+Both jobs used image `sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1`, PyMC6.3.2/PyTensor3.3.4 float64, inherited NumbaLinker guard followed by explicit native CVM, unchanged optimizer queries,2CPU/2GiB/equal swap ceiling, UID10002, network none, root/source/input read-only, owned output writable, private512MiB exec/nosuid/nodev scratch, BLAS/OpenMP1, pids256, cap-drop ALL/no-new-privileges. Only selected image/runtime fields were captured. No host-exclusive benchmark is claimed.
+
+## Exact base and next qualification
+
+Ordinary merge `2b854a6e2f92075f4f1b612aac851d1d8e2130c9` incorporated current main/base `393edc9e9e80fc303a50e99e061e2c266bbd688e`, with no conflicts and only5 documentation files added/changed relative to8464. `merged-source-identities.json` records equal8464/merged blobs for N model/test, shared measurement, config/admission/analysis and compile policy/monitor. Model blob `cc8f200b47c7e68adb0862ad1b50f357afb3e0c6`; symbolic-test blob `ff37a9ce51ce113673decb67adee72a069a9320b`; shared measurement `595eabdb2260b3318effe405fd93d44ab427069e`; N config `a291240de324739bc606e8ce883ff2dfc4961904`; admission `ffe8fd76db3709a7e20ae707da328b621c028893`. Executable remains false and N allowlist empty. The full candidate diff against393 includes the inherited N proposal/source package; readiness review must inspect that full diff and dependencies, not just this checkpoint's two-file repair.
+
+`artifacts/user-reports/poc-n-compile-repair-qualification/` contains the unchanged original probe and four byte-identical original inputs, plus a non-executed manifest template. Its source is deliberately null: the independent reviewer must freeze the actual reviewed execution HEAD and stamp it into a new input manifest before any authorized full run. Its layout instruction reproduces the original probe's `/source/artifacts/user-reports/poc-n-symbolic-e6d5-prep/` path. The original J1/J2 transformed-point SHA256 values are respectively `b0b839cd70f4de3d787bd72b6f26adce81d72a574258af7f89a774de92a32978` / `5b43bc9487c0823d140a4140c81121f8dfab16f4f8cba6c3742f8f67ea9dde7f`; history hashes `c776a2f0e700047f0aca8af0381d3eb7691147cb607966df3da60e9d3d9af623` / `27337589c66b2b0298f11978357a991caa81498238eb40902c7079ac79eb036b`.
+
+Next: separate Astra exact-head/base393 readiness review, then root coordination/authorization for the original four cases J1/J2 × N0/N1, original96 nights, delayed start10/review72/public cutoff82, same explicit points and factor/density/gradient/helper gates under the unchanged1800s stage cap and resource/options custody. No model.initial_point(), NUTS, clinical fits, qualification retry, service/application execution or further model job was run here. All historical f941/e6d5 failures remain preserved. Any fit/admission/research/clinical acceptance remains outstanding.
