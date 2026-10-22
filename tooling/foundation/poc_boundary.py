@@ -56,6 +56,14 @@ assert set(product)=={'name','records'} and len(product['records'])==2
 print(json.dumps(dict(service_generator_rpc=True,observed_records=len(projection['records']),day=json.loads(p['state_json'])['simulation']['day'])))
 """
     command(['docker','exec',deployment['service_container'],'python','-c',code])
+    # Copy exactly the approved projection into a task-private public product volume.
+    # The service export root remains UID10001-only; never relax its permissions.
+    public = 'remission-poc13-observed-' + uuid.uuid4().hex[:8]
+    command(['docker','volume','create',public])
+    stage = "import os,hashlib;from pathlib import Path;raw=Path('/export-source/poc-boundary-observed.json').read_bytes();p=Path('/observed/poc-boundary-observed.json');p.write_bytes(raw);p.chmod(0o444);os.chown(p,10002,10002);os.chmod('/observed',0o755);print(hashlib.sha256(raw).hexdigest())"
+    command(['docker','run','--rm','--network','none',*COMMON,'--cap-add','CHOWN','--cap-add','DAC_OVERRIDE','--user','0:0',
+             '--mount','type=volume,source='+deployment['volumes']['exports']+',target=/export-source,readonly',
+             '--mount','type=volume,source='+public+',target=/observed',build['runtime'],'python','-c',stage])
     probe = """import importlib.util,json,os,urllib.request,urllib.error
 from pathlib import Path
 from contracts.domain.boundaries import LearnerHistory
@@ -77,16 +85,17 @@ print(json.dumps(dict(uid=os.getuid(),generator_rpc_denied=True,transport_failur
     # Deliberately remove the network boundary: this SAME denial probe must fail.
     command(['docker','run','--rm','--network',deployment['network'],*COMMON,
              '--env','GENERATOR_URL=http://'+address+':8780/generate',
-             '--mount','type=volume,source='+deployment['volumes']['exports']+',target=/observed,readonly',
+             '--mount','type=volume,source='+public+',target=/observed,readonly',
              build['images']['learner'],'python','-c',probe],expected=1)
     assert 'private generator reached HTTP 200' in commands[-1]['stderr']
     command(['docker','run','--rm','--name','remission-poc13-boundary-'+uuid.uuid4().hex[:8], '--network','none',*COMMON,
              '--env','GENERATOR_URL=http://'+address+':8780/generate',
-             '--mount','type=volume,source='+deployment['volumes']['exports']+',target=/observed,readonly',
+             '--mount','type=volume,source='+public+',target=/observed,readonly',
              build['images']['learner'],'python','-c',probe])
     (args.evidence/'result.json').write_text(json.dumps(dict(status='passed', source_head=build['source_head'],
         images=build['images'],url=deployment['url'],runtime=build['runtime'],generator_no_mount_or_host_port=True,
         service_rpc=True,reachable_misconfiguration_rejected=True,learner_network='none',learner_public_projection_only=True),indent=2)+'\n',encoding='utf-8')
+    command(['docker','volume','rm',public])
     print('Copied source, actual service RPC, learner source/mount/network denial and observed-only consumption passed.')
 
 
