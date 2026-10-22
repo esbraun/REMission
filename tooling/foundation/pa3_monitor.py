@@ -33,6 +33,38 @@ def type_metadata(variable):
         shape=[int(v) if v is not None else None for v in kind.shape] if hasattr(kind,'shape') else None)
 
 
+def save_inventory(function,output,policy):
+    """One capped metadata inventory for an already compiled function."""
+    nodes=function.maker.fgraph.toposort()
+    if len(nodes)>policy['inventory_node_cap']:raise ValueError('inventory node cap; no evaluation')
+    result=dict(nodes=[dict(index=i,operation=type(node.op).__module__+'.'+type(node.op).__qualname__,
+        input_types=[type_metadata(v) for v in node.inputs],output_types=[type_metadata(v) for v in node.outputs])
+        for i,node in enumerate(nodes)],compiled_optimizer=optimizer_identity(function.maker.mode.provided_optimizer),
+        compiled_linker=type(function.maker.mode.linker).__name__)
+    encoded=(canonical(result)+'\n').encode()
+    if len(encoded)>policy['inventory_byte_cap']:raise ValueError('inventory byte cap; no evaluation')
+    (output/'optimized-inventory.json').write_bytes(encoded)
+    return dict(nodes=len(nodes),bytes=len(encoded),sha256=hashlib.sha256(encoded).hexdigest(),
+                compiled_optimizer=result['compiled_optimizer'],compiled_linker=result['compiled_linker'])
+
+
+def compilation_options(policy,default=None):
+    """The unselected path never imports PyTensor or supplies a mode override."""
+    if policy is None:return {},None
+    if policy['id']!='pa3-numba-fusion-contrast-v1' or policy['version']!='1.0.0':raise ValueError('unfrozen compilation policy')
+    if policy['excluded_tags']!=['fusion']:raise ValueError('only the frozen fusion group may be excluded')
+    if default is None:
+        from pytensor.compile.mode import get_default_mode
+        default=get_default_mode()
+    before=optimizer_identity(default.provided_optimizer)
+    if before!=policy['default_optimizer'] or type(default.linker).__name__!='NumbaLinker':raise ValueError('default optimizer/linker mismatch')
+    candidate=default.excluding('fusion')
+    after=optimizer_identity(candidate.provided_optimizer)
+    if after!=policy['candidate_optimizer'] or type(candidate.linker).__name__!='NumbaLinker':raise ValueError('candidate optimizer/linker mismatch')
+    return dict(mode=candidate),dict(default_optimizer=before,candidate_optimizer=after,linker='NumbaLinker',
+        rule='Compile-specific diagnostic fusion-group exclusion only; no environment/backend/sampler/production change')
+
+
 class MetadataTrace:
     def __init__(self,output,policy):
         from pytensor.compile.mode import get_default_mode
@@ -82,14 +114,5 @@ class MetadataTrace:
     def post(self,graph,index,node,thunk):self.record('after',index,node,thunk)
 
     def inventory(self,function):
-        graph=function.f.maker.fgraph
-        nodes=graph.toposort()
-        if len(nodes)>self.policy['inventory_node_cap']:raise ValueError('inventory node cap; no evaluation')
-        result=dict(nodes=[dict(index=i,operation=type(node.op).__module__+'.'+type(node.op).__qualname__,
-            input_types=[type_metadata(v) for v in node.inputs],
-            output_types=[type_metadata(v) for v in node.outputs]) for i,node in enumerate(nodes)],
-            compiled_optimizer=optimizer_identity(function.f.maker.mode.provided_optimizer))
-        encoded=(canonical(result)+'\n').encode()
-        if len(encoded)>self.policy['inventory_byte_cap']:raise ValueError('inventory byte cap; no evaluation')
-        (self.output/'optimized-inventory.json').write_bytes(encoded)
+        save_inventory(function.f,self.output,self.policy)
         self.inventory_complete=True;self.status()
