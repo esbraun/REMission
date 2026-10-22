@@ -39,6 +39,8 @@ PRIOR_REF = reference("poc-visit-prior-v1", "mu_b N(19,5);sd_b HN(3);beta N(0,4)
 PROTOCOL_REF = reference("poc-visit-retain-v1", "42 future nights; endpoint mean nights29..42; retain both plans at14/28; no prompt; C .65/.35 E .8/.2; untreated baseline")
 DGP_REF = reference('poc-longitudinal-v1','public observed v1 interface; private realizations denied')
 SCENARIO_REF = reference('poc-interactive-reference-v1','uninterrupted physician-selected behavioral plans')
+FIXED_SUPPORT_REF = dict(id='fixed-approved-support',version='1.0.0',
+    sha256=hashlib.sha256(b'foundation fixed support; no learning').hexdigest())
 
 
 class Header(StrictModel):
@@ -206,7 +208,7 @@ def project_history(projected):
             value.update(total=r.total, instrument_version=r.instrument_version, recall_days=r.recall_days,
                          recall_start=r.recall_start.isoformat(), recall_end=r.recall_end.isoformat())
         elif r.kind == "assignment":
-            if r.clinician_override is not None or r.support_policy.id != "fixed-approved-support":
+            if r.clinician_override is not None or r.support_policy.model_dump() != FIXED_SUPPORT_REF:
                 raise ValueError("unsupported assignment/support")
             value.update(option=r.option, experimental=r.experimental)
         else:

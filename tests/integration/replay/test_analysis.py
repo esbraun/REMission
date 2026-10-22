@@ -142,6 +142,10 @@ class NumericalTests(unittest.TestCase):
         full=fixture_records();full[1]['source']['id']='unqualified-other-law'
         observed=ObservedHistory.model_validate_json(canonical(dict(schema_version='1.0.0',synthetic=True,kind='observed_history',patient_id='POC-TEST',records=full)))
         with self.assertRaisesRegex(ValueError,'unqualified'):project_history(observed.project(ORIGIN+timedelta(days=14)))
+        for field,value in [('version','99.0.0'),('sha256','f'*64)]:
+            full=fixture_records();full[0]['support_policy'][field]=value
+            observed=ObservedHistory.model_validate_json(canonical(dict(schema_version='1.0.0',synthetic=True,kind='observed_history',patient_id='POC-TEST',records=full)))
+            with self.assertRaisesRegex(ValueError,'support'):project_history(observed.project(ORIGIN+timedelta(days=14)))
 
 
 class AnalysisRoutesTests(unittest.TestCase):
