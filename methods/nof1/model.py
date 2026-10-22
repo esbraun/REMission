@@ -11,6 +11,17 @@ from .data import CohortData, Unavailable
 F = np.float64
 
 
+def _ar_error(innovation, rho, sigma_e, n):
+    """Same finite AR convolution, without a chain of scalar products."""
+    # Positive integer powers preserve negative rho. Keep the lag-zero term
+    # constant so differentiation at rho=0 never forms 0 * rho**(-1).
+    powers = pt.concatenate([np.ones(1, dtype=np.float64),
+        pt.power(rho, np.arange(1, n, dtype=np.int64))])
+    lag = np.arange(n)[:, None] - np.arange(n)[None, :]
+    transition = (lag >= 0) * powers[np.maximum(lag, 0)]
+    return sigma_e * pt.dot(transition, innovation)
+
+
 def build(data):
     if not isinstance(data, CohortData) or data.readiness != "eligible":
         raise Unavailable("inconclusive", "target needs two completed randomized blocks per arm")
@@ -37,12 +48,7 @@ def build(data):
         for i, patient in enumerate(data.patients):
             suffix, n = str(i), len(patient.nights)
             innovation = pm.Normal("innovation_" + suffix, F(0.), F(1.), dims="night_" + suffix)
-            powers = [pt.as_tensor_variable(np.float64(1.))]
-            for _ in range(1, n):
-                powers.append(powers[-1] * rho)
-            lag = np.arange(n)[:, None] - np.arange(n)[None, :]
-            transition = (lag >= 0) * pt.stack(powers)[np.maximum(lag, 0)]
-            error = pm.Deterministic("error_" + suffix, sigma_e * pt.dot(transition, innovation), dims="night_" + suffix)
+            error = pm.Deterministic("error_" + suffix, _ar_error(innovation, rho, sigma_e, n), dims="night_" + suffix)
             burden = pm.Deterministic("burden_" + suffix,
                 baseline[i] + a * np.sin(2 * np.pi * patient.nights / 21) + error
                 - amplitude[i, 0] * patient.c - amplitude[i, 2] * patient.medication[:, 0]

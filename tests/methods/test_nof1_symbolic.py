@@ -86,6 +86,45 @@ def independent_logp(point, data):
 
 @unittest.skipUnless(os.environ.get("NOF1_SYMBOLIC_QUALIFY") == "1", "requires explicit exclusive heavy-resource lease")
 class SymbolicTests(unittest.TestCase):
+    def test_ar_convolution_and_pullback_at_zero_and_negative_rho(self):
+        import pytensor
+        import pytensor.tensor as pt
+        from methods.nof1.model import _ar_error
+        from tooling.foundation.pa3_monitor import verify_cvm
+
+        rng = np.random.default_rng(20261022)
+        # The public -13..84 grid has 98 nights. Retain the original 96-night
+        # qualification size too, plus the one-night boundary.
+        for n in (1, 96, 98):
+            innovation, rho, sigma = pt.dvector("innovation"), pt.dscalar("rho"), pt.dscalar("sigma")
+            eps, weights = rng.normal(size=n), rng.normal(size=n)
+            error = _ar_error(innovation, rho, sigma, n)
+            pullback = pt.grad(pt.dot(error, weights), [rho, sigma, innovation])
+            fn = pytensor.function([innovation, rho, sigma], [error, *pullback], **compile_options())
+            verify_cvm(fn)
+            for correlation in (-.949999, -.4, 0., .4, .949999):
+                with self.subTest(n=n, rho=correlation):
+                    expected, dr, ds = [], [], []
+                    previous = previous_rho = previous_sigma = 0.
+                    for value in eps:
+                        current = correlation * previous + 2.2 * value
+                        current_rho = previous + correlation * previous_rho
+                        current_sigma = value + correlation * previous_sigma
+                        expected.append(current)
+                        dr.append(current_rho)
+                        ds.append(current_sigma)
+                        previous, previous_rho, previous_sigma = current, current_rho, current_sigma
+                    reverse = np.empty(n)
+                    following = 0.
+                    for index in range(n - 1, -1, -1):
+                        following = weights[index] + correlation * following
+                        reverse[index] = 2.2 * following
+                    actual, actual_rho, actual_sigma, actual_innovation = fn(eps, correlation, 2.2)
+                    np.testing.assert_allclose(actual, expected, rtol=0, atol=1e-10)
+                    np.testing.assert_allclose(actual_rho, weights @ dr, rtol=0, atol=1e-10)
+                    np.testing.assert_allclose(actual_sigma, weights @ ds, rtol=0, atol=1e-10)
+                    np.testing.assert_allclose(actual_innovation, reverse, rtol=0, atol=1e-10)
+
     def test_frozen_point_measurement_factors_against_reference(self):
         import pytensor
         import pytensor.tensor as pt
