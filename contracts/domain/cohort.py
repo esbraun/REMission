@@ -1,7 +1,8 @@
 """Explicit PA1 joint-cohort branch. Legacy visit/protocol envelopes are unchanged.
 
-This source-only branch is deliberately not executable until exact-head numerical
-and isolated-role qualification. Hashes bind the complete ordered reduced H*.
+Scientific admission is restricted to one independently qualified genuine tuple.
+Runtime admission separately requires an operator-reviewed source/image binding.
+Hashes bind the complete ordered reduced H*; attempt identities remain ordinary.
 """
 from typing import Annotated, Literal
 
@@ -246,9 +247,29 @@ class CohortResult(StrictModel):
 
 
 def require_executable(product):
-    """No success fixture or new configuration enters the native allowlist."""
-    cohort=getattr(product,'cohort',None)
-    manifest=cohort.manifest if cohort is not None else getattr(product,'manifest',None)
-    if manifest is not None and manifest.research_execution=='contract_fixture':
+    """One genuine research tuple, independent of ordinary attempt ID/seeds.
+
+    The public input/metadata and independent setup review are frozen at Git
+    blobs e8d5c1aa51867d0317e937afe7331b479a4473dd,
+    b96a2f6651f9704f8529e268ca0543505e9b635d and
+    75a61dc262220e0f6cd15b5b5b2811d7decbdd9a respectively. These hashes
+    admit scientific input only; they do not qualify a changed runtime or fit.
+    """
+    if type(product) is not CohortInput:
+        raise ValueError('cohort qualification requires the frozen typed original input')
+    # Revalidate nested content: model_copy/model_construct are not admission.
+    product=CohortInput.model_validate_json(product.model_dump_json())
+    cohort=product.cohort;manifest=cohort.manifest
+    if manifest.research_execution=='contract_fixture':
         raise ValueError('contract fixture cohort is never executable or acceptable fit evidence')
-    raise ValueError('cohort execution unavailable pending independent numerical and role qualification')
+    if (manifest.scope!='research' or manifest.research_execution!='engine_run'
+            or manifest.research_run_id!='r-29182b743db44e28bc2b9ddffe8b797c'
+            or manifest.cohort_id!='c-fa55c4ba20d14350aaca01ef28092eae'
+            or cohort.manifest_sha256!='e732730003e8b1b538fbac516c2905637c8dce60befa3c1150c3a119af2d4490'
+            or product.cohort_sha256!='7f8d004352d7e68e667bff84e51b36a404653091c05f36594a4fef380f837563'
+            or any(m.patient_version!=19 for m in manifest.members)
+            or (manifest.cutoff-manifest.origin).total_seconds()!=14*86400
+            or product.request.configuration.model_dump()!=dict(id='poc-visit-cohort-v1',version='1.0.0',
+                sha256='8209ada5a89f11198122922802ab42c1f7e2b4f2525b85d82875ef471ca4806b')
+            or product.sources is not None or product.source_set_sha256 is not None):
+        raise ValueError('cohort qualification unavailable for this scientific input tuple')

@@ -1,0 +1,49 @@
+/src/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/src/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/src/contracts/domain/cohort.py:69: UserWarning: Field name "schema" in "CohortManifest" shadows an attribute in parent "StrictModel"
+  class CohortManifest(StrictModel):
+/src/contracts/domain/cohort.py:97: UserWarning: Field name "schema" in "CohortHistory" shadows an attribute in parent "StrictModel"
+  class CohortHistory(StrictModel):
+test_fully_rehashed_scientific_mutations_remain_unqualified (tests.contracts.test_cohort_qualification.ScientificQualificationControls.test_fully_rehashed_scientific_mutations_remain_unqualified) ... 
+  test_fully_rehashed_scientific_mutations_remain_unqualified (tests.contracts.test_cohort_qualification.ScientificQualificationControls.test_fully_rehashed_scientific_mutations_remain_unqualified) (name='day42') ... ERROR
+test_public_source_and_ordinary_independent_attempts (tests.contracts.test_cohort_qualification.ScientificQualificationControls.test_public_source_and_ordinary_independent_attempts) ... ok
+test_result_or_caller_lookalike_cannot_satisfy_input_predicate (tests.contracts.test_cohort_qualification.ScientificQualificationControls.test_result_or_caller_lookalike_cannot_satisfy_input_predicate) ... ok
+test_v1_sources_and_invalid_copies_do_not_enter_tuple (tests.contracts.test_cohort_qualification.ScientificQualificationControls.test_v1_sources_and_invalid_copies_do_not_enter_tuple) ... ok
+test_exact_joint_binding_and_negative_map_seed_origin_prior_controls (tests.contracts.test_cohort_runtime.CohortRuntimeControls.test_exact_joint_binding_and_negative_map_seed_origin_prior_controls) ... ok
+test_runtime_configuration_is_lazy_deny_default_and_exact (tests.contracts.test_cohort_runtime.CohortRuntimeControls.test_runtime_configuration_is_lazy_deny_default_and_exact) ... ok
+test_before_deadline_ingests_and_pre_ingest_deadline_vetoes (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_before_deadline_ingests_and_pre_ingest_deadline_vetoes) ... ok
+test_cohort_deployment_misconfiguration_is_recorded_before_launch (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_cohort_deployment_misconfiguration_is_recorded_before_launch) ... ok
+test_cohort_v0_v1_use_native_binding_digest_scratch_and_policy (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_cohort_v0_v1_use_native_binding_digest_scratch_and_policy) ... ok
+test_exec_scratch_is_borrow_only_and_keeps_other_limits (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_exec_scratch_is_borrow_only_and_keeps_other_limits) ... ok
+test_formatted_inspection_is_selected_before_capture (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_formatted_inspection_is_selected_before_capture) ... ok
+test_host_cohort_and_protocol_admission_remain_closed_legacy_v0_unchanged (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_host_cohort_and_protocol_admission_remain_closed_legacy_v0_unchanged) ... ok
+test_slow_claim_consumes_native_deadline_before_launch (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_slow_claim_consumes_native_deadline_before_launch) ... ok
+test_terminal_completion_after_cap_is_failed_without_ingestion (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_terminal_completion_after_cap_is_failed_without_ingestion) ... ok
+test_unconfirmed_stop_traceback_cannot_reveal_claim_token (tests.integration.replay.test_borrowing_dispatcher.DispatcherDeadlineTests.test_unconfirmed_stop_traceback_cannot_reveal_claim_token) ... ok
+test_validation_crosses_persisted_claim_deadline_inside_transaction (tests.integration.replay.test_cohort_completion_deadline.CompletionDeadlineControls.test_validation_crosses_persisted_claim_deadline_inside_transaction) ... ok
+
+======================================================================
+ERROR: test_fully_rehashed_scientific_mutations_remain_unqualified (tests.contracts.test_cohort_qualification.ScientificQualificationControls.test_fully_rehashed_scientific_mutations_remain_unqualified) (name='day42')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/src/tests/contracts/test_cohort_qualification.py", line 101, in test_fully_rehashed_scientific_mutations_remain_unqualified
+    product=changed_cohort(mutate)
+  File "/src/tests/contracts/test_cohort_qualification.py", line 30, in changed_cohort
+    cohort=CohortHistory.model_validate_json(canonical(value))
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort member projection checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+----------------------------------------------------------------------
+Ran 16 tests in 3.163s
+
+FAILED (errors=1)

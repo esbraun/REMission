@@ -1,4 +1,4 @@
-"""Inactive joint-cohort lifecycle. Entry remains behind require_executable.
+"""Joint-cohort lifecycle behind scientific and reviewed runtime admission.
 
 One prior graph is saved/released before one shared posterior is constructed.
 All members retain their chain/draw axes and gates; no averaged target exists.
@@ -64,14 +64,16 @@ def run(product, out):
         publish(out/'progress.json',dict(attempt_id=product.attempt_id,input_sha256=input_hash,**value))
     def save():publish(out/'diagnostics.json',d)
     try:
-        data=cohort_inputs(product.cohort)
-        d['data']={patient:dict(day=x['day'],consumed_ids=x['record_ids'],likelihood_blocks=x['likelihood_blocks'],
-            deliveries=x['deliveries'],taken=x['taken'],local_arm_support=x['arms']) for patient,x in data}
-        layout=cohort_coordinate_layout(product.cohort,borrowed=borrowed)
+        # Deny before model/prior construction. This learner-side check cannot
+        # configure or replace the service's independently fixed reviewed pair.
         origin=runtime_origin(os.environ.get('REMISSION_LEARNER_IMAGE',''),os.environ.get('REMISSION_SOURCE_COMMIT',''))
         d['execution']=execution_binding(product,origin)
         custody_binding=sha(d['execution'])
         d['execution'].update(kind='cohort_native_execution_v1',native_compilations=[],callable_custody=[])
+        data=cohort_inputs(product.cohort)
+        d['data']={patient:dict(day=x['day'],consumed_ids=x['record_ids'],likelihood_blocks=x['likelihood_blocks'],
+            deliveries=x['deliveries'],taken=x['taken'],local_arm_support=x['arms']) for patient,x in data}
+        layout=cohort_coordinate_layout(product.cohort,borrowed=borrowed)
         def observed_callable(value):
             d['execution']['callable_custody'].append(value);save()
         stage(dict(stage='fitting'));save()

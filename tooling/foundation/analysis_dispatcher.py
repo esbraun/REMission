@@ -18,6 +18,7 @@ CONTAINER_FORMAT=(' {"Id":{{json .Id}},"Image":{{json .Image}},"State":{{json .S
     '"Labels":{{with index .Config "Labels"}}{"remission.attempt":{{json (index . "remission.attempt")}},'
     '"remission.analysis":{{json (index . "remission.analysis")}}}{{else}}{}{{end}}},'
     '"HostConfig":{"Memory":{{json (index .HostConfig "Memory")}},"NanoCpus":{{json (index .HostConfig "NanoCpus")}},'
+    '"MemorySwap":{{json (index .HostConfig "MemorySwap")}},"PidsLimit":{{json (index .HostConfig "PidsLimit")}},'
     '"NetworkMode":{{json (index .HostConfig "NetworkMode")}},"ReadonlyRootfs":{{json (index .HostConfig "ReadonlyRootfs")}},'
     '"CapDrop":{{json (index .HostConfig "CapDrop")}},"SecurityOpt":{{json (index .HostConfig "SecurityOpt")}},'
     '"Tmpfs":{{json (index .HostConfig "Tmpfs")}}},"Mounts":{{json .Mounts}}}')
@@ -53,10 +54,11 @@ def check_deadline(deadline):
     if time.monotonic()>deadline:raise TimeoutError('fit-watchdog-deadline-exceeded')
 
 
-def worker_limits(borrowing):
+def worker_limits(borrowing, *, cohort=False):
     result=list(COMMON)
     if borrowing:
         result[result.index('--tmpfs')+1]='/tmp:rw,exec,nosuid,nodev,size=512m'
+    if cohort:result.extend(['--memory-swap','2g','--pids-limit','64'])
     return result
 
 
@@ -68,6 +70,19 @@ def require_dispatchable(input_value):
     if input_value.get('kind')=='poc_visit_cohort_input':
         from contracts.domain.cohort import CohortInput,require_executable
         require_executable(CohortInput.model_validate_json(json.dumps(input_value)))
+
+
+def cohort_reviewed_runtime(state, actual_image):
+    """Frozen host deployment pair; service independently owns its fixed pair."""
+    from contracts.domain.borrow_runtime import runtime_origin
+    reviewed=state.get('cohort_reviewed_runtime')
+    if (not isinstance(reviewed,dict) or set(reviewed)!={'learner_image','source_commit'}
+            or any(not isinstance(v,str) for v in reviewed.values())):
+        raise ValueError('Cohort deployment requires exactly one reviewed source/image pair.')
+    expected=runtime_origin(reviewed['learner_image'],reviewed['source_commit'])
+    if expected!=runtime_origin(actual_image,state['source_commit']):
+        raise ValueError('Cohort actual runtime differs from reviewed deployment pair.')
+    return expected
 
 
 def main():
@@ -129,6 +144,7 @@ def main():
         save()
         launched=False
         try:
+            reviewed_environment=[]
             if native:check_deadline(deadline)
             execution_image=image
             if native:
@@ -138,6 +154,12 @@ def main():
                     execution_policy='poc-cohort-native-cvm-v1' if cohort else 'poc-borrow-native-cvm-v1',
                     scratch='/tmp:rw,exec,nosuid,nodev,size=512m')
                 origin=dict(learner_image=execution_image,source_commit=state['source_commit'])
+                if cohort:
+                    reviewed=cohort_reviewed_runtime(state,execution_image)
+                    reviewed_environment=['-e','REMISSION_COHORT_REVIEWED_LEARNER_IMAGE='+reviewed['learner_image'],
+                        '-e','REMISSION_COHORT_REVIEWED_SOURCE_COMMIT='+reviewed['source_commit'],
+                        '-e','OPENBLAS_NUM_THREADS=1','-e','OMP_NUM_THREADS=1',
+                        '-e','MKL_NUM_THREADS=1','-e','NUMEXPR_NUM_THREADS=1']
                 trusted=cli('bind-execution','--job',identifier,'--token',token,'--value',json.dumps(origin,sort_keys=True))
                 if any(trusted.get(k)!=v for k,v in dict(input_sha256=manifest['input_sha256'],**origin).items()):
                     raise RuntimeError('host execution binding was not confirmed by service')
@@ -153,9 +175,10 @@ def main():
             command(['docker','start','--attach',helper])
             command(['docker','rm',helper])
             if native:check_deadline(deadline)
-            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*worker_limits(native),
+            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*worker_limits(native,cohort=cohort),
                 '--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
                 '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+execution_image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
+                *reviewed_environment,
                 execution_image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
             launched=True
             manifest.update(status='running',inventory=json.loads(inspect_container(learner).stdout))

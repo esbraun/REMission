@@ -56,8 +56,8 @@ def submit(db, owner, patient_versions, cutoff, *, cohort_id, approved_manifest_
            now, previous_attempt=None, source_bundle_id=None, research_run_id=None):
     """Caller owns Store.transaction + authenticated session/CSRF/receipt scope.
 
-    Admission is deliberately closed until exact source/math/role qualification.
-    No callback or caller flag can enable the executable configuration.
+    Only the independently qualified scientific tuple can enter the queue.
+    Runtime admission separately requires the reviewed immutable host binding.
     """
     from .analysis import AnalysisError, prepare_cohort
     product=prepare_cohort(db,owner,patient_versions,cutoff,cohort_id=cohort_id,
@@ -72,7 +72,7 @@ def submit(db, owner, patient_versions, cutoff, *, cohort_id, approved_manifest_
         if old is None or old['status'] in ('queued','running') or sorted(json.loads(old['cohort_json']))!=sorted(patient_versions):
             raise AnalysisError('Retry requires a finished owned attempt for exactly this cohort.')
     require_executable(product)
-    # This insertion stays behind the same closed qualification gate as claim,
+    # This insertion stays behind the same canonical qualification gate as claim,
     # worker entry and accepted ingest. No queue-only bypass is exposed.
     frozen=product.model_dump(mode='json');job=product.attempt_id;anchor=min(patient_versions)
     db.execute('INSERT INTO pending_work VALUES(?,?,?,?)',(job,anchor,'queued','Joint cohort analysis queued'))

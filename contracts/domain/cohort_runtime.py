@@ -1,8 +1,9 @@
-"""Separate source-only cohort execution identity; legacy guards unchanged."""
+"""Cohort reviewed runtime and attempt identity; legacy guards unchanged."""
 import math
+import os
 from .analysis import reference, sha, canonical
 from .borrow_runtime import (POLICY, POLICY_REF, NATIVE_OPTIMIZER, runtime_origin, cohort_coordinate_layout)
-from .cohort import COORDINATE_REF
+from .cohort import COORDINATE_REF, require_executable
 
 INITIALIZER_OPTIMIZER = dict(type='RewriteDatabaseQuery', name=None, include=['fast_compile', 'py_only'],
     exclude=[], require=[], subquery={}, position_cutoff='inf', extra_rewrites=[])
@@ -14,8 +15,27 @@ COHORT_POLICY_REF=reference('poc-cohort-native-cvm-v1',dict(compile_policy=POLIC
     scope='Owned cohort callable custody and fit-bound indices; unchanged seeded initialization/settings; qualification required'))
 
 
+def reviewed_runtime(origin):
+    """Operator-owned process configuration, read at each authority boundary.
+
+    These values are supplied outside the image only after exact source/COPY/
+    image review. Host/result payloads cannot configure the service process.
+    Missing configuration denies cohort use without affecting legacy imports.
+    """
+    if (not isinstance(origin,dict) or set(origin)!={'learner_image','source_commit'}
+            or any(not isinstance(v,str) for v in origin.values())):
+        raise ValueError('Cohort requires exactly the reviewed runtime origin fields.')
+    expected=runtime_origin(os.environ.get('REMISSION_COHORT_REVIEWED_LEARNER_IMAGE',''),
+        os.environ.get('REMISSION_COHORT_REVIEWED_SOURCE_COMMIT',''))
+    actual=runtime_origin(origin['learner_image'],origin['source_commit'])
+    if actual!=expected:
+        raise ValueError('Cohort runtime differs from operator-reviewed source/image.')
+    return actual
+
+
 def execution_binding(product, origin):
-    runtime_origin(origin['learner_image'],origin['source_commit'])
+    require_executable(product)
+    origin=reviewed_runtime(origin)
     return dict(kind='cohort_host_launch_v1',attempt_id=product.attempt_id,policy=COHORT_POLICY_REF,
         input_sha256=sha(product.model_dump(mode='json')),cohort_sha256=product.cohort_sha256,
         manifest_sha256=product.cohort.manifest_sha256,source_set_sha256=product.source_set_sha256,
@@ -27,7 +47,7 @@ def execution_binding(product, origin):
 def validate_execution(execution, product, trusted):
     if not isinstance(execution,dict) or not isinstance(trusted,dict) or not trusted:
         raise ValueError('Cohort requires a trusted host launch binding.')
-    expected=execution_binding(product,runtime_origin(trusted.get('learner_image',''),trusted.get('source_commit','')))
+    expected=execution_binding(product,dict(learner_image=trusted.get('learner_image',''),source_commit=trusted.get('source_commit','')))
     if trusted!=expected or execution.get('kind')!='cohort_native_execution_v1':
         raise ValueError('Cohort trusted host launch mismatch.')
     if any(execution.get(k)!=v for k,v in expected.items() if k!='kind'):
