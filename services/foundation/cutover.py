@@ -98,7 +98,7 @@ def activate_new(target: Path, installed: InstalledBundle, at, *, source: Path |
         preserved=protected_snapshot(db)
         scripts = Path(__file__).with_name('migrations')
         # One explicit offline transaction, including all schema/bootstrap facts.
-        sql = '\n'.join((scripts/name).read_text(encoding='utf-8') for name in ['001_foundation.sql','002_observed_archive.sql','003_live_hold.sql','004_live_hold_followups.sql'])
+        sql = '\n'.join((scripts/name).read_text(encoding='utf-8') for name in ['001_foundation.sql','002_observed_archive.sql','003_live_hold.sql','004_live_hold_followups.sql','005_analysis.sql'])
         db.executescript('BEGIN IMMEDIATE;\n'+sql)
         try:
             c = installed.control

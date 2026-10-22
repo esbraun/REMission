@@ -116,9 +116,17 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
                    labels=["Synthetic demonstration", "No acute clinical monitoring"],
                    version_status="Foundation contract consumer; downstream G2-G5 engines pending")
     display['live_safety_summary']=summary(db,patient_id)
+    # Only a NEW decision may freeze a saved analysis reference. Older decision
+    # and bundle bytes are immutable; asynchronous completion never rewrites them.
+    analysis=db.execute("SELECT job_id,cutoff,result_json,input_sha256 FROM analysis_attempts WHERE patient_id=? AND status='completed' ORDER BY created_at DESC,rowid DESC LIMIT 1",(patient_id,)).fetchone()
+    if analysis:
+        display['analysis_reference']=dict(id=analysis['job_id'],cutoff=analysis['cutoff'],input_sha256=analysis['input_sha256'],
+            stale=instant(analysis['cutoff'])!=at,result=json.loads(analysis['result_json']))
     if 'simulation' in state:
         display['simulation'] = state['simulation']
-        display['version_status'] = 'Generated synthetic PoC; fitted analyses and randomized protocols pending'
+        display['version_status'] = 'Generated synthetic PoC; observed-only V0 on demand; randomized protocols pending'
+        display['engines']['bayesian']='poc-visit-v1 on demand after day14'
+        display['estimates']['reason']='Visit analysis is available in Analysis; ordinary options have no superiority ranking'
         display['labels'].append('Generated longitudinal observations; fictional clock')
         display['plan'] = state['plan']
     encoded = canonical(display)

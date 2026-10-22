@@ -41,7 +41,7 @@ def reset_password(store: Store, username: str, password: str):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument("command",choices=["activate-new","upgrade-003","change-authority","seed","reset-password","replay","replay-export"])
+    parser=argparse.ArgumentParser();parser.add_argument("command",choices=["activate-new","upgrade-003","upgrade-004","change-authority","seed","reset-password","replay","replay-export"])
     parser.add_argument("--database",type=Path,required=True);parser.add_argument("--username");parser.add_argument("--password")
     parser.add_argument("--manifest",type=Path);parser.add_argument("--run-id");parser.add_argument("--cutoff")
     parser.add_argument("--artifact-root",type=Path);parser.add_argument("--authority",type=Path)
@@ -51,11 +51,12 @@ def main():
     args=parser.parse_args()
     from contracts.service.live_hold import InstalledBundle
     if args.command=='upgrade-003':
-        if args.historical_source is None or args.next_bundle is None:parser.error('historical-source and next-bundle required after draining all 003 workers')
-        from .upgrade003 import upgrade_checkpoint003
-        upgraded=upgrade_checkpoint003(args.database,args.historical_source,args.bundle.read_bytes(),InstalledBundle.model_validate_json(args.next_bundle.read_bytes()))
-        print(json.dumps(dict(status='upgraded_003_to_004_unrouted',control=upgraded.installed.control.model_dump(mode='json'))));return
+        parser.error('Schema003 requires the preserved schema4 SERVICE release sha256:a92d7bda327ce7eb06a1d8ee03193d4090f148f48034bee63655d3cd8402dbcb (accepted source a7ab7e60). Run its upgrade-003 command on a NEW private path with old --bundle and new --next-bundle after stopping all workers. Then run this release upgrade-004 on that target with the new --bundle before routing. See docs/implementation/poc-analysis-runbook.md. No database was opened or changed.')
     installed=InstalledBundle.model_validate_json(args.bundle.read_bytes())
+    if args.command=='upgrade-004':
+        from .upgrade004 import upgrade004
+        upgraded=upgrade004(args.database,installed)
+        print(json.dumps(dict(status='upgraded_004_to_005_unrouted',control=upgraded.installed.control.model_dump(mode='json'))));return
     if args.command=='activate-new':
         from .cutover import activate_new
         store=activate_new(args.database,installed,datetime.now(timezone.utc),source=args.historical_source)

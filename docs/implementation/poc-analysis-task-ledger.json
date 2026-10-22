@@ -1,0 +1,22 @@
+{
+  "id": "PA1-THIN-PA2",
+  "status": "implementation-and-verification-running",
+  "owner": "/root/poc_v0_xhigh_sol",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "effort_escalation_reason": "Rounded/clipped latent state-space likelihood, per-draw expected-effect integration precision gates and isolated transactional SQLite ingestion have coupled correctness risks.",
+  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/poc-v0x-sol-261021",
+  "branch": "launch/poc-v0-analysis-xhigh-20261021",
+  "initial_head": "918f11c99512468509929d7bad960750558eaceb",
+  "integration_base": "a7ab7e60a8146ace6342efd8d51a0bd1013566ad",
+  "early_core_checkpoints": ["7d004172696fdead17d5ebde274cbebe47e3d95d", "e7b3cf7e8a0eb086c8aa25c36c91c957e7fa7e49", "8aa43f12c84a060f8c53aeaa16e1cc6060bbd183"],
+  "dependencies": ["POC1–3 accepted PR21", "accepted analytics contract ae974268", "pinned runtime ce346fea"],
+  "requirements": ["PA1", "thin PA2", "POC-4", "EST-VISIT:poc-hstar-v1"],
+  "truth": "No evaluator truth in this first slice; learner posterior is never truth.",
+  "tests": [{"id": "HSTAR-NUMERICAL-ROUTES", "command": "python -m unittest test_analysis -v", "result": "7 focused checks passed in pinned runtime; actual final copied-image rerun pending", "evidence": "artifacts/pa12/unit/71732ee6cded452c8d069914eec836a3.json"}],
+  "retained_failures": ["Initial compiled-logp test could not write default /root/.pytensor on read-only root; corrected explicit temporary compile cache in copied learner/test images.", "Independent early checkpoint gradient at rho0 failed; multiplication recurrence repair independently reproduced on e7b3cf7.", "Independent early whole-stage timeout/source qualification findings repaired; final review pending."],
+  "actual_fit": "Day14 full native fit running in isolated copied learner; no accepted numerical result yet.",
+  "reviewer": "/root/poc_analytics_critic_astra",
+  "review_disposition": "pending exact final candidate",
+  "later_pending": ["PA3 borrowing", "PA4 N-of-1", "PA5 support/MRT", "PA6 truth and study", "PA7 complete reproduction", "human factors", "clinical review", "clinical validation"]
+}

@@ -111,7 +111,9 @@ def run(source, out):
     except Exception as error:
         (out/"failure.log").write_text(traceback.format_exc(),encoding="utf-8")
         result.update(status="failed",reason=f"{type(error).__name__}: {str(error)[:180]}")
+    peak=Path('/sys/fs/cgroup/memory.peak')
     result["diagnostics"].update(seconds=time.monotonic()-started,peak_memory_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        cgroup_peak_memory_bytes=int(peak.read_text()) if peak.exists() else None,
         runtime=dict(packages={name:metadata.version(name) for name in ("pymc","pytensor","arviz","arviz-stats","numpy","scipy","xarray")},
                      backend="pymc",sampler="native_nuts",precision="float64",cpu_limit=2,memory_gib=2,
                      learner_image=os.environ.get('REMISSION_LEARNER_IMAGE','not-recorded'),source_commit=os.environ.get('REMISSION_SOURCE_COMMIT','not-recorded')))

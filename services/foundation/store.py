@@ -67,7 +67,7 @@ class Store:
                 or (row['database_device'],row['database_inode'],row['lock_device'],row['lock_inode'])!=
                    (database_stat.st_dev,database_stat.st_ino,lock_stat.st_dev,lock_stat.st_ino)
                 or row['capability'] != CAPABILITY
-                or {r[0] for r in db.execute('SELECT version FROM schema_migrations')}!={1,2,3,4}
+                or {r[0] for r in db.execute('SELECT version FROM schema_migrations')}!={1,2,3,4,5}
                 or self.installed.authority.service_contract.model_dump()!=bindings['live_hold']
                 or self.installed.authority.schema_binding.model_dump()!=bindings['service_schema_set']
                 or digest(canonical(self.installed.authority.model_dump(mode='json'))) != row['authority_sha256']
