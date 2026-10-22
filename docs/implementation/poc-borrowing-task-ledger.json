@@ -8,8 +8,16 @@
   "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/poc-borrow-sol-261021",
   "branch": "launch/poc-borrowing-20261021",
   "base": "045b373a18ad067a3ecd1281d445076aae423a80",
-  "accepted_plan_original_commits": ["a89bac17b7e5b97a998fc9644edeac95feaa87e8", "88133e91f2428730177bf14ed5a3e624cc507260", "4d51062bce7fd0504877dffeac06b0b8619b1580"],
-  "accepted_plan_local_commits": ["1e5f660", "12299b1", "3eed8f7"],
+  "accepted_plan_original_commits": [
+    "a89bac17b7e5b97a998fc9644edeac95feaa87e8",
+    "88133e91f2428730177bf14ed5a3e624cc507260",
+    "4d51062bce7fd0504877dffeac06b0b8619b1580"
+  ],
+  "accepted_plan_local_commits": [
+    "1e5f660",
+    "12299b1",
+    "3eed8f7"
+  ],
   "independent_plan_ready": "d3da15eede33ca4f5d8bac6188e0e0c406eb31c2",
   "independent_plan_prior_review": "76d9a11df782fdbb574755fabc90647c5ad7d619",
   "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
@@ -17,27 +25,142 @@
   "estimand": "EST-VISIT:poc-hstar-v1",
   "allowed_information": "Reduced H* and public approved synthetic source summaries; no private replay keys/IPD/generator truth",
   "seed_recipe": "poc-pa3-seeds-v1",
-  "freeze": {"orders": [16, 32, 64], "qualification_double_order": 128, "prefit_prior_points": 64, "prefit_stress_points": 24, "postfit_points": 32, "batches": 8, "looks": [4096, 8192, 16384, 32768, 65536, 131072], "alpha": 0.01, "bonferroni_tests": 4320, "suite_seconds": 1800, "postfit_seconds": 900, "dispatcher_seconds": 7200},
+  "freeze": {
+    "orders": [
+      16,
+      32,
+      64
+    ],
+    "qualification_double_order": 128,
+    "prefit_prior_points": 64,
+    "prefit_stress_points": 24,
+    "postfit_points": 32,
+    "batches": 8,
+    "looks": [
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "alpha": 0.01,
+    "bonferroni_tests": 4320,
+    "suite_seconds": 1800,
+    "postfit_seconds": 900,
+    "dispatcher_seconds": 7200
+  },
   "tasks": [
-    {"id": "PA3-A", "requirements": ["BORROW-01", "POC-4", "TIME-01"], "test": "PA3-STUDY", "status": "bounded-preparation-accepted-f1695e6"},
-    {"id": "PA3-B", "requirements": ["BORROW-01", "EST-VISIT"], "test": "PA3-BRIDGE", "status": "core-prefit-Q64-kernel-accepted; posterior-and-fit-sensitivity-pending", "dependent_execution_rule": "Moment approximation failure stops dependent V1 acceptance; preserve evidence and route bounded repair to independent review."},
-    {"id": "PA3-C", "test": "PA3-FIT", "status": "model-source-implemented; full-target-tests-running; prior-diagnostic-repair-needs-review"},
-    {"id": "PA3-D", "test": "PA3-BOUNDARY", "status": "source-contracts-job-ingestion-implemented; actual-authenticated-source-test-passed; copied-boundary-pending"},
-    {"id": "PA3-E", "test": "PA3-APP", "status": "implementation-in-progress; no-browser-or-native-fit-claim"},
-    {"id": "PA3-F", "test": "PA3-REPORT", "status": "prefit-and-kernel-report-complete; full-report-pending-actual-fits"}
+    {
+      "id": "PA3-A",
+      "requirements": [
+        "BORROW-01",
+        "POC-4",
+        "TIME-01"
+      ],
+      "test": "PA3-STUDY",
+      "status": "bounded-preparation-accepted-f1695e6"
+    },
+    {
+      "id": "PA3-B",
+      "requirements": [
+        "BORROW-01",
+        "EST-VISIT"
+      ],
+      "test": "PA3-BRIDGE",
+      "status": "core-prefit-Q64-kernel-accepted; posterior-and-fit-sensitivity-pending",
+      "dependent_execution_rule": "Moment approximation failure stops dependent V1 acceptance; preserve evidence and route bounded repair to independent review."
+    },
+    {
+      "id": "PA3-C",
+      "test": "PA3-FIT",
+      "status": "source-ready-9d; original full-model OOM retained; bounded instrumented diagnosis running; no native fit"
+    },
+    {
+      "id": "PA3-D",
+      "test": "PA3-BOUNDARY",
+      "status": "source-ready; focused copied authenticated-source/old-input-result/dispatcher-runtime accepted; full role boundary pending"
+    },
+    {
+      "id": "PA3-E",
+      "test": "PA3-APP",
+      "status": "same-shell source/paired-comparison implemented; copied build, receipt replay and visible browser validation pending"
+    },
+    {
+      "id": "PA3-F",
+      "test": "PA3-REPORT",
+      "status": "prefit-and-kernel-report-complete; full-report-pending-actual-fits"
+    }
   ],
   "dependency_status": "PR22 accepted PA1 plus thin PA2 at045b373; full shared-cohort PA1 and PA2 cohort consumption remain unsatisfied",
   "prefit_evidence_head": "92d42ac0a75f7f4b33bdab0afa840df8657a6afd",
   "q64_gradient_test_head": "a2e1fb60d8859a8ffbfba1e889650af74c75693f",
   "q64_profile_head": "527450c6d8be75939c7007e79c9b5cb9b82ea211",
-  "independent_core_prefit_kernel_acceptance": {"head": "d2771a1056797afd2addb3350185d49e666a358f", "base": "045b373a18ad067a3ecd1281d445076aae423a80", "report": "f1695e634f2092fabea9ce5c2c8533dc426e50d4", "raw_manifest": "f116df2b566cf4fdeebc1a066a6847df63272d3f", "scope": "core, finite prefit and affected Q64 kernel only"},
-  "model_source_review": {"head": "b295285a2b421a996aa66cf0ef4d373a61cd93c1", "report": "f28c86bb6c5e50446f6fe2cd81ab6a42d400144d", "findings": ["unconditioned source-prior Beta(1,1) diagnostic", "terminal-worker dispatcher deadline before ingestion"], "status": "repairs implemented; affected checks/review pending"},
-  "continuity_review": {"requested_by": "user", "reviewer_model": "gpt-6-astra", "reviewer_effort": "medium", "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/poc-simulation-continuity-astra-261022", "head": "b295285a2b421a996aa66cf0ef4d373a61cd93c1", "base": "045b373a18ad067a3ecd1281d445076aae423a80", "scope": "existing panel loading to explicit physician decision to advance to generated consequences/history, lean additive analytics/ablations and no replacement design", "status": "running"},
-  "legacy_fixture_evidence": {"input_blob": "0753af07260fe6f6890f5807f8491a11d83e7335", "result_blob": "82f21b654b1dbe8e396e8afc238e1bac45a5817b", "origin": "actual BC/1248 day14 attempt5746f0fea4964d77b5a1cf5aeb552f01", "historical_receipt": "not recovered; read-only SQLite extraction stopped on open failure; evidence gap, no fabricated historical receipt"},
-  "observed_prefit": "Q16 84/88, four resolution failures retained; Q64 88/88 accepted in10.391s, peak80510976B; independent acceptance pending",
+  "independent_core_prefit_kernel_acceptance": {
+    "head": "d2771a1056797afd2addb3350185d49e666a358f",
+    "base": "045b373a18ad067a3ecd1281d445076aae423a80",
+    "report": "f1695e634f2092fabea9ce5c2c8533dc426e50d4",
+    "raw_manifest": "f116df2b566cf4fdeebc1a066a6847df63272d3f",
+    "scope": "core, finite prefit and affected Q64 kernel only"
+  },
+  "model_source_review": {
+    "head": "9d1bb94bc06b491b352ba26bbc6b9f2b73ad339e",
+    "report": "b57e5cfa148e8721ee31f5ce6e24f71354f76f34",
+    "findings": [
+      "unconditioned source-prior Beta(1,1) diagnostic",
+      "terminal-worker dispatcher deadline before ingestion"
+    ],
+    "status": "SOURCE READY; three source findings closed; runtime/native fit acceptance separate"
+  },
+  "continuity_review": {
+    "requested_by": "user",
+    "reviewer_model": "gpt-6-astra",
+    "reviewer_effort": "medium",
+    "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/poc-simulation-continuity-astra-261022",
+    "head": "b295285a2b421a996aa66cf0ef4d373a61cd93c1",
+    "base": "045b373a18ad067a3ecd1281d445076aae423a80",
+    "scope": "existing panel loading to explicit physician decision to advance to generated consequences/history, lean additive analytics/ablations and no replacement design",
+    "status": "PASS for plan/architecture continuity only",
+    "report": "302b2dfaab6098f1ec22b89b4470ddc465ecf7b8"
+  },
+  "legacy_fixture_evidence": {
+    "input_blob": "0753af07260fe6f6890f5807f8491a11d83e7335",
+    "result_blob": "82f21b654b1dbe8e396e8afc238e1bac45a5817b",
+    "origin": "actual BC/1248 day14 attempt5746f0fea4964d77b5a1cf5aeb552f01",
+    "historical_receipt": "Genuine later query-only stored receipt independently READY7020473577a700848fbc64d4e3a2a10d4ba76f68; exact758-byte response86f76cc, corrected physical index70544c9. Replay test implemented; execution pending. Original POST body/session not recovered; canonical candidate exactly matches stored payload hash, fresh test session explicitly identified."
+  },
+  "observed_prefit": "Q16 84/88, four resolution failures retained; Q64 88/88 in10.391s peak80510976B; finite prefit independently accepted f1695e6, posterior gates pending",
   "observed_q64_gradient": "4/4 tests passed26.501s;24 fixed vectors including negative and zero rho; no V1 fit",
   "observed_kernel_cost": "Source likelihood only: median logp1.907ms/gradient2.832ms; not a full-model NUTS runtime claim",
   "v0_config": "poc-visit-v1/1.1.1 remains unchanged",
-  "review": "pending independent exact-head/base review",
-  "outstanding": ["shared cohort model and PA2 full consumption", "PA4", "PA5", "PA6", "PA7", "human factors", "clinical review", "clinical validation"]
+  "review": "CORE/prefit/Q64 kernel, configuration freeze, source9d and scoped non-fitting runtime accepted; UI/new receipt replay/full-model diagnosis/native fits/posterior validation pending",
+  "outstanding": [
+    "shared cohort model and PA2 full consumption",
+    "PA4",
+    "PA5",
+    "PA6",
+    "PA7",
+    "human factors",
+    "clinical review",
+    "clinical validation"
+  ],
+  "focused_runtime_acceptance": {
+    "head": "262ff65b4edf34a9e132658b8002c8706d1a1823",
+    "report": "498bedddc780beb1edd377afe3d238ec53f89242",
+    "raw_index": "d661abfb5afd888d1f1ff16d5b5ef081b483c433",
+    "scope": "Five non-fitting copied checks: source admission/old V0 input-result identity/dispatcher imports and deadline controls; no new receipt replay or full-model compilation"
+  },
+  "full_model_failure": {
+    "head": "b295285a2b421a996aa66cf0ef4d373a61cd93c1",
+    "manifest": "evidence/pa3-model-oom-20261022/manifest.json",
+    "state": "Exit137/OOMKilled=true after1105.553s under2GiB; exact internal compiler call unknown; no NUTS or accepted estimate"
+  },
+  "compile_diagnosis": {
+    "plan_head": "262ff65b4edf34a9e132658b8002c8706d1a1823",
+    "plan_ready": "25fcdbcac757c017f65b3a94cce7d45046892823",
+    "executable_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "session": 41904,
+    "status": "running; no numerical acceptance inferred",
+    "scope": "One model per phase, frozen public H*/points/Q64, persistent stages,600s phase/1800s suite, unchanged target/optimizer; final Dockerfile delta review runs in parallel and execution timing is explicit"
+  }
 }

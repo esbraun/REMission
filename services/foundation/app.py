@@ -91,6 +91,11 @@ class AnalysisSubmission(StrictModel):
     source_bundle_id: str | None = None
 
 
+class ComparisonSubmission(StrictModel):
+    left: str
+    right: str
+
+
 class DraftInput(StrictModel):
     decision_id: str
     expected_version: int = Field(gt=0)
@@ -556,6 +561,28 @@ def create_app(settings: Settings) -> FastAPI:
             from .analysis_sources import catalog
             try:return dict(bundles=catalog(instant(patient['cutoff'])))
             except ValueError as error:raise APIError(409,'sources_unavailable',str(error)) from error
+
+    @app.post('/api/patients/{patient_id}/analysis-comparisons')
+    async def freeze_comparison(patient_id: str,request: Request):
+        data=await body(request,ComparisonSubmission)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True);own(db,patient_id,current['account_id'])
+            payload=data.model_dump();scope=patient_id+':analysis-comparison'
+            key,prior=mutation_receipt(db,current,request,scope,payload)
+            if prior:return prior
+            from .analysis import compare
+            try:response=compare(db,patient_id,current['account_id'],data.left,data.right,settings.live_export_root)
+            except ValueError as error:raise APIError(409,'comparison_unavailable',str(error)) from error
+            save_mutation(db,current,key,scope,payload,response)
+            return JSONResponse(response,status_code=201)
+
+    @app.get('/api/patients/{patient_id}/analysis-comparisons')
+    def saved_comparisons(patient_id: str,request: Request):
+        with store.transaction() as db:
+            current=session(db,request);own(db,patient_id,current['account_id'])
+            from .analysis import comparisons
+            try:return dict(comparisons=comparisons(settings.live_export_root,current['account_id'],patient_id))
+            except ValueError as error:raise APIError(409,'comparison_unavailable',str(error)) from error
 
     @app.get('/api/patients/{patient_id}/analyses/{job_id}')
     def analysis_status(patient_id: str,job_id: str,request: Request):

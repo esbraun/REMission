@@ -121,10 +121,65 @@ class JointTargetTests(unittest.TestCase):
 
 
 class BorrowingRoutesTests(unittest.TestCase):
-    setUp=analysis_cases.AnalysisRoutesTests.setUp
     tearDown=analysis_cases.AnalysisRoutesTests.tearDown
     login=analysis_cases.AnalysisRoutesTests.login
     headers=analysis_cases.AnalysisRoutesTests.headers
+    def setUp(self):
+        analysis_cases.AnalysisRoutesTests.setUp(self)
+        self.client.close()
+        self.app=analysis_cases.create_app(analysis_cases.Settings(self.store.path,self.store.installed,clock=self.store.clock,live_export_root=self.root/'exports'))
+        self.client=analysis_cases.TestClient(self.app,base_url=analysis_cases.URL);self.login(self.client,'alice')
+
+    def test_genuine_pre_v1_stored_receipt_replays_with_optional_defaults(self):
+        import hashlib
+        root=Path(__file__).with_name('fixtures')
+        raw=(root/'pa3-legacy-v0-receipt.json').read_bytes()
+        self.assertEqual(len(raw),758)
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'bb1f9b9ef8d3707114d1bed85a355467cad8d22c201de070f6507c5914b057ec')
+        payload=json.loads((root/'pa3-legacy-v0-payload.json').read_bytes())
+        payload_hash=sha(payload)
+        self.assertEqual(payload_hash,'009dd2e72debc0623fa62118a06e23a81dd09469a2cbf3c16a8842f5ecf7dc46')
+        stored=json.loads(raw);patient=stored['patient_id']
+        self.assertEqual(stored['configuration'],CONFIG_REF)
+        self.assertEqual(stored['status'],'queued');self.assertIsNone(stored['result'])
+        session=self.client.get('/api/session').json()['auth_generation']
+        # The original session was not captured. Only the fresh test-session
+        # association and owned stub are synthetic; receipt bytes are genuine.
+        with self.store.transaction(write=True) as db:
+            db.execute('INSERT INTO patients SELECT ?,owner_id,name,version,state_version,consent_version,eligibility_version,state_json,NULL,cutoff FROM patients WHERE id=?',(patient,'POC-TEST'))
+            db.execute('INSERT INTO receipts VALUES(?,?,?,?,?,?)',('alice',session,'9877f6c1-c994-418a-a2ec-3141afba90b8',patient+':analysis',payload_hash,raw.decode()))
+            before=db.execute('SELECT count(*) FROM analysis_attempts').fetchone()[0]
+        for body in (payload,dict(payload,mode='v0',source_bundle_id=None)):
+            response=self.client.post('/api/patients/'+patient+'/analyses',json=body,headers=self.headers('9877f6c1-c994-418a-a2ec-3141afba90b8'))
+            self.assertEqual(response.status_code,200,response.text)
+            self.assertEqual(response.json(),stored)
+            self.assertEqual(sha(response.json()),hashlib.sha256(raw).hexdigest())
+        changed=self.client.post('/api/patients/'+patient+'/analyses',json=dict(payload,mode='borrow',source_bundle_id='source-7c97862d'),headers=self.headers('9877f6c1-c994-418a-a2ec-3141afba90b8'))
+        self.assertEqual(changed.status_code,409,changed.text)
+        with self.store.transaction() as db:self.assertEqual(db.execute('SELECT count(*) FROM analysis_attempts').fetchone()[0],before)
+
+    def test_legacy_v0_receipt_retry_with_new_default_fields_and_immutable_failed_comparison(self):
+        legacy=dict(expected_version=1,previous_attempt=None)
+        first=self.client.post('/api/patients/POC-TEST/analyses',json=legacy,headers=self.headers('old-shape'))
+        self.assertEqual(first.status_code,202,first.text)
+        modern=dict(legacy,mode='v0',source_bundle_id=None)
+        replay=self.client.post('/api/patients/POC-TEST/analyses',json=modern,headers=self.headers('old-shape'))
+        self.assertEqual(replay.json()['id'],first.json()['id'])
+        claim(self.store);interrupt(self.store)
+        second=self.client.post('/api/patients/POC-TEST/analyses',json=dict(legacy,mode='borrow',source_bundle_id='source-7c97862d'),headers=self.headers('borrow-pair'))
+        self.assertEqual(second.status_code,202,second.text);claim(self.store);interrupt(self.store)
+        pair=dict(left=first.json()['id'],right=second.json()['id'])
+        saved=self.client.post('/api/patients/POC-TEST/analysis-comparisons',json=pair,headers=self.headers('comparison-1'))
+        self.assertEqual(saved.status_code,201,saved.text)
+        self.assertTrue(all(v['effect'] is None for v in saved.json()['attempts']))
+        repeated=self.client.post('/api/patients/POC-TEST/analysis-comparisons',json=pair,headers=self.headers('comparison-1'))
+        self.assertEqual(repeated.json(),saved.json())
+        self.assertEqual(self.client.get('/api/patients/POC-TEST/analysis-comparisons').json()['comparisons'],[saved.json()])
+        with self.store.transaction(write=True) as db:
+            db.execute('UPDATE patients SET cutoff=? WHERE id=?',((ORIGIN+timedelta(days=42)).isoformat(),'POC-TEST'))
+        self.assertEqual(self.client.get('/api/patients/POC-TEST/analysis-comparisons').json()['comparisons'],[saved.json()])
+        self.assertEqual(self.client.post('/api/patients/POC-TEST/analysis-comparisons',json=dict(left=pair['left'],right=pair['left']),headers=self.headers('same-attempt')).status_code,409)
+
     def test_source_admission_receipt_intents_and_guarded_result_sources(self):
         available=self.client.get('/api/patients/POC-TEST/analysis-sources')
         self.assertEqual(available.status_code,200,available.text)

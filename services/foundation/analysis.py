@@ -151,3 +151,63 @@ def ingest(store,job,token,directory):
             (result.status,'complete' if result.status=='completed' else result.status,result.reason,result.model_dump_json(),str(directory),timestamp(store.clock()),job))
         db.execute('UPDATE pending_work SET status=?,reason=? WHERE id=?',(result.status,result.reason or 'Visit analysis complete',job))
     return dict(id=job,status=result.status)
+
+
+def comparison_root(root,owner,patient):
+    if root is None:raise AnalysisError('Comparison artifact storage is unavailable.')
+    return Path(root)/'comparisons'/sha([owner,patient])
+
+
+def compare(db,patient,owner,left,right,root):
+    if left==right:raise AnalysisError('Choose two distinct V0/V1 attempts.')
+    rows=[db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND patient_id=? AND owner_id=?',(job,patient,owner)).fetchone() for job in (left,right)]
+    if any(row is None for row in rows):raise AnalysisError('Comparison attempt is unavailable.')
+    if any(row['status'] in ('queued','running') for row in rows):raise AnalysisError('Both attempts must finish before freezing a comparison.')
+    inputs=[json.loads(row['request_json']) for row in rows]
+    contexts=[v['request']['context'] for v in inputs]
+    if len({row['history_sha256'] for row in rows})!=1 or len({row['cutoff'] for row in rows})!=1:
+        raise AnalysisError('Pairing requires identical patient H* and observation cutoff.')
+    for key in ('estimand','comparator_estimand','protocol'):
+        if contexts[0][key]!=contexts[1][key]:raise AnalysisError('Pairing requires the same protocol and target.')
+    configs=[json.loads(row['configuration_json']) for row in rows]
+    if sorted(c['id']=='poc-visit-v1' for c in configs)!=[False,True] or any(c['id'] not in ('poc-visit-v1','poc-visit-borrow-v1','poc-visit-borrow-tau2-v1') for c in configs):
+        raise AnalysisError('This comparison pairs V0 with a production V1 configuration.')
+    if contexts[0]['seed']==contexts[1]['seed'] or contexts[0]['seed']['replicate']==contexts[1]['seed']['replicate']:
+        raise AnalysisError('Comparison requires distinct recorded fit seeds.')
+    attempts=[]
+    for row in rows:
+        value=view(row,row['cutoff']);result=value['result']
+        effect=result['effect'] if result else None
+        attempts.append(dict(id=row['job_id'],configuration=value['configuration'],input_sha256=value['input_sha256'],
+            status=value['status'],failure_reason=value['failure_reason'],effect=effect,
+            interval_width=effect['upper']-effect['lower'] if effect else None,
+            worker_seconds=result['diagnostics'].get('seconds') if result else None,
+            sources=value['sources'],source_set_sha256=value['source_set_sha256']))
+    manifest=dict(schema_version='1.0.0',kind='poc_v0_v1_comparison',synthetic=True,patient_id=patient,owner_id=owner,
+        cutoff=rows[0]['cutoff'],history_sha256=rows[0]['history_sha256'],estimand=contexts[0]['estimand'],protocol=contexts[0]['protocol'],
+        attempts=attempts,fit_seeds=[ctx['seed'] for ctx in contexts],
+        limitations=['Same H*/cutoff, distinct original-prior fits; source studies contribute once only in V1.',
+            'Estimates, interval widths and observed latency only; PA6 independent conditional truth and accuracy are unavailable.',
+            'No beneficial direction or clinical superiority is required or established.'])
+    identifier='comparison-'+sha(manifest);manifest['id']=identifier
+    destination=comparison_root(root,owner,patient);destination.mkdir(parents=True,exist_ok=True)
+    path=destination/(identifier+'.json');encoded=canonical(manifest)+'\n'
+    if path.is_symlink():raise AnalysisError('Invalid comparison artifact.')
+    try:
+        with path.open('x',encoding='utf-8',newline='\n') as stream:stream.write(encoded)
+    except FileExistsError:
+        if path.read_text(encoding='utf-8')!=encoded:raise AnalysisError('Frozen comparison checksum changed.')
+    return manifest
+
+
+def comparisons(root,owner,patient):
+    destination=comparison_root(root,owner,patient)
+    if not destination.exists():return []
+    results=[]
+    for path in sorted(destination.glob('comparison-*.json')):
+        if path.is_symlink() or path.stat().st_size>1024*1024:raise AnalysisError('Invalid comparison artifact.')
+        value=json.loads(path.read_bytes());identifier=value.pop('id',None)
+        if identifier!='comparison-'+sha(value) or value.get('patient_id')!=patient or value.get('owner_id')!=owner:
+            raise AnalysisError('Comparison artifact identity mismatch.')
+        value['id']=identifier;results.append(value)
+    return results
