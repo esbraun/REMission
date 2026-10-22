@@ -134,8 +134,8 @@
   },
   "permissions": "Explicit existing Dockerfile COPY additions only; no private generator/evaluator/truth/DB/socket added.",
   "limits": "Source inventory, not actual built-image proof or production execution qualification.",
-  "source_binding": "Exact git archive 45d35071036ca3b635ae60e97ca04e924d98f74e; build uses committed Git bytes, not Windows worktree newline expansion.",
-  "retained_control_failure": "role-checks-r1 expected physical-worktree hashes for cohort_runtime.py and measurement.py; actual Git archive has LF. No code/image/model change; correct custody reference to archived source.",
+  "source_binding": "Exact git archive operation on 45d35071036ca3b635ae60e97ca04e924d98f74e; build and inventory bind its emitted checkout-converted bytes, distinct from both raw Git blobs and current physical working-tree bytes.",
+  "retained_control_failure": "role-checks-r1 expected physical working-tree LF hashes for cohort_runtime.py and measurement.py; actual archived files are CRLF under repository attributes. Hashes now bind the actual archive producer bytes. No model/code/image change for this custody repair.",
   "inventory_repair": {
     "service": [
       "/app/contracts/domain/cohort_runtime.py"
