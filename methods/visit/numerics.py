@@ -27,7 +27,7 @@ def rounded_isi_mean(mean, sd):
         raise ValueError("negative normal SD")
     if np.all(sd > 0):
         return ndtr((mean[..., None]-np.arange(.5, 28))/sd[..., None]).sum(axis=-1)
-    safe = np.maximum(sd, np.finfo(float).tiny)
+    safe = np.where(sd==0,1.,sd)
     return np.where(sd == 0, np.clip(np.floor(mean+.5), 0, 28),
                     ndtr((mean[..., None]-np.arange(.5, 28))/safe[..., None]).sum(axis=-1))
 

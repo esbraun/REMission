@@ -59,7 +59,12 @@ def build(data):
         sigma_isi = pm.HalfNormal("sigma_isi",2)
         sigma_quality = pm.HalfNormal("sigma_quality",1)
         lag = np.arange(n)[:,None]-np.arange(n)[None,:]
-        transition = (lag>=0)*pt.power(rho,np.maximum(lag,0))
+        # Multiplication recurrence has a finite derivative at rho=0. A tensor
+        # power with zero exponents can generate0/rho in PyTensor's gradient.
+        powers=[pt.as_tensor_variable(np.float64(1.))]
+        for _ in range(1,n):
+            powers.append(powers[-1]*rho)
+        transition = (lag>=0)*pt.stack(powers)[np.maximum(lag,0)]
         error = pm.Deterministic("error", sigma_e*pt.dot(transition,pm.Normal("innovation",0,1,dims="night")),dims="night")
         z = pm.Deterministic("burden",b+a*np.sin(2*np.pi*data["nights"]/21)+error-individual[0]*data["c"]-individual[1]*data["e"],dims="night")
         pm.Potential("isi_likelihood",log_bin(data["isi"],pt.mean(z[data["recall"]],axis=1),sigma_isi,1.,28.).sum())
