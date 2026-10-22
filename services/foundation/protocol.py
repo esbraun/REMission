@@ -19,6 +19,13 @@ def _available(history,record,cutoff):
     return record
 
 
+def _validate_assignment_known(assignment,approval,decision,consents):
+    # Event time cannot stand in for when the approving context was known.
+    if approval.available_at>assignment.event_at or decision.available_at>assignment.event_at:
+        raise ValueError('protocol_assignment_context_not_yet_available')
+    validate_assignment(assignment,approval,decision,decision.view,'doctor',consents)
+
+
 def validate_snapshot(history,snapshot,cutoff):
     def exact(ref,kinds):
         record=resolve(history,ref,kinds,cutoff=cutoff)
@@ -34,7 +41,10 @@ def validate_snapshot(history,snapshot,cutoff):
         decision=next((r for r in history.records if r.record_id==approval.decision_id),None)
         if decision is None or decision.kind!='decision_snapshot':raise ValueError('protocol_approval_snapshot_missing')
         _available(history,decision,cutoff)
-        validate_approval(approval,decision,decision.view,'doctor',snapshot.activation_at,component,consents)
+        # Exact saved refs stay immutable, while current authority must include
+        # newer independent consent/withdrawal/retraction lineages as well.
+        validate_approval(approval,decision,decision.view,'doctor',snapshot.activation_at,component,
+                          [r for r in history.records if r.kind=='consent'])
         if set(approval.permitted_options)!=expected:raise ValueError('protocol_approval_requires_exact_binary_envelope')
     background=exact(snapshot.background_ref,{'assignment'})
     if background.option!='behavioral_continue' or background.experimental or background.clinician_override is not None:
@@ -65,6 +75,7 @@ def validate_support_v21(history,decision,cutoff):
     restriction=decision.policy_constraint
     if restriction.snapshot_ref is not None:
         frozen=resolve(history,restriction.snapshot_ref,{'protocol_snapshot'},cutoff=cutoff)
+        resolve(history,restriction.snapshot_ref,{'protocol_snapshot'},cutoff=decision.cutoff,inclusive=True)
         if frozen.activation_at>decision.cutoff:raise ValueError('future_policy_snapshot')
         if (restriction.reason=='nof1_snapshot')!=(frozen.family=='nof1_med'):
             raise ValueError('support_constraint_snapshot_family_mismatch')
@@ -78,7 +89,7 @@ def validate_support_v21(history,decision,cutoff):
         if approval is None or approval.kind!='approval':raise ValueError('support_approval_missing')
         _available(history,approval,cutoff)
         consents=[r for r in history.records if r.kind=='consent']
-        validate_assignment(assignment,approval,snapshot,snapshot.view,'doctor',consents)
+        _validate_assignment_known(assignment,approval,snapshot,consents)
         if (assignment.event_at<decision.distribution_persisted_at or assignment.option not in decision.probabilities
                 or not assignment.experimental or assignment.component!='mrt_bandit' or assignment.seed.namespace!='assignment'
                 or assignment.probability!=decision.probabilities[assignment.option] or assignment.probability<=0):
@@ -136,7 +147,7 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
             approval=records.get(record.approval_id);decision=records.get(record.decision_id)
             if approval is None or approval.kind!='approval' or decision is None or decision.kind!='decision_snapshot':
                 raise ValueError('owned_assignment_approval_and_decision_required')
-            validate_assignment(record,approval,decision,decision.view,'doctor',[r for r in full.records if r.kind=='consent'])
+            _validate_assignment_known(record,approval,decision,[r for r in full.records if r.kind=='consent'])
             if record.experimental and record.seed.namespace!='assignment':raise ValueError('independent_protocol_execution_key_required')
             if not record.experimental and (record.option not in ('behavioral_continue','no_prompt') or record.support_policy.model_dump()!=FIXED_SUPPORT_REF):
                 raise ValueError('fixed_protocol_background_or_no_prompt_required')

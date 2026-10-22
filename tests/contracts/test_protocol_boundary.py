@@ -10,13 +10,14 @@ import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'tooling/foundation'))
-from protocol_fixtures import ORIGIN,PATIENT,full_history,history,perturb_forbidden,snapshot_history,typed
+from protocol_fixtures import ORIGIN,PATIENT,frozen_support_history,full_history,history,perturb_forbidden,snapshot_history,typed
 from contracts.domain.analysis import canonical,reference,sha
 from contracts.domain.borrowing import parse_input,parse_result
 from contracts.domain.protocol import RECORD_ADAPTER_V21,SupportDecisionV21
 from contracts.domain.protocol_request import (BOUNDARY_CONFIG_REF,EXECUTABLE_CONFIGURATIONS,IDENTITIES,
     N_PRIOR_REF,ProtocolInput,ProtocolResult,WCLS_PRIOR_REF,make_boundary_input,require_executable)
 from services.foundation.protocol import project_protocol
+from contracts.domain.protocol_analysis import ProtocolHistory,ReducedHeader
 from analysis_dispatcher import require_dispatchable
 
 
@@ -33,7 +34,59 @@ def product(purpose='S1-WCLS'):
     return make_boundary_input([h],purpose,'analysis-p1-boundary',run,seed)
 
 
+def refresh_reduced(value):
+    """Legitimate public nested hashes/provenance, without full audit refs."""
+    by_id={r['record_id']:r for r in value['records']}
+    def visit(item):
+        if isinstance(item,dict):
+            if set(item)=={'record_id','projection_sha256'}:
+                item['projection_sha256']=sha(visit(by_id[item['record_id']]))
+            else:
+                for child in item.values():visit(child)
+        elif isinstance(item,list):
+            for child in item:visit(child)
+        return item
+    for record in value['records']:visit(record)
+    for header in value['provenance']:
+        if header['record_id'] in by_id:
+            header.update({k:by_id[header['record_id']][k] for k in ReducedHeader.model_fields})
+    return value
+
+
 class ProtocolBoundaryTests(unittest.TestCase):
+    def test_snapshot_cannot_omit_newer_withdrawal_or_retraction(self):
+        full=snapshot_history()
+        self.assertIsInstance(project_protocol(full,ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN),ProtocolHistory)
+        original=next(r for r in full.records if r.kind=='consent').model_dump(mode='json')
+        for withdrawn in [True,False]:
+            value=copy.deepcopy(original);at=(ORIGIN+timedelta(seconds=1)).isoformat()
+            value.update(record_id='new-consent-lineage',lineage_id='new-consent-lineage',event_at=at,recorded_at=at,available_at=at,
+                consent_status='withdrawn' if withdrawn else 'active',withdrawn_at=at if withdrawn else None,
+                record_status='active' if withdrawn else 'retracted')
+            with self.assertRaises(ValueError):
+                project_protocol(history([*full.records,typed(value)]),ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+
+    def test_policy_snapshot_must_be_available_at_support_decision_full_and_reduced(self):
+        positive=project_protocol(frozen_support_history(),ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+        project_protocol(frozen_support_history(snapshot_available_at=ORIGIN+timedelta(days=1)),ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+        with self.assertRaises(ValueError):
+            project_protocol(frozen_support_history(late_snapshot=True),ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+        value=positive.model_dump(mode='json')
+        snapshot=next(r for r in value['records'] if r['kind']=='protocol_snapshot')
+        snapshot['available_at']=snapshot['recorded_at']=(ORIGIN+timedelta(days=1,seconds=10)).isoformat()
+        with self.assertRaises(ValueError):ProtocolHistory.model_validate_json(canonical(refresh_reduced(value)))
+
+    def test_assignment_approval_must_be_available_by_assignment_full_and_reduced(self):
+        full=snapshot_history()
+        positive=project_protocol(full,ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+        values=[r.model_dump(mode='json') for r in full.records]
+        approval=next(r for r in values if r['record_id']=='n-background-approval')
+        approval['recorded_at']=approval['available_at']=(ORIGIN+timedelta(seconds=2.5)).isoformat()
+        with self.assertRaises(ValueError):project_protocol(history(values),ORIGIN+timedelta(days=2),family='nof1_med',origin=ORIGIN)
+        value=positive.model_dump(mode='json')
+        approval=next(r for r in value['records'] if r['record_id']=='n-background-approval')
+        approval['recorded_at']=approval['available_at']=(ORIGIN+timedelta(seconds=2.5)).isoformat()
+        with self.assertRaises(ValueError):ProtocolHistory.model_validate_json(canonical(refresh_reduced(value)))
     def test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar(self):
         for family in ['nof1_med','support']:
             full=full_history(family=family,recursive=family=='support')
@@ -116,6 +169,7 @@ class ProtocolBoundaryTests(unittest.TestCase):
             bad=copy.deepcopy(record);bad['schema_version']='2.2.0'
             db.execute('UPDATE events SET payload=?',(canonical(bad),))
             with self.assertRaises(ValueError):stored_history(db,PATIENT)
+        db.close()
         old=copy.deepcopy(record);old['schema_version']='2.0.0';old.pop('policy_constraint')
         new=copy.deepcopy(record);new.update(record_id='support-v21-correction',supersedes=old['record_id'],revision=2,record_status='corrected',
             recorded_at=(ORIGIN+timedelta(days=1,seconds=1)).isoformat(),available_at=(ORIGIN+timedelta(days=1,seconds=1)).isoformat())

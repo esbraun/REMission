@@ -282,6 +282,9 @@ class ProtocolHistory(StrictModel):
                     raise ValueError('reduced support context must be strictly predecision')
                 if active[record.decision_snapshot.record_id].available_at>record.cutoff:
                     raise ValueError('future reduced decision snapshot')
+                frozen=record.policy_constraint.snapshot_ref
+                if frozen is not None and (active[frozen.record_id].kind!='protocol_snapshot' or active[frozen.record_id].available_at>record.cutoff):
+                    raise ValueError('policy snapshot was unavailable at reduced support decision')
             elif record.kind=='protocol_snapshot':
                 if record.family!=self.family or record.activation_at!=record.event_at:
                     raise ValueError('reduced snapshot family/activation mismatch')
@@ -293,6 +296,11 @@ class ProtocolHistory(StrictModel):
             if record.kind in ('assignment','delivery'):
                 permitted={'behavioral_continue','MED_A','MED_B','no_prompt'} if self.family=='nof1_med' else {'behavioral_continue','support_prompt','no_prompt'}
                 if record.option not in permitted:raise ValueError('cross-family protocol action')
+            if record.kind=='assignment':
+                approval=active.get(record.approval_id);decision=active.get(record.decision_id)
+                if (approval is None or approval.kind!='approval' or decision is None or decision.kind!='decision_snapshot'
+                        or approval.available_at>record.event_at or decision.available_at>record.event_at):
+                    raise ValueError('reduced assignment approval/context unavailable at assignment')
         if len({(r.assignment_id, r.event_at, r.stage) for r in self.records if r.kind == 'delivery'}) != sum(r.kind == 'delivery' for r in self.records):
             raise ValueError('duplicate delivery ownership')
         elapsed=(self.cutoff-self.origin).total_seconds()/86400

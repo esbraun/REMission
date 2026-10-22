@@ -115,3 +115,27 @@ def snapshot_history():
         protocol=PROTOCOL_REFS['nof1_med'],template=PROTOCOL_REFS['nof1_med'],consent_refs=[exact_ref(consent).model_dump()],approval_refs=[exact_ref(binary).model_dump()],
         background_ref=exact_ref(background).model_dump(),support_refs=[exact_ref(support).model_dump()],activation_at=activated.isoformat()))
     return history([*full.records,consent,decision,binary,background_approval,support_approval,background,support,snapshot])
+
+
+def frozen_support_history(*, late_snapshot=False, snapshot_available_at=None):
+    base=full_history(family='nof1_med')
+    values={r.record_id:r.model_dump(mode='json') for r in base.records}
+    for record in snapshot_history().records:
+        if record.record_id not in values:values[record.record_id]=record.model_dump(mode='json')
+    snapshot=values['n-protocol-snapshot']
+    if late_snapshot:
+        snapshot['recorded_at']=snapshot['available_at']=(ORIGIN+timedelta(days=1,seconds=10)).isoformat()
+    if snapshot_available_at is not None:
+        snapshot['recorded_at']=snapshot['available_at']=snapshot_available_at.isoformat()
+    values['n-protocol-snapshot']=typed(snapshot).model_dump(mode='json')
+    decision=values['p1-decision'];decision['workflow']=state_for('ASSIGN-05')['workflow']
+    values['p1-decision']=typed(decision).model_dump(mode='json')
+    support=values['p1-support'];support['mode']='frozen'
+    support['decision_snapshot']=exact_ref(RECORD_ADAPTER_V21.validate_json(canonical(values['p1-decision']))).model_dump()
+    support['policy_constraint']=dict(allowed_actions=['no_prompt'],reason='nof1_snapshot',
+        snapshot_ref=exact_ref(RECORD_ADAPTER_V21.validate_json(canonical(values['n-protocol-snapshot']))).model_dump())
+    support['context_projection_sha256']=projection_hash(history(list(values.values())),instant(support['cutoff']))
+    values['p1-support']=typed(support).model_dump(mode='json')
+    outcome=values['p1-outcome'];outcome['support_decision']=exact_ref(RECORD_ADAPTER_V21.validate_json(canonical(values['p1-support']))).model_dump()
+    values['p1-outcome']=typed(outcome).model_dump(mode='json')
+    return history(list(values.values()))
