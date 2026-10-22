@@ -1,0 +1,49 @@
+# Appointment saved-summary serving checkpoint
+
+2026-10-22. Source implemented; independent exact-head acceptance is pending. This is a bounded APPT-01–03/05 implementation and smoke check, **not completion of A1–A4, POC-4–6 or POC-VAL**.
+
+Source candidate `c7d6a8277215b05029142b80e65ea2fc0719740a`, review base `4a84755509ffdc399787b4ebb84eb938aab15594`, branch `launch/poc-appointment-serving-20261022`. The original accepted base was `9aadda5eedc25d3ca83e887437e3a3ea2aaf315f`; ordinary merge `eaacc17458f0af0f9f6c54b767c1f1c819f1ad1d` integrated accepted S1 without changing APPT files or analytic contracts. The final documentation/evidence commit contains this checkpoint and the existing ledger update; it does not change the frozen source.
+
+## Implemented behavior
+
+- Authenticated analysis reads recompute the same strict available-at reduced H* and lineage used for the learner. Cutoff equality alone cannot grant current status. Unsupported current support policy/history removes the current claim. Cohort reads check every currently owned member's H*, provenance, version and cutoff; frozen manifests and review hashes remain unchanged.
+- A small computed `serving` envelope distinguishes current, dated, pending, failed and unavailable. It retains data-through, original forecast origin/endpoint, actual attempt/result status publication time and current identity. Existing workers did not separately record artifact generation timestamps: the UI explicitly says generation time is not recorded, rather than inventing one.
+- The bounded serving artifact is the complete persisted result JSON. Reads validate typed input/result/configuration/source bindings and accepted computational diagnostics before exposing a completed summary. Ingest retains ownership of original output-file checksum validation. Reads neither reopen private posterior files nor recompute numerical estimates. Missing/incompatible/unaccepted stored JSON is unavailable; a later failed refresh cannot overwrite an earlier immutable result.
+- The UI selects an accepted saved summary for the selected existing configuration/source, preferring matching current H* and otherwise clearly labeling dated information. It displays the exact saved expected-effect summary and separately validated saved future-outcome predictive intervals. Effect uncertainty and future outcome noise have distinct labels. Full attempt history remains available.
+- Explicit **Refresh analysis** queues the existing frozen-cutoff job; no navigation, ordinary choice, approval or advancement dispatches fitting. The physician continues eligible care and simulation. Pending frozen cutoffs and latest failed-refresh status remain visible. Cohort execution remains closed by `require_executable`; no dispatcher activation or new scheduler was added.
+- Comparison artifacts remain immutable. Their read/replay envelope recomputes freshness. Independent pre-review identified a stale idempotent comparison-replay badge; the repair recomputes that envelope without rewriting either receipt or artifact. Public projections remove numerical seeds/private worker paths; original private records are retained.
+
+No method, generator, replay, enrollment, Store schema, migration, lockfile, runtime base or dependency version changed. No posterior loader, new scenario API, sampler/backend change, automatic selection/advice, or bypass of approval/consent/clinical-hold checks was introduced.
+
+## Verification and evidence
+
+See [the byte manifest](evidence/appt-serving-20261022/manifest.json). Raw logs and serialized MCP results are included in that bounded evidence directory; retained local screenshots have exact original/copy bindings in the manifest.
+
+| Check | Observed result and scope |
+| --- | --- |
+| Focused authenticated service/Store suites | 22 tests passed in 40.168 seconds on source `c7d6a827`, qualified runtime `sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa`, network none, read-only source, 2 CPU/2 GiB. |
+| Identity/failure seams | Same-cutoff correction, strict future-unavailable exclusion, current policy incompatibility, wrong input hash/configuration/rejected/malformed diagnostics, missing summary artifact references, cohort member identity, prior result after failed refresh, privacy projection, and preserved forecast endpoints. |
+| No-fit/approval seam | GET and ordinary approval run with submit/claim/model-build sentinels; a queued attempt does not gate eligible ordinary approval. Existing ownership, CSRF, stale-version, immutable history and closed cohort qualification tests pass. |
+| Comparison replay regression | Explicitly labeled typed V0/V1 envelope fixtures: current POST, same-cutoff correction, dated replay and fresh GET agree; saved artifact and original receipt bytes remain identical. These fixtures are **not actual fits or runtime qualification**. |
+| Frontend/copied service | TypeScript, all 6 existing frontend tests and Vite build pass. Exact copied foundation/contracts file hashes and imports match the source manifest. Copied clinician service contains no methods, learner or generator role. |
+| Fresh actual browser workflow | Official MCP, exclusive lease, new port 8791 and owned fixture volumes/networks. Generated default12 v1 panel; approved explicit continuation at day0, read immutable history, advanced14; opening Analysis left zero attempts. Explicit refresh queued one job. While pending, approved explicit escalation and advanced28: only approval/advance POSTs occurred, and the original job retained day14 cutoff/endpoint56. |
+| Browser failure/history | A declared pre-fit fault injection used existing claim/fail transitions, produced no posterior and showed failed status. A new explicit refresh at day28 retained that failure and queued a distinct attempt with endpoint70. Final-source History → Research → Analysis navigation made no POST and preserved attempt IDs. Historical decision still displayed original day0 cutoff. |
+| Visual/accessibility smoke | Actual desktop1440×1100 and narrow390×844 screenshots inspected. Synthetic labels, patient identity, readable pending/failure states, semantic controls, chart/table alternatives and no horizontal page overflow observed. This is not a screen-reader or representative-clinician study. |
+
+Fresh service image: `sha256:affb20326cfe76357e267ed4e6042de7783ac7ab9433a1606ad0aa1452f17a64`. The generator role was built unchanged from accepted source and has no host port or database mount. App network `10.245.91.0/29` is internal; frontend network `10.245.92.0/29` exposes only localhost8791. No old stack/database/session, learner or dispatcher was used.
+
+Installed React best practices and relevant async/derived-state rules were read. Web Interface Guidelines were retrieved on 2026-10-22 from the official raw upstream URL; the report records this as guidance, not clinical/UI acceptance. Existing React/FastAPI/SQLite and the established visual foundation were retained.
+
+## Small timing observations, not A4 acceptance
+
+Final-source explicit refresh: one observation, HTTP202 acknowledgement68 ms and pending rendered158 ms. Five sequential authenticated two-attempt summary reads, including response JSON parsing: 24.7,21.2,23.7,21.7,23.3 ms. One History/Research-to-Analysis navigation and pending render:116 ms. These are opportunistic local smoke samples, not preregistered distributions, p95 estimates or SLAs.
+
+Host: Intel i7-13620H,10 cores/16 logical processors; Docker reports16 CPUs and25,199,005,696 bytes available. Service/test limits2 CPU/2 GiB; one interactive browser user, two stored attempts, no concurrent fit in this stack. No background fitting/conditioning, saved-posterior loading, new scenario rollout, accepted-fit yield, accuracy/coverage, or end-to-end completion latency was measured. Queue wait remained pending because this verification stack deliberately has no dispatcher. Publication time is an actual recorded timestamp, not a measured publication-stage duration.
+
+## Preserved recoverable failures and limitations
+
+Offline locked npm acquisition failed with EAI_AGAIN; the authorized build-only network retry used unchanged lockfiles and `npm ci --ignore-scripts`, then passed. A repeated offline build encountered the same cache/network limitation; both raw failures remain retained locally. Docker's automatic address pool was exhausted; selected IPAM and host-route checks preceded the two nonoverlapping task-specific subnets. Initial fresh Research GET returned409 because that fixture launch omitted the existing export-root setting; configuring `REMISSION_LIVE_EXPORT_ROOT=/data/analysis-exports` fixed it without source changes. Initial fault tests attempted forbidden immutable updates; corrected fixtures append lineage/new attempts instead. One accidentally broad numerical-source test run was stopped after its route checks; no result from that unfinished run is used for acceptance.
+
+Current/dated **positive** accepted-summary paths and exact numeric display identity are exercised with explicitly labeled typed fixtures only. A new genuine accepted-fit API/browser smoke, genuine joint12 fits/throughput, posterior hydration if a future scenario actually requires it, N activation/fitting, S1/S2 integration/qualification, the seven-configuration accuracy/timeliness study and fresh confirmation remain separate unfinished work. Existing accepted evidence keeps its original scope. Clinical, human-factors, safety/efficacy and statistical-calibration gates remain unexecuted here.
+
+Next action: independent Astra review of the exact final head against base4a, reproduce focused checks, and record disposition. Source is frozen; any repair or base change requires a fresh affected check/review. The root orchestrator owns PR integration and browser-lease reassignment.

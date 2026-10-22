@@ -1,0 +1,246 @@
+{
+  "source_head": "c7d6a8277215b05029142b80e65ea2fc0719740a",
+  "service_image": "sha256:affb20326cfe76357e267ed4e6042de7783ac7ab9433a1606ad0aa1452f17a64",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=128m",
+    "remission-appt-serving-261022-service:c7d6a827",
+    "python",
+    "-c",
+    "import hashlib,json,pathlib; import services.foundation.app; paths=['contracts/domain/analysis.py', 'contracts/domain/borrow_runtime.py', 'contracts/domain/borrowing.py', 'contracts/domain/cohort.py', 'contracts/domain/cohort_runtime.py', 'services/foundation/__init__.py', 'services/foundation/admission.py', 'services/foundation/analysis.py', 'services/foundation/analysis_cli.py', 'services/foundation/analysis_sources.py', 'services/foundation/app.py', 'services/foundation/appointment.py', 'services/foundation/archive.py', 'services/foundation/cli.py', 'services/foundation/cohort_analysis.py', 'services/foundation/cohort_registration.py', 'services/foundation/configuration.py', 'services/foundation/cutover.py', 'services/foundation/followup_cutover.py', 'services/foundation/live_coordinator.py', 'services/foundation/live_hold.py', 'services/foundation/live_journal.py', 'services/foundation/live_safety_export.py', 'services/foundation/live_tasks.py', 'services/foundation/migrations/001_foundation.sql', 'services/foundation/migrations/002_observed_archive.sql', 'services/foundation/migrations/003_live_hold.sql', 'services/foundation/migrations/004_live_hold_followups.sql', 'services/foundation/migrations/005_analysis.sql', 'services/foundation/nof1.py', 'services/foundation/nof1_clock.py', 'services/foundation/protocol.py', 'services/foundation/replay.py', 'services/foundation/research_enrollment.py', 'services/foundation/server.py', 'services/foundation/simulation.py', 'services/foundation/store.py', 'services/foundation/upgrade003.py', 'services/foundation/upgrade004.py', 'services/foundation/workflow.py']; result={'files':{p:{'sha256':hashlib.sha256(pathlib.Path('/app',p).read_bytes()).hexdigest(),'bytes':pathlib.Path('/app',p).stat().st_size} for p in paths},'forbidden_roles_present':{p:pathlib.Path('/app',p).exists() for p in ['methods','services/learner','services/generator']}}; print(json.dumps(result,sort_keys=True))"
+  ],
+  "exit_code": 0,
+  "copied_service": {
+    "files": {
+      "contracts/domain/analysis.py": {
+        "bytes": 17270,
+        "sha256": "3b6dcfda272cf12bfd5c595df167d3229cbf9fe36137d1d84411e4aa73f877fe"
+      },
+      "contracts/domain/borrow_runtime.py": {
+        "bytes": 6212,
+        "sha256": "5c73048e4be585c2f0d3833bb4126cc195ea1643bc00d22d90ac376032b4c6af"
+      },
+      "contracts/domain/borrowing.py": {
+        "bytes": 12395,
+        "sha256": "d335792f6eed89d4962bdd458695c8f5d2530dddf7571ca493157be91dda758f"
+      },
+      "contracts/domain/cohort.py": {
+        "bytes": 12933,
+        "sha256": "e4ec890a1b04ead7e155ea977524d1e714bdb09be51131a5ee5b033fa883df65"
+      },
+      "contracts/domain/cohort_runtime.py": {
+        "bytes": 2963,
+        "sha256": "880eebfc2cec03b39de628367570e5362ea2df7d8b5beaf66261604819f1ae71"
+      },
+      "services/foundation/__init__.py": {
+        "bytes": 82,
+        "sha256": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481"
+      },
+      "services/foundation/admission.py": {
+        "bytes": 2384,
+        "sha256": "619b5de040c6990f339a1d755dc07f41c201e3ad3303efc0c2602cc21bed1d47"
+      },
+      "services/foundation/analysis.py": {
+        "bytes": 24320,
+        "sha256": "fa38acb9d59aa98a951cdd5c186f9c0937ef4e652eb6d2d389c2c6e2be35b62a"
+      },
+      "services/foundation/analysis_cli.py": {
+        "bytes": 1733,
+        "sha256": "75c92a5163d6677c638cf2531fac85a205278fcd617e85412e20872239467e74"
+      },
+      "services/foundation/analysis_sources.py": {
+        "bytes": 1033,
+        "sha256": "13c953652207f62dcd859522eec4cce4e16d794bd0ef7e4ccae89877b5bf0008"
+      },
+      "services/foundation/app.py": {
+        "bytes": 63050,
+        "sha256": "500b594dedd5dc86eb34dbc89b9c60245378e8447b4eb1382eec0babfc205a5e"
+      },
+      "services/foundation/appointment.py": {
+        "bytes": 7641,
+        "sha256": "0a4f6962b6a9cd5345f1f3455d960ea908ab3a924acee9f00380cce9988365a8"
+      },
+      "services/foundation/archive.py": {
+        "bytes": 8265,
+        "sha256": "2ebd6c72a6a11a53cfefbfe03f07e92e49f583946842ee69c684de3a22587234"
+      },
+      "services/foundation/cli.py": {
+        "bytes": 6477,
+        "sha256": "df62837792b0c137d0d832cc540ba6e75111fa7cf5d21dfc82eb4ce48c0ded2c"
+      },
+      "services/foundation/cohort_analysis.py": {
+        "bytes": 10708,
+        "sha256": "7b98d8c346e4632bc67305f8da9031d98d2e6df56cd8dbaec4dae2f18261ff8a"
+      },
+      "services/foundation/cohort_registration.py": {
+        "bytes": 7668,
+        "sha256": "a32b55c6f48715170d5b19b2d270567b92db3fa3dafe0ce1def31c956a89c336"
+      },
+      "services/foundation/configuration.py": {
+        "bytes": 1799,
+        "sha256": "df049fdc0342483449e676a0be93ed69350282f9e82041b1e1c5ba1b9c729dbf"
+      },
+      "services/foundation/cutover.py": {
+        "bytes": 14398,
+        "sha256": "79682fc8afbe5adc83259d58d1b46fbac124ec9ffab766c69076a86c7a41b062"
+      },
+      "services/foundation/followup_cutover.py": {
+        "bytes": 5915,
+        "sha256": "2667c5e996486cebfce9a054b51b6df13ce2aed8b7371d5f7e97c10a512c50e7"
+      },
+      "services/foundation/live_coordinator.py": {
+        "bytes": 8775,
+        "sha256": "cecd615392b865b2b0806845d75a92441a3f497414a19e111330ec1ab9f4a4df"
+      },
+      "services/foundation/live_hold.py": {
+        "bytes": 46242,
+        "sha256": "1849284f3b1bd4c72d416e35af0b9d16a33c739354c3c8b4889f23294fefa00c"
+      },
+      "services/foundation/live_journal.py": {
+        "bytes": 9073,
+        "sha256": "3362a295cd41fe04ccd75aad467606463460755c7a8fb65921bf34171a2a5df6"
+      },
+      "services/foundation/live_safety_export.py": {
+        "bytes": 9227,
+        "sha256": "41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87"
+      },
+      "services/foundation/live_tasks.py": {
+        "bytes": 3561,
+        "sha256": "edbac613209c736743b2f394b66bb0f2809526db8dbe284e9941302481b5ef46"
+      },
+      "services/foundation/migrations/001_foundation.sql": {
+        "bytes": 3490,
+        "sha256": "b76b1af7f41080c83f1ac736655ca4bdca6ed03310b29e8196f4638894d0c93d"
+      },
+      "services/foundation/migrations/002_observed_archive.sql": {
+        "bytes": 1048,
+        "sha256": "3e7660781b2aac3e5dcfa071831f9fc6d02997347b9aae3af73290133f6439ca"
+      },
+      "services/foundation/migrations/003_live_hold.sql": {
+        "bytes": 3747,
+        "sha256": "896105c407e13fcd91edb15b924e87a589e6e7e84d35340dbb4dbf2d118def2c"
+      },
+      "services/foundation/migrations/004_live_hold_followups.sql": {
+        "bytes": 1786,
+        "sha256": "af9e77dcb205e95b9bf448bd07c315d042182ccda205d264ebb3883f58673134"
+      },
+      "services/foundation/migrations/005_analysis.sql": {
+        "bytes": 1874,
+        "sha256": "9e34bc868e8bd8e6da36d4629c20ccf96143833ea723bc1998cc803fcaed4f84"
+      },
+      "services/foundation/nof1.py": {
+        "bytes": 22385,
+        "sha256": "43a8398d8282ae647026872c9f6f881f7000a28050e1b377bbb90d4402d98b3c"
+      },
+      "services/foundation/nof1_clock.py": {
+        "bytes": 972,
+        "sha256": "61713be62783a031c8176bf8c95e1ab8abc399bd1c6687b82663f6773be3d67d"
+      },
+      "services/foundation/protocol.py": {
+        "bytes": 14959,
+        "sha256": "cb8d1b0828ec4054bb81550de79dd336a1aab334f6afd6bf08a655b667f33492"
+      },
+      "services/foundation/replay.py": {
+        "bytes": 14087,
+        "sha256": "2786efc951269150ce60bcb91daff37e28502c59107f76d06a844b330b78c8f0"
+      },
+      "services/foundation/research_enrollment.py": {
+        "bytes": 6899,
+        "sha256": "d2be49e543648e29f8c201be582aa3ffb2b96265bbd7e497ecefbe8be6167107"
+      },
+      "services/foundation/server.py": {
+        "bytes": 116,
+        "sha256": "ae1736a22f03c2b5d3044d1a45a8263526f5f9fb249eb7d2f25e6f3961468448"
+      },
+      "services/foundation/simulation.py": {
+        "bytes": 13759,
+        "sha256": "f9847ad960c4c0820bea6ca6acc8cbe64210d0f2151608b5544fcd001bd06446"
+      },
+      "services/foundation/store.py": {
+        "bytes": 6077,
+        "sha256": "bf479f9148a1f242f47ab77e708003a3fe5e942f0de0c0fc59afb99604788d37"
+      },
+      "services/foundation/upgrade003.py": {
+        "bytes": 13592,
+        "sha256": "0e5fb407c2bc3fe7bb59149bdccec29c23a78261eeb2242b5cb3b728796eda9d"
+      },
+      "services/foundation/upgrade004.py": {
+        "bytes": 1938,
+        "sha256": "c7e7cbae8c1f0ee44333734ca8bbbb1b6472c31c9874de3e8f8822d978e38399"
+      },
+      "services/foundation/workflow.py": {
+        "bytes": 11232,
+        "sha256": "22b153d79a1f1cce63e4945f1ba021ed2d2554e328c6359aa393729221882a8e"
+      }
+    },
+    "forbidden_roles_present": {
+      "methods": false,
+      "services/generator": false,
+      "services/learner": false
+    }
+  },
+  "web_source": {
+    "web/src/analysis-state.mjs": {
+      "sha256": "dfa5943cdf86d3288ed219d2b5aacd64916f844de36add39d2c61ba1359b22f1",
+      "bytes": 886
+    },
+    "web/src/AnalysisPanel.tsx": {
+      "sha256": "fc666f65d0cc36864a39e53f838221bde80e12a8667f7b1f6fd8b490f5fd168c",
+      "bytes": 26580
+    },
+    "web/src/context.mjs": {
+      "sha256": "551022c59af9c5e6a4da98ef75eb62131631cdd69d703f336b7ce42cbb942a73",
+      "bytes": 1014
+    },
+    "web/src/LiveHoldPanel.tsx": {
+      "sha256": "0cb83df89dc7d471d28486f74b1ef44214ffeb52fd0489f118adca611451e629",
+      "bytes": 11308
+    },
+    "web/src/main.tsx": {
+      "sha256": "846de678d73b4d16bc7bb1bc190b5797ef33fe662514a3f81dd48780e4b0615f",
+      "bytes": 34382
+    },
+    "web/src/Nof1Panel.tsx": {
+      "sha256": "5e8416a5528c7c05cf6f05b0c8686548f6cac950534002059c79caf4131ac70c",
+      "bytes": 7523
+    },
+    "web/src/ResearchPanel.tsx": {
+      "sha256": "92f2234d8cf6c08dd1531eb47689a4e0327271dec96f52747fc604d1c280f50a",
+      "bytes": 9752
+    },
+    "web/src/SimulationPanel.tsx": {
+      "sha256": "d093f2060b77464eed688bbf345b8dc90a1a4b573ed36f211835411bf2a4c5bb",
+      "bytes": 9358
+    },
+    "web/src/style.css": {
+      "sha256": "c47283e3faa5dac8e4df7391e1099da4ba39b9b63a313a26f599349ae4624dcc",
+      "bytes": 7474
+    },
+    "web/src/types.ts": {
+      "sha256": "60a63ce037bb2d07e3a1419cea921320cb1b5e963723f2e960438b363a1577a4",
+      "bytes": 7173
+    },
+    "web/package.json": {
+      "sha256": "786c812c583f24bd3fb4b50711f0656c35c85bcf245b862aa6e0d33608eceb67",
+      "bytes": 440
+    },
+    "web/package-lock.json": {
+      "sha256": "b104f843476352a48e78fbce18aa2d8a0ffbf11c5640c8dab9f1177eb5bf400e",
+      "bytes": 39947
+    }
+  }
+}

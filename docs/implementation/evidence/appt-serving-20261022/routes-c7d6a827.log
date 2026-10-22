@@ -1,0 +1,44 @@
+/source/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/source/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+/source/contracts/domain/cohort.py:68: UserWarning: Field name "schema" in "CohortManifest" shadows an attribute in parent "StrictModel"
+  class CohortManifest(StrictModel):
+/source/contracts/domain/cohort.py:96: UserWarning: Field name "schema" in "CohortHistory" shadows an attribute in parent "StrictModel"
+  class CohortHistory(StrictModel):
+test_changed_current_support_policy_cannot_reuse_summary_as_current (test_appointment.AppointmentRoutes.test_changed_current_support_policy_cannot_reuse_summary_as_current) ... ok
+test_comparison_receipt_recomputes_freshness_without_rewriting_saved_bytes (test_appointment.AppointmentRoutes.test_comparison_receipt_recomputes_freshness_without_rewriting_saved_bytes)
+Typed envelopes only: these are NOT actual fits or runtime qualification. ... ok
+test_corrupt_summary_hash_config_and_rejected_diagnostics_fail_closed (test_appointment.AppointmentRoutes.test_corrupt_summary_hash_config_and_rejected_diagnostics_fail_closed) ... ok
+test_exact_stored_pair_publication_and_no_foreground_work (test_appointment.AppointmentRoutes.test_exact_stored_pair_publication_and_no_foreground_work) ... ok
+test_later_failed_refresh_preserves_prior_summary_and_forecast (test_appointment.AppointmentRoutes.test_later_failed_refresh_preserves_prior_summary_and_forecast) ... ok
+test_pending_refresh_does_not_gate_ordinary_approval_or_run_fit (test_appointment.AppointmentRoutes.test_pending_refresh_does_not_gate_ordinary_approval_or_run_fit) ... ok
+test_same_cutoff_correction_stales_but_future_unavailable_does_not (test_appointment.AppointmentRoutes.test_same_cutoff_correction_stales_but_future_unavailable_does_not) ... ok
+test_ingestion_identity_staleness_and_terminal_immutability (test_analysis.AnalysisRoutesTests.test_ingestion_identity_staleness_and_terminal_immutability) ... ok
+test_receipt_owner_csrf_atomic_freeze_restart_and_retry (test_analysis.AnalysisRoutesTests.test_receipt_owner_csrf_atomic_freeze_restart_and_retry) ... ok
+test_actual_nonanchor_listing_status_and_whole_member_staleness (test_cohort_routes.CohortRoutes.test_actual_nonanchor_listing_status_and_whole_member_staleness) ... ok
+test_preview_auth_owner_versions_and_real_closed_submission (test_cohort_routes.CohortRoutes.test_preview_auth_owner_versions_and_real_closed_submission) ... ok
+test_receipt_replay_and_changed_intent_use_actual_routes_core_only (test_cohort_routes.CohortRoutes.test_receipt_replay_and_changed_intent_use_actual_routes_core_only)
+Test-local qualification stub only queues CORE rows, never a learner. ... ok
+test_atomic_receipt_rollback_retry_and_nonanchor_overlap_core_only (test_cohort_service.CohortStoreTests.test_atomic_receipt_rollback_retry_and_nonanchor_overlap_core_only)
+Stub ONLY closed qualification for CORE storage, never run a worker. ... ok
+test_concurrent_core_submissions_serialize_whole_member_set (test_cohort_service.CohortStoreTests.test_concurrent_core_submissions_serialize_whole_member_set)
+Qualification stub is test-local; no production bypass or fit. ... ok
+test_failed_result_identity_and_immutable_whole_cohort_comparison (test_cohort_service.CohortStoreTests.test_failed_result_identity_and_immutable_whole_cohort_comparison)
+Failure envelopes only: no fabricated posterior or accepted interval. ... ok
+test_host_binding_worker_and_ingest_remain_closed_without_compilation (test_cohort_service.CohortStoreTests.test_host_binding_worker_and_ingest_remain_closed_without_compilation)
+Real entry points reject before building a model or accepting output. ... ok
+test_owned_manifest_and_failclosed_submission_claim_rollback (test_cohort_service.CohortStoreTests.test_owned_manifest_and_failclosed_submission_claim_rollback) ... ok
+test_research_requires_trusted_artifact_membership_and_owner (test_cohort_service.CohortStoreTests.test_research_requires_trusted_artifact_membership_and_owner) ... ok
+test_genuine_pre_v1_stored_receipt_replays_with_optional_defaults (test_borrowing.BorrowingRoutesTests.test_genuine_pre_v1_stored_receipt_replays_with_optional_defaults) ... ok
+test_host_binding_survives_progress_and_vetoes_forged_completed_execution (test_borrowing.BorrowingRoutesTests.test_host_binding_survives_progress_and_vetoes_forged_completed_execution)
+Temporary test DB/unit artifact markers only; no fitted posterior. ... ok
+test_legacy_v0_receipt_retry_with_new_default_fields_and_immutable_failed_comparison (test_borrowing.BorrowingRoutesTests.test_legacy_v0_receipt_retry_with_new_default_fields_and_immutable_failed_comparison) ... ok
+test_source_admission_receipt_intents_and_guarded_result_sources (test_borrowing.BorrowingRoutesTests.test_source_admission_receipt_intents_and_guarded_result_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 40.168s
+
+OK
