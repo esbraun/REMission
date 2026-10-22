@@ -1,0 +1,78 @@
+{
+  "compile_marker_interval_seconds": 220.05944680795074,
+  "compiled_linker": "NumbaLinker",
+  "compiled_optimizer": {
+    "exclude": [
+      "fusion"
+    ],
+    "extra_rewrites": [],
+    "include": [
+      "fast_run",
+      "local_check_parameter_to_ninf_switch",
+      "random_make_inplace"
+    ],
+    "name": null,
+    "position_cutoff": "inf",
+    "require": [],
+    "subquery": {},
+    "type": "RewriteDatabaseQuery"
+  },
+  "fd_qualified": false,
+  "file": {
+    "bytes": 1228578,
+    "sha256": "a3e19f764b912aa22dc44c8b2217ead9ca1abed0e90284c90034247f26bcbe5a"
+  },
+  "gradient_returned": false,
+  "last_completed_stage": {
+    "elapsed_seconds": 221.687646294944,
+    "index": 0,
+    "memory": {
+      "events": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0
+      },
+      "memory.current": 331042816,
+      "memory.peak": 335503360
+    },
+    "peak_rss_kib": 408544,
+    "phase": "guided-gradient",
+    "stage": "before-point"
+  },
+  "nodes": 2921,
+  "operation_classes": {
+    "pytensor.compile.builders.OpFromGraph": 2,
+    "pytensor.tensor.basic.ARange": 1,
+    "pytensor.tensor.basic.Alloc": 7,
+    "pytensor.tensor.basic.AllocDiag": 2,
+    "pytensor.tensor.basic.ExtractDiag": 3,
+    "pytensor.tensor.basic.Join": 5,
+    "pytensor.tensor.basic.MakeVector": 2,
+    "pytensor.tensor.basic.Split": 4,
+    "pytensor.tensor.elemwise.DimShuffle": 1694,
+    "pytensor.tensor.elemwise.Elemwise": 1013,
+    "pytensor.tensor.linalg.decomposition.cholesky.Cholesky": 1,
+    "pytensor.tensor.linalg.solvers.psd.CholeskySolve": 2,
+    "pytensor.tensor.linalg.solvers.triangular.SolveTriangular": 5,
+    "pytensor.tensor.math.Dot": 13,
+    "pytensor.tensor.math.Sum": 6,
+    "pytensor.tensor.rewriting.fused_elemwise.FusedElemwise": 51,
+    "pytensor.tensor.shape.Shape_i": 1,
+    "pytensor.tensor.subtensor.AdvancedIncSubtensor": 2,
+    "pytensor.tensor.subtensor.AdvancedSubtensor": 1,
+    "pytensor.tensor.subtensor.IncSubtensor": 12,
+    "pytensor.tensor.subtensor.Subtensor": 94
+  },
+  "scope": "Fusion-group exclusion did not make the first ordinary-Numba call return within this bound. Remaining FusedElemwise operations are inventory facts, not causal localization. Final runtime memory peak/events after the last marker are unmeasured.",
+  "unlaunched": [
+    "guided-native-logp-gradient",
+    "guided-logp",
+    "original-logp",
+    "original-gradient",
+    "local-logp",
+    "changed-logp"
+  ]
+}
