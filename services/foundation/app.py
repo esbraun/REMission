@@ -87,6 +87,8 @@ class StateInput(StrictModel):
 class AnalysisSubmission(StrictModel):
     expected_version: int = Field(gt=0)
     previous_attempt: str | None = None
+    mode: Literal['v0','borrow','tau2'] = 'v0'
+    source_bundle_id: str | None = None
 
 
 class DraftInput(StrictModel):
@@ -526,13 +528,15 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction(write=True) as db:
             current=session(db,request,mutation=True)
             patient=own(db,patient_id,current['account_id'])
-            payload=data.model_dump()
+            payload=data.model_dump(exclude={'mode','source_bundle_id'})
+            if data.mode!='v0' or data.source_bundle_id is not None:
+                payload.update(mode=data.mode,source_bundle_id=data.source_bundle_id)
             key,prior=mutation_receipt(db,current,request,patient_id+':analysis',payload)
             if prior:
                 return prior
             from .analysis import submit
             try:
-                response=submit(db,patient,current['account_id'],data.expected_version,data.previous_attempt,settings.clock())
+                response=submit(db,patient,current['account_id'],data.expected_version,data.previous_attempt,settings.clock(),mode=data.mode,source_bundle_id=data.source_bundle_id)
             except (AnalysisError,ValueError) as error:
                 raise APIError(409,'analysis_unavailable',str(error)) from error
             save_mutation(db,current,key,patient_id+':analysis',payload,response)
@@ -544,6 +548,14 @@ def create_app(settings: Settings) -> FastAPI:
             current=session(db,request);patient=own(db,patient_id,current['account_id'])
             from .analysis import view
             return dict(attempts=[view(row,patient['cutoff']) for row in db.execute('SELECT * FROM analysis_attempts WHERE patient_id=? AND owner_id=? ORDER BY created_at DESC,rowid DESC',(patient_id,current['account_id']))])
+
+    @app.get('/api/patients/{patient_id}/analysis-sources')
+    def analysis_sources(patient_id: str,request: Request):
+        with store.transaction() as db:
+            current=session(db,request);patient=own(db,patient_id,current['account_id'])
+            from .analysis_sources import catalog
+            try:return dict(bundles=catalog(instant(patient['cutoff'])))
+            except ValueError as error:raise APIError(409,'sources_unavailable',str(error)) from error
 
     @app.get('/api/patients/{patient_id}/analyses/{job_id}')
     def analysis_status(patient_id: str,job_id: str,request: Request):

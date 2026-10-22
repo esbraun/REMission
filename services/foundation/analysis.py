@@ -7,6 +7,8 @@ import uuid
 
 from contracts.domain.analysis import (AnalysisInput, AnalysisResult, CONFIG_REF, ESTIMAND_REF,
     MODEL_REF, PRIOR_REF, PROTOCOL_REF, project_history, make_input, sha)
+from contracts.domain.borrowing import (BORROW_CONFIG_REF,TAU2_CONFIG_REF,BorrowAnalysisResult,
+    make_borrow_input,parse_result)
 from .store import canonical, timestamp, instant
 from .workflow import history
 
@@ -16,15 +18,18 @@ class AnalysisError(ValueError):
 
 
 def view(row, cutoff):
+    frozen=json.loads(row['request_json']);h=frozen['history'];day=(instant(h['cutoff'])-instant(h['origin'])).days
     return dict(id=row['job_id'],kind='visit_analysis',patient_id=row['patient_id'],status=row['status'],stage=row['stage'],
         cutoff=row['cutoff'],stale=instant(row['cutoff']) != instant(cutoff),configuration=json.loads(row['configuration_json']),
         cohort=json.loads(row['cohort_json']),previous_attempt=row['previous_attempt'],created_at=row['created_at'],
         started_at=row['started_at'],finished_at=row['finished_at'],failure_reason=row['failure_reason'],
         progress=json.loads(row['progress_json']),result=json.loads(row['result_json']) if row['result_json'] else None,
-        input_sha256=row['input_sha256'],history_sha256=row['history_sha256'])
+        input_sha256=row['input_sha256'],history_sha256=row['history_sha256'],sources=frozen.get('sources'),
+        source_set_sha256=frozen.get('source_set_sha256'),cutoff_day=day,forecast_endpoint_day=day+42,
+        recall_first_night=day+29,recall_last_night=day+42)
 
 
-def submit(db, patient, owner, expected_version, previous, now):
+def submit(db, patient, owner, expected_version, previous, now, *, mode='v0',source_bundle_id=None):
     state=json.loads(patient['state_json'])
     if 'simulation' not in state or state['simulation']['law_version'] != 'poc-longitudinal-v1':
         raise AnalysisError('Generate a v1 synthetic patient before analysis.')
@@ -41,11 +46,18 @@ def submit(db, patient, owner, expected_version, previous, now):
     reduced=project_history(history(db,patient['id']).project(instant(patient['cutoff'])))
     value=reduced.model_dump(mode='json')
     job='analysis-'+uuid.uuid4().hex
-    product=make_input(reduced,job,secrets.randbelow(2147483647))
+    if mode=='v0':
+        if source_bundle_id is not None:raise AnalysisError('V0 cannot include external sources.')
+        product=make_input(reduced,job,secrets.randbelow(2147483647))
+    else:
+        from .analysis_sources import load_source
+        if mode not in ('borrow','tau2') or source_bundle_id is None:raise AnalysisError('Choose an approved source bundle for borrowing.')
+        sources=load_source(source_bundle_id,reduced.cutoff)
+        product=make_borrow_input(reduced,job,sources,TAU2_CONFIG_REF if mode=='tau2' else BORROW_CONFIG_REF)
     frozen=product.model_dump(mode='json')
     db.execute('INSERT INTO pending_work VALUES(?,?,?,?)',(job,patient['id'],'queued','Visit analysis queued'))
     db.execute('INSERT INTO analysis_attempts(job_id,patient_id,owner_id,previous_attempt,request_json,input_sha256,history_sha256,cutoff,configuration_json,cohort_json,status,stage,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        (job,patient['id'],owner,previous,canonical(frozen),sha(frozen),sha(value),patient['cutoff'],canonical(CONFIG_REF),canonical([patient['id']]),'queued','queued',timestamp(now)))
+        (job,patient['id'],owner,previous,canonical(frozen),sha(frozen),sha(value),patient['cutoff'],canonical(product.request.configuration.model_dump()),canonical([patient['id']]),'queued','queued',timestamp(now)))
     return view(db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(job,)).fetchone(),patient['cutoff'])
 
 
@@ -106,7 +118,7 @@ def ingest(store,job,token,directory):
     result_path=directory/'result.json'
     if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
         raise AnalysisError('Invalid result file')
-    result=AnalysisResult.model_validate_json(result_path.read_bytes())
+    result=parse_result(result_path.read_bytes())
     # Validate output files BEFORE acquiring the SQLite writer lock.
     names=set()
     for ref in result.artifacts:
@@ -126,11 +138,15 @@ def ingest(store,job,token,directory):
         d=result.diagnostics
         if not d.get('fits') or not d['fits'][-1]['diagnostics'].get('accepted') or not d.get('effect_mcmc',{}).get('accepted') or d.get('integration',{}).get('status')!='accepted' or 'expected-effect.npz' not in names:
             raise AnalysisError('Completed result lacks accepted computational diagnostics')
+        if isinstance(result,BorrowAnalysisResult) and (d.get('bridge_precision',{}).get('status')!='accepted' or not {'bridge-precision.json','bridge-marginals.npz'}<=names):
+            raise AnalysisError('Completed borrowing result lacks accepted bridge precision')
     with store.transaction(write=True) as db:
         row=running(db,job,token)
         if (result.attempt_id!=job or result.input_sha256!=row['input_sha256'] or result.history_sha256!=row['history_sha256']
             or result.cutoff!=instant(row['cutoff']) or result.configuration.model_dump()!=json.loads(row['configuration_json'])):
             raise AnalysisError('Frozen result identity/hash/cutoff mismatch')
+        source_hash=json.loads(row['request_json']).get('source_set_sha256')
+        if source_hash!=getattr(result,'source_set_sha256',None):raise AnalysisError('Frozen result source hash mismatch')
         db.execute('UPDATE analysis_attempts SET status=?,stage=?,failure_reason=?,result_json=?,artifact_root=?,finished_at=? WHERE job_id=?',
             (result.status,'complete' if result.status=='completed' else result.status,result.reason,result.model_dump_json(),str(directory),timestamp(store.clock()),job))
         db.execute('UPDATE pending_work SET status=?,reason=? WHERE id=?',(result.status,result.reason or 'Visit analysis complete',job))

@@ -1,0 +1,132 @@
+"""PA3 full-target and actual authenticated admission/old-reader seams."""
+import copy
+from datetime import timedelta
+import json
+from pathlib import Path
+import unittest
+from unittest.mock import patch
+import numpy as np
+import pymc as pm
+from scipy.stats import norm,halfnorm
+from contracts.domain.analysis import AnalysisInput,AnalysisResult,CONFIG_REF,canonical,sha
+from contracts.domain.borrowing import (BORROW_CONFIG,BORROW_CONFIG_REF,BRIDGE_REF,BORROW_MODEL_REF,
+    BorrowAnalysisInput,make_borrow_input,parse_input,APPROVED_BUNDLES)
+from methods.visit.borrow_model import build_joint
+from methods.visit.borrowing import marginal
+from methods.visit.model import build,inputs
+from methods.visit.source_precision import select_indices
+from services.foundation.analysis_sources import load_source
+from services.foundation.analysis import claim,interrupt,ingest,AnalysisError
+from test_analysis import reduced,ORIGIN
+import test_analysis as analysis_cases
+
+
+class JointTargetTests(unittest.TestCase):
+    def test_joint_minus_original_exact_normalized_terms_and_new_priors(self):
+        data=inputs(reduced());sources=load_source('source-7c97862d',reduced().cutoff)
+        original=build(data,guide=False);joint=build_joint(data,sources,BORROW_CONFIG,guide=False)
+        old=original.initial_point();new=joint.initial_point()
+        old.update(mu_b=np.array(19.),population_beta=np.array([1.,3.]),a=np.array(.4),
+            sd_b_log__=np.array(np.log(2.)),sd_beta_log__=np.log([.8,.8]),
+            p_adherence_logodds__=np.array(np.log(.7/.3)),rho_interval__=np.array(np.log((.3+.95)/(.95-.3))),
+            sigma_e_log__=np.array(0.),sigma_isi_log__=np.array(np.log(1.2)))
+        new.update(old);bias=np.array([.2,-.3]);tau=.8
+        new.update(source_bias=bias,source_tau_log__=np.array(np.log(tau)))
+        theta=dict(mu_b=19,beta_c=1,beta_e=3,sd_b=2,sd_beta_c=.8,sd_beta_e=.8,p=.7,rho=.3,sigma_e=1,sigma_isi=1.2,a=.4)
+        g=marginal(theta,64)
+        terms=[np.log(.5*norm.pdf(s.d,g+b, np.sqrt(s.se*s.se+tau*tau))+.5*norm.pdf(s.d,0,np.sqrt(s.se*s.se+100))) for s,b in zip(sources.studies,bias)]
+        priors=norm.logpdf(bias,0,.5).sum()+halfnorm.logpdf(tau,scale=1)+np.log(tau)
+        observed=float(joint.compile_logp()(new)-original.compile_logp()(old))
+        self.assertAlmostEqual(observed,sum(terms)+priors,places=8)
+        self.assertNotAlmostEqual(observed,2*sum(terms)+priors,places=6)
+        self.assertNotAlmostEqual(observed,terms[0]+priors,places=6)
+        reversed_terms=[np.log(.5*norm.pdf(-s.d,g+b,np.sqrt(s.se*s.se+tau*tau))+.5*norm.pdf(-s.d,0,np.sqrt(s.se*s.se+100))) for s,b in zip(sources.studies,bias)]
+        self.assertNotAlmostEqual(observed,sum(reversed_terms)+priors,places=6)
+        changed=copy.deepcopy(sources);changed.studies[0].__dict__['d']+=.7
+        altered=build_joint(data,changed,BORROW_CONFIG,guide=False)
+        self.assertNotAlmostEqual(float(altered.compile_logp()(new)),float(joint.compile_logp()(new)),places=6)
+        self.assertTrue(np.isfinite(joint.compile_dlogp()(new)).all())
+
+    def test_joint_exact_guide_identity_and_original_prior_parameterization(self):
+        data=inputs(reduced());sources=load_source('source-7c97862d',reduced().cutoff)
+        guided=build_joint(data,sources,BORROW_CONFIG);original=build_joint(data,sources,BORROW_CONFIG,guide=False)
+        gp=guided.initial_point();base=original.initial_point()
+        converted=guided.compile_fn(guided.replace_rvs_by_values([guided['prior_normal_coordinates'],guided['guide_log_jacobian']]),inputs=guided.value_vars,on_unused_input='ignore')
+        glog=guided.compile_logp();olog=original.compile_logp();gradient=guided.compile_dlogp()
+        for rho in (0.,-.94,.94):
+            point=copy.deepcopy(gp);point['rho_interval__']=np.log((rho+.95)/(.95-rho))
+            point['guide_innovation']=np.linspace(-.2,.2,len(data['nights'])+7)
+            u,jac=converted(point);op=copy.deepcopy(base);op.update({k:v for k,v in point.items() if k in op})
+            op.update(mu_b=19+5*u[0],b_raw=u[1],population_beta=4*u[2:4],beta_raw=u[4:6],a=u[6],innovation=u[7:])
+            self.assertAlmostEqual(float(glog(point)),float(olog(op))+np.log(80)+float(jac),places=7)
+            self.assertTrue(np.isfinite(gradient(point)).all())
+        self.assertNotIn('guide_innovation',original.named_vars)
+        with original:
+            prior=pm.sample_prior_predictive(draws=32,random_seed=37198,var_names=['mu_b','population_beta','source_g'])
+        self.assertEqual(prior['prior']['source_g'].shape,(1,32))
+        self.assertTrue(np.isfinite(prior['prior']['source_g']).all())
+
+    def test_frozen_source_identity_old_reader_and_seed_intents(self):
+        h=reduced();sources=load_source('source-7c97862d',h.cutoff)
+        first=make_borrow_input(h,'analysis-one',sources);second=make_borrow_input(h,'analysis-two',sources)
+        self.assertNotEqual(first.numerical_seeds.nuts,second.numerical_seeds.nuts)
+        self.assertEqual(first.model_dump(),parse_input(first.model_dump_json()).model_dump())
+        with self.assertRaises(ValueError):AnalysisInput.model_validate_json(first.model_dump_json())
+        bad=first.model_dump(mode='json');bad['source_set_sha256']='0'*64
+        with self.assertRaises(ValueError):BorrowAnalysisInput.model_validate_json(canonical(bad))
+        bad=first.model_dump(mode='json');bad['sources']['map_prior']={}
+        with self.assertRaises(ValueError):BorrowAnalysisInput.model_validate_json(canonical(bad))
+        for key in ('participant_rows','seed','private_parameters','ipd'):
+            bad=first.model_dump(mode='json');bad['sources']['studies'][0][key]=[]
+            with self.assertRaises(ValueError):BorrowAnalysisInput.model_validate_json(canonical(bad))
+        from contracts.domain.analysis import make_input
+        old=make_input(h,'analysis-old',123)
+        self.assertEqual(parse_input(old.model_dump_json()).model_dump(),old.model_dump())
+        bad=old.model_dump(mode='json');bad['sources']=sources.model_dump(mode='json')
+        with self.assertRaises(ValueError):parse_input(canonical(bad))
+
+    def test_selection_extrema_ties_and_chain_balance(self):
+        g=np.tile(np.arange(20.),(4,1));v=np.ones((4,20));g[:,3]=-100;g[:,17]=100
+        selected=select_indices(g,v)
+        self.assertEqual(len(selected),32)
+        for chain in range(4):
+            observed=[r['draw'] for r in selected if r['chain']==chain]
+            self.assertEqual(observed,[2,7,11,16,3,17,0,1])
+        with self.assertRaises(ValueError):select_indices(g[:,:7],v[:,:7])
+
+
+class BorrowingRoutesTests(unittest.TestCase):
+    setUp=analysis_cases.AnalysisRoutesTests.setUp
+    tearDown=analysis_cases.AnalysisRoutesTests.tearDown
+    login=analysis_cases.AnalysisRoutesTests.login
+    headers=analysis_cases.AnalysisRoutesTests.headers
+    def test_source_admission_receipt_intents_and_guarded_result_sources(self):
+        available=self.client.get('/api/patients/POC-TEST/analysis-sources')
+        self.assertEqual(available.status_code,200,available.text)
+        self.assertEqual(len(available.json()['bundles']),3)
+        base=dict(expected_version=1,previous_attempt=None,mode='borrow',source_bundle_id='source-7c97862d')
+        for bad in [dict(base,source_bundle_id='../private'),dict(base,mode='v0'),dict(base,source_bundle_id=None)]:
+            response=self.client.post('/api/patients/POC-TEST/analyses',json=bad,headers=self.headers('bad-'+sha(bad)[:8]))
+            self.assertEqual(response.status_code,409,response.text)
+        response=self.client.post('/api/patients/POC-TEST/analyses',json=base,headers=self.headers('borrow-intent'))
+        self.assertEqual(response.status_code,202,response.text);created=response.json()
+        self.assertEqual(created['configuration'],BORROW_CONFIG_REF)
+        self.assertEqual(created['forecast_endpoint_day'],56)
+        self.assertEqual(created['recall_first_night'],43)
+        self.assertEqual(self.client.post('/api/patients/POC-TEST/analyses',json=base,headers=self.headers('borrow-intent')).json()['id'],created['id'])
+        self.assertEqual(self.client.post('/api/patients/POC-TEST/analyses',json=dict(base,mode='tau2'),headers=self.headers('borrow-intent')).status_code,409)
+        job=claim(self.store);product=parse_input(canonical(job['input']))
+        self.assertEqual(product.source_set_sha256,created['source_set_sha256'])
+        result=dict(schema_version='1.1.0',synthetic=True,kind='poc_visit_borrow_result',attempt_id=created['id'],
+            input_sha256=created['input_sha256'],history_sha256=created['history_sha256'],source_set_sha256='f'*64,
+            cutoff=created['cutoff'],configuration=BORROW_CONFIG_REF,estimand=product.request.context.estimand.model_dump(),
+            bridge=BRIDGE_REF,status='abstained',reason='test-bridge-precision-unmet',effect=None,diagnostics={},artifacts=[],limitations=['Synthetic boundary test only'])
+        directory=self.root/'borrow-result';directory.mkdir();(directory/'result.json').write_text(canonical(result))
+        with self.assertRaisesRegex(AnalysisError,'source hash'):ingest(self.store,created['id'],job['claim_token'],directory)
+        result['source_set_sha256']=created['source_set_sha256'];(directory/'result.json').write_text(canonical(result))
+        ingest(self.store,created['id'],job['claim_token'],directory)
+        saved=self.client.get('/api/jobs/'+created['id']).json()
+        self.assertIsNone(saved['result']['effect']);self.assertEqual(saved['status'],'abstained')
+
+
+if __name__=='__main__':unittest.main()

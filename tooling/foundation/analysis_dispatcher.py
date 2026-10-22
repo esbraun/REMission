@@ -97,14 +97,19 @@ def main():
             manifest.update(status='running',inventory=json.loads(command(['docker','inspect',learner]).stdout)[0])
             save()
             last=None
-            deadline=time.monotonic()+4*3600  # fit watchdog; integration has its own stricter30min cap
+            borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
+            watchdog_seconds=7200 if borrowing else 4*3600
+            manifest['watchdog_seconds']=watchdog_seconds
+            deadline=time.monotonic()+watchdog_seconds
             while True:
                 inventory=json.loads(command(['docker','inspect',learner]).stdout)[0]
                 if not inventory['State']['Running']:
                     break
                 if time.monotonic()>deadline:
                     command(['docker','stop','--time','10',learner])
-                    raise RuntimeError('fit-watchdog-exceeded-4h')
+                    stopped=json.loads(command(['docker','inspect',learner]).stdout)[0]
+                    if stopped['State']['Running']:raise RuntimeError('fit-watchdog-stop-unconfirmed')
+                    raise RuntimeError('fit-watchdog-exceeded-'+str(watchdog_seconds)+'s')
                 copied=command(['docker','cp',learner+':/output/progress.json',str(directory/'progress.json')],check=False)
                 if copied.returncode==0:
                     value=json.loads((directory/'progress.json').read_bytes())
@@ -127,6 +132,9 @@ def main():
             manifest.update(status=response['status'],exit=inventory['State']['ExitCode'],oom_killed=inventory['State']['OOMKilled'])
         except Exception as error:
             command(['docker','stop','--time','10',learner],check=False)
+            logs=command(['docker','logs',learner],check=False)
+            (directory/'failure-worker.stdout').write_bytes(logs.stdout);(directory/'failure-worker.stderr').write_bytes(logs.stderr)
+            command(['docker','cp',learner+':/output/.',str(directory/'failure-output')],check=False)
             message=str(error)
             manifest.update(status='failed',failure=message)
             (directory/'dispatcher-failure.log').write_text(message,encoding='utf-8')
