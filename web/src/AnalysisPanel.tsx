@@ -3,8 +3,8 @@ import type { AnalysisAttempt, Workspace } from './types';
 import { analysisMessage, definitiveRejection } from './analysis-state.mjs';
 
 type Request = <T>(url: string, options?: RequestInit) => Promise<T>;
-const date = (value: string) => new Date(value).toLocaleString();
-const number = (value: number) => value.toFixed(2);
+const date = (value: string) => new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'long' }).format(new Date(value));
+const number = (value: number) => new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 
 function Result({ attempt }: { attempt: AnalysisAttempt }) {
   const result = attempt.result;

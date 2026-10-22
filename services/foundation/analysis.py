@@ -99,10 +99,14 @@ def interrupt(store):
 
 
 def ingest(store,job,token,directory):
-    directory=Path(directory).resolve(strict=True)
+    directory=Path(directory)
     if directory.is_symlink():
         raise AnalysisError('Invalid artifact directory')
-    result=AnalysisResult.model_validate_json(directory.joinpath('result.json').read_bytes())
+    directory=directory.resolve(strict=True)
+    result_path=directory/'result.json'
+    if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
+        raise AnalysisError('Invalid result file')
+    result=AnalysisResult.model_validate_json(result_path.read_bytes())
     # Validate output files BEFORE acquiring the SQLite writer lock.
     names=set()
     for ref in result.artifacts:
