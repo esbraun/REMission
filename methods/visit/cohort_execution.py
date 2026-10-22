@@ -37,6 +37,7 @@ class CallableCustody:
         self.expected_layout = expected_layout
         self.thread = threading.get_ident()
         self.compiling = False
+        self.initializer_capture = None
         self.support = None
         self.counts = {}
 
@@ -85,17 +86,21 @@ def owned_callables(model, *, fit, binding_sha256, on_event, expected_layout=Non
 
         def compile_initializer(*args, **kwargs):
             custody.owned()
-            if not custody.compiling or initial_point.compile is not compile_initializer:
+            capture = custody.initializer_capture
+            if not custody.compiling or capture is None or initial_point.compile is not compile_initializer:
                 raise ValueError('cohort initializer compiler invoked outside owned model')
             mode = kwargs.get('mode')
             if mode is not FAST_COMPILE or optimizer_identity(mode.provided_optimizer) != INITIALIZER_OPTIMIZER:
                 raise ValueError('cohort initializer incoming mode/query differs')
             before = optimizer_identity(mode.provided_optimizer)
+            if capture:
+                raise ValueError('cohort initializer compiled more than once per original maker')
             replacement = Mode(linker='cvm', optimizer=mode.provided_optimizer)
             if optimizer_identity(replacement.provided_optimizer) != before:
                 raise ValueError('cohort initializer optimizer changed')
             forwarded = dict(kwargs, mode=replacement)
             function = original_compile(*args, **forwarded)
+            capture.append(function)
             if optimizer_identity(mode.provided_optimizer) != before:
                 raise ValueError('cohort initializer shared optimizer mutated')
             custody.observe(function, custody.initializer_stage, INITIALIZER_NATIVE_OPTIMIZER)
@@ -109,24 +114,32 @@ def owned_callables(model, *, fit, binding_sha256, on_event, expected_layout=Non
                 raise ValueError('cohort requires transformed initial coordinates')
             stage = 'jitter_initializer' if kwargs.get('jitter_rvs') else 'support_initializer'
             custody.initializer_stage, custody.compiling = stage, True
+            capture = []
+            custody.initializer_capture = capture
             try:
                 seeded = original_make(*args, **kwargs)
             finally:
                 custody.compiling = False
+                custody.initializer_capture = None
+            if len(capture) != 1 or getattr(seeded, '__wrapped__', None) is not capture[0]:
+                raise ValueError('cohort original seeded wrapper does not own the captured initializer')
+            function = capture[0]
 
             @wraps(seeded)
             def checked_point(*point_args, **point_kwargs):
                 custody.owned()
                 # Check the inherited actual function before original reseed/evaluation.
-                verify_cvm(seeded)
-                optimizer = optimizer_identity(seeded.maker.mode.provided_optimizer)
+                if getattr(seeded, '__wrapped__', None) is not function:
+                    raise ValueError('cohort original seeded wrapper initializer identity changed')
+                verify_cvm(function)
+                optimizer = optimizer_identity(function.maker.mode.provided_optimizer)
                 if optimizer != INITIALIZER_NATIVE_OPTIMIZER:
                     raise ValueError('cohort seeded initializer optimizer changed')
                 point = seeded(*point_args, **point_kwargs)
                 layout = raw_point(point, model.continuous_value_vars, expected_layout)
                 if stage == 'support_initializer':
                     custody.support = point
-                custody.observe(seeded, stage+'_point', optimizer, coordinate_map=layout)
+                custody.observe(function, stage+'_point', optimizer, coordinate_map=layout)
                 return point
             return checked_point
 

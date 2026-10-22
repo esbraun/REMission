@@ -18,9 +18,14 @@ VM = dict(vm_type=POLICY['actual_vm'], linker='VMLinker', use_cloop=True, c_thun
 
 class Function:
     def __init__(self, mode, calls):
-        self.maker = SimpleNamespace(mode=mode)
+        self._maker = SimpleNamespace(mode=mode)
         self.vm = object()
         self.calls = calls
+
+    @property
+    def maker(self):
+        # PyTensor exposes maker outside the instance dictionary copied by wraps.
+        return self._maker
 
     def __call__(self, *args, **kwargs):
         self.calls.append(('evaluate', args, kwargs))
@@ -80,8 +85,11 @@ class CohortCallableControls(unittest.TestCase):
         overrides={'theta': np.array([1., 2.])};jitter={object()}
         with self.context(model, events):
             seeded=model._make_initial_point(overrides=overrides,jitter_rvs=jitter,return_transformed=True)
-            self.assertIs(seeded.maker, self.compiled[0].maker)
+            self.assertFalse(hasattr(seeded, 'maker'))
+            self.assertIs(seeded.__wrapped__.__wrapped__, self.compiled[0])
             point=seeded(739)
+            self.assertEqual([event['function_identity'] for event in events],
+                [id(self.compiled[0]), id(self.compiled[0])])
             self.assertEqual(point['theta'].dtype, np.dtype('float64'))
             self.assertEqual(self.calls[0], ('make', dict(overrides=overrides,jitter_rvs=jitter,return_transformed=True)))
             self.assertEqual([c[1] for c in self.calls if c[0]=='original-reseed'], [739])
@@ -107,6 +115,31 @@ class CohortCallableControls(unittest.TestCase):
                 self.assertEqual(model.__dict__, before)
                 self.assertIs(execution.initial_point.compile, self.compiler)
                 self.compiler(mode=execution.FAST_COMPILE)  # Subsequent unrelated compiler works.
+
+    def test_missing_foreign_duplicate_capture_reject_and_restore(self):
+        for kind in ('missing', 'foreign', 'duplicate'):
+            class UnexpectedModel(Model):
+                def _make_initial_point(self, **kwargs):
+                    if kind == 'missing':return lambda seed: {'theta': np.ones(2)}
+                    seeded = super()._make_initial_point(**kwargs)
+                    if kind == 'duplicate':
+                        execution.initial_point.compile(mode=execution.FAST_COMPILE)
+                    else:
+                        seeded.__wrapped__ = object()
+                    return seeded
+            model=UnexpectedModel(self.calls);before=dict(model.__dict__)
+            with self.subTest(kind=kind), self.assertRaises(ValueError):
+                with self.context(model, []):model._make_initial_point()
+            self.assertEqual(model.__dict__,before)
+            self.assertIs(execution.initial_point.compile,self.compiler)
+            self.assertFalse(execution._OWNER.locked())
+        model=Model(self.calls)
+        with self.context(model,[]) as custody:
+            seeded=model._make_initial_point()
+            self.assertIsNone(custody.initializer_capture)
+            seeded.__wrapped__.__wrapped__=object()
+            with self.assertRaisesRegex(ValueError,'identity changed'):seeded(13)
+        self.assertFalse(any(call[0]=='original-reseed' for call in self.calls))
 
     def test_owner_nested_concurrent_and_exhausted_jitter_reject(self):
         model=Model(self.calls);events=[];errors=[]
@@ -151,6 +184,7 @@ class CohortCallableControls(unittest.TestCase):
         self.assertFalse(execution._OWNER.locked())
         with self.context(model,[]) as custody:
             custody.compiling=True;custody.initializer_stage='support_initializer'
+            custody.initializer_capture=[]
             with self.assertRaisesRegex(ValueError,'incoming mode'):
                 execution.initial_point.compile(mode=Mode(linker='cvm',optimizer='fast_run'))
 
