@@ -10,7 +10,8 @@ import pytensor
 import pytensor.tensor as pt
 
 from contracts.domain.analysis import CONFIG
-from .model import inputs, gaussian_guide, log_bin
+from .model import inputs, gaussian_guide
+from methods.measurement import log_bin
 from .cohort_geometry import coordinate_slices, embed_basis
 
 
@@ -35,7 +36,7 @@ def build_cohort(data, *, guide=True, prior_predictive=False):
     count = len(patients)
     with pm.Model(coords=dict(patient=patients, night=data[0][1]['nights'],
             arm=['continue', 'escalate'], latent=np.arange(layout['dimension']))) as model:
-        sd_b = pm.HalfNormal('sd_b', 3)
+        sd_b = pm.HalfNormal('sd_b', np.float64(3))
         sd_beta = pm.HalfNormal('sd_beta', 1, dims='arm')
         rho = pm.Uniform('rho', -.95, .95)
         sigma_e = pm.HalfNormal('sigma_e', 2)
@@ -72,7 +73,7 @@ def build_cohort(data, *, guide=True, prior_predictive=False):
             beta_raw = pm.Deterministic('beta_raw', local[:, 1:3], dims=('patient', 'arm'))
             innovation = pm.Deterministic('innovation', local[:, 3:], dims=('patient', 'night'))
         else:
-            mu_b = pm.Normal('mu_b', 19, 5)
+            mu_b = pm.Normal('mu_b', np.float64(19), np.float64(5))
             beta = pm.Normal('population_beta', 0, 4, dims='arm')
             a = pm.Normal('a', 0, 1)
             b_raw = pm.Normal('b_raw', 0, 1, dims='patient')
