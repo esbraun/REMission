@@ -1,0 +1,248 @@
+{
+  "changed_source_abs_deltas": [
+    0.011494026224823983,
+    0.010449438997284233,
+    0.08756154105088854
+  ],
+  "guide_jacobian_max_abs": 3.7689403598051285e-08,
+  "guided_fd": {
+    "coordinates_per_point": 47,
+    "max_abs_error": 7.949896523029576e-08,
+    "points": 3
+  },
+  "native_vs_separate_logp_max_abs": 2.8421709430404007e-13,
+  "native_vs_separate_max_abs_gradient": 3.979039320256561e-13,
+  "negative_control_separation_min": 3.9273297041922923,
+  "original_fd": {
+    "coordinates_per_point": 47,
+    "max_abs_error": 8.690017648527171e-08,
+    "points": 3
+  },
+  "phases": {
+    "changed-logp": {
+      "compile_seconds": 37.701559377019294,
+      "last_marker": {
+        "elapsed_seconds": 40.23252492607571,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 184995840,
+          "memory.peak": 495198208
+        },
+        "peak_rss_kib": 216112,
+        "phase": "changed-logp",
+        "stage": "published"
+      },
+      "median_seconds": 0.002428950509056449,
+      "p95_seconds": 0.0027412924275267867,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    },
+    "guided-gradient": {
+      "compile_seconds": 465.96486428694334,
+      "last_marker": {
+        "elapsed_seconds": 472.0147054929985,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 10054,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 267055104,
+          "memory.peak": 2147483648
+        },
+        "peak_rss_kib": 343860,
+        "phase": "guided-gradient",
+        "stage": "published"
+      },
+      "median_seconds": 0.005554447008762509,
+      "p95_seconds": 0.007342966570286079,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    },
+    "guided-logp": {
+      "compile_seconds": 46.26441643899307,
+      "last_marker": {
+        "elapsed_seconds": 49.18631739390548,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 193896448,
+          "memory.peak": 496279552
+        },
+        "peak_rss_kib": 220060,
+        "phase": "guided-logp",
+        "stage": "published"
+      },
+      "median_seconds": 0.0024671079590916634,
+      "p95_seconds": 0.0028000541613437233,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    },
+    "guided-native-logp-gradient": {
+      "compile_seconds": 466.9508897010237,
+      "last_marker": {
+        "elapsed_seconds": 472.92338648298755,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 10133,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 243552256,
+          "memory.peak": 2147483648
+        },
+        "peak_rss_kib": 329688,
+        "phase": "guided-native-logp-gradient",
+        "stage": "published"
+      },
+      "median_seconds": 0.007319834490772337,
+      "p95_seconds": 0.011852085957070812,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    },
+    "local-logp": {
+      "compile_seconds": 11.818719747010618,
+      "last_marker": {
+        "elapsed_seconds": 13.47453491599299,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 171593728,
+          "memory.peak": 301985792
+        },
+        "peak_rss_kib": 204424,
+        "phase": "local-logp",
+        "stage": "published"
+      },
+      "median_seconds": 7.165252463892102e-05,
+      "p95_seconds": 0.000106018636142835,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    },
+    "original-gradient": {
+      "compile_seconds": 453.06063180498313,
+      "last_marker": {
+        "elapsed_seconds": 458.9386799419299,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 10208,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 261083136,
+          "memory.peak": 2147483648
+        },
+        "peak_rss_kib": 336836,
+        "phase": "original-gradient",
+        "stage": "published"
+      },
+      "median_seconds": 0.004092542047146708,
+      "p95_seconds": 0.0050044274772517335,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    },
+    "original-logp": {
+      "compile_seconds": 37.86005377990659,
+      "last_marker": {
+        "elapsed_seconds": 40.509274087962694,
+        "memory": {
+          "events": {
+            "high": 0,
+            "low": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "memory.current": 185253888,
+          "memory.peak": 495415296
+        },
+        "peak_rss_kib": 216080,
+        "phase": "original-logp",
+        "stage": "published"
+      },
+      "median_seconds": 0.0024553894763812423,
+      "p95_seconds": 0.0030678136274218558,
+      "vm": {
+        "c_thunks": true,
+        "callback_empty": true,
+        "callback_input_empty": true,
+        "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+        "linker": "VMLinker",
+        "use_cloop": true,
+        "vm_type": "pytensor.link.c.cvm.CVM"
+      }
+    }
+  },
+  "source_prior_max_abs": 3.809322635106582e-09
+}
