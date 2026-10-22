@@ -100,7 +100,13 @@ def main():
     singleton=build_cohort(data[:1],guide=False);single=build(data[0][1],guide=False)
     sp=original_point(singleton,1,n);op=dict(sp,b_raw=sp['b_raw'][0],beta_raw=sp['beta_raw'][0],innovation=sp['innovation'][0])
     sl=float(singleton.compile_logp(jacobian=False,mode=MODE)(sp));ol=float(single.compile_logp(jacobian=False,mode=MODE)(op))
-    assert abs(sl-ol)<1e-8,(sl,ol);results['singleton_equivalence']=dict(cohort=sl,legacy=ol)
+    # Retain the original raw legacy threshold. Known legacy float32 rounding
+    # may fail this gate; record failure and still inspect the other independent
+    # gates in this ONE bounded attempt. Final status remains failed in that case.
+    singleton_pass=abs(sl-ol)<1e-8
+    results['singleton_equivalence']=dict(cohort=sl,legacy=ol,absolute_tolerance=1e-8,
+        signed_difference=sl-ol,passed=bool(singleton_pass),
+        independent_singleton=density(data[:1],sp))
     save()
     del singleton,single;gc.collect()
     guided=build_cohort(data);gp=guided.initial_point()
@@ -155,8 +161,10 @@ def main():
         results['native_combined']=dict(seconds=time.monotonic()-before,actual_vm=vm,coordinate_map=mapping,
             logp=float(value),gradient_finite=bool(np.isfinite(gradient).all()),dimension=len(gradient))
     results.update(seconds=time.monotonic()-started,no_fit=True,fixture='12 renamed observed contract histories, not independently generated/qualified job input')
+    results['full_qualification']=bool(args.native and singleton_pass)
     args.output.write_text(json.dumps(results,indent=2)+'\n')
     print(json.dumps(results,indent=2),flush=True)
+    if not singleton_pass:raise SystemExit(1)
 
 
 if __name__=='__main__':main()
