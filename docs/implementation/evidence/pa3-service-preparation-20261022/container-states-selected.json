@@ -1,0 +1,444 @@
+{
+  "cli-help": {
+    "command": {
+      "command": [
+        "docker",
+        "run",
+        "--name",
+        "remission-pa3-sol261022-service-46e2dfcb04-cli-help",
+        "--network",
+        "none",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--user",
+        "10001:10001",
+        "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+        "python",
+        "-m",
+        "services.foundation.analysis_cli",
+        "--help"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+      "elapsed_seconds": 1.2234258651733398,
+      "exit": 0,
+      "source_head": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+      "started_unix": 1792672051.9244692,
+      "streams": {
+        "stderr": {
+          "bytes": 340,
+          "path": "c4216d31dbff46b281c995a341cfea83.stderr",
+          "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+        },
+        "stdout": {
+          "bytes": 409,
+          "path": "c4216d31dbff46b281c995a341cfea83.stdout",
+          "sha256": "bacf77e8c7cd334983ce95504e8ea6dd8135882df8dac69a4faa9be04f11a32b"
+        }
+      },
+      "timed_out": false,
+      "timeout_seconds": 60
+    },
+    "container": {
+      "Args": [
+        "-m",
+        "services.foundation.analysis_cli",
+        "--help"
+      ],
+      "HostConfig": {
+        "CapDrop": [
+          "ALL"
+        ],
+        "Memory": 2147483648,
+        "NanoCpus": 2000000000,
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,exec,nosuid,nodev,size=512m"
+        }
+      },
+      "Id": "d9abd135fe068c20b4b641fdd3946116516c9d2f1b642cfb8e13c90f976401c9",
+      "Image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+      "Mounts": [],
+      "Path": "python",
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T12:27:33.002202881Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T12:27:32.066949381Z",
+        "Status": "exited"
+      },
+      "User": "10001:10001"
+    },
+    "wall_seconds": 1.5959699000231922
+  },
+  "inventory-base": {
+    "command": {
+      "command": [
+        "docker",
+        "run",
+        "--name",
+        "remission-pa3-sol261022-service-46e2dfcb04-inventory-base",
+        "--network",
+        "none",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--user",
+        "10001:10001",
+        "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+        "python",
+        "-c",
+        "import hashlib,json;from pathlib import Path\nr={}\nfor p in sorted(Path('/app').rglob('*')):\n if p.is_file():\n  b=p.read_bytes();r[str(p)]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}\nprint(json.dumps(r,sort_keys=True))\n"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+      "elapsed_seconds": 0.6441140174865723,
+      "exit": 0,
+      "source_head": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+      "started_unix": 1792672049.8590765,
+      "streams": {
+        "stderr": {
+          "bytes": 0,
+          "path": "fb81969d90224a3bab9892d9ac97db8e.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 8366,
+          "path": "fb81969d90224a3bab9892d9ac97db8e.stdout",
+          "sha256": "ff60510f623898cc6397daea5f238f2823a4b38db4e0c593e6b53b19cdd9c7c6"
+        }
+      },
+      "timed_out": false,
+      "timeout_seconds": 60
+    },
+    "container": {
+      "Args": [
+        "-c",
+        "import hashlib,json;from pathlib import Path\nr={}\nfor p in sorted(Path('/app').rglob('*')):\n if p.is_file():\n  b=p.read_bytes();r[str(p)]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}\nprint(json.dumps(r,sort_keys=True))\n"
+      ],
+      "HostConfig": {
+        "CapDrop": [
+          "ALL"
+        ],
+        "Memory": 2147483648,
+        "NanoCpus": 2000000000,
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,exec,nosuid,nodev,size=512m"
+        }
+      },
+      "Id": "4a34b3d8bf73635c7cffbc41d2c1817ae530d390edbc9df045ab9a1a3977aa03",
+      "Image": "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+      "Mounts": [],
+      "Path": "python",
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T12:27:30.336443283Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T12:27:30.077001062Z",
+        "Status": "exited"
+      },
+      "User": "10001:10001"
+    },
+    "wall_seconds": 1.1386668999912217
+  },
+  "inventory-service": {
+    "command": {
+      "command": [
+        "docker",
+        "run",
+        "--name",
+        "remission-pa3-sol261022-service-46e2dfcb04-inventory-service",
+        "--network",
+        "none",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--user",
+        "10001:10001",
+        "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+        "python",
+        "-c",
+        "import hashlib,json;from pathlib import Path\nr={}\nfor p in sorted(Path('/app').rglob('*')):\n if p.is_file():\n  b=p.read_bytes();r[str(p)]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}\nprint(json.dumps(r,sort_keys=True))\n"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+      "elapsed_seconds": 0.477954626083374,
+      "exit": 0,
+      "source_head": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+      "started_unix": 1792672051.0860214,
+      "streams": {
+        "stderr": {
+          "bytes": 0,
+          "path": "20938c820b234276b9708944bdfee1c2.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 8504,
+          "path": "20938c820b234276b9708944bdfee1c2.stdout",
+          "sha256": "8d57978f9c10f15a55ef6c8576b7e48fe5b29ad2d6bf3f12cba9087b9223face"
+        }
+      },
+      "timed_out": false,
+      "timeout_seconds": 60
+    },
+    "container": {
+      "Args": [
+        "-c",
+        "import hashlib,json;from pathlib import Path\nr={}\nfor p in sorted(Path('/app').rglob('*')):\n if p.is_file():\n  b=p.read_bytes();r[str(p)]={'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}\nprint(json.dumps(r,sort_keys=True))\n"
+      ],
+      "HostConfig": {
+        "CapDrop": [
+          "ALL"
+        ],
+        "Memory": 2147483648,
+        "NanoCpus": 2000000000,
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,exec,nosuid,nodev,size=512m"
+        }
+      },
+      "Id": "66bb55d3f22a702870ca0d0c3afe5fcde4e4da0934e0d9db99d1e28a31c8570c",
+      "Image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+      "Mounts": [],
+      "Path": "python",
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T12:27:31.415386407Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T12:27:31.223405066Z",
+        "Status": "exited"
+      },
+      "User": "10001:10001"
+    },
+    "wall_seconds": 0.8985567999770865
+  },
+  "purity": {
+    "command": {
+      "command": [
+        "docker",
+        "run",
+        "--name",
+        "remission-pa3-sol261022-service-46e2dfcb04-purity",
+        "--network",
+        "none",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--user",
+        "10001:10001",
+        "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+        "python",
+        "-c",
+        "import sys,importlib.util;from services.foundation.analysis import bind_execution,ingest;assert 'pymc' not in sys.modules;assert importlib.util.find_spec('services.generator') is None;print('consumer-only service imports; private generator absent; no PyMC imported')"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+      "elapsed_seconds": 0.805079460144043,
+      "exit": 0,
+      "source_head": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+      "started_unix": 1792672053.500541,
+      "streams": {
+        "stderr": {
+          "bytes": 340,
+          "path": "620fa36163ee494a8d4d709ac57e0280.stderr",
+          "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+        },
+        "stdout": {
+          "bytes": 74,
+          "path": "620fa36163ee494a8d4d709ac57e0280.stdout",
+          "sha256": "a372d322ae7b74761737c8271f6ed73fc019a46f95abdd339d3693e0befc8103"
+        }
+      },
+      "timed_out": false,
+      "timeout_seconds": 60
+    },
+    "container": {
+      "Args": [
+        "-c",
+        "import sys,importlib.util;from services.foundation.analysis import bind_execution,ingest;assert 'pymc' not in sys.modules;assert importlib.util.find_spec('services.generator') is None;print('consumer-only service imports; private generator absent; no PyMC imported')"
+      ],
+      "HostConfig": {
+        "CapDrop": [
+          "ALL"
+        ],
+        "Memory": 2147483648,
+        "NanoCpus": 2000000000,
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,exec,nosuid,nodev,size=512m"
+        }
+      },
+      "Id": "84b95f0b8f90b260af03108ecd72f41c8bd2d997043f3c50a5bc6971798ca045",
+      "Image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+      "Mounts": [],
+      "Path": "python",
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T12:27:34.144856519Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T12:27:33.639932371Z",
+        "Status": "exited"
+      },
+      "User": "10001:10001"
+    },
+    "wall_seconds": 1.1678386999992654
+  },
+  "tempdb-controls": {
+    "command": {
+      "command": [
+        "docker",
+        "run",
+        "--name",
+        "remission-pa3-sol261022-service-46e2dfcb04-tempdb-controls",
+        "--network",
+        "none",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--user",
+        "10001:10001",
+        "sha256:16e13c88544d1737f05e7990c52a43a790f4fe35c7194a5339aa11db99d479d2",
+        "python",
+        "-c",
+        "import unittest;names=['test_borrowing.JointTargetTests.test_real_frozen_pre_v1_input_result_canonical_identity', 'test_borrowing.BorrowingRoutesTests.test_genuine_pre_v1_stored_receipt_replays_with_optional_defaults', 'test_borrowing.BorrowingRoutesTests.test_source_admission_receipt_intents_and_guarded_result_sources', 'test_borrowing.BorrowingRoutesTests.test_host_binding_survives_progress_and_vetoes_forged_completed_execution'];suite=unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName(n) for n in names);r=unittest.TextTestRunner(verbosity=2).run(suite);raise SystemExit(not r.wasSuccessful())"
+      ],
+      "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+      "elapsed_seconds": 4.58078145980835,
+      "exit": 0,
+      "source_head": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+      "started_unix": 1792672054.673585,
+      "streams": {
+        "stderr": {
+          "bytes": 1448,
+          "path": "41d35be2078841039e803f49d5743f74.stderr",
+          "sha256": "1f4664ba3a02d4a453615a7501655bba52f89ac7949b87443ecfc29a3bde5f07"
+        },
+        "stdout": {
+          "bytes": 0,
+          "path": "41d35be2078841039e803f49d5743f74.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "timed_out": false,
+      "timeout_seconds": 300
+    },
+    "container": {
+      "Args": [
+        "-c",
+        "import unittest;names=['test_borrowing.JointTargetTests.test_real_frozen_pre_v1_input_result_canonical_identity', 'test_borrowing.BorrowingRoutesTests.test_genuine_pre_v1_stored_receipt_replays_with_optional_defaults', 'test_borrowing.BorrowingRoutesTests.test_source_admission_receipt_intents_and_guarded_result_sources', 'test_borrowing.BorrowingRoutesTests.test_host_binding_survives_progress_and_vetoes_forged_completed_execution'];suite=unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName(n) for n in names);r=unittest.TextTestRunner(verbosity=2).run(suite);raise SystemExit(not r.wasSuccessful())"
+      ],
+      "HostConfig": {
+        "CapDrop": [
+          "ALL"
+        ],
+        "Memory": 2147483648,
+        "NanoCpus": 2000000000,
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,exec,nosuid,nodev,size=512m"
+        }
+      },
+      "Id": "55bd7490321f63563f6e8379711483f4dcf8c66792cf48ab107bb7aabb8c3421",
+      "Image": "sha256:16e13c88544d1737f05e7990c52a43a790f4fe35c7194a5339aa11db99d479d2",
+      "Mounts": [],
+      "Path": "python",
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T12:27:39.085872168Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T12:27:34.804939309Z",
+        "Status": "exited"
+      },
+      "User": "10001:10001"
+    },
+    "wall_seconds": 4.9322694999864325
+  }
+}
