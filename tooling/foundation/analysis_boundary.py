@@ -31,7 +31,7 @@ def main():
     run(['docker','volume','create',volume])
     run(['docker','create','--name',helper,'--network','none',*COMMON,'--cap-add','CHOWN','--user','0:0',
          '--mount',f'type=volume,source={volume},target=/input',image,'python','-c',
-         "import os;os.chown('/input/input.json',10002,10002);os.chmod('/input/input.json',0o444);os.chmod('/input',0o755)"])
+         "import os;os.chmod('/input',0o755);os.chmod('/input/input.json',0o444);os.chown('/input/input.json',10002,10002)"])
     run(['docker','cp',str((args.evidence/'input.json').resolve()),helper+':/input/input.json'])
     run(['docker','start','--attach',helper]);run(['docker','rm',helper])
     generator=json.loads(run(['docker','inspect',state['generator_container']]))[0]

@@ -86,7 +86,7 @@ def main():
             command(['docker','create','--name',helper,*COMMON,'--cap-add','CHOWN','--user','0:0',
                 '--mount',f'type=volume,source={input_volume},target=/input',
                 '--mount',f'type=volume,source={output_volume},target=/output',image,'python','-c',
-                "import os;os.chmod('/input',0o755);os.chown('/input/input.json',10002,10002);os.chmod('/input/input.json',0o444);os.chown('/output',10002,10002);os.chmod('/output',0o700)"])
+                "import os;os.chmod('/input',0o755);os.chmod('/input/input.json',0o444);os.chown('/input/input.json',10002,10002);os.chmod('/output',0o700);os.chown('/output',10002,10002)"])
             command(['docker','cp',str(directory/'input.json'),helper+':/input/input.json'])
             command(['docker','start','--attach',helper])
             command(['docker','rm',helper])
