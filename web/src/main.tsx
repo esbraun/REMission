@@ -104,11 +104,11 @@ function App() {
     return () => { active = false; };
   }, [bootstrapVersion]);
   useEffect(() => {
-    function pop() { clearIdentity(); setPath(location.pathname); }
+    function pop() { if (location.pathname === path) return; clearIdentity(); setPath(location.pathname); }
     function warn(event: BeforeUnloadEvent) { if (dirty) { event.preventDefault(); event.returnValue = ''; } }
     window.addEventListener('popstate', pop); window.addEventListener('beforeunload', warn);
     return () => { window.removeEventListener('popstate', pop); window.removeEventListener('beforeunload', warn); };
-  }, [dirty]);
+  }, [dirty, path]);
   useEffect(() => {
     if (!session?.principal) return;
     const context = `${session.auth_generation}:${path}`;
