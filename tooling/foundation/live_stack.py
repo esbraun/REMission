@@ -19,16 +19,17 @@ COMMON=['--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--securit
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=8769)
     parser.add_argument('--service-image',required=True);parser.add_argument('--learner-image',required=True)
+    parser.add_argument('--generator-image')
     parser.add_argument('--evidence',type=Path,required=True);args=parser.parse_args()
     args.evidence.mkdir(parents=True,exist_ok=True);captures=[]
-    prefix='remission-g1-live-hold-20261021-'+uuid.uuid4().hex[:8]
+    prefix=('remission-poc13-' if args.generator_image else 'remission-g1-live-hold-20261021-')+uuid.uuid4().hex[:8]
     def command(argv,check=True):
         result,metadata=run(argv,args.evidence/'c');captures.append(metadata)
         (args.evidence/'deployment-commands.json').write_text(json.dumps(captures,indent=2)+'\n',encoding='utf-8')
         if check and result.returncode:raise RuntimeError('command failed: '+metadata['streams']['stderr']['path'])
         return result
     head=command(['git','rev-parse','HEAD']).stdout.decode().strip()
-    for image in [RUNTIME,OLD,args.service_image,args.learner_image]:command(['docker','image','inspect',image])
+    for image in [RUNTIME,OLD,args.service_image,args.learner_image,*([args.generator_image] if args.generator_image else [])]:command(['docker','image','inspect',image])
     network=prefix+'-app';label='remission.task='+prefix
     command(['docker','network','create','--label',label,network])
     volumes={k:prefix+'-'+k for k in ['historical','database','fixtures','exports']}
@@ -73,10 +74,15 @@ def main():
     expected={str(p.relative_to(ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
     probe="import hashlib,json,os,pathlib; expected=json.loads(os.environ['EXPECTED_HASHES']); actual={p:hashlib.sha256(pathlib.Path('/app',p).read_bytes()).hexdigest() for p in expected}; assert actual==expected,(actual,expected); print(json.dumps({'uid':os.getuid(),'source_sha256':actual},sort_keys=True))"
     command(['docker','run','--rm','--network','none',*COMMON,'--env','EXPECTED_HASHES='+json.dumps(expected),args.service_image,'python','-c',probe])
+    generator_name=None
+    if args.generator_image:
+        generator_name=prefix+'-generator'
+        command(['docker','run','--detach','--name',generator_name,'--label',label,'--network',network,'--network-alias','generator',*COMMON,args.generator_image])
     command(['docker','run','--detach','--name',service_name,'--label',label,'--network',network,
         '--publish',f'127.0.0.1:{args.port}:8765',*COMMON,*mount('database','/data'),*mount('fixtures','/fixtures',True),*mount('exports','/exports'),
         '--env','REMISSION_ORIGIN='+url,'--env','REMISSION_CONTROL_BUNDLE=/fixtures/bundle.json','--env','REMISSION_ARCHIVE_CONFIG=/fixtures/archives.json',
-        '--env','REMISSION_LIVE_EXPORT_ROOT=/exports','--env','REMISSION_RUNTIME_REF=/fixtures/runtime.json','--env','REMISSION_SOURCE_COMMIT='+head,args.service_image])
+        '--env','REMISSION_LIVE_EXPORT_ROOT=/exports','--env','REMISSION_RUNTIME_REF=/fixtures/runtime.json','--env','REMISSION_SOURCE_COMMIT='+head,
+        *(['--env','REMISSION_GENERATOR_URL=http://generator:8780'] if args.generator_image else []),args.service_image])
     current_health=health('LIVE-HOLD-01/1.0.0')
     # A stale launch retains its old volume/port configuration; the new current route owns that port.
     stale=command(['docker','start',old_name],check=False)
@@ -89,6 +95,7 @@ def main():
     if any(m['Name']==volumes['historical'] for m in inventory['Mounts'] if m.get('Type')=='volume'):
         raise RuntimeError('new current service still mounts old database')
     state=dict(prefix=prefix,source_commit=head,service_image=args.service_image,learner_image=args.learner_image,
+        generator_image=args.generator_image,generator_container=generator_name,
         runtime_image=RUNTIME,old_image=OLD,url=url,port=args.port,network=network,volumes=volumes,
         old_container=old_name,service_container=service_name,old_health=old_health,current_health=current_health,
         old_stopped=True,old_restart_disabled=True,new_private_volume=True,source_hashes=expected,

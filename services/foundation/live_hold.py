@@ -632,9 +632,9 @@ def clear_episode(db,settings,owner,patient_id,episode_id,data,key,at):
     db.execute("UPDATE live_hold_episodes SET status='closed',last_operation=? WHERE id=? AND generation=?",(operation_id,episode_id,row['generation']))
     from .live_tasks import event
     for task_id in e['task_ids']:event(db,task_id,operation_id,dict(status='closed',review_id=data.review_id))
-    from .workflow import state_for,current_safety
+    from .workflow import state_for,current_safety,preserve_simulation
     held=any(r.kind=='intercurrent_event' and r.event_type in ('death','admission','regimen_change','steroid_change','fever_suspected_infection','confusion','fall') for r in current_safety(db,patient_id,at))
-    state=state_for('ASSIGN-09' if held else 'ASSIGN-01','Known safety event requires clinical review')
+    state=preserve_simulation(json.loads(patient['state_json']),state_for('ASSIGN-09' if held else 'ASSIGN-01','Known safety event requires clinical review'))
     state['workflow'].update(data_readiness='stale' if held else 'incomplete',support_mode='paused')
     state['plan']=json.loads(patient['state_json'])['plan']
     advance(db,patient_id,state)

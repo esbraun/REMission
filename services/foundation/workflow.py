@@ -1,9 +1,9 @@
 """Foundation presentation composes the accepted domain, without an estimator."""
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from contracts.domain.boundaries import ObservedHistory, lineage_heads, visible_records
 from contracts.domain.entities import DecisionSnapshot, Workflow
-from .store import canonical, digest, timestamp
+from .store import canonical, digest, timestamp, instant
 
 STAGES = {
     "ASSIGN-01": ("Assessment incomplete", "assessment", "none", "incomplete", "fixed"),
@@ -24,6 +24,17 @@ def reference(identifier: str, value: str = "foundation-v1") -> dict:
 
 
 SUPPORT = reference("fixed-approved-support", "foundation fixed support; no learning")
+
+
+def patient_clock(patient, fallback):
+    simulation = json.loads(patient['state_json']).get('simulation')
+    return instant(simulation['origin']) + timedelta(days=simulation['day']) if simulation else fallback
+
+
+def preserve_simulation(previous, state):
+    if 'simulation' in previous:
+        state['simulation'] = previous['simulation']
+    return state
 
 
 def state_for(stage: str, reason: str = "Synthetic clinical concern requires review") -> dict:
@@ -63,9 +74,11 @@ def current_safety(db, patient_id: str, at: datetime):
 
 def create_decision(db, patient_id: str, at: datetime) -> str:
     row = db.execute("SELECT * FROM patients WHERE id=?", (patient_id,)).fetchone()
+    receipt_at = at
+    at = patient_clock(row, at)
     state = json.loads(row["state_json"])
     from .live_journal import initialize_journal, overlay, summary, dispute_reviews, active_episodes
-    initialize_journal(db,patient_id,at)
+    initialize_journal(db,patient_id,receipt_at)
     state = overlay(db,patient_id,state)
     db.execute('UPDATE patients SET state_json=? WHERE id=?',(canonical(state),patient_id))
     # Non-live mutations invalidate review usability without an extra version bump.
@@ -77,11 +90,12 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
             saved=json.loads(review[0])
             expected=dict(saved['input_versions']);expected.update(version=expected['version']+1,state_version=expected['state_version']+1,eligibility_version=expected['eligibility_version']+1)
             if any(row[k]!=v for k,v in expected.items()):
-                dispute_reviews(db,patient_id,at,digest(canonical([patient_id,row['version'],state])))
+                dispute_reviews(db,patient_id,receipt_at,digest(canonical([patient_id,row['version'],state])))
                 break
     identifier = "decision-" + digest(canonical([patient_id, row["version"], timestamp(at)]))[:32]
+    actions = ['behavioral_continue', 'behavioral_escalate'] if 'simulation' in state else ["MED_A", "MED_B", "behavioral_continue", "behavioral_escalate", "usual_care"]
     eligibility = [dict(action=action, status="excluded" if state["workflow"]["hold_reasons"] else "eligible",
-                        reasons=state["workflow"]["hold_reasons"]) for action in ["MED_A", "MED_B", "behavioral_continue", "behavioral_escalate", "usual_care"]]
+                        reasons=state["workflow"]["hold_reasons"]) for action in actions]
     snapshot = DecisionSnapshot.model_validate_json(canonical(dict(**record_header(identifier, patient_id, at),
         kind="decision_snapshot", cutoff=timestamp(at), patient_version=row["version"], state_version=row["state_version"],
         consent_version=row["consent_version"], eligibility_version=row["eligibility_version"], workflow=state["workflow"],
@@ -92,6 +106,8 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
     projected = history(db, patient_id).project(at).model_dump(mode="json")
     options = eligibility if state["stage"] != "ASSIGN-07" else [e for e in eligibility if e["action"].startswith("behavioral_")]
     ordinary = state["stage"] in ("ASSIGN-02", "ASSIGN-07") and state["workflow"]["data_readiness"] == "ready" and not state["workflow"]["hold_reasons"]
+    if state.get('simulation', {}).get('day', 0) >= 84:
+        ordinary = False
     display = dict(patient_id=patient_id, name=row["name"], stage=state["stage"], stage_label=STAGES[state["stage"]][0],
                    snapshot=snapshot.model_dump(mode="json"), projection=projected, plan=state["plan"],
                    options=options, permissions=dict(approve_ordinary=ordinary, request_review=True, randomize=False, estimate=False),
@@ -100,6 +116,11 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
                    labels=["Synthetic demonstration", "No acute clinical monitoring"],
                    version_status="Foundation contract consumer; downstream G2-G5 engines pending")
     display['live_safety_summary']=summary(db,patient_id)
+    if 'simulation' in state:
+        display['simulation'] = state['simulation']
+        display['version_status'] = 'Generated synthetic PoC; fitted analyses and randomized protocols pending'
+        display['labels'].append('Generated longitudinal observations; fictional clock')
+        display['plan'] = state['plan']
     encoded = canonical(display)
     db.execute("INSERT INTO decisions VALUES (?,?,?,?,?)", (identifier, patient_id, snapshot.model_dump_json(), encoded, digest(encoded)))
     db.execute("UPDATE patients SET current_decision=?,cutoff=? WHERE id=?", (identifier, timestamp(at), patient_id))
