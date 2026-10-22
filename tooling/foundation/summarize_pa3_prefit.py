@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import shutil
 from capture import run
+from run_pa3_prefit import reuse_origin
 
 
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -61,7 +62,19 @@ def main():
         tests='sha256:0f1f0f5e4d543ec204833044a0b0dcb8a8b85f20b54fd928dd52e011e320bbd5'),
         authoritative_identity='docker inspect container.Image and docker image inspect .Id; preserve original BuildKit config labels as correction, never relabel runs')
     private=json.loads((args.artifacts/'prefit-q16/studies/private/preparation.json').read_text())
+    original=deployments['prefit-q16'];reused=deployments['prefit-q64']
+    checked,check_metadata=run(['docker','inspect',original['containers']['producer'],'--format','{{.Image}}'],args.artifacts/'source-binding-commands',timeout_seconds=30)
+    if checked.returncode:raise RuntimeError(check_metadata)
+    origin=reuse_origin(original,reused['images']['producer'],checked.stdout.decode().strip())
+    original_public={p.name:sha(p.read_bytes()) for p in (args.artifacts/'prefit-q16/studies/public').glob('*.json')}
+    reused_public={p.name:sha(p.read_bytes()) for p in (args.artifacts/'prefit-q64/studies/public').glob('*.json')}
+    if original_public!=reused_public:raise ValueError('reused public summaries changed')
+    origin.update(original_deployment_sha256=sha((args.artifacts/'prefit-q16/deployment.json').read_bytes()),
+        reused_deployment_sha256=sha((args.artifacts/'prefit-q64/deployment.json').read_bytes()),
+        public_summary_files=original_public,reuse_bytes_unchanged=True,
+        correction='Original657 run used identical requested/original producer image;511 enforces this origin for differing future requested images. Original deployment files retained unmodified.')
     report=dict(deployments=deployments,source_bindings=binding,image_label_correction=correction,
+        reused_producer_origin=origin,
         private_preparation_sha256=sha((args.artifacts/'prefit-q16/studies/private/preparation.json').read_bytes()),
         private_participants=private['private_participants'],unique_replay_namespaces=private['unique_replay_namespaces'],
         local_external_streams_disjoint=private['local_external_streams_disjoint'],

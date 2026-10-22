@@ -1,0 +1,80 @@
+{
+  "producer": {
+    "Id": "92147ccddf2ab362f0fb90537f5a866c35956a09162467d8bbd8dcafdd7cb453",
+    "Image": "sha256:ea20e2ebe6e0b29b9d1c0b61cc72c1492e84b18e36ce84a7506eb6fecce1de9a",
+    "User": "20000:20000",
+    "State": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-22T07:12:20.912084283Z",
+      "FinishedAt": "2026-10-22T07:12:23.968696501Z"
+    },
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "NanoCpus": 2000000000,
+    "Memory": 2147483648,
+    "Mounts": [
+      {
+        "Type": "volume",
+        "Name": "remission-pa3-sol-bdab456a6b93-private-preparation",
+        "Source": "/var/lib/docker/volumes/remission-pa3-sol-bdab456a6b93-private-preparation/_data",
+        "Destination": "/output",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      }
+    ]
+  },
+  "bridge": {
+    "Id": "be6b33d42a4d6b769ba262820524b0deedfbfdadfe0b17316a3a1d90b958440b",
+    "Image": "sha256:d7eb95c7163d49970b31e78f1a1d2ba8616d557f3bc1381345679cab85048dd7",
+    "User": "10002:10002",
+    "State": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-22T07:12:26.320858997Z",
+      "FinishedAt": "2026-10-22T07:12:38.803703816Z"
+    },
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "NanoCpus": 2000000000,
+    "Memory": 2147483648,
+    "Mounts": [
+      {
+        "Type": "volume",
+        "Name": "remission-pa3-sol-bdab456a6b93-public-input",
+        "Source": "/var/lib/docker/volumes/remission-pa3-sol-bdab456a6b93-public-input/_data",
+        "Destination": "/input",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": false,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "remission-pa3-sol-bdab456a6b93-bridge-output",
+        "Source": "/var/lib/docker/volumes/remission-pa3-sol-bdab456a6b93-bridge-output/_data",
+        "Destination": "/output",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      }
+    ]
+  }
+}
