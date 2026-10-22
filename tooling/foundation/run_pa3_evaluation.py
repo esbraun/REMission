@@ -27,13 +27,14 @@ def main():
     prefix='remission-pa3-monitor-'+uuid.uuid4().hex[:12];volume=prefix+'-output';container=prefix+'-gradient'
     command(['docker','volume','create',volume])
     limits=['--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL',
-        '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,nosuid,size=512m']
+        '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m']
     mount=lambda name,path,ro=False:['--mount',f'type=volume,src={name},dst={path}'+(',readonly' if ro else '')]
     command(['docker','run','--rm',*limits,'--user','0:0',*mount(volume,'/output'),'--entrypoint','python',RUNTIME,
         '-c',"from pathlib import Path;Path('/output').chmod(0o777)"])
     manifest=dict(source_head=command(['git','rev-parse','HEAD']),image=image,original_input_image=policy['original_image'],runtime=RUNTIME,
         prefix=prefix,container=container,output_volume=volume,readonly_volumes={k:policy['volumes'][k] for k in ['input','coordinates','guided-logp']},
         policy=policy,policy_file_sha256=hashlib.sha256(policy_path.read_bytes()).hexdigest(),
+        private_scratch_tmpfs='/tmp:rw,exec,nosuid,nodev,size=512m',
         boundary='Diagnostic MonitorMode linker only, unchanged default optimizer/target; no NUTS, production timeliness or full-target acceptance.')
     write('deployment.json',manifest)
     remaining=policy['suite_seconds']-(time.monotonic()-started)
@@ -52,7 +53,7 @@ def main():
         raw=json.loads(command(['docker','inspect',container]))[0]
     state=raw['State']
     isolation=dict(Id=raw['Id'],Image=raw['Image'],State=state,User=raw['Config']['User'],Memory=raw['HostConfig']['Memory'],
-        NanoCpus=raw['HostConfig']['NanoCpus'],NetworkMode=raw['HostConfig']['NetworkMode'],ReadonlyRootfs=raw['HostConfig']['ReadonlyRootfs'],Mounts=raw['Mounts'])
+        NanoCpus=raw['HostConfig']['NanoCpus'],NetworkMode=raw['HostConfig']['NetworkMode'],ReadonlyRootfs=raw['HostConfig']['ReadonlyRootfs'],Mounts=raw['Mounts'],Tmpfs=raw['HostConfig']['Tmpfs'])
     write('isolation.json',isolation)
     if state['Running']:
         write('live-handle.json',dict(container=container,status='termination-unconfirmed',instruction='Stop exact owned computation; no terminal qualification published.'))
