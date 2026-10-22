@@ -70,7 +70,7 @@ def batch(source,folder,tests):
     write(folder/'command.json',dict(argv=args,source_head=head,unit_only=True,watchdog_seconds=300,
         terminal_inspect_format=TERMINAL_INSPECT_FORMAT,
         source_sha256={p:hashlib.sha256((source/p).read_bytes()).hexdigest() for p in paths},
-        source_git_blobs={p:subprocess.check_output(['git','-C',str(source),'hash-object',p],text=True).strip() for p in paths}))
+        source_git_blobs={p:subprocess.check_output(['git','-C',str(source),'hash-object','-w',p],text=True).strip() for p in paths}))
     created=subprocess.run(args,capture_output=True,text=True,timeout=30)
     (folder/'create.stdout').write_text(created.stdout);(folder/'create.stderr').write_text(created.stderr)
     if created.returncode:raise RuntimeError('container creation failed; retained logs')

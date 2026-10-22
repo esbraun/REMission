@@ -1,0 +1,1071 @@
+{
+  "host_dispatcher": {
+    "association": "exact",
+    "bytes": 14997,
+    "git_blob": "b253c97d6889c69c18928667105764dfba6ab069",
+    "git_sha256": "bfccda849e25468bf6437ce3768a8ba860acd9944a4a75c83add6e7f6f3feab3",
+    "sha256": "bfccda849e25468bf6437ce3768a8ba860acd9944a4a75c83add6e7f6f3feab3",
+    "source": "tooling/foundation/analysis_dispatcher.py"
+  },
+  "immutable_dependencies": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "kind": "prepared static production role COPY inventory; no build or qualification",
+  "locks": {
+    "tooling/foundation/requirements.lock": {
+      "association": "CRLF-LF-only",
+      "bytes": 1454,
+      "git_blob": "4e454d1c406f28382b33f6ce5751166b9273ed96",
+      "git_sha256": "9f80395cb237560fa9c8b240f544a3f21b28ad148cc1a65df05d0c2378b77f68",
+      "sha256": "1c17072ac81418856175a2df7afda837626721fcf0523501f7793e37ab46b004",
+      "source": "tooling/foundation/requirements.lock"
+    },
+    "tooling/library/requirements.lock": {
+      "association": "CRLF-LF-only",
+      "bytes": 4970,
+      "git_blob": "1e5b7b63d2cdd69f4e929379c17263186f430237",
+      "git_sha256": "3dc1c9632e4fc413f8c9224268c41d795e5b1c1ed348a528a53f44db82f2bc3e",
+      "sha256": "a68ed00335bdba1e6a3272292fd53a2db7ac0897b61400472780903b58141d71",
+      "source": "tooling/library/requirements.lock"
+    },
+    "web/package-lock.json": {
+      "association": "exact",
+      "bytes": 39947,
+      "git_blob": "740716970878d54facb4ebce8e03a568c2b6daec",
+      "git_sha256": "b104f843476352a48e78fbce18aa2d8a0ffbf11c5640c8dab9f1177eb5bf400e",
+      "sha256": "b104f843476352a48e78fbce18aa2d8a0ffbf11c5640c8dab9f1177eb5bf400e",
+      "source": "web/package-lock.json"
+    }
+  },
+  "probe_sources": {
+    "tooling/foundation/consumer_probe.py": {
+      "association": "exact",
+      "bytes": 1658,
+      "git_blob": "ba4c5e278db8d160dec3e88372bfb7ef9bb151c1",
+      "git_sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+      "sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+      "source": "tooling/foundation/consumer_probe.py"
+    },
+    "tooling/foundation/observed_v2_probe.py": {
+      "association": "exact",
+      "bytes": 7364,
+      "git_blob": "a5d40caa380f19b98a688c301440a53953ce1352",
+      "git_sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+      "sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+      "source": "tooling/foundation/observed_v2_probe.py"
+    }
+  },
+  "roles": {
+    "learner": {
+      "actual_image": null,
+      "copied": {
+        "/app/boundary_probe.py": {
+          "association": "exact",
+          "bytes": 1658,
+          "git_blob": "ba4c5e278db8d160dec3e88372bfb7ef9bb151c1",
+          "git_sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "source": "tooling/foundation/consumer_probe.py"
+        },
+        "/app/contracts/domain/__init__.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 80,
+          "git_blob": "12f9e6cdd2d09cf2493e6ac6ef5dc9c62d03f20a",
+          "git_sha256": "fd923ace781924c5539bb3f7072cbc6ce25c29c3e89e292c94414574eb7f2d1e",
+          "sha256": "5504df41242c69e464fd08d7743a039c0259594cded2df0b0fb08566722340f2",
+          "source": "contracts/domain/__init__.py"
+        },
+        "/app/contracts/domain/analysis.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 17270,
+          "git_blob": "8de671be4963e8a8cc15cdf1c05a2378bb2faa61",
+          "git_sha256": "a250d20c02fc331c11a3f0dd7a496120e720579bdb381ecfb3d630560341cb50",
+          "sha256": "3b6dcfda272cf12bfd5c595df167d3229cbf9fe36137d1d84411e4aa73f877fe",
+          "source": "contracts/domain/analysis.py"
+        },
+        "/app/contracts/domain/borrow_runtime.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 6212,
+          "git_blob": "cc7a7d4ff29ec7c8acdafe99708e97b12d3b4264",
+          "git_sha256": "8f2d390b0c869bef1da024a1b7be6b9876fb2cecce12a4e16be698d140147b0b",
+          "sha256": "5c73048e4be585c2f0d3833bb4126cc195ea1643bc00d22d90ac376032b4c6af",
+          "source": "contracts/domain/borrow_runtime.py"
+        },
+        "/app/contracts/domain/borrowing.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 12395,
+          "git_blob": "c2684fcbb70d817f19a649096a23e637a1187e56",
+          "git_sha256": "e61f5453a0ddf840d57bbd8978a311f8751122a540f137e0fed612e58c61bd27",
+          "sha256": "d335792f6eed89d4962bdd458695c8f5d2530dddf7571ca493157be91dda758f",
+          "source": "contracts/domain/borrowing.py"
+        },
+        "/app/contracts/domain/boundaries.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 13272,
+          "git_blob": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+          "git_sha256": "a3365a28abdaa558b166789292348908c8f123fcd4356bdf1027d317c608589d",
+          "sha256": "0671f401265d65e586976127cf68f4e9250fd92916297725d6a0b2016605ef72",
+          "source": "contracts/domain/boundaries.py"
+        },
+        "/app/contracts/domain/cohort.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 14403,
+          "git_blob": "a0c8bcf388182ba42bf3e2fc30b3db9e42684773",
+          "git_sha256": "da8bd9496ae72be8fb2e547e1cac1ff1f30c5d2574817225730c865904bce5ca",
+          "sha256": "a68a583c4a7879a635b00dd67b65f6fbb752d312d8af6fccddc97411dcdc82c5",
+          "source": "contracts/domain/cohort.py"
+        },
+        "/app/contracts/domain/cohort_runtime.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7168,
+          "git_blob": "d8acc577592dff466fc5e19bee3877c3ec71756d",
+          "git_sha256": "4f3f4809fe118e4da56ef5cff175e08a7f6602ccaba3350ef8e3180d1781429c",
+          "sha256": "cf6f8418aa345f47c5c2ec5c368ce430e85b60e2740b7fcd2caeec70e7677de4",
+          "source": "contracts/domain/cohort_runtime.py"
+        },
+        "/app/contracts/domain/common.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 4528,
+          "git_blob": "2b737d7e596085fa5f3577c772a1ad5d6e250274",
+          "git_sha256": "78c690be51b1d6a630fd75e285e481b85a6b4ad45e8fe9543fc6a2d38ab88db9",
+          "sha256": "a08da301acc4b831854ca216111c43bb1b09d975e07b50ca1efdb7feff206784",
+          "source": "contracts/domain/common.py"
+        },
+        "/app/contracts/domain/entities.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 14445,
+          "git_blob": "64a3a763b276c0f3e0c242966506e323c4273513",
+          "git_sha256": "eef39576822070e8480bb125333beefa5f24bd90a71935df4da3a2daba3f4228",
+          "sha256": "4e456effd627850955b35fed12178f89fd25de3e02b49c9c9e6d07086b241ab5",
+          "source": "contracts/domain/entities.py"
+        },
+        "/app/contracts/domain/estimands.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 11867,
+          "git_blob": "a22c6a4ce4828ac5c34fefaf84b87084f4d09ec5",
+          "git_sha256": "908b39d5ff0c84bd46fe96553d3254e96737ed4b58d435f6779c787bf40c05b3",
+          "sha256": "b7dc316db651be228c6290112c9b7dcdd61d84e258b4d8fd784de73b7eb4772f",
+          "source": "contracts/domain/estimands.py"
+        },
+        "/app/contracts/domain/evidence_v2.py": {
+          "association": "exact",
+          "bytes": 15995,
+          "git_blob": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+          "git_sha256": "921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1",
+          "sha256": "921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1",
+          "source": "contracts/domain/evidence_v2.py"
+        },
+        "/app/contracts/domain/observed_v2.py": {
+          "association": "exact",
+          "bytes": 18246,
+          "git_blob": "166b840341235e00bd229d9739d8928ea9980250",
+          "git_sha256": "b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940",
+          "sha256": "b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940",
+          "source": "contracts/domain/observed_v2.py"
+        },
+        "/app/contracts/domain/protocol.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 8184,
+          "git_blob": "e5c080376c2098f86494943c75d694f3dd184120",
+          "git_sha256": "a077669810f3e64de6830f23f23959235900bcf1c6dc8f17a9b4e393a89fe1e5",
+          "sha256": "631a29ee6097e2e3c1ba2069f30e6fff69f58d0be70d3f6b28a3982bccf7ce53",
+          "source": "contracts/domain/protocol.py"
+        },
+        "/app/contracts/domain/protocol_analysis.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 15029,
+          "git_blob": "8762313d11d8d07f487fd46d68c82eadc927b4e8",
+          "git_sha256": "49d690ad7e07928f18e9e3a253b96c14d91edcc7cf8ebcb98a0e336de893585e",
+          "sha256": "192d20c82bb4c01452614f9c24130c8e532d822f4c25e8c910351f6ccc4c3f3c",
+          "source": "contracts/domain/protocol_analysis.py"
+        },
+        "/app/contracts/domain/protocol_request.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 11781,
+          "git_blob": "ffe8fd76db3709a7e20ae707da328b621c028893",
+          "git_sha256": "24c13573de577fc4cec9a4c4bd668f82f0ee7e6cf6b5dbbcbda61a5c76b4d134",
+          "sha256": "2037a65440a53d154b0d08b6e9b1e685dcdae40c815dfe94f799957888dd0855",
+          "source": "contracts/domain/protocol_request.py"
+        },
+        "/app/contracts/runs/__init__.py": {
+          "association": "exact",
+          "bytes": 76,
+          "git_blob": "673e19c4b6ace9bcfcc1e7863956f808c2eab4b7",
+          "git_sha256": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+          "sha256": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+          "source": "contracts/runs/__init__.py"
+        },
+        "/app/contracts/runs/admission.py": {
+          "association": "exact",
+          "bytes": 3928,
+          "git_blob": "9f6808fd41f3d76fbb92185d6823c6461105c135",
+          "git_sha256": "00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba",
+          "sha256": "00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba",
+          "source": "contracts/runs/admission.py"
+        },
+        "/app/contracts/runs/admission_v2.py": {
+          "association": "exact",
+          "bytes": 23280,
+          "git_blob": "e6775a444b559aefbf3401be64365372c5f1eed3",
+          "git_sha256": "11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb",
+          "sha256": "11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb",
+          "source": "contracts/runs/admission_v2.py"
+        },
+        "/app/contracts/runs/bindings-v1.json": {
+          "association": "exact",
+          "bytes": 1718,
+          "git_blob": "02a49d4594e035af3f0e44a520d05434c73b6058",
+          "git_sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+          "sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+          "source": "contracts/runs/bindings-v1.json"
+        },
+        "/app/contracts/runs/bindings-v2.json": {
+          "association": "exact",
+          "bytes": 2213,
+          "git_blob": "9fc17598b269f5d1bc36f1a4edaf7e5e05e53897",
+          "git_sha256": "40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7",
+          "sha256": "40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7",
+          "source": "contracts/runs/bindings-v2.json"
+        },
+        "/app/contracts/runs/common.py": {
+          "association": "exact",
+          "bytes": 5996,
+          "git_blob": "fac3c565773e5da75ee544207ac7f6f5c0214f7b",
+          "git_sha256": "d9d4035427f03711f985650ea776a7e848009cde7d7438bd30e564bf78f0dc2e",
+          "sha256": "d9d4035427f03711f985650ea776a7e848009cde7d7438bd30e564bf78f0dc2e",
+          "source": "contracts/runs/common.py"
+        },
+        "/app/contracts/runs/coverage_v2.py": {
+          "association": "exact",
+          "bytes": 10251,
+          "git_blob": "f88b41afb5e569ac672ce95e5db60adba4b1b70e",
+          "git_sha256": "38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf",
+          "sha256": "38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf",
+          "source": "contracts/runs/coverage_v2.py"
+        },
+        "/app/contracts/runs/observed.py": {
+          "association": "exact",
+          "bytes": 10248,
+          "git_blob": "a864169ad752b330ef351c02acf3677d58f2424a",
+          "git_sha256": "fb45414c1848c15175458e30c4fdba0a27d8d7896bb7de186c3366aeeeaf4ae9",
+          "sha256": "fb45414c1848c15175458e30c4fdba0a27d8d7896bb7de186c3366aeeeaf4ae9",
+          "source": "contracts/runs/observed.py"
+        },
+        "/app/contracts/runs/observed_v2.py": {
+          "association": "exact",
+          "bytes": 7908,
+          "git_blob": "21a5be8b8a6528d4ff1719046a5e29426068b928",
+          "git_sha256": "e9855901f61cf26e1dae27dc383bfe66ee264292d9160919579a5e5ef975393a",
+          "sha256": "e9855901f61cf26e1dae27dc383bfe66ee264292d9160919579a5e5ef975393a",
+          "source": "contracts/runs/observed_v2.py"
+        },
+        "/app/contracts/runs/restricted-profile-v1.json": {
+          "association": "exact",
+          "bytes": 7191,
+          "git_blob": "169c93b7f8285badaa0135e3c81d9624b9423afc",
+          "git_sha256": "0dd55716eaaeec3632e258541d3bb169feb2d0493421e56cc30ef4b80e437e8e",
+          "sha256": "0dd55716eaaeec3632e258541d3bb169feb2d0493421e56cc30ef4b80e437e8e",
+          "source": "contracts/runs/restricted-profile-v1.json"
+        },
+        "/app/contracts/service/__init__.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 75,
+          "git_blob": "fbf88a0c378dcec230bfe27a8e072e2dce7428b0",
+          "git_sha256": "5c64ed8dba62d97a6d171bca56e54b985c6b1c7fbb39d084b99b2a9ef8d5bb75",
+          "sha256": "5f5aad3865db7aba1b7b36ffc5e84ca1896e79ac8dfed97e9ccefbd9dd5fa33c",
+          "source": "contracts/service/__init__.py"
+        },
+        "/app/contracts/service/bindings-v1.json": {
+          "association": "CRLF-LF-only",
+          "bytes": 885,
+          "git_blob": "bd1cc5be90811fb024e0c6974fb12d85301c5787",
+          "git_sha256": "39ae38f1e973937ad0b352e9ae9a44cc67241c932fa7a8c7bd9b4d0460501f30",
+          "sha256": "59699927e7ac045db1b4ebe08402101fe20f172d992aa92052d25881999c44bb",
+          "source": "contracts/service/bindings-v1.json"
+        },
+        "/app/contracts/service/live_hold.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7477,
+          "git_blob": "27a899de5af2ef9e4400abef97c62ed523ba37e9",
+          "git_sha256": "7210147b3ee93fb6034ef72b26f84747adbf3eece0974481c483c1ff5ff6d9bd",
+          "sha256": "930ce55193d5a43ad955992d239857f4000b0f8a28cd4a2f0fa3f75b0b4943d9",
+          "source": "contracts/service/live_hold.py"
+        },
+        "/app/contracts/service/live_safety.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7150,
+          "git_blob": "f3827d19a94d5ff370ffe532290191cb7a9b889c",
+          "git_sha256": "0b4ff5dec1af9d4199b033292045cd7180a86c58058b3ba77fdfdace9f98ce63",
+          "sha256": "462de6d11716a1d8b2052fa567d31186b0aa9b7fac05edfe70eb1007f8f22451",
+          "source": "contracts/service/live_safety.py"
+        },
+        "/app/contracts/service/live_safety_admission.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 12525,
+          "git_blob": "5247d1d7e99a6686b9163642e031858c14295845",
+          "git_sha256": "45b51be3f6fba20d1a4bda004b4cf102c7212050d43e51feaa90b5a4a622bd00",
+          "sha256": "15e6cbe34a4d9d26f644eda45a12097f1be07f281875579fb85cae214aa4fca1",
+          "source": "contracts/service/live_safety_admission.py"
+        },
+        "/app/contracts/service/spec-v1.json": {
+          "association": "CRLF-LF-only",
+          "bytes": 682,
+          "git_blob": "2330afc2d252f471fd94dd2ad01b8577aee3ce40",
+          "git_sha256": "a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3",
+          "sha256": "9086f3ec8237ccef5696cd9099b880e2d725fabbabe7a364f9186e5ea19ff0f0",
+          "source": "contracts/service/spec-v1.json"
+        },
+        "/app/methods/measurement.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 2813,
+          "git_blob": "595eabdb2260b3318effe405fd93d44ab427069e",
+          "git_sha256": "fbcc3adac1be85712a00934707d490b5528ad68dad73dbedea0c12f480be73ef",
+          "sha256": "c4f8849a13ff8d9f23ab3ab26f063227b306de92f005564bbe01f95de8eb370c",
+          "source": "methods/measurement.py"
+        },
+        "/app/methods/visit/__init__.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 71,
+          "git_blob": "2c1fba575a4c2c7fd7b406e25d85631ba90c309f",
+          "git_sha256": "21f06e3dfdf7bb9d134d6f7aa35bcf96074d1fb82b49193ab21c2749e17f2c79",
+          "sha256": "15ac8ea78d69da6f55c7f00fd9845cadac6c13bbeac8d4c854b07251bcdc56f4",
+          "source": "methods/visit/__init__.py"
+        },
+        "/app/methods/visit/borrow_execution.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 6383,
+          "git_blob": "c1ac38730f00f2f6e9c4b84ff05d51f0cdc4be87",
+          "git_sha256": "eeb03746a3782510977990213801b816c1081fba7929e52efdfbe5d547349daa",
+          "sha256": "f7ec71be7c71aa4ba2d93a6c9c0fa79dc8f9062f800897485718ba69ccd88c33",
+          "source": "methods/visit/borrow_execution.py"
+        },
+        "/app/methods/visit/borrow_model.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 1890,
+          "git_blob": "a1fefef3b2b9cd8392d34c69735c8487659a4c0e",
+          "git_sha256": "6216ab008f5dcbe97452465440e283d19b5f6f0a94f4ee6702f9431e8438edd3",
+          "sha256": "65a5e96684851139e4634c8ed0dca2f7943251291af3674217918ff2e6bb34da",
+          "source": "methods/visit/borrow_model.py"
+        },
+        "/app/methods/visit/borrowing.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 4619,
+          "git_blob": "70ca5e2a83a4eff397dd103907c8eae874679983",
+          "git_sha256": "dd9138677c56b4f5a66508287a3e23916fa41272878a158b7ab4393867ac9fb2",
+          "sha256": "d04811556d82cba6ab24b0c950d6d2a4e1183b1c6b1f3e7674c36fc6302f7d7d",
+          "source": "methods/visit/borrowing.py"
+        },
+        "/app/methods/visit/cohort_execution.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 11011,
+          "git_blob": "c4bc066d6a9e03e228b47c574138cd41e7731bef",
+          "git_sha256": "62c952ce51503ec6e0f5145b4d6a292d6ce4638f408b3c2bc5e911b8ec03c8d3",
+          "sha256": "010b0b74c8ca8039f0e4b534a3503d18f2417c84f49d49941eb32cef37f820f9",
+          "source": "methods/visit/cohort_execution.py"
+        },
+        "/app/methods/visit/cohort_geometry.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 1570,
+          "git_blob": "48071b30923292eff17cef435179e94c8710c228",
+          "git_sha256": "9c271abd17f3be3a2fb97a6660e333cc19200b72e863a37675a155b86fc275f6",
+          "sha256": "e83e4879cbd415d145849103ca30c2a0b536d74aa1238376bccca50c546fe0bb",
+          "source": "methods/visit/cohort_geometry.py"
+        },
+        "/app/methods/visit/cohort_model.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7657,
+          "git_blob": "99b4f2e0a986870f92ed9d29ed744c2619321d56",
+          "git_sha256": "ec3cd73b6952a0617a402612fad88335b8d21c60dfe882595be17660f780bbf4",
+          "sha256": "73b2fd90fc3cdba8e4f3fcb21bc9f650f8d3ff5ad2c1496390c423a3792374be",
+          "source": "methods/visit/cohort_model.py"
+        },
+        "/app/methods/visit/model.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 9668,
+          "git_blob": "5e33008e36809b78f182993a88f1e09bdf641c78",
+          "git_sha256": "e58f341b17c8ad87df4ef67165c27814481b7cad7ee354332ba1d16ea5b3d777",
+          "sha256": "134ee7ae5fb85b153d0455fb4594fa6807d77d6bc3d53af89a8f38f7c2914a72",
+          "source": "methods/visit/model.py"
+        },
+        "/app/methods/visit/numerics.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 8693,
+          "git_blob": "5c1ac014eb12822c6b21a430ba8dcf2c32cd64cf",
+          "git_sha256": "fd0d64d7ee9e29ed3f7d24c05d4526e09cf5357ae0e96a8c577e4b09d4deab14",
+          "sha256": "41136d48bd7d40d70ee17f33f271f42ec6ad9f2cfbd3d6314dbb3dd13d7c9d96",
+          "source": "methods/visit/numerics.py"
+        },
+        "/app/methods/visit/source_precision.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 6185,
+          "git_blob": "1d7ae82b011432a26c902a56817877fcdd0e7df0",
+          "git_sha256": "3a28403cb61b9b2c60a3e16e91cf16da067568deb52f45afe513fbecd5537d4b",
+          "sha256": "1bee77b3664e7e19b854bd851a4dafd24874d1fb0bb8fbdd2ff3998a583c4163",
+          "source": "methods/visit/source_precision.py"
+        },
+        "/app/methods/visit/source_reference.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 1378,
+          "git_blob": "6a6665fc05a668293f337000876bfea6ce697fba",
+          "git_sha256": "ad8bb1ade95e80c6640af75c2b1ebb505f2868b7595798d872d502873c9b104a",
+          "sha256": "96af62e0deb7f91adbd709a0a591a29e4be6fe256cb774b9421d19c27e2a37fb",
+          "source": "methods/visit/source_reference.py"
+        },
+        "/app/observed_v2_probe.py": {
+          "association": "exact",
+          "bytes": 7364,
+          "git_blob": "a5d40caa380f19b98a688c301440a53953ce1352",
+          "git_sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "source": "tooling/foundation/observed_v2_probe.py"
+        },
+        "/app/services/learner/analysis_worker.py": {
+          "association": "exact",
+          "bytes": 15158,
+          "git_blob": "5a1e871185e698c612a7a5b4aa7b9624e1ed3d56",
+          "git_sha256": "41133e5d8ed7deb7aeb43285ea55e72cb2c6fdc5bb345f65dc146d4153cd7aad",
+          "sha256": "41133e5d8ed7deb7aeb43285ea55e72cb2c6fdc5bb345f65dc146d4153cd7aad",
+          "source": "services/learner/analysis_worker.py"
+        },
+        "/app/services/learner/cohort_worker.py": {
+          "association": "exact",
+          "bytes": 11363,
+          "git_blob": "4acc1f2727a36774c8b8ecb7aea81734a03fb0be",
+          "git_sha256": "633d59dc1730755acd2f6f40df739bceecab172a5c7c286cd4486a9a1569a504",
+          "sha256": "633d59dc1730755acd2f6f40df739bceecab172a5c7c286cd4486a9a1569a504",
+          "source": "services/learner/cohort_worker.py"
+        },
+        "/app/services/learner/export_observed.py": {
+          "association": "exact",
+          "bytes": 2333,
+          "git_blob": "de2337fbcd514a80a4ea1f9b13c181cf8ca5627a",
+          "git_sha256": "e8f2ea9d07f2d90a3a53e0002ad2318cd098f2c3d46dbf3739e34ca1c725f6bf",
+          "sha256": "e8f2ea9d07f2d90a3a53e0002ad2318cd098f2c3d46dbf3739e34ca1c725f6bf",
+          "source": "services/learner/export_observed.py"
+        },
+        "/app/services/learner/live_product.py": {
+          "association": "exact",
+          "bytes": 1177,
+          "git_blob": "23123ab86402a5be3d939b12bb244223e7f3d00b",
+          "git_sha256": "fce839ca39c2c5f3d4143947ace2fd1d8a51aa25ddfbffbb43db98bd1c48cc1c",
+          "sha256": "fce839ca39c2c5f3d4143947ace2fd1d8a51aa25ddfbffbb43db98bd1c48cc1c",
+          "source": "services/learner/live_product.py"
+        },
+        "/app/services/learner/worker.py": {
+          "association": "exact",
+          "bytes": 2791,
+          "git_blob": "b05f6a8324b4f3fa1568ab0eae43153addd9ed10",
+          "git_sha256": "a8f06968b03f8953c7d4dc7254f0e6dab8242d3cba24a3902d9b23f8c86b9d6e",
+          "sha256": "a8f06968b03f8953c7d4dc7254f0e6dab8242d3cba24a3902d9b23f8c86b9d6e",
+          "source": "services/learner/worker.py"
+        }
+      },
+      "dockerfile": {
+        "association": "exact",
+        "bytes": 2032,
+        "git_blob": "897d2632b56479f51b81d95a37e5bd22ea4163dd",
+        "git_sha256": "d7d9aa560540b14656bb3e1e39f1f210aa85b30fe0852b2b85bd2f2bb3e7c91b",
+        "sha256": "d7d9aa560540b14656bb3e1e39f1f210aa85b30fe0852b2b85bd2f2bb3e7c91b",
+        "source": "tooling/foundation/learner.Dockerfile"
+      },
+      "generated_copy": [],
+      "no_source_overlays_required": true,
+      "qualification": "pending exact source freeze and independent review",
+      "user": "10002:10002"
+    },
+    "service": {
+      "actual_image": null,
+      "copied": {
+        "/app/boundary_probe.py": {
+          "association": "exact",
+          "bytes": 1658,
+          "git_blob": "ba4c5e278db8d160dec3e88372bfb7ef9bb151c1",
+          "git_sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "source": "tooling/foundation/consumer_probe.py"
+        },
+        "/app/contracts/domain/__init__.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 80,
+          "git_blob": "12f9e6cdd2d09cf2493e6ac6ef5dc9c62d03f20a",
+          "git_sha256": "fd923ace781924c5539bb3f7072cbc6ce25c29c3e89e292c94414574eb7f2d1e",
+          "sha256": "5504df41242c69e464fd08d7743a039c0259594cded2df0b0fb08566722340f2",
+          "source": "contracts/domain/__init__.py"
+        },
+        "/app/contracts/domain/analysis.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 17270,
+          "git_blob": "8de671be4963e8a8cc15cdf1c05a2378bb2faa61",
+          "git_sha256": "a250d20c02fc331c11a3f0dd7a496120e720579bdb381ecfb3d630560341cb50",
+          "sha256": "3b6dcfda272cf12bfd5c595df167d3229cbf9fe36137d1d84411e4aa73f877fe",
+          "source": "contracts/domain/analysis.py"
+        },
+        "/app/contracts/domain/borrow_runtime.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 6212,
+          "git_blob": "cc7a7d4ff29ec7c8acdafe99708e97b12d3b4264",
+          "git_sha256": "8f2d390b0c869bef1da024a1b7be6b9876fb2cecce12a4e16be698d140147b0b",
+          "sha256": "5c73048e4be585c2f0d3833bb4126cc195ea1643bc00d22d90ac376032b4c6af",
+          "source": "contracts/domain/borrow_runtime.py"
+        },
+        "/app/contracts/domain/borrowing.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 12395,
+          "git_blob": "c2684fcbb70d817f19a649096a23e637a1187e56",
+          "git_sha256": "e61f5453a0ddf840d57bbd8978a311f8751122a540f137e0fed612e58c61bd27",
+          "sha256": "d335792f6eed89d4962bdd458695c8f5d2530dddf7571ca493157be91dda758f",
+          "source": "contracts/domain/borrowing.py"
+        },
+        "/app/contracts/domain/boundaries.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 13272,
+          "git_blob": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+          "git_sha256": "a3365a28abdaa558b166789292348908c8f123fcd4356bdf1027d317c608589d",
+          "sha256": "0671f401265d65e586976127cf68f4e9250fd92916297725d6a0b2016605ef72",
+          "source": "contracts/domain/boundaries.py"
+        },
+        "/app/contracts/domain/cohort.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 14403,
+          "git_blob": "a0c8bcf388182ba42bf3e2fc30b3db9e42684773",
+          "git_sha256": "da8bd9496ae72be8fb2e547e1cac1ff1f30c5d2574817225730c865904bce5ca",
+          "sha256": "a68a583c4a7879a635b00dd67b65f6fbb752d312d8af6fccddc97411dcdc82c5",
+          "source": "contracts/domain/cohort.py"
+        },
+        "/app/contracts/domain/cohort_runtime.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7168,
+          "git_blob": "d8acc577592dff466fc5e19bee3877c3ec71756d",
+          "git_sha256": "4f3f4809fe118e4da56ef5cff175e08a7f6602ccaba3350ef8e3180d1781429c",
+          "sha256": "cf6f8418aa345f47c5c2ec5c368ce430e85b60e2740b7fcd2caeec70e7677de4",
+          "source": "contracts/domain/cohort_runtime.py"
+        },
+        "/app/contracts/domain/common.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 4528,
+          "git_blob": "2b737d7e596085fa5f3577c772a1ad5d6e250274",
+          "git_sha256": "78c690be51b1d6a630fd75e285e481b85a6b4ad45e8fe9543fc6a2d38ab88db9",
+          "sha256": "a08da301acc4b831854ca216111c43bb1b09d975e07b50ca1efdb7feff206784",
+          "source": "contracts/domain/common.py"
+        },
+        "/app/contracts/domain/entities.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 14445,
+          "git_blob": "64a3a763b276c0f3e0c242966506e323c4273513",
+          "git_sha256": "eef39576822070e8480bb125333beefa5f24bd90a71935df4da3a2daba3f4228",
+          "sha256": "4e456effd627850955b35fed12178f89fd25de3e02b49c9c9e6d07086b241ab5",
+          "source": "contracts/domain/entities.py"
+        },
+        "/app/contracts/domain/estimands.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 11867,
+          "git_blob": "a22c6a4ce4828ac5c34fefaf84b87084f4d09ec5",
+          "git_sha256": "908b39d5ff0c84bd46fe96553d3254e96737ed4b58d435f6779c787bf40c05b3",
+          "sha256": "b7dc316db651be228c6290112c9b7dcdd61d84e258b4d8fd784de73b7eb4772f",
+          "source": "contracts/domain/estimands.py"
+        },
+        "/app/contracts/domain/evidence_v2.py": {
+          "association": "exact",
+          "bytes": 15995,
+          "git_blob": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+          "git_sha256": "921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1",
+          "sha256": "921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1",
+          "source": "contracts/domain/evidence_v2.py"
+        },
+        "/app/contracts/domain/observed_v2.py": {
+          "association": "exact",
+          "bytes": 18246,
+          "git_blob": "166b840341235e00bd229d9739d8928ea9980250",
+          "git_sha256": "b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940",
+          "sha256": "b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940",
+          "source": "contracts/domain/observed_v2.py"
+        },
+        "/app/contracts/domain/protocol.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 8184,
+          "git_blob": "e5c080376c2098f86494943c75d694f3dd184120",
+          "git_sha256": "a077669810f3e64de6830f23f23959235900bcf1c6dc8f17a9b4e393a89fe1e5",
+          "sha256": "631a29ee6097e2e3c1ba2069f30e6fff69f58d0be70d3f6b28a3982bccf7ce53",
+          "source": "contracts/domain/protocol.py"
+        },
+        "/app/contracts/domain/protocol_analysis.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 15029,
+          "git_blob": "8762313d11d8d07f487fd46d68c82eadc927b4e8",
+          "git_sha256": "49d690ad7e07928f18e9e3a253b96c14d91edcc7cf8ebcb98a0e336de893585e",
+          "sha256": "192d20c82bb4c01452614f9c24130c8e532d822f4c25e8c910351f6ccc4c3f3c",
+          "source": "contracts/domain/protocol_analysis.py"
+        },
+        "/app/contracts/domain/protocol_request.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 11781,
+          "git_blob": "ffe8fd76db3709a7e20ae707da328b621c028893",
+          "git_sha256": "24c13573de577fc4cec9a4c4bd668f82f0ee7e6cf6b5dbbcbda61a5c76b4d134",
+          "sha256": "2037a65440a53d154b0d08b6e9b1e685dcdae40c815dfe94f799957888dd0855",
+          "source": "contracts/domain/protocol_request.py"
+        },
+        "/app/contracts/runs/__init__.py": {
+          "association": "exact",
+          "bytes": 76,
+          "git_blob": "673e19c4b6ace9bcfcc1e7863956f808c2eab4b7",
+          "git_sha256": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+          "sha256": "97348e9de8a3445ff239c2922bc643fa53bff8f4fc43fbd7dda32158d272988f",
+          "source": "contracts/runs/__init__.py"
+        },
+        "/app/contracts/runs/admission.py": {
+          "association": "exact",
+          "bytes": 3928,
+          "git_blob": "9f6808fd41f3d76fbb92185d6823c6461105c135",
+          "git_sha256": "00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba",
+          "sha256": "00af27b380742f0d5b232aef1935b00874f495f54fcf0f212f82b998dec9f5ba",
+          "source": "contracts/runs/admission.py"
+        },
+        "/app/contracts/runs/admission_v2.py": {
+          "association": "exact",
+          "bytes": 23280,
+          "git_blob": "e6775a444b559aefbf3401be64365372c5f1eed3",
+          "git_sha256": "11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb",
+          "sha256": "11268829b526369d9bf4d78be1c7a9c248231d97858e23001d83f1dd81169abb",
+          "source": "contracts/runs/admission_v2.py"
+        },
+        "/app/contracts/runs/bindings-v1.json": {
+          "association": "exact",
+          "bytes": 1718,
+          "git_blob": "02a49d4594e035af3f0e44a520d05434c73b6058",
+          "git_sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+          "sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+          "source": "contracts/runs/bindings-v1.json"
+        },
+        "/app/contracts/runs/bindings-v2.json": {
+          "association": "exact",
+          "bytes": 2213,
+          "git_blob": "9fc17598b269f5d1bc36f1a4edaf7e5e05e53897",
+          "git_sha256": "40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7",
+          "sha256": "40a291edf487c83385276049e5ebf67c39a66941b0f491d147815b17c60758f7",
+          "source": "contracts/runs/bindings-v2.json"
+        },
+        "/app/contracts/runs/common.py": {
+          "association": "exact",
+          "bytes": 5996,
+          "git_blob": "fac3c565773e5da75ee544207ac7f6f5c0214f7b",
+          "git_sha256": "d9d4035427f03711f985650ea776a7e848009cde7d7438bd30e564bf78f0dc2e",
+          "sha256": "d9d4035427f03711f985650ea776a7e848009cde7d7438bd30e564bf78f0dc2e",
+          "source": "contracts/runs/common.py"
+        },
+        "/app/contracts/runs/coverage_v2.py": {
+          "association": "exact",
+          "bytes": 10251,
+          "git_blob": "f88b41afb5e569ac672ce95e5db60adba4b1b70e",
+          "git_sha256": "38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf",
+          "sha256": "38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf",
+          "source": "contracts/runs/coverage_v2.py"
+        },
+        "/app/contracts/runs/observed.py": {
+          "association": "exact",
+          "bytes": 10248,
+          "git_blob": "a864169ad752b330ef351c02acf3677d58f2424a",
+          "git_sha256": "fb45414c1848c15175458e30c4fdba0a27d8d7896bb7de186c3366aeeeaf4ae9",
+          "sha256": "fb45414c1848c15175458e30c4fdba0a27d8d7896bb7de186c3366aeeeaf4ae9",
+          "source": "contracts/runs/observed.py"
+        },
+        "/app/contracts/runs/observed_v2.py": {
+          "association": "exact",
+          "bytes": 7908,
+          "git_blob": "21a5be8b8a6528d4ff1719046a5e29426068b928",
+          "git_sha256": "e9855901f61cf26e1dae27dc383bfe66ee264292d9160919579a5e5ef975393a",
+          "sha256": "e9855901f61cf26e1dae27dc383bfe66ee264292d9160919579a5e5ef975393a",
+          "source": "contracts/runs/observed_v2.py"
+        },
+        "/app/contracts/runs/restricted-profile-v1.json": {
+          "association": "exact",
+          "bytes": 7191,
+          "git_blob": "169c93b7f8285badaa0135e3c81d9624b9423afc",
+          "git_sha256": "0dd55716eaaeec3632e258541d3bb169feb2d0493421e56cc30ef4b80e437e8e",
+          "sha256": "0dd55716eaaeec3632e258541d3bb169feb2d0493421e56cc30ef4b80e437e8e",
+          "source": "contracts/runs/restricted-profile-v1.json"
+        },
+        "/app/contracts/service/__init__.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 75,
+          "git_blob": "fbf88a0c378dcec230bfe27a8e072e2dce7428b0",
+          "git_sha256": "5c64ed8dba62d97a6d171bca56e54b985c6b1c7fbb39d084b99b2a9ef8d5bb75",
+          "sha256": "5f5aad3865db7aba1b7b36ffc5e84ca1896e79ac8dfed97e9ccefbd9dd5fa33c",
+          "source": "contracts/service/__init__.py"
+        },
+        "/app/contracts/service/bindings-v1.json": {
+          "association": "CRLF-LF-only",
+          "bytes": 885,
+          "git_blob": "bd1cc5be90811fb024e0c6974fb12d85301c5787",
+          "git_sha256": "39ae38f1e973937ad0b352e9ae9a44cc67241c932fa7a8c7bd9b4d0460501f30",
+          "sha256": "59699927e7ac045db1b4ebe08402101fe20f172d992aa92052d25881999c44bb",
+          "source": "contracts/service/bindings-v1.json"
+        },
+        "/app/contracts/service/live_hold.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7477,
+          "git_blob": "27a899de5af2ef9e4400abef97c62ed523ba37e9",
+          "git_sha256": "7210147b3ee93fb6034ef72b26f84747adbf3eece0974481c483c1ff5ff6d9bd",
+          "sha256": "930ce55193d5a43ad955992d239857f4000b0f8a28cd4a2f0fa3f75b0b4943d9",
+          "source": "contracts/service/live_hold.py"
+        },
+        "/app/contracts/service/live_safety.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 7150,
+          "git_blob": "f3827d19a94d5ff370ffe532290191cb7a9b889c",
+          "git_sha256": "0b4ff5dec1af9d4199b033292045cd7180a86c58058b3ba77fdfdace9f98ce63",
+          "sha256": "462de6d11716a1d8b2052fa567d31186b0aa9b7fac05edfe70eb1007f8f22451",
+          "source": "contracts/service/live_safety.py"
+        },
+        "/app/contracts/service/live_safety_admission.py": {
+          "association": "CRLF-LF-only",
+          "bytes": 12525,
+          "git_blob": "5247d1d7e99a6686b9163642e031858c14295845",
+          "git_sha256": "45b51be3f6fba20d1a4bda004b4cf102c7212050d43e51feaa90b5a4a622bd00",
+          "sha256": "15e6cbe34a4d9d26f644eda45a12097f1be07f281875579fb85cae214aa4fca1",
+          "source": "contracts/service/live_safety_admission.py"
+        },
+        "/app/contracts/service/spec-v1.json": {
+          "association": "CRLF-LF-only",
+          "bytes": 682,
+          "git_blob": "2330afc2d252f471fd94dd2ad01b8577aee3ce40",
+          "git_sha256": "a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3",
+          "sha256": "9086f3ec8237ccef5696cd9099b880e2d725fabbabe7a364f9186e5ea19ff0f0",
+          "source": "contracts/service/spec-v1.json"
+        },
+        "/app/observed_v2_probe.py": {
+          "association": "exact",
+          "bytes": 7364,
+          "git_blob": "a5d40caa380f19b98a688c301440a53953ce1352",
+          "git_sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "source": "tooling/foundation/observed_v2_probe.py"
+        },
+        "/app/services/foundation/README.md": {
+          "association": "exact",
+          "bytes": 8347,
+          "git_blob": "7247b30ede5d8303312ae6425cc65d4cc8b9b5e3",
+          "git_sha256": "3dd7ca8490d9ae773af49342d9cd53323308fde149cbd2a34a43a09317cb9814",
+          "sha256": "3dd7ca8490d9ae773af49342d9cd53323308fde149cbd2a34a43a09317cb9814",
+          "source": "services/foundation/README.md"
+        },
+        "/app/services/foundation/__init__.py": {
+          "association": "exact",
+          "bytes": 82,
+          "git_blob": "5876fa882f9ed194b460652381c73c1c8343cfc6",
+          "git_sha256": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481",
+          "sha256": "a3dc82d53874a3c3bad267daea942da52405efb45da3350952a0c2c1a05fa481",
+          "source": "services/foundation/__init__.py"
+        },
+        "/app/services/foundation/admission.py": {
+          "association": "exact",
+          "bytes": 2384,
+          "git_blob": "337c316d85c83b0b248989663f8d8b8848cd3bdd",
+          "git_sha256": "619b5de040c6990f339a1d755dc07f41c201e3ad3303efc0c2602cc21bed1d47",
+          "sha256": "619b5de040c6990f339a1d755dc07f41c201e3ad3303efc0c2602cc21bed1d47",
+          "source": "services/foundation/admission.py"
+        },
+        "/app/services/foundation/analysis.py": {
+          "association": "exact",
+          "bytes": 24802,
+          "git_blob": "0b0641dfe621f637ec54c15d18a5c9440e651bf7",
+          "git_sha256": "52a55ffd565f377ab3a4a980fa5724f505fcb8970593f493bab8d2e23480691e",
+          "sha256": "52a55ffd565f377ab3a4a980fa5724f505fcb8970593f493bab8d2e23480691e",
+          "source": "services/foundation/analysis.py"
+        },
+        "/app/services/foundation/analysis_cli.py": {
+          "association": "exact",
+          "bytes": 1733,
+          "git_blob": "fe505d515916903b1e06edf3e5d9941de382ae57",
+          "git_sha256": "75c92a5163d6677c638cf2531fac85a205278fcd617e85412e20872239467e74",
+          "sha256": "75c92a5163d6677c638cf2531fac85a205278fcd617e85412e20872239467e74",
+          "source": "services/foundation/analysis_cli.py"
+        },
+        "/app/services/foundation/analysis_sources.py": {
+          "association": "exact",
+          "bytes": 1033,
+          "git_blob": "d88b40374d6137406ee3d048401b4c4b103f1932",
+          "git_sha256": "13c953652207f62dcd859522eec4cce4e16d794bd0ef7e4ccae89877b5bf0008",
+          "sha256": "13c953652207f62dcd859522eec4cce4e16d794bd0ef7e4ccae89877b5bf0008",
+          "source": "services/foundation/analysis_sources.py"
+        },
+        "/app/services/foundation/app.py": {
+          "association": "exact",
+          "bytes": 63050,
+          "git_blob": "c2553b0ce0e57e85f9fb055436aea1fc7401d6d7",
+          "git_sha256": "500b594dedd5dc86eb34dbc89b9c60245378e8447b4eb1382eec0babfc205a5e",
+          "sha256": "500b594dedd5dc86eb34dbc89b9c60245378e8447b4eb1382eec0babfc205a5e",
+          "source": "services/foundation/app.py"
+        },
+        "/app/services/foundation/appointment.py": {
+          "association": "exact",
+          "bytes": 7641,
+          "git_blob": "b42bdcbc265f34482ef0281ba013fd1473645ea2",
+          "git_sha256": "0a4f6962b6a9cd5345f1f3455d960ea908ab3a924acee9f00380cce9988365a8",
+          "sha256": "0a4f6962b6a9cd5345f1f3455d960ea908ab3a924acee9f00380cce9988365a8",
+          "source": "services/foundation/appointment.py"
+        },
+        "/app/services/foundation/archive.py": {
+          "association": "exact",
+          "bytes": 8265,
+          "git_blob": "879298abdd7f939074b662dfbd3f53f206ba4dc3",
+          "git_sha256": "2ebd6c72a6a11a53cfefbfe03f07e92e49f583946842ee69c684de3a22587234",
+          "sha256": "2ebd6c72a6a11a53cfefbfe03f07e92e49f583946842ee69c684de3a22587234",
+          "source": "services/foundation/archive.py"
+        },
+        "/app/services/foundation/cli.py": {
+          "association": "exact",
+          "bytes": 6477,
+          "git_blob": "6875e89d39e5cb8529d2a9d517582418052720c4",
+          "git_sha256": "df62837792b0c137d0d832cc540ba6e75111fa7cf5d21dfc82eb4ce48c0ded2c",
+          "sha256": "df62837792b0c137d0d832cc540ba6e75111fa7cf5d21dfc82eb4ce48c0ded2c",
+          "source": "services/foundation/cli.py"
+        },
+        "/app/services/foundation/cohort_analysis.py": {
+          "association": "exact",
+          "bytes": 10712,
+          "git_blob": "40c932a89983eb7de79e56fa4303b5313f123fda",
+          "git_sha256": "b07615bbec5812c59008573c3880bb2e5161ccceae16cc5715f00101756be490",
+          "sha256": "b07615bbec5812c59008573c3880bb2e5161ccceae16cc5715f00101756be490",
+          "source": "services/foundation/cohort_analysis.py"
+        },
+        "/app/services/foundation/cohort_registration.py": {
+          "association": "exact",
+          "bytes": 7668,
+          "git_blob": "dabe586f8c65b1def181b4cbbc73db0bf75e6cb1",
+          "git_sha256": "a32b55c6f48715170d5b19b2d270567b92db3fa3dafe0ce1def31c956a89c336",
+          "sha256": "a32b55c6f48715170d5b19b2d270567b92db3fa3dafe0ce1def31c956a89c336",
+          "source": "services/foundation/cohort_registration.py"
+        },
+        "/app/services/foundation/configuration.py": {
+          "association": "exact",
+          "bytes": 1799,
+          "git_blob": "cfb9891be1e98fe56d0b7662bf3cd335eac4ae60",
+          "git_sha256": "df049fdc0342483449e676a0be93ed69350282f9e82041b1e1c5ba1b9c729dbf",
+          "sha256": "df049fdc0342483449e676a0be93ed69350282f9e82041b1e1c5ba1b9c729dbf",
+          "source": "services/foundation/configuration.py"
+        },
+        "/app/services/foundation/cutover.py": {
+          "association": "exact",
+          "bytes": 14398,
+          "git_blob": "a08435a4c0eb7f1afb3a7dfa48d61c86668f1377",
+          "git_sha256": "79682fc8afbe5adc83259d58d1b46fbac124ec9ffab766c69076a86c7a41b062",
+          "sha256": "79682fc8afbe5adc83259d58d1b46fbac124ec9ffab766c69076a86c7a41b062",
+          "source": "services/foundation/cutover.py"
+        },
+        "/app/services/foundation/followup_cutover.py": {
+          "association": "exact",
+          "bytes": 5915,
+          "git_blob": "09f54a9c8573cea9d9709850cb4fecd9b4fba255",
+          "git_sha256": "2667c5e996486cebfce9a054b51b6df13ce2aed8b7371d5f7e97c10a512c50e7",
+          "sha256": "2667c5e996486cebfce9a054b51b6df13ce2aed8b7371d5f7e97c10a512c50e7",
+          "source": "services/foundation/followup_cutover.py"
+        },
+        "/app/services/foundation/live_coordinator.py": {
+          "association": "exact",
+          "bytes": 8775,
+          "git_blob": "652a45fab28d47d99f8a1aa17e8ed3b4c01232c4",
+          "git_sha256": "cecd615392b865b2b0806845d75a92441a3f497414a19e111330ec1ab9f4a4df",
+          "sha256": "cecd615392b865b2b0806845d75a92441a3f497414a19e111330ec1ab9f4a4df",
+          "source": "services/foundation/live_coordinator.py"
+        },
+        "/app/services/foundation/live_hold.py": {
+          "association": "exact",
+          "bytes": 46242,
+          "git_blob": "19093dabc87b06221310904c531340b514963e0c",
+          "git_sha256": "1849284f3b1bd4c72d416e35af0b9d16a33c739354c3c8b4889f23294fefa00c",
+          "sha256": "1849284f3b1bd4c72d416e35af0b9d16a33c739354c3c8b4889f23294fefa00c",
+          "source": "services/foundation/live_hold.py"
+        },
+        "/app/services/foundation/live_journal.py": {
+          "association": "exact",
+          "bytes": 9073,
+          "git_blob": "a3c5000d46cd957fdca2c08555235080207d8b4f",
+          "git_sha256": "3362a295cd41fe04ccd75aad467606463460755c7a8fb65921bf34171a2a5df6",
+          "sha256": "3362a295cd41fe04ccd75aad467606463460755c7a8fb65921bf34171a2a5df6",
+          "source": "services/foundation/live_journal.py"
+        },
+        "/app/services/foundation/live_safety_export.py": {
+          "association": "exact",
+          "bytes": 9227,
+          "git_blob": "7e42f154368931bd8c37e1d3b2035d5fdf2db1d4",
+          "git_sha256": "41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87",
+          "sha256": "41574808cd1aa87f5e302f6beeda03cf439a09e71022da3f3c59227f373a4c87",
+          "source": "services/foundation/live_safety_export.py"
+        },
+        "/app/services/foundation/live_tasks.py": {
+          "association": "exact",
+          "bytes": 3561,
+          "git_blob": "90d26eda61d40bbd98c4da3d0ba8a08fc0f2b140",
+          "git_sha256": "edbac613209c736743b2f394b66bb0f2809526db8dbe284e9941302481b5ef46",
+          "sha256": "edbac613209c736743b2f394b66bb0f2809526db8dbe284e9941302481b5ef46",
+          "source": "services/foundation/live_tasks.py"
+        },
+        "/app/services/foundation/migrations/001_foundation.sql": {
+          "association": "exact",
+          "bytes": 3490,
+          "git_blob": "e48f951e9a12991154bdff170645ae737f73adcb",
+          "git_sha256": "b76b1af7f41080c83f1ac736655ca4bdca6ed03310b29e8196f4638894d0c93d",
+          "sha256": "b76b1af7f41080c83f1ac736655ca4bdca6ed03310b29e8196f4638894d0c93d",
+          "source": "services/foundation/migrations/001_foundation.sql"
+        },
+        "/app/services/foundation/migrations/002_observed_archive.sql": {
+          "association": "exact",
+          "bytes": 1048,
+          "git_blob": "567152e7005837519003b62d9fc798c022cd0812",
+          "git_sha256": "3e7660781b2aac3e5dcfa071831f9fc6d02997347b9aae3af73290133f6439ca",
+          "sha256": "3e7660781b2aac3e5dcfa071831f9fc6d02997347b9aae3af73290133f6439ca",
+          "source": "services/foundation/migrations/002_observed_archive.sql"
+        },
+        "/app/services/foundation/migrations/003_live_hold.sql": {
+          "association": "exact",
+          "bytes": 3747,
+          "git_blob": "56cbb7f8d710f5451e923ac8c2c52a613f23edb0",
+          "git_sha256": "896105c407e13fcd91edb15b924e87a589e6e7e84d35340dbb4dbf2d118def2c",
+          "sha256": "896105c407e13fcd91edb15b924e87a589e6e7e84d35340dbb4dbf2d118def2c",
+          "source": "services/foundation/migrations/003_live_hold.sql"
+        },
+        "/app/services/foundation/migrations/004_live_hold_followups.sql": {
+          "association": "exact",
+          "bytes": 1786,
+          "git_blob": "c5a13f7601f62f5b65d59afd36c976226e82bbd9",
+          "git_sha256": "af9e77dcb205e95b9bf448bd07c315d042182ccda205d264ebb3883f58673134",
+          "sha256": "af9e77dcb205e95b9bf448bd07c315d042182ccda205d264ebb3883f58673134",
+          "source": "services/foundation/migrations/004_live_hold_followups.sql"
+        },
+        "/app/services/foundation/migrations/005_analysis.sql": {
+          "association": "exact",
+          "bytes": 1874,
+          "git_blob": "d0f1984fc92b3aaa441808ca47968da9cc27164c",
+          "git_sha256": "9e34bc868e8bd8e6da36d4629c20ccf96143833ea723bc1998cc803fcaed4f84",
+          "sha256": "9e34bc868e8bd8e6da36d4629c20ccf96143833ea723bc1998cc803fcaed4f84",
+          "source": "services/foundation/migrations/005_analysis.sql"
+        },
+        "/app/services/foundation/nof1.py": {
+          "association": "exact",
+          "bytes": 22385,
+          "git_blob": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+          "git_sha256": "43a8398d8282ae647026872c9f6f881f7000a28050e1b377bbb90d4402d98b3c",
+          "sha256": "43a8398d8282ae647026872c9f6f881f7000a28050e1b377bbb90d4402d98b3c",
+          "source": "services/foundation/nof1.py"
+        },
+        "/app/services/foundation/nof1_clock.py": {
+          "association": "exact",
+          "bytes": 972,
+          "git_blob": "17aaa857d3d5039feceec9539e78ded207fefedc",
+          "git_sha256": "61713be62783a031c8176bf8c95e1ab8abc399bd1c6687b82663f6773be3d67d",
+          "sha256": "61713be62783a031c8176bf8c95e1ab8abc399bd1c6687b82663f6773be3d67d",
+          "source": "services/foundation/nof1_clock.py"
+        },
+        "/app/services/foundation/protocol.py": {
+          "association": "exact",
+          "bytes": 16730,
+          "git_blob": "99023a11fb71933903e0925f44afb1944c96bda7",
+          "git_sha256": "2623bb80a32bdbbaf6ea00dc9c80bcfe0558cca1d2c39fd96e87cedb8b1e0932",
+          "sha256": "2623bb80a32bdbbaf6ea00dc9c80bcfe0558cca1d2c39fd96e87cedb8b1e0932",
+          "source": "services/foundation/protocol.py"
+        },
+        "/app/services/foundation/replay.py": {
+          "association": "exact",
+          "bytes": 14087,
+          "git_blob": "c65c8a2fa2adb75130a0ea8597428804bfd7c141",
+          "git_sha256": "2786efc951269150ce60bcb91daff37e28502c59107f76d06a844b330b78c8f0",
+          "sha256": "2786efc951269150ce60bcb91daff37e28502c59107f76d06a844b330b78c8f0",
+          "source": "services/foundation/replay.py"
+        },
+        "/app/services/foundation/research_enrollment.py": {
+          "association": "exact",
+          "bytes": 6899,
+          "git_blob": "30ebb476cde8f57292373950fb961117a557aceb",
+          "git_sha256": "d2be49e543648e29f8c201be582aa3ffb2b96265bbd7e497ecefbe8be6167107",
+          "sha256": "d2be49e543648e29f8c201be582aa3ffb2b96265bbd7e497ecefbe8be6167107",
+          "source": "services/foundation/research_enrollment.py"
+        },
+        "/app/services/foundation/server.py": {
+          "association": "exact",
+          "bytes": 116,
+          "git_blob": "5151eeef10d1b9c4cd004e0043f7bf5d9f87b46d",
+          "git_sha256": "ae1736a22f03c2b5d3044d1a45a8263526f5f9fb249eb7d2f25e6f3961468448",
+          "sha256": "ae1736a22f03c2b5d3044d1a45a8263526f5f9fb249eb7d2f25e6f3961468448",
+          "source": "services/foundation/server.py"
+        },
+        "/app/services/foundation/simulation.py": {
+          "association": "exact",
+          "bytes": 13759,
+          "git_blob": "76c113972ea2eaa24866ded9cba4a19776def72f",
+          "git_sha256": "f9847ad960c4c0820bea6ca6acc8cbe64210d0f2151608b5544fcd001bd06446",
+          "sha256": "f9847ad960c4c0820bea6ca6acc8cbe64210d0f2151608b5544fcd001bd06446",
+          "source": "services/foundation/simulation.py"
+        },
+        "/app/services/foundation/store.py": {
+          "association": "exact",
+          "bytes": 6077,
+          "git_blob": "ca5c492480702874f38c6c9ca1d5808adb9c4505",
+          "git_sha256": "bf479f9148a1f242f47ab77e708003a3fe5e942f0de0c0fc59afb99604788d37",
+          "sha256": "bf479f9148a1f242f47ab77e708003a3fe5e942f0de0c0fc59afb99604788d37",
+          "source": "services/foundation/store.py"
+        },
+        "/app/services/foundation/studies/source-28814e65.json": {
+          "association": "exact",
+          "bytes": 1904,
+          "git_blob": "f737ef100d2a8294cebe7b079855b1a3da2c7aa0",
+          "git_sha256": "1848e5a9415d89c7919b3faa5f4d1cebba844f2b8095f142fec21115b7fa91e9",
+          "sha256": "1848e5a9415d89c7919b3faa5f4d1cebba844f2b8095f142fec21115b7fa91e9",
+          "source": "services/foundation/studies/source-28814e65.json"
+        },
+        "/app/services/foundation/studies/source-7c97862d.json": {
+          "association": "exact",
+          "bytes": 1904,
+          "git_blob": "43c4c9eb717b857a9864089ca8ce66eb4dbcb510",
+          "git_sha256": "9c541a723c558f6aa01818b4789ed7c68172c17a790fe130043be305acaba079",
+          "sha256": "9c541a723c558f6aa01818b4789ed7c68172c17a790fe130043be305acaba079",
+          "source": "services/foundation/studies/source-7c97862d.json"
+        },
+        "/app/services/foundation/studies/source-d48331f8.json": {
+          "association": "exact",
+          "bytes": 1899,
+          "git_blob": "1c48b49dc30801b05d0d736e3b8b5dde900daa07",
+          "git_sha256": "c13654f735eca21d3049b4f297c47ba75a31885606b83c6c4e0540dfea96d290",
+          "sha256": "c13654f735eca21d3049b4f297c47ba75a31885606b83c6c4e0540dfea96d290",
+          "source": "services/foundation/studies/source-d48331f8.json"
+        },
+        "/app/services/foundation/upgrade003.py": {
+          "association": "exact",
+          "bytes": 13592,
+          "git_blob": "8f2cb773f265b31f0c518b6c0e5e23a35b721d47",
+          "git_sha256": "0e5fb407c2bc3fe7bb59149bdccec29c23a78261eeb2242b5cb3b728796eda9d",
+          "sha256": "0e5fb407c2bc3fe7bb59149bdccec29c23a78261eeb2242b5cb3b728796eda9d",
+          "source": "services/foundation/upgrade003.py"
+        },
+        "/app/services/foundation/upgrade004.py": {
+          "association": "exact",
+          "bytes": 1938,
+          "git_blob": "34f4e9995833965588a55c5c0d71078c0aee6251",
+          "git_sha256": "c7e7cbae8c1f0ee44333734ca8bbbb1b6472c31c9874de3e8f8822d978e38399",
+          "sha256": "c7e7cbae8c1f0ee44333734ca8bbbb1b6472c31c9874de3e8f8822d978e38399",
+          "source": "services/foundation/upgrade004.py"
+        },
+        "/app/services/foundation/workflow.py": {
+          "association": "exact",
+          "bytes": 11232,
+          "git_blob": "b30701f4aa38d0ddfa599db23d497702a2f8d636",
+          "git_sha256": "22b153d79a1f1cce63e4945f1ba021ed2d2554e328c6359aa393729221882a8e",
+          "sha256": "22b153d79a1f1cce63e4945f1ba021ed2d2554e328c6359aa393729221882a8e",
+          "source": "services/foundation/workflow.py"
+        }
+      },
+      "dockerfile": {
+        "association": "exact",
+        "bytes": 2730,
+        "git_blob": "eac1933cf2e1e222045783f777063f60e0a8c644",
+        "git_sha256": "52b05fadd0081e94d8494f910ad3a98ce55cb2825a63efbe66e231f80997c93c",
+        "sha256": "52b05fadd0081e94d8494f910ad3a98ce55cb2825a63efbe66e231f80997c93c",
+        "source": "tooling/foundation/service.Dockerfile"
+      },
+      "generated_copy": [
+        "COPY --from=client /client/dist/ /app/web/dist/"
+      ],
+      "no_source_overlays_required": true,
+      "qualification": "pending exact source freeze and independent review",
+      "user": "10001:10001"
+    }
+  },
+  "source_parent": "ce727cafb45016345e24bc1da9b4c7d10d2d2335"
+}
