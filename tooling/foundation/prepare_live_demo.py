@@ -18,9 +18,10 @@ def main():
     sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'tests/integration/replay'))
     from live_helpers import live_fixture
     fixtures=[];grants=[];rules={}
-    for name,threshold in [('concern',False),('threshold',True),('second-concern',False)]:
+    for name,options in [('concern',dict(multi_followup=True)),('threshold',dict(threshold=True)),
+            ('second-concern',dict(extra_hold=True)),('mixed',dict(extra_hold=True,extra_threshold=True))]:
         location=args.fixture_root/name
-        fixture,authority,installed,command=live_fixture(location,run_name='live-demo-'+name,threshold=threshold)
+        fixture,authority,installed,command=live_fixture(location,run_name='live-demo-'+name,**options)
         fixtures.append((name,location,fixture,authority,command))
         grants.extend(installed.authority.grants)
         for rule in installed.review_rules.rules:rules[rule.ref.id]=rule
@@ -35,6 +36,10 @@ def main():
         archive_export(store,fixture['raw'],location/'staging',archive_authority,owner_id='alice',received_at=datetime.now(timezone.utc))
         configs.append(dict(export_id=name,manifest=str(location/'staging/manifest.json'),artifact_root=str(location/'staging'),authority=str(location/'staging/authority.json')))
         cases.append(dict(name=name,patient_id='SYN-02',command=command,expected='named T-OBS2-CLEARANCE-POLICY block' if name=='threshold' else 'explicit structural concern review then assessment only'))
+        from contracts.domain.evidence_v2 import exact_ref
+        for transition in fixture['history'].records:
+            if transition.kind=='hold_transition_bundle' and transition.transition_type=='change_reason':
+                cases.append(dict(name=name+'-strengthen',patient_id='SYN-02',command={**command,'bundle_ref':exact_ref(transition).model_dump(mode='json'),'trigger_refs':[r.model_dump(mode='json') for r in transition.trigger_refs]},expected='all same-episode obligations; named threshold block' if name=='mixed' else 'strengthen or reopen selected generation; stale prior review'))
     args.fixture_root.joinpath('bundle.json').write_text(bundle.model_dump_json(),encoding='utf-8')
     args.fixture_root.joinpath('archives.json').write_text(canonical(configs),encoding='utf-8')
     runtime=dict(id='foundation-qualified-linux-sqlite',version='Python3.13.7-SQLite3.54.1',sha256='ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa')

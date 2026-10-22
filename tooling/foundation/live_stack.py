@@ -69,7 +69,7 @@ def main():
         '--fixture-root','/fixtures','--database','/data/remission.sqlite','--historical-source','/historical/remission.sqlite','--source-commit',head])
     # Exact copied source audit without a source mount in the runtime image.
     files=[*ROOT.joinpath('services/foundation').glob('*.py'),*ROOT.joinpath('services/foundation/migrations').glob('*.sql'),
-        *[ROOT/'contracts/service'/f for f in ['__init__.py','live_hold.py','live_safety.py','live_safety_admission.py','bindings-v1.json']]]
+        *[ROOT/'contracts/service'/f for f in ['__init__.py','live_hold.py','live_safety.py','live_safety_admission.py','bindings-v1.json','spec-v1.json']]]
     expected={str(p.relative_to(ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
     probe="import hashlib,json,os,pathlib; expected=json.loads(os.environ['EXPECTED_HASHES']); actual={p:hashlib.sha256(pathlib.Path('/app',p).read_bytes()).hexdigest() for p in expected}; assert actual==expected,(actual,expected); print(json.dumps({'uid':os.getuid(),'source_sha256':actual},sort_keys=True))"
     command(['docker','run','--rm','--network','none',*COMMON,'--env','EXPECTED_HASHES='+json.dumps(expected),args.service_image,'python','-c',probe])
