@@ -14,6 +14,17 @@ import sys
 import time
 
 IMAGE='sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa'
+# Restrict at the Docker boundary, before stdout is captured or persisted. Role
+# qualification and genuine-run harnesses must retain this discipline as well.
+TERMINAL_INSPECT_FORMAT=(
+    '{"Id":{{json .Id}},"Image":{{json .Image}},"State":{{json .State}},'
+    '"User":{{json .Config.User}},"WorkingDir":{{json .Config.WorkingDir}},'
+    '"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},'
+    '"NetworkMode":{{json .HostConfig.NetworkMode}},"NanoCpus":{{json .HostConfig.NanoCpus}},'
+    '"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},'
+    '"PidsLimit":{{json .HostConfig.PidsLimit}},"CapAdd":{{json .HostConfig.CapAdd}},'
+    '"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},'
+    '"Tmpfs":{{json .HostConfig.Tmpfs}},"Mounts":{{json .Mounts}}}')
 
 
 def write(path,value):
@@ -54,9 +65,12 @@ def batch(source,folder,tests):
     paths=['services/generator/research_support.py','contracts/runs/support_research.py','services/foundation/protocol.py',
         'services/generator/restricted.py','services/generator/restricted_v2.py',
         'tests/run_contracts/test_support_research_producer.py','tests/methods/test_support_wcls.py',
+        'tests/contracts/test_protocol_boundary.py',
+        'docs/implementation/evidence/support-producer-20261022/run_unit_batch.py',
         'docs/implementation/evidence/support-producer-20261022/run_support_once.py',
         'docs/implementation/evidence/support-producer-20261022/support_roles.Dockerfile']
     write(folder/'command.json',dict(argv=args,source_head=head,unit_only=True,watchdog_seconds=300,
+        terminal_inspect_format=TERMINAL_INSPECT_FORMAT,
         source_sha256={p:hashlib.sha256((source/p).read_bytes()).hexdigest() for p in paths}))
     created=subprocess.run(args,capture_output=True,text=True,timeout=30)
     (folder/'create.stdout').write_text(created.stdout);(folder/'create.stderr').write_text(created.stderr)
@@ -74,7 +88,8 @@ def batch(source,folder,tests):
     with (folder/'terminal.stdout').open('w') as stdout,(folder/'terminal.stderr').open('w') as stderr:
         result=subprocess.run(['docker','start','--attach',cid],stdout=stdout,stderr=stderr,timeout=325)
     child.wait(timeout=20)
-    terminal=subprocess.run(['docker','inspect',cid],capture_output=True,text=True,timeout=15)
+    terminal=subprocess.run(['docker','inspect','--format',TERMINAL_INSPECT_FORMAT,cid],capture_output=True,text=True,timeout=15)
+    terminal.check_returncode()
     (folder/'container-terminal.json').write_text(terminal.stdout)
     wait=subprocess.run(['docker','wait',cid],capture_output=True,text=True,timeout=10)
     write(folder/'result.json',dict(cid=cid,attach_returncode=result.returncode,container_exit=wait.stdout.strip(),
