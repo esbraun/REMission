@@ -45,7 +45,7 @@ def conditional_endpoint(b, a, rho, sigma_e, sigma_isi, current_e, beta_c, beta_
     return mean, sd
 
 
-def integration_bounds(batches, *, seed=CONFIG["bootstrap_seed"]):
+def integration_bounds(batches, *, seed=CONFIG["bootstrap_seed"],deadline=None):
     """Whole 20-draw within-chain block bootstrap, retaining all eight batches.
 
     Sums are sufficient for the two prespecified variances, so bootstrapping
@@ -65,6 +65,8 @@ def integration_bounds(batches, *, seed=CONFIG["bootstrap_seed"]):
     rng = np.random.default_rng(seed)
     u, lower = [], []
     for _ in range(CONFIG["bootstrap_resamples"]):
+        if deadline is not None and time.monotonic()>deadline:
+            raise TimeoutError('whole-integration-deadline')
         selected = sums[np.arange(chains)[:,None], rng.integers(nb,size=(chains,nb))].sum(axis=(0,1))
         vbar = selected[2]/m
         s2 = (selected[1]-selected[0]**2/m)/(m-1)
@@ -103,11 +105,15 @@ def integrate(parameters, *, day, current_c, current_e, seed, stage=lambda value
     n = 0
     accepted = False
     delta = None
+    def timed_out():
+        return None,dict(status="numerical-precision-unmet",attempted=reports,seconds=time.monotonic()-started,
+                         cap_seconds=cap,reason="whole-integration-deadline")
     for k in [1024,2048,4096,8192,16384,32768,65536]:
         add = k//8-n
         for i in range(m):
             if time.monotonic()-started > cap:
-                return None, dict(status="numerical-precision-unmet", attempted=reports, seconds=time.monotonic()-started, cap_seconds=cap)
+                reports.append(dict(K=k,status='interrupted',completed_outer_draws=i))
+                return timed_out()
             for batch,rng in enumerate(streams[i]):
                 taken = rng.random((add,42)) < flat["p_adherence"][i]
                 # Common adherence uniforms pair the two retained-plan branches.
@@ -117,7 +123,11 @@ def integrate(parameters, *, day, current_c, current_e, seed, stage=lambda value
         n = k//8
         batches = (totals/n).reshape(*shape,8)
         delta = batches.mean(axis=-1)
-        bounds = integration_bounds(batches)
+        try:
+            bounds = integration_bounds(batches,deadline=started+cap)
+        except TimeoutError:
+            reports.append(dict(K=k,status='precision-checks-interrupted'))
+            return timed_out()
         summary = np.array([delta.std(ddof=1), *np.quantile(delta,[.025,.975])])
         tolerance = max(CONFIG["absolute_stability"], .02*np.sqrt(bounds["L"]))
         change = None if previous is None else np.abs(summary-previous)
@@ -127,10 +137,15 @@ def integrate(parameters, *, day, current_c, current_e, seed, stage=lambda value
                       stability_pass=stable, seconds=time.monotonic()-started)
         reports.append(record)
         stage(dict(stage="rollouts", K=k, checks=record))
+        # Bootstrap, quantiles and progress publication belong to the same cap.
+        if time.monotonic()-started>cap:
+            return timed_out()
         if bounds["variance_pass"] and bounds["mean_pass"] and stable:
             accepted = True
             break
         previous = summary
+    if time.monotonic()-started>cap:
+        return timed_out()
     return (delta if accepted else None), dict(status="accepted" if accepted else "numerical-precision-unmet",
         attempted=reports, seconds=time.monotonic()-started, gaussian_integration="exact conditional AR plus endpoint measurement",
         bootstrap=dict(resamples=1000,block=20,seed=CONFIG["bootstrap_seed"]),

@@ -5,11 +5,13 @@ import importlib.metadata as metadata
 import json
 from pathlib import Path
 import resource
+import os
 import time
 import traceback
 
 import numpy as np
 import xarray as xr
+import pymc as pm
 from contracts.domain.analysis import AnalysisInput, AnalysisResult, CONFIG_REF, ESTIMAND_REF, canonical, sha
 from methods.visit.model import build, inputs, sample, diagnostics
 from methods.visit.numerics import integrate, predictive
@@ -43,10 +45,24 @@ def run(source, out):
         data = inputs(product.history)
         result["diagnostics"]["data"] = dict(day=data["day"],quality=len(data["quality"]),isi=len(data["isi"]),
             deliveries=data["deliveries"],taken=data["taken"],local_arm_support=data["arms"],
-            consumed_ids=data["record_ids"],likelihood="one total ISI per14-night recall plus available quality")
+            consumed_ids=data["record_ids"],likelihood_blocks=data["likelihood_blocks"],likelihood="one total ISI per14-night recall plus available quality")
         if len(data["arms"])<2:
             result["limitations"].append("Only one or zero local treatment arms observed; the other arm relies on the declared prior.")
         model = build(data)
+        with model:
+            prior=pm.sample_prior_predictive(draws=64,random_seed=seed+313, var_names=['burden','sigma_isi','sigma_quality'])
+        def observed_predictive(group,seed_suffix):
+            rng=np.random.default_rng(np.random.SeedSequence([seed,seed_suffix]))
+            burden=np.asarray(group['burden'].values)
+            isi_mu=burden[...,data['recall']].mean(axis=-1)
+            isi=np.clip(np.floor(isi_mu+rng.normal(size=isi_mu.shape)*group['sigma_isi'].values[...,None]+.5),0,28)
+            quality_mu=10-burden[...,data['qindex']]/3
+            quality=np.round(np.clip(quality_mu+rng.normal(size=quality_mu.shape)*group['sigma_quality'].values[...,None],0,10),3)
+            return isi,quality
+        prior_isi,prior_quality=observed_predictive(prior['prior'],314)
+        np.savez_compressed(out/'prior-predictive.npz',isi=prior_isi,quality=prior_quality)
+        result['diagnostics']['prior_predictive']=dict(draws=64,isi_range=[float(prior_isi.min()),float(prior_isi.max())],
+            note='Prior simulation at actual observed grid; descriptive model check, not calibration')
         attempts = []
         trace = None
         for extension in (False,True):
@@ -66,6 +82,10 @@ def run(source, out):
             result.update(status="abstained",reason="nuts-diagnostics-unmet")
         else:
             posterior = trace["posterior"]
+            replicated_isi,replicated_quality=observed_predictive(posterior,315)
+            np.savez_compressed(out/'observed-posterior-predictive.npz',isi=replicated_isi,quality=replicated_quality)
+            result['diagnostics']['observed_posterior_predictive']=dict(isi_mean=replicated_isi.mean(axis=(0,1)).tolist(),observed_isi=data['isi'].tolist(),
+                quality_mean=replicated_quality.mean(axis=(0,1)).tolist(),observed_quality=data['quality'].tolist(),note='Descriptive fit check; excludes function and diary')
             parameters = {k:np.asarray(posterior[k].values) for k in ("b","a","rho","sigma_e","sigma_isi","p_adherence")}
             parameters.update(beta_c=posterior["patient_beta"].values[...,0],beta_e=posterior["patient_beta"].values[...,1],current_e=posterior["error"].values[...,-1])
             stage(dict(stage="rollouts"))
@@ -93,7 +113,8 @@ def run(source, out):
         result.update(status="failed",reason=f"{type(error).__name__}: {str(error)[:180]}")
     result["diagnostics"].update(seconds=time.monotonic()-started,peak_memory_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         runtime=dict(packages={name:metadata.version(name) for name in ("pymc","pytensor","arviz","arviz-stats","numpy","scipy","xarray")},
-                     backend="pymc",sampler="native_nuts",precision="float64",cpu_limit=2,memory_gib=2))
+                     backend="pymc",sampler="native_nuts",precision="float64",cpu_limit=2,memory_gib=2,
+                     learner_image=os.environ.get('REMISSION_LEARNER_IMAGE','not-recorded'),source_commit=os.environ.get('REMISSION_SOURCE_COMMIT','not-recorded')))
     publish(out/"diagnostics.json",result["diagnostics"])
     result["artifacts"] = [dict(path=p.name,sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in sorted(out.iterdir()) if p.is_file() and p.name not in ("result.json","progress.json") and p.suffix!=".partial"]
     parsed = AnalysisResult.model_validate_json(canonical(result))

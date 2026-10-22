@@ -26,7 +26,10 @@ def inputs(history):
     return dict(day=day,nights=nights,c=c,e=e,quality=np.array([r.sleep_quality for r in quality]),
                 qindex=qindex,isi=np.array([r.total for r in isi]),recall=np.asarray(recall),
                 taken=sum(r.stage == "taken" for r in deliveries.values()), deliveries=len(deliveries),
-                record_ids=[r.record_id for r in quality+isi],
+                record_ids=[r.record_id for r in history.records],
+                likelihood_blocks=dict(isi=[r.record_id for r in isi],quality=[r.record_id for r in quality],
+                    adherence=[r.record_id for r in deliveries.values()],
+                    observation_indicators=[r.record_id for r in history.records if r.kind=='daily_report']),
                 arms=sorted({r.option for r in deliveries.values()}))
 
 

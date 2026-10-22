@@ -37,6 +37,8 @@ ESTIMAND_REF = reference("EST-VISIT:poc-hstar-v1", "Expected ISI at 42 future da
 MODEL_REF = reference(CONFIG["model"], "contract 20261021: b hierarchy; independent beta hierarchy; sinusoid; AR; rounded clipped total ISI and quality")
 PRIOR_REF = reference("poc-visit-prior-v1", "mu_b N(19,5);sd_b HN(3);beta N(0,4);sd_beta HN(1);a N(0,1);rho U(-.95,.95);sd_e,sd_isi HN(2);sd_quality HN(1);p Beta(1,1)")
 PROTOCOL_REF = reference("poc-visit-retain-v1", "42 future nights; endpoint mean nights29..42; retain both plans at14/28; no prompt; C .65/.35 E .8/.2; untreated baseline")
+DGP_REF = reference('poc-longitudinal-v1','public observed v1 interface; private realizations denied')
+SCENARIO_REF = reference('poc-interactive-reference-v1','uninterrupted physician-selected behavioral plans')
 
 
 class Header(StrictModel):
@@ -185,6 +187,14 @@ def project_history(projected):
     selected = {"daily_report", "isi", "assignment", "delivery"}
     if any(r.kind == "intercurrent_event" for r in projected.records):
         raise ValueError("uninterrupted reference model only")
+    # Admit the explicitly supported observed producer BEFORE stripping source
+    # envelopes. This is engineering source qualification, not clinical review.
+    for r in [*projected.records,*projected.provenance]:
+        if r.kind not in selected:
+            continue
+        expected=('foundation-synthetic','research_configuration') if r.kind=='assignment' else ('poc-longitudinal-v1','simulation')
+        if (r.source.id,r.source.adapter)!=expected or r.source.version!='1.0.0' or r.schema_version!='1.0.0':
+            raise ValueError('unqualified observed producer for restricted v1 analysis')
     records = []
     for r in projected.records:
         if r.kind not in selected:
@@ -221,7 +231,7 @@ class AnalysisInput(Versioned):
         ctx = self.request.context
         expected = [(ctx.estimand, ESTIMAND_REF), (ctx.comparator_estimand, ESTIMAND_REF),
                     (ctx.model, MODEL_REF), (ctx.prior, PRIOR_REF), (ctx.protocol, PROTOCOL_REF),
-                    (self.request.configuration, CONFIG_REF)]
+                    (self.request.configuration, CONFIG_REF),(ctx.dgp,DGP_REF),(ctx.scenario,SCENARIO_REF)]
         if any(a.model_dump() != b for a,b in expected) or ctx.input_data.model_dump() != reference("poc-analysis-history-v1", self.history.model_dump(mode="json")):
             raise ValueError("unsupported configuration/input identity")
         if ctx.observation_cutoff != self.history.cutoff or self.history_sha256 != sha(self.history.model_dump(mode="json")):
@@ -229,6 +239,20 @@ class AnalysisInput(Versioned):
         if ctx.seed.namespace != "fit" or ctx.seed.patient != self.history.patient_id:
             raise ValueError("independent fit seed required")
         return self
+
+
+def make_input(history,attempt_id,replicate):
+    value=history.model_dump(mode='json')
+    ctx=dict(estimand=ESTIMAND_REF,dgp=DGP_REF,scenario=SCENARIO_REF,input_data=reference('poc-analysis-history-v1',value),
+        prior=PRIOR_REF,model=MODEL_REF,protocol=PROTOCOL_REF,observation_cutoff=history.cutoff.isoformat(),
+        seed=dict(namespace='fit',protocol='poc-visit-v1',scenario='interactive-reference',replicate=replicate,
+                  patient=history.patient_id,time_index=(history.cutoff-history.origin).days,process='native-nuts'),
+        allowed_information='available_observed_history_only',truth_access='denied',comparator_estimand=ESTIMAND_REF,
+        comparator_information='same_permitted_history',source_ids=['BAYES-02','EST-VISIT','POC-4'],
+        failure_policy='retain_all_attempts_fail_or_abstain_never_fabricate')
+    return AnalysisInput.model_validate_json(canonical(dict(schema_version='1.0.0',synthetic=True,kind='poc_visit_input',attempt_id=attempt_id,
+        request=dict(schema_version='1.0.0',synthetic=True,kind='fit_request',context=ctx,backend='pymc',sampler='native_nuts',precision='float64',configuration=CONFIG_REF),
+        history=value,history_sha256=sha(value))))
 
 
 class Effect(StrictModel):
