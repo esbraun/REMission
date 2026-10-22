@@ -8,7 +8,6 @@ import subprocess
 import sys
 import time
 
-ROOT=Path(__file__).resolve().parents[2]
 COMMON=['--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
         '--tmpfs','/tmp:rw,nosuid,size=256m']
 
