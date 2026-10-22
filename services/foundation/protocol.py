@@ -49,6 +49,7 @@ def validate_snapshot(history,snapshot,cutoff):
 
 def validate_support_v21(history,decision,cutoff):
     snapshot=resolve(history,decision.decision_snapshot,{'decision_snapshot'},cutoff=cutoff)
+    resolve(history,decision.decision_snapshot,{'decision_snapshot'},cutoff=decision.cutoff,inclusive=True)
     if (snapshot.cutoff!=decision.cutoff or snapshot.workflow.support_policy!=decision.policy
             or snapshot.workflow.support_mode!=decision.mode
             or [e for e in snapshot.eligibility if e.action in ('support_prompt','no_prompt')]!=decision.eligibility):
@@ -93,6 +94,10 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
     """
     projected=full.project(cutoff)
     selected=set(REDUCED_MODELS)
+    if family=='support':
+        # S1/S2 condition on declared quality context, not the separate ISI
+        # measurements. Full audit refs still resolve before being omitted.
+        selected.remove('isi')
     records={r.record_id:r for r in projected.records if r.kind in selected}
     cache={};visiting=set()
     def exact(ref,kinds=None,at=None):
@@ -104,6 +109,10 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
     def closure(ref,at=None):
         if verify_closure is None:raise ValueError('verified_stage_ledger_required_for_burden')
         return verify_closure(ref,at or cutoff)
+    def context_ref(ref,at=None):
+        record=resolve(full,ref,cutoff=cutoff)
+        if at is not None:resolve(full,ref,cutoff=at)
+        return exact(ref,at=at) if record.kind in selected else None
     def reduce(record):
         if record.record_id in cache:return cache[record.record_id]
         if record.record_id in visiting:raise ValueError('cyclic_protocol_dependency')
@@ -129,7 +138,8 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
                 raise ValueError('owned_assignment_approval_and_decision_required')
             validate_assignment(record,approval,decision,decision.view,'doctor',[r for r in full.records if r.kind=='consent'])
             if record.experimental and record.seed.namespace!='assignment':raise ValueError('independent_protocol_execution_key_required')
-            if not record.experimental and record.option!='behavioral_continue':raise ValueError('fixed_protocol_background_required')
+            if not record.experimental and (record.option not in ('behavioral_continue','no_prompt') or record.support_policy.model_dump()!=FIXED_SUPPORT_REF):
+                raise ValueError('fixed_protocol_background_or_no_prompt_required')
         elif record.kind=='protocol_snapshot':
             validate_snapshot(full,record,cutoff)
             value.update(consent_refs=[exact(r,{'consent'}) for r in record.consent_refs],approval_refs=[exact(r,{'approval'}) for r in record.approval_refs],
@@ -137,7 +147,7 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
         elif record.kind=='support_decision':
             if record.schema_version=='2.1.0':validate_support_v21(full,record,cutoff)
             else:validate_support_decision(full,record)
-            context=sorted((exact(r,at=record.cutoff) for r in record.context),key=lambda r:r['record_id'])
+            context=sorted((link for r in record.context if (link:=context_ref(r,at=record.cutoff)) is not None),key=lambda r:r['record_id'])
             if record.schema_version!='2.1.0':raise ValueError('protocol_consumer_requires_explicit_2_1_policy_constraint')
             constraint=record.policy_constraint.model_dump(mode='json')
             constraint['snapshot_ref']=exact(record.policy_constraint.snapshot_ref,{'protocol_snapshot'}) if record.policy_constraint.snapshot_ref else None
@@ -146,7 +156,7 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
         elif record.kind=='support_outcome_link':
             validate_outcome_link(full,record,verify_closure=closure)
             reward=record.reward.model_dump(mode='json');reward['report_ref']=exact(record.reward.report_ref,{'daily_report'}) if record.reward.report_ref else None
-            reward['evidence_refs']=[exact(r) for r in record.reward.evidence_refs]
+            reward['evidence_refs']=[link for r in record.reward.evidence_refs if (link:=context_ref(r)) is not None]
             burden=[]
             for item in record.burden:
                 data=item.model_dump(mode='json');data['source_refs']=[exact(r,{'delivery'}) for r in item.source_refs];burden.append(data)

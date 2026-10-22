@@ -101,6 +101,8 @@ class ProtocolSnapshot(RecordV2):
     def public_design(self):
         if self.protocol.model_dump() != PROTOCOL_REFS[self.family] or self.template != self.protocol or self.activation_at != self.event_at:
             raise ValueError('unsupported snapshot family/template/activation')
+        if self.family=='nof1_med' and not self.support_refs:
+            raise ValueError('N-of-1 snapshot requires explicit frozen no-prompt evidence')
         return self
 
 

@@ -70,6 +70,10 @@ def claim(store):
         row=db.execute("SELECT * FROM analysis_attempts WHERE status='queued' ORDER BY created_at,job_id LIMIT 1").fetchone()
         if row is None:
             return None
+        product=json.loads(row['request_json'])
+        if product.get('kind')=='poc_protocol_input':
+            from contracts.domain.protocol_request import ProtocolInput,require_executable
+            require_executable(ProtocolInput.model_validate_json(row['request_json']))
         token=secrets.token_hex(24)
         db.execute("UPDATE analysis_attempts SET status='running',stage='preparing',claim_token=?,started_at=? WHERE job_id=? AND status='queued'",(token,timestamp(store.clock()),row['job_id']))
         db.execute("UPDATE pending_work SET status='running',reason='Visit analysis preparing' WHERE id=?",(row['job_id'],))
@@ -144,6 +148,9 @@ def ingest(store,job,token,directory):
     if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
         raise AnalysisError('Invalid result file')
     result=parse_result(result_path.read_bytes())
+    if result.kind=='poc_protocol_result':
+        from contracts.domain.protocol_request import require_executable
+        require_executable(result)
     # Validate output files BEFORE acquiring the SQLite writer lock.
     names=set()
     for ref in result.artifacts:

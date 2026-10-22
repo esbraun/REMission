@@ -5,8 +5,8 @@ from pydantic import AwareDatetime, BaseModel, Field, model_validator
 from .analysis import canonical, sha
 from .common import Action, Identifier, Name, Sha256, StrictModel, VersionRef
 from .entities import Eligibility, Workflow
-from .observed_v2 import OutcomeWindow
-from .protocol import PROTOCOL_REFS
+from .observed_v2 import OutcomeWindow, Reward as FullReward, OperationalBurden
+from .protocol import PROTOCOL_REFS, PolicyConstraint
 
 Kinds = Literal['daily_report', 'isi', 'assignment', 'delivery', 'consent', 'approval',
                 'decision_snapshot', 'protocol_snapshot', 'support_decision',
@@ -122,7 +122,7 @@ class Snapshot(ReducedHeader):
     activation_at: AwareDatetime
 
 
-class Constraint(StrictModel):
+class Constraint(PolicyConstraint):
     allowed_actions: list[Literal['support_prompt', 'no_prompt']]
     reason: Literal['unrestricted', 'fixed_no_prompt', 'nof1_snapshot']
     snapshot_ref: ReducedRef | None
@@ -149,7 +149,7 @@ class Support(ReducedHeader):
     outcome_link_id: Identifier
 
 
-class Reward(StrictModel):
+class Reward(FullReward):
     status: Literal['observed', 'pending', 'missing', 'undefined']
     report_ref: ReducedRef | None
     field: Literal['sleep_quality']
@@ -159,7 +159,7 @@ class Reward(StrictModel):
     definition_refs: list[VersionRef]
 
 
-class Burden(StrictModel):
+class Burden(OperationalBurden):
     definition: VersionRef
     type: Literal['offered_prompt_count', 'delivered_prompt_count']
     unit: Literal['count']
@@ -275,6 +275,24 @@ class ProtocolHistory(StrictModel):
                 target = active.get(ref.record_id)
                 if target is None or sha(target.model_dump(mode='json')) != ref.projection_sha256:
                     raise ValueError('unresolved or changed reduced dependency')
+            if record.kind=='support_decision':
+                if record.event_at!=record.cutoff or record.outcome_window.starts_at!=record.cutoff:
+                    raise ValueError('reduced support decision clock mismatch')
+                if any(active[r.record_id].available_at>=record.cutoff for r in record.context):
+                    raise ValueError('reduced support context must be strictly predecision')
+                if active[record.decision_snapshot.record_id].available_at>record.cutoff:
+                    raise ValueError('future reduced decision snapshot')
+            elif record.kind=='protocol_snapshot':
+                if record.family!=self.family or record.activation_at!=record.event_at:
+                    raise ValueError('reduced snapshot family/activation mismatch')
+                if any(active[r.record_id].available_at>record.activation_at for r in nested_refs(record)):
+                    raise ValueError('future reduced protocol snapshot dependency')
+            elif record.kind=='support_outcome_link':
+                if record.assessment_at>record.evaluated_as_of or any(active[r.record_id].available_at>=record.evaluated_as_of for r in nested_refs(record)):
+                    raise ValueError('future reduced outcome dependency')
+            if record.kind in ('assignment','delivery'):
+                permitted={'behavioral_continue','MED_A','MED_B','no_prompt'} if self.family=='nof1_med' else {'behavioral_continue','support_prompt','no_prompt'}
+                if record.option not in permitted:raise ValueError('cross-family protocol action')
         if len({(r.assignment_id, r.event_at, r.stage) for r in self.records if r.kind == 'delivery'}) != sum(r.kind == 'delivery' for r in self.records):
             raise ValueError('duplicate delivery ownership')
         elapsed=(self.cutoff-self.origin).total_seconds()/86400
@@ -283,7 +301,8 @@ class ProtocolHistory(StrictModel):
         if sorted(r.event_at for r in self.records if r.kind=='daily_report')!=[self.origin+timedelta(days=t,minutes=-1) for t in range(1,day+1)]:
             raise ValueError('one quality/missingness indicator per night required')
         isi=[r for r in self.records if r.kind=='isi']
-        if sorted(r.recall_end for r in isi)!=[self.origin+timedelta(days=t,hours=-1) for t in range(0,day+1,14)]:
+        expected_isi=[self.origin+timedelta(days=t,hours=-1) for t in range(0,day+1,14)] if self.family=='nof1_med' else []
+        if sorted(r.recall_end for r in isi)!=expected_isi:
             raise ValueError('scheduled unique cumulative ISI required')
         if any(r.recall_end-r.recall_start!=timedelta(days=14) or r.event_at!=r.recall_end+timedelta(minutes=59) for r in isi):
             raise ValueError('ISI recall/assessment mismatch')

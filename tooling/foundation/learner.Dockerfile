@@ -10,6 +10,7 @@ COPY services/learner/export_observed.py /app/services/learner/export_observed.p
 COPY services/learner/live_product.py /app/services/learner/live_product.py
 COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/domain/
 COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
+COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py /app/contracts/domain/
 COPY methods/visit/ /app/methods/visit/
 COPY services/learner/analysis_worker.py /app/services/learner/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py

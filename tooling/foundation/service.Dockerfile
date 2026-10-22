@@ -15,6 +15,7 @@ COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/serv
 COPY services/foundation/ /app/services/foundation/
 COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/domain/
 COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
+COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py /app/contracts/domain/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 COPY --from=client /client/dist/ /app/web/dist/

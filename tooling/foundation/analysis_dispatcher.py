@@ -60,6 +60,13 @@ def worker_limits(borrowing):
     return result
 
 
+def require_dispatchable(input_value):
+    # P1 has no executable protocol configurations. The host must veto this
+    # independently of parser/worker/ingestion labels and without importing PyMC.
+    if input_value.get('kind')=='poc_protocol_input':
+        raise ValueError('protocol configuration is not executable in P1')
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--deployment',type=Path,required=True);parser.add_argument('--once',action='store_true')
     args=parser.parse_args()
@@ -94,6 +101,7 @@ def main():
                 break
             time.sleep(2)
             continue
+        require_dispatchable(job['input'])
         identifier=job['attempt_id'];token=job['claim_token'];directory=root/identifier
         borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
         attempt_started=time.monotonic()

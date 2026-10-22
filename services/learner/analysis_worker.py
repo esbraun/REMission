@@ -34,6 +34,9 @@ def run(source, out):
     out.mkdir(parents=True,exist_ok=True)
     raw = source.read_bytes()
     product = parse_input(raw)
+    if product.kind=='poc_protocol_input':
+        from contracts.domain.protocol_request import require_executable
+        require_executable(product)
     borrowed=isinstance(product,BorrowAnalysisInput)
     configuration=admitted_configuration(product.request.configuration) if borrowed else None
     input_hash = sha(product.model_dump(mode="json"))

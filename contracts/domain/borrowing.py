@@ -213,10 +213,16 @@ class BorrowAnalysisResult(StrictModel):
 def parse_input(raw):
     from .analysis import AnalysisInput
     value=json.loads(raw)
+    if value.get('kind')=='poc_protocol_input':
+        from .protocol_request import ProtocolInput
+        return ProtocolInput.model_validate_json(raw)
     return (BorrowAnalysisInput if value.get('kind')=='poc_visit_borrow_input' else AnalysisInput).model_validate_json(raw)
 
 
 def parse_result(raw):
     from .analysis import AnalysisResult
     value=json.loads(raw)
+    if value.get('kind')=='poc_protocol_result':
+        from .protocol_request import ProtocolResult
+        return ProtocolResult.model_validate_json(raw)
     return (BorrowAnalysisResult if value.get('kind')=='poc_visit_borrow_result' else AnalysisResult).model_validate_json(raw)
