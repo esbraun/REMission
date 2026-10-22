@@ -86,6 +86,10 @@ def main():
         metadata.update(compiled_sum=value,difference_from_independent=value-result['independent_density'],
             seconds=time.monotonic()-began,point_unchanged_after_sum=all(np.array_equal(values[k],point[k]) for k in point))
         save();print(json.dumps(clean(dict(mode=name,compiled_sum=value,factor_sum=metadata['factor_sum'],seconds=metadata['seconds']))),flush=True)
+    production=result['modes']['production_unchanged_cvm']
+    result['gates']=dict(all_factors_finite=all(f['finite'] for f in production['factors']),
+        independent_density_absolute_1e_8=bool(abs(production['difference_from_independent'])<=1e-8),
+        independent_factors_absolute_1e_8=all(f['max_absolute_difference']<=1e-8 for f in production['factors']))
     result['seconds']=time.monotonic()-started;save()
 
 
