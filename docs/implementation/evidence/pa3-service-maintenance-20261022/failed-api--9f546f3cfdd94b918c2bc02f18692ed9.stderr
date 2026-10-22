@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\poc-native-run-sol-261022\tooling\foundation\verify_pa3_continuity_once.py", line 73, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\poc-native-run-sol-261022\tooling\foundation\verify_pa3_continuity_once.py", line 66, in main
+    after=database(SERVICE);equal_database(before,after)
+                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\poc-native-run-sol-261022\tooling\foundation\maintain_pa3_service_once.py", line 42, in equal_database
+    assert before[key] == after[key], 'database identity difference: '+key
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: database identity difference: protected_tables

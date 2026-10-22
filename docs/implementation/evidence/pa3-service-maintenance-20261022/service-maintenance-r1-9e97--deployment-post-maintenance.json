@@ -1,0 +1,53 @@
+{
+  "activation_requires": "independent actual maintenance acceptance, then root explicit ONE native-job authorization and fresh oldest/no-unrelated-work check",
+  "backup_sha256": "b7129dae56e9ccd0bd83649b1aa8f74820ffe9f604c19cf09b474958c6541520",
+  "dispatcher": {
+    "bytes": 12194,
+    "path": "analysis_dispatcher.py",
+    "sha256": "e4befae1c1b9d1684430f3d375308cee059504799a8087683d117e28766c5e1b",
+    "source_commit": "55c07c8ac15d5b55d4d7acdff273570422cd3b01"
+  },
+  "generator_container": "remission-poc13-ac8e16e0-generator",
+  "generator_image": "sha256:5d546abd1448e46d5d45ac4a3d98c31899631f968f93d21b163797ff0674ded9",
+  "inherited_base_image": "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+  "inherited_service_build_source": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+  "learner_image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+  "maintenance_helpers": {
+    "files": {
+      "maintain_pa3_service_once.py": {
+        "bytes": 13624,
+        "sha256": "729b0a0b3de335edfec2d7557aa5e922deeb3c39cf2b6d5ea0149d9492d9bcd4"
+      },
+      "verify_pa3_continuity_once.py": {
+        "bytes": 6193,
+        "sha256": "e9d71c489be40e74ddfa6002e23465a7cd13ac834490f5d73a386bee5f9384a7"
+      }
+    },
+    "source_state": "exact physical one-off bytes at execution; uncommitted on observer9e97, now frozen for candidate review"
+  },
+  "maintenance_observer_commit": "9e97f36ca01ab94c3bd9474e1be7310555e907c6",
+  "network": "remission-poc13-ac8e16e0-app",
+  "port": 8780,
+  "prefix": "remission-poc13-ac8e16e0",
+  "preparation_observer_commit": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+  "previous_manifest_physical": {
+    "bytes": 5523,
+    "sha256": "af422d938c662d990a6c92ce2b65d055a89ee57c84244daac5dca953e878cc62"
+  },
+  "retained_service_container": "remission-poc13-ac8e16e0-service-pre-pa3-4a",
+  "retained_service_id": "cdb12d7e4d6a69f0144ccc9d54d79666faeda066fa2d09008027ecb207b2932a",
+  "runtime_image": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "service_container": "remission-poc13-ac8e16e0-service",
+  "service_container_id": "ba67b6aac302ed7558e75e9fa12445d1f42898e692320fc96ac348931b3e0e44",
+  "service_image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+  "service_source_commit": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3",
+  "source_commit": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3",
+  "status": "service_maintained_no_native_job_authorized",
+  "url": "http://127.0.0.1:8780",
+  "volumes": {
+    "database": "remission-poc13-ac8e16e0-database",
+    "exports": "remission-poc13-ac8e16e0-exports",
+    "fixtures": "remission-poc13-ac8e16e0-fixtures",
+    "historical": "remission-poc13-ac8e16e0-historical"
+  }
+}
