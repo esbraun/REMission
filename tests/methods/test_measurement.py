@@ -26,6 +26,18 @@ def reference(value,mean,sd,step,maximum):
 
 
 class MeasurementControls(unittest.TestCase):
+    def test_composed_caller_constants_and_gradient_are_preserved(self):
+        x=pt.dscalar('x')
+        caller_constant=pt.constant(np.float32(3))
+        expression=normal_logcdf(x+caller_constant)
+        constants=[v for v in graph_inputs([expression]) if isinstance(v,Constant)]
+        self.assertTrue(any(getattr(v,'dtype',None)=='float32' and float(v.data)==3 for v in constants))
+        fn=pytensor.function([x],[expression,pt.grad(expression,x)],**compilation_options())
+        verify_cvm(fn)
+        actual,gradient=fn(-1.3);expected=log_ndtr(1.7)
+        self.assertAlmostEqual(float(actual),expected,delta=1e-12)
+        self.assertAlmostEqual(float(gradient),float(np.exp(norm.logpdf(1.7)-expected)),delta=1e-12)
+
     def test_library_cdf_float64_density_gradient_and_graph_constants(self):
         x=pt.dvector('x');expression=normal_logcdf(x)
         floats=[v for v in graph_inputs([expression]) if isinstance(v,Constant)

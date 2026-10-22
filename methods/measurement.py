@@ -19,8 +19,11 @@ def normal_logcdf(value):
     if pytensor.config.floatX != 'float64':
         raise ValueError('float64 required')
     value=pt.cast(pt.as_tensor_variable(value),'float64')
-    expression=pm.logcdf(pm.Normal.dist(np.float64(0),np.float64(1)),value)
-    replacements={}
+    # Inspect just the library CDF template, never ancestors of a caller's
+    # model expression. Upstream constants belong to that model's own policy.
+    placeholder=value.type()
+    expression=pm.logcdf(pm.Normal.dist(np.float64(0),np.float64(1)),placeholder)
+    replacements={placeholder:value}
     for variable in graph_inputs([expression]):
         if isinstance(variable,Constant) and getattr(variable,'dtype',None)=='float32':
             scalar=np.asarray(variable.data)
