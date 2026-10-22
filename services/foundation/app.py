@@ -459,8 +459,6 @@ def create_app(settings: Settings) -> FastAPI:
             rows=db.execute("SELECT id,name,state_json,cutoff,version FROM patients WHERE owner_id=? ORDER BY id",(current["account_id"],)).fetchall()
             selected = db.execute("SELECT response FROM receipts WHERE owner_id=? AND scope='generated-panel' ORDER BY rowid DESC LIMIT 1", (current['account_id'],)).fetchone()
             generated = json.loads(selected[0]) if selected else None
-            if generated:
-                rows = [r for r in rows if json.loads(r['state_json']).get('simulation', {}).get('panel_id') == generated['panel_id']]
             return {"patients":[dict(id=r["id"],name=r["name"],state=json.loads(r["state_json"]),cutoff=r["cutoff"],version=r["version"]) for r in rows],"denominator":len(rows), 'generated': generated}
 
     def mutation_receipt(db, current, request, scope, payload):
