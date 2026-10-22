@@ -1,0 +1,1010 @@
+[
+  {
+    "step": "BR-001 own repaired8771 new tab",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8771');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-07-041Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-002 observe repaired deployment/browser/assets",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36\",\n  \"platform\": \"Win32\",\n  \"health\": {\n    \"status\": \"ok\",\n    \"synthetic\": true,\n    \"runtime\": \"foundation-live-hold-v1\",\n    \"capability\": \"LIVE-HOLD-01/1.0.0\",\n    \"database_instance_id\": \"707054e3-cdf7-4c6e-ba4a-75e15f164113\",\n    \"authority_generation\": 1\n  },\n  \"assets\": {\n    \"/assets/index-CFqriR5o.js\": \"87c9f945911c7068fd269de1df80d93f967250e48088d70c8ce63c418821244e\",\n    \"/assets/index-D_6TIRrA.css\": \"e0195bcc6dfff89d82709a8bb0789fc11094f158c1d5d244ab1a666072775197\"\n  },\n  \"mcpPackageVersion\": \"unavailable\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const resources=[...document.querySelectorAll(\\'script[src],link[rel=stylesheet]\\')].map(e=>e.src||e.href);const assets={};for(const url of resources){assets[new URL(url).pathname]=[...new Uint8Array(await crypto.subtle.digest(\\'SHA-256\\',await(await fetch(url)).arrayBuffer()))].map(b=>b.toString(16).padStart(2,\\'0\\')).join(\\'\\');}return {userAgent:navigator.userAgent,platform:navigator.platform,health:await(await fetch(\\'/health\\')).json(),assets,mcpPackageVersion:\\'unavailable\\'};}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-003 desktop viewport",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 1280, height: 720 });\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-004 wait for actual sign-in",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for Sign in to your synthetic panel\n### Ran Playwright code\n```js\nawait page.getByText(\"Sign in to your synthetic panel\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-08-512Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-005 public fixture owned login",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('alice');\nawait page.locator('#password').fill('Synthetic-Alice-2026!');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-006 sign in",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-09-671Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-007 wait for owned panel",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for 10 owned synthetic patients\n### Ran Playwright code\n```js\nawait page.getByText(\"10 owned synthetic patients\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-09-726Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-008 select patient02",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/overview\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/overview)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/overview\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-29-278Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-009 current decision",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/current\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-30-372Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-010 wait rendered concern controls",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for Authorized source concern · none preselected\n### Ran Playwright code\n```js\nawait page.getByText(\"Authorized source concern · none preselected\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-30-417Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-011 no defaults",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"selectedConcern\": \"\",\n  \"selectedOrdinary\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({selectedConcern:document.querySelector(\\'#configured-concern\\').value,selectedOrdinary:document.querySelectorAll(\\'input[type=radio]:checked\\').length})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-012 initial source3 concern",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic clinician_concern · source 3');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-013 enter source3",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-32-105Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-014 wait owned review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for review-concern: finding and changed facts\n### Ran Playwright code\n```js\nawait page.getByText(\"review-concern: finding and changed facts\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-32-147Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-015 first current concern review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('input[name=finding-0]').fill('BR current first generation owned synthetic assessment');\nawait page.locator('select[name=result-0]').selectOption('Satisfied under the installed rule');\nawait page.locator('input[name=evidence-0-0]').check();\nawait page.locator('textarea[name=review-rationale]').fill('BR explicit current review before separate first-generation clearance');\nawait page.locator('input[name=current-assessment]').check();\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-016 save review keep hold",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Save current review; keep hold active\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-33-309Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-017 explicit clear first generation",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Clear this episode and re-enter assessment\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-34-366Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-018 clearance still assessment unready",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"stage\": \"ASSIGN-01\",\n  \"data\": \"incomplete\",\n  \"support\": \"paused\",\n  \"approve\": false\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const w=await(await fetch(\\'/api/patients/SYN-02\\')).json();return {stage:w.stage,data:w.snapshot.workflow.data_readiness,support:w.snapshot.workflow.support_mode,approve:w.permissions.approve_ordinary};}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-019 new source4 recurrence",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic clinician_concern · source 4');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-020 enter recurrence",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-36-534Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-021 observe held generation2",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for clinician concern · episode generation 2\n### Ran Playwright code\n```js\nawait page.getByText(\"clinician concern · episode generation 2\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-36-579Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-022 choose mixed source5 before any clearance",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic clinician_concern · source 5');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-023 enter mixed source5",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-32-53-469Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-024 observe same-generation mixed initial form",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- region [ref=e539]:\n  - heading \"Independent safety review\" [level=2] [ref=e540]\n  - paragraph [ref=e541]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n  - article [ref=e542]:\n    - heading \"clinician concern · episode generation 2\" [level=3] [ref=e543]\n    - paragraph [ref=e544]:\n      - strong [ref=e545]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:32 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e546]\n    - list [ref=e547]:\n      - listitem [ref=e548]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e549]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e550]\n    - list [ref=e551]:\n      - listitem [ref=e552]:\n        - button \"Inspect obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e553] [cursor=pointer]\n        - generic [ref=e554]: SHA256 d73d2e05e182d4bf54ce491a93824fd0236d533e18421bd07c9315165d72648b\n    - group [ref=e555]:\n      - generic \"Installed review rules and all active obligations\" [ref=e556] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e558]:\n      - generic [ref=e560]:\n        - generic [ref=e561]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e562]'\n        - generic [ref=e563]: Requirement result\n        - combobox \"Requirement result\" [ref=e564]\n        - paragraph [ref=e565]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e566]\n      - generic [ref=e569]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e570]\n      - generic [ref=e571]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e572]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e573] [cursor=pointer]\n  - article [ref=e574]:\n    - heading \"clinician concern · episode generation 1\" [level=3] [ref=e575]\n    - paragraph [ref=e576]:\n      - strong [ref=e577]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:32 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e578]\n    - list [ref=e579]:\n      - listitem [ref=e580]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e581]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e582]\n    - list [ref=e583]:\n      - listitem [ref=e584]:\n        - button \"Inspect obs2-47b32e635500ce2e70bfc85a46c60705e22d7dcbd9c4e897\" [ref=e585] [cursor=pointer]\n        - generic [ref=e586]: SHA256 5b4f434ac30c016b1fec2076a29532099c10cd8868d6ffed0edbe81098005ac0\n    - group [ref=e587]:\n      - generic \"Installed review rules and all active obligations\" [ref=e588] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e590]:\n      - generic [ref=e592]:\n        - generic [ref=e593]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e594]'\n        - generic [ref=e595]: Requirement result\n        - combobox \"Requirement result\" [ref=e596]\n        - paragraph [ref=e597]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e598]\n      - generic [ref=e601]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e602]\n      - generic [ref=e603]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e604]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e605] [cursor=pointer]\n  - generic [ref=e606]:\n    - heading \"Record a configured synthetic concern\" [level=3] [ref=e607]\n    - paragraph [ref=e608]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n    - generic [ref=e609]: Authorized source concern · none preselected\n    - combobox \"Authorized source concern · none preselected\" [ref=e610]:\n      - option \"Choose a configured concern\" [selected]\n      - option \"Synthetic clinician_concern · source 1\"\n      - option \"Synthetic experimental_stability_review · source 2\"\n      - option \"Synthetic clinician_concern · source 3\"\n      - option \"Synthetic clinician_concern · source 4\"\n      - option \"Synthetic clinician_concern · source 5\"\n      - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n    - button \"Record selected concern and hold\" [disabled] [ref=e611]\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-025 mixed initial concern review before clearance",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('article').filter({ hasText: 'clinician concern · episode generation 1Hold remains active. Entered Oct 21,' }).getByLabel('review-concern: finding and').fill('BR same-generation mixed concern initially reviewed');\nawait page.getByRole('article').filter({ hasText: 'clinician concern · episode generation 1Hold remains active. Entered Oct 21,' }).getByLabel('Requirement result').selectOption('Satisfied under the installed rule');\nawait page.locator('article.hold-episode').nth(1).locator('input[name=evidence-0-0]').check();\nawait page.getByRole('article').filter({ hasText: 'clinician concern · episode generation 1Hold remains active. Entered Oct 21,' }).getByLabel('Current assessment rationale').fill('BR keep mixed generation1 active before adding threshold obligation');\nawait page.getByRole('article').filter({ hasText: 'clinician concern · episode generation 1Hold remains active. Entered Oct 21,' }).getByLabel('I have reviewed the entire').check();\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-026 save same-generation initial review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Save current review; keep' }).nth(1).click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-33-44-014Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-027 choose mixed source6 strengthening",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic clinician_concern, experimental_stability_review · source 6');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-028 strengthen same generation before clear",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-33-45-141Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-029 inspect mixed union/current review invalidation",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n[\n  {\n    \"id\": \"episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82\",\n    \"generation\": 2,\n    \"obligations\": [\n      \"review-concern\"\n    ],\n    \"tasks\": [\n      \"hold-review-628b3f4f08ed7e3400353ff29e2123582fea549c\"\n    ],\n    \"currentReview\": null,\n    \"blocker\": null\n  },\n  {\n    \"id\": \"episode-ee27aba5bc300595184de865b8a65e81eadcd22a\",\n    \"generation\": 1,\n    \"obligations\": [\n      \"review-concern\",\n      \"review-threshold\"\n    ],\n    \"tasks\": [\n      \"hold-followup-3bd0d46d9011e00aefa7a38add3d61928aec2465\",\n      \"hold-review-9a281dec2098d4cb716b22e452edab3b84258e51\"\n    ],\n    \"currentReview\": null,\n    \"blocker\": \"T-OBS2-CLEARANCE-POLICY\"\n  }\n]\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const h=await(await fetch(\\'/api/patients/SYN-02/live-holds\\')).json();return h.episodes.map(e=>({id:e.episode_id,generation:e.generation,obligations:e.obligations.map(o=>o.requirement_id),tasks:e.task_ids,currentReview:e.current_review,blocker:e.blocker}));}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-030 observe exact complete mixed obligation controls",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- region [ref=e782]:\n  - heading \"Independent safety review\" [level=2] [ref=e783]\n  - paragraph [ref=e784]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n  - article [ref=e785]:\n    - heading \"clinician concern · episode generation 2\" [level=3] [ref=e786]\n    - paragraph [ref=e787]:\n      - strong [ref=e788]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:32 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e789]\n    - list [ref=e790]:\n      - listitem [ref=e791]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e792]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e793]\n    - list [ref=e794]:\n      - listitem [ref=e795]:\n        - button \"Inspect obs2-4ef5f4372f7b6f5ca28084f176f3bf1f627113c922b086ae\" [ref=e796] [cursor=pointer]\n        - generic [ref=e797]: SHA256 d73d2e05e182d4bf54ce491a93824fd0236d533e18421bd07c9315165d72648b\n    - group [ref=e798]:\n      - generic \"Installed review rules and all active obligations\" [ref=e799] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e801]:\n      - generic [ref=e803]:\n        - generic [ref=e804]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e805]'\n        - generic [ref=e806]: Requirement result\n        - combobox \"Requirement result\" [ref=e807]\n        - paragraph [ref=e808]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e809]\n      - generic [ref=e812]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e813]\n      - generic [ref=e814]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e815]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e816] [cursor=pointer]\n  - article [ref=e817]:\n    - heading \"clinician concern, experimental stability review · episode generation 1\" [level=3] [ref=e818]\n    - paragraph [ref=e819]:\n      - strong [ref=e820]: Hold remains active.\n      - text: Entered Oct 21, 2026, 6:32 PM.\n    - heading \"Owned review follow-ups\" [level=4] [ref=e821]\n    - list [ref=e822]:\n      - listitem [ref=e823]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n      - listitem [ref=e824]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n    - paragraph [ref=e825]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n    - heading \"Exact triggering evidence\" [level=4] [ref=e826]\n    - list [ref=e827]:\n      - listitem [ref=e828]:\n        - button \"Inspect obs2-efab7be525d2ede7a9cbc645116819d7c706754f6efe926d\" [ref=e829] [cursor=pointer]\n        - generic [ref=e830]: SHA256 1af3d0ca3ca0c2897df622144342c998d16129e43561f8b132a82a0e8134a7b5\n      - listitem [ref=e831]:\n        - button \"Inspect obs2-47b32e635500ce2e70bfc85a46c60705e22d7dcbd9c4e897\" [ref=e832] [cursor=pointer]\n        - generic [ref=e833]: SHA256 5b4f434ac30c016b1fec2076a29532099c10cd8868d6ffed0edbe81098005ac0\n    - paragraph [ref=e834]:\n      - strong [ref=e835]: T-OBS2-CLEARANCE-POLICY\n      - text: \": an accepted clearance criterion is unavailable for one or more active obligations. The whole episode remains held; there is no timer or default clearance.\"\n    - group [ref=e836]:\n      - generic \"Installed review rules and all active obligations\" [ref=e837] [cursor=pointer]\n    - group \"Record a current authenticated assessment\" [ref=e839]:\n      - generic [ref=e841]:\n        - generic [ref=e842]: \"review-concern: finding and changed facts\"\n        - 'textbox \"review-concern: finding and changed facts\" [ref=e843]'\n        - generic [ref=e844]: Requirement result\n        - combobox \"Requirement result\" [ref=e845]\n        - paragraph [ref=e846]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e847]\n        - generic [ref=e850]\n      - generic [ref=e853]:\n        - generic [ref=e854]: \"review-threshold: finding and changed facts\"\n        - 'textbox \"review-threshold: finding and changed facts\" [ref=e855]'\n        - generic [ref=e856]: Requirement result\n        - combobox \"Requirement result\" [ref=e857]\n        - paragraph [ref=e858]: \"Select the exact evidence supporting this requirement:\"\n        - generic [ref=e859]\n        - generic [ref=e862]\n      - generic [ref=e865]: Current assessment rationale and documented follow-up\n      - textbox \"Current assessment rationale and documented follow-up\" [ref=e866]\n      - generic [ref=e867]:\n        - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e868]\n        - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n      - button \"Save current review; keep hold active\" [ref=e869] [cursor=pointer]\n  - generic [ref=e870]:\n    - heading \"Record a configured synthetic concern\" [level=3] [ref=e871]\n    - paragraph [ref=e872]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n    - generic [ref=e873]: Authorized source concern · none preselected\n    - combobox \"Authorized source concern · none preselected\" [ref=e874]:\n      - option \"Choose a configured concern\" [selected]\n      - option \"Synthetic clinician_concern · source 1\"\n      - option \"Synthetic experimental_stability_review · source 2\"\n      - option \"Synthetic clinician_concern · source 3\"\n      - option \"Synthetic clinician_concern · source 4\"\n      - option \"Synthetic clinician_concern · source 5\"\n      - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n    - button \"Record selected concern and hold\" [disabled] [ref=e875]\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-031 complete mixed satisfied-concern pending-threshold review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('article').filter({ hasText: 'clinician concern,' }).getByLabel('review-concern: finding and').fill('BR exact concern remains structurally satisfied');\nawait page.getByRole('article').filter({ hasText: 'clinician concern,' }).locator('select[name=\"result-0\"]').selectOption('Satisfied under the installed rule');\nawait page.locator('article.hold-episode').nth(1).locator('input[name=evidence-0-1]').check();\nawait page.getByRole('textbox', { name: 'review-threshold: finding and' }).fill('T-OBS2-CLEARANCE-POLICY unavailable; no threshold law or alias');\nawait page.locator('select[name=\"result-1\"]').selectOption('Pending review');\nawait page.getByRole('article').filter({ hasText: 'clinician concern,' }).getByLabel('Current assessment rationale').fill('BR entire same-generation mixed episode stays held pending accepted threshold criterion');\nawait page.getByRole('article').filter({ hasText: 'clinician concern,' }).getByLabel('I have reviewed the entire').check();\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-032 save all-obligation mixed pending review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Save current review; keep' }).nth(1).click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-34-10-861Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-033 verify pending entire mixed episode staysheld",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n[\n  {\n    \"id\": \"episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82\",\n    \"generation\": 2,\n    \"tasks\": [\n      \"hold-review-628b3f4f08ed7e3400353ff29e2123582fea549c\"\n    ],\n    \"obligations\": [\n      \"review-concern\"\n    ],\n    \"blocker\": null\n  },\n  {\n    \"id\": \"episode-ee27aba5bc300595184de865b8a65e81eadcd22a\",\n    \"generation\": 1,\n    \"tasks\": [\n      \"hold-followup-3bd0d46d9011e00aefa7a38add3d61928aec2465\",\n      \"hold-review-9a281dec2098d4cb716b22e452edab3b84258e51\"\n    ],\n    \"obligations\": [\n      \"review-concern\",\n      \"review-threshold\"\n    ],\n    \"result\": \"pending\",\n    \"blocker\": \"T-OBS2-CLEARANCE-POLICY\"\n  }\n]\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const h=await(await fetch(\\'/api/patients/SYN-02/live-holds\\')).json();return h.episodes.map(e=>({id:e.episode_id,generation:e.generation,tasks:e.task_ids,obligations:e.obligations.map(o=>o.requirement_id),result:e.current_review?.payload.result,blocker:e.blocker}));}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-034 narrow mixed layout",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 390, height: 844 });\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-035 narrow screenshot",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1-live-hold-br-mixed-ec49-1f754beb.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1-live-hold-br-mixed-ec49-1f754beb.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1-live-hold-br-mixed-ec49-1f754beb.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-036 actual rendered-app bootstrap503 and visible retry503 with real held flock",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nError: File access denied: C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-live-hold-implementation-sol-20261021\\web\\tests\\browser\\bootstrap-busy-start.js is outside allowed roots. Allowed roots: C:\\Users\\erics\\Documents\\Projects\\REMission\\artifacts\\playwright-mcp, C:\\Users\\erics\\Documents\\Projects\\REMission"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "step": "BR-037 same exact committed recipe inline after denied own file root",
+    "invocation": {
+      "tool": "browser_run_code_unsafe",
+      "code": "// Execute through the official Playwright MCP browser_run_code tool only.\n// A real separate process must already hold this deployment's admission flock.\nasync (page) => {\n  await page.addInitScript(() => {\n    if (window.bootstrapRegression) return;\n    window.bootstrapRegression = { sessions: [] };\n    const fetchOriginal = window.fetch;\n    window.fetch = async (...args) => {\n      const response = await fetchOriginal(...args);\n      if (String(args[0]) === '/api/session') window.bootstrapRegression.sessions.push(response.status);\n      return response;\n    };\n  });\n  await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const before = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (before.statuses.join(',') !== '503' || before.text.includes('Dr Alice')) throw new Error('Bootstrap must refuse under the actual gate without restoring identity');\n  // Retrying before RELEASE must remain fail-closed and keep a usable retry.\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const after = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (after.statuses.join(',') !== '503,503' || after.text.includes('Dr Alice')) throw new Error('Busy bootstrap retry must issue a request and remain unauthenticated');\n  return { phase: 'real gate still held', sessionStatuses: after.statuses, refreshVisible: true, identityVisible: false };\n}\n\r\n"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"phase\":\"real gate still held\",\"sessionStatuses\":[503,503],\"refreshVisible\":true,\"identityVisible\":false}\n### Ran Playwright code\n```js\nawait (// Execute through the official Playwright MCP browser_run_code tool only.\n// A real separate process must already hold this deployment's admission flock.\nasync (page) => {\n  await page.addInitScript(() => {\n    if (window.bootstrapRegression) return;\n    window.bootstrapRegression = { sessions: [] };\n    const fetchOriginal = window.fetch;\n    window.fetch = async (...args) => {\n      const response = await fetchOriginal(...args);\n      if (String(args[0]) === '/api/session') window.bootstrapRegression.sessions.push(response.status);\n      return response;\n    };\n  });\n  await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const before = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (before.statuses.join(',') !== '503' || before.text.includes('Dr Alice')) throw new Error('Bootstrap must refuse under the actual gate without restoring identity');\n  // Retrying before RELEASE must remain fail-closed and keep a usable retry.\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const after = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (after.statuses.join(',') !== '503,503' || after.text.includes('Dr Alice')) throw new Error('Busy bootstrap retry must issue a request and remain unauthenticated');\n  return { phase: 'real gate still held', sessionStatuses: after.statuses, refreshVisible: true, identityVisible: false };\n}\n\r\n)(page);\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T01-32-06-884Z.log#L1-L2"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-038 bootstrap busy retry remains usable",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=f1e2]:\n  - link \"Skip to main content\" [ref=f1e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=f1e4]:\n    - generic [ref=f1e5]:\n      - text: REMission\n      - generic [ref=f1e6]: Synthetic care workspace\n  - generic [ref=f1e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=f1e8]:\n    - alert [ref=f1e9]:\n      - strong [ref=f1e10]: Action needs attention\n      - paragraph [ref=f1e11]: \"Error: Current service unavailable; refresh after the safety admission completes\"\n      - button \"Refresh current information\" [ref=f1e12] [cursor=pointer]\n    - generic [ref=f1e13]:\n      - paragraph [ref=f1e14]: Research demonstration\n      - heading \"Sign in to your synthetic panel\" [level=1] [ref=f1e15]\n      - paragraph [ref=f1e16]: Ordinary clinician choices and immutable history. Statistical engines and real clinical systems are unavailable.\n      - generic [ref=f1e17]:\n        - generic [ref=f1e18]: Username\n        - textbox \"Username\" [ref=f1e19]\n        - generic [ref=f1e20]: Password\n        - textbox \"Password\" [ref=f1e21]\n        - button \"Sign in\" [ref=f1e22] [cursor=pointer]\n    - generic [ref=f1e23]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-039 narrow busy screenshot",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1-live-hold-br-bootstrap-busy-3f6cb229.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1-live-hold-br-bootstrap-busy-3f6cb229.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1-live-hold-br-bootstrap-busy-3f6cb229.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-040 actual same-page visibleRefresh/session200/currentheld recovery without reload/login",
+    "invocation": {
+      "tool": "browser_run_code_unsafe",
+      "code": "// Execute through official Playwright MCP after the same actual holder RELEASE.\n// The cookie must still be valid and SYN-02 must already have an active hold.\nasync (page) => {\n  const before = await page.evaluate(() => window.bootstrapRegression.sessions.length);\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n  await page.getByRole('heading', { name: 'Synthetic patient 02', exact: true }).waitFor({ state: 'visible' });\n  await page.getByText('Hold remains active.', { exact: true }).first().waitFor({ state: 'visible' });\n  const result = await page.evaluate(async () => {\n    const workspace = await (await fetch('/api/patients/SYN-02')).json();\n    return { statuses: window.bootstrapRegression.sessions, identity: document.querySelector('h1')?.textContent,\n      stage: workspace.stage, workflow: workspace.snapshot.workflow, permissions: workspace.permissions,\n      findings: [...document.querySelectorAll('input[name^=\"finding-\"]')].map(input => input.value),\n      selectedOptions: document.querySelectorAll('input[name=\"option\"]:checked').length };\n  });\n  if (result.statuses.length !== before + 1 || result.statuses.at(-1) !== 200) throw new Error('Visible refresh must repeat GET /api/session once after RELEASE');\n  if (result.stage !== 'ASSIGN-09' || result.workflow.data_readiness !== 'stale' || result.workflow.support_mode !== 'paused' || result.permissions.approve_ordinary || result.selectedOptions || result.findings.some(Boolean)) throw new Error('Recovered identity must show current held/unready state and empty local input');\n  return { phase: 'same page recovered without reload or sign-in', ...result };\n}\n\r\n"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"phase\":\"same page recovered without reload or sign-in\",\"statuses\":[503,503,200],\"identity\":\"Synthetic patient 02\",\"stage\":\"ASSIGN-09\",\"workflow\":{\"clinical\":\"clinical_hold\",\"data_readiness\":\"stale\",\"hold_reasons\":[\"clinician_concern\",\"experimental_stability_review\"],\"learning\":\"none\",\"support_mode\":\"paused\",\"support_policy\":{\"id\":\"fixed-approved-support\",\"sha256\":\"096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639\",\"version\":\"1.0.0\"}},\"permissions\":{\"approve_ordinary\":false,\"estimate\":false,\"randomize\":false,\"request_review\":true},\"findings\":[\"\",\"\",\"\"],\"selectedOptions\":0}\n### Ran Playwright code\n```js\nawait (// Execute through official Playwright MCP after the same actual holder RELEASE.\n// The cookie must still be valid and SYN-02 must already have an active hold.\nasync (page) => {\n  const before = await page.evaluate(() => window.bootstrapRegression.sessions.length);\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n  await page.getByRole('heading', { name: 'Synthetic patient 02', exact: true }).waitFor({ state: 'visible' });\n  await page.getByText('Hold remains active.', { exact: true }).first().waitFor({ state: 'visible' });\n  const result = await page.evaluate(async () => {\n    const workspace = await (await fetch('/api/patients/SYN-02')).json();\n    return { statuses: window.bootstrapRegression.sessions, identity: document.querySelector('h1')?.textContent,\n      stage: workspace.stage, workflow: workspace.snapshot.workflow, permissions: workspace.permissions,\n      findings: [...document.querySelectorAll('input[name^=\"finding-\"]')].map(input => input.value),\n      selectedOptions: document.querySelectorAll('input[name=\"option\"]:checked').length };\n  });\n  if (result.statuses.length !== before + 1 || result.statuses.at(-1) !== 200) throw new Error('Visible refresh must repeat GET /api/session once after RELEASE');\n  if (result.stage !== 'ASSIGN-09' || result.workflow.data_readiness !== 'stale' || result.workflow.support_mode !== 'paused' || result.permissions.approve_ordinary || result.selectedOptions || result.findings.some(Boolean)) throw new Error('Recovered identity must show current held/unready state and empty local input');\n  return { phase: 'same page recovered without reload or sign-in', ...result };\n}\n\r\n)(page);\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-041 actual HTTP200 bootstrap delayed across browser Back/popstate epoch invalidation",
+    "invocation": {
+      "tool": "browser_run_code_unsafe",
+      "code": "async (page) => {\n  let admitResponse, responseReady;\n  const released = new Promise(resolve => { admitResponse = resolve; });\n  const ready = new Promise(resolve => { responseReady = resolve; });\n  let actualStatus;\n  const handler = async route => {\n    const actual = await route.fetch();\n    actualStatus = actual.status();\n    responseReady();\n    await released;\n    await route.fulfill({ response: actual });\n  };\n  await page.route('**/api/session', handler);\n  try {\n    await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n    await ready;\n    if (actualStatus !== 200) throw new Error('Need actual successful authenticated bootstrap response');\n    await page.getByText('Checking session…', { exact: true }).waitFor({ state: 'visible' });\n    await page.evaluate(() => {\n      window.bootstrapPopObserved = false;\n      window.addEventListener('popstate', () => { window.bootstrapPopObserved = true; }, { once: true });\n      history.pushState({}, '', '/patients/SYN-02/overview');\n    });\n    await page.goBack();\n    await page.waitForFunction(() => window.bootstrapPopObserved === true);\n    admitResponse();\n    await page.getByRole('heading', { name: 'Sign in to your synthetic panel', exact: true }).waitFor({ state: 'visible' });\n    const result = await page.evaluate(() => ({ doctorVisible: document.body.textContent.includes('Dr Alice'), patientVisible: document.body.textContent.includes('Synthetic patient 02'), reviewInputs: document.querySelectorAll('input[name^=\"finding-\"]').length, popObserved: window.bootstrapPopObserved }));\n    if (result.doctorVisible || result.patientVisible || result.reviewInputs) throw new Error('Stale bootstrap result crossed invalidated route/identity context');\n    return { actualServerStatus: actualStatus, actualResponseWasDelayedNotMocked: true, staleResultDiscarded: true, ...result };\n  } finally { admitResponse(); await page.unroute('**/api/session', handler); }\n}"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"actualServerStatus\":200,\"actualResponseWasDelayedNotMocked\":true,\"staleResultDiscarded\":true,\"doctorVisible\":false,\"patientVisible\":false,\"reviewInputs\":0,\"popObserved\":true}\n### Ran Playwright code\n```js\nawait (async (page) => {\n  let admitResponse, responseReady;\n  const released = new Promise(resolve => { admitResponse = resolve; });\n  const ready = new Promise(resolve => { responseReady = resolve; });\n  let actualStatus;\n  const handler = async route => {\n    const actual = await route.fetch();\n    actualStatus = actual.status();\n    responseReady();\n    await released;\n    await route.fulfill({ response: actual });\n  };\n  await page.route('**/api/session', handler);\n  try {\n    await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n    await ready;\n    if (actualStatus !== 200) throw new Error('Need actual successful authenticated bootstrap response');\n    await page.getByText('Checking session…', { exact: true }).waitFor({ state: 'visible' });\n    await page.evaluate(() => {\n      window.bootstrapPopObserved = false;\n      window.addEventListener('popstate', () => { window.bootstrapPopObserved = true; }, { once: true });\n      history.pushState({}, '', '/patients/SYN-02/overview');\n    });\n    await page.goBack();\n    await page.waitForFunction(() => window.bootstrapPopObserved === true);\n    admitResponse();\n    await page.getByRole('heading', { name: 'Sign in to your synthetic panel', exact: true }).waitFor({ state: 'visible' });\n    const result = await page.evaluate(() => ({ doctorVisible: document.body.textContent.includes('Dr Alice'), patientVisible: document.body.textContent.includes('Synthetic patient 02'), reviewInputs: document.querySelectorAll('input[name^=\"finding-\"]').length, popObserved: window.bootstrapPopObserved }));\n    if (result.doctorVisible || result.patientVisible || result.reviewInputs) throw new Error('Stale bootstrap result crossed invalidated route/identity context');\n    return { actualServerStatus: actualStatus, actualResponseWasDelayedNotMocked: true, staleResultDiscarded: true, ...result };\n  } finally { admitResponse(); await page.unroute('**/api/session', handler); }\n})(page);\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-042 valid underlying cookie remains after stale-result UI rejection",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"status\": 200,\n  \"principal\": \"Dr Alice (synthetic)\",\n  \"staleUIIdentityRestored\": false\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const r=await fetch(\\'/api/session\\');const s=await r.json();return {status:r.status,principal:s.principal?.name,staleUIIdentityRestored:document.body.textContent.includes(\\'Dr Alice\\')};}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-043 actual expired-cookie bootstrap503 and visible retry503",
+    "invocation": {
+      "tool": "browser_run_code_unsafe",
+      "code": "// Execute through the official Playwright MCP browser_run_code tool only.\n// A real separate process must already hold this deployment's admission flock.\nasync (page) => {\n  await page.addInitScript(() => {\n    if (window.bootstrapRegression) return;\n    window.bootstrapRegression = { sessions: [] };\n    const fetchOriginal = window.fetch;\n    window.fetch = async (...args) => {\n      const response = await fetchOriginal(...args);\n      if (String(args[0]) === '/api/session') window.bootstrapRegression.sessions.push(response.status);\n      return response;\n    };\n  });\n  await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const before = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (before.statuses.join(',') !== '503' || before.text.includes('Dr Alice')) throw new Error('Bootstrap must refuse under the actual gate without restoring identity');\n  // Retrying before RELEASE must remain fail-closed and keep a usable retry.\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const after = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (after.statuses.join(',') !== '503,503' || after.text.includes('Dr Alice')) throw new Error('Busy bootstrap retry must issue a request and remain unauthenticated');\n  return { phase: 'real gate still held', sessionStatuses: after.statuses, refreshVisible: true, identityVisible: false };\n}\n\r\n"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"phase\":\"real gate still held\",\"sessionStatuses\":[503,503],\"refreshVisible\":true,\"identityVisible\":false}\n### Ran Playwright code\n```js\nawait (// Execute through the official Playwright MCP browser_run_code tool only.\n// A real separate process must already hold this deployment's admission flock.\nasync (page) => {\n  await page.addInitScript(() => {\n    if (window.bootstrapRegression) return;\n    window.bootstrapRegression = { sessions: [] };\n    const fetchOriginal = window.fetch;\n    window.fetch = async (...args) => {\n      const response = await fetchOriginal(...args);\n      if (String(args[0]) === '/api/session') window.bootstrapRegression.sessions.push(response.status);\n      return response;\n    };\n  });\n  await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const before = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (before.statuses.join(',') !== '503' || before.text.includes('Dr Alice')) throw new Error('Bootstrap must refuse under the actual gate without restoring identity');\n  // Retrying before RELEASE must remain fail-closed and keep a usable retry.\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n  const after = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n  if (after.statuses.join(',') !== '503,503' || after.text.includes('Dr Alice')) throw new Error('Busy bootstrap retry must issue a request and remain unauthenticated');\n  return { phase: 'real gate still held', sessionStatuses: after.statuses, refreshVisible: true, identityVisible: false };\n}\n\r\n)(page);\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T01-32-06-884Z.log#L3-L4"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-044 keyboard focus expired recovery 0",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\n// Press Tab\nawait page.keyboard.press('Tab');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-044 observe focus 0",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"active\": \"Refresh current information\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({active:document.activeElement.textContent?.trim()})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-045 keyboard visible refresh after expired-cookie RELEASE",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\n// Press Enter\nawait page.keyboard.press('Enter');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-37-55-576Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-046 bootstrap200 anonymous cannot restore expired identity/draft",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"expiredCookieRemainsAnonymous\":true,\"statuses\":[503,503,200],\"doctorVisible\":false,\"patientVisible\":false,\"reviewInputs\":0,\"overflow\":390,\"viewport\":390}\n### Ran Playwright code\n```js\nawait (async (page) => {await page.waitForFunction(() => window.bootstrapRegression.sessions.length === 3);await page.getByRole('heading',{name:'Sign in to your synthetic panel',exact:true}).waitFor({state:'visible'});const result=await page.evaluate(()=>({statuses:window.bootstrapRegression.sessions,doctorVisible:document.body.textContent.includes('Dr Alice'),patientVisible:document.body.textContent.includes('Synthetic patient 02'),reviewInputs:document.querySelectorAll('input[name^=finding-]').length,overflow:document.documentElement.scrollWidth,viewport:innerWidth}));if(result.statuses.join(',')!=='503,503,200'||result.doctorVisible||result.patientVisible||result.reviewInputs)throw new Error('Expired session restored stale identity');return {expiredCookieRemainsAnonymous:true,...result};})(page);\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-047 explicit reauthentication after expired bootstrap",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('alice');\nawait page.locator('#password').fill('Synthetic-Alice-2026!');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-048 sign in current Alice",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-28-967Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-049 wait held restored by explicit sign-in",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for clinician concern · episode generation 2\n### Ran Playwright code\n```js\nawait page.getByText(\"clinician concern · episode generation 2\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-28-995Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-050 go owned panel",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-30-051Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-051 choose SYN01 ordinary assessment",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-01/overview\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/overview)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/overview\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-31-115Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-052 current ordinary assessment",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-01/current\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-32-181Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-053 record prerequisite review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record prerequisite review\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-33-247Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-054 wait explicit ordinary form",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for Choose an eligible option · none is preselected\n### Ran Playwright code\n```js\nawait page.getByText(\"Choose an eligible option · none is preselected\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-33-271Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-055 explicit draft choice",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('input[type=radio][name=option]').first().click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-33-845Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-056 unsaved ordinary draft before real expiry",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#rationale').fill('BR draft must clear on actual expired401 and foreign identity');\nawait page.locator('#follow-up').fill('2026-10-29T09:00');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-057 expired ordinary draft Save returns401",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Save draft\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 3 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-57-320Z.yml)\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T01-32-06-884Z.log#L5"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-058 wait identity cleared",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for Sign in to your synthetic panel\n### Ran Playwright code\n```js\nawait page.getByText(\"Sign in to your synthetic panel\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 3 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-57-343Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-059 no expired local draft/patient leak",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"localDraft\": false,\n  \"patientIdentity\": false,\n  \"editableDraft\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({localDraft:document.body.textContent.includes(\\'BR draft must clear\\'),patientIdentity:document.body.textContent.includes(\\'Synthetic patient 01\\'),editableDraft:document.querySelectorAll(\\'#rationale,#follow-up\\').length})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-060 explicit different owner authentication",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('bob');\nawait page.locator('#password').fill('Synthetic-Bob-2026!');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-061 sign in Bob on foreign patient route",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-38-58-969Z.yml)\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T01-32-06-884Z.log#L6-L7"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-062 foreign route denied",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nTimeoutError: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Patient not found').first() to be visible\u001b[22m\n"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "step": "BR-063 no Alice/patient/draft under Bob",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"doctor\": \"Dr Bob (synthetic)Sign out\",\n  \"patientHeading\": null,\n  \"oldDraftLeaked\": false,\n  \"oldAlice\": false,\n  \"workspaceContexts\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({doctor:document.querySelector(\\'.account\\')?.textContent,patientHeading:document.querySelector(\\'h1\\')?.textContent??null,oldDraftLeaked:document.body.textContent.includes(\\'BR draft must clear\\'),oldAlice:document.body.textContent.includes(\\'Dr Alice\\'),workspaceContexts:document.querySelectorAll(\\'.identity\\').length})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-064 owned Bob panel only",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-05-566Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-065 verify Bob owns one",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for 1 owned synthetic patients\n### Ran Playwright code\n```js\nawait page.getByText(\"1 owned synthetic patients\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-05-590Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-066 sign out Bob clears identity",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign out\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-06-644Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-067 sign in Alice again",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('alice');\nawait page.locator('#password').fill('Synthetic-Alice-2026!');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-068 authenticate Alice",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-08-183Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-069 wait Alice owned panel",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for 10 owned synthetic patients\n### Ran Playwright code\n```js\nawait page.getByText(\"10 owned synthetic patients\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-08-206Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-070 return ordinary patient01",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-01/overview\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/overview)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/overview\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-42-721Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-071 ordinary current after reauth",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-01/current\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-43-811Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-072 wait current empty form",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for Choose an eligible option · none is preselected\n### Ran Playwright code\n```js\nawait page.getByText(\"Choose an eligible option · none is preselected\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-01/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-01/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-43-859Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-073 cleared ordinary draft after expired and foreign auth",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"rationale\": \"\",\n  \"followUp\": \"\",\n  \"selected\": 0,\n  \"identity\": \"Synthetic patient 01\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({rationale:document.querySelector(\\'#rationale\\').value,followUp:document.querySelector(\\'#follow-up\\').value,selected:document.querySelectorAll(\\'input[name=option]:checked\\').length,identity:document.querySelector(\\'h1\\').textContent})');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-074 return panel for held patient",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/)\n### Page\n- Page URL: http://127.0.0.1:8771/\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-45-488Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-075 patient02 held",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/overview\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/overview)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/overview\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-46-565Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-076 current held",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/current\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-47-657Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-077 wait mixed pending saved review",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for BR entire same-generation mixed episode stays held pending accepted threshold criterion\n### Ran Playwright code\n```js\nawait page.getByText(\"BR entire same-generation mixed episode stays held pending accepted threshold criterion\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 5 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-39-47-701Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-078 before authenticated refresh sessions/current identity",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"sessionRequests\": 6,\n  \"version\": 9,\n  \"decision\": \"decision-9d2bcf22c614a23eaae423f183635768\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const w=await(await fetch(\\'/api/patients/SYN-02\\')).json();window.brAuthBefore={sessionRequests:window.bootstrapRegression.sessions.length,version:w.snapshot.patient_version,decision:w.snapshot.record_id};return window.brAuthBefore;}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-079 authenticated evidence busy refusal",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button.evidence-link').first().click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 6 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-40-28-070Z.yml)\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T01-32-06-884Z.log#L8"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-080 refresh safety while still busy",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Refresh safety information\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 7 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-40-33-648Z.yml)\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T01-32-06-884Z.log#L9"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-081 authenticated refresh remains fail-closed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 7 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=f3e2]:\n  - link \"Skip to main content\" [ref=f3e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=f3e4]:\n    - generic [ref=f3e5]:\n      - text: REMission\n      - generic [ref=f3e6]: Synthetic care workspace\n    - generic [ref=f3e420]:\n      - generic [ref=f3e421]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=f3e422] [cursor=pointer]\n  - generic [ref=f3e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=f3e8]:\n    - alert [ref=f3e835]:\n      - strong [ref=f3e836]: Action needs attention\n      - paragraph [ref=f3e837]: \"Error: Current service unavailable; refresh after the safety admission completes\"\n      - button \"Refresh current information\" [ref=f3e838] [cursor=pointer]\n    - navigation \"Workspace\" [ref=f3e423]:\n      - link \"My panel\" [ref=f3e424] [cursor=pointer]:\n        - /url: /\n      - generic [ref=f3e425]: 10 owned synthetic patients\n    - generic [ref=f3e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-082 authenticated current refresh after RELEASE",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Refresh current information\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 7 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-40-35-512Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-083 wait restored mixed pending current",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nWaited for BR entire same-generation mixed episode stays held pending accepted threshold criterion\n### Ran Playwright code\n```js\nawait page.getByText(\"BR entire same-generation mixed episode stays held pending accepted threshold criterion\").first().waitFor({ state: 'visible' });\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8771/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 7 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T01-40-35-549Z.yml)"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-084 authenticated refresh retains identity/version without redundant session bootstrap",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"sessionRequests\": 6,\n  \"before\": {\n    \"sessionRequests\": 6,\n    \"version\": 9,\n    \"decision\": \"decision-9d2bcf22c614a23eaae423f183635768\"\n  },\n  \"version\": 9,\n  \"decision\": \"decision-9d2bcf22c614a23eaae423f183635768\",\n  \"stage\": \"ASSIGN-09\",\n  \"data\": \"stale\",\n  \"support\": \"paused\",\n  \"localFinding\": [\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"width\": 390,\n  \"scrollWidth\": 390\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const w=await(await fetch(\\'/api/patients/SYN-02\\')).json();const result={sessionRequests:window.bootstrapRegression.sessions.length,before:window.brAuthBefore,version:w.snapshot.patient_version,decision:w.snapshot.record_id,stage:w.stage,data:w.snapshot.workflow.data_readiness,support:w.snapshot.workflow.support_mode,localFinding:[...document.querySelectorAll(\\'input[name^=finding-]\\')].map(x=>x.value),width:innerWidth,scrollWidth:document.documentElement.scrollWidth};if(result.sessionRequests!==result.before.sessionRequests||result.version!==result.before.version||result.decision!==result.before.decision||result.stage!==\\'ASSIGN-09\\')throw Error(\\'Authenticated refresh changed safety identity or bootstrapped unexpectedly\\');return result;}');\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-085 recovered narrow screenshot",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1-live-hold-br-recovered-ec49-8d9233d0.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1-live-hold-br-recovered-ec49-8d9233d0.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1-live-hold-br-recovered-ec49-8d9233d0.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-086 desktop finalviewport",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 1280, height: 720 });\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-087 recovered desktop screenshot",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1-live-hold-br-recovered-desktop-ec49-60cf07e3.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1-live-hold-br-recovered-desktop-ec49-60cf07e3.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1-live-hold-br-recovered-desktop-ec49-60cf07e3.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-088 final current network",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n1. [GET] http://127.0.0.1:8771/ => [200] OK\n2. [GET] http://127.0.0.1:8771/assets/index-CFqriR5o.js => [200] OK\n3. [GET] http://127.0.0.1:8771/assets/index-D_6TIRrA.css => [200] OK\n4. [GET] http://127.0.0.1:8771/api/session => [200] OK\n5. [GET] http://127.0.0.1:8771/assets/index-CFqriR5o.js => [200] OK\n6. [GET] http://127.0.0.1:8771/assets/index-D_6TIRrA.css => [200] OK\n7. [GET] http://127.0.0.1:8771/health => [200] OK\n8. [GET] http://127.0.0.1:8771/api/session => [200] OK\n9. [POST] http://127.0.0.1:8771/api/login => [200] OK\n10. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n11. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n12. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n13. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n14. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n15. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n16. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n17. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n18. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n19. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n20. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n21. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n22. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n23. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds/episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82/reviews => [200] OK\n24. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n25. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n26. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n27. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n28. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds/episode-e45da781f7db2ff3b56cda9e4a0749a65825fa82/clearance => [200] OK\n29. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n30. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n31. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n32. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n33. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n34. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n35. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n36. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n37. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n38. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n39. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n40. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n41. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n42. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n43. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n44. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds/episode-ee27aba5bc300595184de865b8a65e81eadcd22a/reviews => [200] OK\n45. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n46. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n47. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n48. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n49. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n50. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n51. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n52. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n53. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n54. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n55. [POST] http://127.0.0.1:8771/api/patients/SYN-02/live-holds/episode-ee27aba5bc300595184de865b8a65e81eadcd22a/reviews => [200] OK\n56. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n57. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n58. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n59. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n60. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n61. [GET] http://127.0.0.1:8771/patients/SYN-02/current => [200] OK\n62. [GET] http://127.0.0.1:8771/assets/index-CFqriR5o.js => [200] OK\n63. [GET] http://127.0.0.1:8771/assets/index-D_6TIRrA.css => [200] OK\n64. [GET] http://127.0.0.1:8771/api/session => [503] Service Unavailable\n65. [GET] http://127.0.0.1:8771/api/session => [503] Service Unavailable\n66. [GET] http://127.0.0.1:8771/api/session => [200] OK\n67. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n68. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n69. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n70. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n71. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n72. [GET] http://127.0.0.1:8771/patients/SYN-02/current => [200] OK\n73. [GET] http://127.0.0.1:8771/assets/index-CFqriR5o.js => [200] OK\n74. [GET] http://127.0.0.1:8771/assets/index-D_6TIRrA.css => [200] OK\n75. [GET] http://127.0.0.1:8771/api/session => [200] OK\n76. [GET] http://127.0.0.1:8771/api/session => [200] OK\n77. [GET] http://127.0.0.1:8771/patients/SYN-02/current => [200] OK\n78. [GET] http://127.0.0.1:8771/assets/index-CFqriR5o.js => [200] OK\n79. [GET] http://127.0.0.1:8771/assets/index-D_6TIRrA.css => [200] OK\n80. [GET] http://127.0.0.1:8771/api/session => [503] Service Unavailable\n81. [GET] http://127.0.0.1:8771/api/session => [503] Service Unavailable\n82. [GET] http://127.0.0.1:8771/api/session => [200] OK\n83. [GET] http://127.0.0.1:8771/api/session => [200] OK\n84. [POST] http://127.0.0.1:8771/api/login => [200] OK\n85. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n86. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n87. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n88. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n89. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n90. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n91. [GET] http://127.0.0.1:8771/api/patients/SYN-01 => [200] OK\n92. [GET] http://127.0.0.1:8771/api/patients/SYN-01/draft => [200] OK\n93. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n94. [GET] http://127.0.0.1:8771/api/patients/SYN-01 => [200] OK\n95. [GET] http://127.0.0.1:8771/api/patients/SYN-01/draft => [200] OK\n96. [GET] http://127.0.0.1:8771/api/patients/SYN-01/live-holds => [200] OK\n97. [POST] http://127.0.0.1:8771/api/patients/SYN-01/state => [200] OK\n98. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n99. [GET] http://127.0.0.1:8771/api/patients/SYN-01 => [200] OK\n100. [GET] http://127.0.0.1:8771/api/patients/SYN-01/draft => [200] OK\n101. [GET] http://127.0.0.1:8771/api/patients/SYN-01/live-holds => [200] OK\n102. [PUT] http://127.0.0.1:8771/api/patients/SYN-01/draft => [401] Unauthorized\n103. [GET] http://127.0.0.1:8771/api/session => [200] OK\n104. [POST] http://127.0.0.1:8771/api/login => [200] OK\n105. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n106. [GET] http://127.0.0.1:8771/api/patients/SYN-01 => [404] Not Found\n107. [GET] http://127.0.0.1:8771/api/patients/SYN-01/draft => [404] Not Found\n108. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n109. [POST] http://127.0.0.1:8771/api/logout => [200] OK\n110. [GET] http://127.0.0.1:8771/api/session => [200] OK\n111. [POST] http://127.0.0.1:8771/api/login => [200] OK\n112. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n113. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n114. [GET] http://127.0.0.1:8771/api/patients/SYN-01 => [200] OK\n115. [GET] http://127.0.0.1:8771/api/patients/SYN-01/draft => [200] OK\n116. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n117. [GET] http://127.0.0.1:8771/api/patients/SYN-01 => [200] OK\n118. [GET] http://127.0.0.1:8771/api/patients/SYN-01/draft => [200] OK\n119. [GET] http://127.0.0.1:8771/api/patients/SYN-01/live-holds => [200] OK\n120. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n121. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n122. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n123. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n124. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n125. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n126. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n127. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n128. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n129. [GET] http://127.0.0.1:8771/api/patients/SYN-02/observed-archives/live-demo-second-concern%3Afixture-export => [503] Service Unavailable\n130. [GET] http://127.0.0.1:8771/api/patients => [503] Service Unavailable\n131. [GET] http://127.0.0.1:8771/api/patients => [200] OK\n132. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK\n133. [GET] http://127.0.0.1:8771/api/patients/SYN-02/draft => [200] OK\n134. [GET] http://127.0.0.1:8771/api/patients/SYN-02/live-holds => [200] OK\n135. [GET] http://127.0.0.1:8771/api/patients/SYN-02 => [200] OK"
+        }
+      ]
+    }
+  },
+  {
+    "step": "BR-089 full current console",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nTotal messages: 7 (Errors: 7, Warnings: 0)\nReturning 9 messages for level \"debug\"\n\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8771/api/session:0\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8771/api/session:0\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8771/api/session:0\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8771/api/session:0\n[ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:8771/api/patients/SYN-01/draft:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8771/api/patients/SYN-01:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8771/api/patients/SYN-01/draft:0\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8771/api/patients/SYN-02/observed-archives/live-demo-second-concern%3Afixture-export:0\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8771/api/patients:0"
+        }
+      ]
+    }
+  }
+]

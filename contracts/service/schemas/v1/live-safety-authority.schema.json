@@ -1,0 +1,210 @@
+{
+  "$defs": {
+    "AuthorityGeneration": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Authority Sha256",
+          "type": "string"
+        },
+        "generation": {
+          "exclusiveMinimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "review_rules_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Review Rules Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "generation",
+        "authority_sha256",
+        "review_rules_sha256"
+      ],
+      "title": "AuthorityGeneration",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:service:live-safety-authority:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allow_contract_fixture": {
+      "default": false,
+      "title": "Allow Contract Fixture",
+      "type": "boolean"
+    },
+    "authority_generation": {
+      "exclusiveMinimum": 0,
+      "title": "Authority Generation",
+      "type": "integer"
+    },
+    "authority_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Authority Sha256",
+      "type": "string"
+    },
+    "baseline_operation_id": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Baseline Operation Id"
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "export_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Export Id",
+      "type": "string"
+    },
+    "generations": {
+      "items": {
+        "$ref": "#/$defs/AuthorityGeneration"
+      },
+      "title": "Generations",
+      "type": "array"
+    },
+    "kind": {
+      "const": "trusted_live_safety_authority",
+      "title": "Kind",
+      "type": "string"
+    },
+    "manifest_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "observed_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Observed Sha256",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "prefix_chain_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Prefix Chain Sha256",
+      "type": "string"
+    },
+    "prefix_count": {
+      "minimum": 0,
+      "title": "Prefix Count",
+      "type": "integer"
+    },
+    "review_rules_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Review Rules Sha256",
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service_instance_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Service Instance Id",
+      "type": "string"
+    },
+    "service_producer": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "snapshot_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "snapshot_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Snapshot Sha256",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "through_patient_sequence": {
+      "minimum": 0,
+      "title": "Through Patient Sequence",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "synthetic",
+    "service_instance_id",
+    "service_producer",
+    "source_commit",
+    "runtime",
+    "export_id",
+    "manifest_sha256",
+    "patient_id",
+    "cutoff",
+    "snapshot_id",
+    "snapshot_sha256",
+    "authority_generation",
+    "authority_sha256",
+    "review_rules_sha256",
+    "generations",
+    "observed_sha256",
+    "prefix_count",
+    "through_patient_sequence",
+    "prefix_chain_sha256",
+    "baseline_operation_id"
+  ],
+  "title": "TrustedLiveSafetyAuthority",
+  "type": "object"
+}

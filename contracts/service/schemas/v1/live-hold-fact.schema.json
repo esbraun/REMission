@@ -1,0 +1,640 @@
+{
+  "$defs": {
+    "AuthorityChanged": {
+      "additionalProperties": false,
+      "properties": {
+        "active_episodes": {
+          "items": {
+            "$ref": "#/$defs/EpisodeObligations"
+          },
+          "title": "Active Episodes",
+          "type": "array"
+        },
+        "new_authority_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "New Authority Sha256",
+          "type": "string"
+        },
+        "new_generation": {
+          "exclusiveMinimum": 0,
+          "title": "New Generation",
+          "type": "integer"
+        },
+        "new_review_rules_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "New Review Rules Sha256",
+          "type": "string"
+        },
+        "old_authority_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Old Authority Sha256",
+          "type": "string"
+        },
+        "old_generation": {
+          "exclusiveMinimum": 0,
+          "title": "Old Generation",
+          "type": "integer"
+        },
+        "old_review_rules_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Old Review Rules Sha256",
+          "type": "string"
+        },
+        "prior_journal_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Prior Journal Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "authority_changed",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "old_generation",
+        "new_generation",
+        "old_authority_sha256",
+        "new_authority_sha256",
+        "old_review_rules_sha256",
+        "new_review_rules_sha256",
+        "prior_journal_id",
+        "active_episodes"
+      ],
+      "title": "AuthorityChanged",
+      "type": "object"
+    },
+    "Baseline": {
+      "additionalProperties": false,
+      "properties": {
+        "active_episodes": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Active Episodes",
+          "type": "array"
+        },
+        "scope": {
+          "const": "independent_live_holds",
+          "title": "Scope",
+          "type": "string"
+        },
+        "type": {
+          "const": "baseline",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "scope",
+        "active_episodes"
+      ],
+      "title": "Baseline",
+      "type": "object"
+    },
+    "Clearance": {
+      "additionalProperties": false,
+      "properties": {
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "generation": {
+          "exclusiveMinimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "obligation_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Obligation Set Sha256",
+          "type": "string"
+        },
+        "review_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Review Id",
+          "type": "string"
+        },
+        "review_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Review Sha256",
+          "type": "string"
+        },
+        "rule_refs": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Rule Refs",
+          "type": "array"
+        },
+        "trigger_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Trigger Set Sha256",
+          "type": "string"
+        },
+        "type": {
+          "const": "clearance",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "episode_id",
+        "generation",
+        "review_id",
+        "review_sha256",
+        "trigger_set_sha256",
+        "obligation_set_sha256",
+        "rule_refs"
+      ],
+      "title": "Clearance",
+      "type": "object"
+    },
+    "EpisodeObligations": {
+      "additionalProperties": false,
+      "properties": {
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "generation": {
+          "exclusiveMinimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "obligation_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Obligation Set Sha256",
+          "type": "string"
+        },
+        "obligations": {
+          "items": {
+            "$ref": "#/$defs/Obligation"
+          },
+          "title": "Obligations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "episode_id",
+        "generation",
+        "obligations",
+        "obligation_set_sha256"
+      ],
+      "title": "EpisodeObligations",
+      "type": "object"
+    },
+    "EvidenceDisputed": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Affected Refs",
+          "type": "array"
+        },
+        "changed_context_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Changed Context Sha256"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "generation": {
+          "exclusiveMinimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "reason": {
+          "enum": [
+            "corrected",
+            "retracted",
+            "superseded",
+            "unresolved",
+            "current_context_changed"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "type": {
+          "const": "evidence_disputed",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "episode_id",
+        "generation",
+        "reason",
+        "affected_refs",
+        "changed_context_sha256"
+      ],
+      "title": "EvidenceDisputed",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Namespace Id",
+          "type": "string"
+        },
+        "partition_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Partition Id"
+        },
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "store": {
+          "enum": [
+            "archive",
+            "event",
+            "live_review"
+          ],
+          "title": "Store",
+          "type": "string"
+        }
+      },
+      "required": [
+        "store",
+        "namespace_id",
+        "partition_id",
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "Invalidate": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "open",
+            "strengthen"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "active_trigger_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Active Trigger Refs",
+          "type": "array"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "generation": {
+          "exclusiveMinimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "obligation_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Obligation Set Sha256",
+          "type": "string"
+        },
+        "obligations": {
+          "items": {
+            "$ref": "#/$defs/Obligation"
+          },
+          "title": "Obligations",
+          "type": "array"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "trigger_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Trigger Refs",
+          "type": "array"
+        },
+        "trigger_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Trigger Set Sha256",
+          "type": "string"
+        },
+        "type": {
+          "const": "invalidate",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "action",
+        "episode_id",
+        "generation",
+        "trigger_refs",
+        "active_trigger_refs",
+        "trigger_set_sha256",
+        "reason_codes",
+        "obligations",
+        "obligation_set_sha256"
+      ],
+      "title": "Invalidate",
+      "type": "object"
+    },
+    "Obligation": {
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "requirement_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Requirement Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "definition"
+      ],
+      "title": "Obligation",
+      "type": "object"
+    },
+    "ReviewRecorded": {
+      "additionalProperties": false,
+      "properties": {
+        "current_review_at": {
+          "format": "date-time",
+          "title": "Current Review At",
+          "type": "string"
+        },
+        "episode_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "generation": {
+          "exclusiveMinimum": 0,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "obligation_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Obligation Set Sha256",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "pending",
+            "satisfied"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "review_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Review Id",
+          "type": "string"
+        },
+        "review_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Review Sha256",
+          "type": "string"
+        },
+        "rule_refs": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Rule Refs",
+          "type": "array"
+        },
+        "trigger_set_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Trigger Set Sha256",
+          "type": "string"
+        },
+        "type": {
+          "const": "review_recorded",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "episode_id",
+        "generation",
+        "review_id",
+        "review_sha256",
+        "current_review_at",
+        "trigger_set_sha256",
+        "obligation_set_sha256",
+        "rule_refs",
+        "result"
+      ],
+      "title": "ReviewRecorded",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:service:live-hold-fact:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority_generation": {
+      "exclusiveMinimum": 0,
+      "title": "Authority Generation",
+      "type": "integer"
+    },
+    "authority_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Authority Sha256",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "event_at": {
+      "format": "date-time",
+      "title": "Event At",
+      "type": "string"
+    },
+    "journal_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Journal Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "live_hold_fact",
+      "title": "Kind",
+      "type": "string"
+    },
+    "operation": {
+      "discriminator": {
+        "mapping": {
+          "authority_changed": "#/$defs/AuthorityChanged",
+          "baseline": "#/$defs/Baseline",
+          "clearance": "#/$defs/Clearance",
+          "evidence_disputed": "#/$defs/EvidenceDisputed",
+          "invalidate": "#/$defs/Invalidate",
+          "review_recorded": "#/$defs/ReviewRecorded"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Baseline"
+        },
+        {
+          "$ref": "#/$defs/Invalidate"
+        },
+        {
+          "$ref": "#/$defs/ReviewRecorded"
+        },
+        {
+          "$ref": "#/$defs/Clearance"
+        },
+        {
+          "$ref": "#/$defs/AuthorityChanged"
+        },
+        {
+          "$ref": "#/$defs/EvidenceDisputed"
+        }
+      ],
+      "title": "Operation"
+    },
+    "operation_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "patient_sequence": {
+      "exclusiveMinimum": 0,
+      "title": "Patient Sequence",
+      "type": "integer"
+    },
+    "previous_fact_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Previous Fact Sha256"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "review_rules_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Review Rules Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "synthetic",
+    "patient_id",
+    "journal_id",
+    "operation_id",
+    "patient_sequence",
+    "previous_fact_sha256",
+    "authority_generation",
+    "authority_sha256",
+    "review_rules_sha256",
+    "event_at",
+    "recorded_at",
+    "available_at",
+    "operation"
+  ],
+  "title": "LiveHoldFact",
+  "type": "object"
+}

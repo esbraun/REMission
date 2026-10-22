@@ -1,0 +1,49 @@
+/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution (test_live_hold.LiveWorkflowTests.test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution) ... ERROR
+test_amendment_cannot_consume_an_unadmitted_positive_transition (test_live_hold.LiveWorkflowTests.test_amendment_cannot_consume_an_unadmitted_positive_transition) ... ERROR
+
+======================================================================
+ERROR: test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution (test_live_hold.LiveWorkflowTests.test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/integration/replay/test_live_hold.py", line 578, in test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution
+    amendment,first=self.prepare_exact_amendment()
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/source/tests/integration/replay/test_live_hold.py", line 569, in prepare_exact_amendment
+    amendment=FollowUpAmendment(service_patient_id='SYN-02',episode_id=row['id'],episode_generation=row['generation'],
+        prior_authority_generation=old.authority_generation,prior_authority_sha256=old.authority_sha256,prior_review_rules_sha256=old.review_rules_sha256,
+        prior_trigger_set_sha256=e['trigger_set_sha256'],prior_obligation_set_sha256=e['obligation_set_sha256'],source_key=__import__('json').loads(row['source_key']),
+        source_id=grant.source_id,source_version=grant.source_version,owner_id='alice',grant=grant,source_bundle_ref=exact_ref(bundle),
+        follow_up=FollowUpBinding(reference=exact_ref(follow),owner_id='alice',policy=ref('explicit-cutover-followup'),due_at=follow.due_at,escalation_destination=follow.escalation_destination),authorization=ref('explicit-installed-offline-amendment'))
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 280, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FollowUpAmendment
+source_key
+  Input should be a valid tuple [type=tuple_type, input_value=['synthetic-fixture', 'ob...2-partition', 'episode'], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.14/v/tuple_type
+
+======================================================================
+ERROR: test_amendment_cannot_consume_an_unadmitted_positive_transition (test_live_hold.LiveWorkflowTests.test_amendment_cannot_consume_an_unadmitted_positive_transition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/integration/replay/test_live_hold.py", line 610, in test_amendment_cannot_consume_an_unadmitted_positive_transition
+    amendment,_=self.prepare_exact_amendment(unadmitted_positive=True);before=self.safety_state()
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/tests/integration/replay/test_live_hold.py", line 569, in prepare_exact_amendment
+    amendment=FollowUpAmendment(service_patient_id='SYN-02',episode_id=row['id'],episode_generation=row['generation'],
+        prior_authority_generation=old.authority_generation,prior_authority_sha256=old.authority_sha256,prior_review_rules_sha256=old.review_rules_sha256,
+        prior_trigger_set_sha256=e['trigger_set_sha256'],prior_obligation_set_sha256=e['obligation_set_sha256'],source_key=__import__('json').loads(row['source_key']),
+        source_id=grant.source_id,source_version=grant.source_version,owner_id='alice',grant=grant,source_bundle_ref=exact_ref(bundle),
+        follow_up=FollowUpBinding(reference=exact_ref(follow),owner_id='alice',policy=ref('explicit-cutover-followup'),due_at=follow.due_at,escalation_destination=follow.escalation_destination),authorization=ref('explicit-installed-offline-amendment'))
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 280, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FollowUpAmendment
+source_key
+  Input should be a valid tuple [type=tuple_type, input_value=['synthetic-fixture', 'ob...2-partition', 'episode'], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.14/v/tuple_type
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.632s
+
+FAILED (errors=2)

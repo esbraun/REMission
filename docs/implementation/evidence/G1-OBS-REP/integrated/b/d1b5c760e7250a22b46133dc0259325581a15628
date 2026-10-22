@@ -1,0 +1,57 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from learner.Dockerfile
+#1 transferring dockerfile: 1.02kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 178B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 3.27kB done
+#4 DONE 0.0s
+
+#5 [1/9] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#5 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#5 DONE 0.0s
+
+#6 [7/9] COPY services/learner/export_observed.py /app/services/learner/export_observed.py
+#6 CACHED
+
+#7 [3/9] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+#7 CACHED
+
+#8 [4/9] COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
+#8 CACHED
+
+#9 [5/9] COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
+#9 CACHED
+
+#10 [6/9] COPY services/learner/worker.py /app/services/learner/worker.py
+#10 CACHED
+
+#11 [2/9] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#11 CACHED
+
+#12 [8/9] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#12 CACHED
+
+#13 [9/9] COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 exporting manifest sha256:b64ff81bbd4d8713a64ad2349107c2a1e205ba70c92a61e1771b844e8bab03d2 done
+#14 exporting config sha256:829035c902ed5668a58ecb0ff5c7829e73d1b06ccf21603fe7f7d0a545554f60 done
+#14 exporting attestation manifest sha256:2903d1db815dc258c24761ae81c2eb0655965882481d3fd6ee884cb7e7d73908
+#14 exporting attestation manifest sha256:2903d1db815dc258c24761ae81c2eb0655965882481d3fd6ee884cb7e7d73908 0.0s done
+#14 exporting manifest list sha256:1d30bb4940c403cf2f2a0d239b6c40b8a121375bede14fa58874dd968a9c0795 done
+#14 naming to docker.io/library/remission-obs2-repair-astra-20261021-learner:candidate done
+#14 unpacking to docker.io/library/remission-obs2-repair-astra-20261021-learner:candidate 0.0s done
+#14 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/gudl2ky67buvo29jhcl8w3rar

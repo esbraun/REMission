@@ -1,0 +1,18 @@
+{
+  "initial_expected_message": {
+    "outer_exit": 1,
+    "expected": "REMISSION_CONTROL_BUNDLE",
+    "actual_child_exit": 1,
+    "actual_named_refusal": "service_control_bundle_required",
+    "result": "correct fail-closed runtime, incorrect test error-string expectation",
+    "preservation": "all four first-attempt UUID command/stdout/stderr records retained in this directory",
+    "repair": "separate four-case rerun expects the actual named refusal; summary.json passes"
+  },
+  "auxiliary_report_print": {
+    "outer_exit": 1,
+    "after_qualification": "corrected four-case summary already written and passed",
+    "error": "UnicodeEncodeError: cp1252 cannot encode U+2192 in independent report",
+    "repair": "separate UTF8 stdout reconfiguration read the complete report successfully; exact report bytes also preserved in base64 raw envelope",
+    "runtime_change": false
+  }
+}

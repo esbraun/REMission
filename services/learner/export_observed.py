@@ -7,7 +7,10 @@ from contracts.domain.boundaries import ObservedHistory
 
 def admit(source: Path, destination: Path):
     raw=source.read_bytes()
-    if json.loads(raw).get('schema_version') == '2.0.0':
+    wrapper=json.loads(raw)
+    if not isinstance(wrapper,dict):
+        raise ValueError('observed history wrapper required')
+    if wrapper.get('schema_version') == '2.0.0':
         from contracts.domain.observed_v2 import ObservedHistoryV2
         observed=ObservedHistoryV2.model_validate_json(raw)
     else:
@@ -27,3 +30,15 @@ def admit_run_export(manifest: bytes, staging: Path, destination: Path, authorit
     """Versioned multi-patient admission with trusted out-of-band producer binding."""
     from contracts.runs.admission import admit_export
     return admit_export(manifest,staging,destination,authority)
+
+
+def admit_live_safety(manifest: bytes, staging: Path, destination: Path, authority):
+    """Require the complete independently authorized operational product."""
+    from contracts.service.live_safety_admission import verify_live_safety
+    verify_live_safety(manifest,staging,authority)
+    # Reuse only the immutable file publisher, not service authority/configuration.
+    from .live_product import publish_product
+    # Read untrusted staging into private bytes and reverify the copied complete
+    # three-file product before its single atomic directory publication.
+    observed=(staging/'observed-projection.json').read_bytes();facts=(staging/'live-hold-facts.json').read_bytes()
+    return publish_product(destination,manifest,observed,facts,validate=lambda root:verify_live_safety(manifest,root,authority))

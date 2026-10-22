@@ -1,0 +1,15 @@
+{
+  "scope": "Retained auxiliary host/read-only locator failures; full official browser failures remain in mcp-raw-complete.json",
+  "busy_first_host_invocation": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": "InvalidOperation: Method invocation failed because [System.String] does not contain a method named 'exists'.",
+    "stage": "PowerShell argument parsing before Python capture or Docker execution",
+    "repair": "Literal PowerShell here-string feeds a host Python argv array; actual READY/RELEASE output is setup/25b72e7ead9b4de48521a1eb1ac1bcf7.stdout"
+  },
+  "read_only_locators": [
+    {"path":"web/src/App.tsx","result":"file absent; actual React entry is web/src/main.tsx"},
+    {"path":"docs/implementation/evidence/G1-LIVE-HOLD/browser/setup.json","result":"file absent; prior evidence has other setup capture names"},
+    {"pattern":"release-checks/*.stderr or test_live*.py as literal rg path on Windows","result":"os error123; corrected to native file enumeration or rg -g patterns"}
+  ]
+}

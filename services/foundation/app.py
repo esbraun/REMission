@@ -21,6 +21,9 @@ from contracts.domain.boundaries import ContractViolation, validate_approval
 from .store import Store, canonical, digest, instant, timestamp
 from .workflow import create_decision, current_safety, history, record_header, state_for
 from .replay import append_event, apply_current_state, parse_observed
+from contracts.service.live_hold import InstalledBundle, InvalidationInput, ReviewInput, ClearanceInput, ExportInput
+from .admission import AdmissionError
+from .live_hold import LiveError
 
 COOKIE = "remission_session"
 HASHER = PasswordHasher()
@@ -29,6 +32,7 @@ HASHER = PasswordHasher()
 @dataclass(frozen=True)
 class Settings:
     database: Path
+    installed: InstalledBundle
     origin: str = "http://127.0.0.1:8765"
     session_seconds: int = 1800
     preauth_seconds: int = 600
@@ -38,6 +42,10 @@ class Settings:
     fault: Callable[[str], None] | None = None
     web_root: Path | None = None
     observed_archives: dict | None = None
+    live_export_root: Path | None = None
+    source_commit: str | None = None
+    runtime_ref: dict | None = None
+    admission_timeout: float = 5
 
     @property
     def secure_cookie(self):
@@ -100,7 +108,8 @@ class ArchiveInput(StrictModel):
 
 
 def create_app(settings: Settings) -> FastAPI:
-    store = Store(settings.database)
+    store = Store(settings.database,settings.installed,clock=settings.clock)
+    store.gate.timeout=settings.admission_timeout
     app = FastAPI(title="REMission synthetic foundation", docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store, app.state.settings = store, settings
     dummy_hash = HASHER.hash("non-account-timing-control")
@@ -112,6 +121,14 @@ def create_app(settings: Settings) -> FastAPI:
     @app.exception_handler(ContractViolation)
     async def contract_error(_request, error):
         return JSONResponse({"code": error.code, "detail": str(error)}, status_code=409)
+
+    @app.exception_handler(AdmissionError)
+    async def admission_error(_request,error):
+        return JSONResponse({'code':error.code,'detail':'Current service unavailable; refresh after the safety admission completes'},status_code=503)
+
+    @app.exception_handler(LiveError)
+    async def live_error(_request,error):
+        return JSONResponse({'code':error.code,'detail':error.code.replace('_',' ')},status_code=error.status)
 
     @app.middleware("http")
     async def headers(request, call_next):
@@ -158,7 +175,165 @@ def create_app(settings: Settings) -> FastAPI:
     def health():
         with store.transaction() as db:
             assert db.execute("SELECT version FROM schema_migrations").fetchone()[0] == 1
-        return {"status": "ok", "synthetic": True, "runtime": "foundation-v1"}
+        return {"status": "ok", "synthetic": True, "runtime": "foundation-live-hold-v1",'capability':settings.installed.control.capability,
+                'database_instance_id':settings.installed.control.database_instance_id,'authority_generation':settings.installed.control.authority_generation}
+
+    def live_key(request):
+        key=request.headers.get('idempotency-key','')
+        if not key or len(key)>128:
+            raise APIError(422,'idempotency_required','Supply the original bounded operation key')
+        return key
+
+    def live_operation(patient_id,episode_id,request,data,family):
+        from . import live_hold as live
+        key=live_key(request);prepared={};intent=live.object_hash(live.canonical_intent(data))
+        def authorize(db):
+            principal=session(db,request,mutation=True)
+            live.patient_row(db,patient_id,principal['account_id'])
+            if prepared and principal['account_id']!=prepared['owner']:
+                raise APIError(401,'authentication_required','Sign in again')
+            # All current grants for a previously admitted episode must still exist.
+            if episode_id:
+                row=db.execute('SELECT payload FROM live_hold_episodes WHERE id=? AND patient_id=? ORDER BY generation DESC LIMIT 1',(episode_id,patient_id)).fetchone()
+                if row is None:
+                    raise APIError(404,'not_found','Resource not found')
+                if not live.episode_grants_current(settings,json.loads(row[0])):
+                    raise LiveError('live_source_grant_unavailable')
+            return principal
+        def prepare(db):
+            current=authorize(db);owner=current['account_id']
+            prepared['owner']=owner
+            prior=live.committed_key(db,owner,patient_id,family,key,intent)
+            prepared['prior']=prior
+            semantic_prior=family=='review' and db.execute('SELECT 1 FROM live_hold_operations WHERE semantic_sha256=?',(live.review_semantic(patient_id,episode_id,data),)).fetchone() is not None
+            if family=='invalidate':
+                retry=live.authorized_invalidation_retry(db,settings,owner,patient_id,data)
+                initial=None if retry else live.prepare_invalidation(settings,db,owner,patient_id,data,settings.clock())
+            elif family=='review' and not prior and not semantic_prior:
+                initial=live.prepare_review(db,settings,owner,patient_id,episode_id,data,settings.clock())
+            else:
+                initial=None
+            prepared['at']=settings.clock()
+            if family=='review' and initial is not None:
+                live.stamp_proofs(initial['proofs'],prepared['at'])
+                initial['evidence_head_sha256']=live.object_hash(initial['proofs'])
+            prepared['value']=initial
+            if prepared['at']<instant(store.validate_control(db)['last_receipt_at']):
+                raise LiveError('service_clock_regression')
+            if settings.fault:
+                settings.fault('after_hold_admission')
+        if settings.fault:
+            settings.fault('before_hold_gate')
+        with store.transaction(write=True,prepare=prepare,authorize=authorize) as db:
+            owner=prepared['owner'];at=prepared['at']
+            if family=='invalidate':
+                retry=live.authorized_invalidation_retry(db,settings,owner,patient_id,data)
+                if retry:
+                    result=live.committed_key(db,owner,patient_id,family,key,intent)
+                    if result is None:result=live.semantic_retry(db,retry[0],owner,patient_id,family,key,intent)
+                else:
+                    value=live.prepare_invalidation(settings,db,owner,patient_id,data,at)
+                    result=live.invalidate(db,settings,owner,patient_id,data,key,at,value)
+            elif prepared['prior']:
+                result=prepared['prior']
+            elif family=='review':
+                # Historical semantic success aliases only after current control,
+                # account/patient/grant authorization and the writer recheck.
+                result=live.semantic_retry(db,live.review_semantic(patient_id,episode_id,data),owner,patient_id,family,key,intent)
+                if result is None:
+                    latest=live.prepare_review(db,settings,owner,patient_id,episode_id,data,at)
+                    if latest!=prepared['value']:raise LiveError('hold_evidence_stale')
+                    result=live.record_review(db,settings,owner,patient_id,episode_id,data,key,at,prepared['value'])
+            else:
+                result=live.clear_episode(db,settings,owner,patient_id,episode_id,data,key,at)
+        if settings.fault:
+            settings.fault('after_hold_commit')
+        return result
+
+    @app.post('/api/patients/{patient_id}/live-holds')
+    async def enter_live_hold(patient_id: str,request: Request):
+        return live_operation(patient_id,None,request,await body(request,InvalidationInput),'invalidate')
+
+    @app.get('/api/patients/{patient_id}/live-holds')
+    def read_live_holds(patient_id: str,request: Request):
+        from .live_journal import summary,active_episodes
+        from .live_hold import installed_rules,episode_grants_current
+        with store.transaction() as db:
+            current=session(db,request);own(db,patient_id,current['account_id'])
+            episodes=[]
+            for row in active_episodes(db,patient_id):
+                e=row['data'];rules,complete=installed_rules(settings,e)
+                grants_valid=episode_grants_current(settings,e)
+                review=db.execute('SELECT payload,payload_sha256 FROM live_hold_reviews WHERE id=?',(e.get('current_review_id'),)).fetchone()
+                episodes.append(dict(episode_id=row['id'],generation=row['generation'],opened_at=row['opened_at'],
+                    trigger_set_sha256=e['trigger_set_sha256'],obligation_set_sha256=e['obligation_set_sha256'],
+                    trigger_refs=e['trigger_refs'],reason_codes=e['reason_codes'],obligations=e['obligations'],task_ids=e['task_ids'],
+                    review_rules=[r.ref.model_dump(mode='json') for r in rules],clearance_supported=complete and grants_valid,
+                    blocker='live_source_grant_unavailable' if not grants_valid else None if complete else 'T-OBS2-CLEARANCE-POLICY',
+                    current_review=dict(payload=json.loads(review[0]),payload_sha256=review[1]) if review else None))
+            from .live_tasks import all_tasks
+            tasks=all_tasks(db,patient_id)
+            available=[]
+            for grant in settings.installed.authority.grants:
+                if grant.account_id!=current['account_id'] or grant.service_patient_id!=patient_id:
+                    continue
+                archive=db.execute('SELECT export_sha256 FROM observed_archives WHERE id=? AND owner_id=?',(grant.archive_id,current['account_id'])).fetchone()
+                if archive is None or archive[0]!=grant.package_sha256:continue
+                for record in db.execute("SELECT payload,payload_sha256 FROM observed_archive_entries WHERE archive_id=? AND partition_id=? AND patient_id=? AND kind='hold_transition_bundle'",(grant.archive_id,grant.partition_id,patient_id)):
+                    value=json.loads(record['payload'])
+                    if value['transition_type'] in ('enter','change_reason') and value['record_status']!='retracted':
+                        available.append(dict(label='Synthetic '+', '.join(value['reason_codes']),command=dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,
+                            archive_id=grant.archive_id,partition_id=grant.partition_id,bundle_ref=dict(record_id=value['record_id'],payload_sha256=record['payload_sha256']),trigger_refs=value['trigger_refs'])))
+            return dict(summary=summary(db,patient_id),episodes=episodes,tasks=tasks,available_triggers=available)
+
+    @app.post('/api/patients/{patient_id}/live-holds/{episode_id}/reviews')
+    async def live_review(patient_id: str,episode_id: str,request: Request):
+        return live_operation(patient_id,episode_id,request,await body(request,ReviewInput),'review')
+
+    @app.post('/api/patients/{patient_id}/live-holds/{episode_id}/clearance')
+    async def live_clearance(patient_id: str,episode_id: str,request: Request):
+        return live_operation(patient_id,episode_id,request,await body(request,ClearanceInput),'clearance')
+
+    @app.get('/api/patients/{patient_id}/live-hold-receipts/{key}')
+    def live_receipt(patient_id: str,key: str,family: str,request: Request):
+        if family not in ('invalidate','review','clearance','import'):
+            raise APIError(422,'invalid_operation_family','Choose the original operation family')
+        with store.transaction() as db:
+            current=session(db,request);own(db,patient_id,current['account_id'])
+            row=db.execute('SELECT o.response FROM live_hold_keys k JOIN live_hold_operations o ON o.id=k.operation_id WHERE k.owner_id=? AND k.patient_id=? AND k.family=? AND k.key=?',
+                (current['account_id'],patient_id,family,key)).fetchone()
+            if row is None:
+                raise APIError(404,'not_found','Committed operation not found')
+            return json.loads(row[0])
+
+    @app.post('/api/patients/{patient_id}/live-safety-exports')
+    async def live_export(patient_id: str,request: Request):
+        data=await body(request,ExportInput);key=live_key(request)
+        if settings.live_export_root is None:
+            raise LiveError('live_export_destination_unconfigured',503)
+        def authorize(db):
+            current=session(db,request,mutation=True)
+            own(db,patient_id,current['account_id'])
+            if current['account_id']!=owner:
+                raise APIError(401,'authentication_required','Sign in again')
+        with store.transaction() as db:
+            current=session(db,request,mutation=True);own(db,patient_id,current['account_id']);owner=current['account_id']
+        from .live_safety_export import ExportContext,export_live_safety
+        return export_live_safety(store,patient_id,data.cutoff,settings.live_export_root,ExportContext(owner,key,settings,authorize))
+
+    @app.get('/api/patients/{patient_id}/live-safety-exports/{export_id}/{artifact_name}')
+    def download_live_export(patient_id: str,export_id: str,artifact_name: str,request: Request):
+        from fastapi.responses import Response
+        column={'manifest.json':'manifest','observed-projection.json':'observed','live-hold-facts.json':'facts'}.get(artifact_name)
+        if column is None:
+            raise APIError(404,'not_found','Resource not found')
+        with store.transaction() as db:
+            current=session(db,request);own(db,patient_id,current['account_id'])
+            row=db.execute('SELECT * FROM live_export_receipts WHERE patient_id=? AND owner_id=?',(patient_id,current['account_id'])).fetchall()
+            saved=next((r for r in row if json.loads(r['manifest'])['export_id']==export_id),None)
+            if saved is None:
+                raise APIError(404,'not_found','Resource not found')
+            return Response(bytes(saved[column]),media_type='application/json',headers={'Content-Disposition':'attachment; filename="'+artifact_name+'"'})
 
     @app.post('/api/observed-archives/{export_id}')
     async def import_archive(export_id: str, request: Request):
@@ -181,7 +356,19 @@ def create_app(settings: Settings) -> FastAPI:
             for partition in authority.partitions:
                 own(db, partition.schedule.patient_id, latest['account_id'])
         try:
+            if data.mode=='clinical_observation_import':
+                from .archive import verify_archive
+                package=verify_archive(raw,root,authority)
+                affected=any((r.kind=='hold_transition_bundle' and r.transition_type!='baseline'
+                    or r.kind=='hold_review_evidence' and r.review_result=='requires_hold'
+                    or r.kind=='decision_snapshot' and (r.workflow.clinical=='clinical_hold' or r.workflow.hold_reasons))
+                    for _,h,*_ in package.partitions for r in h.records)
+                if affected and settings.installed.control.enabled and settings.installed.authority.enabled and settings.installed.authority.grants:
+                    from .live_coordinator import project_archive
+                    return project_archive(store,settings,raw,root,authority,owner_id=owner,key=live_key(request),authorize=authorize)
             return archive_export(store, raw, root, authority, owner_id=owner, received_at=settings.clock(), mode=data.mode, fault=settings.fault, authorize=authorize)
+        except LiveError:
+            raise
         except ValueError as error:
             code = 'independent_hold_live_integration_required' if str(error) == 'independent_hold_live_integration_required' else 'archive_admission_rejected'
             raise APIError(409, code, str(error))
@@ -261,6 +448,8 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction() as db:
             current=session(db,request);patient=own(db,patient_id,current["account_id"])
             result=json.loads(read_decision(db,patient)["display"])
+            from .live_journal import summary
+            result['live_safety_summary']=summary(db,patient_id)
             result["tasks"]=[dict(id=r["id"],due_at=r["due_at"],owner_id=r["owner_id"],payload=json.loads(r["payload"])) for r in db.execute("SELECT * FROM tasks WHERE patient_id=?",(patient_id,))]
             result["history"]=[dict(id=r["id"],approved_at=r["approved_at"],display_sha256=r["display_sha256"]) for r in db.execute("SELECT id,approved_at,display_sha256 FROM bundles WHERE patient_id=? ORDER BY approved_at,id",(patient_id,))]
             result["mode"]="current";result["auth_generation"]=current["token_hash"]
@@ -321,6 +510,8 @@ def create_app(settings: Settings) -> FastAPI:
             if prior:
                 if prior["scope"]!=patient_id or prior["payload_sha256"]!=digest(encoded):raise APIError(409,"idempotency_conflict","This key already identifies different content")
                 return json.loads(prior["response"])
+            from .live_journal import active_episodes
+            if active_episodes(db,patient_id):raise APIError(409,'active_live_hold','Current independent clinical hold requires owned review')
             if any(r.kind=="intercurrent_event" and r.event_type=="death" for r in current_safety(db,patient_id,now)):
                 raise APIError(409,"outside_scope","A deceased patient cannot receive a new ordinary approval")
             decision=read_decision(db,patient);snapshot=DecisionSnapshot.model_validate_json(decision["snapshot"])
@@ -363,6 +554,8 @@ def create_app(settings: Settings) -> FastAPI:
             now=settings.clock()
             current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
             if data.expected_version!=patient["version"] and data.stage!="ASSIGN-09":raise APIError(409,"stale_state","Refresh before recording a state change")
+            from .live_journal import active_episodes
+            if data.stage!='ASSIGN-09' and active_episodes(db,patient_id):raise APIError(409,'active_live_hold','Review each active independent episode before assessment re-entry')
             # Foundation allows hold, assessment and ordinary review transitions.
             # Statistical/protocol engines cannot be activated by changing stage.
             if data.stage not in ("ASSIGN-01","ASSIGN-02","ASSIGN-09","ASSIGN-10"):
@@ -409,6 +602,8 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction(write=True) as db:
             current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
             if data.mode!="current":raise APIError(409,"historical_write","History is read-only")
+            from .live_journal import active_episodes
+            if active_episodes(db,patient_id):raise APIError(409,'active_live_hold','Ordinary approval drafts are unavailable during a clinical hold')
             if data.decision_id!=patient["current_decision"] or data.expected_version!=patient["version"]:raise APIError(409,"stale_draft","Review current state before saving this draft")
             db.execute("INSERT INTO drafts VALUES(?,?,?,?,?,?) ON CONFLICT(owner_id,patient_id,decision_id) DO UPDATE SET auth_generation=excluded.auth_generation,base_version=excluded.base_version,payload=excluded.payload",
                        (current["account_id"],patient_id,data.decision_id,current["token_hash"],patient["version"],canonical(data.model_dump())))

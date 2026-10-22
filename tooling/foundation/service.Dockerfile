@@ -11,6 +11,7 @@ COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/en
 COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
 COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
 COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
+COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/service/live_safety.py contracts/service/live_safety_admission.py contracts/service/bindings-v1.json contracts/service/spec-v1.json /app/contracts/service/
 COPY services/foundation/ /app/services/foundation/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
@@ -23,4 +24,5 @@ CMD ["python","-m","uvicorn","services.foundation.server:app","--host","0.0.0.0"
 FROM service AS integration-tests
 COPY tests/integration/replay/ /app/tests/integration/replay/
 COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
+COPY services/learner/worker.py services/learner/export_observed.py services/learner/live_product.py /app/services/learner/
 CMD ["python","-m","unittest","discover","-s","tests/integration/replay","-v"]

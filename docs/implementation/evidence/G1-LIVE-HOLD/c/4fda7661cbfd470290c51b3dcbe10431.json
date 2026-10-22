@@ -1,0 +1,54 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=128m",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-e",
+    "PYTHONPATH=/source",
+    "-v",
+    "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-implementation-sol-20261021:/source:ro",
+    "-w",
+    "/source",
+    "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests/integration/replay",
+    "-p",
+    "test_live_hold.py",
+    "-v"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1-live-hold-implementation-sol-20261021",
+  "started_unix": 1792622669.0326126,
+  "elapsed_seconds": 1.9218618869781494,
+  "exit": 0,
+  "streams": {
+    "stdout": {
+      "path": "4fda7661cbfd470290c51b3dcbe10431.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "4fda7661cbfd470290c51b3dcbe10431.stderr",
+      "bytes": 488,
+      "sha256": "ac62c0bde8d17655a3a22b173f023f5c44a9f001e439ec214f39904c1e67a85e"
+    }
+  }
+}

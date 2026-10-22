@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-live-hold-implementation-sol-20261021\tooling\foundation\live_stack.py", line 99, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-live-hold-implementation-sol-20261021\tooling\foundation\live_stack.py", line 55, in main
+    old_health=health(None)
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-live-hold-implementation-sol-20261021\tooling\foundation\live_stack.py", line 53, in health
+    if time.monotonic()>deadline:raise RuntimeError('health did not reach expected current capability')
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: health did not reach expected current capability

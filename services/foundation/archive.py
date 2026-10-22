@@ -4,6 +4,53 @@ from contracts.runs.common import read_artifact
 from contracts.runs.observed_v2 import CLINICAL_KINDS
 from .replay import append_event, apply_current_state, preflight_current
 from .store import canonical, digest, timestamp
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class VerifiedArchive:
+    raw: bytes
+    root: object
+    authority: object
+    manifest: object
+    partitions: tuple
+
+
+def verify_archive(raw,root,authority):
+    manifest,partitions=verify_export_v2(raw,root,authority)
+    return VerifiedArchive(raw,root,authority,manifest,tuple(partitions))
+
+
+def persist_archive(db,package,*,owner_id,received_at,installed):
+    """Private coordinator staging, always an unchanged read-only archive receipt."""
+    from contracts.runs.common import read_artifact
+    manifest,partitions=package.manifest,package.partitions
+    identifier=manifest.run_id+':'+manifest.id
+    prior=db.execute('SELECT * FROM observed_archives WHERE id=?',(identifier,)).fetchone()
+    if prior:
+        if prior['export_sha256']!=digest(package.raw) or prior['owner_id']!=owner_id:
+            raise ValueError('immutable_archive_idempotency_conflict')
+        return identifier
+    entries=[(partition,entry) for partition,_,batch,*_ in partitions for entry in batch.entries]
+    receipt=dict(status='archived_read_only',archive_id=identifier,export_sha256=digest(package.raw),records=len(entries),cursor=len(entries),
+        mode='archive_only',live_authority_granted=False,received_at=timestamp(received_at),hold_intervals={})
+    from contracts.domain.evidence_v2 import reconstruct_hold
+    from datetime import timedelta
+    for partition,history,*_ in partitions:
+        if any(r.kind=='hold_transition_bundle' for r in history.records):
+            intervals=reconstruct_hold(history,manifest.cutoff+timedelta(microseconds=1))
+            receipt['hold_intervals'][partition.patient_id]=[{k:timestamp(v) if k in ('starts_at','ends_at') and v is not None else v for k,v in interval.items()} for interval in intervals]
+    db.execute('INSERT INTO observed_archives VALUES(?,?,?,?,?,?,?,?,?)',(identifier,owner_id,digest(package.raw),package.raw,'archive_only',timestamp(received_at),len(entries),len(entries),canonical(receipt)))
+    for ordinal,(partition,entry) in enumerate(entries):
+        r=entry.record;payload=canonical(r.model_dump(mode='json')).encode();source=entry.raw_source.encode()
+        db.execute('INSERT INTO observed_archive_entries VALUES(?,?,?,?,?,?,?,?,?,?,?)',(identifier,partition.id,ordinal,r.patient_id,r.record_id,r.schema_version,r.kind,payload,digest(payload),source,digest(source)))
+    for partition,*_ in partitions:
+        for artifact in [partition.history,partition.replay,partition.coverage,*partition.stage_ledgers,*partition.completion_receipts,*partition.mechanisms]:
+            payload=read_artifact(package.root,artifact,artifact.role)
+            db.execute('INSERT INTO observed_archive_artifacts VALUES(?,?,?,?)',(identifier,artifact.path,payload,digest(payload)))
+    from .live_journal import dispute_archive
+    dispute_archive(db,installed,package,received_at)
+    return identifier
 
 
 def archive_export(store, raw, artifact_root, authority, *, owner_id, received_at, mode='archive_only', fault=None, authorize=None):
@@ -54,6 +101,8 @@ def archive_export(store, raw, artifact_root, authority, *, owner_id, received_a
             for artifact in [partition.history, partition.replay, partition.coverage, *partition.stage_ledgers, *partition.completion_receipts, *partition.mechanisms]:
                 payload = read_artifact(artifact_root, artifact, artifact.role)
                 db.execute('INSERT INTO observed_archive_artifacts VALUES(?,?,?,?)', (identifier, artifact.path, payload, digest(payload)))
+        from .live_journal import dispute_archive
+        dispute_archive(db,store.installed,VerifiedArchive(raw,artifact_root,authority,manifest,tuple(partitions)),received_at)
         if mode == 'clinical_observation_import':
             remaining = [entry for _, entry in entries if entry.record.kind in CLINICAL_KINDS]
             remaining.sort(key=lambda e: (e.record.available_at, e.record.recorded_at, e.record.record_id))

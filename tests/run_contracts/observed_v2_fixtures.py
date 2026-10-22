@@ -19,14 +19,17 @@ def ref(identifier, version='2.0.0', digest=ZERO):
     return dict(id=identifier, version=version, sha256=digest)
 
 
-def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None, complete=False):
+def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', registry=None, transform=None, complete=False, service_owner=None,
+          run_name='obs2-fixture-run',threshold_concern=False,extra_hold=False,extra_threshold=False,multi_followup=False,same_followup_due=False,archive_resolution=False,late_trigger_correction_at=None,late_trigger_retracted=False,late_followup_correction_at=None,refresh_trigger_closure=False,refreshed_trigger_at=None,export_name='fixture-export'):
     root.mkdir(parents=True, exist_ok=True)
+    owner=service_owner or 'sim-owner'
+    owner_role='doctor' if service_owner else 'simulated_clinician'
     bindings = json.loads(Path('contracts/runs/bindings-v2.json').read_bytes())
     typed_bindings = BindingsV2.model_validate_json(canonical(bindings))
     runtime = dict(image_sha256=ZERO, numerical_lock=ref('numerical'), service_lock=ref('service'), python_version='3.13.7',
                    numpy_version='2.5.4', prng='PCG64DXSM', seed_derivation='remission-seed-v1', precision='float64')
     producer = dict(id='obs2-wire-fixture', version='2.0.0', role='contract_fixture')
-    run_id, partition_id, patient_id = 'obs2-fixture-run', 'obs2-partition', 'SYN-02'
+    run_id, partition_id, patient_id = run_name, 'obs2-partition', 'SYN-02'
     records, entries, identities, typed_records = [], [], {}, []
     policy = ref('complete-fixed-no-prompt-mechanism')
     model = ref('explicit-no-estimator')
@@ -59,7 +62,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
         identities[record.record_id] = identity.model_dump(mode='json')
         return record
 
-    patient = add('patient', ORIGIN - timedelta(days=14), identifier='patient-source', covariates=[], diagnosis_context='Synthetic', clinical_context='Synthetic', preferences=[], goals=[], baseline_eligibility=[], care_team=['sim-owner'], timezone='UTC')
+    patient = add('patient', ORIGIN - timedelta(days=14), identifier='patient-source', covariates=[], diagnosis_context='Synthetic', clinical_context='Synthetic', preferences=[], goals=[], baseline_eligibility=[], care_team=[owner], timezone='UTC')
     add('consent', ORIGIN - timedelta(days=13), identifier='generated-active-consent', component='mrt_bandit', consent_version='fixture', oversight_version='fixture', consent_status='active', oversight_status='approved_synthetic', effective_at=(ORIGIN - timedelta(days=13)).isoformat(), expires_at=None, withdrawn_at=None)
     schedule = ScheduleInputV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='support_schedule_input', id='schedule', run_id=run_id, partition_id=partition_id,
                         protocol=bindings['protocol'], timing=bindings['timing'], temporal=bindings['temporal'], representation=bindings['observed_representation'], dgp=bindings['dgp'], catalog=bindings['catalog'],
@@ -68,10 +71,10 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
     slots = derive_slots(schedule)
     schedule_ref = ref(schedule.id, digest=sha256(canonical(schedule.model_dump(mode='json'))))
 
-    def snapshot(identifier, at, *, held=False, version=1):
+    def snapshot(identifier, at, *, held=False, version=1, reason_code='clinician_concern'):
         elig = [dict(action=a, status='excluded' if held else 'eligible' if a == ('support_prompt' if prompt else 'no_prompt') else 'excluded', reasons=['hold' if held else 'fixed mechanism']) for a in ['support_prompt', 'no_prompt']]
         return add('decision_snapshot', at, identifier=identifier, cutoff=at.isoformat(), patient_version=version, state_version=version, consent_version=1, eligibility_version=version,
-                   workflow=dict(clinical='clinical_hold' if held else 'assessment', learning='none', data_readiness='ready', hold_reasons=['clinician_concern'] if held else [], support_policy=policy, support_mode='paused' if held else 'fixed'),
+                   workflow=dict(clinical='clinical_hold' if held else 'assessment', learning='none', data_readiness='ready', hold_reasons=(reason_code if isinstance(reason_code,list) else [reason_code]) if held else [], support_policy=policy, support_mode='paused' if held else 'fixed'),
                    view=dict(patient_id=patient_id, mode='current', snapshot_id=None), eligibility=elig, outcome='sleep_quality', horizon_days=1, estimand=ref('EST-MRT'), model=model, posterior=None, evidence=[], policy=policy)
 
     hold_records = []
@@ -79,14 +82,25 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
     def add_hold(seq, at):
         predecessor = hold_records[-1] if hold_records else None
         predecessor_snap = next((r for r in history().records if predecessor and r.record_id == predecessor.snapshot_ref.record_id), None)
-        held = seq == 1
-        hold_snap = snapshot('hold-snapshot-' + str(seq), at, held=held, version=seq + 2)
-        task = add('follow_up', at, identifier='hold-task-' + str(seq), owner='sim-owner', due_at=(at + timedelta(days=1)).isoformat(), trigger='synthetic review required', status='pending', escalation_destination='sim-care-team')
+        held = seq >= 1
+        threshold=threshold_concern or extra_threshold and seq>1
+        reason_code='experimental_stability_review' if threshold else 'clinician_concern'
+        reasons=['clinician_concern',reason_code] if extra_threshold and seq>1 else [reason_code]
+        hold_snap = snapshot('hold-snapshot-' + str(seq), at, held=held, version=seq + 2,reason_code=reasons if extra_threshold and seq>1 else reason_code)
+        task = add('follow_up', at, identifier='hold-task-' + str(seq), owner=owner, due_at=(at + timedelta(days=1)).isoformat(), trigger='synthetic review required', status='pending', escalation_destination='sim-care-team')
+        follow_up_refs=[exact_ref(task).model_dump()]
+        if held and multi_followup:
+            extra=add('follow_up',at,identifier='hold-task-extra-'+str(seq),owner=owner,due_at=(at+timedelta(days=1 if same_followup_due else 2)).isoformat(),trigger='second explicit synthetic review',status='pending',escalation_destination='sim-care-team' if same_followup_due else 'sim-second-team')
+            follow_up_refs.append(exact_ref(extra).model_dump())
         trigger = None
+        rule_id='accepted-observed-threshold' if threshold else 'accepted-script-concern'
+        if seq>1:rule_id+='-strengthen-'+str(seq)
+        requirement_id='review-threshold' if threshold else 'review-concern'
         if held:
-            trigger = add('hold_review_evidence', at, version='2.0.0', process='hold_review', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', evidence_type='trigger_observation', rule=ref('accepted-script-concern'), requirement=ref('review-concern'), actor_id='sim-owner', actor_role='simulated_clinician', origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=at.isoformat(), facts_refs=[], finding='simulated clinician concern, no hidden numeric coordinates', review_result='requires_hold', follow_up_refs=[exact_ref(task).model_dump()])
-        bundle = add('hold_transition_bundle', at, version='2.0.0', process='hold_transition', substream='baseline' if not held else 'enter', run_id=run_id, partition_id=partition_id, hold_episode_id='episode', transition_sequence=seq, transition_type='enter' if held else 'baseline', effective_at=at.isoformat(), snapshot_ref=exact_ref(hold_snap).model_dump(), predecessor_bundle_ref=exact_ref(predecessor).model_dump() if predecessor else None, predecessor_snapshot_ref=exact_ref(predecessor_snap).model_dump() if predecessor_snap else None,
-                     reason_codes=['clinician_concern'] if held else [], reason='simulated hold' if held else 'initial baseline', trigger_refs=[exact_ref(trigger).model_dump()] if trigger else [], changed_fact_refs=[], blocked_actions=['MED_A', 'MED_B', 'support_prompt', 'no_prompt'] if held else [], context_cutoff=at.isoformat(), causal_context_refs=[], context_projection_sha256=projection_hash(history(), at), policy=policy, model=model, eligibility_configuration=ref('paused-experiment-eligibility'), owner_id='sim-owner', owner_role='simulated_clinician', ownership_ref=exact_ref(patient).model_dump(), follow_up_refs=[exact_ref(task).model_dump()], required_reviews=[], review_refs=[], clearance=dict(status='pending' if held else 'not_applicable', rule=None, evidence_refs=[], assessment_snapshot_ref=None), evidence_roles=[dict(ref=exact_ref(trigger).model_dump(), role='transition_trigger')] if trigger else [])
+            trigger = add('hold_review_evidence', at, version='2.0.0', process='hold_review', substream='main' if seq==1 else 'strengthen-'+str(seq),run_id=run_id, partition_id=partition_id, hold_episode_id='episode', evidence_type='trigger_observation', rule=ref(rule_id), requirement=ref(requirement_id), actor_id=owner, actor_role=owner_role, origin='simulation', ownership_ref=exact_ref(patient).model_dump(), assessed_at=at.isoformat(), facts_refs=[], finding='simulated observed concern, no hidden numeric coordinates; threshold clearance law unspecified' if threshold_concern else 'simulated clinician concern, no hidden numeric coordinates', review_result='requires_hold', follow_up_refs=follow_up_refs)
+        transition='baseline' if not held else 'enter' if seq==1 else 'change_reason'
+        bundle = add('hold_transition_bundle', at, version='2.0.0', process='hold_transition', substream='baseline' if not held else 'enter' if seq==1 else 'strengthen-'+str(seq), run_id=run_id, partition_id=partition_id, hold_episode_id='episode', transition_sequence=seq, transition_type=transition, effective_at=at.isoformat(), snapshot_ref=exact_ref(hold_snap).model_dump(), predecessor_bundle_ref=exact_ref(predecessor).model_dump() if predecessor else None, predecessor_snapshot_ref=exact_ref(predecessor_snap).model_dump() if predecessor_snap else None,
+                     reason_codes=reasons if held else [], reason='simulated hold' if held else 'initial baseline', trigger_refs=[exact_ref(trigger).model_dump()] if trigger else [], changed_fact_refs=[], blocked_actions=['MED_A', 'MED_B', 'support_prompt', 'no_prompt'] if held else [], context_cutoff=at.isoformat(), causal_context_refs=[], context_projection_sha256=projection_hash(history(), at), policy=policy, model=model, eligibility_configuration=ref('paused-experiment-eligibility'), owner_id=owner, owner_role=owner_role, ownership_ref=exact_ref(patient).model_dump(), follow_up_refs=follow_up_refs, required_reviews=[dict(requirement_id=requirement_id,definition=ref(requirement_id),responsible_role='doctor',status='pending',evidence_refs=[])] if service_owner and held else [], review_refs=[], clearance=dict(status='pending' if held else 'not_applicable', rule=None, evidence_refs=[], assessment_snapshot_ref=None), evidence_roles=[dict(ref=exact_ref(trigger).model_dump(), role='transition_trigger')] if trigger else [])
         hold_records.append(bundle)
 
     if hold:
@@ -162,6 +176,44 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
                    offered_closure_ref=exact_ref(closures[0]).model_dump(), delivered_closure_ref=exact_ref(closures[1]).model_dump())
         decisions[index], links[index] = decision, link
         ledger_artifacts.extend(point_ledger_artifacts)
+    if extra_hold:
+        assert hold and not complete
+        # Explicit structural duplicate-clock concern, no scientific law.
+        add_hold(2,ORIGIN+timedelta(hours=10))
+    if archive_resolution:
+        assert hold and not complete and not extra_hold and service_owner
+        # Deliberate structural archive fixture, never live clearance authority.
+        at=ORIGIN+timedelta(hours=11);prior=hold_records[-1]
+        previous_snapshot=next(r for r in history().records if r.record_id==prior.snapshot_ref.record_id)
+        assessment=snapshot('archive-resolution-assessment',at,version=5)
+        follow=add('follow_up',at,identifier='archive-resolution-task',owner=owner,due_at=(at+timedelta(days=3)).isoformat(),trigger='explicit archive amendment fixture',status='pending',escalation_destination='sim-resolution-team')
+        rule=ref('explicit-archive-structural-resolution');requirement=prior.required_reviews[0]
+        review=add('hold_review_evidence',at,version='2.0.0',process='hold_review',substream='archive-resolution',run_id=run_id,partition_id=partition_id,hold_episode_id='episode',evidence_type='clearance',rule=rule,requirement=requirement.definition.model_dump(mode='json'),actor_id=owner,actor_role=owner_role,origin='simulation',ownership_ref=exact_ref(patient).model_dump(),assessed_at=at.isoformat(),facts_refs=[],finding='Explicit structural archive fixture, no live clearance',review_result='requirements_satisfied',follow_up_refs=[exact_ref(follow).model_dump()])
+        reference=exact_ref(review).model_dump()
+        resolved=add('hold_transition_bundle',at,version='2.0.0',process='hold_transition',substream='archive-resolution',run_id=run_id,partition_id=partition_id,hold_episode_id='episode',transition_sequence=2,transition_type='resolve_to_assessment',effective_at=at.isoformat(),snapshot_ref=exact_ref(assessment).model_dump(),predecessor_bundle_ref=exact_ref(prior).model_dump(),predecessor_snapshot_ref=exact_ref(previous_snapshot).model_dump(),reason_codes=[],reason='Explicit archive structural resolution',trigger_refs=[],changed_fact_refs=[],blocked_actions=[],context_cutoff=at.isoformat(),causal_context_refs=[],context_projection_sha256=projection_hash(history(),at),policy=policy,model=model,eligibility_configuration=ref('paused-experiment-eligibility'),owner_id=owner,owner_role=owner_role,ownership_ref=exact_ref(patient).model_dump(),follow_up_refs=[exact_ref(follow).model_dump()],required_reviews=[dict(requirement_id=requirement.requirement_id,definition=requirement.definition.model_dump(mode='json'),responsible_role='doctor',status='satisfied',evidence_refs=[reference])],review_refs=[reference],clearance=dict(status='documented',rule=rule,evidence_refs=[reference],assessment_snapshot_ref=exact_ref(assessment).model_dump()),evidence_roles=[dict(ref=reference,role='later_review')])
+        hold_records.append(resolved)
+    if late_trigger_correction_at is not None:
+        assert hold and not complete and not extra_hold
+        prior=next(r for r in history().records if r.kind=='hold_review_evidence')
+        fields=prior.model_dump(mode='json')
+        for key in ['schema_version','synthetic','kind','record_id','patient_id','event_at','source']:fields.pop(key)
+        fields.update(lineage_id=prior.lineage_id,revision=2,supersedes=prior.record_id,recorded_at=late_trigger_correction_at.isoformat(),available_at=late_trigger_correction_at.isoformat(),record_status='retracted' if late_trigger_retracted else 'active',finding='Late structural concern correction; retains hold')
+        add('hold_review_evidence',prior.event_at,version='2.0.0',process='hold_review',**fields)
+    if late_followup_correction_at is not None:
+        assert hold and not complete and not extra_hold
+        prior=next(r for r in history().records if r.record_id=='hold-task-1')
+        fields=prior.model_dump(mode='json')
+        for key in ['schema_version','synthetic','kind','record_id','patient_id','event_at','source']:fields.pop(key)
+        fields.update(lineage_id=prior.lineage_id,revision=2,supersedes=prior.record_id,recorded_at=late_followup_correction_at.isoformat(),available_at=late_followup_correction_at.isoformat(),record_status='retracted' if late_trigger_retracted else 'active',trigger='Corrected explicit follow-up instruction')
+        revised=add('follow_up',prior.event_at,identifier='hold-task-1-r2',**fields)
+        if refresh_trigger_closure:
+            assert not late_trigger_retracted
+            old=next(r for r in history().records if r.kind=='hold_review_evidence')
+            fields=old.model_dump(mode='json')
+            for key in ['schema_version','synthetic','kind','record_id','patient_id','event_at','source']:fields.pop(key)
+            root_at=refreshed_trigger_at or late_followup_correction_at
+            fields.update(lineage_id=old.lineage_id,revision=2,supersedes=old.record_id,recorded_at=root_at.isoformat(),available_at=root_at.isoformat(),follow_up_refs=[exact_ref(revised).model_dump()])
+            add('hold_review_evidence',old.event_at,version='2.0.0',process='hold_review',**fields)
     if complete:
         cutoff = cutoff or ORIGIN + timedelta(days=85, hours=10)
     cutoff = cutoff or ORIGIN + timedelta(days=1, hours=10)
@@ -184,7 +236,7 @@ def build(root: Path, *, hold=False, prompt=False, cutoff=None, cell_id='S23', r
     from contracts.runs.observed_v2 import CLINICAL_KINDS
     partition = dict(id=partition_id, unit_id='unit', cell_id=cell_id, preset='evaluation', cohort_id='cohort', replicate=0, patient_id=patient_id, history=history_artifact, replay=replay_artifact, coverage=coverage_artifact, stage_ledgers=ledger_artifacts, completion_receipts=receipt_artifacts, mechanisms=mechanism_artifacts,
                      records=[dict(record_id=r.record_id, payload_sha256=payload_hash(r), source=r.source.model_dump(), seed_key_sha256=ZERO, identity=identities[r.record_id], import_to_event_store=r.kind in CLINICAL_KINDS, exclusion_reason=None if r.kind in CLINICAL_KINDS else 'administrative_event_not_live_authority') for r in history().records])
-    manifest = dict(schema_version='2.0.0', synthetic=True, kind='observed_export', contract_version='2.0.0', id='fixture-export', run_id=run_id, run_manifest=run_manifest, producer=producer, execution='contract_fixture', source_commit='6bc8bd998e8a0baaef9884998e740665fb5fd7b1', runtime=runtime, bindings=bindings, cutoff=cutoff.isoformat(), created_at=cutoff.isoformat(), status='complete' if complete else 'partial', partitions=[partition])
+    manifest = dict(schema_version='2.0.0', synthetic=True, kind='observed_export', contract_version='2.0.0', id=export_name, run_id=run_id, run_manifest=run_manifest, producer=producer, execution='contract_fixture', source_commit='6bc8bd998e8a0baaef9884998e740665fb5fd7b1', runtime=runtime, bindings=bindings, cutoff=cutoff.isoformat(), created_at=cutoff.isoformat(), status='complete' if complete else 'partial', partitions=[partition])
     raw = canonical(manifest)
     authority = dict(contract_version='2.0.0', run_id=run_id, producer=producer, manifest_sha256=ZERO, source_commit=manifest['source_commit'], runtime=runtime, allow_contract_fixture=True, export_id=manifest['id'], export_sha256=sha256(raw), bindings=bindings, producer_qualification=None,
                      partitions=[dict(partition_id=partition_id, schedule=schedule.model_dump(mode='json'), expected_decisions=[s.model_dump(mode='json') for s in slots], coverage_sha256=coverage_artifact['sha256'], terminal_evidence_sha256=None, stage_ledger_hashes={a['id']: a['sha256'] for a in ledger_artifacts}, completion_receipt_hashes={a['id']: a['sha256'] for a in receipt_artifacts}, mechanism_hashes={a['id']: a['sha256'] for a in mechanism_artifacts}, record_identities=identities, record_key_hashes={r.record_id: ZERO for r in history().records})])

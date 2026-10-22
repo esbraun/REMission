@@ -1,0 +1,35 @@
+{
+  "$id": "urn:remission:service:live-export-command:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract": {
+      "const": "LIVE-HOLD-01",
+      "title": "Contract",
+      "type": "string"
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "contract",
+    "synthetic",
+    "cutoff"
+  ],
+  "title": "ExportInput",
+  "type": "object"
+}

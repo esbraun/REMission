@@ -1,0 +1,24 @@
+import subprocess,json,pathlib,hashlib,uuid,datetime,sys
+ROOT=pathlib.Path(__file__).resolve().parents[1]; OUT=ROOT/'.review-repair'; IMAGE='sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa'
+def run(name,args,cwd=ROOT):
+ d=OUT/(name+'-'+uuid.uuid4().hex);d.mkdir()
+ files=subprocess.check_output(['git','ls-files','contracts','services','tests','tooling/foundation','web'],cwd=cwd).decode().splitlines()
+ sources={p:hashlib.sha256((cwd/p).read_bytes()).hexdigest() for p in files}
+ (d/'sources.json').write_text(json.dumps(sources,indent=2));start=datetime.datetime.now(datetime.timezone.utc).isoformat()
+ r=subprocess.run(args,cwd=cwd,capture_output=True)
+ for key,val in [('stdout',r.stdout),('stderr',r.stderr)]: (d/key).write_bytes(val)
+ meta=dict(name=name,args=args,cwd=str(cwd),head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=cwd).decode().strip(),start=start,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),exit=r.returncode,stdout_sha256=hashlib.sha256(r.stdout).hexdigest(),stderr_sha256=hashlib.sha256(r.stderr).hexdigest(),sources_sha256=hashlib.sha256((d/'sources.json').read_bytes()).hexdigest())
+ (d/'command.json').write_text(json.dumps(meta,indent=2));print(name,r.returncode,r.stdout.decode(errors='replace')[-500:],r.stderr.decode(errors='replace')[-500:],flush=True)
+ return r
+
+def docker(path,args):return ['docker','run','--rm','--cpus','2','--memory','2g','--network','none','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--tmpfs','/tmp:rw,noexec,nosuid,size=128m','--env','PYTHONPATH=/app','--mount',f'type=bind,source={path.as_posix()},target=/app,readonly','--workdir','/app',IMAGE,'python',*args]
+def suite(path,label):
+ for name,args in [('schema',['docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py']),('domain',['-m','unittest','discover','-s','tests/contracts','-v']),('run',['-m','unittest','discover','-s','tests/run_contracts','-v']),('service',['-m','unittest','discover','-s','tests/integration/replay','-v']),('independent-full',['docs/implementation/evidence/G1-OBS-REP/repair-01/re_admit_independent.py'])]:
+  assert run(label+'-'+name,docker(path,args),path).returncode==0
+ assert run(label+'-ledger',[sys.executable,'docs/implementation/check-ledger-20261020.py'],path).returncode==0
+if __name__=='__main__':
+ suite(ROOT,'own')
+ clone=OUT/'https-clone';assert run('clone',['git','clone','--no-checkout','--config','core.autocrlf=false','https://github.com/esbraun/REMission.git',str(clone)]).returncode==0
+ assert run('checkout',['git','checkout','--detach','3763f7571a47d8ab421a2f8ad4e36e49fe1cc478'],clone).returncode==0
+ assert not run('clone-initial-status',['git','status','--porcelain'],clone).stdout.strip()
+ suite(clone,'clone');assert not run('clone-final-status',['git','status','--porcelain'],clone).stdout.strip()

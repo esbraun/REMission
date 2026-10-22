@@ -1,0 +1,118 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from service.Dockerfile
+#1 transferring dockerfile: 2.06kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/remission-foundation-runtime:candidate
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 178B done
+#4 DONE 0.0s
+
+#5 [client 1/6] FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d
+#5 resolve docker.io/library/node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d 0.0s done
+#5 DONE 0.0s
+
+#6 [service  1/11] FROM docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa
+#6 resolve docker.io/library/remission-foundation-runtime:candidate@sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 3.49kB done
+#7 DONE 0.0s
+
+#8 [client 2/6] WORKDIR /client
+#8 CACHED
+
+#9 [client 3/6] COPY web/package.json web/package-lock.json ./
+#9 CACHED
+
+#10 [client 4/6] RUN npm ci --ignore-scripts
+#10 CACHED
+
+#11 [service  8/11] COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
+#11 CACHED
+
+#12 [service  5/11] COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
+#12 CACHED
+
+#13 [service  4/11] COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
+#13 CACHED
+
+#14 [service  7/11] COPY services/foundation/ /app/services/foundation/
+#14 CACHED
+
+#15 [service  2/11] COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
+#15 CACHED
+
+#16 [service  3/11] COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
+#16 CACHED
+
+#17 [service  6/11] COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/service/live_safety.py contracts/service/live_safety_admission.py contracts/service/bindings-v1.json contracts/service/spec-v1.json /app/contracts/service/
+#17 CACHED
+
+#18 [service  9/11] COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
+#18 CACHED
+
+#19 [client 5/6] COPY web/ ./
+#19 DONE 0.0s
+
+#20 [client 6/6] RUN npm run typecheck && npm run test && npm run build
+#20 0.238 
+#20 0.238 > remission-foundation-shell@0.1.0 typecheck
+#20 0.238 > tsc --noEmit
+#20 0.238 
+#20 0.468 
+#20 0.468 > remission-foundation-shell@0.1.0 test
+#20 0.468 > node --test tests/*.test.mjs
+#20 0.468 
+#20 0.529 ✔ a late response cannot cross patient, task, decision or historical context (0.638069ms)
+#20 0.530 ✔ logout and same-doctor login invalidate every pre-logout response (0.139445ms)
+#20 0.531 ✔ refresh rejects an earlier response even when the same workspace context returns (0.090083ms)
+#20 0.532 ✔ delayed logout success and failure cannot notify a reauthenticated same-doctor workspace (0.917683ms)
+#20 0.539 ℹ tests 4
+#20 0.539 ℹ suites 0
+#20 0.539 ℹ pass 4
+#20 0.539 ℹ fail 0
+#20 0.539 ℹ cancelled 0
+#20 0.539 ℹ skipped 0
+#20 0.539 ℹ todo 0
+#20 0.539 ℹ duration_ms 46.785259
+#20 0.614 
+#20 0.614 > remission-foundation-shell@0.1.0 build
+#20 0.614 > vite build
+#20 0.614 
+#20 0.773 vite v8.3.5 building client environment for production...
+#20 0.786 transforming...
+#20 0.848 ✓ 17 modules transformed.
+#20 0.885 rendering chunks...
+#20 0.915 computing gzip size...
+#20 0.919 dist/index.html                   0.68 kB │ gzip:  0.46 kB
+#20 0.919 dist/assets/index-D_6TIRrA.css    5.70 kB │ gzip:  1.99 kB
+#20 0.919 dist/assets/index-CFqriR5o.js   252.85 kB │ gzip: 77.88 kB
+#20 0.919 
+#20 0.919 ✓ built in 145ms
+#20 DONE 0.9s
+
+#21 [service 10/11] COPY --from=client /client/dist/ /app/web/dist/
+#21 DONE 0.0s
+
+#22 [service 11/11] RUN mkdir /data && chown 10001:10001 /data
+#22 DONE 0.2s
+
+#23 exporting to image
+#23 exporting layers 0.1s done
+#23 exporting manifest sha256:10a794c1ceb7c668c6314a0fb69fd3a2fa93e8764765a8d58fd4d8b1996d7edc done
+#23 exporting config sha256:99a689702ddbaaf5d1353dcd41472ae466b0bdcf6834ec51604b9d53c208dc3a done
+#23 exporting attestation manifest sha256:0376151eda20d579375aa1f89a4ba1599ac0ef9b818e4a118b65774cb1707868 0.0s done
+#23 exporting manifest list sha256:5c402bb69fce60acde58dbe3d8bc21692f8fbc9b57d5162d3acaedcca4b5fd6c done
+#23 naming to docker.io/library/remission-lh-c0c896007c20-service:candidate done
+#23 unpacking to docker.io/library/remission-lh-c0c896007c20-service:candidate 0.1s done
+#23 DONE 0.3s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/8e1ct0960eb53d8w9gxsqe07w

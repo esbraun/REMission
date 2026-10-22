@@ -1,7 +1,4 @@
-import os
-from pathlib import Path
-from .app import Settings, create_app
+from .app import create_app
+from .configuration import environment_settings
 
-app=create_app(Settings(database=Path(os.environ.get("REMISSION_DATABASE","/data/remission.sqlite")),
-                        origin=os.environ.get("REMISSION_ORIGIN","http://127.0.0.1:8765"),
-                        web_root=Path(os.environ.get("REMISSION_WEB_ROOT","/app/web/dist"))))
+app=create_app(environment_settings())

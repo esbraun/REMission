@@ -40,11 +40,23 @@ def main():
         from fastapi.testclient import TestClient
         from services.foundation.app import Settings, create_app
         from services.foundation.cli import DEMO_PASSWORDS, seed
-        from services.foundation.store import Store
+        from services.foundation.store import canonical
+        from services.foundation.cutover import activate_new,bundle_for
+        from contracts.service.live_hold import LiveHoldAuthority,ReviewRules
         with TemporaryDirectory() as directory:
-            settings = Settings(Path(directory) / 'actual.sqlite', clock=lambda: manifest.cutoff + timedelta(days=1),
+            now=manifest.cutoff+timedelta(days=1)
+            ref=lambda name:dict(id=name,version='1.0.0',sha256='0'*64)
+            installed=bundle_for(LiveHoldAuthority.model_validate_json(canonical(dict(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,
+                authority_id='role-probe-fixture-only',version=ref('role-probe'),enabled=True,
+                service_contract=json.loads(Path('/app/contracts/service/bindings-v1.json').read_bytes())['live_hold'],
+                schema_binding=json.loads(Path('/app/contracts/service/bindings-v1.json').read_bytes())['service_schema_set'],follow_up_amendments=[],
+                observed_binding=json.loads(Path('/app/contracts/runs/bindings-v2.json').read_bytes())['observed_representation'],
+                archive_verifier=ref('wire-verifier'),producer=ref('role-probe-fixture'),source_registry=ref('role-probe-registry'),execution='contract_fixture',grants=[]))),
+                ReviewRules(schema_version='1.0.0',contract='LIVE-HOLD-01',synthetic=True,rules=[]))
+            store=activate_new(Path(directory)/'actual.sqlite',installed,now);store.clock=lambda:now
+            settings = Settings(store.path,installed,clock=lambda:now,
                                 observed_archives={manifest.id: ((root / 'manifest.json').read_bytes(), root, authority)})
-            seed(Store(settings.database))
+            seed(store)
             with TestClient(create_app(settings), base_url=settings.origin) as client:
                 bootstrap = client.get('/api/session').json()
                 login = client.post('/api/login', json=dict(username='alice', password=DEMO_PASSWORDS['alice']), headers={'Origin': settings.origin, 'X-CSRF-Token': bootstrap['csrf']})

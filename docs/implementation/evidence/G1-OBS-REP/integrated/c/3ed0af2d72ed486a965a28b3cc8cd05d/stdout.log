@@ -1,0 +1,42 @@
+MERGED CHECK docs/implementation/evidence/G1-OBS-REP/implementation/schema_checks.py
+CHECK -m contracts.domain.export --check
+Contract JSON Schema/dictionary match typed source
+CHECK -m contracts.dgp.export --check
+DGP parameter/scenario artifacts match v1.2.0; independent fixtures remain v1.0.0
+CHECK -m contracts.runs.export --check
+Run interface schemas/dictionary and exact accepted source references match v1.0.0
+CHECK -m contracts.domain.export_v2 --check
+PASS: separate v2 domain products
+CHECK -m contracts.runs.export_v2 --check
+PASS: separate v2 run products and exact representation/schema bindings
+CHECK -m pip check
+No broken requirements found.
+CHECK tooling/foundation/qualify.py
+{
+  "status": "pass",
+  "sqlite_version": "3.54.1",
+  "sqlite_source_id": "2026-10-16 14:45:20 555e07ef33f69a0957d24d8e555b702464a131d6f1607f4c3c1e4551e8e6ca76",
+  "packages": {
+    "fastapi": "0.157.0",
+    "starlette": "1.9.0",
+    "uvicorn": "0.54.0",
+    "argon2-cffi": "25.1.0",
+    "httpx": "0.28.1",
+    "pydantic": "2.14.1"
+  },
+  "checks": [
+    "actual ASGI route",
+    "Argon2 correct/wrong password",
+    "WAL/FULL/foreign_keys",
+    "two-connection writer exclusion",
+    "rollback"
+  ]
+}
+CHECK -m unittest discover -s tests/library -v
+CHECK -m unittest discover -s tests/library/dr -v
+MERGED CHECK -m unittest discover -s tests/contracts -v
+MERGED CHECK -m unittest discover -s tests/run_contracts -v
+MERGED CHECK -m unittest discover -s tests/integration/replay -v
+MERGED CHECK docs/implementation/evidence/G1-OBS-REP/repair-01/re_admit_independent.py
+PASS: unchanged independent full85 wire and direct calendar re-admitted; delayed day84 report and day85 administrative endpoint retained; fixture authority only
+PASS: merged required domain/run/service/export/runtime/artifact/DR and unchanged independent full85 wire checks

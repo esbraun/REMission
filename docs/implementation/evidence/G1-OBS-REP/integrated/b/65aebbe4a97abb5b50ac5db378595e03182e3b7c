@@ -1,0 +1,5 @@
+import capture
+capture.run('service-image-id',['docker','image','inspect','remission-foundation-runtime:candidate','--format','{{.Id}}'])
+args=['docker','run','--rm','--cpus','2','--memory','2g','--network','none','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges:true','--tmpfs','/tmp:rw,noexec,nosuid,size=128m','remission-obs2-repair-astra-20261021-tests:candidate']
+assert capture.run('curated-tests25',args).returncode==0
+capture.run('remote-main',['git','ls-remote','origin','refs/heads/main'])

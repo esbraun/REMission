@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-live-hold-implementation-sol-20261021\tooling\foundation\live_stack.py", line 100, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-live-hold-implementation-sol-20261021\tooling\foundation\live_stack.py", line 66, in main
+    command(['docker','run','--rm','--network','none',*COMMON,'--user','10001:10001','-e','PYTHONDONTWRITEBYTECODE=1','-e','PYTHONPATH=/source',
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        '--mount',f'type=bind,source={ROOT},target=/source,readonly','-w','/source',*mount('historical','/historical',True),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        *mount('database','/data'),*mount('fixtures','/fixtures'),RUNTIME,'python','tooling/foundation/prepare_live_demo.py',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        '--fixture-root','/fixtures','--database','/data/remission.sqlite','--historical-source','/historical/remission.sqlite','--source-commit',head])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1-live-hold-implementation-sol-20261021\tooling\foundation\live_stack.py", line 28, in command
+    if check and result.returncode:raise RuntimeError('command failed: '+metadata['streams']['stderr']['path'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: command failed: cc2e765d9e604b47ad2a8cc3e435216b.stderr
