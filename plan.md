@@ -10,6 +10,8 @@ Start with [scope and invariants](docs/spec/00-scope-and-invariants.md), then th
 
 Remaining analytics implementation: [POC4–6 technical contract](docs/implementation/poc-analytics-contract-20261021.md) proposes the next bounded source changes and first real-fit slice on accepted POC1–3. It is a plan, not implemented or independently accepted analytics.
 
+Pending independent critique: [appointment inference proposal](docs/spec/poc-appointment-inference-proposal-20261022.md) separates background posterior refresh from appointment predictions; the [StochTree assessment](docs/implementation/poc-appointment-inference-assessment-20261022.md) evaluates one possible future comparator. Neither changes the accepted backend or enables another model.
+
 ## Implementation coordination
 
 Use one orchestrator and at most two concurrently open non-Luna subagents with the [entry point's model assignments](implementation-prompt.md#launch-contract). **GPT-6 Luna helpers do not count toward that two-worker limit** and may run alongside both workers within the runtime's total capacity. Every subagent works in its own Git worktree, including planners, explorers, helpers, and reviewers. The orchestrator may open PRs and merge accepted worktree branches into assigned integration targets after independent review deems the exact head/base ready to ship, required checks pass, findings are resolved, and dependencies are accepted. Follow the canonical [worktree and merge procedure](docs/execution/delegation.md#worktree-isolation-and-reviewed-merges); source conflicts and repairs remain delegated. Integration does not replace G0–G7 or outstanding human/clinical acceptance.
