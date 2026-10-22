@@ -13,6 +13,7 @@ from methods.visit.model import log_bin
 from methods.visit.borrow_execution import compilation_options,verify_cvm
 from tests.contracts.test_cohort import database,export
 from methods.visit.cohort_model import cohort_inputs
+from diagnose_cohort_factors import clean
 
 
 def typed_bin(value,mean,sd,step,maximum):
@@ -44,7 +45,7 @@ def main():
     options=compilation_options();p={k:np.asarray(v,dtype=np.float64) for k,v in json.loads(args.point.read_bytes()).items()}
     results=dict(no_fit=True,no_joint_model=True,priors=[],measurement=[])
     args.output.parent.mkdir(parents=True,exist_ok=True)
-    def save():args.output.write_text(json.dumps(results,indent=2,allow_nan=False)+'\n')
+    def save():args.output.write_text(json.dumps(clean(results),indent=2,allow_nan=False)+'\n')
     x=pt.dscalar('x')
     for name,value,original,typed,reference in [
         ('sd_b',1.4,pm.HalfNormal.dist(3),pm.HalfNormal.dist(np.float64(3)),halfnorm.logpdf(1.4,scale=3)),
@@ -73,7 +74,7 @@ def main():
             actual=np.asarray(fn(mu,sigma));case['constructions'][label]=dict(sum=float(actual.sum()),reference_sum=float(ref.sum()),
                 sum_error=float((actual-ref).sum()),max_error=float(np.abs(actual-ref).max()),constants=constants(expression),actual_vm=verify_cvm(fn))
         results['measurement'].append(case);save()
-    save();print(json.dumps(results,indent=2))
+    save();print(json.dumps(clean(results),indent=2))
 
 
 if __name__=='__main__':main()
