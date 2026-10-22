@@ -1,0 +1,235 @@
+[
+    {
+        "Id": "a6ff8ed2507726fb67f90b3e8d24dc3a75f09f1a3dd036d441f2b369a4c9a236",
+        "Created": "2026-10-22T01:30:48.519881353Z",
+        "Path": "python",
+        "Args": [
+            "/app/evaluator_canary.py",
+            "serve"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 78426,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-22T01:30:48.619241568Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:3206ecf6a7527041d98db686cb7d3be1a06687463204fa6847aa9f4192c016a4",
+        "ResolvConfPath": "/var/lib/docker/containers/a6ff8ed2507726fb67f90b3e8d24dc3a75f09f1a3dd036d441f2b369a4c9a236/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/a6ff8ed2507726fb67f90b3e8d24dc3a75f09f1a3dd036d441f2b369a4c9a236/hostname",
+        "HostsPath": "/var/lib/docker/containers/a6ff8ed2507726fb67f90b3e8d24dc3a75f09f1a3dd036d441f2b369a4c9a236/hosts",
+        "LogPath": "/var/lib/docker/containers/a6ff8ed2507726fb67f90b3e8d24dc3a75f09f1a3dd036d441f2b369a4c9a236/a6ff8ed2507726fb67f90b3e8d24dc3a75f09f1a3dd036d441f2b369a4c9a236-json.log",
+        "Name": "/remission-lh-role-280228b36061-evaluator",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "remission-lh-role-280228b36061-private",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,noexec,nosuid,size=256m"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 2147483648,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 4294967296,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": "remission-lh-role-280228b36061-truth",
+                    "Target": "/truth",
+                    "ReadOnly": true
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "remission-lh-role-280228b36061-truth",
+                "Source": "/var/lib/docker/volumes/remission-lh-role-280228b36061-truth/_data",
+                "Destination": "/truth",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": false,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "a6ff8ed25077",
+            "Domainname": "",
+            "User": "20000:20000",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "/app/evaluator_canary.py",
+                "serve"
+            ],
+            "Image": "sha256:3206ecf6a7527041d98db686cb7d3be1a06687463204fa6847aa9f4192c016a4",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "SandboxID": "b25709f7faf9494a6f23647e4a2176cee5953666cb6ac0ef1c543f9f81a60bc8",
+            "SandboxKey": "/var/run/docker/netns/b25709f7faf9",
+            "Ports": {},
+            "Networks": {
+                "remission-lh-role-280228b36061-private": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "9d0f51af99d9fea6216437a985e4fbcae029bea1c33c10cb0c1af6ee6fef7734",
+                    "EndpointID": "c55b4224879a8a0699cccfb6d438622715a7ad8ec255688ccba7c4bc609c250d",
+                    "Gateway": "",
+                    "IPAddress": "192.168.32.2",
+                    "MacAddress": "ea:8f:7f:cc:0e:73",
+                    "IPPrefixLen": 20,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": [
+                        "remission-lh-role-280228b36061-evaluator",
+                        "a6ff8ed25077"
+                    ]
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:80bcf59499869bcea6f7ec756ab56622eb6650e2c1aa294e23d89dda6a9cf399",
+            "size": 3329,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]
