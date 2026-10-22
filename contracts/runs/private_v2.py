@@ -9,7 +9,7 @@ from typing import Literal
 from pydantic import model_validator
 from contracts.domain.common import Identifier, Sha256, StrictModel, VersionRef
 from contracts.domain.observed_v2 import LearnerHistoryV2
-from .common import Authority, Artifact, canonical, read_artifact, sha256, unique
+from .common import Authority, Artifact, Runtime, canonical, read_artifact, sha256, unique
 from .private import RunManifest, RunResult, SeedLedger, StreamKey, TruthRequest, TruthResponse
 from .observed_v2 import BindingsV2, ExportAuthorityV2, ObservedExportV2, TrustedPartitionV2
 from .coverage_v2 import ScheduleInputV2, derive_slots
@@ -20,6 +20,7 @@ class RunManifestV2(RunManifest):
     schema_version: Literal['2.0.0']
     contract_version: Literal['2.0.0']
     bindings: BindingsV2
+    runtime: Runtime
     schedule_inputs: list[Artifact]
     source_registry: VersionRef
     transformation_registry: VersionRef
@@ -66,6 +67,7 @@ class TruthResponseV2(TruthResponse):
 
 
 class AuthorityV2(Authority):
+    runtime: Runtime
     contract_version: Literal['2.0.0']
     bindings: BindingsV2
     producer_qualification: VersionRef | None

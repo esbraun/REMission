@@ -286,6 +286,61 @@
       "title": "RequiredWorkloads",
       "type": "object"
     },
+    "RestrictedRuntime": {
+      "additionalProperties": false,
+      "description": "Exact v1 alternative; canonical/v2 Runtime wire remains frozen.",
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "keyed-SHA256-53bit-BoxMuller-v1",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "poc-restricted-adapter-map-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "RestrictedRuntime",
+      "type": "object"
+    },
     "Runtime": {
       "additionalProperties": false,
       "properties": {
@@ -510,7 +565,15 @@
       "type": "string"
     },
     "runtime": {
-      "$ref": "#/$defs/Runtime"
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Runtime"
+        },
+        {
+          "$ref": "#/$defs/RestrictedRuntime"
+        }
+      ],
+      "title": "Runtime"
     },
     "schema_version": {
       "const": "1.0.0",

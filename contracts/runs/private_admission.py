@@ -3,7 +3,7 @@ from pathlib import Path
 
 from contracts.domain.evaluation import SimulatorTruth
 from .admission import verify_export
-from .common import Authority, ExportAuthority, read_artifact, sha256
+from .common import Authority, ExportAuthority, read_artifact, sha256, RESTRICTED, restricted_profile
 from .private import CalibrationArtifact, ExternalCalibrationEvidence, RunManifest, RunResult, SeedLedger, TruthRequest, TruthResponse, validate_truth_response
 
 
@@ -27,7 +27,8 @@ def verify_run(raw: bytes, root: Path, authority: Authority):
             ref=unit.evaluation_configuration;artifact=by_id.get(ref.id)
             if artifact is None or artifact.role!='configuration' or artifact.sha256!=ref.sha256:raise ValueError('evaluation preset requires the exact predeclared configuration bytes')
             configuration=json.loads(read_artifact(root,artifact,'configuration'))
-            expected=dict(id=ref.id,version=ref.version,repetitions=unit.repetitions,cohorts=[dict(id=c.id,role=c.role,patients_per_replicate=sum(p.replicate==0 for p in c.patients)) for c in unit.cohorts])
+            expected=(RESTRICTED['evaluation_configuration']['payload'] if restricted_profile(run.bindings,run.runtime) else
+                dict(id=ref.id,version=ref.version,repetitions=unit.repetitions,cohorts=[dict(id=c.id,role=c.role,patients_per_replicate=sum(p.replicate==0 for p in c.patients)) for c in unit.cohorts]))
             if configuration!=expected:raise ValueError('evaluation cohort/replicate roster differs from its hashed configuration')
     return run
 

@@ -86,7 +86,7 @@ class ISI(Header):
 class Plan(Header):
     kind: Literal["assignment"]
     option: Literal["behavioral_continue", "behavioral_escalate"]
-    experimental: Literal[False]
+    experimental: bool
 
 
 class Taken(Header):
@@ -197,8 +197,8 @@ def project_history(projected):
     for r in [*projected.records,*projected.provenance]:
         if r.kind not in selected:
             continue
-        expected=('foundation-synthetic','research_configuration') if r.kind=='assignment' else ('poc-longitudinal-v1','simulation')
-        if (r.source.id,r.source.adapter)!=expected or r.source.version!='1.0.0' or r.schema_version!='1.0.0':
+        expected={('foundation-synthetic','research_configuration'),('poc-restricted-research-assignment-v1','simulation')} if r.kind=='assignment' else {('poc-longitudinal-v1','simulation')}
+        if (r.source.id,r.source.adapter) not in expected or r.source.version!='1.0.0' or r.schema_version!='1.0.0':
             raise ValueError('unqualified observed producer for restricted v1 analysis')
     records = []
     for r in projected.records:
@@ -213,10 +213,26 @@ def project_history(projected):
         elif r.kind == "assignment":
             if r.clinician_override is not None or r.support_policy.model_dump() != FIXED_SUPPORT_REF:
                 raise ValueError("unsupported assignment/support")
+            if r.source.id=='foundation-synthetic' and r.experimental:
+                raise ValueError('interactive assignment cannot claim research randomization')
+            if r.source.id=='poc-restricted-research-assignment-v1' and (r.component not in (None,'escalation') or (r.experimental and r.probability!=.5)):
+                raise ValueError('unsupported restricted research randomization')
+            if r.source.id=='poc-restricted-research-assignment-v1':
+                origin=baseline.recall_end+timedelta(hours=1)
+                day=(r.event_at-origin).total_seconds()/86400
+                if day not in (0,14,28) or r.experimental!=(day==0) or r.patient_blinded or r.clinician_blinded:
+                    raise ValueError('restricted research initial/retention assignment mismatch')
+                if day==0 and (r.seed.namespace!='assignment' or r.seed.protocol!='poc-restricted-research-retain-v1'
+                        or r.seed.scenario!='poc-restricted-reference-n12-v1' or r.seed.replicate!=0
+                        or r.seed.patient!=r.patient_id or r.seed.time_index!=0 or r.seed.process!='historical-initial-assignment'):
+                    raise ValueError('restricted historical assignment reference mismatch')
             value.update(option=r.option, experimental=r.experimental)
         else:
             value.update(**r.model_dump(include={"assignment_id", "option", "stage", "adherence", "rescue", "protocol_deviations"}, mode="json"))
         records.append(value)
+    research_plans=sorted((r for r in projected.records if r.kind=='assignment' and r.source.id=='poc-restricted-research-assignment-v1'),key=lambda r:r.event_at)
+    if research_plans and (len({r.option for r in research_plans})!=1 or any(r.kind=='assignment' and r.source.id!='poc-restricted-research-assignment-v1' for r in projected.records)):
+        raise ValueError('restricted research retains one initial plan without mixed assignment sources')
     return AnalysisHistory.model_validate_json(canonical(dict(schema_version="1.0.0", synthetic=True,
         kind="poc_analysis_history", version="poc-analysis-history-v1", patient_id=projected.patient_id,
         cutoff=projected.cutoff.isoformat(), origin=(baseline.recall_end+timedelta(hours=1)).isoformat(),

@@ -10,6 +10,8 @@ from contracts.domain.common import Identifier, Name, Sha256, StrictModel, Versi
 Token = Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$")]
 Commit = Annotated[str, Field(pattern=r"^[a-f0-9]{40}$")]
 Role = Literal['generator', 'evaluator', 'contract_fixture']
+RESTRICTED = json.loads(Path(__file__).with_name('restricted-profile-v1.json').read_text(encoding='utf-8'))
+RESTRICTED_CELL = RESTRICTED['evaluation_configuration']['payload']['cell_id']
 
 
 def canonical(value) -> bytes:
@@ -68,7 +70,7 @@ class Bindings(StrictModel):
     @model_validator(mode='after')
     def accepted_source(self):
         expected=json.loads(Path(__file__).with_name('bindings-v1.json').read_text(encoding='utf-8'))
-        if self.model_dump(mode='json')!=expected:
+        if self.model_dump(mode='json') not in (expected, RESTRICTED['bindings']):
             raise ValueError('unaccepted protocol/DGP/equation/catalog/timing/calibration/fixture binding')
         return self
 
@@ -84,6 +86,34 @@ class Runtime(StrictModel):
     precision: Literal['float64']
 
 
+class RestrictedRuntime(Runtime):
+    """Exact v1 alternative; canonical/v2 Runtime wire remains frozen."""
+    prng: Literal['keyed-SHA256-53bit-BoxMuller-v1']
+    seed_derivation: Literal['poc-restricted-adapter-map-v1']
+
+    @model_validator(mode='after')
+    def coherent_randomness(self):
+        profile=RESTRICTED['runtime_profile']
+        if self.numerical_lock.sha256!=profile['numerical_lock_sha256'] or self.service_lock.sha256!=profile['service_lock_sha256']:
+            raise ValueError('restricted runtime requires exact dependency locks')
+        return self
+
+
+RuntimeProfile = Runtime | RestrictedRuntime
+
+
+def restricted_profile(bindings, runtime):
+    selected=bindings.model_dump(mode='json')==RESTRICTED['bindings']
+    if selected != (runtime.prng==RESTRICTED['runtime_profile']['prng']):
+        raise ValueError('mixed binding/runtime profiles')
+    return selected
+
+
+def restricted_producer(producer, execution):
+    if producer.model_dump(mode='json')!=RESTRICTED['producer'] or execution!='engine_run':
+        raise ValueError('restricted research requires exact engine producer')
+
+
 class Authority(StrictModel):
     """Trusted caller configuration, supplied out-of-band, never read from a run.
 
@@ -94,7 +124,7 @@ class Authority(StrictModel):
     producer: Producer
     manifest_sha256: Sha256
     source_commit: Commit
-    runtime: Runtime
+    runtime: RuntimeProfile
     allow_contract_fixture: bool
 
 

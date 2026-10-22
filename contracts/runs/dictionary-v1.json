@@ -920,7 +920,15 @@
         "runtime": {
           "required": true,
           "schema": {
-            "$ref": "#/$defs/Runtime"
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Runtime"
+              },
+              {
+                "$ref": "#/$defs/RestrictedRuntime"
+              }
+            ],
+            "title": "Runtime"
           }
         },
         "source_commit": {
@@ -3297,7 +3305,15 @@
         "runtime": {
           "required": true,
           "schema": {
-            "$ref": "#/$defs/Runtime"
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Runtime"
+              },
+              {
+                "$ref": "#/$defs/RestrictedRuntime"
+              }
+            ],
+            "title": "Runtime"
           }
         },
         "source_commit": {
@@ -5563,6 +5579,20 @@
             "type": "string"
           }
         },
+        "evaluation_configuration": {
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VersionRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
         "execution": {
           "required": true,
           "schema": {
@@ -5624,7 +5654,15 @@
         "runtime": {
           "required": true,
           "schema": {
-            "$ref": "#/$defs/Runtime"
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Runtime"
+              },
+              {
+                "$ref": "#/$defs/RestrictedRuntime"
+              }
+            ],
+            "title": "Runtime"
           }
         },
         "schema_version": {
@@ -7092,6 +7130,72 @@
         }
       }
     },
+    "RestrictedRuntime": {
+      "description": "Exact v1 alternative; canonical/v2 Runtime wire remains frozen.",
+      "fields": {
+        "image_sha256": {
+          "required": true,
+          "schema": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Image Sha256",
+            "type": "string"
+          }
+        },
+        "numerical_lock": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        },
+        "numpy_version": {
+          "required": true,
+          "schema": {
+            "const": "2.5.4",
+            "title": "Numpy Version",
+            "type": "string"
+          }
+        },
+        "precision": {
+          "required": true,
+          "schema": {
+            "const": "float64",
+            "title": "Precision",
+            "type": "string"
+          }
+        },
+        "prng": {
+          "required": true,
+          "schema": {
+            "const": "keyed-SHA256-53bit-BoxMuller-v1",
+            "title": "Prng",
+            "type": "string"
+          }
+        },
+        "python_version": {
+          "required": true,
+          "schema": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Python Version",
+            "type": "string"
+          }
+        },
+        "seed_derivation": {
+          "required": true,
+          "schema": {
+            "const": "poc-restricted-adapter-map-v1",
+            "title": "Seed Derivation",
+            "type": "string"
+          }
+        },
+        "service_lock": {
+          "required": true,
+          "schema": {
+            "$ref": "#/$defs/VersionRef"
+          }
+        }
+      }
+    },
     "RunManifest": {
       "description": "Immutable pre-execution input plan; outputs are separate to avoid hash cycles.",
       "fields": {
@@ -7208,7 +7312,15 @@
         "runtime": {
           "required": true,
           "schema": {
-            "$ref": "#/$defs/Runtime"
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Runtime"
+              },
+              {
+                "$ref": "#/$defs/RestrictedRuntime"
+              }
+            ],
+            "title": "Runtime"
           }
         },
         "schema_version": {

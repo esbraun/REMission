@@ -168,6 +168,7 @@ class TrustedPartitionV2(StrictModel):
 
 
 class ExportAuthorityV2(ExportAuthority):
+    runtime: Runtime
     contract_version: Literal['2.0.0']
     bindings: BindingsV2
     producer_qualification: VersionRef | None

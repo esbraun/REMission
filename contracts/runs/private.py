@@ -1,4 +1,5 @@
 """Evaluator/generator-owned run and truth contracts. Exclude from consumers."""
+from datetime import datetime, timedelta
 from typing import Annotated, Literal
 from pydantic import AwareDatetime, Field, model_validator
 from contracts.domain.common import Identifier, Name, Nonnegative, Sha256, Source, StrictModel, Versioned, VersionRef
@@ -8,7 +9,7 @@ from contracts.dgp.calibration import CalibrationBinding, ExternalTargetEvidence
 from contracts.dgp.parameters import reference_parameters
 from contracts.dgp.scenarios import scenario_manifest
 from contracts.dgp.truth import fixture_manifest, seed_words, truth_status
-from .common import Artifact, Bindings, Commit, Producer, Runtime, Token, canonical, sha256, unique
+from .common import Artifact, Bindings, Commit, Producer, Runtime, RuntimeProfile, Token, canonical, sha256, unique, RESTRICTED, RESTRICTED_CELL, restricted_profile, restricted_producer
 
 Phase=Literal['fixture','calibration','pilot','smoke','development','confirmation']
 Namespace=Literal['generation','assignment','measurement','missingness','fitting','posterior_rollout','truth']
@@ -68,6 +69,13 @@ class Unit(StrictModel):
 
     @model_validator(mode='after')
     def exact_cell_and_preset(self):
+        if self.cell_id==RESTRICTED_CELL:
+            if (self.catalog_patients!=12 or self.preset!='evaluation' or self.repetitions!=1
+                    or self.evaluation_configuration is None or self.evaluation_configuration.model_dump(mode='json')!=RESTRICTED['evaluation_configuration']['reference']
+                    or len(self.cohorts)!=1 or self.cohorts[0].role!='prospective' or len(self.cohorts[0].patients)!=12
+                    or any(p.replicate!=0 for p in self.cohorts[0].patients)):
+                raise ValueError('restricted reference requires exact prospective twelve-member evaluation')
+            return self
         cell=CELLS.get(self.cell_id)
         if cell is None or self.catalog_patients!=cell['patients']:
             raise ValueError('unknown or resized catalog cell')
@@ -117,7 +125,7 @@ class RunManifest(Versioned):
     producer: Producer
     execution: Literal['contract_fixture','engine_run']
     source_commit: Commit
-    runtime: Runtime
+    runtime: RuntimeProfile
     bindings: Bindings
     input_sha256: Sha256
     inputs: list[Artifact]
@@ -132,6 +140,16 @@ class RunManifest(Versioned):
 
     @model_validator(mode='after')
     def inputs_and_rosters(self):
+        restricted=restricted_profile(self.bindings,self.runtime)
+        if restricted:
+            restricted_producer(self.producer,self.execution)
+            if (self.schema_version!='1.0.0' or self.phase!='development' or self.scope!='preset'
+                    or len(self.units)!=1 or self.units[0].cell_id!=RESTRICTED_CELL
+                    or self.cutoff!=datetime.fromisoformat(RESTRICTED['binding_descriptors']['timing']['origin'])+timedelta(days=42)
+                    or self.sources!=[*RESTRICTED['source'], RESTRICTED['historical_assignment_source']]):
+                raise ValueError('restricted run profile/configuration/source mismatch')
+        elif any(u.cell_id==RESTRICTED_CELL for u in self.units):
+            raise ValueError('restricted cell requires restricted profile')
         if self.producer.role not in ('generator','contract_fixture') or (self.execution=='contract_fixture')!=(self.producer.role=='contract_fixture'):
             raise ValueError('run producer/execution mismatch')
         if self.execution=='contract_fixture' and self.phase!='fixture':
@@ -149,7 +167,7 @@ class RunManifest(Versioned):
         if self.phase=='smoke' and any(u.repetitions<5 for u in self.units if u.preset=='catalog_cell'):
             raise ValueError('cell smoke requires five attempts per cell')
         for source in self.sources:
-            if set(source)!={'id','version','adapter'} or source['version']!='1.2.0' or source['adapter'] not in {'simulation','synthetic_fhir_shaped','synthetic_oura_like','patient_report','synthetic_trial'}:
+            if set(source)!={'id','version','adapter'} or (not restricted and source['version']!='1.2.0') or source['adapter'] not in {'simulation','synthetic_fhir_shaped','synthetic_oura_like','patient_report','synthetic_trial'}:
                 raise ValueError('complete explicit generated source identity/version/adapter required')
             Source.model_validate({**source,'raw_sha256':'0'*64})
         unique([canonical(source) for source in self.sources],'source identity')
@@ -284,6 +302,8 @@ class TruthRequest(Versioned):
 
     @model_validator(mode='after')
     def registered_target(self):
+        if self.bindings.model_dump(mode='json')==RESTRICTED['bindings']:
+            raise ValueError('restricted producer profile does not authorize evaluator requests')
         cell=CELLS.get(self.cell_id)
         standalone=self.target.kind=='analytic_fixture'
         if standalone:
