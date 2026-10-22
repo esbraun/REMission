@@ -1,5 +1,7 @@
 # Requirement preservation and gate map
 
+**Proposed implementation amendment (2026-10-22; independent critique pending):** [Restricted longitudinal truth and seven-condition study plan](../implementation/poc-truth-ablation-plan-20261022.md) and its [task/test ledger](../implementation/poc-truth-ablation-task-ledger-20261022.json) map TRUTH-01/02, TIME-01, DGP-03, POC-4/5/6, POC-VAL, BAYES-02, MRT-01, MISS-01 and APPT-01–05 to TA1–TA6/TA-T1–10. This is planning traceability, not implemented or executed acceptance; canonical PoC scope and repetition counts are unchanged.
+
 Legacy section IDs retain all original requirements in the mapped canonical sections. Atomic paragraph/list/table units are mapped in the gate traceability files below; each mandatory unit receives an implementation task/test ID before its gate. Migration does not count as executed acceptance. Source IDs refer to the domain evidence registers.
 
 ## Atomic legacy map
