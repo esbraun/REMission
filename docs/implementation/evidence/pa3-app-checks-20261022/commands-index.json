@@ -1,0 +1,77 @@
+[
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-pa3-sol261022-ui-checks-584"
+    ],
+    "started_unix": 1792658800.309779,
+    "elapsed_seconds": 0.1540546417236328,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "15546df126af4ca0a27b1c286309c153.stdout",
+        "bytes": 8248,
+        "sha256": "8473adad8cc08575c6b1ef5341689efb8e13dc2ac2319a78fa4192c3ad143239"
+      },
+      "stderr": {
+        "path": "15546df126af4ca0a27b1c286309c153.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 30,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-pa3-sol261022-ui-checks-584",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,nosuid,size=512m",
+      "--env",
+      "PYTHONPATH=/app:/app/tests/integration/replay",
+      "sha256:32ff19629dabc7776e5762b8b437e60ccd8e7ecb10d89a0eb64f095e2030f2b8",
+      "python",
+      "-m",
+      "unittest",
+      "-v",
+      "test_borrowing.BorrowingRoutesTests",
+      "test_borrowing.JointTargetTests.test_real_frozen_pre_v1_input_result_canonical_identity",
+      "test_borrowing.JointTargetTests.test_unconditioned_source_prior_is_invariant_to_local_adherence_counts",
+      "test_borrowing_dispatcher.DispatcherDeadlineTests"
+    ],
+    "started_unix": 1792658780.7695804,
+    "elapsed_seconds": 19.420980215072632,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "3cef6fed92cf433a88789875bf1754a0.stdout",
+        "bytes": 568,
+        "sha256": "b53ce94ef86fcdd157ac8c8b92e77b8184a6db29aa0bd4e7ea5ae83fc6565105"
+      },
+      "stderr": {
+        "path": "3cef6fed92cf433a88789875bf1754a0.stderr",
+        "bytes": 3002,
+        "sha256": "26b00a2548b504284558286cff0385d492d6270f1de44940b17efae74deb51b8"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 300,
+    "timed_out": false
+  }
+]
