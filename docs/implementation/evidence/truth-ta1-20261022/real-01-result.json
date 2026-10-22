@@ -1,0 +1,211 @@
+{
+  "status": "exploratory_unqualified",
+  "truth_kind": "observed-Hstar-conditional-mean",
+  "information_set": "strict-reduced-Hstar-v1",
+  "privileged_information": false,
+  "production_truth": false,
+  "history_sha256": "5bd8d8ebcd84ff862cb3caa8255f7b9cb8eba73aba3e2d2a7a721993743b3289",
+  "patient_id": "p-08aa51d3e737479495085ea07881adcf",
+  "cutoff": "2026-01-15T12:00:00+00:00",
+  "endpoint_absolute_day": 56,
+  "recall_absolute_nights": [
+    43,
+    56
+  ],
+  "retained_visits_absolute_days": [
+    28,
+    42
+  ],
+  "outcome": "rounded-clipped-ISI-total",
+  "direction": "escalate-minus-continue",
+  "horizon_nights": 42,
+  "support": "no_prompt",
+  "seeds": {
+    "conditioning": 938190051713884504352743537273279808,
+    "future": 174723515868699932266213177105485548087
+  },
+  "replicate": 0,
+  "namespace": "truth-ta1-development-20261022-v1",
+  "prng": "NumPy-PCG64",
+  "filter_diagnostics": {
+    "stages": [
+      {
+        "night": 0,
+        "ess": 576.7988679873828,
+        "max_weight": 0.0023418884998483414,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 1024,
+        "unique_parameters": 1024,
+        "elapsed_seconds": 0.002681295038200915
+      },
+      {
+        "night": 1,
+        "ess": 411.86198510135506,
+        "max_weight": 0.004722014771878321,
+        "resampled": true,
+        "severe_weight_collapse": false,
+        "ancestral_count": 502,
+        "unique_parameters": 1022,
+        "elapsed_seconds": 0.03101519704796374
+      },
+      {
+        "night": 4,
+        "ess": 895.7157854851431,
+        "max_weight": 0.0013726246002439422,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 502,
+        "unique_parameters": 1022,
+        "elapsed_seconds": 0.05189802101813257
+      },
+      {
+        "night": 5,
+        "ess": 475.70697654011207,
+        "max_weight": 0.005188088704500614,
+        "resampled": true,
+        "severe_weight_collapse": false,
+        "ancestral_count": 364,
+        "unique_parameters": 1021,
+        "elapsed_seconds": 0.0986316460184753
+      },
+      {
+        "night": 8,
+        "ess": 385.85726638533845,
+        "max_weight": 0.005137093262735927,
+        "resampled": true,
+        "severe_weight_collapse": false,
+        "ancestral_count": 280,
+        "unique_parameters": 1017,
+        "elapsed_seconds": 0.12507994496263564
+      },
+      {
+        "night": 9,
+        "ess": 908.6821265364093,
+        "max_weight": 0.0013310360852533513,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 280,
+        "unique_parameters": 1017,
+        "elapsed_seconds": 0.1329531769733876
+      },
+      {
+        "night": 10,
+        "ess": 825.4205897905483,
+        "max_weight": 0.0016891736424738167,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 280,
+        "unique_parameters": 1017,
+        "elapsed_seconds": 0.15115603304002434
+      },
+      {
+        "night": 11,
+        "ess": 713.1707211164797,
+        "max_weight": 0.002399013762105742,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 280,
+        "unique_parameters": 1017,
+        "elapsed_seconds": 0.16686219803523272
+      },
+      {
+        "night": 12,
+        "ess": 574.6732608907765,
+        "max_weight": 0.0033390717813953147,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 280,
+        "unique_parameters": 1017,
+        "elapsed_seconds": 0.1819821719545871
+      },
+      {
+        "night": 13,
+        "ess": 525.5772841691069,
+        "max_weight": 0.0042597786515691455,
+        "resampled": false,
+        "severe_weight_collapse": false,
+        "ancestral_count": 280,
+        "unique_parameters": 1017,
+        "elapsed_seconds": 0.19566921796649694
+      },
+      {
+        "night": 14,
+        "ess": 425.4249129176884,
+        "max_weight": 0.006760405259540942,
+        "resampled": true,
+        "severe_weight_collapse": false,
+        "ancestral_count": 223,
+        "unique_parameters": 1019,
+        "elapsed_seconds": 0.25242119503673166
+      }
+    ],
+    "resamplings": 4,
+    "mh_proposals": 8192,
+    "mh_accepts": 6654,
+    "mh_bounds_rejected": 479,
+    "slice_evaluations": 20018,
+    "slice_accepts": 8192,
+    "severe_weight_collapse": false,
+    "known_independent_log_factors": -17.743013707687613,
+    "final_ess": 1024.0,
+    "baseline_mean": 19.652022442155307,
+    "response_mean": 0.992411095456592,
+    "baseline_sd": 0.5666835168711868,
+    "response_sd": 0.11278633190877893,
+    "ancestral_count": 223,
+    "unique_parameters": 1019
+  },
+  "batches": [
+    {
+      "index": 0,
+      "trajectories": 10000,
+      "estimate": -1.685919582356514,
+      "elapsed_seconds": 0.28227646299637854
+    },
+    {
+      "index": 1,
+      "trajectories": 10000,
+      "estimate": -1.682765052668009,
+      "elapsed_seconds": 0.3086326529737562
+    }
+  ],
+  "conditioning_seconds": 0.258617126964964,
+  "estimate": -1.6843423175122614,
+  "arm_means": [
+    16.458839953779272,
+    18.143182271291536
+  ],
+  "within_filter_rollout_mcse": 0.0017432013449994468,
+  "arm_rollout_mcse": [
+    0.0055850963668742735,
+    0.005085507728068981
+  ],
+  "future_trajectories": 20000,
+  "reason": "TA2_refinement_and_matched_SE_pending",
+  "elapsed_seconds": 0.3139137449907139,
+  "numerical_error_components": {
+    "quadrature_change": null,
+    "conditioning_refinement": null,
+    "within_filter_mcse": 0.0017432013449994468,
+    "between_filter_mcse": null,
+    "finite_grid_discrepancy_bound": null
+  },
+  "qualification": "No 32-filter refinement, matched-estimator-SE or finite-grid qualification",
+  "settings": {
+    "particles": 1024,
+    "moves": 2,
+    "slice_limit": 128,
+    "batches": 2,
+    "batch_size": 10000,
+    "seconds": 240.0
+  },
+  "raw_history_sha256": "5bd8d8ebcd84ff862cb3caa8255f7b9cb8eba73aba3e2d2a7a721993743b3289",
+  "runtime": {
+    "python": "3.13.7",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "peak_rss_kib": 116412,
+  "cli_seconds": 0.3245534549932927
+}
