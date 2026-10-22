@@ -16,6 +16,14 @@ BORROW_PROFILE_PHASES=('coordinates','guided-logp','guided-gradient','guided-nat
 PHASE_SECONDS=600
 SUITE_SECONDS=1800
 
+# Select evidence fields in Docker before capture; never request Env/full Config.
+# Map indexing renders an absent optional key as JSON null instead of failing.
+CONTAINER_FORMAT=('{"Id":{{json .Id}},"Image":{{json .Image}},"State":{{json .State}},'
+    '"Config":{"User":{{json (index .Config "User")}}},'
+    '"HostConfig":{"Memory":{{json (index .HostConfig "Memory")}},"NanoCpus":{{json (index .HostConfig "NanoCpus")}},'
+    '"NetworkMode":{{json (index .HostConfig "NetworkMode")}},"ReadonlyRootfs":{{json (index .HostConfig "ReadonlyRootfs")}}},'
+    '"Mounts":{{json .Mounts}}}')
+
 
 def terminal_reason(state,exit_code,elapsed,limit,timed_out):
     if state['Running']:return 'termination-unconfirmed'
@@ -186,11 +194,11 @@ def main():
             if phase=='guided-native-logp-gradient':argv+=['--separate-gradient','/separate/guided-gradient.json']
         before=time.monotonic();outcome,metadata=run(argv,args.evidence/'commands',timeout_seconds=limit)
         elapsed=time.monotonic()-before
-        raw=json.loads(command(['docker','inspect',name]))[0]
+        raw=json.loads(command(['docker','inspect',name,'--format',CONTAINER_FORMAT]))
         if raw['State']['Running']:
             # Stopping the Docker CLI never counts as stopping computation.
             run(['docker','kill',name],args.evidence/'commands',timeout_seconds=30)
-            raw=json.loads(command(['docker','inspect',name]))[0]
+            raw=json.loads(command(['docker','inspect',name,'--format',CONTAINER_FORMAT]))
         state=raw['State']
         inspections[phase]=dict(Id=raw['Id'],Image=raw['Image'],User=raw['Config']['User'],State=state,
             Memory=raw['HostConfig']['Memory'],NanoCpus=raw['HostConfig']['NanoCpus'],NetworkMode=raw['HostConfig']['NetworkMode'],

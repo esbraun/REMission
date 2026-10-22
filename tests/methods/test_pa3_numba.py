@@ -86,7 +86,8 @@ class NumbaContrastTests(unittest.TestCase):
                 elif argv[:3]==['docker','run','--name']:
                     phase=argv[argv.index('--phase')+1];launched.append(phase);clock[0]+=elapsed
                 elif argv[:2]==['docker','inspect']:
-                    text=json.dumps([dict(Id='owned',Image='sha256:owned-test-image',Config={'User':'10002:10002'},State=dict(Running=False,ExitCode=0,OOMKilled=False),HostConfig=dict(Memory=2147483648,NanoCpus=2000000000,NetworkMode='none',ReadonlyRootfs=True),Mounts=[])])
+                    self.assertEqual(argv[3:],['--format',runner.CONTAINER_FORMAT])
+                    text=json.dumps(dict(Id='owned',Image='sha256:owned-test-image',Config={'User':'10002:10002'},State=dict(Running=False,ExitCode=0,OOMKilled=False),HostConfig=dict(Memory=2147483648,NanoCpus=2000000000,NetworkMode='none',ReadonlyRootfs=True),Mounts=[]))
                 elif argv[:2]==['docker','cp'] and argv[2].endswith(':/output'):
                     target=Path(argv[3]);target.mkdir();(target/(launched[-1]+'.json')).write_text(json.dumps(dict(status='evaluated',independent_fd={'passed':fd_pass})))
                 return subprocess.CompletedProcess(argv,0,text.encode(),b''),dict(timed_out=False,streams={'stderr':{'path':'retained-test-stderr'}})
