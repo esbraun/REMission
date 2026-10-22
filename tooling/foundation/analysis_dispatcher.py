@@ -181,7 +181,7 @@ def main():
                     confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)['State']['Running']
                 if not confirmed:
                     manifest.update(status='worker-stop-unconfirmed',failure=str(error).replace(token,'[claim-token-redacted]'));save()
-                    raise RuntimeError('Owned worker termination unconfirmed; retain live handle '+learner) from error
+                    raise RuntimeError('Owned worker termination unconfirmed; retain live handle '+learner) from None
                 manifest['worker_stop_verified']=True
             logs=command(['docker','logs',learner],check=False)
             (directory/'failure-worker.stdout').write_bytes(logs.stdout);(directory/'failure-worker.stderr').write_bytes(logs.stderr)

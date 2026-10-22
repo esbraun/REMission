@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import traceback
 import unittest
 from unittest.mock import Mock,patch
 import analysis_dispatcher
@@ -106,6 +107,39 @@ class DispatcherDeadlineTests(unittest.TestCase):
         self.assertEqual(borrowed[index+1:],ordinary[index+1:])
         self.assertEqual(ordinary[index],'/tmp:rw,nosuid,size=256m')
         self.assertEqual(borrowed[index],'/tmp:rw,exec,nosuid,nodev,size=512m')
+
+    def test_unconfirmed_stop_traceback_cannot_reveal_claim_token(self):
+        token='SYNTHETIC-PRIVATE-CLAIM-DO-NOT-PERSIST';calls=[];inspections=[0]
+        job=dict(attempt_id='analysis-stop-control',claim_token=token,input=dict(kind='poc_visit_borrow_input'))
+        def command(argv,check=True):
+            calls.append(argv);response=b''
+            if argv[:6]==['docker','exec','test-service','python','-m','services.foundation.analysis_cli']:
+                if argv[6]=='claim':response=json.dumps(job).encode()
+                elif argv[6]=='interrupt':response=b'{"interrupted":0}'
+                elif argv[6]=='bind-execution':response=json.dumps(dict(learner_image='sha256:'+'a'*64,source_commit='test-head',input_sha256=__import__('hashlib').sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest())).encode()
+                else:self.fail('Unconfirmed running computation must not reach fail/ingest')
+            elif argv[:3]==['docker','image','inspect']:response=('sha256:'+'a'*64).encode()
+            elif argv[:2]==['docker','inspect']:
+                self.assertEqual(argv[3:],['--format',analysis_dispatcher.CONTAINER_FORMAT])
+                inspections[0]+=1
+                if inspections[0]==1:raise RuntimeError('injected origin '+token)
+                response=json.dumps(dict(Image='sha256:'+'a'*64,State=dict(Running=True,ExitCode=0,OOMKilled=False))).encode()
+            return subprocess.CompletedProcess(argv,0,response,b'')
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);deployment=root/'deployment.json'
+            deployment.write_text(json.dumps(dict(service_container='test-service',learner_image='test-image',prefix='test-private',source_commit='test-head')))
+            with patch.object(sys,'argv',['analysis_dispatcher','--deployment',str(deployment),'--once']),patch.object(analysis_dispatcher,'exclusive',return_value=Mock()),patch.object(analysis_dispatcher,'command',side_effect=command):
+                with self.assertRaisesRegex(RuntimeError,'Owned worker termination unconfirmed') as raised:
+                    analysis_dispatcher.main()
+            rendered=''.join(traceback.format_exception(raised.exception))
+            self.assertNotIn(token,rendered)
+            self.assertIn('retain live handle',rendered)
+            manifest=(root/'analysis-jobs/analysis-stop-control/dispatch.json').read_text()
+            self.assertNotIn(token,manifest)
+            self.assertEqual(json.loads(manifest)['status'],'worker-stop-unconfirmed')
+            self.assertEqual(inspections[0],3)
+            self.assertTrue(any(argv[:2]==['docker','stop'] for argv in calls))
+            self.assertTrue(any(argv[:2]==['docker','kill'] for argv in calls))
 
 
 if __name__=='__main__':unittest.main()
