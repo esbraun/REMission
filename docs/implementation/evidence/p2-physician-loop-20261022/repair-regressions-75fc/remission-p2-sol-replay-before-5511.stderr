@@ -1,0 +1,42 @@
+/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+/app/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/app/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+test_regenerated_panel_replays_eight_assignment_uniforms_and_outcomes (test_nof1_loop.Nof1LoopTests.test_regenerated_panel_replays_eight_assignment_uniforms_and_outcomes) ... FAIL
+
+======================================================================
+FAIL: test_regenerated_panel_replays_eight_assignment_uniforms_and_outcomes (test_nof1_loop.Nof1LoopTests.test_regenerated_panel_replays_eight_assignment_uniforms_and_outcomes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/tests/generator/test_nof1_loop.py", line 183, in test_regenerated_panel_replays_eight_assignment_uniforms_and_outcomes
+    self.assertEqual([d['uniform'] for d in histories[0][0]],[d['uniform'] for d in histories[1][0]])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [0.13081444297110245, 0.7919494217521384, 0.[114 chars]0538] != [0.5548992029510438, 0.31374190985391315, 0.[115 chars]3565]
+
+First differing element 0:
+0.13081444297110245
+0.5548992029510438
+
+- [0.13081444297110245,
+-  0.7919494217521384,
+-  0.9717404843819302,
+-  0.4263753002308158,
+-  0.9702736092157878,
+-  0.35220784700213714,
+-  0.07113057087306174,
+-  0.6752247528630538]
++ [0.5548992029510438,
++  0.31374190985391315,
++  0.230137058017443,
++  0.21082267573301516,
++  0.9841337272268795,
++  0.25587474085577344,
++  0.17194793171777312,
++  0.48046004879673565]
+
+----------------------------------------------------------------------
+Ran 1 test in 14.272s
+
+FAILED (failures=1)

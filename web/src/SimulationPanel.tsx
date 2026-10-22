@@ -4,16 +4,16 @@ import type { ProjectionRecord, Simulation, Workspace } from './types';
 const label = (value: string) => value.replaceAll('_', ' ');
 const date = (value: string) => new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(new Date(value));
 
-export function PanelGenerator({ generate }: { generate: (seed: number, count: number, key: string) => Promise<void> }) {
+export function PanelGenerator({ generate }: { generate: (seed: number, count: number, key: string, family: string) => Promise<void> }) {
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState('');
-  const submitted = useRef<{ seed: number; count: number; key: string } | null>(null);
+  const submitted = useRef<{ seed: number; count: number; key: string; family: string } | null>(null);
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
-    submitted.current ??= { seed: Number(values.get('seed')), count: Number(values.get('count')), key: crypto.randomUUID() };
+    submitted.current ??= { seed: Number(values.get('seed')), count: Number(values.get('count')), key: crypto.randomUUID(), family: String(values.get('family')) };
     setPending(true); setFailure('');
-    try { await generate(submitted.current.seed, submitted.current.count, submitted.current.key); submitted.current = null; }
+    try { await generate(submitted.current.seed, submitted.current.count, submitted.current.key, submitted.current.family); submitted.current = null; }
     catch (error) { setFailure(String(error)); }
     finally { setPending(false); }
   }
@@ -21,6 +21,7 @@ export function PanelGenerator({ generate }: { generate: (seed: number, count: n
     <h2 id="generate-title">Generate a synthetic panel</h2>
     <p>Create fictional patients and explore your own decisions over 84 simulated days. The seed reproduces patient content and noise on the pinned runtime. Earlier generated patients and their history remain saved.</p>
     <form onSubmit={event => void submit(event)}>
+      <label htmlFor="panel-family">Synthetic patient family</label><select id="panel-family" name="family" disabled={pending || Boolean(submitted.current)}><option value="visit">Ordinary behavioral care · v1</option><option value="nof1_med">Fictional N-of-1 medication protocol · v2</option></select>
       <fieldset disabled={pending || Boolean(submitted.current)}><div className="generator-fields"><div><label htmlFor="panel-seed">Panel seed</label><input id="panel-seed" name="seed" type="number" min="0" max="2147483647" step="1" defaultValue="20261021" inputMode="numeric" autoComplete="off" required/></div><div><label htmlFor="panel-count">Patient count · 2–24</label><input id="panel-count" name="count" type="number" min="2" max="24" step="1" defaultValue="12" inputMode="numeric" autoComplete="off" required/></div></div></fieldset>
       <button type="submit" disabled={pending}>{pending ? 'Generating panel…' : submitted.current ? 'Retry original panel request' : 'Generate and load panel'}</button>
     </form>

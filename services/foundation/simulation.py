@@ -171,6 +171,9 @@ def advance(db, settings, patient, expected_version, mode, now):
     if day >= 84:
         raise SimulationError('simulation_complete', 'The 84-day demonstration is complete.')
     target = min(84, day + 1 if mode == 'day' else (day // 14 + 1) * 14)
+    if simulation.get('nof1',{}).get('status') in ('active','stopped','completed'):
+        from .nof1 import advance as advance_nof1
+        return advance_nof1(db,settings,patient,state,target,now)
     cutoff = instant(simulation['origin']) + timedelta(days=target)
     generated = product(settings, simulation, patient['id'], target)
     count = persist_product(db, generated, patient['id'], after=patient_clock(patient, now), cutoff=cutoff, received_at=now, actions=simulation['actions'], simulation=simulation)

@@ -14,7 +14,7 @@ from argon2.exceptions import VerifyMismatchError, VerificationError
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import Field, RootModel
+from pydantic import AwareDatetime,Field, RootModel,model_validator
 from contracts.domain.common import Action, StrictModel
 from contracts.domain.entities import Approval, DecisionSnapshot, ViewContext
 from contracts.domain.boundaries import ContractViolation, validate_approval
@@ -137,6 +137,35 @@ class PanelRequest(RootModel[PanelInput | ProtocolPanel]):
 class AdvanceInput(StrictModel):
     expected_version: int = Field(gt=0)
     mode: Literal['day', 'visit']
+
+
+class Nof1Input(StrictModel):
+    mode: Literal['current']
+    action: Literal['consent','review','approve','start','withdraw']
+    decision_id: str
+    expected_version: int = Field(gt=0)
+    expected_state_version: int = Field(gt=0)
+    expected_consent_version: int = Field(gt=0)
+    expected_eligibility_version: int = Field(gt=0)
+    rationale: str = Field(min_length=1,max_length=1000)
+    assertions: list[Literal['both_options_acceptable','stable_regimen_reviewed','interactions_reviewed','fall_risk_reviewed','rescue_stop_plan_reviewed','patient_agrees']] = Field(default_factory=list)
+    permitted_options: list[Literal['MED_A','MED_B']] = Field(default_factory=list)
+    template: dict | None = None
+    consent_expires_at: AwareDatetime | None = None
+
+    @model_validator(mode='after')
+    def explicit_authority(self):
+        from contracts.domain.protocol import NOF1_REF
+        required={'both_options_acceptable','stable_regimen_reviewed','interactions_reviewed','fall_risk_reviewed','rescue_stop_plan_reviewed','patient_agrees'}
+        if self.action=='review':
+            if set(self.assertions)!=required or len(self.assertions)!=len(required):raise ValueError('Explicit complete synthetic readiness review required')
+        elif self.assertions:raise ValueError('Review assertions belong only to review command')
+        if self.action=='approve':
+            if set(self.permitted_options)!={'MED_A','MED_B'} or len(self.permitted_options)!=2 or self.template!=NOF1_REF:
+                raise ValueError('Explicit both-option fixed-template approval required; no selected winner')
+        elif self.permitted_options or self.template is not None:raise ValueError('Only approval grants the exact medication/template envelope')
+        if self.action!='consent' and self.consent_expires_at is not None:raise ValueError('Expiry belongs only to explicit consent')
+        return self
 
 
 def create_app(settings: Settings) -> FastAPI:
@@ -508,6 +537,13 @@ def create_app(settings: Settings) -> FastAPI:
             save_mutation(db, current, key, 'generated-panel', payload, response)
             return response
 
+    @app.get('/api/panel-options')
+    def panel_options(request: Request):
+        with store.transaction() as db:
+            session(db,request)
+            from contracts.domain.protocol import LAW_REF,NOF1_REF
+            return dict(nof1_med=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='nof1_med',law=LAW_REF,protocol=NOF1_REF))
+
     @app.post('/api/patients/{patient_id}/advance')
     async def advance_patient(patient_id: str, request: Request):
         data = await body(request, AdvanceInput)
@@ -534,6 +570,19 @@ def create_app(settings: Settings) -> FastAPI:
             result["history"]=[dict(id=r["id"],approved_at=r["approved_at"],display_sha256=r["display_sha256"]) for r in db.execute("SELECT id,approved_at,display_sha256 FROM bundles WHERE patient_id=? ORDER BY approved_at,id",(patient_id,))]
             result["mode"]="current";result["auth_generation"]=current["token_hash"]
             return result
+
+    @app.post('/api/patients/{patient_id}/nof1')
+    async def nof1_command(patient_id: str,request: Request):
+        data=await body(request,Nof1Input)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True);patient=own(db,patient_id,current['account_id'])
+            payload=data.model_dump(mode='json');scope=patient_id+':nof1'
+            key,prior=mutation_receipt(db,current,request,scope,payload)
+            if prior:return prior
+            from .nof1 import transition
+            response=transition(db,settings,patient,current['account_id'],data,settings.clock())
+            save_mutation(db,current,key,scope,payload,response)
+            return response
 
     @app.post('/api/patients/{patient_id}/analyses')
     async def submit_analysis(patient_id: str, request: Request):
@@ -686,6 +735,13 @@ def create_app(settings: Settings) -> FastAPI:
             state=preserve_simulation(json.loads(patient['state_json']), state_for("ASSIGN-03"));state["plan"]={"option":data.option,"approved_at":timestamp(now),"rationale":data.rationale,"bundle_id":bundle_id}
             if 'simulation' in state:
                 from .simulation import assign
+                if state['simulation']['law_version']=='poc-longitudinal-v2':
+                    # A protocol background must retain actual typed approval
+                    # and context, not just a saved display/bundle reference.
+                    from .nof1 import persist
+                    if db.execute('SELECT 1 FROM events WHERE id=?',(snapshot.record_id,)).fetchone() is None:
+                        persist(db,snapshot.model_dump(mode='json'),received_at)
+                    persist(db,approval.model_dump(mode='json'),received_at)
                 assign(db, patient, state, approval, now, received_at)
             db.execute("UPDATE patients SET version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,state_json=? WHERE id=?",(canonical(state),patient_id))
             db.execute("INSERT INTO state_changes VALUES(?,?,?,?,?)",("audit-"+uuid.uuid4().hex,patient_id,current["account_id"],timestamp(received_at),canonical(saved["audit"])))

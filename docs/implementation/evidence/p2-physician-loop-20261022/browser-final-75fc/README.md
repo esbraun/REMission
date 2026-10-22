@@ -1,0 +1,7 @@
+# Author P2 browser record
+
+Source75fcd, actual isolated8782 app. Final snapshots/screenshots use p2-sol-75fc; retained9b73 files are earlier observations and do not substitute for repaired-source proof. The initial automatic navigation snapshot is retained. original-copy-bindings.json binds exactly29 tool-generated files to their copies. Browser closed before independent reviewer lease transfer.
+
+Ordinary fixture login used existing private fixture credentials; credentials/session/CSRF values were never captured. Generate an explicit N v2 panel (seed1245,count2), select patient, approve ordinary behavioral continuation, Return current visit, consent, check six synthetic acknowledgements, confirm both MED options and NOF1_REF, then separately Start. Advance seven one-day steps to washout; reload; use14-day steps through84. Open saved day7 decision and reload. In second patient, attempt approval without consent; then valid consent/review followed by a clinical hold from a separate tab and stale confirmation. Both denials are expected409. Exact semantic UI state is preserved in YAML; runtime public counts independently check persisted observations.
+
+Desktop1280x900, narrow390x844. Final narrow washout and hold screenshots were visually inspected; no horizontal overflow. Keyboard consent and Start used Space/Enter. This is bounded engineering proof, not a comprehensive accessibility or clinical acceptance review.
