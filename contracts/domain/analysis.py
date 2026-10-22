@@ -18,7 +18,7 @@ def sha(value):
 
 
 CONFIG = dict(id="poc-visit-v1", chains=4, tune=1000, draws=1000, extension_tune=2000,
-              extension_draws=2000, target_accept=.95, max_treedepth=12,
+              extension_draws=2000, target_accept=.995, max_treedepth=12,
               batches=8, initial_k=1024, max_k=65536, integration_seconds=1800,
               bootstrap_resamples=1000, bootstrap_block=20, bootstrap_seed=721981,
               mean_se=.05, sd_floor=.10, absolute_stability=.01,
@@ -34,7 +34,7 @@ def reference(identifier, value):
 
 
 CONFIG_REF = reference("poc-visit-v1", CONFIG)
-CONFIG_REF['version']='1.1.0'
+CONFIG_REF['version']='1.1.1'
 HISTORY_REF = reference("poc-analysis-history-v1", "quality/ISI/indicators/assignments/deliveries/reduced-lineage-v1")
 ESTIMAND_REF = reference("EST-VISIT:poc-hstar-v1", "Expected ISI at 42 future days: escalate minus continue conditional on reduced H*; retain plans; no prompt")
 MODEL_REF = reference(CONFIG["model"], "contract 20261021: b hierarchy; independent beta hierarchy; sinusoid; AR; rounded clipped total ISI and quality")
