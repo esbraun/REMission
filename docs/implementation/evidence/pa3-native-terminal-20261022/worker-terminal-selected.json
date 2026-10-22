@@ -1,0 +1,70 @@
+{
+  "Args": [
+    "-m",
+    "services.learner.analysis_worker",
+    "--input",
+    "/input/input.json",
+    "--output",
+    "/output"
+  ],
+  "Config": {
+    "Labels": {
+      "remission.analysis": "remission-poc13-ac8e16e0",
+      "remission.attempt": "analysis-4ff86193058d4d13a1600f0423e91f12"
+    },
+    "User": "10002:10002"
+  },
+  "HostConfig": {
+    "CapDrop": [
+      "ALL"
+    ],
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": {
+      "/tmp": "rw,exec,nosuid,nodev,size=512m"
+    }
+  },
+  "Id": "93cf67b550a31198b070dafebf2140d64651cfc4b8ac76f777f26ae519f0059b",
+  "Image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+  "Mounts": [
+    {
+      "Destination": "/input",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input",
+      "Propagation": "",
+      "RW": false,
+      "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/output",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output",
+      "Propagation": "",
+      "RW": true,
+      "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output/_data",
+      "Type": "volume"
+    }
+  ],
+  "Path": "python",
+  "State": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "2026-10-22T15:13:49.376786918Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "2026-10-22T13:18:51.183558354Z",
+    "Status": "exited"
+  }
+}
