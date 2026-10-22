@@ -11,6 +11,7 @@ ENV PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64 MPLCONFIGDIR=/tm
 COPY methods/visit/ /app/methods/visit/
 COPY tests/methods/ /app/tests/methods/
 COPY tooling/foundation/qualify_pa3_bridge.py /app/qualify_pa3_bridge.py
+COPY tooling/foundation/profile_pa3_bridge.py /app/profile_pa3_bridge.py
 USER 10002:10002
 ENTRYPOINT ["python","/app/qualify_pa3_bridge.py"]
 
