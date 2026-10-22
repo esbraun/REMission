@@ -1,0 +1,55 @@
+"""Independent byte and SQLite feasibility checks, not application acceptance."""
+import base64,hashlib,json,sqlite3,subprocess
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'.review-artifacts'
+HEAD='189b9902da288ef249a7216d3a121652fdf59210';BASE='ec18cb4020ba239710a3fd615e365d5cd72b4d80';PARENT='ab353bb93737da541e8d366acd28c35c86814bc1'
+def git(*args,data=None):return subprocess.check_output(['git',*args],cwd=ROOT,input=data)
+def ident(raw):
+    oid=git('hash-object','-w','--stdin',data=raw).decode().strip();assert git('cat-file','blob',oid)==raw
+    return dict(blob=oid,bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+assert git('rev-parse','HEAD').decode().strip()==HEAD
+assert git('merge-base','HEAD',BASE).decode().strip()==BASE
+assert Path(git('rev-parse','--show-toplevel').decode().strip()).resolve()==ROOT.resolve()
+paths=['docs/implementation/g1-live-hold-trigger-binding-supplement-r1-20261021.md','docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md','docs/implementation/g1-live-hold-trigger-binding-supplement-20261021.md','docs/implementation/evidence/G1-LIVE-HOLD/proposed-composed-spec-v1.json','docs/implementation/evidence/G1-LIVE-HOLD/raw-supplement-review-and-compatibility.json','docs/implementation/evidence/G1-LIVE-HOLD/freeze_spec_proposal.py','tooling/foundation/preserve_live_inputs.py','services/foundation/migrations/003_live_hold.sql','services/foundation/live_hold.py','services/foundation/cutover.py','contracts/service/export.py','contracts/service/live_hold.py']
+sources=[dict(path=p,**ident(git('show',HEAD+':'+p))) for p in paths]
+for p in paths[1:3]+paths[7:]:assert git('show',HEAD+':'+p)==git('show',PARENT+':'+p)
+spec=json.loads(git('show',HEAD+':'+paths[3]));encoded=(json.dumps(spec,sort_keys=True,indent=2,ensure_ascii=True)+'\n').encode()
+assert encoded==git('show',HEAD+':'+paths[3])
+assert hashlib.sha256(encoded).hexdigest()=='a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3'
+for part in spec['parts']:
+    raw=git('show',HEAD+':'+part['path']);assert ident(raw)['blob']==part['git_blob'];assert hashlib.sha256(raw.replace(b'\r\n',b'\n')).hexdigest()==part['lf_sha256']
+assert spec['parts'][1]['git_blob']=='a05a2667f62888e5ecb269c545ac70b65fb068bc'
+preserved=[];(OUT/'inputs').mkdir(exist_ok=True)
+for x in json.loads(git('show',HEAD+':'+paths[4])):
+    raw=base64.b64decode(x['base64'],validate=True);d=ident(raw)
+    assert d['blob']==x['git_blob'] and d['bytes']==x['bytes'] and d['sha256']==x['sha256']
+    (OUT/'inputs'/d['blob']).write_bytes(raw);preserved.append(d)
+db=sqlite3.connect(':memory:');db.execute('PRAGMA foreign_keys=ON')
+db.executescript('CREATE TABLE patients(id TEXT PRIMARY KEY); CREATE TABLE accounts(id TEXT PRIMARY KEY); CREATE TABLE schema_migrations(version INTEGER); CREATE TABLE observed_archives(id TEXT PRIMARY KEY);')
+db.executescript(git('show',HEAD+':services/foundation/migrations/003_live_hold.sql').decode())
+db.executescript("INSERT INTO patients VALUES('P'); INSERT INTO accounts VALUES('D'); INSERT INTO live_hold_episodes VALUES('E',1,'P','source','active','t','op','old'); INSERT INTO live_hold_tasks VALUES('old-T','P','E',1,'D','due','old bytes'); INSERT INTO live_hold_task_events VALUES('old-event','old-T','op','old event bytes');")
+try:db.execute("INSERT INTO live_hold_tasks VALUES('second','P','E',1,'D','due2','new')")
+except sqlite3.IntegrityError as e:singleton=str(e)
+else:raise AssertionError('003 singleton did not reject')
+# A minimal independently written feasibility model of the specified additive tables.
+# It is not the future migration004 and does not verify application relation checks.
+ddl=["CREATE TABLE live_hold_additional_tasks(id TEXT PRIMARY KEY,patient_id TEXT REFERENCES patients(id),episode_id TEXT,generation INTEGER,owner_id TEXT REFERENCES accounts(id),due_at TEXT,payload TEXT,FOREIGN KEY(episode_id,generation) REFERENCES live_hold_episodes(id,generation))",
+"CREATE TABLE live_hold_task_bindings(episode_id TEXT,generation INTEGER,full_binding_sha256 TEXT,payload TEXT,task_id TEXT UNIQUE,anchor_task_id TEXT REFERENCES live_hold_tasks(id),additional_task_id TEXT REFERENCES live_hold_additional_tasks(id),PRIMARY KEY(episode_id,generation,full_binding_sha256),FOREIGN KEY(episode_id,generation) REFERENCES live_hold_episodes(id,generation),CHECK((anchor_task_id IS NOT NULL)+(additional_task_id IS NOT NULL)=1),CHECK(task_id=COALESCE(anchor_task_id,additional_task_id)))",
+"CREATE TABLE live_hold_additional_task_events(id TEXT PRIMARY KEY,task_id TEXT REFERENCES live_hold_additional_tasks(id),operation_id TEXT,payload TEXT)"]
+for sql in ddl:db.execute(sql)
+db.execute("INSERT INTO live_hold_task_bindings VALUES('E',1,'B1','binding1','old-T','old-T',NULL)")
+db.execute("INSERT INTO live_hold_additional_tasks VALUES('new-T','P','E',1,'D','due2','new bytes')")
+db.execute("INSERT INTO live_hold_task_bindings VALUES('E',1,'B2','binding2','new-T',NULL,'new-T')")
+db.execute("INSERT INTO live_hold_additional_task_events VALUES('new-event','new-T','op2','pending')")
+assert db.execute('SELECT COUNT(*) FROM live_hold_task_bindings').fetchone()[0]==2
+try:db.execute("INSERT INTO live_hold_task_bindings VALUES('E',1,'B2','binding2','new-T',NULL,'new-T')")
+except sqlite3.IntegrityError:pass
+else:raise AssertionError('duplicate effective binding accepted')
+assert db.execute('PRAGMA foreign_key_check').fetchall()==[]
+assert db.execute("SELECT payload FROM live_hold_tasks WHERE id='old-T'").fetchone()[0]=='old bytes'
+assert db.execute("SELECT payload FROM live_hold_task_events WHERE id='old-event'").fetchone()[0]=='old event bytes'
+db.commit();db.execute('BEGIN');db.execute('CREATE TABLE rollback_probe(id INTEGER)');db.rollback()
+assert db.execute("SELECT 1 FROM sqlite_master WHERE name='rollback_probe'").fetchone() is None
+diff=subprocess.run(['git','diff','--check',PARENT,HEAD],cwd=ROOT,capture_output=True);assert diff.returncode==0
+result=dict(head=HEAD,base=BASE,document_delta_parent=PARENT,sources=sources,preserved=preserved,composed_sha256=hashlib.sha256(encoded).hexdigest(),checks=dict(expected_old_singleton_error=singleton,additive_two_task_feasible=True,duplicate_binding_rejected=True,foreign_keys_valid=True,old_task_event_bytes_preserved=True,sqlite_ddl_rollback=True,scoped_diff_check=0),limitations='In-memory physical feasibility only, not executed migration004 or runtime/code acceptance')
+(OUT/'source-checks.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps(result['checks'],indent=2))

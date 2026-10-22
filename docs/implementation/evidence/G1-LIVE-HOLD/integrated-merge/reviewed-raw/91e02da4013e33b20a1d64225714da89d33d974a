@@ -1,0 +1,4 @@
+import subprocess,pathlib,json
+root=pathlib.Path.cwd();p=root/'.review-artifacts';base=['docker','run','--rm','--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,nosuid,size=512m','-e','PYTHONPATH=/app:/app/tests/integration/replay:/app/tests/run_contracts','--mount',f'type=bind,source={root},target=/app,readonly','-w','/app','sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa','python']
+for name in ['current-head-oracle','closure-oracle']:
+ cmd=base+['/app/.review-artifacts/'+name+'.py'];r=subprocess.run(cmd,capture_output=True,text=True);data={'head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'command':cmd,'exit_code':r.returncode,'stdout':r.stdout,'stderr':r.stderr};(p/(name+'-raw.json')).write_text(json.dumps(data,indent=2));print(json.dumps(data,indent=2),flush=True)

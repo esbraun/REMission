@@ -1,0 +1,5 @@
+import subprocess,pathlib,json
+p=pathlib.Path('.review-artifacts');template=json.loads((p/'closure-raw.json').read_text());base=template['command'][:-2]
+cases={'clearance-retry':['python','.review-artifacts/clearance-retry-oracle.py'],'repair-controls':['python','-m','unittest','-v',*[f'test_live_hold.LiveWorkflowTests.{name}' for name in ['test_semantic_review_retry_after_restart_and_reference_reorder_only_adds_alias','test_nested_followup_correction_and_retraction_refuse_review_without_partial_effects','test_review_named_package_membership_and_fresh_recursive_closure_positive','test_archive_refuses_future_dependency_bytes_before_any_review_publication','test_uncommitted_nested_correction_not_read_then_writer_recheck_refuses']]]}
+for name,args in cases.items():
+ cmd=base+args;r=subprocess.run(cmd,capture_output=True);out=dict(head=template['head'],command=cmd,exit_code=r.returncode,stdout=r.stdout.decode(),stderr=r.stderr.decode());(p/f'{name}-raw.json').write_text(json.dumps(out,indent=2));print(name,r.returncode,r.stdout.decode(),r.stderr.decode(),flush=True)

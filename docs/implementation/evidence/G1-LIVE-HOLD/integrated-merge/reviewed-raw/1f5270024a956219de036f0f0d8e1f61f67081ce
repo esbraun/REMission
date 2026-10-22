@@ -1,0 +1,36 @@
+import unittest,json
+from dataclasses import replace
+from datetime import timedelta
+from test_live_hold import LiveWorkflowTests,NOW
+from live_helpers import live_fixture
+class RetryFamilies(LiveWorkflowTests):
+ def probe(self,coordinator):
+  late=NOW
+  fixture,trust,addition,_=live_fixture(self.root/'correction',late_trigger_correction_at=late,export_name='retry-correction')
+  authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants});self.install_next(authority)
+  self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'correction':(fixture['raw'],self.root/'correction/staging',trust)});self.restart_client()
+  url='/api/observed-archives/fixture-export' if coordinator else '/api/patients/SYN-02/live-holds'
+  body={'mode':'clinical_observation_import'} if coordinator else self.command
+  first=self.client.post(url,json=body,headers=self.headers('original'));self.assertEqual(first.status_code,200,first.text)
+  before=self.safety_state();alias=self.client.post(url,json=body,headers=self.headers('valid-alias'));self.assertEqual(alias.status_code,200,alias.text);self.assertEqual(alias.json(),first.json());after=self.safety_state()
+  self.assertEqual(len(after['live_hold_keys']),len(before['live_hold_keys'])+1);self.assertEqual({k:v for k,v in before.items() if k!='live_hold_keys'},{k:v for k,v in after.items() if k!='live_hold_keys'})
+  self.settings=replace(self.settings,clock=lambda:late);self.restart_client()
+  correction=self.client.post('/api/observed-archives/correction',json={'mode':'archive_only'},headers=self.headers('correction'));self.assertEqual(correction.status_code,200,correction.text)
+  before=self.safety_state();same=self.client.post(url,json=body,headers=self.headers('original'));self.assertEqual(before,self.safety_state());new=self.client.post(url,json=body,headers=self.headers('historical-alias'));after=self.safety_state()
+  print(json.dumps(dict(family='coordinator' if coordinator else 'invalidate',first=first.status_code,valid_alias=alias.status_code,same=same.status_code,same_body=same.json(),new=new.status_code,new_body=new.json(),no_delta=before==after)),flush=True)
+  current=self.client.get('/api/patients/SYN-02').json();self.assertEqual(current['stage'],'ASSIGN-09');self.assertFalse(current['permissions']['approve_ordinary'])
+  self.assertEqual(same.status_code,200,'Previously committed exact transport key must return historical receipt after current authorization, even with later corrected evidence')
+  self.assertEqual(new.status_code,200);self.assertEqual(new.json(),first.json());self.assertEqual(same.json(),first.json())
+  self.assertEqual(len(after['live_hold_keys']),len(before['live_hold_keys'])+1);self.assertEqual({k:v for k,v in before.items() if k!='live_hold_keys'},{k:v for k,v in after.items() if k!='live_hold_keys'})
+  self.login(user='bob');before=self.safety_state()
+  for key in ['original','foreign-alias']:
+   r=self.client.post(url,json=body,headers=self.headers(key));self.assertEqual(r.status_code,404,r.text);self.assertEqual(before,self.safety_state())
+  self.login();stale_headers=self.headers('original');old=self.client
+  self.install_next(self.settings.installed.authority.model_copy(update={'grants':[]}));before=self.safety_state()
+  r=old.post(url,json=body,headers=stale_headers);self.assertEqual(r.status_code,503,r.text);self.assertEqual(before,self.safety_state())
+  self.restart_client();before=self.safety_state()
+  for key in ['original','revoked-alias']:
+   r=self.client.post(url,json=body,headers=self.headers(key));self.assertEqual(r.status_code,409,r.text);self.assertEqual(r.json()['code'],'live_source_grant_unavailable');self.assertEqual(before,self.safety_state())
+ def test_invalidate(self):self.probe(False)
+ def test_coordinator(self):self.probe(True)
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([RetryFamilies('test_invalidate'),RetryFamilies('test_coordinator')])).wasSuccessful())

@@ -1,0 +1,11 @@
+import pathlib,json,hashlib,re
+p=pathlib.Path('.review-artifacts/full-checks');rows=[]
+for f in sorted(p.glob('*.json')):
+ x=json.loads(f.read_bytes())
+ if not isinstance(x,dict) or 'command' not in x:continue
+ streams={}
+ for k,v in x['streams'].items():
+  raw=(p/v['path']).read_bytes();assert len(raw)==v['bytes'] and hashlib.sha256(raw).hexdigest()==v['sha256'];streams[k]=raw.decode(errors='replace')
+ assert x['exit']==0 and x['source_head']=='8019314fb3ef7640339f2b0bbb3d70de93913239'
+ rows.append(dict(metadata=f.name,command=x['command'][-7:],exit=x['exit'],elapsed=x['elapsed_seconds'],summary=re.findall(r'Ran \d+ tests in [^\n]+|^OK$',streams['stderr'],re.M),stdout=streams['stdout'][:1000],warnings=[line for line in streams['stderr'].splitlines() if 'Warning' in line or 'Unexpected' in line]))
+pathlib.Path('.review-artifacts/full-checks-summary.json').write_text(json.dumps(rows,indent=2));print(json.dumps(rows,indent=2))

@@ -1,0 +1,20 @@
+from test_live_hold import LiveWorkflowTests,NOW
+from live_helpers import live_fixture
+from dataclasses import replace
+from datetime import timedelta
+import unittest,json
+class CurrentHeadOracle(LiveWorkflowTests):
+ def runTest(self):
+  late=NOW+timedelta(hours=2)
+  fixture,trust,addition,_=live_fixture(self.root/'correction',late_trigger_correction_at=late,export_name='correction-export')
+  authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants})
+  self.install_next(authority);self.settings=replace(self.settings,clock=lambda:late,observed_archives={**self.settings.observed_archives,'correction':(fixture['raw'],self.root/'correction/staging',trust)});self.restart_client()
+  r=self.client.post('/api/observed-archives/correction',json={'mode':'archive_only'},headers=self.headers('archive-correction'));self.assertEqual(r.status_code,200,r.text)
+  direct=self.client.post('/api/patients/SYN-02/live-holds',json=self.command,headers=self.headers('stale-direct'))
+  before=self.safety_state()
+  coordinator=self.client.post('/api/observed-archives/fixture-export',json={'mode':'clinical_observation_import'},headers=self.headers('stale-coordinator'))
+  print(json.dumps({'direct_status':direct.status_code,'direct':direct.json(),'coordinator_status':coordinator.status_code,'coordinator':coordinator.json()}),flush=True)
+  self.assertEqual(direct.status_code,409)
+  self.assertEqual(coordinator.status_code,409,'Coordinator must also reject stale trigger head already superseded by committed registered correction')
+  self.assertEqual(self.safety_state(),before)
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([CurrentHeadOracle()])).wasSuccessful())

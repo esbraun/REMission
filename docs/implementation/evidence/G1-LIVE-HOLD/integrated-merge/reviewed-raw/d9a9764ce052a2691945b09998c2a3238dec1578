@@ -1,0 +1,13 @@
+import pathlib,json,hashlib
+p=pathlib.Path('.review-artifacts');rows=[]
+for folder in ['fresh-build','fresh-build-pinned-npm','fresh-roles','fresh-checks','cli']:
+ for f in (p/folder).rglob('*.json'):
+  x=json.loads(f.read_bytes())
+  if not isinstance(x,dict) or not {'command','streams','exit'}<=x.keys():continue
+  out={}
+  for k,v in x['streams'].items():
+   raw=(f.parent/v['path']).read_bytes();assert len(raw)==v['bytes'] and hashlib.sha256(raw).hexdigest()==v['sha256'];out[k]=raw.decode(errors='replace')
+  rows.append(dict(folder=folder,metadata=f.relative_to(p).as_posix(),command=x['command'],exit=x['exit'],source_head=x['source_head'],stdout=out['stdout'],stderr=out['stderr']))
+(p/'qualification-results.json').write_text(json.dumps(rows,indent=2));print('captures',len(rows),'failed',[(x['folder'],x['metadata'],x['exit']) for x in rows if x['exit']]);
+for x in rows:
+ if x['folder']=='fresh-roles' and x['stdout'] and ('private' in x['stdout'] or 'positive evaluator' in x['stdout'] or 'live_status' in x['stdout']):print(x['stdout'][:1900])

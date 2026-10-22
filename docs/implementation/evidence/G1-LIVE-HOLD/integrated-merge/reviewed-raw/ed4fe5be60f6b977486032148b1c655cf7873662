@@ -1,0 +1,388 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "BindingsV2": {
+      "additionalProperties": false,
+      "properties": {
+        "analytic_fixtures": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "calibration_schema": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "catalog": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "dgp": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "domain_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "equations": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "observed_representation": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "parameters": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "probability_precision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "run_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "scenarios": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "temporal": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "timing": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "protocol",
+        "dgp",
+        "parameters",
+        "equations",
+        "scenarios",
+        "catalog",
+        "timing",
+        "temporal",
+        "calibration_schema",
+        "analytic_fixtures",
+        "probability_precision",
+        "observed_representation",
+        "domain_schema_set",
+        "run_schema_set"
+      ],
+      "title": "BindingsV2",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:run-result",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bindings": {
+      "$ref": "#/$defs/BindingsV2"
+    },
+    "calibration": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Calibration",
+      "type": "array"
+    },
+    "completion_receipts": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Completion Receipts",
+      "type": "array"
+    },
+    "contract_version": {
+      "const": "2.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "execution": {
+      "enum": [
+        "contract_fixture",
+        "engine_run"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "kind": {
+      "const": "generator_run_result",
+      "title": "Kind",
+      "type": "string"
+    },
+    "observed_exports": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Observed Exports",
+      "type": "array"
+    },
+    "private_truth": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Private Truth",
+      "type": "array"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Reason"
+    },
+    "reports": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "title": "Reports",
+      "type": "array"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "run_manifest": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "seed_ledger": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Artifact"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "failed",
+        "partial",
+        "complete"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "contract_version",
+    "run_id",
+    "run_manifest",
+    "producer",
+    "execution",
+    "source_commit",
+    "runtime",
+    "status",
+    "reason",
+    "observed_exports",
+    "private_truth",
+    "seed_ledger",
+    "calibration",
+    "reports",
+    "bindings",
+    "completion_receipts"
+  ],
+  "title": "RunResultV2",
+  "type": "object"
+}

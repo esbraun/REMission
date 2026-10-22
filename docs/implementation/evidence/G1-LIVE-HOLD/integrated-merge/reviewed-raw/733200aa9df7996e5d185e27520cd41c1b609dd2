@@ -1,0 +1,16 @@
+import json, unittest
+from test_live_hold import LiveWorkflowTests
+class IndependentSubsetOracle(LiveWorkflowTests):
+    def runTest(self):
+        self.install_extra_transition_fixture()
+        grant=next(g for g in self.settings.installed.authority.grants if g.archive_id==self.command['archive_id'])
+        configured=[f.reference.model_dump(mode='json') for f in grant.trigger_bindings[0].follow_ups]
+        response=self.client.post('/api/patients/SYN-02/live-holds',json=self.command,headers=self.headers('independent-subset'))
+        print(json.dumps({'configured_followups':configured,'submitted_command':self.command,'status':response.status_code,'response':response.json()},sort_keys=True),flush=True)
+        with self.store.transaction() as db:
+            print('TASK_BINDINGS',db.execute('SELECT count(*) FROM live_hold_task_bindings').fetchone()[0],flush=True)
+        self.assertEqual(len(configured),2)
+        self.assertEqual(response.status_code,409,'Accepted R1 requires every matched binding follow-up in trigger and bundle; subset must refuse')
+suite=unittest.TestSuite([IndependentSubsetOracle()])
+result=unittest.TextTestRunner(verbosity=2).run(suite)
+raise SystemExit(not result.wasSuccessful())

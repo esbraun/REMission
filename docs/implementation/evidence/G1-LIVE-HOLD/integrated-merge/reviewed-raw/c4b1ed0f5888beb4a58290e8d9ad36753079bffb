@@ -1,0 +1,124 @@
+import hashlib, json, pathlib, subprocess, sys
+
+ROOT = pathlib.Path.cwd()
+BASE = 'ec18cb4020ba239710a3fd615e365d5cd72b4d80'
+HEAD = '5e226f9b13ff9c0d4d9d800893ef130f056b8fa6'
+FROZEN_003 = '1096d6da86048e7a53f98ed70abdd85f6f497aed'
+HIST_REPORT = '0636e576ed4500fb9842079063f9fc60e70dcb4d'
+HIST_JSON = 'a5b9c5ee8c4428ab72d2291f83a1a8c7edf1ece6'
+PRIOR_SCRIPT = '9c5b40d4c891c97aaabd860c4fe9984390bdf64f'
+OUT = pathlib.Path('docs/implementation/evidence/G1-LH-COMPAT-R3-LUNA-20261021')
+FAILURES = []
+
+def git(*args, check=True):
+    p = subprocess.run(['git', *args], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if check and p.returncode:
+        msg = f'git {args!r}: rc={p.returncode}; {p.stderr.decode(errors="replace")}'
+        FAILURES.append(msg)
+        raise RuntimeError(msg)
+    return p
+
+def blob(rev, path):
+    p = git('rev-parse', f'{rev}:{path}', check=False)
+    if p.returncode:
+        return None, None
+    oid = p.stdout.decode().strip()
+    return oid, git('cat-file', 'blob', oid).stdout
+
+def obj(oid): return git('cat-file', 'blob', oid).stdout
+def sha(data): return hashlib.sha256(data).hexdigest()
+def parse(data): return json.loads(data.decode('utf-8'))
+def ids(rows, key): return [x.get(key) for x in rows]
+def changed_paths(a, b, prefix=''):
+    if isinstance(a, dict) and isinstance(b, dict):
+        out=[]
+        for k in sorted(set(a)|set(b)):
+            p=f'{prefix}.{k}' if prefix else k
+            if k not in a or k not in b: out.append(p)
+            else: out.extend(changed_paths(a[k],b[k],p))
+        return out
+    if isinstance(a, list) and isinstance(b, list): return [] if a == b else [prefix]
+    return [] if a == b else [prefix]
+
+def ref_inventory(doc):
+    tasks, coverage = doc.get('tasks', []), doc.get('coverage', [])
+    task_ids={x.get('id') for x in tasks}; req_ids={x.get('requirement_id') for x in coverage}
+    test_ids={x for t in tasks for x in t.get('test_ids',[])} | {x for c in coverage for x in c.get('test_ids',[])}
+    deps=[]; dep_bad=[]; task_tests=[]; task_reqs=[]; cov_tasks=[]; cov_tests=[]; cov_task_bad=[]; cov_test_bad=[]
+    for t in tasks:
+        tid=t.get('id')
+        for d in t.get('depends_on',[]):
+            deps.append((tid,d))
+            if d not in task_ids: dep_bad.append({'task':tid,'dependency':d})
+        for x in t.get('test_ids',[]): task_tests.append((tid,x))
+        for x in t.get('requirement_ids',[]): task_reqs.append((tid,x))
+    for c in coverage:
+        rid=c.get('requirement_id')
+        for x in c.get('task_ids',[]):
+            cov_tasks.append((rid,x))
+            if x not in task_ids: cov_task_bad.append({'requirement':rid,'task':x})
+        for x in c.get('test_ids',[]):
+            cov_tests.append((rid,x))
+            if x not in test_ids: cov_test_bad.append({'requirement':rid,'test':x})
+    return {'task_count':len(tasks),'unique_task_id_count':len(task_ids),'dependency_edge_count':len(deps),'dependency_dangling':dep_bad,
+      'task_test_reference_count':len(task_tests),'unique_task_test_ids':len({x for _,x in task_tests}),
+      'task_test_dangling':[{'task':t,'test':x} for t,x in task_tests if x not in test_ids],
+      'task_requirement_reference_count':len(task_reqs),'task_requirement_dangling':[{'task':t,'requirement':x} for t,x in task_reqs if x not in req_ids],
+      'coverage_count':len(coverage),'unique_coverage_requirement_ids':len({c.get('requirement_id') for c in coverage}),
+      'coverage_task_reference_count':len(cov_tasks),'coverage_test_reference_count':len(cov_tests),
+      'coverage_task_dangling':cov_task_bad,'coverage_test_dangling':cov_test_bad}
+
+# Resolve every historical file using object bytes only; physical checkout hash is kept distinct.
+hist=parse(obj(HIST_JSON)); gold=[]
+for rec in hist['golden_paths']:
+    path=rec['path']; bo,bb=blob(BASE,path); ho,hb=blob(HEAD,path)
+    physical_path=ROOT.joinpath(*path.split('/'))
+    physical=physical_path.read_bytes() if physical_path.exists() else None
+    gold.append({'path':path,'historical_inventory_blob':rec['inventory_blob'],'accepted_base_blob':bo,'checkpoint_blob':ho,
+      'base_matches_historical_inventory':bo==rec['inventory_blob'],'head_equals_base':ho==bo,
+      'historical_sha256_matches_head_git_bytes':hb is not None and sha(hb)==rec['checkpoint_sha256'],
+      'physical_checkout_sha256':sha(physical) if physical is not None else None,
+      'physical_matches_git_blob_bytes':physical==hb if physical is not None else False,
+      'physical_diff_is_crlf_only':physical is not None and hb is not None and physical.replace(b'\r\n',b'\n')==hb.replace(b'\r\n',b'\n')})
+
+ledger_path='docs/implementation/g0-task-test-ledger-20261020.json'
+bo,bb=blob(BASE,ledger_path); ho,hb=blob(HEAD,ledger_path)
+bl,hl=parse(bb),parse(hb); bc,hc=bl.get('coverage',[]),hl.get('coverage',[]); bt,ht=bl.get('tasks',[]),hl.get('tasks',[])
+br,hr=ref_inventory(bl),ref_inventory(hl)
+legacy_diffs={k:{'base':bl[k],'head':hl.get(k)} for k in sorted(bl) if bl[k]!=hl.get(k)}
+top_added=sorted(set(hl)-set(bl)); top_removed=sorted(set(bl)-set(hl))
+metadata_paths={k:changed_paths(bl.get(k),hl.get(k),k) for k in ('live_hold_implementation','observed_representation_v2') if bl.get(k)!=hl.get(k)}
+# Metadata is reported separately from the immutable original task/coverage arrays.
+
+migrations=[]
+for path in ('services/foundation/migrations/001_foundation.sql','services/foundation/migrations/002_observed_archive.sql'):
+    x,y=blob(BASE,path); z,w=blob(HEAD,path); migrations.append({'path':path,'base_blob':x,'head_blob':z,'unchanged':x==z})
+m003='services/foundation/migrations/003_live_hold.sql'; m3o,m3b=blob(HEAD,m003); f3o,f3b=blob(FROZEN_003,m003)
+diff3=git('diff','--no-ext-diff','--unified=3',f3o,m3o).stdout.decode(errors='replace') if m3o and f3o else ''
+
+root=git('rev-parse','--show-toplevel').stdout.decode().strip().replace('\\','/')
+head=git('rev-parse','HEAD').stdout.decode().strip(); base=git('rev-parse',BASE).stdout.decode().strip()
+no_dangling=all(not hr[k] for k in ('dependency_dangling','task_test_dangling','task_requirement_dangling','coverage_task_dangling','coverage_test_dangling'))
+report={
+ 'scope':'Source-only Git-byte compatibility inventory for the 5e226f9 checkpoint. No application behavior, schema validity, tests, runtime, review, or acceptance claim.',
+ 'checkout':{'root':root,'head':head,'expected_head':HEAD,'head_matches_expected':head==HEAD,'accepted_base':base,'expected_base':BASE,'base_matches_expected':base==BASE,'status':git('status','--short','--branch').stdout.decode().strip()},
+ 'agent_capability':{'assignment':'gpt-6-luna/high','effective_model_introspection':'unavailable in this runtime; no substitution was observable'},
+ 'historical_locators':{'prior_report_blob':HIST_REPORT,'source_inventory_blob':HIST_JSON,'prior_audit_script_blob':PRIOR_SCRIPT,'prior_script_scope':'45ccc7-specific and includes unrelated 004/service inventory; current audit is a bounded adaptation for the assigned 5e226f9 scope'},
+ 'immutable_v1':{'expected_count':len(hist['golden_paths']),'checked_count':len(gold),'all_base_blobs_match_historical_inventory':all(x['base_matches_historical_inventory'] for x in gold),'all_head_blobs_equal_base':all(x['head_equals_base'] for x in gold),'all_historical_sha256_match_head_git_bytes':all(x['historical_sha256_matches_head_git_bytes'] for x in gold),'physical_hashes_are_separate_from_git_identity':True,'physical_byte_mismatches':sum(not x['physical_matches_git_blob_bytes'] for x in gold),'crlf_only_physical_mismatches':sum(x['physical_diff_is_crlf_only'] for x in gold),'paths':gold},
+ 'ledger':{'path':ledger_path,'base_blob':bo,'head_blob':ho,'coverage_base_count':len(bc),'coverage_head_count':len(hc),'coverage_rows_exact_ordered':bc==hc,'coverage_ids_exact_ordered':ids(bc,'requirement_id')==ids(hc,'requirement_id'),'task_base_count':len(bt),'task_head_count':len(ht),'task_rows_exact_ordered':bt==ht,'task_ids_exact_ordered':ids(bt,'id')==ids(ht,'id'),'base_reference_inventory':br,'head_reference_inventory':hr,'no_coverage_or_task_count_shrink':len(hc)>=len(bc) and len(ht)>=len(bt),'no_coverage_or_task_link_shrink':hr['coverage_task_reference_count']>=br['coverage_task_reference_count'] and hr['task_requirement_reference_count']>=br['task_requirement_reference_count'] and hr['task_test_reference_count']>=br['task_test_reference_count'],'all_declared_references_resolve':no_dangling,'top_level_added':top_added,'top_level_removed':top_removed,'changed_existing_sections_and_fields':metadata_paths,'other_legacy_top_level_differences':{k:v for k,v in legacy_diffs.items() if k not in ('live_hold_implementation','observed_representation_v2')}},
+ 'migrations':{'001_002_unchanged':all(x['unchanged'] for x in migrations),'existing':migrations,'003':{'path':m003,'head_blob':m3o,'frozen_revision':FROZEN_003,'frozen_blob':f3o,'head_equals_frozen':m3o==f3o,'head_sha256_git_bytes':sha(m3b) if m3b is not None else None,'frozen_sha256_git_bytes':sha(f3b) if f3b is not None else None,'head_size_bytes':len(m3b) if m3b is not None else None,'frozen_size_bytes':len(f3b) if f3b is not None else None,'git_object_diff':diff3}},
+ 'failures':FAILURES}
+
+OUT.mkdir(parents=True,exist_ok=True)
+(OUT/'source-inventory.json').write_bytes(obj(HIST_JSON))
+(OUT/'prior-report.md').write_bytes(obj(HIST_REPORT))
+(OUT/'prior-audit-script.py').write_bytes(obj(PRIOR_SCRIPT))
+(OUT/'command-failures.log').write_text('\n'.join(FAILURES)+'\n' if FAILURES else 'No audit command failures recorded.\n',encoding='utf-8',newline='\n')
+(OUT/'compatibility-report.json').write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n',encoding='utf-8',newline='\n')
+lines=['# G1 live-hold compatibility refresh (5e226f9)','',report['scope'],'',f"Checkout `{root}` at `{head}` against accepted base `{base}`. Assignment `gpt-6-luna/high`; effective model introspection was unavailable, with no substitution observable.",'',
+ '## Immutable v1 artifacts',f"Compared {len(gold)}/{len(hist['golden_paths'])} historical paths by Git blob bytes. All base inventory identities match: {report['immutable_v1']['all_base_blobs_match_historical_inventory']}; all checkpoint blobs equal the accepted base: {report['immutable_v1']['all_head_blobs_equal_base']}; all historical SHA-256 values match checkpoint Git bytes: {report['immutable_v1']['all_historical_sha256_match_head_git_bytes']}. Physical checkout SHA-256 was separately recorded for {len(gold)} paths; {report['immutable_v1']['physical_byte_mismatches']} differ from Git bytes and {report['immutable_v1']['crlf_only_physical_mismatches']} are CRLF-only after newline normalization.",'',
+ '## Original ledger rows and links',f"Coverage rows: {len(bc)} at base and {len(hc)} at head; exact ordered row equality: {bc==hc}. Task rows: {len(bt)} and {len(ht)}; exact ordered row equality: {bt==ht}. Head inventory: `{json.dumps(hr,ensure_ascii=False)}`. All references resolve: {no_dangling}. Row counts and tracked link counts did not shrink: {report['ledger']['no_coverage_or_task_count_shrink'] and report['ledger']['no_coverage_or_task_link_shrink']}.",'',
+ '## Separate live-hold/status/evidence metadata',f"Top-level additions: `{top_added}`; removals: `{top_removed}`. Deltas inside the existing live-hold and observed-representation metadata sections are recorded separately at `{metadata_paths}`. Any other legacy top-level differences are recorded verbatim in the JSON; the task and coverage arrays are compared in order and preserved as the original baseline.",'',
+ '## Migrations',f"Migrations 001 and 002 unchanged from accepted base: {all(x['unchanged'] for x in migrations)}. Migration 003 head blob `{m3o}` versus frozen blob `{f3o}` at `{FROZEN_003}`; equal: {m3o==f3o}. The direct Git-object diff is in the JSON (empty when identical).","",'## Audit limitations',"This is a source-byte and ledger inventory only. It does not establish runtime behavior, valid migration execution, schema validity, test outcomes, safety, review disposition, or gate acceptance. The prior script was specific to 45ccc7 and included 004/service enumeration, so this evidence uses a bounded adaptation that changes only audit logic/scope and does not edit source, schemas, migrations, or ledgers.",'']
+(OUT/'compatibility-report.md').write_text('\n'.join(lines),encoding='utf-8',newline='\n')
+print(json.dumps({'summary':{'root':root,'head':head,'head_matches_expected':head==HEAD,'base':base,'base_matches_expected':base==BASE,'v1_count':len(gold),'v1_equal':report['immutable_v1']['all_head_blobs_equal_base'],'physical_mismatches':report['immutable_v1']['physical_byte_mismatches'],'crlf_only':report['immutable_v1']['crlf_only_physical_mismatches'],'coverage_equal':bc==hc,'tasks_equal':bt==ht,'links':hr,'all_links_resolve':no_dangling,'migrations_001_002_unchanged':report['migrations']['001_002_unchanged'],'migration_003_frozen_equal':m3o==f3o,'metadata_fields':metadata_paths,'failures':FAILURES},'out':str(OUT)},indent=2))

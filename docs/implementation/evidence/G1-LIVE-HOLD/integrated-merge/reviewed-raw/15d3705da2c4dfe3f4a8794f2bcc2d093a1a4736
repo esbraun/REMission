@@ -1,0 +1,6 @@
+import pathlib,subprocess,json,hashlib
+p=pathlib.Path('.review-artifacts');items=[]
+for f in sorted(p.iterdir()):
+ if not f.is_file() or f.name=='closure-manifest.json':continue
+ raw=f.read_bytes();oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw;items.append({'path':f.name,'raw_git_blob':oid,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'cat_file_verified':True})
+m={'head':'5e226f9b13ff9c0d4d9d800893ef130f056b8fa6','base':'ec18cb4020ba239710a3fd615e365d5cd72b4d80','disposition':'P1 nested-closure changes requested; full review ongoing','artifacts':items};raw=json.dumps(m,indent=2).encode();(p/'closure-manifest.json').write_bytes(raw);oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw;print(json.dumps(m,indent=2));print('MANIFEST',oid)

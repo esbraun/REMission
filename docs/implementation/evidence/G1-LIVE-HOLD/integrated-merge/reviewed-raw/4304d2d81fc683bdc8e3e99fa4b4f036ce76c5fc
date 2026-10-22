@@ -1,0 +1,238 @@
+[
+    {
+        "Id": "0620177b2e25a67aa6b3849ca703a11039eda2cfe7c2dd3f9e3354b5b97ab630",
+        "Created": "2026-10-22T01:32:03.940320092Z",
+        "Path": "python",
+        "Args": [
+            "-m",
+            "uvicorn",
+            "services.foundation.server:app",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8765",
+            "--no-access-log"
+        ],
+        "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 128,
+            "Error": "failed to set up container networking: driver failed programming external connectivity on endpoint remission-g1-live-hold-20261021-f8e99b9e-old (e4ac9966b8451d64766cd7c6562a4ca1aab4d1d85e3185767a6e26aaa391906b): Bind for 127.0.0.1:8772 failed: port is already allocated",
+            "StartedAt": "2026-10-22T01:32:04.021467645Z",
+            "FinishedAt": "2026-10-22T01:32:06.187250609Z"
+        },
+        "Image": "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8",
+        "ResolvConfPath": "/var/lib/docker/containers/0620177b2e25a67aa6b3849ca703a11039eda2cfe7c2dd3f9e3354b5b97ab630/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/0620177b2e25a67aa6b3849ca703a11039eda2cfe7c2dd3f9e3354b5b97ab630/hostname",
+        "HostsPath": "/var/lib/docker/containers/0620177b2e25a67aa6b3849ca703a11039eda2cfe7c2dd3f9e3354b5b97ab630/hosts",
+        "LogPath": "/var/lib/docker/containers/0620177b2e25a67aa6b3849ca703a11039eda2cfe7c2dd3f9e3354b5b97ab630/0620177b2e25a67aa6b3849ca703a11039eda2cfe7c2dd3f9e3354b5b97ab630-json.log",
+        "Name": "/remission-g1-live-hold-20261021-f8e99b9e-old",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "remission-g1-live-hold-20261021-f8e99b9e-app",
+            "PortBindings": {
+                "8765/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "8772"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,noexec,nosuid,size=128m"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 2147483648,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 4294967296,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": "remission-g1-live-hold-20261021-f8e99b9e-historical",
+                    "Target": "/data"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "remission-g1-live-hold-20261021-f8e99b9e-historical",
+                "Source": "/var/lib/docker/volumes/remission-g1-live-hold-20261021-f8e99b9e-historical/_data",
+                "Destination": "/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "0620177b2e25",
+            "Domainname": "",
+            "User": "10001:10001",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "8765/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "REMISSION_ORIGIN=http://127.0.0.1:8772",
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "-m",
+                "uvicorn",
+                "services.foundation.server:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8765",
+                "--no-access-log"
+            ],
+            "Image": "sha256:82f5b9c4ea1f13a0bee5fe1a852a220fba16752d5aa21df8fa3726b8c483d6a8",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": null,
+            "Labels": {
+                "remission.task": "remission-g1-live-hold-20261021-f8e99b9e"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {}
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:1a678950defef601600f06436e8ee3e2837a5dddf394ee61835076787b018136",
+            "size": 5221,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

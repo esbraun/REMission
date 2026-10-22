@@ -1,0 +1,10 @@
+import unittest,json
+from test_live_hold import LiveWorkflowTests
+class RetryOracle(LiveWorkflowTests):
+ def runTest(self):
+  first=self.enter();e=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];request=self.review_input(e);url='/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews'
+  result=self.client.post(url,json=request,headers=self.headers('review-first'));self.assertEqual(result.status_code,200,result.text)
+  samekey=self.client.post(url,json=request,headers=self.headers('review-first'));self.assertEqual(samekey.status_code,200,samekey.text);self.assertEqual(samekey.json(),result.json())
+  self.restart_client();alias=self.client.post(url,json=request,headers=self.headers('review-new-key'));print(json.dumps({'first_status':result.status_code,'same_key_status':samekey.status_code,'alias_status':alias.status_code,'alias':alias.json()}),flush=True)
+  self.assertEqual(alias.status_code,200,'Identical semantic review at original input decision must return original receipt before stale input validation');self.assertEqual(alias.json(),result.json())
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([RetryOracle()])).wasSuccessful())

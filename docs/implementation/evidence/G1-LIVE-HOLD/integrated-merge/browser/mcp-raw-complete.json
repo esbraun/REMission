@@ -1,0 +1,1599 @@
+[
+  {
+    "timestamp": "2026-10-22T02:06:33.296Z",
+    "type": "McpToolCall",
+    "id": "exec-b13cd73b-1d70-47b9-8e56-da9bed69db3d",
+    "server": "playwright",
+    "tool": "browser_tabs",
+    "arguments": {
+      "action": "new",
+      "url": "http://127.0.0.1:8773"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/)\n### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8773');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/)\n### Page\n- Page URL: http://127.0.0.1:8773/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-06-33-293Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 169437500
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:44.705Z",
+    "type": "McpToolCall",
+    "id": "exec-74613f95-c3a1-4aa7-beba-b2ecf33f92c4",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => { const h=await (await fetch('/health')).json(); const assets={}; for(const p of [...document.scripts].map(x=>new URL(x.src).pathname).concat([...document.querySelectorAll('link[rel=stylesheet]')].map(x=>new URL(x.href).pathname))){const bytes=await(await fetch(p)).arrayBuffer();assets[p]=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');} return {url:location.href,ua:navigator.userAgent,platform:navigator.platform,health:h,assets,mcp_package_version:'unavailable from official tool'}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"url\": \"http://127.0.0.1:8773/\",\n  \"ua\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36\",\n  \"platform\": \"Win32\",\n  \"health\": {\n    \"status\": \"ok\",\n    \"synthetic\": true,\n    \"runtime\": \"foundation-live-hold-v1\",\n    \"capability\": \"LIVE-HOLD-01/1.0.0\",\n    \"database_instance_id\": \"92066c87-70c8-4129-9cbc-e9380e0c74c9\",\n    \"authority_generation\": 1\n  },\n  \"assets\": {\n    \"/assets/index-CFqriR5o.js\": \"87c9f945911c7068fd269de1df80d93f967250e48088d70c8ce63c418821244e\",\n    \"/assets/index-D_6TIRrA.css\": \"e0195bcc6dfff89d82709a8bb0789fc11094f158c1d5d244ab1a666072775197\"\n  },\n  \"mcp_package_version\": \"unavailable from official tool\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => { const h=await (await fetch(\\'/health\\')).json(); const assets={}; for(const p of [...document.scripts].map(x=>new URL(x.src).pathname).concat([...document.querySelectorAll(\\'link[rel=stylesheet]\\')].map(x=>new URL(x.href).pathname))){const bytes=await(await fetch(p)).arrayBuffer();assets[p]=[...new Uint8Array(await crypto.subtle.digest(\\'SHA-256\\',bytes))].map(x=>x.toString(16).padStart(2,\\'0\\')).join(\\'\\');} return {url:location.href,ua:navigator.userAgent,platform:navigator.platform,health:h,assets,mcp_package_version:\\'unavailable from official tool\\'}; }');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 59360700
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:44.732Z",
+    "type": "McpToolCall",
+    "id": "exec-705dff89-19cb-4c1d-8ecf-706ffeab3e33",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/)\n### Page\n- Page URL: http://127.0.0.1:8773/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - generic [ref=e11]:\n      - paragraph [ref=e12]: Research demonstration\n      - heading \"Sign in to your synthetic panel\" [level=1] [ref=e13]\n      - paragraph [ref=e14]: Ordinary clinician choices and immutable history. Statistical engines and real clinical systems are unavailable.\n      - generic [ref=e15]:\n        - generic [ref=e16]: Username\n        - textbox \"Username\" [ref=e17]\n        - generic [ref=e18]: Password\n        - textbox \"Password\" [ref=e19]\n        - button \"Sign in\" [ref=e20] [cursor=pointer]\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 13908100
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:50.451Z",
+    "type": "McpToolCall",
+    "id": "exec-6c11cc62-dd1a-4eb5-97d0-e9c5acf505f2",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Username",
+          "target": "#username",
+          "type": "textbox",
+          "value": "alice"
+        },
+        {
+          "name": "Password",
+          "target": "#password",
+          "type": "textbox",
+          "value": "Synthetic-Alice-2026!"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('alice');\nawait page.locator('#password').fill('Synthetic-Alice-2026!');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 45955600
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:51.537Z",
+    "type": "McpToolCall",
+    "id": "exec-9f2b17d9-6cbb-4b63-ae4e-67ea374935a1",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Sign in')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/)\n### Page\n- Page URL: http://127.0.0.1:8773/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-06-51-534Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 65747200
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:51.583Z",
+    "type": "McpToolCall",
+    "id": "exec-308f4beb-ee19-40f8-97af-a7b264bed154",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/)\n### Page\n- Page URL: http://127.0.0.1:8773/\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e21]:\n      - generic [ref=e22]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e23] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e24]:\n      - link \"My panel\" [ref=e25] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e26]: 10 owned synthetic patients\n    - paragraph [ref=e27]: Your clinical workspace\n    - heading \"My panel\" [level=1] [ref=e28]\n    - paragraph [ref=e29]: Choose a synthetic patient. State and permissions come from the service; opening a workspace never assigns a treatment.\n    - generic [ref=e30]:\n      - article [ref=e31]:\n        - paragraph [ref=e32]: SYN-01\n        - heading [level=2] [ref=e33]:\n          - link \"Synthetic patient 01\" [ref=e34] [cursor=pointer]:\n            - /url: /patients/SYN-01/overview\n        - paragraph [ref=e35]: ASSIGN-01 · assessment\n        - paragraph [ref=e36]: \"Learning: none\"\n        - text: incomplete\n      - article [ref=e37]:\n        - paragraph [ref=e38]: SYN-02\n        - heading [level=2] [ref=e39]:\n          - link \"Synthetic patient 02\" [ref=e40] [cursor=pointer]:\n            - /url: /patients/SYN-02/overview\n        - paragraph [ref=e41]: ASSIGN-02 · initial assignment\n        - paragraph [ref=e42]: \"Learning: none\"\n        - text: ready\n      - article [ref=e43]:\n        - paragraph [ref=e44]: SYN-03\n        - heading [level=2] [ref=e45]:\n          - link \"Synthetic patient 03\" [ref=e46] [cursor=pointer]:\n            - /url: /patients/SYN-03/overview\n        - paragraph [ref=e47]: ASSIGN-03 · treatment active\n        - paragraph [ref=e48]: \"Learning: none\"\n        - text: ready\n      - article [ref=e49]:\n        - paragraph [ref=e50]: SYN-04\n        - heading [level=2] [ref=e51]:\n          - link \"Synthetic patient 04\" [ref=e52] [cursor=pointer]:\n            - /url: /patients/SYN-04/overview\n        - paragraph [ref=e53]: ASSIGN-04 · treatment active\n        - paragraph [ref=e54]: \"Learning: nof1 design\"\n        - text: ready\n      - article [ref=e55]:\n        - paragraph [ref=e56]: SYN-05\n        - heading [level=2] [ref=e57]:\n          - link \"Synthetic patient 05\" [ref=e58] [cursor=pointer]:\n            - /url: /patients/SYN-05/overview\n        - paragraph [ref=e59]: ASSIGN-05 · treatment active\n        - paragraph [ref=e60]: \"Learning: nof1 block\"\n        - text: ready\n      - article [ref=e61]:\n        - paragraph [ref=e62]: SYN-06\n        - heading [level=2] [ref=e63]:\n          - link \"Synthetic patient 06\" [ref=e64] [cursor=pointer]:\n            - /url: /patients/SYN-06/overview\n        - paragraph [ref=e65]: ASSIGN-06 · scheduled reassessment\n        - paragraph [ref=e66]: \"Learning: nof1 review\"\n        - text: ready\n      - article [ref=e67]:\n        - paragraph [ref=e68]: SYN-07\n        - heading [level=2] [ref=e69]:\n          - link \"Synthetic patient 07\" [ref=e70] [cursor=pointer]:\n            - /url: /patients/SYN-07/overview\n        - paragraph [ref=e71]: ASSIGN-07 · scheduled reassessment\n        - paragraph [ref=e72]: \"Learning: escalation decision\"\n        - text: ready\n      - article [ref=e73]:\n        - paragraph [ref=e74]: SYN-08\n        - heading [level=2] [ref=e75]:\n          - link \"Synthetic patient 08\" [ref=e76] [cursor=pointer]:\n            - /url: /patients/SYN-08/overview\n        - paragraph [ref=e77]: ASSIGN-08 · treatment active\n        - paragraph [ref=e78]: \"Learning: support unavailable\"\n        - text: ready\n      - article [ref=e79]:\n        - paragraph [ref=e80]: SYN-09\n        - heading [level=2] [ref=e81]:\n          - link \"Synthetic patient 09\" [ref=e82] [cursor=pointer]:\n            - /url: /patients/SYN-09/overview\n        - paragraph [ref=e83]: ASSIGN-09 · clinical hold\n        - paragraph [ref=e84]: \"Learning: none\"\n        - text: ready\n      - article [ref=e85]:\n        - paragraph [ref=e86]: SYN-10\n        - heading [level=2] [ref=e87]:\n          - link \"Synthetic patient 10\" [ref=e88] [cursor=pointer]:\n            - /url: /patients/SYN-10/overview\n        - paragraph [ref=e89]: ASSIGN-10 · maintenance closeout\n        - paragraph [ref=e90]: \"Learning: none\"\n        - text: ready\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 17425900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:58.262Z",
+    "type": "McpToolCall",
+    "id": "exec-3f0f835b-2f96-425f-b301-b68081550969",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "a[href='/patients/SYN-02/overview']"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/overview\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/overview)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/overview\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-06-58-260Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 61926600
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:59.358Z",
+    "type": "McpToolCall",
+    "id": "exec-2a8da504-8339-4a16-aba2-c55c13781924",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "a[href='/patients/SYN-02/current']"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/current\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-06-59-356Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 68395800
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:06:59.407Z",
+    "type": "McpToolCall",
+    "id": "exec-72143ee7-0db5-4ff6-b036-eab946790c81",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e21]:\n      - generic [ref=e22]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e23] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e24]:\n      - link \"My panel\" [ref=e25] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e26]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=e124]:\n      - generic [ref=e125]:\n        - paragraph [ref=e126]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=e127]\n        - paragraph [ref=e128]: \"ASSIGN-02: Initial ordinary choice\"\n      - generic [ref=e129]:\n        - generic [ref=e130]:\n          - term [ref=e131]: Clinical\n          - definition [ref=e132]: initial assignment\n        - generic [ref=e133]:\n          - term [ref=e134]: Learning\n          - definition [ref=e135]: none\n        - generic [ref=e136]:\n          - term [ref=e137]: Data readiness\n          - definition [ref=e138]: ready\n        - generic [ref=e139]:\n          - term [ref=e140]: Observation cutoff\n          - definition [ref=e141]: Oct 21, 2026, 2:00 AM PDT\n    - navigation \"Patient views\" [ref=e142]:\n      - link \"Overview\" [ref=e143] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=e144] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=e145] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=e146] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=e147]:\n      - heading \"Independent safety review\" [level=2] [ref=e148]\n      - paragraph [ref=e149]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - paragraph [ref=e150]: No independent live episode is active. Ordinary eligibility and other clinical holds are checked separately.\n      - generic [ref=e151]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=e152]\n        - paragraph [ref=e153]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=e154]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=e155]:\n          - option \"Choose a configured concern\" [selected]\n          - option \"Synthetic clinician_concern · source 1\"\n          - option \"Synthetic experimental_stability_review · source 2\"\n          - option \"Synthetic clinician_concern · source 3\"\n          - option \"Synthetic clinician_concern · source 4\"\n          - option \"Synthetic clinician_concern · source 5\"\n          - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n        - button \"Record selected concern and hold\" [disabled] [ref=e156]\n    - generic [ref=e157]:\n      - paragraph [ref=e158]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=e159]\n      - paragraph [ref=e160]: \"Clinical: initial assignment. Learning: none. Data: ready.\"\n      - paragraph [ref=e161]: Support is fixed; policy fixed-approved-support version 1.0.0.\n      - button \"Request clinical hold\" [ref=e163] [cursor=pointer]\n    - generic [ref=e164]:\n      - paragraph [ref=e165]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=e166]\n      - generic [ref=e167]:\n        - strong [ref=e168]: No statistical comparison is available\n        - paragraph [ref=e169]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=e170]:\n        - generic \"Inspect basis and engine status\" [ref=e171] [cursor=pointer]\n    - generic [ref=e172]:\n      - paragraph [ref=e173]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=e174]\n      - group \"Choose an eligible option · none is preselected\" [ref=e176]:\n        - generic [ref=e178]:\n          - radio \"MED A\" [ref=e179]\n          - text: MED A\n        - generic [ref=e180]:\n          - radio \"MED B\" [ref=e181]\n          - text: MED B\n        - generic [ref=e182]:\n          - radio \"behavioral continue\" [ref=e183]\n          - text: behavioral continue\n        - generic [ref=e184]:\n          - radio \"behavioral escalate\" [ref=e185]\n          - text: behavioral escalate\n        - generic [ref=e186]:\n          - radio \"usual care\" [ref=e187]\n          - text: usual care\n        - generic [ref=e188]: Preference and rationale\n        - textbox \"Preference and rationale\" [ref=e189]\n        - generic [ref=e190]: Follow-up date and time\n        - textbox \"Follow-up date and time\" [ref=e191]\n        - generic [ref=e192]:\n          - button \"Review ordinary choice\" [ref=e193] [cursor=pointer]\n          - button \"Save draft\" [ref=e194] [cursor=pointer]\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 12853100
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:06.838Z",
+    "type": "McpToolCall",
+    "id": "exec-cac81435-b81e-46ce-905a-b1a0fa2314b5",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "MED_A",
+          "target": "input[type=radio][name=option] >> nth=0",
+          "type": "radio",
+          "value": "true"
+        },
+        {
+          "name": "Rationale",
+          "target": "#rationale",
+          "type": "textbox",
+          "value": "Merged structural integration demonstration; fictional choice with documented follow-up."
+        },
+        {
+          "name": "Follow up",
+          "target": "#follow-up",
+          "type": "textbox",
+          "value": "2026-10-29T09:00"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('input[type=radio][name=option]').first().check();\nawait page.locator('#rationale').fill('Merged structural integration demonstration; fictional choice with documented follow-up.');\nawait page.locator('#follow-up').fill('2026-10-29T09:00');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 61869200
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:07.434Z",
+    "type": "McpToolCall",
+    "id": "exec-82a7d4d4-d441-4072-8be9-05083a922d36",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Review ordinary choice')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Review ordinary choice\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-07-432Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 553311600
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:08.544Z",
+    "type": "McpToolCall",
+    "id": "exec-e2e853bb-e9a3-44d2-9051-c0eb2e76588a",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Confirm and save choice')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Confirm and save choice\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-08-540Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 75218200
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:09.620Z",
+    "type": "McpToolCall",
+    "id": "exec-bcc7e40b-f869-457d-9ad1-74079adce42b",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => { const r=await fetch('/api'+location.pathname); const v=await r.json();return {url:location.href,status:r.status,display_sha256:v.display_sha256,visible:document.body.innerText,editable_inputs:document.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled])').length}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"url\": \"http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\",\n  \"status\": 200,\n  \"display_sha256\": \"a39e3f4157eb1e3fd1b77c287fc2bd78d6db52bc7b91f194946ff1d073dd7223\",\n  \"visible\": \"Skip to main content\\nREMission\\nSynthetic care workspace\\nDr Alice (synthetic)\\nSign out\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nMy panel\\n10 owned synthetic patients\\n\\nSYN-02 · HISTORICAL · READ ONLY\\n\\nSynthetic patient 02\\n\\nASSIGN-02: Initial ordinary choice\\n\\nClinical\\ninitial assignment\\nLearning\\nnone\\nData readiness\\nready\\nObservation cutoff\\nOct 21, 2026, 2:00 AM PDT\\nSaved decision · as known then\\n\\nThis exact display is persisted. New observations and model references do not replace its inputs.\\n\\nApproved ordinary choice: MED A\\n\\nRationale: Merged structural integration demonstration; fictional choice with documented follow-up.\\n\\nFollow-up: Oct 29, 2026, 9:00 AM PDT · alice\\n\\nSaved display integrity and basis\\nReturn to current\\nAvailable observations\\n\\nObserved records available before the selected cutoff. Missing reports are not zero values. Oura-like measures are estimates, separate from patient reports.\\n\\nNo observed records are available at this cutoff.\\nLater outcomes\\n\\nSeparate retrospective information. These observations did not inform the saved decision.\\n\\nRequest later outcomes\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\",\n  \"editable_inputs\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => { const r=await fetch(\\'/api\\'+location.pathname); const v=await r.json();return {url:location.href,status:r.status,display_sha256:v.display_sha256,visible:document.body.innerText,editable_inputs:document.querySelectorAll(\\'input:not([disabled]),textarea:not([disabled]),select:not([disabled])\\').length}; }');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 41392200
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:18.975Z",
+    "type": "McpToolCall",
+    "id": "exec-0fc95b9e-33fa-4286-ae53-c12026706c35",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "a:has-text('Return to current')"
+    },
+    "readOnlyHint": false,
+    "status": "failed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nError: \"a:has-text('Return to current')\" does not match any elements."
+        }
+      ],
+      "isError": true
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 3766700
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:18.989Z",
+    "type": "McpToolCall",
+    "id": "exec-6a0a8472-1d6e-4d6a-9480-8d90cb907f51",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "a[href='/patients/SYN-02/current']"
+    },
+    "readOnlyHint": false,
+    "status": "failed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nError: \"a[href='/patients/SYN-02/current']\" does not match any elements."
+        }
+      ],
+      "isError": true
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 3509500
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:19.003Z",
+    "type": "McpToolCall",
+    "id": "exec-de4ffa84-dae5-4845-90b1-4cd331f3528a",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Source concern",
+          "target": "#configured-concern",
+          "type": "combobox",
+          "value": "Synthetic clinician_concern · source 1"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "failed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nError: \"#configured-concern\" does not match any elements."
+        }
+      ],
+      "isError": true
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 3109300
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:19.059Z",
+    "type": "McpToolCall",
+    "id": "exec-c9aa9467-52c1-40e0-9eb5-306145822e1e",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Record selected concern and hold')"
+    },
+    "readOnlyHint": false,
+    "status": "failed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nError: \"button:has-text('Record selected concern and hold')\" does not match any elements."
+        }
+      ],
+      "isError": true
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 3736300
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:19.099Z",
+    "type": "McpToolCall",
+    "id": "exec-807b9fce-d951-4cd7-9ecb-644103a318b8",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e21]:\n      - generic [ref=e22]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e23] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e24]:\n      - link \"My panel\" [ref=e25] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e26]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=e201]:\n      - generic [ref=e202]:\n        - paragraph [ref=e203]: SYN-02 · Historical · read only\n        - heading \"Synthetic patient 02\" [level=1] [ref=e204]\n        - paragraph [ref=e205]: \"ASSIGN-02: Initial ordinary choice\"\n      - generic [ref=e206]:\n        - generic [ref=e207]:\n          - term [ref=e208]: Clinical\n          - definition [ref=e209]: initial assignment\n        - generic [ref=e210]:\n          - term [ref=e211]: Learning\n          - definition [ref=e212]: none\n        - generic [ref=e213]:\n          - term [ref=e214]: Data readiness\n          - definition [ref=e215]: ready\n        - generic [ref=e216]:\n          - term [ref=e217]: Observation cutoff\n          - definition [ref=e218]: Oct 21, 2026, 2:00 AM PDT\n    - generic [ref=e219]:\n      - heading \"Saved decision · as known then\" [level=2] [ref=e220]\n      - paragraph [ref=e221]: This exact display is persisted. New observations and model references do not replace its inputs.\n      - paragraph [ref=e222]:\n        - strong [ref=e223]: \"Approved ordinary choice:\"\n        - text: MED A\n      - paragraph [ref=e224]:\n        - strong [ref=e225]: \"Rationale:\"\n        - text: Merged structural integration demonstration; fictional choice with documented follow-up.\n      - paragraph [ref=e226]:\n        - strong [ref=e227]: \"Follow-up:\"\n        - text: Oct 29, 2026, 9:00 AM PDT · alice\n      - group [ref=e228]:\n        - generic \"Saved display integrity and basis\" [ref=e229] [cursor=pointer]\n      - button \"Return to current\" [ref=e230] [cursor=pointer]\n    - generic [ref=e231]:\n      - heading \"Available observations\" [level=2] [ref=e232]\n      - paragraph [ref=e233]: Observed records available before the selected cutoff. Missing reports are not zero values. Oura-like measures are estimates, separate from patient reports.\n      - generic [ref=e234]: No observed records are available at this cutoff.\n    - generic [ref=e235]:\n      - heading \"Later outcomes\" [level=2] [ref=e236]\n      - paragraph [ref=e237]: Separate retrospective information. These observations did not inform the saved decision.\n      - button \"Request later outcomes\" [ref=e238] [cursor=pointer]\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 10782700
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:27.492Z",
+    "type": "McpToolCall",
+    "id": "exec-c5894bc5-1663-4ab7-a2e7-573f14d3f694",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Return to current')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Return to current\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/overview)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/overview\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-27-489Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 58447900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:28.586Z",
+    "type": "McpToolCall",
+    "id": "exec-5333f880-34c1-44f0-bbbe-a977dace5b3a",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "a[href='/patients/SYN-02/current']"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('a[href=\\'/patients/SYN-02/current\\']').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-28-583Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 62013900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:28.643Z",
+    "type": "McpToolCall",
+    "id": "exec-d856c78f-6eaa-4318-90b2-07b788cc7b48",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Source concern",
+          "target": "#configured-concern",
+          "type": "combobox",
+          "value": "Synthetic clinician_concern · source 1"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic clinician_concern · source 1');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 14262000
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:29.729Z",
+    "type": "McpToolCall",
+    "id": "exec-bff47fa8-98fb-48db-8a1a-fe0bf96da7cc",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Record selected concern and hold')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-29-727Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 53343900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:29.756Z",
+    "type": "McpToolCall",
+    "id": "exec-812b6ba1-0cc4-414e-acf0-a5501c85d7c1",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e21]:\n      - generic [ref=e22]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e23] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e24]:\n      - link \"My panel\" [ref=e25] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e26]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=e338]:\n      - generic [ref=e339]:\n        - paragraph [ref=e340]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=e341]\n        - paragraph [ref=e342]: \"ASSIGN-09: Clinical hold or major phase change\"\n      - generic [ref=e343]:\n        - generic [ref=e344]:\n          - term [ref=e345]: Clinical\n          - definition [ref=e346]: clinical hold\n        - generic [ref=e347]:\n          - term [ref=e348]: Learning\n          - definition [ref=e349]: none\n        - generic [ref=e350]:\n          - term [ref=e351]: Data readiness\n          - definition [ref=e352]: stale\n        - generic [ref=e353]:\n          - term [ref=e354]: Observation cutoff\n          - definition [ref=e355]: Oct 21, 2026, 7:07 PM PDT\n      - status [ref=e356]:\n        - strong [ref=e357]: Clinical hold\n        - paragraph [ref=e358]: clinician_concern\n    - navigation \"Patient views\" [ref=e359]:\n      - link \"Overview\" [ref=e360] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=e361] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=e362] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=e363] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=e364]:\n      - heading \"Independent safety review\" [level=2] [ref=e365]\n      - paragraph [ref=e366]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - article [ref=e367]:\n        - heading \"clinician concern · episode generation 1\" [level=3] [ref=e368]\n        - paragraph [ref=e369]:\n          - strong [ref=e370]: Hold remains active.\n          - text: Entered Oct 21, 2026, 7:07 PM.\n        - heading \"Owned review follow-ups\" [level=4] [ref=e371]\n        - list [ref=e372]:\n          - listitem [ref=e373]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n          - listitem [ref=e374]: \"Review owner: alice; due Jan 3, 2026, 2:00 AM. Status: pending. Escalation: sim-second-team.\"\n        - paragraph [ref=e375]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n        - heading \"Exact triggering evidence\" [level=4] [ref=e376]\n        - list [ref=e377]:\n          - listitem [ref=e378]:\n            - button \"Inspect obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\" [ref=e379] [cursor=pointer]\n            - generic [ref=e380]: SHA256 1832f642f94a1596c707d5d8fa95ce773534f51eeab4017e342dcdb421cd7a78\n        - group [ref=e381]:\n          - generic \"Installed review rules and all active obligations\" [ref=e382] [cursor=pointer]\n        - group \"Record a current authenticated assessment\" [ref=e384]:\n          - generic [ref=e386]:\n            - generic [ref=e387]: \"review-concern: finding and changed facts\"\n            - 'textbox \"review-concern: finding and changed facts\" [ref=e388]'\n            - generic [ref=e389]: Requirement result\n            - combobox \"Requirement result\" [ref=e390]:\n              - option \"Pending review\" [selected]\n              - option \"Satisfied under the installed rule\"\n            - paragraph [ref=e391]: \"Select the exact evidence supporting this requirement:\"\n            - generic [ref=e392]:\n              - checkbox \"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\" [ref=e393]\n              - generic [ref=e394]: obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\n          - generic [ref=e395]: Current assessment rationale and documented follow-up\n          - textbox \"Current assessment rationale and documented follow-up\" [ref=e396]\n          - generic [ref=e397]:\n            - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e398]\n            - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n          - button \"Save current review; keep hold active\" [ref=e399] [cursor=pointer]\n      - generic [ref=e400]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=e401]\n        - paragraph [ref=e402]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=e403]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=e404]:\n          - option \"Choose a configured concern\" [selected]\n          - option \"Synthetic clinician_concern · source 1\"\n          - option \"Synthetic experimental_stability_review · source 2\"\n          - option \"Synthetic clinician_concern · source 3\"\n          - option \"Synthetic clinician_concern · source 4\"\n          - option \"Synthetic clinician_concern · source 5\"\n          - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n        - button \"Record selected concern and hold\" [disabled] [ref=e405]\n    - generic [ref=e406]:\n      - paragraph [ref=e407]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=e408]\n      - paragraph [ref=e409]: \"Clinical: clinical hold. Learning: none. Data: stale.\"\n      - paragraph [ref=e410]: Support is paused; policy fixed-approved-support version 1.0.0.\n      - generic [ref=e411]:\n        - button \"Request clinical hold\" [ref=e412] [cursor=pointer]\n        - button \"Record prerequisite review\" [ref=e413] [cursor=pointer]\n    - generic [ref=e414]:\n      - paragraph [ref=e415]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=e416]\n      - generic [ref=e417]:\n        - strong [ref=e418]: No statistical comparison is available\n        - paragraph [ref=e419]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=e420]:\n        - generic \"Inspect basis and engine status\" [ref=e421] [cursor=pointer]\n    - generic [ref=e422]:\n      - paragraph [ref=e423]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=e424]\n      - paragraph [ref=e425]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\n    - generic [ref=e426]:\n      - heading \"Saved decisions\" [level=2] [ref=e427]\n      - list [ref=e428]:\n        - listitem [ref=e429]:\n          - link \"Ordinary choice · Oct 21, 2026, 7:07 PM PDT\" [ref=e430] [cursor=pointer]:\n            - /url: /patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 15628000
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:43.471Z",
+    "type": "McpToolCall",
+    "id": "exec-e56e0ffa-e72d-4e69-ac57-4de96a028303",
+    "server": "playwright",
+    "tool": "browser_take_screenshot",
+    "arguments": {
+      "filename": "artifacts/g1lh-iv-merged-held-cc75ad00.png",
+      "scale": "css",
+      "fullPage": true
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1lh-iv-merged-held-cc75ad00.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1lh-iv-merged-held-cc75ad00.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1lh-iv-merged-held-cc75ad00.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 157383400
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:44.540Z",
+    "type": "McpToolCall",
+    "id": "exec-1ea6be13-ed61-436f-9a74-23296144804e",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": ".evidence-link"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('.evidence-link').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-44-538Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 43477000
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:44.654Z",
+    "type": "McpToolCall",
+    "id": "exec-71e73d42-0445-4010-9c3a-9f9e36127bac",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Finding",
+          "target": "input[name=finding-0]",
+          "type": "textbox",
+          "value": "Synthetic concern and all active changed facts assessed under the installed structural rule."
+        },
+        {
+          "name": "Result",
+          "target": "select[name=result-0]",
+          "type": "combobox",
+          "value": "Satisfied under the installed rule"
+        },
+        {
+          "name": "Evidence",
+          "target": "input[name=evidence-0-0]",
+          "type": "checkbox",
+          "value": "true"
+        },
+        {
+          "name": "Rationale",
+          "target": "textarea[name=review-rationale]",
+          "type": "textbox",
+          "value": "Explicit synthetic owning doctor assessment; current evidence reviewed and follow-up retained."
+        },
+        {
+          "name": "Assessment attested",
+          "target": "input[name=current-assessment]",
+          "type": "checkbox",
+          "value": "true"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('input[name=finding-0]').fill('Synthetic concern and all active changed facts assessed under the installed structural rule.');\nawait page.locator('select[name=result-0]').selectOption('Satisfied under the installed rule');\nawait page.locator('input[name=evidence-0-0]').check();\nawait page.locator('textarea[name=review-rationale]').fill('Explicit synthetic owning doctor assessment; current evidence reviewed and follow-up retained.');\nawait page.locator('input[name=current-assessment]').check();\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 85730600
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:45.737Z",
+    "type": "McpToolCall",
+    "id": "exec-7aace5a8-8c87-4c8a-b677-ce2c7583dfb3",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Save current review; keep hold active')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Save current review; keep hold active\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-07-45-735Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 53298200
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:07:45.787Z",
+    "type": "McpToolCall",
+    "id": "exec-245fc139-d0f5-49d6-ab70-44d833352dd2",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=e2]:\n  - link \"Skip to main content\" [ref=e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=e4]:\n    - generic [ref=e5]:\n      - text: REMission\n      - generic [ref=e6]: Synthetic care workspace\n    - generic [ref=e21]:\n      - generic [ref=e22]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=e23] [cursor=pointer]\n  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=e8]:\n    - navigation \"Workspace\" [ref=e24]:\n      - link \"My panel\" [ref=e25] [cursor=pointer]:\n        - /url: /\n      - generic [ref=e26]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=e434]:\n      - generic [ref=e435]:\n        - paragraph [ref=e436]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=e437]\n        - paragraph [ref=e438]: \"ASSIGN-09: Clinical hold or major phase change\"\n      - generic [ref=e439]:\n        - generic [ref=e440]:\n          - term [ref=e441]: Clinical\n          - definition [ref=e442]: clinical hold\n        - generic [ref=e443]:\n          - term [ref=e444]: Learning\n          - definition [ref=e445]: none\n        - generic [ref=e446]:\n          - term [ref=e447]: Data readiness\n          - definition [ref=e448]: stale\n        - generic [ref=e449]:\n          - term [ref=e450]: Observation cutoff\n          - definition [ref=e451]: Oct 21, 2026, 7:07 PM PDT\n      - status [ref=e452]:\n        - strong [ref=e453]: Clinical hold\n        - paragraph [ref=e454]: clinician_concern\n    - navigation \"Patient views\" [ref=e455]:\n      - link \"Overview\" [ref=e456] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=e457] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=e458] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=e459] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=e460]:\n      - heading \"Independent safety review\" [level=2] [ref=e461]\n      - paragraph [ref=e462]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - article [ref=e463]:\n        - heading \"clinician concern · episode generation 1\" [level=3] [ref=e464]\n        - paragraph [ref=e465]:\n          - strong [ref=e466]: Hold remains active.\n          - text: Entered Oct 21, 2026, 7:07 PM.\n        - heading \"Owned review follow-ups\" [level=4] [ref=e467]\n        - list [ref=e468]:\n          - listitem [ref=e469]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n          - listitem [ref=e470]: \"Review owner: alice; due Jan 3, 2026, 2:00 AM. Status: pending. Escalation: sim-second-team.\"\n        - paragraph [ref=e471]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n        - heading \"Exact triggering evidence\" [level=4] [ref=e472]\n        - list [ref=e473]:\n          - listitem [ref=e474]:\n            - button \"Inspect obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\" [ref=e475] [cursor=pointer]\n            - generic [ref=e476]: SHA256 1832f642f94a1596c707d5d8fa95ce773534f51eeab4017e342dcdb421cd7a78\n        - group [ref=e477]:\n          - generic \"Installed review rules and all active obligations\" [ref=e478] [cursor=pointer]\n        - group \"Record a current authenticated assessment\" [ref=e480]:\n          - generic [ref=e482]:\n            - generic [ref=e483]: \"review-concern: finding and changed facts\"\n            - 'textbox \"review-concern: finding and changed facts\" [ref=e484]'\n            - generic [ref=e485]: Requirement result\n            - combobox \"Requirement result\" [ref=e486]:\n              - option \"Pending review\" [selected]\n              - option \"Satisfied under the installed rule\"\n            - paragraph [ref=e487]: \"Select the exact evidence supporting this requirement:\"\n            - generic [ref=e488]:\n              - checkbox \"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\" [ref=e489]\n              - generic [ref=e490]: obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\n          - generic [ref=e491]: Current assessment rationale and documented follow-up\n          - textbox \"Current assessment rationale and documented follow-up\" [ref=e492]\n          - generic [ref=e493]:\n            - checkbox \"I have reviewed the entire active trigger and obligation set and attest this current assessment.\" [ref=e494]\n            - text: I have reviewed the entire active trigger and obligation set and attest this current assessment.\n          - button \"Save current review; keep hold active\" [ref=e495] [cursor=pointer]\n        - generic [ref=e496]:\n          - heading \"Saved authenticated review\" [level=4] [ref=e497]\n          - paragraph [ref=e498]: Oct 21, 2026, 7:07 PM · satisfied. Explicit synthetic owning doctor assessment; current evidence reviewed and follow-up retained.\n          - paragraph [ref=e499]: Explicit clearance closes this episode generation and requests re-entry through assessment. Other active episodes remain held.\n          - button \"Clear this episode and re-enter assessment\" [ref=e500] [cursor=pointer]\n      - generic [ref=e501]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=e502]\n        - paragraph [ref=e503]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=e504]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=e505]:\n          - option \"Choose a configured concern\" [selected]\n          - option \"Synthetic clinician_concern · source 1\"\n          - option \"Synthetic experimental_stability_review · source 2\"\n          - option \"Synthetic clinician_concern · source 3\"\n          - option \"Synthetic clinician_concern · source 4\"\n          - option \"Synthetic clinician_concern · source 5\"\n          - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n        - button \"Record selected concern and hold\" [disabled] [ref=e506]\n    - generic [ref=e507]:\n      - paragraph [ref=e508]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=e509]\n      - paragraph [ref=e510]: \"Clinical: clinical hold. Learning: none. Data: stale.\"\n      - paragraph [ref=e511]: Support is paused; policy fixed-approved-support version 1.0.0.\n      - generic [ref=e512]:\n        - button \"Request clinical hold\" [ref=e513] [cursor=pointer]\n        - button \"Record prerequisite review\" [ref=e514] [cursor=pointer]\n    - generic [ref=e515]:\n      - paragraph [ref=e516]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=e517]\n      - generic [ref=e518]:\n        - strong [ref=e519]: No statistical comparison is available\n        - paragraph [ref=e520]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=e521]:\n        - generic \"Inspect basis and engine status\" [ref=e522] [cursor=pointer]\n    - generic [ref=e523]:\n      - paragraph [ref=e524]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=e525]\n      - paragraph [ref=e526]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\n    - generic [ref=e527]:\n      - heading \"Saved decisions\" [level=2] [ref=e528]\n      - list [ref=e529]:\n        - listitem [ref=e530]:\n          - link \"Ordinary choice · Oct 21, 2026, 7:07 PM PDT\" [ref=e531] [cursor=pointer]:\n            - /url: /patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 21424900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:08:18.122Z",
+    "type": "McpToolCall",
+    "id": "exec-0cbeed41-ca25-49cf-a7c7-5e096f14711f",
+    "server": "playwright",
+    "tool": "browser_navigate",
+    "arguments": {
+      "url": "http://127.0.0.1:8773/patients/SYN-02/current"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8773/patients/SYN-02/current');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-08-18-119Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 73587700
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:08:23.181Z",
+    "type": "McpToolCall",
+    "id": "exec-ada1b601-818b-455f-b711-05b5c9840a93",
+    "server": "playwright",
+    "tool": "browser_wait_for",
+    "arguments": {
+      "text": "Refresh current information"
+    },
+    "readOnlyHint": true,
+    "status": "failed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Error\nTimeoutError: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Refresh current information').first() to be visible\u001b[22m\n"
+        }
+      ],
+      "isError": true
+    },
+    "duration": {
+      "secs": 5,
+      "nanos": 6505500
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:08:29.160Z",
+    "type": "McpToolCall",
+    "id": "exec-9404b812-1814-4846-9369-22f208d454f4",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=f1e2]:\n  - link \"Skip to main content\" [ref=f1e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=f1e4]:\n    - generic [ref=f1e5]:\n      - text: REMission\n      - generic [ref=f1e6]: Synthetic care workspace\n  - generic [ref=f1e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=f1e8]:\n    - alert [ref=f1e11]:\n      - strong [ref=f1e12]: Action needs attention\n      - paragraph [ref=f1e13]: \"Error: Current service unavailable; refresh after the safety admission completes\"\n      - button \"Refresh current information\" [ref=f1e14] [cursor=pointer]\n    - generic [ref=f1e15]:\n      - paragraph [ref=f1e16]: Research demonstration\n      - heading \"Sign in to your synthetic panel\" [level=1] [ref=f1e17]\n      - paragraph [ref=f1e18]: Ordinary clinician choices and immutable history. Statistical engines and real clinical systems are unavailable.\n      - generic [ref=f1e19]:\n        - generic [ref=f1e20]: Username\n        - textbox \"Username\" [ref=f1e21]\n        - generic [ref=f1e22]: Password\n        - textbox \"Password\" [ref=f1e23]\n        - button \"Sign in\" [ref=f1e24] [cursor=pointer]\n    - generic [ref=f1e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T02-08-18-049Z.log#L1"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 12061100
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:08:42.621Z",
+    "type": "McpToolCall",
+    "id": "exec-db1254ee-9ab2-419c-9b84-e17933458462",
+    "server": "playwright",
+    "tool": "browser_run_code_unsafe",
+    "arguments": {
+      "code": "async (page) => { const response = page.waitForResponse(r => r.url().endsWith('/api/session') && r.status()===503,{timeout:15000}); await page.getByRole('button',{name:'Refresh current information',exact:true}).click(); const r=await response; return {status:r.status(),body:await r.json(),visible:await page.locator('body').innerText()}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"status\":503,\"body\":{\"code\":\"safety_admission_busy\",\"detail\":\"Current service unavailable; refresh after the safety admission completes\"},\"visible\":\"Skip to main content\\nREMission\\nSynthetic care workspace\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nAction needs attention\\n\\nError: Current service unavailable; refresh after the safety admission completes\\n\\nRefresh current information\\n\\nRESEARCH DEMONSTRATION\\n\\nSign in to your synthetic panel\\n\\nOrdinary clinician choices and immutable history. Statistical engines and real clinical systems are unavailable.\\n\\nUsername\\nPassword\\nSign in\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\"}\n### Ran Playwright code\n```js\nawait (async (page) => { const response = page.waitForResponse(r => r.url().endsWith('/api/session') && r.status()===503,{timeout:15000}); await page.getByRole('button',{name:'Refresh current information',exact:true}).click(); const r=await response; return {status:r.status(),body:await r.json(),visible:await page.locator('body').innerText()}; })(page);\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T02-08-18-049Z.log#L2"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 6,
+      "nanos": 62891100
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:08:58.248Z",
+    "type": "McpToolCall",
+    "id": "exec-62669795-0aac-4b9a-bb62-f975e8b4fd50",
+    "server": "playwright",
+    "tool": "browser_run_code_unsafe",
+    "arguments": {
+      "code": "async (page) => { const response=page.waitForResponse(r=>r.url().endsWith('/api/session')&&r.status()===200,{timeout:15000});await page.getByRole('button',{name:'Refresh current information',exact:true}).click();const r=await response;await page.getByText('Hold remains active.',{exact:true}).waitFor({state:'visible'});return {status:r.status(),session:await r.json(),url:page.url(),visible:await page.locator('body').innerText(),clear_controls:await page.getByRole('button',{name:'Clear this episode and re-enter assessment',exact:true}).count()}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\"status\":200,\"session\":{\"principal\":{\"id\":\"alice\",\"name\":\"Dr Alice (synthetic)\"},\"csrf\":\"xfoco0aW7XBsTWOZHMJ-9El0tCOF26IiX0pUi573cGI\",\"auth_generation\":\"9e594e4ccb3e4419a9d4e2a431017bf37507caaf9ba0f76dbad49594858fcde5\",\"expires_at\":1792636610.578312},\"url\":\"http://127.0.0.1:8773/patients/SYN-02/current\",\"visible\":\"Skip to main content\\nREMission\\nSynthetic care workspace\\nDr Alice (synthetic)\\nSign out\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nMy panel\\n10 owned synthetic patients\\n\\nSYN-02 · CURRENT WORKSPACE\\n\\nSynthetic patient 02\\n\\nASSIGN-09: Clinical hold or major phase change\\n\\nClinical\\nclinical hold\\nLearning\\nnone\\nData readiness\\nstale\\nObservation cutoff\\nOct 21, 2026, 7:07 PM PDT\\nClinical hold\\n\\nclinician_concern\\n\\nOverview\\nCurrent decision\\nMonitoring\\nHistory\\nIndependent safety review\\n\\nSynthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\\n\\nclinician concern · episode generation 1\\n\\nHold remains active. Entered Oct 21, 2026, 7:07 PM.\\n\\nOwned review follow-ups\\nReview owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\\nReview owner: alice; due Jan 3, 2026, 2:00 AM. Status: pending. Escalation: sim-second-team.\\n\\nAssignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\\n\\nExact triggering evidence\\nInspect obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\\nSHA256 1832f642f94a1596c707d5d8fa95ce773534f51eeab4017e342dcdb421cd7a78\\nInstalled review rules and all active obligations\\nRecord a current authenticated assessment\\nreview-concern: finding and changed facts\\nRequirement result\\nPending review\\nSatisfied under the installed rule\\n\\nSelect the exact evidence supporting this requirement:\\n\\nobs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\\nCurrent assessment rationale and documented follow-up\\nI have reviewed the entire active trigger and obligation set and attest this current assessment.\\nSave current review; keep hold active\\nSaved authenticated review\\n\\nOct 21, 2026, 7:07 PM · satisfied. Explicit synthetic owning doctor assessment; current evidence reviewed and follow-up retained.\\n\\nExplicit clearance closes this episode generation and requests re-entry through assessment. Other active episodes remain held.\\n\\nClear this episode and re-enter assessment\\nRecord a configured synthetic concern\\n\\nThis fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\\n\\nAuthorized source concern · none preselected\\nChoose a configured concern\\nSynthetic clinician_concern · source 1\\nSynthetic experimental_stability_review · source 2\\nSynthetic clinician_concern · source 3\\nSynthetic clinician_concern · source 4\\nSynthetic clinician_concern · source 5\\nSynthetic clinician_concern, experimental_stability_review · source 6\\nRecord selected concern and hold\\n\\n1 · ASSESS\\n\\nReadiness and clinical review\\n\\nClinical: clinical hold. Learning: none. Data: stale.\\n\\nSupport is paused; policy fixed-approved-support version 1.0.0.\\n\\nRequest clinical hold\\nRecord prerequisite review\\n\\n2 · COMPARE\\n\\nEligible ordinary options\\nNo statistical comparison is available\\n\\nStatistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\\n\\nInspect basis and engine status\\n\\n3 · DECIDE AND FOLLOW UP\\n\\nExplicit ordinary synthetic choice\\n\\nNo ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\\n\\nSaved decisions\\nOrdinary choice · Oct 21, 2026, 7:07 PM PDT\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\",\"clear_controls\":1}\n### Ran Playwright code\n```js\nawait (async (page) => { const response=page.waitForResponse(r=>r.url().endsWith('/api/session')&&r.status()===200,{timeout:15000});await page.getByRole('button',{name:'Refresh current information',exact:true}).click();const r=await response;await page.getByText('Hold remains active.',{exact:true}).waitFor({state:'visible'});return {status:r.status(),session:await r.json(),url:page.url(),visible:await page.locator('body').innerText(),clear_controls:await page.getByRole('button',{name:'Clear this episode and re-enter assessment',exact:true}).count()}; })(page);\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 170358400
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:08:58.286Z",
+    "type": "McpToolCall",
+    "id": "exec-dfdd26b8-42ed-42d1-8cf9-e7921883bc4b",
+    "server": "playwright",
+    "tool": "browser_network_requests",
+    "arguments": {
+      "static": true
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n1. [GET] http://127.0.0.1:8773/patients/SYN-02/current => [200] OK\n2. [GET] http://127.0.0.1:8773/assets/index-CFqriR5o.js => [200] OK\n3. [GET] http://127.0.0.1:8773/assets/index-D_6TIRrA.css => [200] OK\n4. [GET] http://127.0.0.1:8773/api/session => [503] Service Unavailable\n5. [GET] http://127.0.0.1:8773/api/session => [503] Service Unavailable\n6. [GET] http://127.0.0.1:8773/api/session => [200] OK\n7. [GET] http://127.0.0.1:8773/api/patients => [200] OK\n8. [GET] http://127.0.0.1:8773/api/patients/SYN-02 => [200] OK\n9. [GET] http://127.0.0.1:8773/api/patients/SYN-02/draft => [200] OK\n10. [GET] http://127.0.0.1:8773/api/patients/SYN-02/live-holds => [200] OK"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 6931800
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:08.581Z",
+    "type": "McpToolCall",
+    "id": "exec-f50c7641-c550-4634-9bc1-746495bda44a",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Clear this episode and re-enter assessment')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Clear this episode and re-enter assessment\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-09-08-578Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 96844500
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:09.675Z",
+    "type": "McpToolCall",
+    "id": "exec-56b88912-0855-4770-9f21-466c8e78a717",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => { const w=await(await fetch('/api/patients/SYN-02')).json();const h=await(await fetch('/api/patients/SYN-02/live-holds')).json();return {snapshot:w.snapshot,permissions:w.permissions,episodes:h.episodes,tasks:h.tasks,visible:document.body.innerText}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"snapshot\": {\n    \"available_at\": \"2026-10-22T02:09:07.528574Z\",\n    \"consent_version\": 1,\n    \"cutoff\": \"2026-10-22T02:09:07.528574Z\",\n    \"duplicate_of\": null,\n    \"eligibility\": [\n      {\n        \"action\": \"MED_A\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"MED_B\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"behavioral_continue\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"behavioral_escalate\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      },\n      {\n        \"action\": \"usual_care\",\n        \"reasons\": [],\n        \"status\": \"eligible\"\n      }\n    ],\n    \"eligibility_version\": 5,\n    \"estimand\": {\n      \"id\": \"EST-VISIT\",\n      \"sha256\": \"7cb083146962e9cd07b404d0cd24f2b251977a4c99bc0b83e71a9b743224a63c\",\n      \"version\": \"1.0.0\"\n    },\n    \"event_at\": \"2026-10-22T02:09:07.528574Z\",\n    \"evidence\": [],\n    \"horizon_days\": 42,\n    \"kind\": \"decision_snapshot\",\n    \"lineage_id\": \"decision-1313301946ebb152713f3088e6d3b804\",\n    \"model\": {\n      \"id\": \"foundation-no-estimator\",\n      \"sha256\": \"dc45e5812ab508cd9e18593554b3f3f2999974046fe6645e79cdd1f9f5c6dc8e\",\n      \"version\": \"1.0.0\"\n    },\n    \"outcome\": \"Ordinary synthetic care; statistical estimates unavailable\",\n    \"patient_id\": \"SYN-02\",\n    \"patient_version\": 5,\n    \"policy\": {\n      \"id\": \"fixed-approved-support\",\n      \"sha256\": \"096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639\",\n      \"version\": \"1.0.0\"\n    },\n    \"posterior\": null,\n    \"record_id\": \"decision-1313301946ebb152713f3088e6d3b804\",\n    \"record_status\": \"active\",\n    \"recorded_at\": \"2026-10-22T02:09:07.528574Z\",\n    \"revision\": 1,\n    \"schema_version\": \"1.0.0\",\n    \"source\": {\n      \"adapter\": \"research_configuration\",\n      \"id\": \"foundation-synthetic\",\n      \"raw_sha256\": \"08ee9de655decd17c641b06acd6858333c1c9ebc9e3109e80979a482ce38ff47\",\n      \"version\": \"1.0.0\"\n    },\n    \"state_version\": 5,\n    \"supersedes\": null,\n    \"synthetic\": true,\n    \"view\": {\n      \"mode\": \"current\",\n      \"patient_id\": \"SYN-02\",\n      \"snapshot_id\": null\n    },\n    \"workflow\": {\n      \"clinical\": \"assessment\",\n      \"data_readiness\": \"incomplete\",\n      \"hold_reasons\": [],\n      \"learning\": \"none\",\n      \"support_mode\": \"paused\",\n      \"support_policy\": {\n        \"id\": \"fixed-approved-support\",\n        \"sha256\": \"096535ec93db0e899f78070139ac34fd02a633ef94a2375a649db19e9c950639\",\n        \"version\": \"1.0.0\"\n      }\n    }\n  },\n  \"permissions\": {\n    \"approve_ordinary\": false,\n    \"estimate\": false,\n    \"randomize\": false,\n    \"request_review\": true\n  },\n  \"episodes\": [],\n  \"tasks\": [\n    {\n      \"id\": \"hold-review-fe3ffdfce8429b8ffa7076b904fccffa7ddf1bf5\",\n      \"patient_id\": \"SYN-02\",\n      \"episode_id\": \"episode-d1a903154b8a1e6e9f04687c6440fb137f3c9ae2\",\n      \"generation\": 1,\n      \"owner_id\": \"alice\",\n      \"due_at\": \"2026-01-02T10:00:00Z\",\n      \"payload\": {\n        \"escalation_destination\": \"sim-care-team\",\n        \"policy\": {\n          \"id\": \"explicit-fixture-follow-up\",\n          \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n          \"version\": \"1.0.0\"\n        },\n        \"requirements\": [\n          {\n            \"definition\": {\n              \"id\": \"review-concern\",\n              \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n              \"version\": \"2.0.0\"\n            },\n            \"evidence_kinds\": [\n              \"hold_review_evidence\"\n            ],\n            \"requirement_id\": \"review-concern\",\n            \"responsible_role\": \"doctor\",\n            \"source_ids\": [\n              \"fixture-simulation\"\n            ]\n          }\n        ],\n        \"source_binding\": {\n          \"archive_episode_id\": \"episode\",\n          \"archive_id\": \"live-demo-concern:fixture-export\",\n          \"follow_up\": {\n            \"due_at\": \"2026-01-02T10:00:00Z\",\n            \"escalation_destination\": \"sim-care-team\",\n            \"owner_id\": \"alice\",\n            \"policy\": {\n              \"id\": \"explicit-fixture-follow-up\",\n              \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n              \"version\": \"1.0.0\"\n            },\n            \"reference\": {\n              \"payload_sha256\": \"558205e7652d4a3d91f932d02f736efbdaa54449e2f75633dad862d944f78080\",\n              \"record_id\": \"hold-task-1\"\n            }\n          },\n          \"package_sha256\": \"b34c5a6add6072f4b0b81455fc03d970265e45bb1857a66fa0ee0e749f8c13b5\",\n          \"partition_id\": \"obs2-partition\",\n          \"run_id\": \"live-demo-concern\",\n          \"source_id\": \"fixture-simulation\",\n          \"source_version\": \"1.2.0\"\n        }\n      },\n      \"events\": [\n        {\n          \"obligations\": [\n            {\n              \"definition\": {\n                \"id\": \"review-concern\",\n                \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n                \"version\": \"2.0.0\"\n              },\n              \"evidence_kinds\": [\n                \"hold_review_evidence\"\n              ],\n              \"requirement_id\": \"review-concern\",\n              \"responsible_role\": \"doctor\",\n              \"source_ids\": [\n                \"fixture-simulation\"\n              ]\n            }\n          ],\n          \"status\": \"pending\",\n          \"trigger_set_sha256\": \"089d929904a03c853d903b6c6820958fd9e66f5b8e9c9f5d5038a7174fa02676\"\n        },\n        {\n          \"review_id\": \"review-3ec42fa59a1f4f98b68e8db90c50305a\",\n          \"status\": \"closed\"\n        }\n      ]\n    },\n    {\n      \"id\": \"hold-followup-3b613677c250eb207ff981f9bc72377fdf4ce6d6\",\n      \"patient_id\": \"SYN-02\",\n      \"episode_id\": \"episode-d1a903154b8a1e6e9f04687c6440fb137f3c9ae2\",\n      \"generation\": 1,\n      \"owner_id\": \"alice\",\n      \"due_at\": \"2026-01-03T10:00:00Z\",\n      \"payload\": {\n        \"escalation_destination\": \"sim-second-team\",\n        \"policy\": {\n          \"id\": \"explicit-fixture-follow-up\",\n          \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n          \"version\": \"1.0.0\"\n        },\n        \"requirements\": [\n          {\n            \"definition\": {\n              \"id\": \"review-concern\",\n              \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n              \"version\": \"2.0.0\"\n            },\n            \"evidence_kinds\": [\n              \"hold_review_evidence\"\n            ],\n            \"requirement_id\": \"review-concern\",\n            \"responsible_role\": \"doctor\",\n            \"source_ids\": [\n              \"fixture-simulation\"\n            ]\n          }\n        ],\n        \"source_binding\": {\n          \"archive_episode_id\": \"episode\",\n          \"archive_id\": \"live-demo-concern:fixture-export\",\n          \"follow_up\": {\n            \"due_at\": \"2026-01-03T10:00:00Z\",\n            \"escalation_destination\": \"sim-second-team\",\n            \"owner_id\": \"alice\",\n            \"policy\": {\n              \"id\": \"explicit-fixture-follow-up\",\n              \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n              \"version\": \"1.0.0\"\n            },\n            \"reference\": {\n              \"payload_sha256\": \"4da8e0008ddee34d73615b8955fbf030a749ee4d45bb0bd42beffb817fdbed2b\",\n              \"record_id\": \"hold-task-extra-1\"\n            }\n          },\n          \"package_sha256\": \"b34c5a6add6072f4b0b81455fc03d970265e45bb1857a66fa0ee0e749f8c13b5\",\n          \"partition_id\": \"obs2-partition\",\n          \"run_id\": \"live-demo-concern\",\n          \"source_id\": \"fixture-simulation\",\n          \"source_version\": \"1.2.0\"\n        }\n      },\n      \"events\": [\n        {\n          \"obligations\": [\n            {\n              \"definition\": {\n                \"id\": \"review-concern\",\n                \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n                \"version\": \"2.0.0\"\n              },\n              \"evidence_kinds\": [\n                \"hold_review_evidence\"\n              ],\n              \"requirement_id\": \"review-concern\",\n              \"responsible_role\": \"doctor\",\n              \"source_ids\": [\n                \"fixture-simulation\"\n              ]\n            }\n          ],\n          \"status\": \"pending\",\n          \"trigger_set_sha256\": \"089d929904a03c853d903b6c6820958fd9e66f5b8e9c9f5d5038a7174fa02676\"\n        },\n        {\n          \"review_id\": \"review-3ec42fa59a1f4f98b68e8db90c50305a\",\n          \"status\": \"closed\"\n        }\n      ]\n    }\n  ],\n  \"visible\": \"Skip to main content\\nREMission\\nSynthetic care workspace\\nDr Alice (synthetic)\\nSign out\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nMy panel\\n10 owned synthetic patients\\n\\nSYN-02 · CURRENT WORKSPACE\\n\\nSynthetic patient 02\\n\\nASSIGN-01: Assessment incomplete\\n\\nClinical\\nassessment\\nLearning\\nnone\\nData readiness\\nincomplete\\nObservation cutoff\\nOct 21, 2026, 7:09 PM PDT\\nOverview\\nCurrent decision\\nMonitoring\\nHistory\\nIndependent safety review\\n\\nSynthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\\n\\nNo independent live episode is active. Ordinary eligibility and other clinical holds are checked separately.\\n\\nRecord a configured synthetic concern\\n\\nThis fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\\n\\nAuthorized source concern · none preselected\\nChoose a configured concern\\nSynthetic clinician_concern · source 1\\nSynthetic experimental_stability_review · source 2\\nSynthetic clinician_concern · source 3\\nSynthetic clinician_concern · source 4\\nSynthetic clinician_concern · source 5\\nSynthetic clinician_concern, experimental_stability_review · source 6\\nRecord selected concern and hold\\n\\n1 · ASSESS\\n\\nReadiness and clinical review\\n\\nClinical: assessment. Learning: none. Data: incomplete.\\n\\nSupport is paused; policy fixed-approved-support version 1.0.0.\\n\\nRequest clinical hold\\nRecord prerequisite review\\n\\n2 · COMPARE\\n\\nEligible ordinary options\\nNo statistical comparison is available\\n\\nStatistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\\n\\nInspect basis and engine status\\n\\n3 · DECIDE AND FOLLOW UP\\n\\nExplicit ordinary synthetic choice\\n\\nNo ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\\n\\nSaved decisions\\nOrdinary choice · Oct 21, 2026, 7:07 PM PDT\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => { const w=await(await fetch(\\'/api/patients/SYN-02\\')).json();const h=await(await fetch(\\'/api/patients/SYN-02/live-holds\\')).json();return {snapshot:w.snapshot,permissions:w.permissions,episodes:h.episodes,tasks:h.tasks,visible:document.body.innerText}; }');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 56407500
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:09.727Z",
+    "type": "McpToolCall",
+    "id": "exec-9e3836b2-b714-4447-9c20-738da9cb4ba6",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Source concern",
+          "target": "#configured-concern",
+          "type": "combobox",
+          "value": "Synthetic experimental_stability_review · source 2"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#configured-concern').selectOption('Synthetic experimental_stability_review · source 2');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 21913900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:10.833Z",
+    "type": "McpToolCall",
+    "id": "exec-ceb76b81-8e63-481d-b2c1-a017912e7213",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Record selected concern and hold')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Record selected concern and hold\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 2 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-09-10-829Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 80700600
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:10.885Z",
+    "type": "McpToolCall",
+    "id": "exec-e685d6e5-3b4d-4c55-9c24-c45fc56ce2f1",
+    "server": "playwright",
+    "tool": "browser_resize",
+    "arguments": {
+      "width": 390,
+      "height": 844
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 390, height: 844 });\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 16545000
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:10.991Z",
+    "type": "McpToolCall",
+    "id": "exec-56d443cf-a9c5-461e-89ae-37bf94b8e849",
+    "server": "playwright",
+    "tool": "browser_take_screenshot",
+    "arguments": {
+      "filename": "artifacts/g1lh-iv-merged-threshold-narrow-cc75ad00.png",
+      "scale": "css",
+      "fullPage": true
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1lh-iv-merged-threshold-narrow-cc75ad00.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1lh-iv-merged-threshold-narrow-cc75ad00.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1lh-iv-merged-threshold-narrow-cc75ad00.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 74967800
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:24.114Z",
+    "type": "McpToolCall",
+    "id": "exec-f74ce972-d87d-4759-b047-2914f9f0bdec",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => { const h=await(await fetch('/api/patients/SYN-02/live-holds')).json();return {episodes:h.episodes,task_statuses:h.tasks.map(t=>({id:t.id,status:t.events.at(-1).status})),clear_controls:[...document.querySelectorAll('button')].filter(b=>b.textContent.includes('Clear this episode')).length,visible:document.body.innerText,overflow:document.documentElement.scrollWidth>innerWidth}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"episodes\": [\n    {\n      \"episode_id\": \"episode-caf87cbe76f5f343359ee8bbe4b0265bfe2a6b8a\",\n      \"generation\": 1,\n      \"opened_at\": \"2026-10-22T02:09:09.805495+00:00\",\n      \"trigger_set_sha256\": \"83d7ef7a8e6fa6227b8283aba5df2ff2b93659f93fa34799375ac096546e4f5d\",\n      \"obligation_set_sha256\": \"c79ae587c7fc2d0fbd659b5f7e48e48775076c6862f06a017d6f8eb022b837b3\",\n      \"trigger_refs\": [\n        {\n          \"namespace_id\": \"live-demo-threshold:fixture-export\",\n          \"partition_id\": \"obs2-partition\",\n          \"payload_sha256\": \"74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d\",\n          \"record_id\": \"obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9\",\n          \"store\": \"archive\"\n        }\n      ],\n      \"reason_codes\": [\n        \"experimental_stability_review\"\n      ],\n      \"obligations\": [\n        {\n          \"definition\": {\n            \"id\": \"review-threshold\",\n            \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n            \"version\": \"2.0.0\"\n          },\n          \"evidence_kinds\": [\n            \"hold_review_evidence\"\n          ],\n          \"requirement_id\": \"review-threshold\",\n          \"responsible_role\": \"doctor\",\n          \"source_ids\": [\n            \"fixture-simulation\"\n          ]\n        }\n      ],\n      \"task_ids\": [\n        \"hold-review-46ae12340c0dca26ba8bf169b931d059ad99821d\"\n      ],\n      \"review_rules\": [],\n      \"clearance_supported\": false,\n      \"blocker\": \"T-OBS2-CLEARANCE-POLICY\",\n      \"current_review\": null\n    }\n  ],\n  \"task_statuses\": [\n    {\n      \"id\": \"hold-review-46ae12340c0dca26ba8bf169b931d059ad99821d\",\n      \"status\": \"pending\"\n    },\n    {\n      \"id\": \"hold-review-fe3ffdfce8429b8ffa7076b904fccffa7ddf1bf5\",\n      \"status\": \"closed\"\n    },\n    {\n      \"id\": \"hold-followup-3b613677c250eb207ff981f9bc72377fdf4ce6d6\",\n      \"status\": \"closed\"\n    }\n  ],\n  \"clear_controls\": 0,\n  \"visible\": \"Skip to main content\\nREMission\\nSynthetic care workspace\\nDr Alice (synthetic)\\nSign out\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nMy panel\\n10 owned synthetic patients\\n\\nSYN-02 · CURRENT WORKSPACE\\n\\nSynthetic patient 02\\n\\nASSIGN-09: Clinical hold or major phase change\\n\\nClinical\\nclinical hold\\nLearning\\nnone\\nData readiness\\nstale\\nObservation cutoff\\nOct 21, 2026, 7:09 PM PDT\\nClinical hold\\n\\nexperimental_stability_review\\n\\nOverview\\nCurrent decision\\nMonitoring\\nHistory\\nIndependent safety review\\n\\nSynthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\\n\\nexperimental stability review · episode generation 1\\n\\nHold remains active. Entered Oct 21, 2026, 7:09 PM.\\n\\nOwned review follow-ups\\nReview owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\\n\\nAssignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\\n\\nExact triggering evidence\\nInspect obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9\\nSHA256 74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d\\n\\nT-OBS2-CLEARANCE-POLICY: an accepted clearance criterion is unavailable for one or more active obligations. The whole episode remains held; there is no timer or default clearance.\\n\\nInstalled review rules and all active obligations\\nRecord a configured synthetic concern\\n\\nThis fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\\n\\nAuthorized source concern · none preselected\\nChoose a configured concern\\nSynthetic clinician_concern · source 1\\nSynthetic experimental_stability_review · source 2\\nSynthetic clinician_concern · source 3\\nSynthetic clinician_concern · source 4\\nSynthetic clinician_concern · source 5\\nSynthetic clinician_concern, experimental_stability_review · source 6\\nRecord selected concern and hold\\n\\n1 · ASSESS\\n\\nReadiness and clinical review\\n\\nClinical: clinical hold. Learning: none. Data: stale.\\n\\nSupport is paused; policy fixed-approved-support version 1.0.0.\\n\\nRequest clinical hold\\nRecord prerequisite review\\n\\n2 · COMPARE\\n\\nEligible ordinary options\\nNo statistical comparison is available\\n\\nStatistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\\n\\nInspect basis and engine status\\n\\n3 · DECIDE AND FOLLOW UP\\n\\nExplicit ordinary synthetic choice\\n\\nNo ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\\n\\nSaved decisions\\nOrdinary choice · Oct 21, 2026, 7:07 PM PDT\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\",\n  \"overflow\": false\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => { const h=await(await fetch(\\'/api/patients/SYN-02/live-holds\\')).json();return {episodes:h.episodes,task_statuses:h.tasks.map(t=>({id:t.id,status:t.events.at(-1).status})),clear_controls:[...document.querySelectorAll(\\'button\\')].filter(b=>b.textContent.includes(\\'Clear this episode\\')).length,visible:document.body.innerText,overflow:document.documentElement.scrollWidth>innerWidth}; }');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 47152900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:24.155Z",
+    "type": "McpToolCall",
+    "id": "exec-f27ecb6d-5104-4811-8561-769163c468f7",
+    "server": "playwright",
+    "tool": "browser_press_key",
+    "arguments": {
+      "key": "Tab"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\n// Press Tab\nawait page.keyboard.press('Tab');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 14494900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:24.704Z",
+    "type": "McpToolCall",
+    "id": "exec-f93ca658-74db-435e-ae1e-2ee260e699a8",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "() => ({tag:document.activeElement?.tagName,text:document.activeElement?.textContent,outline:getComputedStyle(document.activeElement).outlineStyle})"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"tag\": \"A\",\n  \"text\": \"Overview\",\n  \"outline\": \"solid\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({tag:document.activeElement?.tagName,text:document.activeElement?.textContent,outline:getComputedStyle(document.activeElement).outlineStyle})');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 524142400
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:24.798Z",
+    "type": "McpToolCall",
+    "id": "exec-9ab4059f-69e4-4a8e-b8e0-0d1100a381d8",
+    "server": "playwright",
+    "tool": "browser_navigate",
+    "arguments": {
+      "url": "http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-09-24-794Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 66072300
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:25.845Z",
+    "type": "McpToolCall",
+    "id": "exec-0f5a51e4-dd50-4ccf-a328-76fd868c5e0f",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => {const r=await fetch('/api'+location.pathname);const h=await r.json();return {status:r.status,display_sha256:h.display_sha256,editable_inputs:document.querySelectorAll('input:not([disabled]),textarea:not([disabled]),select:not([disabled])').length,visible:document.body.innerText};}"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"status\": 200,\n  \"display_sha256\": \"a39e3f4157eb1e3fd1b77c287fc2bd78d6db52bc7b91f194946ff1d073dd7223\",\n  \"editable_inputs\": 0,\n  \"visible\": \"Skip to main content\\nREMission\\nSynthetic care workspace\\nDr Alice (synthetic)\\nSign out\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nMy panel\\n10 owned synthetic patients\\n\\nSYN-02 · HISTORICAL · READ ONLY\\n\\nSynthetic patient 02\\n\\nASSIGN-02: Initial ordinary choice\\n\\nClinical\\ninitial assignment\\nLearning\\nnone\\nData readiness\\nready\\nObservation cutoff\\nOct 21, 2026, 2:00 AM PDT\\nSaved decision · as known then\\n\\nThis exact display is persisted. New observations and model references do not replace its inputs.\\n\\nApproved ordinary choice: MED A\\n\\nRationale: Merged structural integration demonstration; fictional choice with documented follow-up.\\n\\nFollow-up: Oct 29, 2026, 9:00 AM PDT · alice\\n\\nSaved display integrity and basis\\nReturn to current\\nAvailable observations\\n\\nObserved records available before the selected cutoff. Missing reports are not zero values. Oura-like measures are estimates, separate from patient reports.\\n\\nNo observed records are available at this cutoff.\\nLater outcomes\\n\\nSeparate retrospective information. These observations did not inform the saved decision.\\n\\nRequest later outcomes\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const r=await fetch(\\'/api\\'+location.pathname);const h=await r.json();return {status:r.status,display_sha256:h.display_sha256,editable_inputs:document.querySelectorAll(\\'input:not([disabled]),textarea:not([disabled]),select:not([disabled])\\').length,visible:document.body.innerText};}');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 32405100
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:25.938Z",
+    "type": "McpToolCall",
+    "id": "exec-9045b8fa-bb8e-4af2-a991-4494d8096558",
+    "server": "playwright",
+    "tool": "browser_take_screenshot",
+    "arguments": {
+      "filename": "artifacts/g1lh-iv-merged-history-cc75ad00.png",
+      "scale": "css",
+      "fullPage": true
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1lh-iv-merged-history-cc75ad00.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1lh-iv-merged-history-cc75ad00.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1lh-iv-merged-history-cc75ad00.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 59711900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:45.050Z",
+    "type": "McpToolCall",
+    "id": "exec-16ad7f67-8c81-48c2-b2e5-825d73960f7d",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Sign out')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign out\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-09-45-048Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 80528400
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:45.114Z",
+    "type": "McpToolCall",
+    "id": "exec-5c3f25e9-a491-490c-9b4b-245ec737bea2",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Username",
+          "target": "#username",
+          "type": "textbox",
+          "value": "bob"
+        },
+        {
+          "name": "Password",
+          "target": "#password",
+          "type": "textbox",
+          "value": "Synthetic-Bob-2026!"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('bob');\nawait page.locator('#password').fill('Synthetic-Bob-2026!');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 29165100
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:46.181Z",
+    "type": "McpToolCall",
+    "id": "exec-79f49aa8-8eb4-4810-8493-97c27111d297",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Sign in')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-09-46-180Z.yml)\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T02-09-24-732Z.log#L1"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 42543700
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:46.231Z",
+    "type": "McpToolCall",
+    "id": "exec-8c7b85ff-ce9c-4eca-a010-92e696352605",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=f2e2]:\n  - link \"Skip to main content\" [ref=f2e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=f2e4]:\n    - generic [ref=f2e5]:\n      - text: REMission\n      - generic [ref=f2e6]: Synthetic care workspace\n    - generic [ref=f2e22]:\n      - generic [ref=f2e23]: Dr Bob (synthetic)\n      - button \"Sign out\" [ref=f2e24] [cursor=pointer]\n  - generic [ref=f2e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=f2e8]:\n    - alert [ref=f2e25]:\n      - strong [ref=f2e26]: Action needs attention\n      - paragraph [ref=f2e27]: \"Error: Resource not found\"\n      - button \"Refresh current information\" [ref=f2e28] [cursor=pointer]\n    - navigation \"Workspace\" [ref=f2e29]:\n      - link \"My panel\" [ref=f2e30] [cursor=pointer]:\n        - /url: /\n      - generic [ref=f2e31]: 1 owned synthetic patients\n    - generic [ref=f2e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 10820600
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:46.331Z",
+    "type": "McpToolCall",
+    "id": "exec-b9397ccf-db5a-4129-bc30-6426f007c4f0",
+    "server": "playwright",
+    "tool": "browser_navigate",
+    "arguments": {
+      "url": "http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-09-46-328Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 68662000
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:09:52.425Z",
+    "type": "McpToolCall",
+    "id": "exec-96ff757a-e356-4845-8d74-9d2f2d53b08d",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => {const h=await fetch('/api'+location.pathname);const c=await fetch('/api/patients/SYN-02');return {history_status:h.status,current_status:c.status,visible:document.body.innerText,alice_rationale_leak:document.body.innerText.includes('Merged structural integration demonstration')};}"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"history_status\": 404,\n  \"current_status\": 404,\n  \"visible\": \"Skip to main content\\nREMission\\nSynthetic care workspace\\nDr Bob (synthetic)\\nSign out\\nSynthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\\nAction needs attention\\n\\nError: Resource not found\\n\\nRefresh current information\\nMy panel\\n1 owned synthetic patients\\nEngineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\",\n  \"alice_rationale_leak\": false\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => {const h=await fetch(\\'/api\\'+location.pathname);const c=await fetch(\\'/api/patients/SYN-02\\');return {history_status:h.status,current_status:c.status,visible:document.body.innerText,alice_rationale_leak:document.body.innerText.includes(\\'Merged structural integration demonstration\\')};}');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n- Console: 3 errors, 0 warnings\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T02-09-46-262Z.log#L1-L3"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 6,
+      "nanos": 65979900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:05.767Z",
+    "type": "McpToolCall",
+    "id": "exec-c13d21e8-3be1-4377-911b-e520f6907e0f",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Sign out')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign out\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n- Console: 3 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-10-05-765Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 76437900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:05.808Z",
+    "type": "McpToolCall",
+    "id": "exec-5782cba4-4d33-4c28-b447-5cd67e4283ef",
+    "server": "playwright",
+    "tool": "browser_fill_form",
+    "arguments": {
+      "fields": [
+        {
+          "name": "Username",
+          "target": "#username",
+          "type": "textbox",
+          "value": "alice"
+        },
+        {
+          "name": "Password",
+          "target": "#password",
+          "type": "textbox",
+          "value": "Synthetic-Alice-2026!"
+        }
+      ]
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('#username').fill('alice');\nawait page.locator('#password').fill('Synthetic-Alice-2026!');\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 23898400
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:06.905Z",
+    "type": "McpToolCall",
+    "id": "exec-d9031699-43d0-4427-a9a1-e9a040aba82d",
+    "server": "playwright",
+    "tool": "browser_click",
+    "arguments": {
+      "target": "button:has-text('Sign in')"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.locator('button:has-text(\\'Sign in\\')').click();\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n- Page Title: REMission · Synthetic care workspace\n- Console: 3 errors, 0 warnings\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-10-06-903Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 65143800
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:07.010Z",
+    "type": "McpToolCall",
+    "id": "exec-67a3c193-1fe5-4a0d-8f07-0a29e1585b2a",
+    "server": "playwright",
+    "tool": "browser_navigate",
+    "arguments": {
+      "url": "http://127.0.0.1:8773/patients/SYN-02/current"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.goto('http://127.0.0.1:8773/patients/SYN-02/current');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n- [Snapshot](artifacts\\playwright-mcp\\page-2026-10-22T02-10-07-007Z.yml)"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 64110500
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:07.057Z",
+    "type": "McpToolCall",
+    "id": "exec-d8f9ade3-d60a-4924-a53e-13a4b53b3ca8",
+    "server": "playwright",
+    "tool": "browser_snapshot",
+    "arguments": {},
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n### Snapshot\n```yaml\n- generic [ref=f4e2]:\n  - link \"Skip to main content\" [ref=f4e3] [cursor=pointer]:\n    - /url: \"#main\"\n  - banner [ref=f4e4]:\n    - generic [ref=f4e5]:\n      - text: REMission\n      - generic [ref=f4e6]: Synthetic care workspace\n    - generic [ref=f4e11]:\n      - generic [ref=f4e12]: Dr Alice (synthetic)\n      - button \"Sign out\" [ref=f4e13] [cursor=pointer]\n  - generic [ref=f4e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring\n  - main [ref=f4e8]:\n    - navigation \"Workspace\" [ref=f4e14]:\n      - link \"My panel\" [ref=f4e15] [cursor=pointer]:\n        - /url: /\n      - generic [ref=f4e16]: 10 owned synthetic patients\n    - region \"Patient context\" [ref=f4e17]:\n      - generic [ref=f4e18]:\n        - paragraph [ref=f4e19]: SYN-02 · Current workspace\n        - heading \"Synthetic patient 02\" [level=1] [ref=f4e20]\n        - paragraph [ref=f4e21]: \"ASSIGN-09: Clinical hold or major phase change\"\n      - generic [ref=f4e22]:\n        - generic [ref=f4e23]:\n          - term [ref=f4e24]: Clinical\n          - definition [ref=f4e25]: clinical hold\n        - generic [ref=f4e26]:\n          - term [ref=f4e27]: Learning\n          - definition [ref=f4e28]: none\n        - generic [ref=f4e29]:\n          - term [ref=f4e30]: Data readiness\n          - definition [ref=f4e31]: stale\n        - generic [ref=f4e32]:\n          - term [ref=f4e33]: Observation cutoff\n          - definition [ref=f4e34]: Oct 21, 2026, 7:09 PM PDT\n      - status [ref=f4e35]:\n        - strong [ref=f4e36]: Clinical hold\n        - paragraph [ref=f4e37]: experimental_stability_review\n    - navigation \"Patient views\" [ref=f4e38]:\n      - link \"Overview\" [ref=f4e39] [cursor=pointer]:\n        - /url: /patients/SYN-02/overview\n      - link \"Current decision\" [ref=f4e40] [cursor=pointer]:\n        - /url: /patients/SYN-02/current\n      - link \"Monitoring\" [ref=f4e41] [cursor=pointer]:\n        - /url: /patients/SYN-02/monitoring\n      - link \"History\" [ref=f4e42] [cursor=pointer]:\n        - /url: /patients/SYN-02/history\n    - region [ref=f4e43]:\n      - heading \"Independent safety review\" [level=2] [ref=f4e44]\n      - paragraph [ref=f4e45]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.\n      - article [ref=f4e46]:\n        - heading \"experimental stability review · episode generation 1\" [level=3] [ref=f4e47]\n        - paragraph [ref=f4e48]:\n          - strong [ref=f4e49]: Hold remains active.\n          - text: Entered Oct 21, 2026, 7:09 PM.\n        - heading \"Owned review follow-ups\" [level=4] [ref=f4e50]\n        - list [ref=f4e51]:\n          - listitem [ref=f4e52]: \"Review owner: alice; due Jan 2, 2026, 2:00 AM. Status: pending. Escalation: sim-care-team.\"\n        - paragraph [ref=f4e53]: Assignments and ordinary approval are blocked. Previous estimates may be inapplicable. Support remains paused.\n        - heading \"Exact triggering evidence\" [level=4] [ref=f4e54]\n        - list [ref=f4e55]:\n          - listitem [ref=f4e56]:\n            - button \"Inspect obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9\" [ref=f4e57] [cursor=pointer]\n            - generic [ref=f4e58]: SHA256 74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d\n        - paragraph [ref=f4e59]:\n          - strong [ref=f4e60]: T-OBS2-CLEARANCE-POLICY\n          - text: \": an accepted clearance criterion is unavailable for one or more active obligations. The whole episode remains held; there is no timer or default clearance.\"\n        - group [ref=f4e61]:\n          - generic \"Installed review rules and all active obligations\" [ref=f4e62] [cursor=pointer]\n      - generic [ref=f4e63]:\n        - heading \"Record a configured synthetic concern\" [level=3] [ref=f4e64]\n        - paragraph [ref=f4e65]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.\n        - generic [ref=f4e66]: Authorized source concern · none preselected\n        - combobox \"Authorized source concern · none preselected\" [ref=f4e67]:\n          - option \"Choose a configured concern\" [selected]\n          - option \"Synthetic clinician_concern · source 1\"\n          - option \"Synthetic experimental_stability_review · source 2\"\n          - option \"Synthetic clinician_concern · source 3\"\n          - option \"Synthetic clinician_concern · source 4\"\n          - option \"Synthetic clinician_concern · source 5\"\n          - option \"Synthetic clinician_concern, experimental_stability_review · source 6\"\n        - button \"Record selected concern and hold\" [disabled] [ref=f4e68]\n    - generic [ref=f4e69]:\n      - paragraph [ref=f4e70]: 1 · Assess\n      - heading \"Readiness and clinical review\" [level=2] [ref=f4e71]\n      - paragraph [ref=f4e72]: \"Clinical: clinical hold. Learning: none. Data: stale.\"\n      - paragraph [ref=f4e73]: Support is paused; policy fixed-approved-support version 1.0.0.\n      - generic [ref=f4e74]:\n        - button \"Request clinical hold\" [ref=f4e75] [cursor=pointer]\n        - button \"Record prerequisite review\" [ref=f4e76] [cursor=pointer]\n    - generic [ref=f4e77]:\n      - paragraph [ref=f4e78]: 2 · Compare\n      - heading \"Eligible ordinary options\" [level=2] [ref=f4e79]\n      - generic [ref=f4e80]:\n        - strong [ref=f4e81]: No statistical comparison is available\n        - paragraph [ref=f4e82]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.\n      - group [ref=f4e83]:\n        - generic \"Inspect basis and engine status\" [ref=f4e84] [cursor=pointer]\n    - generic [ref=f4e85]:\n      - paragraph [ref=f4e86]: 3 · Decide and follow up\n      - heading \"Explicit ordinary synthetic choice\" [level=2] [ref=f4e87]\n      - paragraph [ref=f4e88]: No ordinary assignment is due or permitted in this state. Review prerequisites or the relevant future protocol engine.\n    - generic [ref=f4e89]:\n      - heading \"Saved decisions\" [level=2] [ref=f4e90]\n      - list [ref=f4e91]:\n        - listitem [ref=f4e92]:\n          - link \"Ordinary choice · Oct 21, 2026, 7:07 PM PDT\" [ref=f4e93] [cursor=pointer]:\n            - /url: /patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525\n    - generic [ref=f4e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 22946300
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:26.893Z",
+    "type": "McpToolCall",
+    "id": "exec-f78e2949-db9e-4aec-9ae0-9c223b4f7689",
+    "server": "playwright",
+    "tool": "browser_evaluate",
+    "arguments": {
+      "function": "async () => { const s=await(await fetch('/api/session')).json();const body={schema_version:'1.0.0',contract:'LIVE-HOLD-01',synthetic:true,cutoff:new Date().toISOString()};const route='/api/patients/SYN-02/live-safety-exports';const bad=await fetch(route,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':'iv-bad-csrf-cc75ad00'},body:JSON.stringify(body)});const good=await fetch(route,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':s.csrf,'Idempotency-Key':'iv-product-cc75ad00'},body:JSON.stringify(body)});const receipt=await good.json();const files={};if(good.status===200){for(const name of ['manifest.json','observed-projection.json','live-hold-facts.json']){const r=await fetch(route+'/'+receipt.export_id+'/'+name);const b=await r.arrayBuffer();files[name]={status:r.status,bytes:b.byteLength,sha256:[...new Uint8Array(await crypto.subtle.digest('SHA-256',b))].map(x=>x.toString(16).padStart(2,'0')).join(''),value:JSON.parse(new TextDecoder().decode(b))};}}return {fixture:'explicit authenticated integration API probe; actual service product',csrf_missing_status:bad.status,csrf_missing_body:await bad.json(),published_status:good.status,receipt,files}; }"
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n{\n  \"fixture\": \"explicit authenticated integration API probe; actual service product\",\n  \"csrf_missing_status\": 403,\n  \"csrf_missing_body\": {\n    \"code\": \"csrf_rejected\",\n    \"detail\": \"Refresh this session before submitting\"\n  },\n  \"published_status\": 200,\n  \"receipt\": {\n    \"status\": \"published\",\n    \"export_id\": \"live-export-fe50b0bdc5ff4d328bd2ec59b41af5ee\",\n    \"manifest_sha256\": \"07c0b429c2bd38e8a44b148f08e07c54ddc89d6d3805ba08448cd56d754b9495\",\n    \"scope\": \"independent_live_holds\",\n    \"execution\": \"contract_fixture\"\n  },\n  \"files\": {\n    \"manifest.json\": {\n      \"status\": 200,\n      \"bytes\": 2702,\n      \"sha256\": \"07c0b429c2bd38e8a44b148f08e07c54ddc89d6d3805ba08448cd56d754b9495\",\n      \"value\": {\n        \"active_episodes\": [\n          {\n            \"episode_id\": \"episode-caf87cbe76f5f343359ee8bbe4b0265bfe2a6b8a\",\n            \"generation\": 1,\n            \"obligation_set_sha256\": \"c79ae587c7fc2d0fbd659b5f7e48e48775076c6862f06a017d6f8eb022b837b3\",\n            \"trigger_set_sha256\": \"83d7ef7a8e6fa6227b8283aba5df2ff2b93659f93fa34799375ac096546e4f5d\"\n          }\n        ],\n        \"authority_generation\": 1,\n        \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n        \"baseline_operation_id\": \"baseline-12b90e5c6af6484cb7290c89d854a150\",\n        \"captured_at\": \"2026-10-22T02:10:25.816956Z\",\n        \"completeness\": \"complete_visible_prefix\",\n        \"cutoff\": \"2026-10-22T02:10:25.798000Z\",\n        \"execution\": \"contract_fixture\",\n        \"export_id\": \"live-export-fe50b0bdc5ff4d328bd2ec59b41af5ee\",\n        \"facts\": {\n          \"bytes\": 6610,\n          \"count\": 5,\n          \"path\": \"live-hold-facts.json\",\n          \"sha256\": \"77463e6b82b6b7481184f9ed63dfec7d7fa4de8b5f8d53ccd4bdb1807e7ab9d7\"\n        },\n        \"independent_hold_status\": \"held\",\n        \"journal_id\": \"journal-acb14e843c654d029ac14f60bc182868\",\n        \"kind\": \"live_safety_export\",\n        \"observed_binding\": {\n          \"id\": \"DOMAIN-LEARNER-HISTORY\",\n          \"sha256\": \"8a20cd303f76458182deb654903a99fb9e5365076d6bf5c28f36d1fcdc989f92\",\n          \"version\": \"1.0.0\"\n        },\n        \"observed_projection\": {\n          \"bytes\": 158,\n          \"kind\": \"learner_history\",\n          \"path\": \"observed-projection.json\",\n          \"schema_version\": \"1.0.0\",\n          \"sha256\": \"c9913b2b5f215a2c2e065a6c02ee53f688846532dcf50a216fac24dda2b7e2e9\"\n        },\n        \"observed_source_sha256\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n        \"patient_id\": \"SYN-02\",\n        \"prefix_chain_sha256\": \"5e49269d83a4248dd5e3e4f5f820e4e9dcbc286afe9c01c3b0c2a40fae65bf36\",\n        \"publication_receipt_ref\": {\n          \"payload_sha256\": \"b4d7650823cc600f2d0ae8fd804af855d3e74010ce8abc3a9a5fc8895fae6ac8\",\n          \"receipt_id\": \"export-receipt-8fcb3d4cc4694196b358c9a734b80c7c\"\n        },\n        \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n        \"runtime\": {\n          \"id\": \"foundation-qualified-linux-sqlite\",\n          \"sha256\": \"ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa\",\n          \"version\": \"Python3.13.7-SQLite3.54.1\"\n        },\n        \"schema_binding\": {\n          \"id\": \"LIVE-SAFETY-SERVICE-SCHEMAS\",\n          \"sha256\": \"6af91c0e91a7c41fcea42f09cd4440454435dbd88c612fcf0ae3edfc0d16131c\",\n          \"version\": \"1.0.0\"\n        },\n        \"schema_version\": \"1.0.0\",\n        \"scope\": \"independent_live_holds\",\n        \"service_contract\": {\n          \"id\": \"LIVE-HOLD-01\",\n          \"sha256\": \"a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3\",\n          \"version\": \"1.0.0\"\n        },\n        \"service_instance_id\": \"92066c87-70c8-4129-9cbc-e9380e0c74c9\",\n        \"service_producer\": {\n          \"id\": \"fixture-producer\",\n          \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n          \"version\": \"1.0.0\"\n        },\n        \"snapshot_id\": \"snapshot-81dcbbbc5e33b7eab6c07d9ddc61716eb33b1549\",\n        \"snapshot_sha256\": \"81dcbbbc5e33b7eab6c07d9ddc61716eb33b15494039c796deccf79a85fc2c4b\",\n        \"source_commit\": \"0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55\",\n        \"synthetic\": true,\n        \"through_patient_sequence\": 5\n      }\n    },\n    \"observed-projection.json\": {\n      \"status\": 200,\n      \"bytes\": 158,\n      \"sha256\": \"c9913b2b5f215a2c2e065a6c02ee53f688846532dcf50a216fac24dda2b7e2e9\",\n      \"value\": {\n        \"schema_version\": \"1.0.0\",\n        \"synthetic\": true,\n        \"kind\": \"learner_history\",\n        \"patient_id\": \"SYN-02\",\n        \"cutoff\": \"2026-10-22T02:10:25.798000Z\",\n        \"records\": [],\n        \"provenance\": []\n      }\n    },\n    \"live-hold-facts.json\": {\n      \"status\": 200,\n      \"bytes\": 6610,\n      \"sha256\": \"77463e6b82b6b7481184f9ed63dfec7d7fa4de8b5f8d53ccd4bdb1807e7ab9d7\",\n      \"value\": [\n        {\n          \"authority_generation\": 1,\n          \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n          \"available_at\": \"2026-10-22T02:05:32.769834Z\",\n          \"event_at\": \"2026-10-22T02:05:32.769834Z\",\n          \"journal_id\": \"journal-acb14e843c654d029ac14f60bc182868\",\n          \"kind\": \"live_hold_fact\",\n          \"operation\": {\n            \"active_episodes\": [],\n            \"scope\": \"independent_live_holds\",\n            \"type\": \"baseline\"\n          },\n          \"operation_id\": \"baseline-12b90e5c6af6484cb7290c89d854a150\",\n          \"patient_id\": \"SYN-02\",\n          \"patient_sequence\": 1,\n          \"previous_fact_sha256\": null,\n          \"recorded_at\": \"2026-10-22T02:05:32.769834Z\",\n          \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n          \"schema_version\": \"1.0.0\",\n          \"synthetic\": true\n        },\n        {\n          \"authority_generation\": 1,\n          \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n          \"available_at\": \"2026-10-22T02:07:28.742823Z\",\n          \"event_at\": \"2026-01-01T10:00:00Z\",\n          \"journal_id\": \"journal-acb14e843c654d029ac14f60bc182868\",\n          \"kind\": \"live_hold_fact\",\n          \"operation\": {\n            \"action\": \"open\",\n            \"active_trigger_refs\": [\n              {\n                \"namespace_id\": \"live-demo-concern:fixture-export\",\n                \"partition_id\": \"obs2-partition\",\n                \"payload_sha256\": \"1832f642f94a1596c707d5d8fa95ce773534f51eeab4017e342dcdb421cd7a78\",\n                \"record_id\": \"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\",\n                \"store\": \"archive\"\n              }\n            ],\n            \"episode_id\": \"episode-d1a903154b8a1e6e9f04687c6440fb137f3c9ae2\",\n            \"generation\": 1,\n            \"obligation_set_sha256\": \"487758c2ca8d2f49ddc4226239ab8b59ae5a6b66ce1b8357ea029d7d61ba05d7\",\n            \"obligations\": [\n              {\n                \"definition\": {\n                  \"id\": \"review-concern\",\n                  \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n                  \"version\": \"2.0.0\"\n                },\n                \"requirement_id\": \"review-concern\"\n              }\n            ],\n            \"reason_codes\": [\n              \"clinician_concern\"\n            ],\n            \"trigger_refs\": [\n              {\n                \"namespace_id\": \"live-demo-concern:fixture-export\",\n                \"partition_id\": \"obs2-partition\",\n                \"payload_sha256\": \"1832f642f94a1596c707d5d8fa95ce773534f51eeab4017e342dcdb421cd7a78\",\n                \"record_id\": \"obs2-16db7a3c26685088126656eac287475880eb3ae25d2b730f\",\n                \"store\": \"archive\"\n              }\n            ],\n            \"trigger_set_sha256\": \"089d929904a03c853d903b6c6820958fd9e66f5b8e9c9f5d5038a7174fa02676\",\n            \"type\": \"invalidate\"\n          },\n          \"operation_id\": \"hold-a8e0bbdcd5f24277b1a1c7f142c1df40\",\n          \"patient_id\": \"SYN-02\",\n          \"patient_sequence\": 2,\n          \"previous_fact_sha256\": \"61b804c4d13b66ad269fc35d86214021582de076006a8212f528442a41c6dd59\",\n          \"recorded_at\": \"2026-10-22T02:07:28.742823Z\",\n          \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n          \"schema_version\": \"1.0.0\",\n          \"synthetic\": true\n        },\n        {\n          \"authority_generation\": 1,\n          \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n          \"available_at\": \"2026-10-22T02:07:44.720891Z\",\n          \"event_at\": \"2026-10-22T02:07:44.720891Z\",\n          \"journal_id\": \"journal-acb14e843c654d029ac14f60bc182868\",\n          \"kind\": \"live_hold_fact\",\n          \"operation\": {\n            \"current_review_at\": \"2026-10-22T02:07:44.720891Z\",\n            \"episode_id\": \"episode-d1a903154b8a1e6e9f04687c6440fb137f3c9ae2\",\n            \"generation\": 1,\n            \"obligation_set_sha256\": \"487758c2ca8d2f49ddc4226239ab8b59ae5a6b66ce1b8357ea029d7d61ba05d7\",\n            \"result\": \"satisfied\",\n            \"review_id\": \"review-3ec42fa59a1f4f98b68e8db90c50305a\",\n            \"review_sha256\": \"16d83eef548114a1fbb111e72afeaf2ab15793281c732bc011464755fe9bb0ce\",\n            \"rule_refs\": [\n              {\n                \"id\": \"MANUAL-HOLD-REVIEW\",\n                \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n                \"version\": \"1.0.0\"\n              }\n            ],\n            \"trigger_set_sha256\": \"089d929904a03c853d903b6c6820958fd9e66f5b8e9c9f5d5038a7174fa02676\",\n            \"type\": \"review_recorded\"\n          },\n          \"operation_id\": \"review-op-2ecd3b55410640baab808c0daf4faabc\",\n          \"patient_id\": \"SYN-02\",\n          \"patient_sequence\": 3,\n          \"previous_fact_sha256\": \"9e62bf1bc582ddaebd69c76e81e0008027cb356fbf8fc84ffa316a48dc690ed7\",\n          \"recorded_at\": \"2026-10-22T02:07:44.720891Z\",\n          \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n          \"schema_version\": \"1.0.0\",\n          \"synthetic\": true\n        },\n        {\n          \"authority_generation\": 1,\n          \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n          \"available_at\": \"2026-10-22T02:09:07.528574Z\",\n          \"event_at\": \"2026-10-22T02:09:07.528574Z\",\n          \"journal_id\": \"journal-acb14e843c654d029ac14f60bc182868\",\n          \"kind\": \"live_hold_fact\",\n          \"operation\": {\n            \"episode_id\": \"episode-d1a903154b8a1e6e9f04687c6440fb137f3c9ae2\",\n            \"generation\": 1,\n            \"obligation_set_sha256\": \"487758c2ca8d2f49ddc4226239ab8b59ae5a6b66ce1b8357ea029d7d61ba05d7\",\n            \"review_id\": \"review-3ec42fa59a1f4f98b68e8db90c50305a\",\n            \"review_sha256\": \"16d83eef548114a1fbb111e72afeaf2ab15793281c732bc011464755fe9bb0ce\",\n            \"rule_refs\": [\n              {\n                \"id\": \"MANUAL-HOLD-REVIEW\",\n                \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n                \"version\": \"1.0.0\"\n              }\n            ],\n            \"trigger_set_sha256\": \"089d929904a03c853d903b6c6820958fd9e66f5b8e9c9f5d5038a7174fa02676\",\n            \"type\": \"clearance\"\n          },\n          \"operation_id\": \"clear-1b774be4f2c84eed8c39e1c427e22155\",\n          \"patient_id\": \"SYN-02\",\n          \"patient_sequence\": 4,\n          \"previous_fact_sha256\": \"023e1ab90179ff3db8b9cb395897cf94d226cab61e34f0193603823930489679\",\n          \"recorded_at\": \"2026-10-22T02:09:07.528574Z\",\n          \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n          \"schema_version\": \"1.0.0\",\n          \"synthetic\": true\n        },\n        {\n          \"authority_generation\": 1,\n          \"authority_sha256\": \"3f578ba4c8ae6fb8689752655868c11295c7798a96603f698013751355a04a30\",\n          \"available_at\": \"2026-10-22T02:09:09.805495Z\",\n          \"event_at\": \"2026-01-01T10:00:00Z\",\n          \"journal_id\": \"journal-acb14e843c654d029ac14f60bc182868\",\n          \"kind\": \"live_hold_fact\",\n          \"operation\": {\n            \"action\": \"open\",\n            \"active_trigger_refs\": [\n              {\n                \"namespace_id\": \"live-demo-threshold:fixture-export\",\n                \"partition_id\": \"obs2-partition\",\n                \"payload_sha256\": \"74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d\",\n                \"record_id\": \"obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9\",\n                \"store\": \"archive\"\n              }\n            ],\n            \"episode_id\": \"episode-caf87cbe76f5f343359ee8bbe4b0265bfe2a6b8a\",\n            \"generation\": 1,\n            \"obligation_set_sha256\": \"c79ae587c7fc2d0fbd659b5f7e48e48775076c6862f06a017d6f8eb022b837b3\",\n            \"obligations\": [\n              {\n                \"definition\": {\n                  \"id\": \"review-threshold\",\n                  \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n                  \"version\": \"2.0.0\"\n                },\n                \"requirement_id\": \"review-threshold\"\n              }\n            ],\n            \"reason_codes\": [\n              \"experimental_stability_review\"\n            ],\n            \"trigger_refs\": [\n              {\n                \"namespace_id\": \"live-demo-threshold:fixture-export\",\n                \"partition_id\": \"obs2-partition\",\n                \"payload_sha256\": \"74835954f865be632159c01a1d4f140a7a5dcbd5d593ad49087d199e6dae674d\",\n                \"record_id\": \"obs2-0e3621e5a0fe327ac5a5b60a154d154244e8e9a698e1ada9\",\n                \"store\": \"archive\"\n              }\n            ],\n            \"trigger_set_sha256\": \"83d7ef7a8e6fa6227b8283aba5df2ff2b93659f93fa34799375ac096546e4f5d\",\n            \"type\": \"invalidate\"\n          },\n          \"operation_id\": \"hold-4f3d51efe7aa478fbb9554cee58ab2ce\",\n          \"patient_id\": \"SYN-02\",\n          \"patient_sequence\": 5,\n          \"previous_fact_sha256\": \"8d75c8d9dfd6374bc35bf471d797bc4b91ed92184e74820bf905a71d9a62c457\",\n          \"recorded_at\": \"2026-10-22T02:09:09.805495Z\",\n          \"review_rules_sha256\": \"d2bd01a438fc4365a25d184b82f8aae95ee1f2ed13156b58d8b8c0304cc97502\",\n          \"schema_version\": \"1.0.0\",\n          \"synthetic\": true\n        }\n      ]\n    }\n  }\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => { const s=await(await fetch(\\'/api/session\\')).json();const body={schema_version:\\'1.0.0\\',contract:\\'LIVE-HOLD-01\\',synthetic:true,cutoff:new Date().toISOString()};const route=\\'/api/patients/SYN-02/live-safety-exports\\';const bad=await fetch(route,{method:\\'POST\\',headers:{\\'Content-Type\\':\\'application/json\\',\\'Idempotency-Key\\':\\'iv-bad-csrf-cc75ad00\\'},body:JSON.stringify(body)});const good=await fetch(route,{method:\\'POST\\',headers:{\\'Content-Type\\':\\'application/json\\',\\'X-CSRF-Token\\':s.csrf,\\'Idempotency-Key\\':\\'iv-product-cc75ad00\\'},body:JSON.stringify(body)});const receipt=await good.json();const files={};if(good.status===200){for(const name of [\\'manifest.json\\',\\'observed-projection.json\\',\\'live-hold-facts.json\\']){const r=await fetch(route+\\'/\\'+receipt.export_id+\\'/\\'+name);const b=await r.arrayBuffer();files[name]={status:r.status,bytes:b.byteLength,sha256:[...new Uint8Array(await crypto.subtle.digest(\\'SHA-256\\',b))].map(x=>x.toString(16).padStart(2,\\'0\\')).join(\\'\\'),value:JSON.parse(new TextDecoder().decode(b))};}}return {fixture:\\'explicit authenticated integration API probe; actual service product\\',csrf_missing_status:bad.status,csrf_missing_body:await bad.json(),published_status:good.status,receipt,files}; }');\n```\n### Open tabs\n- 0: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 1: [REMission · Synthetic care workspace](http://127.0.0.1:8769/patients/SYN-02/current)\n- 2: [REMission · Synthetic care workspace](http://127.0.0.1:8771/patients/SYN-02/current)\n- 3: (current) [REMission · Synthetic care workspace](http://127.0.0.1:8773/patients/SYN-02/current)\n### Page\n- Page URL: http://127.0.0.1:8773/patients/SYN-02/current\n- Page Title: REMission · Synthetic care workspace\n- Console: 1 errors, 0 warnings\n### Events\n- New console entries: artifacts\\playwright-mcp\\console-2026-10-22T02-10-06-947Z.log#L1"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 1,
+      "nanos": 124689800
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:26.935Z",
+    "type": "McpToolCall",
+    "id": "exec-7569c2b7-9810-43b7-80c9-af387859baff",
+    "server": "playwright",
+    "tool": "browser_resize",
+    "arguments": {
+      "width": 1440,
+      "height": 1000
+    },
+    "readOnlyHint": false,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 1440, height: 1000 });\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 13809900
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:27.087Z",
+    "type": "McpToolCall",
+    "id": "exec-c3e99f4d-a87e-4ba7-95ed-13aa4c493ac6",
+    "server": "playwright",
+    "tool": "browser_take_screenshot",
+    "arguments": {
+      "filename": "artifacts/g1lh-iv-merged-final-cc75ad00.png",
+      "scale": "css",
+      "fullPage": true
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n- [Screenshot of full page](artifacts\\g1lh-iv-merged-final-cc75ad00.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as artifacts\\g1lh-iv-merged-final-cc75ad00.png\nawait page.screenshot({\n  fullPage: true,\n  path: 'artifacts\\\\g1lh-iv-merged-final-cc75ad00.png',\n  scale: 'css',\n  type: 'png'\n});\n```"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 120152300
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:27.120Z",
+    "type": "McpToolCall",
+    "id": "exec-76a930c6-7327-4035-8f37-89724d2bfb84",
+    "server": "playwright",
+    "tool": "browser_network_requests",
+    "arguments": {
+      "static": true
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\n1. [GET] http://127.0.0.1:8773/patients/SYN-02/current => [200] OK\n2. [GET] http://127.0.0.1:8773/assets/index-CFqriR5o.js => [200] OK\n3. [GET] http://127.0.0.1:8773/assets/index-D_6TIRrA.css => [200] OK\n4. [GET] http://127.0.0.1:8773/api/session => [200] OK\n5. [GET] http://127.0.0.1:8773/api/patients => [200] OK\n6. [GET] http://127.0.0.1:8773/api/patients/SYN-02 => [200] OK\n7. [GET] http://127.0.0.1:8773/api/patients/SYN-02/draft => [200] OK\n8. [GET] http://127.0.0.1:8773/api/patients/SYN-02/live-holds => [200] OK\n9. [GET] http://127.0.0.1:8773/api/session => [200] OK\n10. [POST] http://127.0.0.1:8773/api/patients/SYN-02/live-safety-exports => [403] Forbidden\n11. [POST] http://127.0.0.1:8773/api/patients/SYN-02/live-safety-exports => [200] OK\n12. [GET] http://127.0.0.1:8773/api/patients/SYN-02/live-safety-exports/live-export-fe50b0bdc5ff4d328bd2ec59b41af5ee/manifest.json => [200] OK\n13. [GET] http://127.0.0.1:8773/api/patients/SYN-02/live-safety-exports/live-export-fe50b0bdc5ff4d328bd2ec59b41af5ee/observed-projection.json => [200] OK\n14. [GET] http://127.0.0.1:8773/api/patients/SYN-02/live-safety-exports/live-export-fe50b0bdc5ff4d328bd2ec59b41af5ee/live-hold-facts.json => [200] OK"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 6581800
+    }
+  },
+  {
+    "timestamp": "2026-10-22T02:10:27.175Z",
+    "type": "McpToolCall",
+    "id": "exec-4dd6cdf7-d7b8-49a6-978b-854c8ac8369e",
+    "server": "playwright",
+    "tool": "browser_console_messages",
+    "arguments": {
+      "all": true,
+      "level": "debug"
+    },
+    "readOnlyHint": true,
+    "status": "completed",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "### Result\nTotal messages: 1 (Errors: 1, Warnings: 0)\nReturning 7 messages for level \"debug\"\n\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8773/api/session:0\n[ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:8773/api/session:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8773/api/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8773/api/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8773/api/patients/SYN-02/history/approval-abddb96a7aea407b95ddb2e742f7a525:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8773/api/patients/SYN-02:0\n[ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://127.0.0.1:8773/api/patients/SYN-02/live-safety-exports:0"
+        }
+      ]
+    },
+    "duration": {
+      "secs": 0,
+      "nanos": 18995900
+    }
+  }
+]

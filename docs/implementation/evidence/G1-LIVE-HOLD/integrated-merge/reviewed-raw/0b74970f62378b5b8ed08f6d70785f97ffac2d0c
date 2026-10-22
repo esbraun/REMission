@@ -1,0 +1,33 @@
+{
+  "head": "5e226f9b13ff9c0d4d9d800893ef130f056b8fa6",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,nosuid,size=512m",
+    "-e",
+    "PYTHONPATH=/app:/app/tests/integration/replay:/app/tests/run_contracts",
+    "--mount",
+    "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lh-r2-crit-261021,target=/app,readonly",
+    "-w",
+    "/app",
+    "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "python",
+    "/app/.review-artifacts/current-head-oracle.py"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"direct_status\": 409, \"direct\": {\"code\": \"hold_evidence_stale\", \"detail\": \"hold evidence stale\"}, \"coordinator_status\": 409, \"coordinator\": {\"code\": \"hold_evidence_stale\", \"detail\": \"hold evidence stale\"}}\n",
+  "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\nrunTest (__main__.CurrentHeadOracle.runTest) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 2.711s\n\nOK\n"
+}

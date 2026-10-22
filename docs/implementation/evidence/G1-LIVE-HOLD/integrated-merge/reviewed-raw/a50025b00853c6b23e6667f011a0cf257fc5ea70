@@ -1,0 +1,8 @@
+import json,pathlib,subprocess,sys
+p=pathlib.Path('.review-artifacts/ec49/browser');d=json.loads(pathlib.Path('.review-artifacts/ec49/deployment/deployment.json').read_bytes());c=d['service_container'];mode=sys.argv[1]
+code="import fcntl,pathlib,time,os; f=open('/data/remission.sqlite.admission.lock','r+'); fcntl.flock(f,fcntl.LOCK_EX); print('READY pid='+str(os.getpid()),flush=True); p=pathlib.Path('/tmp/astra-ec49-workspace-release');\nwhile not p.exists(): time.sleep(.05)\nprint('RELEASE',flush=True); fcntl.flock(f,fcntl.LOCK_UN)"
+if mode=='release':code="from pathlib import Path; Path('/tmp/astra-ec49-workspace-release').write_text('RELEASE'); print('EXPLICIT_RELEASE')"
+cmd=['docker','exec',c,'python','-u','-c',code];(p/('workspace-barrier-'+mode+'-command.json')).write_text(json.dumps(cmd));proc=subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE);out=b''
+for line in iter(proc.stdout.readline,b''):
+ out+=line;print(line.decode(),end='',flush=True);(p/('workspace-barrier-'+mode+'-stdout.txt')).write_bytes(out)
+err=proc.stderr.read();rc=proc.wait();(p/('workspace-barrier-'+mode+'-result.json')).write_text(json.dumps({'exit':rc,'stderr':err.decode()}));assert rc==0

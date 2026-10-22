@@ -1,0 +1,11 @@
+# P2: current startup documentation invokes retired commands
+
+Exact candidate8019314fb3ef7640339f2b0bbb3d70de93913239 / accepted baseec18cb4020ba239710a3fd615e365d5cd72b4d80. Assigned independent gpt-6-astra/medium; effective-model introspection unavailable.
+
+services/foundation/README.md:6–7 tells a fresh checkout user to run python tooling/foundation/build.py and python tooling/foundation/run_stack.py --skip-build. Both commands have been retired for this package. README line22 still describes their former qualification behavior and no replacement current build/deployment path appears in this service README.
+
+Actual first documented command executed at the pinned source: child exit1, stderr 'retired fixed-resource builder; use build_live.py with an explicit task-private evidence directory'. The script exits before any Docker/output action. run_stack.py source likewise unconditionally exits with legacy_current_launcher_retired and directs exact images/new own evidence folder. No existing stack or port was touched. This is a release reproduction/documentation defect, not a failure of the deliberate stale-launch protections.
+
+Minimal resolution: replace current instructions with the supported task-private build_live.py command and explicit evidence destination, explain exact source-images.json output and image-ID selection, show the current new-private-volume live_stack.py launch with exact service/learner image IDs and an unused explicitly selected port/evidence folder, and document required runtime prerequisites and applicable verification/role checks. Keep fixture-only upstream/scientific limits and preserved old-stack boundaries. Remove obsolete current qualification claims; do not re-enable retired launchers.
+
+Fresh HTTPS release reproduction remains scheduled after current full groups complete, and final documentation must be exercised from its exact frozen source. No source edits made by reviewer. Startup capture retains exact stdout/stderr/exit/source snapshot. An earlier read attempted nonexistent tooling/foundation/README.md, then file discovery located the actual services/foundation/README.md; this read-only lookup error had no effect on the reproduced failure.

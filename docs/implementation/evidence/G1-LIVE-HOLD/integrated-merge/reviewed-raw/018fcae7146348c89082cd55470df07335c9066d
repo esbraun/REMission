@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "PathOutcome": {
+      "additionalProperties": false,
+      "description": "One complete path, including death and admission before death.",
+      "properties": {
+        "admission_by_day42": {
+          "title": "Admission By Day42",
+          "type": "boolean"
+        },
+        "admission_day": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Admission Day"
+        },
+        "alive_outpatient_day42": {
+          "title": "Alive Outpatient Day42",
+          "type": "boolean"
+        },
+        "conditional_isi": {
+          "anyOf": [
+            {
+              "maximum": 28,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conditional Isi"
+        },
+        "death_day": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Death Day"
+        },
+        "survival_day42": {
+          "title": "Survival Day42",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "survival_day42",
+        "admission_by_day42",
+        "alive_outpatient_day42",
+        "death_day",
+        "admission_day"
+      ],
+      "title": "PathOutcome",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:probability-paired-path",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "comparator": {
+      "$ref": "#/$defs/PathOutcome"
+    },
+    "id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "intervention": {
+      "$ref": "#/$defs/PathOutcome"
+    }
+  },
+  "required": [
+    "id",
+    "intervention",
+    "comparator"
+  ],
+  "title": "PairedPath",
+  "type": "object"
+}

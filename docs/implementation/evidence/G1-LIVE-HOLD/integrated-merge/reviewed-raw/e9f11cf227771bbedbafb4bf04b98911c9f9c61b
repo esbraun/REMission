@@ -1,0 +1,7 @@
+import pathlib,json,subprocess,sys,hashlib
+sys.path.insert(0,'tooling/foundation');from capture import run
+p=pathlib.Path('.review-artifacts/ec49');build=json.loads((p/'build/source-images.json').read_bytes());roles=json.loads((p/'roles/inventory.json').read_bytes());expected=roles['roles']['service']['copied_source']['assets']
+cmd=['docker','run','--rm','--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,nosuid,size=128m',build['images']['tests'],'python','-c',"import pathlib,hashlib,json;print(json.dumps({str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in pathlib.Path('/app/web/dist').rglob('*') if p.is_file()},sort_keys=True))"]
+r,m=run(cmd,p/'asset-checks');assert r.returncode==0;actual=json.loads(r.stdout);assert actual==expected
+lock=hashlib.sha256(pathlib.Path('web/package-lock.json').read_bytes()).hexdigest();assert lock==build['npm_lock_sha256']
+(p/'asset-parity.json').write_text(json.dumps(dict(head=build['source_head'],service_image=build['images']['service'],tests_image=build['images']['tests'],assets=actual,identical=True,npm_lock_sha256=lock,lock_unchanged=True),indent=2));print('asset files',len(actual),'exact copied service/tests parity; lock unchanged')

@@ -1,0 +1,13 @@
+# P2 interim finding — semantic review retry reaches stale validation first
+
+Exact5e226f9b13ff9c0d4d9d800893ef130f056b8fa6/ec18cb4020ba239710a3fd615e365d5cd72b4d80; own g1lh-r2-crit-261021 checkout. Independent assigned gpt-6-astra/medium; effective-model introspection unavailable. No candidate edits. Full review remains ongoing.
+
+services/foundation/app.py live_operation.prepare (review branch, approximately209–211) calls prepare_review whenever the transport key is new. That invokes current_input, which rejects the original input decision/version tuple after the first successful review advanced versions. record_review's semantic_retry runs only later, so the intended semantic retry branch is unreachable for this valid repeated intent.
+
+Real authenticated HTTP reproduction at pinned5e: enter hold, construct valid current review request, submit with review-first →200; submit identical body/key again →200 and exact original response (positive control). Restart application/client, authenticate, submit the identical body under review-new-key →409 stale_live_hold_review. Independent expected200 assertion fails. Full command/stdout/stderr and traceback remain in review-retry-raw.json. The failure is not a changed-intent request, revoked grant or unauthorized session.
+
+Accepted executable R1 section4 explicitly says reviews with different keys but identical canonical intent at the same input decision/generation are one operation, and committed key/semantic lookup precedes stale-version admission after current authorization. A new transport alias may add exactly one live_hold_keys row; no second review/version/task/audit/fact may be created. Historic success does not imply current readiness.
+
+Minimal resolution: after current session/owner/grant/control authorization, resolve the canonical review semantic identity before current-input and evidence revalidation for a new mutation. Recheck authorization after writer wait; atomically add only the alias and return original receipt. Preserve same-key different-content conflict and denial after revocation. Canonicalize reference sets/rules as the contract requires so a presentation reorder does not silently become a different review; that ordering extension was source-inspected but not separately executed in this probe.
+
+This P2 concerns retry reliability/contract fidelity, separately from P1 nested evidence allowing unsafe clearance. Actual runtime is pinned ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa with2CPU/2GiB, networknone and read-only own source/root. TestClient is in process; no ports/MCP/deployment/private engine. Wrapper exit is not the child result; raw childexit1 is preserved. Prior artifacts remain unchanged. No whole-package acceptance.

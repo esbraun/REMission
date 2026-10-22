@@ -1,0 +1,7 @@
+import pathlib,json,urllib.request,hashlib,subprocess
+p=pathlib.Path('.review-artifacts');d=json.loads((p/'fresh-deployment/deployment.json').read_bytes());expected=json.loads((p/'asset-parity.json').read_bytes())['assets'];rows=[]
+for path,sha in expected.items():
+ url=d['url']+('/' if path.endswith('/index.html') else path.removeprefix('/app/web/dist'));r=urllib.request.urlopen(url);raw=r.read();actual=hashlib.sha256(raw).hexdigest();assert actual==sha;rows.append(dict(url=url,status=r.status,bytes=len(raw),sha256=actual))
+r=urllib.request.urlopen(d['url']+'/health');health=json.load(r);assert health==d['current_health']
+cmd=['docker','inspect',d['service_container']];r=subprocess.run(cmd,capture_output=True);assert r.returncode==0;info=json.loads(r.stdout)[0];assert info['Image']==d['service_image'] and info['Config']['User']=='10001:10001' and info['HostConfig']['ReadonlyRootfs'];assert all(m['Type']=='volume' for m in info['Mounts']);assert d['volumes']['historical'] not in [m.get('Name') for m in info['Mounts']]
+result=dict(head=d['source_commit'],health=health,assets=rows,container=info,inspection_command=cmd,inspection_exit=r.returncode,inspection_stderr=r.stderr.decode());(p/'deployed-parity.json').write_text(json.dumps(result,indent=2));print(json.dumps(dict(health=health,asset_count=len(rows),image=info['Image'],uid=info['Config']['User'],source_mount=False),indent=2))

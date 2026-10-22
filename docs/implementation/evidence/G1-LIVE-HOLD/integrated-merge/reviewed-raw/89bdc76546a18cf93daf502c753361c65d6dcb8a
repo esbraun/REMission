@@ -1,0 +1,9 @@
+# Planning evidence only
+
+Base ec18cb4020ba239710a3fd615e365d5cd72b4d80. Own writing checkout/branch and assigned model/thread are recorded in the [proposal](../../g1-live-hold-executable-contract-proposal-20261021.md). No runtime, statistical, browser or human acceptance is asserted. No other checkout was read or modified for this planning work.
+
+Observed documentation check: `python docs/implementation/evidence/G1-LIVE-HOLD-PLAN/verify_docs.py` from the own checkout passed: 16 unchanged inspected source files, all local proposal links exist, exact original ledger Git bytes preserved (therefore all635 original mappings/dependencies), no tracked changes outside assigned documentation scope, `git diff --check` clean. The verifier records hashes of accepted review/oracle/integrated context without copying or relabeling their execution claims. It is a documentation verifier, not an implementation test or critique.
+
+Read-only worktree root/branch/HEAD/status checks confirmed the assigned clean ec18 base before writing. Initial wildcard searches using Windows literal paths ending in `requirement*` failed; corrected lookup used `rg --files` and exact `docs/spec/requirement-map.md`. One initial oversized shell here-string write was rejected before process creation with Windows error206 (command length); it wrote no candidate file. The document was then created with apply_patch. These are authoring/search failures, not runtime acceptance attempts. No failed output is relabeled as success.
+
+Manifest excludes itself to avoid cycles, and records exact raw byte hashes/Git blobs of the proposal and this evidence. Final candidate commit is reported externally. No root ledger/config/schema changes, no source tests/builds/services/migrations, no PR/merge and no self-critique. Candidate writes stop for root's new independent Astra reviewer.

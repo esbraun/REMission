@@ -1,0 +1,6 @@
+HEAD: git rev-parse HEAD
+CLEAN CHECK: git status --porcelain=v1
+BASE: git merge-base ec18cb4020ba239710a3fd615e365d5cd72b4d80 HEAD
+SOURCE BLOBS: git hash-object <path>; git rev-parse ec18cb4020ba239710a3fd615e365d5cd72b4d80:<path>
+INSPECTION: Get-Content / rg --files / rg -n on listed paths
+No application, runtime, test, browser, DB, or container command was run.

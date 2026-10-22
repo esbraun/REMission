@@ -1,0 +1,155 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:support-mechanism",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_versions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "propertyNames": {
+        "enum": [
+          "support_prompt",
+          "no_prompt"
+        ]
+      },
+      "title": "Action Versions",
+      "type": "object"
+    },
+    "approximation_error": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Approximation Error"
+    },
+    "approximation_settings": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "burden_behavior": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "constraints": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "context_mapping": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "frozen_origin": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "support_mechanism",
+      "title": "Kind",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "fixed",
+        "mrt",
+        "adaptive",
+        "frozen",
+        "paused"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "parameter_refs": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Parameter Refs",
+      "type": "array"
+    },
+    "policy": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "probability_rule": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "id",
+    "policy",
+    "mode",
+    "parameter_refs",
+    "action_versions",
+    "probability_rule",
+    "context_mapping",
+    "burden_behavior",
+    "constraints",
+    "frozen_origin",
+    "approximation_settings",
+    "approximation_error"
+  ],
+  "title": "SupportMechanismV2",
+  "type": "object"
+}

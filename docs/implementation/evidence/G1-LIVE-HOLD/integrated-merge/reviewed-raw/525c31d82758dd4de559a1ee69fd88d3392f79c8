@@ -1,0 +1,9 @@
+import subprocess,json,pathlib,hashlib
+helper=json.loads(subprocess.check_output(['git','cat-file','blob','d2efd2237b183324b002cc6a27e31abdfb29958b']))
+print('helper_sections',list(helper));print('ledger_summary', {k:v for k,v in helper.items() if k not in ['immutable_v1'] and isinstance(v,dict) and ('ledger' in k or 'migration' in k)})
+path='docs/implementation/g0-task-test-ledger-20261020.json';base=json.loads(subprocess.check_output(['git','show','ec18cb4020ba239710a3fd615e365d5cd72b4d80:'+path]));head=json.loads(pathlib.Path(path).read_bytes());print('ledger_keys',list(base))
+checks=[]
+for row in helper['immutable_v1']['paths']:
+ p=row['path'];old=subprocess.check_output(['git','rev-parse','ec18cb4020ba239710a3fd615e365d5cd72b4d80:'+p],text=True).strip();new=subprocess.check_output(['git','rev-parse','HEAD:'+p],text=True).strip();checks.append({'path':p,'base':old,'head':new,'equal':old==new})
+result={'head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'v1_count':len(checks),'v1_all_equal':all(r['equal'] for r in checks),'v1':checks,'ledger_equal_sections':{k:base[k]==head.get(k) for k in base},'guidelines_sha256':hashlib.sha256(pathlib.Path('.review-artifacts/web-interface-guidelines.md').read_bytes()).hexdigest(),'guidelines_retrieved':'2026-10-21'}
+pathlib.Path('.review-artifacts/preservation-source.json').write_text(json.dumps(result,indent=2));print({k:v for k,v in result.items() if k!='v1'})

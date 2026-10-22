@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1lh-https-801-261021\.review-artifacts\check-deployment.py", line 4, in <module>
+    url=d['url']+path.removeprefix('/app/web/dist');r=urllib.request.urlopen(url);raw=r.read();actual=hashlib.sha256(raw).hexdigest();assert actual==sha;rows.append(dict(url=url,status=r.status,bytes=len(raw),sha256=actual))
+                                                      ~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\urllib\request.py", line 495, in open
+    response = meth(req, response)
+  File "C:\Python313\Lib\urllib\request.py", line 604, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "C:\Python313\Lib\urllib\request.py", line 533, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Python313\Lib\urllib\request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found

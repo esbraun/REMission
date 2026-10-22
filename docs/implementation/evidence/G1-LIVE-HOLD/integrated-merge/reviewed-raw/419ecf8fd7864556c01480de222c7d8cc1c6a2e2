@@ -1,0 +1,176 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:gate-evidence",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "abstained": {
+      "minimum": 0,
+      "title": "Abstained",
+      "type": "integer"
+    },
+    "attempted": {
+      "minimum": 0,
+      "title": "Attempted",
+      "type": "integer"
+    },
+    "claim_limits": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Claim Limits",
+      "type": "array"
+    },
+    "commands": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Commands",
+      "type": "array"
+    },
+    "completed": {
+      "minimum": 0,
+      "title": "Completed",
+      "type": "integer"
+    },
+    "executed_checks": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Executed Checks",
+      "type": "array"
+    },
+    "failed": {
+      "minimum": 0,
+      "title": "Failed",
+      "type": "integer"
+    },
+    "failures": {
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Failures",
+      "type": "array"
+    },
+    "input_versions": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Input Versions",
+      "type": "array"
+    },
+    "kind": {
+      "const": "gate_evidence",
+      "title": "Kind",
+      "type": "string"
+    },
+    "manifests": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Manifests",
+      "type": "array"
+    },
+    "pending": {
+      "minimum": 0,
+      "title": "Pending",
+      "type": "integer"
+    },
+    "requirement_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Requirement Ids",
+      "type": "array"
+    },
+    "reviewer_disposition": {
+      "enum": [
+        "pending",
+        "changes_requested",
+        "ready_to_ship"
+      ],
+      "title": "Reviewer Disposition",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "undefined": {
+      "minimum": 0,
+      "title": "Undefined",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "requirement_ids",
+    "input_versions",
+    "executed_checks",
+    "commands",
+    "manifests",
+    "attempted",
+    "completed",
+    "failed",
+    "abstained",
+    "undefined",
+    "pending",
+    "failures",
+    "reviewer_disposition",
+    "claim_limits"
+  ],
+  "title": "GateEvidence",
+  "type": "object"
+}

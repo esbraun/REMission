@@ -1,0 +1,20 @@
+# G1 live-hold compatibility refresh (5e226f9)
+
+Source-only Git-byte compatibility inventory for the 5e226f9 checkpoint. No application behavior, schema validity, tests, runtime, review, or acceptance claim.
+
+Checkout `C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-compat3-luna-261021` at `5e226f9b13ff9c0d4d9d800893ef130f056b8fa6` against accepted base `ec18cb4020ba239710a3fd615e365d5cd72b4d80`. Assignment `gpt-6-luna/high`; effective model introspection was unavailable, with no substitution observable.
+
+## Immutable v1 artifacts
+Compared 53/53 historical paths by Git blob bytes. All base inventory identities match: True; all checkpoint blobs equal the accepted base: True; all historical SHA-256 values match checkpoint Git bytes: True. Physical checkout SHA-256 was separately recorded for 53 paths; 30 differ from Git bytes and 53 are CRLF-only after newline normalization.
+
+## Original ledger rows and links
+Coverage rows: 635 at base and 635 at head; exact ordered row equality: True. Task rows: 23 and 23; exact ordered row equality: True. Head inventory: `{"task_count": 23, "unique_task_id_count": 23, "dependency_edge_count": 52, "dependency_dangling": [], "task_test_reference_count": 26, "unique_task_test_ids": 26, "task_test_dangling": [], "task_requirement_reference_count": 1341, "task_requirement_dangling": [], "coverage_count": 635, "unique_coverage_requirement_ids": 635, "coverage_task_reference_count": 1341, "coverage_test_reference_count": 635, "coverage_task_dangling": [], "coverage_test_dangling": []}`. All references resolve: True. Row counts and tracked link counts did not shrink: True.
+
+## Separate live-hold/status/evidence metadata
+Top-level additions: `['live_hold_implementation']`; removals: `[]`. Deltas inside the existing live-hold and observed-representation metadata sections are recorded separately at `{'live_hold_implementation': ['live_hold_implementation'], 'observed_representation_v2': ['observed_representation_v2.implementation_status', 'observed_representation_v2.integrated_verification', 'observed_representation_v2.repair_01.disposition', 'observed_representation_v2.subtasks.T-OBS2-ARCHIVE.evidence', 'observed_representation_v2.subtasks.T-OBS2-ARCHIVE.status', 'observed_representation_v2.subtasks.T-OBS2-COMPAT.evidence', 'observed_representation_v2.subtasks.T-OBS2-COMPAT.status', 'observed_representation_v2.subtasks.T-OBS2-DIARY.evidence', 'observed_representation_v2.subtasks.T-OBS2-DIARY.status', 'observed_representation_v2.subtasks.T-OBS2-HOLD.evidence', 'observed_representation_v2.subtasks.T-OBS2-HOLD.status', 'observed_representation_v2.subtasks.T-OBS2-LINKS.evidence', 'observed_representation_v2.subtasks.T-OBS2-LINKS.status', 'observed_representation_v2.subtasks.T-OBS2-LIVE-HOLD.dependency_status', 'observed_representation_v2.subtasks.T-OBS2-LIVE-HOLD.status', 'observed_representation_v2.subtasks.T-OBS2-SUPPORT.evidence', 'observed_representation_v2.subtasks.T-OBS2-SUPPORT.status']}`. Any other legacy top-level differences are recorded verbatim in the JSON; the task and coverage arrays are compared in order and preserved as the original baseline.
+
+## Migrations
+Migrations 001 and 002 unchanged from accepted base: True. Migration 003 head blob `56cbb7f8d710f5451e923ac8c2c52a613f23edb0` versus frozen blob `56cbb7f8d710f5451e923ac8c2c52a613f23edb0` at `1096d6da86048e7a53f98ed70abdd85f6f497aed`; equal: True. The direct Git-object diff is in the JSON (empty when identical).
+
+## Audit limitations
+This is a source-byte and ledger inventory only. It does not establish runtime behavior, valid migration execution, schema validity, test outcomes, safety, review disposition, or gate acceptance. The prior script was specific to 45ccc7 and included 004/service enumeration, so this evidence uses a bounded adaptation that changes only audit logic/scope and does not edit source, schemas, migrations, or ledgers.

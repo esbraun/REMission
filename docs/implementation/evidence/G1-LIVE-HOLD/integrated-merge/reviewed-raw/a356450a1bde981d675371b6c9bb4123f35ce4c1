@@ -1,0 +1,32 @@
+import pathlib,json,re,hashlib,subprocess
+p=pathlib.Path('.review-artifacts/ec49/browser'); primary=pathlib.Path('C:/Users/erics/Documents/Projects/REMission');shared='C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-r4-crit-261021'
+log=json.loads((p/'mcp-log.json').read_text(encoding='utf-8')); paths=set()
+for entry in log:
+ for c in entry['result'].get('content',[]):
+  if c.get('type')=='text':
+   for x in re.findall(r'artifacts[\\/]playwright-mcp[\\/][A-Za-z0-9_.-]+\.(?:yml|png|log)',c['text']):paths.add(x.replace('\\','/'))
+mapping=[];dest=p/'official';dest.mkdir(exist_ok=True)
+for rel in sorted(paths):
+ src=primary/rel; data=src.read_bytes();target=dest/src.name;target.write_bytes(data);mapping.append({'returned_staging_path':str(src),'owned_copy':str(target),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+(p/'staging-copy-map.json').write_text(json.dumps(mapping,indent=2))
+states={}
+import ast
+for first,last in [('before-bootstrap','after-bootstrap'),('before-workspace','after-workspace')]:
+ baseline=json.loads(json.loads((p/(first+'.json')).read_text())['stdout'])['tables']
+ current=json.loads(json.loads((p/(last+'.json')).read_text())['stdout'])['tables']
+ assert baseline.keys()==current.keys()
+ changes=[]
+ for table in baseline:
+  if table=='service_control':
+   a=list(ast.literal_eval(baseline[table][0]));b=list(ast.literal_eval(current[table][0]))
+   changes.append({'table':table,'before_clock':a[10],'after_clock':b[10]})
+   assert b[10]>=a[10]
+   a[10]=b[10]='allowed_session_bootstrap_receipt_clock';assert a==b
+  else:assert baseline[table]==current[table],(last,table)
+ states[first+' -> '+last]={'all_other_business_fields_equal':True,'clock':changes}
+(p/'persistence-comparison.json').write_text(json.dumps(states,indent=2))
+
+def blob(path):
+ data=path.read_bytes();r=subprocess.run(['git','hash-object','-w','--stdin'],input=data,capture_output=True,cwd=shared,check=True);oid=r.stdout.decode().strip();assert subprocess.run(['git','cat-file','blob',oid],capture_output=True,cwd=shared,check=True).stdout==data
+ return {'path':str(path),'git_blob':oid,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+entries=[blob(x) for x in sorted(p.rglob('*')) if x.is_file() and x.name not in ('manifest.json','seal-result.json')];(p/'manifest.json').write_text(json.dumps({'head':'ec49af47ec437abe7f4ba357205886a23f353402','base':'ec18cb4020ba239710a3fd615e365d5cd72b4d80','artifacts':entries},indent=2));result={'report':blob(p/'report.md'),'manifest':blob(p/'manifest.json'),'calls':len(log),'official_files':len(mapping),'states':states};(p/'seal-result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2))

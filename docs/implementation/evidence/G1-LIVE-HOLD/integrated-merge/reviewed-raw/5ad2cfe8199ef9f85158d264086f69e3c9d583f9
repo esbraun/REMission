@@ -1,0 +1,78 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "--show-toplevel",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-https-801-261021\nec49af47ec437abe7f4ba357205886a23f353402\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "merge-base",
+      "HEAD",
+      "ec18cb4020ba239710a3fd615e365d5cd72b4d80"
+    ],
+    "exit": 0,
+    "stdout": "ec18cb4020ba239710a3fd615e365d5cd72b4d80\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "exit": 0,
+    "stdout": "?? .review-artifacts/\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "6f40d4a29692d86e269b5598ffedd7b6bbbf2a05",
+      "HEAD",
+      "--",
+      "web"
+    ],
+    "exit": 0,
+    "stdout": "diff --git a/web/src/main.tsx b/web/src/main.tsx\nindex 353a17f..84c2799 100644\n--- a/web/src/main.tsx\n+++ b/web/src/main.tsx\n@@ -72,6 +72,7 @@ function App() {\n   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);\n   const [pendingApproval, setPendingApproval] = useState<string | null>(null);\n   const [later, setLater] = useState<string | null>(null);\n+  const [bootstrapVersion, setBootstrapVersion] = useState(0);\n   const [refreshVersion, setRefreshVersion] = useState(0);\n   const route = routeOf(path);\n \n@@ -89,7 +90,15 @@ function App() {\n     }\n     return result as T;\n   }\n-  useEffect(() => { void request<Session>('/api/session').then(setSession).catch(e => setError(String(e))).finally(() => setBooting(false)); }, []);\n+  useEffect(() => {\n+    const ticket = gate.current.capture();\n+    let active = true;\n+    void request<Session>('/api/session')\n+      .then(value => { if (active && gate.current.accepts(ticket)) setSession(value); })\n+      .catch(e => { if (active && gate.current.accepts(ticket)) setError(String(e)); })\n+      .finally(() => { if (active) setBooting(false); });\n+    return () => { active = false; };\n+  }, [bootstrapVersion]);\n   useEffect(() => {\n     function pop() { clearIdentity(); setPath(location.pathname); }\n     function warn(event: BeforeUnloadEvent) { if (dirty) { event.preventDefault(); event.returnValue = ''; } }\n@@ -147,7 +156,11 @@ function App() {\n     catch (e) { if (gate.current.accepts(ticket)) setError(String(e)); }\n   }\n   function edit(values: Partial<Draft>) { if (draft) { setDraft({ ...draft, ...values }); setDirty(true); setReviewing(false); } }\n-  function refresh() { gate.current.activate('refresh'); setWorkspace(null); setRefreshVersion(value => value + 1); }\n+  function refresh() {\n+    gate.current.invalidate(); setWorkspace(null);\n+    if (!session?.principal) { setBooting(true); setBootstrapVersion(value => value + 1); }\n+    else setRefreshVersion(value => value + 1);\n+  }\n   async function finishApproval(result: { bundle_id: string }, ticket: ReturnType<ContextGate['capture']>) {\n     if (!gate.current.accepts(ticket)) return;\n     setDirty(false); setPendingApproval(null); setReviewing(false); setNotice('Ordinary synthetic choice and follow-up persisted.'); navigate(`/patients/${route.patient}/history/${result.bundle_id}`, true);\ndiff --git a/web/tests/browser/bootstrap-busy-recover.js b/web/tests/browser/bootstrap-busy-recover.js\nnew file mode 100644\nindex 0000000..11c2067\n--- /dev/null\n+++ b/web/tests/browser/bootstrap-busy-recover.js\n@@ -0,0 +1,18 @@\n+// Execute through official Playwright MCP after the same actual holder RELEASE.\n+// The cookie must still be valid and SYN-02 must already have an active hold.\n+async (page) => {\n+  const before = await page.evaluate(() => window.bootstrapRegression.sessions.length);\n+  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n+  await page.getByRole('heading', { name: 'Synthetic patient 02', exact: true }).waitFor({ state: 'visible' });\n+  await page.getByText('Hold remains active.', { exact: true }).first().waitFor({ state: 'visible' });\n+  const result = await page.evaluate(async () => {\n+    const workspace = await (await fetch('/api/patients/SYN-02')).json();\n+    return { statuses: window.bootstrapRegression.sessions, identity: document.querySelector('h1')?.textContent,\n+      stage: workspace.stage, workflow: workspace.snapshot.workflow, permissions: workspace.permissions,\n+      findings: [...document.querySelectorAll('input[name^=\"finding-\"]')].map(input => input.value),\n+      selectedOptions: document.querySelectorAll('input[name=\"option\"]:checked').length };\n+  });\n+  if (result.statuses.length !== before + 1 || result.statuses.at(-1) !== 200) throw new Error('Visible refresh must repeat GET /api/session once after RELEASE');\n+  if (result.stage !== 'ASSIGN-09' || result.workflow.data_readiness !== 'stale' || result.workflow.support_mode !== 'paused' || result.permissions.approve_ordinary || result.selectedOptions || result.findings.some(Boolean)) throw new Error('Recovered identity must show current held/unready state and empty local input');\n+  return { phase: 'same page recovered without reload or sign-in', ...result };\n+}\ndiff --git a/web/tests/browser/bootstrap-busy-start.js b/web/tests/browser/bootstrap-busy-start.js\nnew file mode 100644\nindex 0000000..2b917e7\n--- /dev/null\n+++ b/web/tests/browser/bootstrap-busy-start.js\n@@ -0,0 +1,24 @@\n+// Execute through the official Playwright MCP browser_run_code tool only.\n+// A real separate process must already hold this deployment's admission flock.\n+async (page) => {\n+  await page.addInitScript(() => {\n+    if (window.bootstrapRegression) return;\n+    window.bootstrapRegression = { sessions: [] };\n+    const fetchOriginal = window.fetch;\n+    window.fetch = async (...args) => {\n+      const response = await fetchOriginal(...args);\n+      if (String(args[0]) === '/api/session') window.bootstrapRegression.sessions.push(response.status);\n+      return response;\n+    };\n+  });\n+  await page.goto('http://127.0.0.1:8771/patients/SYN-02/current');\n+  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n+  const before = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n+  if (before.statuses.join(',') !== '503' || before.text.includes('Dr Alice')) throw new Error('Bootstrap must refuse under the actual gate without restoring identity');\n+  // Retrying before RELEASE must remain fail-closed and keep a usable retry.\n+  await page.getByRole('button', { name: 'Refresh current information', exact: true }).click();\n+  await page.getByRole('button', { name: 'Refresh current information', exact: true }).waitFor({ state: 'visible' });\n+  const after = await page.evaluate(() => ({ statuses: window.bootstrapRegression.sessions, text: document.body.textContent }));\n+  if (after.statuses.join(',') !== '503,503' || after.text.includes('Dr Alice')) throw new Error('Busy bootstrap retry must issue a request and remain unauthenticated');\n+  return { phase: 'real gate still held', sessionStatuses: after.statuses, refreshVisible: true, identityVisible: false };\n+}\ndiff --git a/web/tests/browser/bootstrap-busy.md b/web/tests/browser/bootstrap-busy.md\nnew file mode 100644\nindex 0000000..37b1f93\n--- /dev/null\n+++ b/web/tests/browser/bootstrap-busy.md\n@@ -0,0 +1,11 @@\n+# Rendered-app bootstrap admission regression\n+\n+Run these browser recipes through the official Playwright MCP tools against the own isolated8771 deployment. They use the actual built React app and actual server session/admission gate. They are not Node helper tests, a CLI browser replacement, intercepted network responses or a claim that a copied-image build executes the browser. The supporting Node context test only checks epoch semantics.\n+\n+1. Bind exact source/image/assets and log in as public fixture Alice. Create an active SYN02 concern with the visible configured concern control; record the owned session cookie and current held/unready workspace. Do not copy another deployment's database or cookies.\n+2. Start a separate process with an exclusive flock on this deployment's exact admission lock; observe its explicit READY barrier. Keep it held. Use a cold navigation to /patients/SYN-02/current with the valid cookie. Execute bootstrap-busy-start.js through official MCP. It observes bootstrap503 and presses the actual refresh button while the gate is still held, requiring a second503 request and no restored identity.\n+3. Explicitly release that holder, observe RELEASE and process exit. Execute bootstrap-busy-recover.js in the SAME page. It presses the visible refresh and requires exactly one new GET /api/session200, restores Alice and the current held/unready patient, and verifies empty local review/choice input. No full page reload or sign-in is allowed between the failed bootstrap and this recovery. The old801/47da implementation fails this schedule because its refresh makes zero session requests.\n+4. Repeat with an expired/revoked cookie: after RELEASE and visible refresh the session bootstrap may return an anonymous200; the actual sign-in form must remain, with no doctor/patient/local draft content. Reauthentication is explicit. Run the existing expiry/reauth/draft-clearing and stale-context browser cases against the new assets, including late results after identity change and ordinary authenticated busy-workspace refresh.\n+5. Preserve the full official raw sequence, actual browser metadata (MCP package version unavailable unless exposed), network statuses, desktop/narrow screenshots and UUID holder/setup command stdout/stderr with source/image bindings. Record failure and corrected reruns without relabeling historical801/47da artifacts.\n+\n+The recipe's fixed8771 URL is task-private. A reviewer can use an independently reserved port by changing only the recipe invocation's URL, recording the exact invocation bytes. Existing8765\u20138770 stacks and their databases/containers remain preserved.\ndiff --git a/web/tests/context.test.mjs b/web/tests/context.test.mjs\nindex 2972231..52d89f2 100644\n--- a/web/tests/context.test.mjs\n+++ b/web/tests/context.test.mjs\n@@ -21,6 +21,15 @@ test('logout and same-doctor login invalidate every pre-logout response', () =>\n   assert.equal(gate.accepts(gate.capture()), true);\n });\n \n+test('refresh rejects an earlier response even when the same workspace context returns', () => {\n+  const gate = new ContextGate();\n+  const old = gate.activate('alice/A/current');\n+  gate.invalidate();\n+  const current = gate.activate('alice/A/current');\n+  assert.equal(gate.accepts(old), false);\n+  assert.equal(gate.accepts(current), true);\n+});\n+\n test('delayed logout success and failure cannot notify a reauthenticated same-doctor workspace', async () => {\n   for (const fails of [false, true]) {\n     const gate = new ContextGate(); gate.activate('alice/A/current');\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-https-801-261021,target=/source,readonly",
+      "-w",
+      "/source/web",
+      "node:24.22.1-bookworm-slim@sha256:1681862882da07ee5476fee047bcf34138833f1df42633bb25bcb0f438d5bf3d",
+      "node",
+      "--test",
+      "tests/context.test.mjs"
+    ],
+    "exit": 0,
+    "stdout": "\u2714 a late response cannot cross patient, task, decision or historical context (0.613896ms)\n\u2714 logout and same-doctor login invalidate every pre-logout response (0.120448ms)\n\u2714 refresh rejects an earlier response even when the same workspace context returns (0.083038ms)\n\u2714 delayed logout success and failure cannot notify a reauthenticated same-doctor workspace (0.834096ms)\n\u2139 tests 4\n\u2139 suites 0\n\u2139 pass 4\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 126.750323\n",
+    "stderr": ""
+  }
+]

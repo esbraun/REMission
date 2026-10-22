@@ -1,0 +1,2 @@
+import json,pathlib,subprocess
+p=pathlib.Path('.review-artifacts');r=json.loads((p/'current-head-raw.json').read_text());cmd=r['command'][:-1]+['-m','unittest','-v','test_live_hold.LiveWorkflowTests.test_whole_archive_coordinator_atomic_aggregate_and_retry'];v=subprocess.run(cmd,capture_output=True,text=True);out={'head':r['head'],'command':cmd,'exit_code':v.returncode,'stdout':v.stdout,'stderr':v.stderr};(p/'current-head-positive.json').write_text(json.dumps(out,indent=2));print(json.dumps(out,indent=2))

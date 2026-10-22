@@ -1,0 +1,329 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "ExternalTargetEvidence": {
+      "additionalProperties": false,
+      "description": "Independently frozen inputs, verified against their artifacts by G1.\n\nThe consumer supplies these trusted artifacts, never the binding's own\ncopies. Targets are derived here from the registered scenario operation.",
+      "properties": {
+        "reference_contrast": {
+          "title": "Reference Contrast",
+          "type": "number"
+        },
+        "smallest_estimator_se": {
+          "exclusiveMinimum": 0,
+          "title": "Smallest Estimator Se",
+          "type": "number"
+        },
+        "source_pilot": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "source_reference": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "source_se": {
+          "exclusiveMinimum": 0,
+          "title": "Source Se",
+          "type": "number"
+        },
+        "source_se_mcse": {
+          "minimum": 0,
+          "title": "Source Se Mcse",
+          "type": "number"
+        }
+      },
+      "required": [
+        "source_reference",
+        "source_pilot",
+        "reference_contrast",
+        "source_se",
+        "source_se_mcse",
+        "smallest_estimator_se"
+      ],
+      "title": "ExternalTargetEvidence",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:external-calibration-evidence",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Trusted evaluator output loaded by hash before target construction.",
+  "properties": {
+    "comparison_pilot_trials": {
+      "const": 1000,
+      "title": "Comparison Pilot Trials",
+      "type": "integer"
+    },
+    "comparison_pilots": {
+      "items": {
+        "$ref": "#/$defs/Artifact"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "title": "Comparison Pilots",
+      "type": "array"
+    },
+    "comparison_sizes": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Comparison Sizes",
+      "type": "array"
+    },
+    "contract_version": {
+      "const": "1.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "evidence": {
+      "$ref": "#/$defs/ExternalTargetEvidence"
+    },
+    "execution": {
+      "enum": [
+        "contract_fixture",
+        "engine_run"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "kind": {
+      "const": "external_calibration_evidence",
+      "title": "Kind",
+      "type": "string"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "source_reference": {
+      "$ref": "#/$defs/Artifact"
+    },
+    "source_shift_pilot": {
+      "$ref": "#/$defs/Artifact"
+    },
+    "source_shift_pilot_trials": {
+      "const": 1000,
+      "title": "Source Shift Pilot Trials",
+      "type": "integer"
+    },
+    "source_shift_trial_size": {
+      "const": 200,
+      "title": "Source Shift Trial Size",
+      "type": "integer"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "contract_version",
+    "run_id",
+    "producer",
+    "execution",
+    "source_commit",
+    "runtime",
+    "evidence",
+    "source_reference",
+    "source_shift_pilot",
+    "source_shift_pilot_trials",
+    "source_shift_trial_size",
+    "comparison_pilots",
+    "comparison_sizes",
+    "comparison_pilot_trials"
+  ],
+  "title": "ExternalCalibrationEvidence",
+  "type": "object"
+}

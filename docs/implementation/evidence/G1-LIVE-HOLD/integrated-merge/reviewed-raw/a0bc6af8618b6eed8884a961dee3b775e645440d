@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "git",
+      "remote",
+      "-v"
+    ],
+    "exit_code": 0,
+    "stdout": "origin\thttps://github.com/esbraun/REMission.git (fetch)\norigin\thttps://github.com/esbraun/REMission.git (push)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "fetch",
+      "origin",
+      "47da5aed10f0d6363c0bbfc538f0547732ae6e3d"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "From https://github.com/esbraun/REMission\n * branch            47da5aed10f0d6363c0bbfc538f0547732ae6e3d -> FETCH_HEAD\n"
+  },
+  {
+    "command": [
+      "git",
+      "checkout",
+      "--detach",
+      "47da5aed10f0d6363c0bbfc538f0547732ae6e3d"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "HEAD is now at 47da5ae docs(foundation): document qualified private live launcher\n"
+  }
+]

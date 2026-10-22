@@ -1,0 +1,12 @@
+import pathlib,subprocess,json,hashlib
+p=pathlib.Path('.review-artifacts');paths=['services/foundation/followup_cutover.py','services/foundation/cutover.py','services/foundation/live_hold.py','services/foundation/store.py','contracts/service/live_hold.py','contracts/domain/evidence_v2.py'];data={'head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'base':'ec18cb4020ba239710a3fd615e365d5cd72b4d80','sources':[]}
+for path in paths:
+ raw=pathlib.Path(path).read_bytes();data['sources'].append({'path':path,'tree_blob':subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip(),'raw_sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+(p/'amendment-source-checks.json').write_text(json.dumps(data,indent=2))
+prior=json.loads((p/'manifest.json').read_text())
+for item in prior['artifacts']:assert hashlib.sha256((p/item['path']).read_bytes()).hexdigest()==item['sha256']
+entries=[]
+for f in sorted(p.glob('amendment-source-*')):
+ if f.name=='amendment-source-manifest.json':continue
+ raw=f.read_bytes();oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw;entries.append({'path':f.name,'raw_git_blob':oid,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'cat_file_verified':True})
+m={'candidate':data['head'],'base':data['base'],'prior_artifacts_unchanged':True,'scope':'bounded source observations only; no readiness disposition','artifacts':entries};raw=json.dumps(m,indent=2).encode();(p/'amendment-source-manifest.json').write_bytes(raw);oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw;print(json.dumps(m,indent=2));print('MANIFEST',oid)

@@ -1,0 +1,91 @@
+# Independent R1 executable-contract critique
+
+2026-10-21. **ready-for-implementation — PLAN ONLY** for the exact candidate and base below. No unresolved material plan finding remains from this review. This disposition does not accept implementation, deployed behavior, scientific producers, browser evidence or human/clinical review.
+
+## Exact candidate, reviewer and scope
+
+- Candidate head: `756ce26bf454cce89933439f03572cd34b29eda8`.
+- Accepted target/base and verified merge-base: `ec18cb4020ba239710a3fd615e365d5cd72b4d80`.
+- Own detached checkout: `C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-r1-critic-astra-20261021`.
+- Assigned model/effort: `gpt-6-astra / medium`; these are assignment settings, without independent effective-model introspection.
+- Reviewer task: `/root/g1_live_hold_critic_astra`; observed nonsecret thread ID: `01a16080-0803-7c32-a839-2453468e357d`.
+- Full replacement: `docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md`, all 254 lines / 66,720 committed bytes read. Exact raw/committed blob `e6d39d6a0bce37a554cd768e14ee0916edf5da5c`.
+- Candidate evidence manifest: `22f993e2e5f9050b8d24667336fa1278d57ea5d3`; preserved-input envelope: `3185f4f1cd7639cb9d3d71caacf2357d36a3fbf0`.
+- Prior complete changes_requested report remains `97082c7ec19fc10f1e5475df60c1a4da218ffe02`; original candidate remains `a58e022945d2077d7214d6c739f95bace41824c2`. This is a fresh review of the full replacement, not acceptance of a patch summary.
+
+Verified root/HEAD/merge-base/detached clean state before reading. Previous preparation/review worktrees and artifacts remain intact. No live author checkout accessed. No proposal/source edits, implementation, private scientific-engine inspection, runtime test, simulation, service, Docker, browser, commit, merge or PR. No helper spawned. Root alone routes assignments. The only new files are this review and its independent evidence/manifest in this checkout.
+
+## Severity-ordered disposition of the original findings
+
+### Original P1 — Cross-process authority/capability generation and ec18 cutover: resolved in the plan
+
+**Replacement locations:** §2A, lines 44–61; §3, lines 82–88; §7, lines 203–209.
+
+The common `service_control` row binds database instance, minimum capability, active generation and authority/rules digests. Startup must validate before legacy Store initialization or serving; every current read/mutation rechecks under the common gate, including CLI/admin/internal entrypoints. Stale supported workers fail before current projection, write, receipt alias or cached success. The same generation is rechecked after a writer wait.
+
+Initial ec18 cutover explicitly stops/drains all old API/CLI/replay/admin workers, disables restart/launch configuration, verifies quiescence, preserves the old DB offline and restores into a new deployment-private volume accessible only to the qualified runtime. New routing is conditional on process/mount/capability checks. Thus the old ec18 worker, which cannot enforce the new row/gate, is addressed by deployment isolation rather than being assumed cooperative.
+
+Later registry/rule changes require stopped-worker cutover, monotonic generation even when bytes revert, and a gate-held administrative transaction. Open episodes retain obligations; patients get fresh invalidating versions/decisions; prior reviews become stale. Disabled integration never disables existing latch enforcement. The deterministic stale G1-worker/G2-registry, grant revocation, rule change, ec18 volume-access and cutover crash schedules answer the earlier counterexample. These obligations still require actual implementation and deployment evidence.
+
+### Original P2 — Current assessment versus actual evidence publication: resolved in the plan
+
+**Replacement locations:** §2 request contract, lines 72–76; §6, lines 184–198.
+
+Caller assessment/recording/availability timestamps are rejected. The current authenticated review is server-authored at C after the gate, current generation/owner/session checks and a committed evidence read. It cannot precede the active generation, reviewed trigger/obligation receipts or last committed patient operation. The service does not turn an earlier external assessment into a current service review.
+
+`CommittedEvidenceAccess` binds exact stored evidence and committed object/receipt identity at C. Archive precommit received_at is explicitly insufficient proof of earlier service accessibility. Event rows with no historical live receipt establish only present committed visibility. Prior live-review evidence must be committed and ordered before this review; same-transaction/self-reference cannot supply its own evidence. Source clocks must also be no later than C. Clearance revalidates exact heads, current authority, versions and required evidence.
+
+The precise former 08:00 source / 10:00 archive / 10:01 generation / 09:00 claimed assessment counterexample now rejects the caller timestamp; an actual 10:02 review records present committed knowledge. Equal-time acceptance relies on committed sequence, not timestamp comparison alone. No arbitrary clinical maximum-age, hazard or clearance interval was introduced. This resolves the structural chronology gap without inventing clinical policy.
+
+### Original P2 — Supplementary safety envelope and real consumers: resolved in the plan
+
+**Replacement locations:** §3A, lines 94–142, with current-state mapping at line 135 and immutable product publication at lines 98/106/136.
+
+The replacement names `LIVE-SAFETY-EXPORT / 1.0.0`, separate schema URNs, new service schema/binding/module paths and a three-file immutable product. The existing nested LearnerHistory v1/v2 schema/serialization is preserved. Manifest fields bind patient/K, service instance/generation, observed artifact, journal prefix, snapshot and receipt. Trusted authority is out of band and binds exact expected bytes/prefix, with fixtures explicitly separated from qualified service output.
+
+The journal has a per-patient sequence distinct from the DB-wide operation cursor, a required baseline, predecessor hashes, closed operation semantics, strict prefix selection and explicit unknown status before initialization. A recomputed shorter prefix cannot satisfy trusted completeness. Review/dispute/authority changes cannot clear an episode; clearance requires matching prior visible satisfied review and no invalidating intervening fact. Ordinary mutations that stale reviews append conservative journal metadata without adding an extra patient version bump. Current operational permission uses inclusive durable state, never this historical strict fold.
+
+Actual entrypoints are mapped: foundation producer and owned export/download, pure verifier returning full LiveSafetyContext, explicit learner admission, explicit worker mode/reader and live-required dispatcher behavior. Existing observed-only readers remain unchanged and cannot masquerade as live-safety consumers. Wrong/missing product or legacy worker fails instead of silently dropping safety. The publication receipt/hash ordering avoids a manifest/receipt self-reference. Statistical use remains separately qualified.
+
+## Remaining contract assessed across the full replacement
+
+No additional material plan finding was identified. The following are required implementation obligations already present in the reviewed plan, not executed checks or newly invented policy.
+
+1. **Trusted source, actor and ownership:** exact installed package/run/partition/patient/source grants and accepted dependency hashes establish permitted live invalidation. Actual authenticated current owning account is distinct from archived simulation actors. No uploader owner/path/authority or hash alone grants permission. Current generation and auth checks precede operation/receipt admission; missing or revoked grants deny as specified. Actual producer qualification is still separate.
+
+2. **Receipt and concurrency:** gate-before-DB order, finished initial read, final checks after writer wait and no nested gate/transaction acquisition are coherent for the stated local single-SQLite runtime. Authenticated R is explicitly distinct from transport arrival and durable acceptance. The writer-blocked hold retains the gate so later approval/current readiness reads cannot overtake it. Both serial commit orders, equality, busy responses and precommit/aftercommit crashes have discriminating required outcomes. This does not claim durable network delivery. Linux OS-lock implementation and separate-process tests remain mandatory; Windows is not silently supported.
+
+3. **Durability and idempotency:** latch, version/readiness change, owned obligation, audit/decision/receipt/key/cursor publish atomically. Cross-session key scope and semantic duplicate rules retain one effective operation, original receipt and task/version effect. Rejection does not reserve a success key. Old successful approval retrieval is historical information, not permission for another action. Novel invalidation/review/clearance deltas and coordinator aggregate deltas are explicit. Alias/rejected/retry requests do not fabricate journal operations.
+
+4. **Out-of-order, future and disputed evidence:** missing/exact-stale dependencies reject without successful cursor/subset publication. Future source declarations reject. Exact lineage refs are not silently rebound. Corrections/retractions and disputes invalidate review usability while preserving latch and obligations; historical archive lineage and live safety are distinct. Clock regression is fail-closed rather than fabricated advancement. Monotonic receipt time plus patient sequence supports strict prefix selection, including all-equal-time batches.
+
+5. **All active obligations and multiple episodes:** lines 55 and 196 explicitly preserve the union of unresolved obligations, prohibit weaker substitutes, and block whole-episode clearance if any active requirement lacks an accepted rule. A supported concern review cannot clear a mixed threshold episode. Pending supported review can be recorded without becoming satisfied whole-episode review. Episode/generation/digest/global-version checks protect recurrence and concurrent H1/H2 entry/clearance; clearing H1 cannot cover H2. Review creation itself does not clear. Valid final clearance returns to assessment only, with other live/enumerated holds still effective.
+
+6. **Manual service rule versus science:** the structural authenticated clinician-concern rule can support a synthetic positive service fixture. It is not a claim of real clinician participation or evidence that a threshold-specific clearance criterion is valid. Missing threshold clearance stays blocked under separately critiqued T-OBS2-CLEARANCE-POLICY. No seven-day course, hidden-L threshold, timer, clinical freshness default or subjective burden law was added. Resumed simulator clearance remains a separate dependency.
+
+7. **Reachable writer and import protection:** raw event/append/legacy replay/full-input guards remain; authenticated coordinator is a server-internal path with no caller-trusted bypass. Whole-package validation and one transaction prevent a harmless subset from being falsely reported as refreshed current readiness. Generic state, reports/events, consent refresh, refit completion, replay and restart must apply the latch overlay. Cutover covers ordinary stale API/CLI workers in addition to the source-level guard. Historical v1 bytes remain supported as history, not incomplete current authority.
+
+8. **History and consumer isolation:** original display/archive/raw bytes remain immutable. Service journal is additive, source archive clocks remain original, and strict learner equality excludes the new fact while current accepted safety includes it. The new summary is saved-display service metadata, not an amendment of the observed DecisionSnapshot schema. Scope `independent_live_holds` means not_held is not global readiness; prebaseline unknown is explicit. No private seeds/truth or extra likelihood observation enters the supplementary product.
+
+9. **UI/MCP:** §10 retains official Playwright MCP validation for changed held permissions, tasks/evidence/rules, stale/busy/refresh behavior, drafts, session transitions, assessment re-entry, multiple episodes, persistence and history even with no JSX change. A staged manual-clearance UI remains explicitly incomplete. Current visible hold behavior still requires MCP verification; API/SQLite acceptance cannot substitute. Documentation-only review does not need a browser, and no full clinician-flow/current-demo acceptance follows from this disposition.
+
+## Observed documentation/source checks
+
+- Verified exact root/HEAD/base and clean detached checkout before reads; no candidate edits afterward.
+- Read the complete replacement in ranges 1–64, 65–145 and 146–254. Read its README/handoff, manifest, verifier and assembly script. Verified all three assembly fragments are included verbatim in the full replacement; implementation does not need an omitted fragment.
+- Inspected `R1/verify_docs.py` before running its default read-only mode. It passed: 22 unchanged source Git identities, 9 complete preserved raw objects, 18 local links, exact original proposal and ledger bytes, repair scope and whitespace. No `--write` used; assembly script was read, not run.
+- Independently verified all 9 manifest-indexed raw blobs against their lengths/SHA256 and exact committed bytes, including the 66,720-byte proposal. Independently verified all 22 source identities against accepted base and candidate and retained those source IDs/hashes in `live-hold-r1-independent-checks.json`.
+- Independently decoded and byte-verified all 9 preserved raw inputs. The original full rejection report, manifest and doccheck remain exact, including previously reported failure metadata. Raw CRLF source-check and committed LF source-check remain distinct preserved identities. No relabeling of bytes was needed in this R1 check.
+- Verified all five original candidate files are unchanged from a58; the R1 repair adds exactly ten paths. All 18 proposal links resolve. `git diff --check ec18cb4020ba239710a3fd615e365d5cd72b4d80 756ce26bf454cce89933439f03572cd34b29eda8` passed.
+- Reinspected consumed accepted-source seams in this new checkout: actual Store startup/transaction behavior, CLI seed/reset/replay, strict history/projection visibility and parser boundaries, actual learner admission/worker readers, manifest-last publication, and relevant current auth/approval/state/archive/replay guard locators. Their full base identities match the earlier source review. No private scientific implementation inspected.
+- No failed command/check occurred during this refreshed review. Earlier author's wildcard/command-length attempts and the critic's initial CRLF checkout comparison failure are preserved by the supplied historical evidence, not turned into runtime results.
+- After completing the independent checks, consumed root-routed Luna's full byte-inventory report `446494d6a0e0c2365ad0b1e81ab42e8e296eba52` and manifest `f66e225008cdd867e68c9a41b08137ffd22dd385` through Git objects in this own checkout. Its 22-source/9-file/9-object results corroborate these checks and explicitly distinguish checkout CRLF from Git bytes. Its two initial inspection/manifest-generation failures are retained in that report; they are not failures of this critic's checks or runtime tests. No Luna live checkout accessed. Its inventory does not supply technical acceptance.
+- Checks above are documentation/provenance/source inspection only. No lock implementation, cutover, migration, HTTP process race, durable crash recovery, product exporter, consumer runtime, browser or scientific result was executed or accepted.
+
+## Handoff and limits
+
+**ready-for-implementation — PLAN ONLY**, exact head `756ce26bf454cce89933439f03572cd34b29eda8` against accepted base `ec18cb4020ba239710a3fd615e365d5cd72b4d80`.
+
+Root may use this disposition for bounded implementation dispatch under the repository workflow. Preserve the exact binding and all documented acceptance cases; implementation/library/runtime choices must prove this contract and return for separate independent exact-code review and integrated verification. A changed plan head or target base needs refreshed review as applicable.
+
+This plan disposition does not close B-OBS2-LIVE-HOLD runtime implementation, full G1, actual producer qualification, scientific clearance/burden definitions, statistical gates, official MCP visible workflow, human-factors or clinical gates. It does not authorize claims of safe clinical operation or real clinical review.

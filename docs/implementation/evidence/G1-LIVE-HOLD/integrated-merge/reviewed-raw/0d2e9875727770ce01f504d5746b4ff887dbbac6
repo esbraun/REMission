@@ -1,0 +1,302 @@
+[
+    {
+        "Id": "45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c",
+        "Created": "2026-10-22T01:07:18.442345677Z",
+        "Path": "python",
+        "Args": [
+            "-m",
+            "uvicorn",
+            "services.foundation.server:app",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8765",
+            "--no-access-log"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 67387,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-22T01:07:18.511443588Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:c64a5b038e83b0a246b0b296655f6394da7447e6827da36f9eac01b777393e3b",
+        "ResolvConfPath": "/var/lib/docker/containers/45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c/hostname",
+        "HostsPath": "/var/lib/docker/containers/45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c/hosts",
+        "LogPath": "/var/lib/docker/containers/45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c/45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c-json.log",
+        "Name": "/remission-g1-live-hold-20261021-d622c80c-service",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "remission-g1-live-hold-20261021-d622c80c-app",
+            "PortBindings": {
+                "8765/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "8770"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "Tmpfs": {
+                "/tmp": "rw,noexec,nosuid,size=128m"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 2147483648,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 4294967296,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": "remission-g1-live-hold-20261021-d622c80c-database",
+                    "Target": "/data"
+                },
+                {
+                    "Type": "volume",
+                    "Source": "remission-g1-live-hold-20261021-d622c80c-fixtures",
+                    "Target": "/fixtures",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "volume",
+                    "Source": "remission-g1-live-hold-20261021-d622c80c-exports",
+                    "Target": "/exports"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "remission-g1-live-hold-20261021-d622c80c-database",
+                "Source": "/var/lib/docker/volumes/remission-g1-live-hold-20261021-d622c80c-database/_data",
+                "Destination": "/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "remission-g1-live-hold-20261021-d622c80c-exports",
+                "Source": "/var/lib/docker/volumes/remission-g1-live-hold-20261021-d622c80c-exports/_data",
+                "Destination": "/exports",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "remission-g1-live-hold-20261021-d622c80c-fixtures",
+                "Source": "/var/lib/docker/volumes/remission-g1-live-hold-20261021-d622c80c-fixtures/_data",
+                "Destination": "/fixtures",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": false,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "45d32f0372a7",
+            "Domainname": "",
+            "User": "10001:10001",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "8765/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "REMISSION_CONTROL_BUNDLE=/fixtures/bundle.json",
+                "REMISSION_ARCHIVE_CONFIG=/fixtures/archives.json",
+                "REMISSION_LIVE_EXPORT_ROOT=/exports",
+                "REMISSION_RUNTIME_REF=/fixtures/runtime.json",
+                "REMISSION_SOURCE_COMMIT=47da5aed10f0d6363c0bbfc538f0547732ae6e3d",
+                "REMISSION_ORIGIN=http://127.0.0.1:8770",
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.7",
+                "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+                "PYTHONDONTWRITEBYTECODE=1",
+                "PYTHONUNBUFFERED=1",
+                "OMP_NUM_THREADS=1",
+                "OPENBLAS_NUM_THREADS=1",
+                "MKL_NUM_THREADS=1",
+                "PYTENSOR_FLAGS=floatX=float64",
+                "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+                "PYTHONPATH=/app"
+            ],
+            "Cmd": [
+                "python",
+                "-m",
+                "uvicorn",
+                "services.foundation.server:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8765",
+                "--no-access-log"
+            ],
+            "Image": "sha256:c64a5b038e83b0a246b0b296655f6394da7447e6827da36f9eac01b777393e3b",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": null,
+            "Labels": {
+                "remission.task": "remission-g1-live-hold-20261021-d622c80c"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "ef9b6da69ae60522ef016ffc10098e233a3235f8ef4357f5bcba5ceccc627182",
+            "SandboxKey": "/var/run/docker/netns/ef9b6da69ae6",
+            "Ports": {
+                "8765/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "8770"
+                    }
+                ]
+            },
+            "Networks": {
+                "remission-g1-live-hold-20261021-d622c80c-app": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "f1ce5f6ad25244cdb288360a365f8dcaa9a523f717d4063fb4938e12cd8f316e",
+                    "EndpointID": "c9edb5096e13244a89ced4ec92b6406e69070c4d6a23ca91b26a4528918464d2",
+                    "Gateway": "192.168.0.1",
+                    "IPAddress": "192.168.0.2",
+                    "MacAddress": "46:22:2a:b4:a1:6c",
+                    "IPPrefixLen": 20,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": [
+                        "remission-g1-live-hold-20261021-d622c80c-service",
+                        "45d32f0372a7"
+                    ]
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:f1c8e8b4648ff007e877100eac509a06626967be67d5b806cbf9da7622fce0d5",
+            "size": 5032,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]

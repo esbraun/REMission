@@ -1,0 +1,244 @@
+[
+  {
+    "metadata": "0633f2088af544d6bcdc9d4ba1092ce2.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "exit": 0,
+    "elapsed": 1.3234765529632568,
+    "summary": [],
+    "stdout": "No broken requirements found.\n",
+    "warnings": []
+  },
+  {
+    "metadata": "354265339e7e46e9bd5a995c85c4472a.json",
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/integration/replay",
+      "-v"
+    ],
+    "exit": 0,
+    "elapsed": 225.47824239730835,
+    "summary": [
+      "Ran 78 tests in 222.819s",
+      "OK"
+    ],
+    "stdout": "",
+    "warnings": [
+      "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.",
+      "test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution (test_live_hold.LiveWorkflowTests.test_exact_archived_resolution_amendment_adds_task_without_clearance_and_rejects_scope_substitution) ... /usr/local/lib/python3.13/site-packages/pydantic/main.py:520: UserWarning: Pydantic serializer warnings:",
+      "  PydanticSerializationUnexpectedValue(Expected `tuple[str, str, str, str]` - serialized value may not be as expected [field_name='source_key', input_value=['synthetic-fixture', 'ob...ion', 'foreign-episode'], input_type=list])"
+    ]
+  },
+  {
+    "metadata": "53c4167cb54447a3b1cd1b17e785dfe4.json",
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/library/dr",
+      "-v"
+    ],
+    "exit": 0,
+    "elapsed": 4.709609746932983,
+    "summary": [
+      "Ran 11 tests in 3.247s",
+      "OK"
+    ],
+    "stdout": "",
+    "warnings": []
+  },
+  {
+    "metadata": "551cebbd860741cd976c61fba73e4899.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "contracts.runs.export_v2",
+      "--check"
+    ],
+    "exit": 0,
+    "elapsed": 1.9529948234558105,
+    "summary": [],
+    "stdout": "PASS: separate v2 run products and exact representation/schema bindings\n",
+    "warnings": []
+  },
+  {
+    "metadata": "57d7e047bf9747428146ba22305b8d82.json",
+    "command": [
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-r4-crit-261021,target=/source,readonly",
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "tooling/foundation/qualify.py"
+    ],
+    "exit": 0,
+    "elapsed": 1.5566425323486328,
+    "summary": [],
+    "stdout": "{\n  \"status\": \"pass\",\n  \"sqlite_version\": \"3.54.1\",\n  \"sqlite_source_id\": \"2026-10-16 14:45:20 555e07ef33f69a0957d24d8e555b702464a131d6f1607f4c3c1e4551e8e6ca76\",\n  \"packages\": {\n    \"fastapi\": \"0.157.0\",\n    \"starlette\": \"1.9.0\",\n    \"uvicorn\": \"0.54.0\",\n    \"argon2-cffi\": \"25.1.0\",\n    \"httpx\": \"0.28.1\",\n    \"pydantic\": \"2.14.1\"\n  },\n  \"checks\": [\n    \"actual ASGI route\",\n    \"Argon2 correct/wrong password\",\n    \"WAL/FULL/foreign_keys\",\n    \"two-connection writer exclusion\",\n    \"rollback\"\n  ]\n}\n",
+    "warnings": [
+      "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead."
+    ]
+  },
+  {
+    "metadata": "6fac0443c5e4428f93dace7391be8da0.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "contracts.domain.export",
+      "--check"
+    ],
+    "exit": 0,
+    "elapsed": 1.3788142204284668,
+    "summary": [],
+    "stdout": "Contract JSON Schema/dictionary match typed source\n",
+    "warnings": []
+  },
+  {
+    "metadata": "7dc3b63f3472438c8f5249b8c2c4f5ff.json",
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/contracts",
+      "-v"
+    ],
+    "exit": 0,
+    "elapsed": 3.072617769241333,
+    "summary": [
+      "Ran 67 tests in 1.167s",
+      "OK"
+    ],
+    "stdout": "",
+    "warnings": []
+  },
+  {
+    "metadata": "9606116c8ad4461e903b926b6ac96d4e.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "contracts.service.export",
+      "--check"
+    ],
+    "exit": 0,
+    "elapsed": 1.336313009262085,
+    "summary": [],
+    "stdout": "",
+    "warnings": []
+  },
+  {
+    "metadata": "a4284a12110c437aa9e7342b01c7a528.json",
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/run_contracts",
+      "-v"
+    ],
+    "exit": 0,
+    "elapsed": 85.30416655540466,
+    "summary": [
+      "Ran 54 tests in 81.953s",
+      "OK"
+    ],
+    "stdout": "",
+    "warnings": []
+  },
+  {
+    "metadata": "c5f9f8c861b747409219f50ac4facc5c.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "contracts.dgp.export",
+      "--check"
+    ],
+    "exit": 0,
+    "elapsed": 1.3289945125579834,
+    "summary": [],
+    "stdout": "DGP parameter/scenario artifacts match v1.2.0; independent fixtures remain v1.0.0\n",
+    "warnings": []
+  },
+  {
+    "metadata": "cb53335b4d2a45958ac95f35265ec269.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "contracts.runs.export",
+      "--check"
+    ],
+    "exit": 0,
+    "elapsed": 2.5079710483551025,
+    "summary": [],
+    "stdout": "Run interface schemas/dictionary and exact accepted source references match v1.0.0\n",
+    "warnings": []
+  },
+  {
+    "metadata": "d4347e77c6814dac9c980f2906d71986.json",
+    "command": [
+      "-w",
+      "/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "contracts.domain.export_v2",
+      "--check"
+    ],
+    "exit": 0,
+    "elapsed": 1.412890911102295,
+    "summary": [],
+    "stdout": "PASS: separate v2 domain products\n",
+    "warnings": []
+  },
+  {
+    "metadata": "de0486af984f4273bcc0d9240097875e.json",
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/library",
+      "-v"
+    ],
+    "exit": 0,
+    "elapsed": 2.5290863513946533,
+    "summary": [
+      "Ran 11 tests in 1.325s",
+      "OK"
+    ],
+    "stdout": "",
+    "warnings": []
+  }
+]

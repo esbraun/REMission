@@ -1,0 +1,16 @@
+import pathlib,subprocess,json,hashlib
+root=pathlib.Path.cwd(); ev=root/'.review-artifacts'
+def git(*args):return subprocess.check_output(['git',*args])
+paths=['services/foundation/live_hold.py','services/foundation/live_tasks.py','services/foundation/cutover.py','services/foundation/store.py','services/foundation/migrations/003_live_hold.sql','services/foundation/migrations/004_live_hold_followups.sql','contracts/service/live_hold.py','contracts/service/export.py','contracts/service/bindings-v1.json','docs/implementation/g1-live-hold-trigger-binding-supplement-r1-20261021.md','tests/integration/replay/live_helpers.py','tests/integration/replay/test_live_hold.py']
+checks={'root':git('rev-parse','--show-toplevel').decode().strip(),'head':git('rev-parse','HEAD').decode().strip(),'merge_base':git('merge-base','HEAD','ec18cb4020ba239710a3fd615e365d5cd72b4d80').decode().strip(),'sources':[]}
+for p in paths:
+ raw=(root/p).read_bytes(); checks['sources'].append({'path':p,'tree_blob':git('rev-parse','HEAD:'+p).decode().strip(),'raw_sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+checks['003_checkpoint_blob']=git('rev-parse','189b9902da288ef249a7216d3a121652fdf59210:services/foundation/migrations/003_live_hold.sql').decode().strip()
+checks['003_unchanged_from_accepted_plan_checkpoint']=checks['003_checkpoint_blob']==git('rev-parse','HEAD:services/foundation/migrations/003_live_hold.sql').decode().strip()
+base=json.loads((ev/'controls-raw.json').read_text())['command'][:-6]
+# Use captured immutable run controls, replacing only Python arguments.
+command=json.loads((ev/'subset-raw.json').read_text())['command'][:-1]+['-m','contracts.service.export','--check']
+r=subprocess.run(command,capture_output=True,text=True)
+checks['exporter']={'command':command,'exit_code':r.returncode,'stdout':r.stdout,'stderr':r.stderr}
+(ev/'source-checks.json').write_text(json.dumps(checks,indent=2),encoding='utf-8')
+print(json.dumps(checks,indent=2))

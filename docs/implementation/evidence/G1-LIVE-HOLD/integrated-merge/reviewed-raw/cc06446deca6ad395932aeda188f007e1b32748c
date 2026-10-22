@@ -1,0 +1,13 @@
+import pathlib,subprocess,json,hashlib
+p=pathlib.Path('.review-artifacts/final54'); e=pathlib.Path('docs/implementation/evidence/G1-LIVE-HOLD/bootstrap-repair')
+def git(*a): return subprocess.check_output(['git',*a])
+head=git('rev-parse','HEAD').decode().strip(); assert head=='54d0bb41cca44d3464b4547db23e6ca39edd9f0c'
+changes=git('diff','--name-only','ec49',head).decode().splitlines();assert all(x.startswith('docs/implementation/evidence/G1-LIVE-HOLD/') or x=='docs/implementation/g0-task-test-ledger-20261020.json' for x in changes)
+(p/'changed-paths.json').write_text(json.dumps(changes,indent=2))
+manifest=json.loads((e/'final-manifest.json').read_bytes()); tree={line.split('\t',1)[1]:line.split()[2] for line in git('ls-tree','-r',head).decode().splitlines()};total=0
+for x in manifest['files']:
+ path=e.parent/x['path'];raw=path.read_bytes();oid=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest(); assert len(raw)==x['bytes'] and hashlib.sha256(raw).hexdigest()==x['sha256'] and oid==x['raw_git_blob']==tree[path.as_posix()];total+=len(raw)
+code=(e/'verify-final.py').read_text();code=code.replace("sha(Path(name).read_bytes())","sha(git('show','HEAD:'+name))");code=code.replace("(E/'final-audit.json').write_text", "(Path('.review-artifacts/final54')/'audit.json').write_text")
+(p/'executed-audit.py').write_text(code);exec(compile(code,str(e/'verify-final.py'),'exec'),{'__file__':str(e/'verify-final.py'),'__name__':'__main__'})
+ledger='docs/implementation/g0-task-test-ledger-20261020.json';a=json.loads(git('show','ec49:'+ledger));b=json.loads(pathlib.Path(ledger).read_bytes());a.pop('live_hold_implementation');b.pop('live_hold_implementation');assert a==b
+r={'head':head,'base':git('merge-base',head,'ec18').decode().strip(),'remote':git('remote','get-url','origin').decode().strip(),'status':git('status','--short').decode(),'delta_files':len(changes),'only_evidence_and_ledger':True,'all_manifest_files':len(manifest['files']),'bytes':total,'all_raw_sha_git_tree_match':True,'manifest_sha256':hashlib.sha256((e/'final-manifest.json').read_bytes()).hexdigest(),'build_runtime_inputs_unchanged_from_ec49':True,'ledger_other_fields_equal':True};(p/'verification.json').write_text(json.dumps(r,indent=2));print(json.dumps(r))

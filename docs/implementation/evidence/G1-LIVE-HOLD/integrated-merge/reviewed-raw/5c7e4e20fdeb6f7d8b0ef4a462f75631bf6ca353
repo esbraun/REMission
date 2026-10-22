@@ -1,0 +1,2 @@
+import pathlib,json,subprocess
+p=pathlib.Path('.review-artifacts');old=json.loads((p/'closure-oracle-raw.json').read_text());cmd=old['command'][:-1]+['/app/.review-artifacts/namespace-oracle.py'];r=subprocess.run(cmd,capture_output=True,text=True);out={'head':old['head'],'command':cmd,'exit_code':r.returncode,'stdout':r.stdout,'stderr':r.stderr};(p/'namespace-raw.json').write_text(json.dumps(out,indent=2));print(json.dumps(out,indent=2))

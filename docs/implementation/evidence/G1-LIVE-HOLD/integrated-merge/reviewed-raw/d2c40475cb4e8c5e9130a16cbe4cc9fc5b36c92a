@@ -1,0 +1,21 @@
+# G1 live hold compatibility inventory (b65 checkpoint)
+
+Scope: Source-byte and ledger inventory only; b65 checkpoint, not frozen/reviewed; no runtime/tests/semantic correctness claims.
+Checkout: `C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-compatibility-luna-20261021` at `b65f2760159a914806b47b7b5caea42ab0e48db2`; accepted base `ec18cb4020ba239710a3fd615e365d5cd72b4d80`.
+
+## Golden v1 paths
+Historical report `93a085248d5dad398237df1c32428c251ac4cc9d`, inventory JSON `451c68a3e1777dc8a47b320564622a2c0ed86ffe`: checked 53/53 paths. Base inventory Git blob IDs match: 53/53. Checkpoint Git blobs equal accepted-base blobs: 53/53. Historical SHA-256 values match checkpoint Git bytes: 53/53.
+Comparison is over Git blobs. The historical inventory records 30 checkout files with CRLF-only conversion under `core.autocrlf=true`; checkout bytes are not interpreted as source changes.
+
+## Requirement/task/test/dependency ledger
+Ledger Git blobs: base `1f198923e7cc903aa0a7ad897dde50fb08b6b0d9`, checkpoint `0f5fca9cbb6412ffeea561a3d38b164dc09d4c03`.
+Original coverage rows: 635; exact row-for-row equality: True. Original task rows: 23; exact object equality: True. Coverage, task, and requirement IDs remain in identical order.
+Reference inventory (base and checkpoint identical): {"task_count": 23, "task_id_count": 23, "dependency_edge_count": 52, "dependency_dangling": [], "task_test_reference_count": 26, "unique_task_test_ids": 26, "task_requirement_reference_count": 1341, "coverage_count": 635, "unique_coverage_requirement_ids": 635, "coverage_task_reference_count": 1341, "coverage_test_reference_count": 635, "coverage_task_dangling": [], "task_requirement_dangling": [], "coverage_counts": {"assignment_state": 10, "browser_matrix": 11, "demonstration_case": 8, "human_task": 13, "legacy_atomic": 483, "named_requirement": 51, "scenario_family": 32, "software_invariant": 13, "ux_test": 14}}.
+Top-level addition: ['live_hold_implementation']; no removals: True. Live-hold entry: `{"task": "T-OBS2-LIVE-HOLD", "status": "in_progress_not_accepted", "base": "ec18cb4020ba239710a3fd615e365d5cd72b4d80", "plan": "756ce26bf454cce89933439f03572cd34b29eda8", "plan_review_blob": "0f90d6be4dbb5193dc31df8291abac57b339e401", "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-implementation-sol-20261021", "branch": "launch/g1-live-hold-implementation-20261021", "assigned_model": "gpt-6.1-sol", "assigned_effort": "xhigh", "effective_model": "not_independently_introspectable_no_substitution", "escalation_reason": "Difficult atomic multi-episode safety workflow, cross-process OS admission/capability cutover, authenticated evidence chronology, immutable complete-prefix products and fail-closed legacy paths", "evidence": "docs/implementation/evidence/G1-LIVE-HOLD/README.md", "scientific_clearance": "T-OBS2-CLEARANCE-POLICY blocked; no threshold/manual alias installed", "next": ["process/race/crash/cutover schedules", "more negative and product tamper tests", "UI/official MCP", "runtime images/byte/isolation/635 audit", "independent exact-code review"]}`.
+
+## Migration and service-contract path inventory
+Old migrations unchanged: [{"path": "services/foundation/migrations/001_foundation.sql", "base_blob": "e48f951e9a12991154bdff170645ae737f73adcb", "checkpoint_blob": "e48f951e9a12991154bdff170645ae737f73adcb", "same": true}, {"path": "services/foundation/migrations/002_observed_archive.sql", "base_blob": "567152e7005837519003b62d9fc798c022cd0812", "checkpoint_blob": "567152e7005837519003b62d9fc798c022cd0812", "same": true}].
+Migration 003 added: `True`, blob `0efa545d25d76e4da1004c0439bd7da0cf00eb5e`.
+Contract diff: 17 added paths; service contract additions: 17. Existing contract paths changed/deleted: 0.
+
+No semantic correctness, runtime behavior, test outcome, final-candidate, or clinical acceptance claim is made. This is an early source-only inventory of b65.

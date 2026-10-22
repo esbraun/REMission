@@ -1,0 +1,42 @@
+import unittest,json,sqlite3
+from contextlib import closing
+from test_live_hold import LiveWorkflowTests
+from test_live_upgrade import StoppedUpgradeTests,NOW
+from services.foundation.upgrade003 import upgrade_checkpoint003
+from prior_pass2 import Pass2
+class Admission(LiveWorkflowTests):
+ def test_subset_and_full(self):
+  self.install_extra_transition_fixture()
+  authority=self.settings.installed.authority.model_copy(deep=True);grant=authority.grants[-1]
+  self.assertEqual(len(grant.trigger_bindings),2)
+  self.assertNotEqual(grant.trigger_bindings[0].trigger_rule,grant.trigger_bindings[1].trigger_rule)
+  grant.trigger_bindings[0].follow_ups.append(grant.trigger_bindings[1].follow_ups[0]);self.install_next(authority);self.restart_client()
+  before=self.safety_state();r=self.client.post('/api/patients/SYN-02/live-holds',json=self.command,headers=self.headers('independent-omission'))
+  print('mandatory-subset',r.status_code,r.text,flush=True);self.assertEqual(r.status_code,409);self.assertEqual(r.json()['code'],'hold_follow_up_mismatch');self.assertEqual(self.safety_state(),before)
+ def test_full_control(self):
+  self.install_extra_transition_fixture(multi_followup=True)
+  grant=self.settings.installed.authority.grants[-1];self.assertEqual(len(grant.trigger_bindings[0].follow_ups),2)
+  r=self.enter('independent-full');self.assertEqual(len(r['task_ids']),2);self.assertEqual(r,self.enter('independent-full-retry'))
+  print('complete binding accepted with exactly two tasks; retry identical',flush=True)
+class Upgrade(StoppedUpgradeTests):
+ def test_independent_rollback_and_preservation(self):
+  def snapshot(path):
+   with closing(sqlite3.connect(path)) as db:
+    tables=[r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
+    return {t:db.execute('SELECT * FROM "'+t+'" ORDER BY rowid').fetchall() for t in tables}
+  original=snapshot(self.source)
+  def fail(point):
+   if point=='before_004_upgrade_commit':raise RuntimeError('independent-beforecommit')
+  with self.assertRaisesRegex(RuntimeError,'independent-beforecommit'):upgrade_checkpoint003(self.target,self.source,self.previous,self.new,clock=lambda:NOW,fault=fail)
+  self.assertEqual(snapshot(self.source),original);self.assertEqual(snapshot(self.target),original)
+  print('beforecommit rollback: every table/row equals actual003 source including control, patient, episode and review',flush=True)
+  good=self.root/'independent-success.sqlite';store=upgrade_checkpoint003(good,self.source,self.previous,self.new,clock=lambda:NOW)
+  after=snapshot(good);self.assertEqual(snapshot(self.source),original)
+  for t in ['live_hold_tasks','live_hold_reviews','live_hold_operations','observed_archives','observed_archive_entries','decisions','receipts','bundles']:
+   self.assertEqual(after[t][:len(original[t])],original[t],t)
+  with store.transaction() as db:
+   self.assertEqual(db.execute('PRAGMA foreign_key_check').fetchall(),[])
+   self.assertEqual(db.execute('SELECT count(*) FROM live_hold_task_bindings').fetchone()[0],1)
+  print('successful private copy: named history/raw/task prefixes byte equal; FK clean; one preserved anchor mapping',flush=True)
+suite=unittest.TestSuite([Admission('test_subset_and_full'),Admission('test_full_control'),Pass2('test_receipt_history'),Pass2('test_plural_clearance_isolation'),StoppedUpgradeTests('test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once'),StoppedUpgradeTests('test_actual_process_death_before004_commit_rolls_back_and_after_commit_recovers'),Upgrade('test_independent_rollback_and_preservation')])
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful())

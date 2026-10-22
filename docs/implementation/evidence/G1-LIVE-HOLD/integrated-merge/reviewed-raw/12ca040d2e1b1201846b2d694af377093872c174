@@ -1,0 +1,9 @@
+import json,pathlib,subprocess,hashlib
+root=pathlib.Path.cwd();m=json.loads((root/'tests/integration/replay/checkpoint003-source.json').read_bytes());mismatch=[]
+for item in m['files']:
+ expected=subprocess.check_output(['git','rev-parse',m['source_head']+':'+item['path']],text=True).strip()
+ if expected!=item['git_blob']:mismatch.append(item['path'])
+result={'source_head':m['source_head'],'file_count':len(m['files']),'manifest_tree_identity_mismatches':mismatch,'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'base':subprocess.check_output(['git','merge-base','HEAD','ec18cb4020ba239710a3fd615e365d5cd72b4d80'],text=True).strip(),'sources':[]}
+for path in ['services/foundation/live_hold.py','services/foundation/upgrade003.py','tests/integration/replay/test_live_upgrade.py','tests/integration/replay/build_checkpoint003.py','tests/integration/replay/checkpoint003-source.json','tests/integration/replay/live_helpers.py']:
+ raw=(root/path).read_bytes();result['sources'].append({'path':path,'tree_blob':subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip(),'raw_sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+(root/'.review-artifacts/source-checks.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2));assert not mismatch

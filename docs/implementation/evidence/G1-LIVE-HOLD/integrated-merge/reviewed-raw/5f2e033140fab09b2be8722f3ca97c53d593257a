@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "remission-g1-live-hold-20261021-f8e99b9e-service",
+    "python",
+    "-c",
+    "import sqlite3,json; d=sqlite3.connect('/data/remission.sqlite'); n=d.execute(\"update sessions set revoked=1 where account_id='alice'\").rowcount; d.commit(); print(json.dumps({'revoked_alice_sessions':n}))"
+  ],
+  "exit": 0,
+  "stdout": "{\"revoked_alice_sessions\": 1}\n",
+  "stderr": ""
+}

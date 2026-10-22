@@ -1,0 +1,63 @@
+{
+  "task": "g1_live_hold_entrypoints_luna",
+  "assigned_model_effort": "GPT-6 Luna / high",
+  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-entrypoints-luna-20261021",
+  "head": "ec18cb4020ba239710a3fd615e365d5cd72b4d80",
+  "accepted_base": "ec18cb4020ba239710a3fd615e365d5cd72b4d80",
+  "head_matches_accepted_base": true,
+  "working_tree_before_artifact": "clean; detached HEAD",
+  "agent_rules": "rg --files -g AGENTS.md returned no paths",
+  "blob_ids": {
+    "implementation-prompt.md": "c0a7faf4906acb7ae5754f70dcb58df875766c71",
+    "docs/implementation/g1-technical-plan-20261021.md": "5d46eb071485a9d5f2ed0473880a75fcab181556",
+    "services/foundation/store.py": "c7c4305be0dd728ef68426bb9f0f396188b6b366",
+    "services/foundation/app.py": "d42e01545382e21ed1344e6c333ead1b02451e60",
+    "services/foundation/workflow.py": "1ae6f23ebccff28cb0bd08490af9fc9936908bf0",
+    "services/foundation/replay.py": "bc16cf3e4ed02d711711dbc2b7c35c498d965114",
+    "services/foundation/archive.py": "62771d3ec5363418c00c36c9cde7bf4f77a5a3bc",
+    "services/foundation/cli.py": "98433ae1f95e64a4c3db34f1fa99ade7933d7dfa",
+    "services/foundation/server.py": "f8810658b457f97474e0e7b4a6bd59cc9b654412",
+    "services/foundation/README.md": "afdd8f5d08a079505e9b6302265f60efdb154233",
+    "services/foundation/migrations/001_foundation.sql": "e48f951e9a12991154bdff170645ae737f73adcb",
+    "services/foundation/migrations/002_observed_archive.sql": "567152e7005837519003b62d9fc798c022cd0812",
+    "tooling/foundation/runtime.Dockerfile": "c7bf5303eafd51563b414a7290f5b839f4c29bd7",
+    "tooling/foundation/service.Dockerfile": "09b774fbe3428dc1ffa812393d4e55fb94cbff99",
+    "tooling/foundation/learner.Dockerfile": "8418d313d4dcc4d209f88c6850887fc77eb68abb",
+    "tooling/foundation/evaluator.Dockerfile": "78cdee4b26f7b7d3fe7db27690fc22c26aa99959",
+    "tooling/foundation/run_stack.py": "186f2e029db0f496bc9b07ddbbbc1f93b00b14b4",
+    "tooling/foundation/build.py": "bde8ac722ec7b5d1bcd8eac3ce374f3478cd2ac5",
+    "tooling/foundation/verify_integration.py": "160c731f894712be0a26715eb6e7aada1a9138d1",
+    ".dockerignore": "74e310d233ebe1598d3d9e7401b52e407f2eea09"
+  },
+  "exploration_commands": [
+    {
+      "result": "success; confirmed exact worktree, detached clean HEAD ec18cb4020ba239710a3fd615e365d5cd72b4d80",
+      "command": "git rev-parse --show-toplevel; git status --short --branch; git rev-parse HEAD; Get-ChildItem -Force"
+    },
+    {
+      "result": "PowerShell passed an encoded command token as revision (fatal ambiguous argument); exact HEAD equality was confirmed directly with git rev-parse HEAD",
+      "command": "git rev-parse ec18cb4020ba239710a3fd615e365d5cd72b4d80^{commit}"
+    },
+    {
+      "result": "success with excessive listing; used narrowed source paths afterward",
+      "command": "rg --files -g AGENTS.md -g implementation-prompt.md -g plan.md -g Dockerfile* ..."
+    },
+    {
+      "result": "PowerShell parser error on brace expansion; repeated with explicit path arguments successfully",
+      "command": "rg -n ... services/foundation/{app.py,...}"
+    },
+    {
+      "result": "read prompt and plan; no AGENTS.md paths returned; combined output was truncated, then relevant source excerpts were read directly",
+      "command": "Get-Content implementation-prompt.md; Get-Content docs/implementation/g1-technical-plan-20261021.md; rg --files -g AGENTS.md"
+    }
+  ],
+  "created_artifacts": [
+    ".exploration-artifacts/live-hold-entrypoints.md",
+    ".exploration-artifacts/command-source-manifest.json"
+  ],
+  "limits": [
+    "source map only; no tests or runtime validation",
+    "no private generator/evaluator engine source inspected",
+    "no service/container/browser/database changed"
+  ]
+}

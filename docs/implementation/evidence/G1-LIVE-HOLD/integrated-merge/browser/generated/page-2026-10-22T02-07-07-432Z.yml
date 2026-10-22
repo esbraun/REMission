@@ -1,0 +1,107 @@
+- generic [ref=e2]:
+  - link "Skip to main content" [ref=e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - text: REMission
+      - generic [ref=e6]: Synthetic care workspace
+    - generic [ref=e21]:
+      - generic [ref=e22]: Dr Alice (synthetic)
+      - button "Sign out" [ref=e23] [cursor=pointer]
+  - generic [ref=e7]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [ref=e8]:
+    - navigation "Workspace" [ref=e24]:
+      - link "My panel" [ref=e25] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e26]: 10 owned synthetic patients
+    - region "Patient context" [ref=e124]:
+      - generic [ref=e125]:
+        - paragraph [ref=e126]: SYN-02 · Current workspace
+        - heading "Synthetic patient 02" [level=1] [ref=e127]
+        - paragraph [ref=e128]: "ASSIGN-02: Initial ordinary choice"
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - term [ref=e131]: Clinical
+          - definition [ref=e132]: initial assignment
+        - generic [ref=e133]:
+          - term [ref=e134]: Learning
+          - definition [ref=e135]: none
+        - generic [ref=e136]:
+          - term [ref=e137]: Data readiness
+          - definition [ref=e138]: ready
+        - generic [ref=e139]:
+          - term [ref=e140]: Observation cutoff
+          - definition [ref=e141]: Oct 21, 2026, 2:00 AM PDT
+    - navigation "Patient views" [ref=e142]:
+      - link "Overview" [ref=e143] [cursor=pointer]:
+        - /url: /patients/SYN-02/overview
+      - link "Current decision" [ref=e144] [cursor=pointer]:
+        - /url: /patients/SYN-02/current
+      - link "Monitoring" [ref=e145] [cursor=pointer]:
+        - /url: /patients/SYN-02/monitoring
+      - link "History" [ref=e146] [cursor=pointer]:
+        - /url: /patients/SYN-02/history
+    - region [ref=e147]:
+      - heading "Independent safety review" [level=2] [ref=e148]
+      - paragraph [ref=e149]: Synthetic structural workflow. The owning doctor reviews exact evidence and changed facts. No automatic readiness or protocol restoration follows clearance.
+      - paragraph [ref=e150]: No independent live episode is active. Ordinary eligibility and other clinical holds are checked separately.
+      - generic [ref=e151]:
+        - heading "Record a configured synthetic concern" [level=3] [ref=e152]
+        - paragraph [ref=e153]: This fixture demonstrates authenticated hold entry independently of a refit. Select an explicitly installed source package.
+        - generic [ref=e154]: Authorized source concern · none preselected
+        - combobox "Authorized source concern · none preselected" [ref=e155]:
+          - option "Choose a configured concern" [selected]
+          - option "Synthetic clinician_concern · source 1"
+          - option "Synthetic experimental_stability_review · source 2"
+          - option "Synthetic clinician_concern · source 3"
+          - option "Synthetic clinician_concern · source 4"
+          - option "Synthetic clinician_concern · source 5"
+          - option "Synthetic clinician_concern, experimental_stability_review · source 6"
+        - button "Record selected concern and hold" [disabled] [ref=e156]
+    - generic [ref=e157]:
+      - paragraph [ref=e158]: 1 · Assess
+      - heading "Readiness and clinical review" [level=2] [ref=e159]
+      - paragraph [ref=e160]: "Clinical: initial assignment. Learning: none. Data: ready."
+      - paragraph [ref=e161]: Support is fixed; policy fixed-approved-support version 1.0.0.
+      - button "Request clinical hold" [ref=e163] [cursor=pointer]
+    - generic [ref=e164]:
+      - paragraph [ref=e165]: 2 · Compare
+      - heading "Eligible ordinary options" [level=2] [ref=e166]
+      - generic [ref=e167]:
+        - strong [ref=e168]: No statistical comparison is available
+        - paragraph [ref=e169]: Statistical engines are not implemented; no treatment ranking is available. No superiority ranking or treatment recommendation is supplied.
+      - group [ref=e170]:
+        - generic "Inspect basis and engine status" [ref=e171] [cursor=pointer]
+    - generic [ref=e172]:
+      - paragraph [ref=e173]: 3 · Decide and follow up
+      - heading "Explicit ordinary synthetic choice" [level=2] [ref=e174]
+      - group "Choose an eligible option · none is preselected" [ref=e176]:
+        - generic [ref=e178]:
+          - radio "MED A" [checked] [ref=e179]
+          - text: MED A
+        - generic [ref=e180]:
+          - radio "MED B" [ref=e181]
+          - text: MED B
+        - generic [ref=e182]:
+          - radio "behavioral continue" [ref=e183]
+          - text: behavioral continue
+        - generic [ref=e184]:
+          - radio "behavioral escalate" [ref=e185]
+          - text: behavioral escalate
+        - generic [ref=e186]:
+          - radio "usual care" [ref=e187]
+          - text: usual care
+        - generic [ref=e188]: Preference and rationale
+        - textbox "Preference and rationale" [ref=e189]: Merged structural integration demonstration; fictional choice with documented follow-up.
+        - generic [ref=e190]: Follow-up date and time
+        - textbox "Follow-up date and time" [ref=e191]: 2026-10-29T09:00
+        - generic [ref=e192]:
+          - button "Review ordinary choice" [active] [ref=e193] [cursor=pointer]
+          - button "Save draft" [ref=e194] [cursor=pointer]
+      - generic "Approval summary" [ref=e195]:
+        - heading "Confirm ordinary choice" [level=3] [ref=e196]
+        - paragraph [ref=e197]: MED A for Synthetic patient 02 (SYN-02).
+        - paragraph [ref=e198]: Merged structural integration demonstration; fictional choice with documented follow-up.
+        - paragraph [ref=e199]: "Follow-up: Oct 29, 2026, 9:00 AM PDT. This is ordinary synthetic care, not a randomized assignment."
+        - button "Confirm and save choice" [ref=e200] [cursor=pointer]
+    - generic [ref=e10]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.

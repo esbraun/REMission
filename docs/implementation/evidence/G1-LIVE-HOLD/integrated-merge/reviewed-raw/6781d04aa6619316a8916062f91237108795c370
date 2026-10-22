@@ -1,0 +1,4 @@
+import subprocess,pathlib
+p=pathlib.Path('.review-artifacts')
+for name,oid in {'closure-oracle.py':'07f72128d8941c30fa012180ebdac0ccc9eac144','namespace-oracle.py':'51c104c262a7600a889686bef8d2cb55d92b1d33','review-retry-oracle.py':'25b434355f70738b0c81efab2aa85d36357019fd','current-head-oracle.py':'fed2538d16085a5a21c986aee918d5f9dad728f2'}.items():
+ raw=subprocess.check_output(['git','cat-file','blob',oid]);(p/name).write_bytes(raw)

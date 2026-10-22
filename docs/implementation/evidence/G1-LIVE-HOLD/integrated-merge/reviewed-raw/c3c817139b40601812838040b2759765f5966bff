@@ -1,0 +1,2 @@
+import subprocess,pathlib,json
+p=pathlib.Path('.review-artifacts');template=json.loads((p/'closure-raw.json').read_text());cmd=template['command'];cmd[-1]='.review-artifacts/retry-families-oracle.py';r=subprocess.run(cmd,capture_output=True);out=dict(head=template['head'],command=cmd,exit_code=r.returncode,stdout=r.stdout.decode(),stderr=r.stderr.decode());(p/'retry-families-raw.json').write_text(json.dumps(out,indent=2));print(json.dumps(out,indent=2))

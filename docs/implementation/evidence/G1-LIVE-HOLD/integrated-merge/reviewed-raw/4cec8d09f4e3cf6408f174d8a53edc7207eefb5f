@@ -1,0 +1,33 @@
+{
+  "head": "45ccc7cf8c89a7fffa5497ac3a1e1067be1e31f6",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--read-only",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,nosuid,size=512m",
+    "--mount",
+    "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lh-fix-crit-261021,target=/app,readonly",
+    "-w",
+    "/app",
+    "-e",
+    "PYTHONPATH=/app:/app/tests/integration/replay:/app/.review-artifacts",
+    "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "python",
+    "/app/.review-artifacts/repaired-oracles.py"
+  ],
+  "exit_code": 0,
+  "stdout": "mandatory-subset 409 {\"code\":\"hold_follow_up_mismatch\",\"detail\":\"hold follow up mismatch\"}\ncomplete binding accepted with exactly two tasks; retry identical\noriginal receipt bytes and single task preserved after strengthen/restart; current task count 2\nreview preserves all task events; clearance closes both selected-generation tasks only; other episode remains held\nbeforecommit rollback: every table/row equals actual003 source including control, patient, episode and review\nsuccessful private copy: named history/raw/task prefixes byte equal; FK clean; one preserved anchor mapping\n",
+  "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\ntest_subset_and_full (__main__.Admission.test_subset_and_full) ... ok\ntest_full_control (__main__.Admission.test_full_control) ... ok\ntest_receipt_history (prior_pass2.Pass2.test_receipt_history) ... ok\ntest_plural_clearance_isolation (prior_pass2.Pass2.test_plural_clearance_isolation) ... ok\ntest_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once (test_live_upgrade.StoppedUpgradeTests.test_actual003_upgrade_preserves_old_bytes_ids_and_invalidates_review_once) ... ok\ntest_actual_process_death_before004_commit_rolls_back_and_after_commit_recovers (test_live_upgrade.StoppedUpgradeTests.test_actual_process_death_before004_commit_rolls_back_and_after_commit_recovers) ... ok\ntest_independent_rollback_and_preservation (__main__.Upgrade.test_independent_rollback_and_preservation) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 20.587s\n\nOK\n"
+}

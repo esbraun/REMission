@@ -1,0 +1,244 @@
+{
+  "$defs": {
+    "BindingsV2": {
+      "additionalProperties": false,
+      "properties": {
+        "analytic_fixtures": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "calibration_schema": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "catalog": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "dgp": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "domain_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "equations": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "observed_representation": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "parameters": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "probability_precision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "run_schema_set": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "scenarios": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "temporal": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "timing": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "protocol",
+        "dgp",
+        "parameters",
+        "equations",
+        "scenarios",
+        "catalog",
+        "timing",
+        "temporal",
+        "calibration_schema",
+        "analytic_fixtures",
+        "probability_precision",
+        "observed_representation",
+        "domain_schema_set",
+        "run_schema_set"
+      ],
+      "title": "BindingsV2",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:trusted-run-authority",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allow_contract_fixture": {
+      "title": "Allow Contract Fixture",
+      "type": "boolean"
+    },
+    "bindings": {
+      "$ref": "#/$defs/BindingsV2"
+    },
+    "contract_version": {
+      "const": "2.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "manifest_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "producer_qualification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "producer",
+    "manifest_sha256",
+    "source_commit",
+    "runtime",
+    "allow_contract_fixture",
+    "contract_version",
+    "bindings",
+    "producer_qualification"
+  ],
+  "title": "AuthorityV2",
+  "type": "object"
+}

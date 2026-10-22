@@ -1,0 +1,178 @@
+"""Bounded raw-byte inventory for G1 live-hold R1 evidence."""
+from __future__ import annotations
+
+import base64
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+ROOT = Path.cwd()
+HEAD = "756ce26bf454cce89933439f03572cd34b29eda8"
+BASE = "ec18cb4020ba239710a3fd615e365d5cd72b4d80"
+PREVIOUS = "a58e022945d2077d7214d6c739f95bace41824c2"
+PLAN = Path("docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md")
+EVIDENCE = Path("docs/implementation/evidence/G1-LIVE-HOLD-PLAN/R1")
+
+
+def git(*args: str, data: bytes | None = None) -> bytes:
+    return subprocess.check_output(["git", *args], cwd=ROOT, input=data)
+
+
+def sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def entry_check(label: str, expected_blob: str, expected_len: int, expected_sha: str, data: bytes) -> dict:
+    actual_blob = git("hash-object", "--stdin", data=data).decode().strip()
+    obj = git("cat-file", "blob", expected_blob)
+    return {
+        "label": label,
+        "expected_blob": expected_blob,
+        "hash_object_blob": actual_blob,
+        "git_object_exists": True,
+        "git_object_len": len(obj),
+        "git_object_sha256": sha(obj),
+        "decoded_len": len(data),
+        "decoded_sha256": sha(data),
+        "expected_len": expected_len,
+        "expected_sha256": expected_sha,
+        "pass": actual_blob == expected_blob and obj == data and len(data) == expected_len and sha(data) == expected_sha,
+    }
+
+
+def main() -> dict:
+    manifest = json.loads((ROOT / EVIDENCE / "manifest.json").read_bytes())
+    doccheck = json.loads((ROOT / EVIDENCE / "doc-check.json").read_bytes())
+    preserved = json.loads((ROOT / EVIDENCE / "preserved-inputs.json").read_bytes())
+    sources = []
+    for item in doccheck["source_files"]:
+        data = git("cat-file", "blob", item["git_blob"])
+        oid = git("hash-object", "--stdin", data=data).decode().strip()
+        path_blob = git("rev-parse", f"{HEAD}:{item['path']}").decode().strip()
+        checkout = (ROOT / item["path"]).read_bytes() if (ROOT / item["path"]).is_file() else None
+        checkout_status = "missing"
+        if checkout is not None:
+            checkout_status = "raw-equal" if checkout == data else ("CRLF-checkout-normalization" if checkout.replace(b"\r\n", b"\n") == data else "different")
+        sources.append({
+            "path": item["path"], "expected_blob": item["git_blob"], "git_object_blob": oid,
+            "candidate_path_blob": path_blob, "git_object_len": len(data), "expected_len": item["bytes"],
+            "git_object_sha256": sha(data), "expected_sha256": item["sha256"],
+            "checkout_len": None if checkout is None else len(checkout), "checkout_comparison": checkout_status,
+            "pass": oid == item["git_blob"] and path_blob == item["git_blob"] and len(data) == item["bytes"] and sha(data) == item["sha256"],
+        })
+    r1_files = []
+    for item in manifest["files"]:
+        raw = git("cat-file", "blob", f"{HEAD}:{item['path']}")
+        oid = git("hash-object", "--stdin", data=raw).decode().strip()
+        r1_files.append({
+            "path": item["path"], "expected_blob": item["raw_git_blob"], "candidate_blob": oid,
+            "git_bytes": len(raw), "expected_bytes": item["bytes"], "git_sha256": sha(raw),
+            "expected_sha256": item["sha256"],
+            "pass": oid == item["raw_git_blob"] and len(raw) == item["bytes"] and sha(raw) == item["sha256"],
+        })
+    raw_objects = []
+    for item in preserved:
+        raw = base64.b64decode(item["raw"], validate=True)
+        raw_objects.append(entry_check(item["label"], item["git_blob"], item["bytes"], item["sha256"], raw))
+
+    proposal_manifest = next(x for x in manifest["files"] if x["path"] == PLAN.as_posix())
+    plan_raw = git("cat-file", "blob", f"{HEAD}:{PLAN.as_posix()}")
+    plan_worktree = (ROOT / PLAN).read_bytes()
+    ledger = "docs/implementation/g0-task-test-ledger-20261020.json"
+    ledger_base_blob = git("rev-parse", f"{BASE}:{ledger}").decode().strip()
+    ledger_head_blob = git("rev-parse", f"{HEAD}:{ledger}").decode().strip()
+    ledger_previous_blob = git("rev-parse", f"{PREVIOUS}:{ledger}").decode().strip()
+
+    compare_paths = [
+        "docs/implementation/g1-live-hold-executable-contract-proposal-20261021.md",
+        "docs/implementation/evidence/G1-LIVE-HOLD-PLAN/README.md",
+        "docs/implementation/evidence/G1-LIVE-HOLD-PLAN/manifest.json",
+        "docs/implementation/evidence/G1-LIVE-HOLD-PLAN/source-check.json",
+        "docs/implementation/evidence/G1-LIVE-HOLD-PLAN/verify_docs.py",
+    ]
+    prior = []
+    for path in compare_paths:
+        a = git("rev-parse", f"{PREVIOUS}:{path}").decode().strip()
+        h = git("rev-parse", f"{HEAD}:{path}").decode().strip()
+        prior.append({"path": path, "previous_blob": a, "candidate_blob": h, "unchanged": a == h})
+
+    changed = git("diff", "--name-only", f"{BASE}...{HEAD}").decode().splitlines()
+    docs_only = all(p.startswith("docs/") for p in changed)
+    source_checks_pass = len(sources) == 22 and all(x["pass"] for x in sources)
+    raw_checks_pass = len(raw_objects) == 9 and all(x["pass"] for x in raw_objects)
+    report = {
+        "audit": "bounded source/evidence byte inventory",
+        "worktree": str(ROOT), "head": git("rev-parse", "HEAD").decode().strip(), "base": git("merge-base", "HEAD", BASE).decode().strip(),
+        "model_effort": "gpt-6-luna/high", "manifest": str(EVIDENCE / "manifest.json"),
+        "manifest_proposal": proposal_manifest,
+        "proposal_git_blob": git("rev-parse", f"{HEAD}:{PLAN.as_posix()}").decode().strip(),
+        "proposal_git_len": len(plan_raw), "proposal_checkout_len": len(plan_worktree),
+        "proposal_checkout": "raw-equal" if plan_worktree == plan_raw else ("CRLF-checkout-normalization" if plan_worktree.replace(b"\r\n", b"\n") == plan_raw else "different"),
+        "source_count": len(sources), "source_checks_pass": source_checks_pass, "sources": sources,
+        "r1_manifest_file_count": len(r1_files), "r1_manifest_files_pass": len(r1_files) == 9 and all(x["pass"] for x in r1_files), "r1_manifest_files": r1_files,
+        "raw_object_count": len(raw_objects), "raw_checks_pass": raw_checks_pass, "raw_objects": raw_objects,
+        "prior_evidence": prior, "prior_evidence_unchanged": all(x["unchanged"] for x in prior),
+        "ledger": {"path": ledger, "base_blob": ledger_base_blob, "candidate_blob": ledger_head_blob, "previous_blob": ledger_previous_blob,
+                   "unchanged_from_base": ledger_base_blob == ledger_head_blob, "unchanged_from_previous": ledger_previous_blob == ledger_head_blob,
+                   "base_bytes": len(git("cat-file", "blob", f"{BASE}:{ledger}")), "candidate_bytes": len(git("cat-file", "blob", f"{HEAD}:{ledger}"))},
+        "changed_paths": changed, "docs_only": docs_only,
+        "doccheck_claims": {k: doccheck.get(k) for k in ("base", "preserved_original_candidate", "scope", "original_proposal_git_bytes_unchanged", "ledger_git_bytes_unchanged", "changes_outside_repair_scope", "runtime_tests")},
+        "overall_byte_inventory_pass": source_checks_pass and len(r1_files) == 9 and all(x["pass"] for x in r1_files) and raw_checks_pass and all(x["unchanged"] for x in prior) and ledger_base_blob == ledger_head_blob and docs_only and proposal_manifest["raw_git_blob"] == git("rev-parse", f"{HEAD}:{PLAN.as_posix()}").decode().strip() and len(plan_raw) == proposal_manifest["bytes"] and sha(plan_raw) == proposal_manifest["sha256"],
+    }
+    return report
+
+
+if __name__ == "__main__":
+    OUT = ROOT / ".audit-artifacts"
+    OUT.mkdir(exist_ok=True)
+    report = main()
+    (OUT / "source-evidence-audit.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n")
+    lines = [
+        "# Bounded source/evidence byte inventory",
+        "",
+        f"- Worktree: `{report['worktree']}`",
+        f"- Model/effort: `{report['model_effort']}`",
+        f"- HEAD/base: `{report['head']}` / `{report['base']}`",
+        f"- Frozen proposal: blob `{report['proposal_git_blob']}`, Git bytes {report['proposal_git_len']}, SHA-256 `{report['manifest_proposal']['sha256']}`; checkout comparison `{report['proposal_checkout']}` ({report['proposal_checkout_len']} bytes).",
+        f"- Documented source identities: {report['source_count']}; all Git blob, raw length and SHA-256 checks pass: `{report['source_checks_pass']}`.",
+        f"- R1 manifest files: {report['r1_manifest_file_count']}; all Git blob, raw length and SHA-256 checks pass: `{report['r1_manifest_files_pass']}`.",
+        f"- Decoded raw envelope objects: {report['raw_object_count']}; all Git blob, raw length and SHA-256 checks pass: `{report['raw_checks_pass']}`.",
+        f"- Prior proposal/evidence unchanged from a58: `{report['prior_evidence_unchanged']}`.",
+        f"- Original ledger unchanged from ec18: `{report['ledger']['unchanged_from_base']}`; Git blob `{report['ledger']['candidate_blob']}`, {report['ledger']['candidate_bytes']} bytes.",
+        f"- Candidate diff is docs-only: `{report['docs_only']}` ({len(report['changed_paths'])} changed paths).",
+        f"- Overall byte inventory: `{report['overall_byte_inventory_pass']}`.",
+        "",
+        "## Source identities",
+        "",
+        "| Path | Blob | Bytes | Checkout comparison | Result |",
+        "|---|---|---:|---|---|",
+    ]
+    for x in report["sources"]:
+        lines.append(f"| `{x['path']}` | `{x['expected_blob']}` | {x['git_object_len']} | {x['checkout_comparison']} ({x['checkout_len']}) | {x['pass']} |")
+    lines += ["", "## Decoded raw objects", "", "| Label | Blob | Bytes | SHA-256 | Result |", "|---|---|---:|---|---|"]
+    for x in report["raw_objects"]:
+        lines.append(f"| `{x['label']}` | `{x['expected_blob']}` | {x['decoded_len']} | `{x['decoded_sha256']}` | {x['pass']} |")
+    lines += ["", "## R1 manifest files", "", "| Path | Blob | Bytes | SHA-256 | Result |", "|---|---|---:|---|---|"]
+    for x in report["r1_manifest_files"]:
+        lines.append(f"| `{x['path']}` | `{x['candidate_blob']}` | {x['git_bytes']} | `{x['git_sha256']}` | {x['pass']} |")
+    lines += ["", "## Prior evidence identity comparisons", "", "| Path | a58 blob | Candidate blob | Unchanged |", "|---|---|---|---|"]
+    for x in report["prior_evidence"]:
+        lines.append(f"| `{x['path']}` | `{x['previous_blob']}` | `{x['candidate_blob']}` | {x['unchanged']} |")
+    lines += ["", "## Initial inspection failures", "", "A compact ad hoc inspection queried `manifest.inspected_sources` and treated `preserved-inputs.json` as a mapping. The actual manifest uses `files` and the envelope is a list, so that inspection raised `AttributeError` after printing an empty source count. It did not write candidate files; the inventory below uses the actual documented structures.", "", "The first attempt to generate an artifact manifest through an inline `python -c` command failed with `SyntaxError` because literal newline escapes were passed through PowerShell. It wrote no manifest; generation is now performed by this script.", ""]
+    (OUT / "source-evidence-audit.md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    artifact_names = ["source-evidence-audit.md", "source-evidence-audit.json", "audit_evidence.py"]
+    artifacts = []
+    for name in artifact_names:
+        raw = (OUT / name).read_bytes()
+        oid = git("hash-object", "-w", "--stdin", data=raw).decode().strip()
+        artifacts.append({"path": f".audit-artifacts/{name}", "git_blob": oid, "bytes": len(raw), "sha256": sha(raw)})
+    artifact_manifest = {
+        "kind": "audit-artifact-manifest", "task": "g1-live-hold-r1-evidence-luna",
+        "head": report["head"], "base": report["base"], "artifacts": artifacts,
+    }
+    manifest_raw = (json.dumps(artifact_manifest, indent=2) + "\n").encode()
+    (OUT / "artifact-manifest.json").write_bytes(manifest_raw)
+    manifest_oid = git("hash-object", "-w", "--stdin", data=manifest_raw).decode().strip()
+    print(json.dumps({k: report[k] for k in ("head", "base", "source_count", "source_checks_pass", "r1_manifest_file_count", "r1_manifest_files_pass", "raw_object_count", "raw_checks_pass", "prior_evidence_unchanged", "docs_only", "overall_byte_inventory_pass")}, indent=2))
+    print(json.dumps({"artifact_manifest_blob": manifest_oid, "artifact_manifest_bytes": len(manifest_raw), "artifact_manifest_sha256": sha(manifest_raw), "artifacts": artifacts}, indent=2))

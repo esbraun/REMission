@@ -1,0 +1,5 @@
+import subprocess,pathlib,json
+p=pathlib.Path('.review-artifacts');rows=[]
+for cmd in [['git','remote','-v'],['git','fetch','origin','47da5aed10f0d6363c0bbfc538f0547732ae6e3d'],['git','checkout','--detach','47da5aed10f0d6363c0bbfc538f0547732ae6e3d']]:
+ r=subprocess.run(cmd,capture_output=True);rows.append(dict(command=cmd,exit_code=r.returncode,stdout=r.stdout.decode(errors='replace'),stderr=r.stderr.decode(errors='replace')));(p/'checkout-raw.json').write_text(json.dumps(rows,indent=2));print(json.dumps(rows[-1]));
+ if r.returncode:break

@@ -1,0 +1,200 @@
+{
+  "$defs": {
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:2.0.0:support-schedule-input",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "catalog": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "cell_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Cell Id",
+      "type": "string"
+    },
+    "cohort_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Cohort Id",
+      "type": "string"
+    },
+    "derivation": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "dgp": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "support_schedule_input",
+      "title": "Kind",
+      "type": "string"
+    },
+    "partition_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Partition Id",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "patient_ref": {
+      "$ref": "#/$defs/ExactRef"
+    },
+    "planned_horizon": {
+      "const": 84,
+      "title": "Planned Horizon",
+      "type": "integer"
+    },
+    "preset": {
+      "enum": [
+        "catalog_cell",
+        "smoke",
+        "demonstration",
+        "evaluation"
+      ],
+      "title": "Preset",
+      "type": "string"
+    },
+    "protocol": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "replicate": {
+      "minimum": 0,
+      "title": "Replicate",
+      "type": "integer"
+    },
+    "representation": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "temporal": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "time_zero_local_date": {
+      "format": "date",
+      "title": "Time Zero Local Date",
+      "type": "string"
+    },
+    "time_zero_utc": {
+      "format": "date-time",
+      "title": "Time Zero Utc",
+      "type": "string"
+    },
+    "timezone": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Timezone",
+      "type": "string"
+    },
+    "timezone_database": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "timing": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "unit_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Unit Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "id",
+    "run_id",
+    "partition_id",
+    "protocol",
+    "timing",
+    "temporal",
+    "representation",
+    "dgp",
+    "catalog",
+    "cell_id",
+    "preset",
+    "unit_id",
+    "cohort_id",
+    "replicate",
+    "patient_id",
+    "patient_ref",
+    "timezone",
+    "time_zero_local_date",
+    "time_zero_utc",
+    "timezone_database",
+    "derivation",
+    "planned_horizon"
+  ],
+  "title": "ScheduleInputV2",
+  "type": "object"
+}

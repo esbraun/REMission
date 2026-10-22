@@ -1,0 +1,17 @@
+import pathlib,json,sys
+sys.path.insert(0,'tooling/foundation');from capture import run
+p=pathlib.Path('.review-artifacts');build=json.loads((p/'fresh-build-pinned-npm/source-images.json').read_bytes())
+code="""import sys,tempfile,pathlib,subprocess,json,sqlite3
+sys.path.insert(0,'/app/tests/integration/replay')
+from live_helpers import fixture_bundle
+with tempfile.TemporaryDirectory() as d:
+ root=pathlib.Path(d);db=root/'new.sqlite';bundle=root/'bundle.json';bundle.write_text(fixture_bundle().model_dump_json())
+ for action in ['activate-new','seed']:
+  cmd=[sys.executable,'-m','services.foundation.cli',action,'--database',str(db),'--bundle',str(bundle)];r=subprocess.run(cmd,capture_output=True,text=True);print(json.dumps(dict(command=cmd,exit=r.returncode,stdout=r.stdout,stderr=r.stderr)));assert r.returncode==0
+ with sqlite3.connect(db) as c:
+  assert c.execute('select count(*) from accounts').fetchone()[0]==2
+  assert c.execute('select count(*) from patients').fetchone()[0]==11
+  print(json.dumps(dict(accounts=2,patients=11,foreign_keys=c.execute('pragma foreign_key_check').fetchall())))
+ r=subprocess.run([sys.executable,'-m','services.foundation.cli','seed','--database',str(db),'--bundle',str(bundle)],capture_output=True,text=True);assert r.returncode!=0 and 'seed_requires_empty_database' in r.stderr;print('repeat seed refuses existing database')
+"""
+(p/'cli-probe.py').write_text(code);cmd=['docker','run','--rm','--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,size=128m',build['images']['tests'],'python','-c',code];r,m=run(cmd,p/'cli');print(r.stdout.decode());print(r.stderr.decode());raise SystemExit(r.returncode)

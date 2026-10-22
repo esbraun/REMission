@@ -1,0 +1,21 @@
+# Independent repair review: remaining historical retry defect
+
+Candidate 9ea9545444a1a3d45f6cdf2382b7078eeb08636a; accepted target/merge-base ec18cb4020ba239710a3fd615e365d5cd72b4d80. Own detached g1lh-r3-crit-261021 verified clean before artifacts. Assigned gpt-6-astra/medium; independent effective-model introspection unavailable. This is a repaired-probe checkpoint, not whole-package approval.
+
+## P2: committed invalidation and coordinator receipts become inaccessible through retry after a registered correction
+
+Locations: services/foundation/app.py:211 and :230; services/foundation/live_coordinator.py:43 and :48–49. Both routes revalidate current evidence heads before returning already committed success. The invalidation route even finds the exact transport key first but unconditionally calls prepare_invalidation; coordinator discover precedes both transport and semantic receipt lookup.
+
+Independent real HTTP counterexample, separately fresh databases for both routes: install the original and later correction grants before any original operation; commit the original operation (200); immediately retry under a different key (200, original receipt, exactly one alias row and no other safety/table/version effects); commit the registered correction, retaining authorization; restart authenticated client; retry the original request under the original key and under a new key. Both return 409 hold_evidence_stale for both families. No mutation occurs. The expected historical original receipt is lost through the supported retry route, despite no authorization revocation. The exact original-key failure alone demonstrates the defect; distinct-key behavior is independently recorded.
+
+Accepted executable contract section 4 requires historical retries after current authorization, and section 8/line207 explicitly requires whole-package original receipt after auth/owner checks with no advancement. A later correction must prevent a new stale admission, but cannot turn a prior committed operation into an unsuccessful retry. Historical receipt does not authorize current readiness.
+
+Minimal resolution: retain current account/session/CSRF/owner/source grant/package/control checks and repeat authorization under the writer, but separate them from new-admission current lineage/evidence validation. Resolve existing exact transport or canonical semantic receipt before the latter. Exact-key retry must add nothing; a new alias may add exactly one key, with no version/task/audit/cursor/projection mutation. Changed same-key intent still conflicts and revoked authorization must refuse without an alias. Preserve the independently resolved coordinator stale NEW admission negative.
+
+## Repair observations
+
+Original independent closure, wrong-namespace, review-retry, and coordinator-current-head oracle scripts were restored byte-for-byte from shared Git objects and rerun against this checkout. All four child exits are zero and each actual unittest passed. Namespace script includes a true exact-package positive. The current-head script verifies no prior admission exists before correction, so its stale admission refusal remains discriminating. Nested closure script independently transforms public fixture construction only, and no service/contract implementation is mocked.
+
+New retry-family oracle actual child exit is 1, with two assertion failures (one per route); both valid alias positive controls passed before the negative. Complete command, stdout, stderr and candidate binding are preserved. The host capture wrapper exits zero because it preserves child results; this is not a passing test claim. Starlette deprecation warning retained. Qualified Linux image ce346fea, network none, 2 CPU/2 GiB, read-only own source. No ports, MCP, other worktree, private engine, or candidate source edits.
+
+Recursive closure/fresh-clearance, clearance-family retry/auth controls and remaining final exact source/image/browser/release qualification continue separately. No full ready disposition.

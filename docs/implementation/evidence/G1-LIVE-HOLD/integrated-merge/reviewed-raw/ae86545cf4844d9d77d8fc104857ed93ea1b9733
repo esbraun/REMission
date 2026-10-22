@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:service:live-clearance-command:1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract": {
+      "const": "LIVE-HOLD-01",
+      "title": "Contract",
+      "type": "string"
+    },
+    "decision_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "expected_consent_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Consent Version",
+      "type": "integer"
+    },
+    "expected_eligibility_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Eligibility Version",
+      "type": "integer"
+    },
+    "expected_episode_generation": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Episode Generation",
+      "type": "integer"
+    },
+    "expected_patient_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected Patient Version",
+      "type": "integer"
+    },
+    "expected_state_version": {
+      "exclusiveMinimum": 0,
+      "title": "Expected State Version",
+      "type": "integer"
+    },
+    "mode": {
+      "const": "current",
+      "title": "Mode",
+      "type": "string"
+    },
+    "review_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Review Id",
+      "type": "string"
+    },
+    "review_rules": {
+      "items": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "minItems": 1,
+      "title": "Review Rules",
+      "type": "array"
+    },
+    "review_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Review Sha256",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "trigger_set_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Trigger Set Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "contract",
+    "synthetic",
+    "mode",
+    "decision_id",
+    "expected_patient_version",
+    "expected_state_version",
+    "expected_consent_version",
+    "expected_eligibility_version",
+    "expected_episode_generation",
+    "trigger_set_sha256",
+    "review_rules",
+    "review_id",
+    "review_sha256"
+  ],
+  "title": "ClearanceInput",
+  "type": "object"
+}

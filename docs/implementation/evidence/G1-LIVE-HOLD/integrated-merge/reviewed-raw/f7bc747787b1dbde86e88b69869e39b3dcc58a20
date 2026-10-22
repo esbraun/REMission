@@ -1,0 +1,77 @@
+import json,sqlite3,unittest
+from dataclasses import replace
+from test_live_hold import LiveWorkflowTests
+from live_helpers import live_fixture
+class Pass2(LiveWorkflowTests):
+ def plural(self):
+  change=self.install_extra_transition_fixture();first=self.enter()
+  r=self.client.post('/api/patients/SYN-02/live-holds',json=change,headers=self.headers('second-transition'));self.assertEqual(r.status_code,200,r.text)
+  self.assertEqual(len(r.json()['task_ids']),2)
+  return first,r.json()
+ def test_constraints(self):
+  first,later=self.plural()
+  with self.store.transaction() as db:
+   self.assertEqual(db.execute('PRAGMA foreign_keys').fetchone()[0],1)
+   anchor=dict(db.execute('SELECT * FROM live_hold_tasks').fetchone());extra=dict(db.execute('SELECT * FROM live_hold_additional_tasks').fetchone());binding=dict(db.execute('SELECT * FROM live_hold_task_bindings WHERE additional_task_id IS NOT NULL').fetchone())
+   def refusal(label,sql,args):
+    db.execute('SAVEPOINT probe')
+    try:
+     with self.assertRaises(sqlite3.IntegrityError) as caught:db.execute(sql,args)
+     print(label,str(caught.exception),flush=True)
+    finally:db.execute('ROLLBACK TO probe');db.execute('RELEASE probe')
+   insert='INSERT INTO live_hold_task_bindings VALUES(?,?,?,?,?,?,?)'
+   base=[extra['episode_id'],extra['generation'],'f'*64,extra['id'],None,extra['id'],'{}']
+   for label,changes in [('neither_target',{4:None,5:None}),('both_targets',{4:anchor['id']}),('task_target_mismatch',{3:'wrong'}),('orphan_target',{3:'orphan',5:'orphan'}),('wrong_episode',{0:'missing'}),('wrong_generation',{1:999})]:
+    vals=base.copy()
+    for i,v in changes.items():vals[i]=v
+    refusal(label,insert,vals)
+   refusal('orphan_additional_task','INSERT INTO live_hold_additional_tasks VALUES(?,?,?,?,?,?,?)',['orphan-task',extra['patient_id'],'missing',1,extra['owner_id'],extra['due_at'],'{}'])
+   refusal('orphan_event','INSERT INTO live_hold_additional_task_events VALUES(?,?,?,?)',['bad-event','missing','operation','{}'])
+   # Valid new physical target makes composite binding uniqueness independent of task-id uniqueness.
+   db.execute('SAVEPOINT positive')
+   db.execute('INSERT INTO live_hold_additional_tasks VALUES(?,?,?,?,?,?,?)',['new-extra',extra['patient_id'],extra['episode_id'],extra['generation'],extra['owner_id'],extra['due_at'],extra['payload']])
+   vals=[extra['episode_id'],extra['generation'],'e'*64,'new-extra',None,'new-extra','{}']
+   db.execute(insert,vals);print('valid_new_target accepted',flush=True)
+   db.execute('ROLLBACK TO positive');db.execute('RELEASE positive')
+   db.execute('SAVEPOINT duplicate')
+   db.execute('INSERT INTO live_hold_additional_tasks VALUES(?,?,?,?,?,?,?)',['new-extra',extra['patient_id'],extra['episode_id'],extra['generation'],extra['owner_id'],extra['due_at'],extra['payload']])
+   vals[2]=binding['full_binding_sha256']
+   refusal('duplicate_episode_generation_binding',insert,vals)
+   db.execute('ROLLBACK TO duplicate');db.execute('RELEASE duplicate')
+   for table in ['live_hold_tasks','live_hold_task_events','live_hold_additional_tasks','live_hold_task_bindings','live_hold_additional_task_events']:
+    refusal(table+'_update','UPDATE '+table+' SET payload=payload',[])
+    refusal(table+'_delete','DELETE FROM '+table,[])
+   self.assertEqual(db.execute('PRAGMA foreign_key_check').fetchall(),[])
+ def test_receipt_history(self):
+  first,later=self.plural();self.assertEqual(len(first['task_ids']),1)
+  with self.store.transaction() as db:before=db.execute('SELECT response FROM live_hold_operations WHERE id=?',(first['operation_id'],)).fetchone()[0]
+  self.restart_client();retry=self.enter('historical-after-restart');self.assertEqual(retry,first)
+  current=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];self.assertEqual(set(current['task_ids']),set(later['task_ids']))
+  with self.store.transaction() as db:
+   after=db.execute('SELECT response FROM live_hold_operations WHERE id=?',(first['operation_id'],)).fetchone()[0];self.assertEqual(before,after)
+   self.assertEqual(db.execute('SELECT count(*) FROM live_hold_task_bindings').fetchone()[0],2)
+  print('original receipt bytes and single task preserved after strengthen/restart; current task count 2',flush=True)
+ def test_plural_clearance_isolation(self):
+  first,later=self.plural()
+  fixture,archive,addition,command=live_fixture(self.root/'threshold2',run_name='independent-threshold2',threshold=True)
+  self.install_next(self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants}))
+  self.settings=replace(self.settings,observed_archives={**self.settings.observed_archives,'threshold2':(fixture['raw'],self.root/'threshold2/staging',archive)})
+  self.restart_client();r=self.client.post('/api/observed-archives/threshold2',json={'mode':'archive_only'},headers=self.headers());self.assertEqual(r.status_code,200,r.text)
+  r=self.client.post('/api/patients/SYN-02/live-holds',json=command,headers=self.headers('threshold2'));self.assertEqual(r.status_code,200,r.text);other=r.json()
+  episodes=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'];chosen=next(e for e in episodes if e['episode_id']==first['episode_id'])
+  self.assertEqual(len(chosen['task_ids']),2)
+  def events():
+   with self.store.transaction() as db:return {t:[r[0] for r in db.execute('SELECT payload FROM '+table+' WHERE task_id=? ORDER BY rowid',(t,))] for t,table in [(later['task_ids'][0],'live_hold_task_events' if later['task_ids'][0].startswith('hold-review-') else 'live_hold_additional_task_events'),(later['task_ids'][1],'live_hold_task_events' if later['task_ids'][1].startswith('hold-review-') else 'live_hold_additional_task_events'),(other['task_ids'][0],'live_hold_task_events')]}
+  before=events();r=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=self.review_input(chosen),headers=self.headers('independent-review'));self.assertEqual(r.status_code,200,r.text);review=r.json();self.assertEqual(before,events())
+  clear=self.review_input(chosen)
+  for k in ['items','rationale','current_assessment_attested']:clear.pop(k)
+  clear.update(review_id=review['review_id'],review_sha256=review['review_sha256'])
+  r=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/clearance',json=clear,headers=self.headers('independent-clear'));self.assertEqual(r.status_code,200,r.text)
+  after=events()
+  for t in later['task_ids']:
+   self.assertEqual(after[t][:-1],before[t]);self.assertEqual(json.loads(after[t][-1])['status'],'closed')
+  self.assertEqual(after[other['task_ids'][0]],before[other['task_ids'][0]])
+  left=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'];self.assertEqual([e['episode_id'] for e in left],[other['episode_id']]);self.assertEqual(self.client.get('/api/patients/SYN-02').json()['stage'],'ASSIGN-09')
+  print('review preserves all task events; clearance closes both selected-generation tasks only; other episode remains held',flush=True)
+suite=unittest.TestSuite(Pass2(name) for name in ['test_constraints','test_receipt_history','test_plural_clearance_isolation'])
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful())

@@ -1,0 +1,13 @@
+# G1-LIVE-HOLD final manifest byte and preservation audit
+
+Assigned model/effort: `gpt-6-luna/high`. Actual model introspection was unavailable; no substitute is claimed. Worktree: `C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-r2-luna-261021`, detached at `54d0bb41cca44d3464b4547db23e6ca39edd9f0c`; requested parent/runtime source `ec49af47ec437abe7f4ba357205886a23f353402`; accepted base `ec18cb4020ba239710a3fd615e365d5cd72b4d80`.
+
+Read the implementation entry point and bounded delegation and verification handoff instructions. The audit used raw file bytes without line-ending normalization. The final manifest declares 1,562 files totaling 74,929,291 bytes. Every declared length, SHA-256, Git blob ID, and candidate-tree blob ID matched the physical file and candidate tree. The complete tracked G1-LIVE-HOLD evidence scope is exact: 1,563 paths including the self-manifest, with no omitted or undeclared tracked paths. The self-manifest SHA-256 is `b394cdae52101839f05068577a9b641108323e7d34447093cbab6505dfee352f`; Git blob and candidate-tree ID are `afdb8fb089dc1cbcaea888ab87207ea67dd01c41`.
+
+The previous `6f40d4a29692d86e269b5598ffedd7b6bbbf2a05` release manifest is byte-identical to its historical commit (`af6dff14ee22604f9c98d501de34434b4e939723d54172a68a89b7d016ec6316`, blob `8d6781964b215078d297e0f023f3ce56a709952a`). All 1,211 entries and 42,352,866 raw bytes match physical files, SHA-256, Git blobs, the candidate tree, and the historical tree.
+
+The raw rejection/history record contains 1,462 items: all 364 embedded base64 payloads, 733 `repository_raw_file` references, and 365 references into full base64 envelopes were decoded/read and checked against declared lengths, SHA-256 values, and Git blob IDs. No mismatch was found. The current browser artifact manifest records 90 retained raw entries and 50 generated files; all 50 use safe relative paths and match declared byte lengths and SHA-256, including all four PNGs.
+
+The `ec49af47` to candidate diff has 348 changed paths, all within `docs/implementation/` (ledger/evidence); no application source or build-image inputs changed. The complete per-file findings and path inventory are in `audit.json`.
+
+This is a byte-preservation audit only. It does not establish runtime, build, browser, scientific, human, clinical, or release acceptance, and it makes no ready-to-ship claim. No tests, validators, browser sessions, Docker, or private engines were run. No source edits or commits were made.

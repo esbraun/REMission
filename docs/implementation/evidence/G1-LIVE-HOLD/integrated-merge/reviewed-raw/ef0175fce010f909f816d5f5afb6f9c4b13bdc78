@@ -1,0 +1,35 @@
+Command: python docs/implementation/evidence/G1-LH-COMPAT-R2-LUNA-20261021/audit_compat.py
+Exit code: 1
+Raw stderr:
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1lh-compat2-luna-261021\docs\implementation\evidence\G1-LH-COMPAT-R2-LUNA-20261021\audit_compat.py", line 95, in <module>
+    base_refs, head_refs = reference_inventory(base_ledger), reference_inventory(head_ledger)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1lh-compat2-luna-261021\docs\implementation\evidence\G1-LH-COMPAT-R2-LUNA-20261021\audit_compat.py", line 85, in reference_inventory
+    if x not in tests: coverage_test_dangling.append({"requirement":rid,"test":x})
+                ^^^^^
+NameError: name 'tests' is not defined. Did you mean: 'tasks'?
+
+Command: python docs/implementation/evidence/G1-LH-COMPAT-R2-LUNA-20261021/audit_compat.py (first run after parser fix)
+Exit code: 1
+Raw stderr:
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1lh-compat2-luna-261021\docs\implementation\evidence\G1-LH-COMPAT-R2-LUNA-20261021\audit_compat.py", line 112, in <module>
+    frozen_003_bytes=git("cat-file","blob",FROZEN_003).stdout
+                     ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\g1lh-compat2-luna-261021\docs\implementation\evidence\G1-LH-COMPAT-R2-LUNA-20261021\audit_compat.py", line 14, in git
+    raise RuntimeError(f"git {' '.join(args)} failed rc={p.returncode}: {p.stderr.decode(errors='replace')}")
+RuntimeError: git cat-file blob 1096d6da86048e7a53f98ed70abdd85f6f497aed failed rc=128: fatal: git cat-file 1096d6da86048e7a53f98ed70abdd85f6f497aed: bad file
+Command: PowerShell summary inspection command
+Exit code: 1
+Raw error:
+ParserError: Missing property name after reference operator at `$j.migrations.003.blob_diff` (PowerShell numeric property access syntax error; no source files changed).
+
+Command: Python manifest verification snippet
+Exit code: 1
+Raw stderr:
+error: unknown option `w'
+usage: git hash-object [-t <type>] [-w] [--path=<file> | --no-filters]
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+subprocess.CalledProcessError: Command '['git', 'hash-object', '--no-filters', '--w', '--', 'docs\\implementation\\evidence\\G1-LH-COMPAT-R2-LUNA-20261021\\manifest.json']' returned non-zero exit status 129.

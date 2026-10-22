@@ -1,0 +1,15 @@
+import subprocess,json,pathlib,hashlib
+p=pathlib.Path('.review-artifacts');base='ec18cb4020ba239710a3fd615e365d5cd72b4d80';helper=json.loads(subprocess.check_output(['git','cat-file','blob','d2efd2237b183324b002cc6a27e31abdfb29958b']))
+checks=[]
+for row in helper['immutable_v1']['paths']:
+ path=row['path'];old=subprocess.check_output(['git','rev-parse',base+':'+path],text=True).strip();new=subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip();checks.append(dict(path=path,base=old,head=new,equal=old==new))
+path='docs/implementation/g0-task-test-ledger-20261020.json';before=json.loads(subprocess.check_output(['git','show',base+':'+path]));after=json.loads(pathlib.Path(path).read_bytes())
+spec=json.loads(pathlib.Path('contracts/service/spec-v1.json').read_bytes());parts=[]
+for item in spec['parts']:
+ raw=pathlib.Path(item['path']).read_bytes();tree=subprocess.check_output(['git','rev-parse','HEAD:'+item['path']],text=True).strip();parts.append(dict(path=item['path'],tree=tree,expected=item['git_blob'],tree_equal=tree==item['git_blob'],lf_sha256=hashlib.sha256(raw.replace(b'\r\n',b'\n')).hexdigest(),expected_lf_sha256=item['lf_sha256']))
+migrations=[]
+for name,ref in [('001_foundation.sql',base),('002_observed_archive.sql',base),('003_live_hold.sql','1096d6da86048e7a53f98ed70abdd85f6f497aed')]:
+ path='services/foundation/migrations/'+name
+ old=subprocess.run(['git','rev-parse',ref+':'+path],capture_output=True,text=True);new=subprocess.run(['git','rev-parse','HEAD:'+path],capture_output=True,text=True);migrations.append(dict(path=path,old_exit=old.returncode,old=old.stdout.strip(),old_stderr=old.stderr,new_exit=new.returncode,new=new.stdout.strip(),new_stderr=new.stderr,equal=old.returncode==new.returncode==0 and old.stdout==new.stdout))
+result=dict(head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),base=base,v1=checks,v1_count=len(checks),v1_all_equal=all(x['equal'] for x in checks),ledger_equal_sections={k:v==after.get(k) for k,v in before.items()},tasks=len(after['tasks']),coverage=len(after['coverage']),spec=parts,migrations=migrations)
+(p/'preservation-source.json').write_text(json.dumps(result,indent=2));print(json.dumps({k:v for k,v in result.items() if k!='v1'},indent=2))

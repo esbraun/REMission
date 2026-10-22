@@ -1,0 +1,67 @@
+import collections, hashlib, json, pathlib, subprocess
+BASE='ec18cb4020ba239710a3fd615e365d5cd72b4d80'
+HEAD='b65f2760159a914806b47b7b5caea42ab0e48db2'
+INV='451c68a3e1777dc8a47b320564622a2c0ed86ffe'
+REPORT='93a085248d5dad398237df1c32428c251ac4cc9d'
+LEDGER='docs/implementation/g0-task-test-ledger-20261020.json'
+def git(*args): return subprocess.check_output(['git',*args], stderr=subprocess.DEVNULL)
+def blob(rev,path): return git('rev-parse',f'{rev}:{path}').decode().strip()
+def catblob(oid): return git('cat-file','-p',oid)
+def tree(rev,path):
+ try: return blob(rev,path)
+ except subprocess.CalledProcessError: return None
+inventory=json.loads(catblob(INV))
+file_rows=[]
+for item in inventory['files']:
+ p=item['path']; b=tree(BASE,p); h=tree(HEAD,p)
+ sha=hashlib.sha256(catblob(h)).hexdigest() if h else None
+ file_rows.append({'path':p,'inventory_blob':item['git_blob'],'base_blob':b,'checkpoint_blob':h,'checkpoint_sha256':sha,'same_base_checkpoint':b==h,'inventory_blob_matches_base':item['git_blob']==b,'inventory_sha256_matches_checkpoint':item.get('git_sha256')==sha})
+
+a=json.loads(git('show',f'{BASE}:{LEDGER}')); z=json.loads(git('show',f'{HEAD}:{LEDGER}'))
+def ids(rows,key): return [r[key] for r in rows]
+acov=a['coverage']; zcov=z['coverage']; at=a['tasks']; zt=z['tasks']
+def coverage_links(rows, field): return [(r['requirement_id'], tuple(r.get(field,[]))) for r in rows]
+def task_maps(rows):
+ return {r['id']:{'depends_on':r.get('depends_on',[]),'test_ids':r.get('test_ids',[]),'requirement_ids':r.get('requirement_ids',[])} for r in rows}
+
+def refs(ledger):
+ tasks=ledger['tasks']; coverage=ledger['coverage']
+ taskids={t['id'] for t in tasks}; covids={c['requirement_id'] for c in coverage}
+ tests=set(); dangling_cov_task=[]; dangling_cov_test=[]; dangling_dep=[]; dangling_task_req=[]
+ for t in tasks:
+  tests.update(t.get('test_ids') or [])
+  dangling_dep.extend((t['id'],d) for d in t.get('depends_on',[]) if d not in taskids)
+  dangling_task_req.extend((t['id'],r) for r in t.get('requirement_ids',[]) if r not in covids)
+ for c in coverage:
+  dangling_cov_task.extend((c['requirement_id'],v) for v in c.get('task_ids',[]) if v not in taskids)
+  dangling_cov_test.extend((c['requirement_id'],v) for v in c.get('test_ids',[]) if v not in tests)
+ return {'task_count':len(tasks),'task_id_count':len(taskids),'dependency_edge_count':sum(len(t.get('depends_on',[])) for t in tasks),'dependency_dangling':dangling_dep,'task_test_reference_count':sum(len(t.get('test_ids',[])) for t in tasks),'unique_task_test_ids':len(tests),'task_requirement_reference_count':sum(len(t.get('requirement_ids',[])) for t in tasks),'coverage_count':len(coverage),'unique_coverage_requirement_ids':len(covids),'coverage_task_reference_count':sum(len(c.get('task_ids',[])) for c in coverage),'coverage_test_reference_count':sum(len(c.get('test_ids',[])) for c in coverage),'coverage_task_dangling':dangling_cov_task,'task_requirement_dangling':dangling_task_req,'coverage_counts':ledger.get('coverage_counts')}
+oldrefs=refs(a); newrefs=refs(z)
+# capture all changed paths, categorizing additions vs edits, and unchanged migration hashes
+name_status=git('diff','--name-status',f'{BASE}..{HEAD}').decode().splitlines()
+statuses=[line.split('\t',1) for line in name_status]
+changed_contracts=[line for line in git('diff','--name-status',f'{BASE}..{HEAD}','--','contracts').decode().splitlines()]
+old_migrations=[]
+for p in ['services/foundation/migrations/001_foundation.sql','services/foundation/migrations/002_observed_archive.sql']:
+ old_migrations.append({'path':p,'base_blob':blob(BASE,p),'checkpoint_blob':blob(HEAD,p),'same':blob(BASE,p)==blob(HEAD,p)})
+migration003={'path':'services/foundation/migrations/003_live_hold.sql','base_blob':tree(BASE,'services/foundation/migrations/003_live_hold.sql'),'checkpoint_blob':tree(HEAD,'services/foundation/migrations/003_live_hold.sql'),'added':tree(BASE,'services/foundation/migrations/003_live_hold.sql') is None and tree(HEAD,'services/foundation/migrations/003_live_hold.sql') is not None}
+added_service_contracts=[l.split('\t',1)[1] for l in changed_contracts if l.startswith('A\t') and l.split('\t',1)[1].startswith('contracts/service/')]
+nonadd_contracts=[l for l in changed_contracts if not l.startswith('A\t')]
+report={
+ 'scope':'Source-byte and ledger inventory only; b65 checkpoint, not frozen/reviewed; no runtime/tests/semantic correctness claims.',
+ 'checkout':{'root':git('rev-parse','--show-toplevel').decode().strip(),'head':git('rev-parse','HEAD').decode().strip(),'expected_head':HEAD,'base':BASE},
+ 'historical_inventory':{'report_blob':REPORT,'json_blob':INV,'files_expected':53,'files_checked':len(file_rows),'all_base_blobs_match_inventory':all(x['inventory_blob_matches_base'] for x in file_rows),'all_53_checkpoint_git_blobs_equal_base':all(x['same_base_checkpoint'] for x in file_rows),'all_inventory_hashes_match_checkpoint_git_bytes':all(x['inventory_sha256_matches_checkpoint'] for x in file_rows),'mismatches':[x for x in file_rows if not (x['same_base_checkpoint'] and x['inventory_blob_matches_base'] and x['inventory_sha256_matches_checkpoint'])],'checkout_line_endings_note':'Comparison uses Git blobs; historical report notes 30 worktree copies were CRLF-only with core.autocrlf=true. This audit did not treat checkout CRLF as Git blob changes.'},
+ 'ledger':{'path':LEDGER,'base_blob':blob(BASE,LEDGER),'checkpoint_blob':blob(HEAD,LEDGER),'original_top_keys_unchanged_except_additions':sorted(set(a)-set(z))==[],'top_level_added':sorted(set(z)-set(a)),'top_level_removed':sorted(set(a)-set(z)),'coverage_635_exact':len(acov)==635 and len(zcov)==635 and acov==zcov,'coverage_requirement_ids_exact_in_order':ids(acov,'requirement_id')==ids(zcov,'requirement_id'),'tasks_23_exact':len(at)==23 and len(zt)==23 and at==zt,'task_ids_exact_in_order':ids(at,'id')==ids(zt,'id'),'all_reference_counts_and_dangling_links_same':oldrefs==newrefs,'base_reference_inventory':oldrefs,'checkpoint_reference_inventory':newrefs,'added_live_hold_status':z.get('live_hold_implementation')},
+ 'migrations':{'old_migrations':old_migrations,'003_live_hold':migration003},
+ 'contracts':{'changed_paths':changed_contracts,'added_service_contract_path_count':len(added_service_contracts),'added_service_contract_paths':added_service_contracts,'nonadd_contract_changes':nonadd_contracts},
+ 'diff_path_counts':{'total_changed_paths':len(statuses),'additions':sum(1 for x in statuses if x[0]=='A'),'modifications':sum(1 for x in statuses if x[0]=='M'),'deletions':sum(1 for x in statuses if x[0]=='D'),'renames':sum(1 for x in statuses if x[0].startswith('R'))},
+ 'golden_paths':file_rows
+}
+pathlib.Path('.compatibility-audit/inventory.json').write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+# concise human-readable report
+summary=[]
+summary += ['# G1 live hold compatibility inventory (b65 checkpoint)','',f"Scope: {report['scope']}",f"Checkout: `{report['checkout']['root']}` at `{report['checkout']['head']}`; accepted base `{BASE}`.",'','## Golden v1 paths',f"Historical report `{REPORT}`, inventory JSON `{INV}`: checked {len(file_rows)}/53 paths. Base inventory Git blob IDs match: {sum(x['inventory_blob_matches_base'] for x in file_rows)}/53. Checkpoint Git blobs equal accepted-base blobs: {sum(x['same_base_checkpoint'] for x in file_rows)}/53. Historical SHA-256 values match checkpoint Git bytes: {sum(x['inventory_sha256_matches_checkpoint'] for x in file_rows)}/53.", 'Comparison is over Git blobs. The historical inventory records 30 checkout files with CRLF-only conversion under `core.autocrlf=true`; checkout bytes are not interpreted as source changes.']
+if report['historical_inventory']['mismatches']:
+ summary += ['','Mismatches:']+[f"- {m['path']}: inventory={m['inventory_blob']}, base={m['base_blob']}, checkpoint={m['checkpoint_blob']}" for m in report['historical_inventory']['mismatches']]
+summary += ['','## Requirement/task/test/dependency ledger',f"Ledger Git blobs: base `{report['ledger']['base_blob']}`, checkpoint `{report['ledger']['checkpoint_blob']}`.",f"Original coverage rows: 635; exact row-for-row equality: {report['ledger']['coverage_635_exact']}. Original task rows: 23; exact object equality: {report['ledger']['tasks_23_exact']}. Coverage, task, and requirement IDs remain in identical order.",f"Reference inventory (base and checkpoint identical): {json.dumps(oldrefs,ensure_ascii=False)}.",f"Top-level addition: {report['ledger']['top_level_added']}; no removals: {not report['ledger']['top_level_removed']}. Live-hold entry: `{json.dumps(z.get('live_hold_implementation'),ensure_ascii=False)}`.",'','## Migration and service-contract path inventory',f"Old migrations unchanged: {json.dumps(old_migrations)}.",f"Migration 003 added: `{migration003['added']}`, blob `{migration003['checkpoint_blob']}`.",f"Contract diff: {len(changed_contracts)} added paths; service contract additions: {len(added_service_contracts)}. Existing contract paths changed/deleted: {len(nonadd_contracts)}.",'','No semantic correctness, runtime behavior, test outcome, final-candidate, or clinical acceptance claim is made. This is an early source-only inventory of b65.']
+pathlib.Path('.compatibility-audit/inventory.md').write_text('\n'.join(summary)+'\n',encoding='utf-8')

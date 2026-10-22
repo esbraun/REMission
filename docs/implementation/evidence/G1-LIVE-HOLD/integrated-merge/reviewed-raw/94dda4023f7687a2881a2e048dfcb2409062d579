@@ -1,0 +1,8 @@
+import subprocess,pathlib,json
+p=pathlib.Path('.review-artifacts')
+for name,oid in {'retry-families-oracle.py':'3bba3527f6b8c899a50383ac1756dc2def381e5f','current-head-oracle.py':'fed2538d16085a5a21c986aee918d5f9dad728f2','clearance-retry-oracle.py':'321142ec7ef65700bfc96f24016aa3b44af4bd96'}.items():(p/name).write_bytes(subprocess.check_output(['git','cat-file','blob',oid]))
+s=(p/'retry-families-oracle.py').read_text();(p/'retry-retraction-oracle.py').write_text(s.replace("late_trigger_correction_at=late,export_name=", "late_trigger_correction_at=late,late_trigger_retracted=True,export_name="))
+root=str(pathlib.Path.cwd());head=subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()
+for name in ['retry-families','retry-retraction','current-head','clearance-retry']:
+ cmd=['docker','run','--rm','--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,nosuid,size=512m','-e','PYTHONPATH=/app:/app/tests/integration/replay:/app/tests/run_contracts','--mount',f'type=bind,source={root},target=/app,readonly','-w','/app','sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa','python',f'.review-artifacts/{name}-oracle.py']
+ r=subprocess.run(cmd,capture_output=True);(p/f'{name}-raw.json').write_text(json.dumps(dict(head=head,command=cmd,exit_code=r.returncode,stdout=r.stdout.decode(),stderr=r.stderr.decode()),indent=2));print(name,r.returncode,r.stdout.decode(),r.stderr.decode()[-400:],flush=True)

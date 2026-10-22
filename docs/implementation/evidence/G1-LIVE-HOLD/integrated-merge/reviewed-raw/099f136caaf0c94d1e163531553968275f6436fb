@@ -1,0 +1,157 @@
+{
+  "$defs": {
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:trusted-iid-investigation-authority",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Trusted caller policy; never take this authority from an uploaded result.",
+  "properties": {
+    "allow_contract_fixture": {
+      "title": "Allow Contract Fixture",
+      "type": "boolean"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "producer_qualification": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Sha256",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sha256",
+    "producer",
+    "source_commit",
+    "runtime",
+    "producer_qualification",
+    "allow_contract_fixture"
+  ],
+  "title": "IIDInvestigationAuthority",
+  "type": "object"
+}

@@ -1,0 +1,298 @@
+{
+  "$defs": {
+    "FilterExecution": {
+      "additionalProperties": false,
+      "description": "Producer execution receipts, not arbitrary relabelled environment IDs.",
+      "properties": {
+        "ancestry_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Ancestry Sha256",
+          "type": "string"
+        },
+        "environment": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Environment",
+          "type": "string"
+        },
+        "innovations_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Innovations Sha256",
+          "type": "string"
+        },
+        "keys": {
+          "items": {
+            "$ref": "#/$defs/StreamKey"
+          },
+          "title": "Keys",
+          "type": "array"
+        },
+        "posterior_selection_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Posterior Selection Sha256",
+          "type": "string"
+        },
+        "producer_run": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Producer Run",
+          "type": "string"
+        },
+        "realization_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Realization Sha256",
+          "type": "string"
+        },
+        "rollout_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Rollout Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "producer_run",
+        "environment",
+        "realization_sha256",
+        "ancestry_sha256",
+        "innovations_sha256",
+        "posterior_selection_sha256",
+        "rollout_sha256",
+        "keys"
+      ],
+      "title": "FilterExecution",
+      "type": "object"
+    },
+    "PathOutcome": {
+      "additionalProperties": false,
+      "description": "One complete path, including death and admission before death.",
+      "properties": {
+        "admission_by_day42": {
+          "title": "Admission By Day42",
+          "type": "boolean"
+        },
+        "admission_day": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Admission Day"
+        },
+        "alive_outpatient_day42": {
+          "title": "Alive Outpatient Day42",
+          "type": "boolean"
+        },
+        "conditional_isi": {
+          "anyOf": [
+            {
+              "maximum": 28,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conditional Isi"
+        },
+        "death_day": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Death Day"
+        },
+        "survival_day42": {
+          "title": "Survival Day42",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "survival_day42",
+        "admission_by_day42",
+        "alive_outpatient_day42",
+        "death_day",
+        "admission_day"
+      ],
+      "title": "PathOutcome",
+      "type": "object"
+    },
+    "PilotEnvironment": {
+      "additionalProperties": false,
+      "properties": {
+        "arm": {
+          "enum": [
+            "intervention",
+            "comparator"
+          ],
+          "title": "Arm",
+          "type": "string"
+        },
+        "filter_execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FilterExecution"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/$defs/PathOutcome"
+        }
+      },
+      "required": [
+        "id",
+        "arm",
+        "outcome",
+        "filter_execution"
+      ],
+      "title": "PilotEnvironment",
+      "type": "object"
+    },
+    "StreamKey": {
+      "additionalProperties": false,
+      "description": "Complete accepted key material; words and digest are verified, not trusted.",
+      "properties": {
+        "key_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Key Sha256",
+          "type": "string"
+        },
+        "namespace": {
+          "enum": [
+            "generation",
+            "assignment",
+            "measurement",
+            "missingness",
+            "fitting",
+            "posterior_rollout",
+            "truth"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "fixture",
+            "calibration",
+            "pilot",
+            "smoke",
+            "development",
+            "confirmation"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "root_seed": {
+          "const": 20261020,
+          "title": "Root Seed",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "stream": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Stream",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        },
+        "words": {
+          "items": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 8,
+          "minItems": 8,
+          "title": "Words",
+          "type": "array"
+        }
+      },
+      "required": [
+        "root_seed",
+        "protocol",
+        "phase",
+        "namespace",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process",
+        "stream",
+        "words",
+        "key_sha256"
+      ],
+      "title": "StreamKey",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:probability-pilot-trial",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allocation_key": {
+      "$ref": "#/$defs/StreamKey"
+    },
+    "environments": {
+      "items": {
+        "$ref": "#/$defs/PilotEnvironment"
+      },
+      "title": "Environments",
+      "type": "array"
+    },
+    "trial": {
+      "exclusiveMaximum": 1000,
+      "minimum": 0,
+      "title": "Trial",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "trial",
+    "allocation_key",
+    "environments"
+  ],
+  "title": "PilotTrial",
+  "type": "object"
+}

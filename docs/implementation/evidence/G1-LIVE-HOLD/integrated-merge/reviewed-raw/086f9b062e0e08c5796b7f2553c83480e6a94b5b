@@ -1,0 +1,307 @@
+{
+  "$defs": {
+    "ExactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256"
+      ],
+      "title": "ExactRef",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:2.0.0:support-stage-closure",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assignment_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExactRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "completion_receipt": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VersionRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "decision_index": {
+      "minimum": 0,
+      "title": "Decision Index",
+      "type": "integer"
+    },
+    "duplicate_of": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Duplicate Of"
+    },
+    "event_at": {
+      "format": "date-time",
+      "title": "Event At",
+      "type": "string"
+    },
+    "kind": {
+      "const": "support_stage_closure",
+      "title": "Kind",
+      "type": "string"
+    },
+    "lineage_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Lineage Id",
+      "type": "string"
+    },
+    "partition_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Partition Id",
+      "type": "string"
+    },
+    "patient_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "record_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_status": {
+      "enum": [
+        "active",
+        "corrected",
+        "retracted"
+      ],
+      "title": "Record Status",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "revision": {
+      "exclusiveMinimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "row_count": {
+      "minimum": 0,
+      "title": "Row Count",
+      "type": "integer"
+    },
+    "rule": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "2.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "stage": {
+      "enum": [
+        "offered",
+        "delivered"
+      ],
+      "title": "Stage",
+      "type": "string"
+    },
+    "stage_completed_at": {
+      "format": "date-time",
+      "title": "Stage Completed At",
+      "type": "string"
+    },
+    "stage_event_refs": {
+      "items": {
+        "$ref": "#/$defs/ExactRef"
+      },
+      "title": "Stage Event Refs",
+      "type": "array"
+    },
+    "stage_ledger": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "pending",
+        "missing"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "supersedes": {
+      "anyOf": [
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Supersedes"
+    },
+    "support_decision": {
+      "$ref": "#/$defs/ExactRef"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "window_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+      "title": "Window Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "record_id",
+    "patient_id",
+    "event_at",
+    "recorded_at",
+    "available_at",
+    "source",
+    "lineage_id",
+    "revision",
+    "supersedes",
+    "duplicate_of",
+    "record_status",
+    "kind",
+    "run_id",
+    "partition_id",
+    "support_decision",
+    "assignment_ref",
+    "window_id",
+    "decision_index",
+    "stage",
+    "rule",
+    "stage_completed_at",
+    "status",
+    "stage_event_refs",
+    "stage_ledger",
+    "row_count",
+    "reason",
+    "completion_receipt"
+  ],
+  "title": "SupportStageClosureV2",
+  "type": "object"
+}

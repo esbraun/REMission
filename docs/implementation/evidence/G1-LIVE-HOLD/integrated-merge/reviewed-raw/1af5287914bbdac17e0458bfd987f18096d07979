@@ -1,0 +1,64 @@
+"""Bounded plan-review evidence: exact source identity and SQLite cardinality probe."""
+import hashlib
+import json
+from pathlib import Path
+import sqlite3
+import subprocess
+
+ROOT=Path(__file__).resolve().parents[1]
+OUT=ROOT/'.review-artifacts'
+HEAD='ab353bb93737da541e8d366acd28c35c86814bc1'
+BASE='ec18cb4020ba239710a3fd615e365d5cd72b4d80'
+PARENT='c6e3adca7adda5eb19833ee28ce468777172ff38'
+def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
+assert git('rev-parse','HEAD').decode().strip()==HEAD
+assert git('merge-base','HEAD',BASE).decode().strip()==BASE
+assert git('rev-parse','HEAD^').decode().strip()==PARENT
+proposal='docs/implementation/g1-live-hold-trigger-binding-supplement-20261021.md'
+assert git('diff','--name-only',PARENT,HEAD).decode().splitlines()==[proposal]
+paths=[proposal,'docs/implementation/g1-live-hold-executable-contract-proposal-r1-20261021.md',
+ 'implementation-prompt.md','docs/execution/delegation.md','docs/execution/runtime-and-workflow.md',
+ 'docs/execution/engineering-guidelines.md','plan.md','docs/spec/00-scope-and-invariants.md',
+ 'docs/spec/06-service-and-ui.md','docs/spec/08-gates-and-release.md',
+ 'contracts/service/live_hold.py','contracts/service/live_safety.py','contracts/service/live_safety_admission.py',
+ 'contracts/service/export.py','contracts/service/bindings-v1.json','services/foundation/configuration.py',
+ 'services/foundation/live_hold.py','services/foundation/cutover.py','services/foundation/live_coordinator.py',
+ 'services/foundation/live_journal.py','services/foundation/workflow.py','services/foundation/app.py',
+ 'services/foundation/migrations/003_live_hold.sql']
+sources=[]
+for path in paths:
+ raw=git('show',HEAD+':'+path)
+ sources.append({'path':path,'git_blob':git('rev-parse',HEAD+':'+path).decode().strip(),
+                 'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})
+accepted=git('cat-file','blob','e6d39d6a0bce37a554cd768e14ee0916edf5da5c')
+assert accepted==git('show',HEAD+':'+paths[1])
+
+# Actual frozen SQL in a private in-memory database. Only stub parent identities;
+# no service, file DB, application imports or runtime acceptance claimed.
+db=sqlite3.connect(':memory:')
+db.executescript('CREATE TABLE patients(id TEXT PRIMARY KEY); CREATE TABLE accounts(id TEXT PRIMARY KEY); CREATE TABLE observed_archives(id TEXT PRIMARY KEY); CREATE TABLE schema_migrations(version INTEGER);')
+db.executescript(git('show',HEAD+':services/foundation/migrations/003_live_hold.sql').decode())
+db.execute("INSERT INTO live_hold_tasks VALUES('T1','P','E',1,'D','2026-10-22T09:00:00Z','{}')")
+try:
+ db.execute("INSERT INTO live_hold_tasks VALUES('T2','P','E',1,'D','2026-10-23T09:00:00Z','{}')")
+ raise AssertionError('Expected frozen singleton constraint was absent')
+except sqlite3.IntegrityError as error:
+ cardinality_failure=str(error)
+assert cardinality_failure=='UNIQUE constraint failed: live_hold_tasks.episode_id, live_hold_tasks.generation'
+
+# Counterexample to the stated cutover selector; source content not application code.
+episode={'namespace':'N','run':'R','partition':'P','episode':'E1','package':'A','rules':['concern-v1']}
+foreign={'namespace':'N','run':'R','partition':'P','episode':'E2','package':'B','rule':'concern-v1','follow_up':'F2'}
+stated_match=all(episode[k]==foreign[k] for k in ('namespace','run','partition')) and foreign['rule'] in episode['rules']
+exact_episode_package_match=episode['episode']==foreign['episode'] and episode['package']==foreign['package']
+assert stated_match and not exact_episode_package_match
+
+bindings=json.loads(git('show',HEAD+':contracts/service/bindings-v1.json'))
+assert bindings['live_hold']['sha256']==hashlib.sha256(accepted.replace(b'\r\n',b'\n')).hexdigest()
+out={'head':HEAD,'accepted_base':BASE,'supplement_parent':PARENT,'sources':sources,
+ 'accepted_R1_exact_blob_verified':'e6d39d6a0bce37a554cd768e14ee0916edf5da5c',
+ 'sql_probe':{'database':':memory:','first_task':'inserted','second_distinct_task_same_generation':cardinality_failure},
+ 'cutover_selector_counterexample':{'episode':episode,'foreign_binding':foreign,'stated_selector_matches':stated_match,'exact_scope_matches':exact_episode_package_match},
+ 'current_contract_binding':bindings['live_hold'],'scope':'independent source/finite plan checks only; no code/runtime approval'}
+(OUT/'source-checks.json').write_text(json.dumps(out,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps({k:v for k,v in out.items() if k!='sources'},indent=2))

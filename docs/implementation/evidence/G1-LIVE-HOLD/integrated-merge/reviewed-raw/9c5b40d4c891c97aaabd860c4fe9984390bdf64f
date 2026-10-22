@@ -1,0 +1,170 @@
+import hashlib, json, pathlib, subprocess, sys
+
+ROOT = pathlib.Path.cwd()
+BASE = "ec18cb4020ba239710a3fd615e365d5cd72b4d80"
+HEAD = "45ccc7cf8c89a7fffa5497ac3a1e1067be1e31f6"
+HIST_REPORT = "d2c40475cb4e8c5e9130a16cbe4cc9fc5b36c92a"
+HIST_JSON = "a5b9c5ee8c4428ab72d2291f83a1a8c7edf1ece6"
+FROZEN_003 = "1096d6da86048e7a53f98ed70abdd85f6f497aed"
+OUT = pathlib.Path("docs/implementation/evidence/G1-LH-COMPAT-R2-LUNA-20261021")
+
+def git(*args, check=True):
+    p = subprocess.run(["git", *args], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if check and p.returncode:
+        raise RuntimeError(f"git {' '.join(args)} failed rc={p.returncode}: {p.stderr.decode(errors='replace')}")
+    return p
+
+def blob(rev, path):
+    p = git("rev-parse", f"{rev}:{path}", check=False)
+    if p.returncode: return None, None
+    oid = p.stdout.decode().strip()
+    return oid, git("cat-file", "blob", oid).stdout
+
+def sha(data): return hashlib.sha256(data).hexdigest()
+def parse(data): return json.loads(data.decode("utf-8"))
+
+base_oid, base_ledger_bytes = blob(BASE, "docs/implementation/g0-task-test-ledger-20261020.json")
+head_oid, head_ledger_bytes = blob(HEAD, "docs/implementation/g0-task-test-ledger-20261020.json")
+base_ledger, head_ledger = parse(base_ledger_bytes), parse(head_ledger_bytes)
+hist = parse(git("cat-file", "blob", HIST_JSON).stdout)
+
+# Golden immutable v1 artifact identities: all comparisons use Git object bytes.
+gold = []
+for rec in hist["golden_paths"]:
+    path = rec["path"]
+    boid, bbytes = blob(BASE, path)
+    hoid, hbytes = blob(HEAD, path)
+    physical = (ROOT / pathlib.Path(*path.split("/"))).read_bytes() if (ROOT / pathlib.Path(*path.split("/"))).exists() else None
+    gold.append({"path": path, "historical_inventory_blob": rec["inventory_blob"], "accepted_base_blob": boid,
+                 "checkpoint_blob": hoid, "historical_base_blob_matches": boid == rec["inventory_blob"],
+                 "checkpoint_equals_base": hoid == boid, "historical_sha256_matches_checkpoint_git_bytes": sha(hbytes) == rec["checkpoint_sha256"],
+                 "physical_checkout_sha256": sha(physical) if physical is not None else None,
+                 "physical_matches_git_blob_bytes": physical == hbytes if physical is not None else False,
+                 "physical_diff_is_crlf_only": (physical is not None and physical.replace(b"\r\n", b"\n") == hbytes.replace(b"\r\n", b"\n")) if physical is not None else False})
+
+# Original ledger coverage/task rows and explicit links.
+cov_base, cov_head = base_ledger.get("coverage", []), head_ledger.get("coverage", [])
+tasks_base, tasks_head = base_ledger.get("tasks", []), head_ledger.get("tasks", [])
+def ids(rows, key): return [x.get(key) for x in rows]
+def changed_paths(a, b, prefix=""):
+    if isinstance(a, dict) and isinstance(b, dict):
+        out=[]
+        for k in sorted(set(a)|set(b)):
+            p=f"{prefix}.{k}" if prefix else k
+            if k not in a or k not in b: out.append(p)
+            else: out.extend(changed_paths(a[k],b[k],p))
+        return out
+    if isinstance(a, list) and isinstance(b, list):
+        if a == b: return []
+        return [prefix]
+    return [] if a == b else [prefix]
+def reference_inventory(doc):
+    tasks = doc.get("tasks", [])
+    coverage = doc.get("coverage", [])
+    task_ids = {x.get("id") for x in tasks}
+    req_ids = {x.get("requirement_id") for x in coverage}
+    tests = {x for t in tasks for x in t.get("test_ids", [])} | {x for c in coverage for x in c.get("test_ids", [])}
+    dep_edges = []
+    dep_dangling = []
+    task_test_refs = []
+    task_req_refs = []
+    for t in tasks:
+        tid = t.get("id")
+        for d in t.get("depends_on", []):
+            dep_edges.append((tid,d))
+            if d not in task_ids: dep_dangling.append({"task":tid,"dependency":d})
+        for x in t.get("test_ids", []): task_test_refs.append((tid,x))
+        for x in t.get("requirement_ids", []): task_req_refs.append((tid,x))
+    coverage_task_refs, coverage_test_refs, coverage_task_dangling, coverage_test_dangling = [], [], [], []
+    for c in coverage:
+        rid = c.get("requirement_id")
+        for x in c.get("task_ids", []):
+            coverage_task_refs.append((rid,x))
+            if x not in task_ids: coverage_task_dangling.append({"requirement":rid,"task":x})
+        for x in c.get("test_ids", []):
+            coverage_test_refs.append((rid,x))
+            if x not in tests: coverage_test_dangling.append({"requirement":rid,"test":x})
+    task_test_dangling = [{"task":t,"test":x} for t,x in task_test_refs if x not in tests]
+    task_req_dangling = [{"task":t,"requirement":x} for t,x in task_req_refs if x not in req_ids]
+    return {"task_count":len(tasks),"unique_task_id_count":len(task_ids),"dependency_edge_count":len(dep_edges),"dependency_dangling":dep_dangling,
+            "task_test_reference_count":len(task_test_refs),"unique_task_test_ids":len(set(x for _,x in task_test_refs)),"task_test_dangling":task_test_dangling,
+            "task_requirement_reference_count":len(task_req_refs),"task_requirement_dangling":task_req_dangling,
+            "coverage_count":len(coverage),"unique_coverage_requirement_ids":len({c.get("requirement_id") for c in coverage}),
+            "coverage_task_reference_count":len(coverage_task_refs),"coverage_test_reference_count":len(coverage_test_refs),
+            "coverage_task_dangling":coverage_task_dangling,"coverage_test_dangling":coverage_test_dangling}
+
+base_refs, head_refs = reference_inventory(base_ledger), reference_inventory(head_ledger)
+base_keys, head_keys = set(base_ledger), set(head_ledger)
+legacy_keys = sorted(base_keys)
+legacy_diffs = {k:{"base":base_ledger[k],"checkpoint":head_ledger.get(k)} for k in legacy_keys if base_ledger[k] != head_ledger.get(k)}
+metadata_paths = changed_paths(base_ledger.get("observed_representation_v2"),head_ledger.get("observed_representation_v2"),"observed_representation_v2")
+top_added, top_removed = sorted(head_keys-base_keys), sorted(base_keys-head_keys)
+meta = head_ledger.get("live_hold_implementation")
+
+# Migration and additive service paths/config bindings.
+old_migrations=[]
+for p in ["services/foundation/migrations/001_foundation.sql","services/foundation/migrations/002_observed_archive.sql"]:
+    bo,b=blob(BASE,p); ho,h=blob(HEAD,p); old_migrations.append({"path":p,"base_blob":bo,"checkpoint_blob":ho,"same":bo==ho})
+m003="services/foundation/migrations/003_live_hold.sql"
+m003_oid,m003_bytes=blob(HEAD,m003)
+m004="services/foundation/migrations/004_live_hold_followups.sql"
+m004_oid,m004_bytes=blob(HEAD,m004)
+frozen_003_oid,frozen_003_bytes=blob(FROZEN_003,m003)
+diff_003=git("diff","--no-ext-diff","--unified=2",frozen_003_oid,m003_oid).stdout.decode(errors="replace") if m003_oid and frozen_003_oid else ""
+service_changes = git("diff","--name-status",BASE,HEAD,"--","contracts/service").stdout.decode().splitlines()
+service_paths = []
+for line in service_changes:
+    status,path = line.split("\t",1)
+    oid,data=blob(HEAD,path)
+    item={"status":status,"path":path,"checkpoint_blob":oid,"sha256_git_blob_bytes":sha(data) if data else None,"size_bytes":len(data) if data else None}
+    if path.endswith("bindings-v1.json") or path.endswith("schema-set.json") or path.endswith("dictionary-v1.json"):
+        try: item["parsed_json"]=parse(data)
+        except Exception as e: item["json_parse_error"]=str(e)
+    service_paths.append(item)
+binding_doc=next((x.get("parsed_json") for x in service_paths if x["path"].endswith("bindings-v1.json")),{})
+schema_set_doc=next((x.get("parsed_json") for x in service_paths if x["path"].endswith("schema-set.json")),{})
+service_binding_summary={"live_hold":binding_doc.get("live_hold"),"live_safety":binding_doc.get("live_safety"),"service_schema_set":binding_doc.get("service_schema_set"),
+                        "observed_domain_versions":sorted(binding_doc.get("observed_domain",{})),"schema_set_file_count":len(schema_set_doc.get("sha256_by_path",{})),
+                        "schema_set_paths":sorted(schema_set_doc.get("sha256_by_path",{}))}
+import re
+m004_inventory={"tables":re.findall(rb"CREATE TABLE\s+([a-zA-Z0-9_]+)",m004_bytes or b""),"triggers":re.findall(rb"CREATE TRIGGER\s+([a-zA-Z0-9_]+)",m004_bytes or b""),
+                "schema_migration_insert":re.findall(rb"INSERT INTO schema_migrations VALUES\((\d+)\)",m004_bytes or b"")}
+
+diff_stats={}
+for line in git("diff","--name-status",BASE,HEAD).stdout.decode().splitlines():
+    status=line.split("\t",1)[0]
+    diff_stats[status]=diff_stats.get(status,0)+1
+
+report={"scope":"Source-byte and ledger inventory only at incomplete 45ccc7f checkpoint; independent code review ongoing; no runtime/test/behavior/acceptance claim.",
+"checkout":{"root":str(ROOT).replace("\\","/"),"head":git("rev-parse","HEAD").stdout.decode().strip(),"base":git("rev-parse",BASE).stdout.decode().strip(),"expected_head":HEAD,"head_matches_expected":git("rev-parse","HEAD").stdout.decode().strip()==HEAD},
+"audit_assignment":{"assigned_model":"gpt-6-luna","assigned_effort":"high","effective_model_introspection":"unavailable","substitution":"none"},
+"source_blobs":{"historical_report_blob":HIST_REPORT,"historical_source_json_blob":HIST_JSON,"accepted_base":BASE},
+"golden_v1":{"expected":len(hist["golden_paths"]),"checked":len(gold),"all_historical_inventory_blobs_match_base":all(x["historical_base_blob_matches"] for x in gold),"all_checkpoint_blobs_equal_base":all(x["checkpoint_equals_base"] for x in gold),"all_historical_sha256_match_checkpoint_git_bytes":all(x["historical_sha256_matches_checkpoint_git_bytes"] for x in gold),"physical_checkout_sha256_is_separate_from_git_blob_comparison":True,"physical_hash_differences":sum(not x["physical_matches_git_blob_bytes"] for x in gold),"crlf_only_physical_differences":sum(x["physical_diff_is_crlf_only"] for x in gold),"paths":gold},
+"ledger":{"path":"docs/implementation/g0-task-test-ledger-20261020.json","base_blob":base_oid,"checkpoint_blob":head_oid,"coverage_base_count":len(cov_base),"coverage_checkpoint_count":len(cov_head),"original_coverage_rows_exact_and_ordered":cov_base==cov_head,"coverage_ids_exact_and_ordered":ids(cov_base,"requirement_id")==ids(cov_head,"requirement_id"),"task_base_count":len(tasks_base),"task_checkpoint_count":len(tasks_head),"original_task_rows_exact_and_ordered":tasks_base==tasks_head,"task_ids_exact_and_ordered":ids(tasks_base,"id")==ids(tasks_head,"id"),"legacy_top_level_differences":legacy_diffs,"top_level_added":top_added,"top_level_removed":top_removed,"nested_existing_plan_metadata_changed_paths":metadata_paths,"original_task_rows_and_coverage_rows_unchanged":tasks_base==tasks_head and cov_base==cov_head,"base_reference_inventory":base_refs,"checkpoint_reference_inventory":head_refs,"no_declared_reference_shrink":len(cov_head)>=len(cov_base) and len(tasks_head)>=len(tasks_base),"all_declared_links_resolve":all(not head_refs[k] for k in ["dependency_dangling","task_test_dangling","task_requirement_dangling","coverage_task_dangling","coverage_test_dangling"]),"live_hold_metadata":meta},
+"migrations":{"existing_001_002_unchanged":all(x["same"] for x in old_migrations),"existing":old_migrations,"003":{"path":m003,"checkpoint_blob":m003_oid,"frozen_revision":FROZEN_003,"frozen_blob":frozen_003_oid,"equals_frozen_b65":m003_oid==frozen_003_oid,"checkpoint_sha256_git_blob_bytes":sha(m003_bytes) if m003_bytes else None,"frozen_sha256_git_blob_bytes":sha(frozen_003_bytes) if frozen_003_bytes else None,"checkpoint_size_bytes":len(m003_bytes) if m003_bytes else None,"frozen_size_bytes":len(frozen_003_bytes) if frozen_003_bytes else None,"blob_diff":diff_003},"004":{"path":m004,"added":m004_oid is not None,"checkpoint_blob":m004_oid,"sha256_git_blob_bytes":sha(m004_bytes) if m004_bytes else None,"size_bytes":len(m004_bytes) if m004_bytes else None,"source_inventory":{k:[v.decode() for v in vals] for k,vals in m004_inventory.items()}}},
+"service_additions":{"paths":service_paths,"added_path_count":sum(x["status"]=="A" for x in service_paths),"binding_summary":service_binding_summary},"diff_path_status_counts":diff_stats}
+
+OUT.mkdir(parents=True, exist_ok=True)
+(OUT/"source-inventory.json").write_bytes(git("cat-file","blob",HIST_JSON).stdout)
+(OUT/"source-report.md").write_bytes(git("cat-file","blob",HIST_REPORT).stdout)
+(OUT/"compatibility-report.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n",encoding="utf-8",newline="\n")
+
+lines=["# G1 live-hold compatibility audit (45ccc7f)","",report["scope"],"",f"Checkout `{report['checkout']['root']}` at `{report['checkout']['head']}` against accepted base `{BASE}`. Assignment: `gpt-6-luna/high`; effective model introspection is unavailable, with no substitution.","",
+"## Immutable v1 artifacts",f"Compared {len(gold)}/{len(hist['golden_paths'])} historical paths using Git blob bytes. Base identity matches: {report['golden_v1']['all_historical_inventory_blobs_match_base']}; checkpoint equals base: {report['golden_v1']['all_checkpoint_blobs_equal_base']}; historical SHA-256 matches checkpoint Git bytes: {report['golden_v1']['all_historical_sha256_match_checkpoint_git_bytes']}. Physical checkout SHA-256 was computed separately for {len(gold)} files; {report['golden_v1']['physical_hash_differences']} differ bytewise from Git blobs, and all {report['golden_v1']['crlf_only_physical_differences']} normalize to the corresponding Git bytes after newline normalization.","",
+"## Ledger",f"Coverage rows: {len(cov_base)} at base and {len(cov_head)} at checkpoint; exact ordered rows: {cov_base==cov_head}. Task rows: {len(tasks_base)} and {len(tasks_head)}; exact ordered rows: {tasks_base==tasks_head}. Top-level additions: {top_added}; removals: {top_removed}. The only changed existing top-level section is `observed_representation_v2`, which has nested plan/task state, status, review, and integration metadata changes at `{metadata_paths}`; the original `tasks` and `coverage` row arrays are unchanged. Checkpoint link inventory: `{json.dumps(head_refs,ensure_ascii=False)}`.","",
+"## Migration identity and service additions",f"Existing 001/002 unchanged: {all(x['same'] for x in old_migrations)}. Migration 003 blob `{m003_oid}` equals blob `{frozen_003_oid}` at frozen revision `{FROZEN_003}`: {m003_oid==frozen_003_oid}; the Git-object diff is included in the JSON. New 004 blob `{m004_oid}` ({len(m004_bytes) if m004_bytes else 0} bytes); the source includes tables `{[x.decode() for x in m004_inventory['tables']]}`, trigger `{[x.decode() for x in m004_inventory['triggers']]}`, and schema migration marker `{[x.decode() for x in m004_inventory['schema_migration_insert']]}`.", "", f"Service bindings are additive: live hold `{service_binding_summary['live_hold']}`, live safety `{service_binding_summary['live_safety']}`, schema-set `{service_binding_summary['service_schema_set']}`, observed-domain versions `{service_binding_summary['observed_domain_versions']}`; the schema set lists {service_binding_summary['schema_set_file_count']} schema/config files. Additive `contracts/service` entries:"]
+for x in service_paths: lines.append(f"- `{x['status']} {x['path']}` — blob `{x['checkpoint_blob']}`")
+lines += ["", "This report makes no claim about schema validity, runtime behavior, test outcomes, engineering acceptance, scientific clearance, clinical review, or gate acceptance.",""]
+(OUT/"compatibility-report.md").write_text("\n".join(lines),encoding="utf-8",newline="\n")
+
+# Write report/evidence objects into this checkout's object DB and byte-verify each via cat-file.
+manifest={"checkout":report["checkout"],"artifacts":[]}
+for name in ["audit_compat.py","command-failures.log","source-inventory.json","source-report.md","compatibility-report.json","compatibility-report.md"]:
+    raw=(OUT/name).read_bytes()
+    oid=git("hash-object","-w","--no-filters","--",str(OUT/name)).stdout.decode().strip()
+    stored=git("cat-file","blob",oid).stdout
+    manifest["artifacts"].append({"path":str((OUT/name).as_posix()),"blob":oid,"physical_sha256":sha(raw),"size_bytes":len(raw),"cat_file_byte_verified":raw==stored})
+(OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8",newline="\n")
+raw=(OUT/"manifest.json").read_bytes(); oid=git("hash-object","-w","--no-filters","--",str(OUT/"manifest.json")).stdout.decode().strip(); stored=git("cat-file","blob",oid).stdout
+if raw!=stored: raise RuntimeError("manifest byte verification failed")
+print(json.dumps({"report":str(OUT/"compatibility-report.md"),"json":str(OUT/"compatibility-report.json"),"manifest":str(OUT/"manifest.json"),"git_blob_manifest":oid,"report_summary":{"golden_53_same":report["golden_v1"]["all_checkpoint_blobs_equal_base"],"coverage_exact":report["ledger"]["original_coverage_rows_exact_and_ordered"],"tasks_exact":report["ledger"]["original_task_rows_exact_and_ordered"],"links_resolve":report["ledger"]["all_declared_links_resolve"],"003_frozen":report["migrations"]["003"]["equals_frozen_b65"],"service_additions":report["service_additions"]["added_path_count"],"004_added":report["migrations"]["004"]["added"]}},indent=2))

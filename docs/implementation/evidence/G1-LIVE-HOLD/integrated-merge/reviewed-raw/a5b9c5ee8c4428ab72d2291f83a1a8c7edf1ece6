@@ -1,0 +1,712 @@
+{
+  "scope": "Source-byte and ledger inventory only; b65 checkpoint, not frozen/reviewed; no runtime/tests/semantic correctness claims.",
+  "checkout": {
+    "root": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-compatibility-luna-20261021",
+    "head": "b65f2760159a914806b47b7b5caea42ab0e48db2",
+    "expected_head": "b65f2760159a914806b47b7b5caea42ab0e48db2",
+    "base": "ec18cb4020ba239710a3fd615e365d5cd72b4d80"
+  },
+  "historical_inventory": {
+    "report_blob": "93a085248d5dad398237df1c32428c251ac4cc9d",
+    "json_blob": "451c68a3e1777dc8a47b320564622a2c0ed86ffe",
+    "files_expected": 53,
+    "files_checked": 53,
+    "all_base_blobs_match_inventory": true,
+    "all_53_checkpoint_git_blobs_equal_base": true,
+    "all_inventory_hashes_match_checkpoint_git_bytes": true,
+    "mismatches": [],
+    "checkout_line_endings_note": "Comparison uses Git blobs; historical report notes 30 worktree copies were CRLF-only with core.autocrlf=true. This audit did not treat checkout CRLF as Git blob changes."
+  },
+  "ledger": {
+    "path": "docs/implementation/g0-task-test-ledger-20261020.json",
+    "base_blob": "1f198923e7cc903aa0a7ad897dde50fb08b6b0d9",
+    "checkpoint_blob": "0f5fca9cbb6412ffeea561a3d38b164dc09d4c03",
+    "original_top_keys_unchanged_except_additions": true,
+    "top_level_added": [
+      "live_hold_implementation"
+    ],
+    "top_level_removed": [],
+    "coverage_635_exact": true,
+    "coverage_requirement_ids_exact_in_order": true,
+    "tasks_23_exact": true,
+    "task_ids_exact_in_order": true,
+    "all_reference_counts_and_dangling_links_same": true,
+    "base_reference_inventory": {
+      "task_count": 23,
+      "task_id_count": 23,
+      "dependency_edge_count": 52,
+      "dependency_dangling": [],
+      "task_test_reference_count": 26,
+      "unique_task_test_ids": 26,
+      "task_requirement_reference_count": 1341,
+      "coverage_count": 635,
+      "unique_coverage_requirement_ids": 635,
+      "coverage_task_reference_count": 1341,
+      "coverage_test_reference_count": 635,
+      "coverage_task_dangling": [],
+      "task_requirement_dangling": [],
+      "coverage_counts": {
+        "assignment_state": 10,
+        "browser_matrix": 11,
+        "demonstration_case": 8,
+        "human_task": 13,
+        "legacy_atomic": 483,
+        "named_requirement": 51,
+        "scenario_family": 32,
+        "software_invariant": 13,
+        "ux_test": 14
+      }
+    },
+    "checkpoint_reference_inventory": {
+      "task_count": 23,
+      "task_id_count": 23,
+      "dependency_edge_count": 52,
+      "dependency_dangling": [],
+      "task_test_reference_count": 26,
+      "unique_task_test_ids": 26,
+      "task_requirement_reference_count": 1341,
+      "coverage_count": 635,
+      "unique_coverage_requirement_ids": 635,
+      "coverage_task_reference_count": 1341,
+      "coverage_test_reference_count": 635,
+      "coverage_task_dangling": [],
+      "task_requirement_dangling": [],
+      "coverage_counts": {
+        "assignment_state": 10,
+        "browser_matrix": 11,
+        "demonstration_case": 8,
+        "human_task": 13,
+        "legacy_atomic": 483,
+        "named_requirement": 51,
+        "scenario_family": 32,
+        "software_invariant": 13,
+        "ux_test": 14
+      }
+    },
+    "added_live_hold_status": {
+      "task": "T-OBS2-LIVE-HOLD",
+      "status": "in_progress_not_accepted",
+      "base": "ec18cb4020ba239710a3fd615e365d5cd72b4d80",
+      "plan": "756ce26bf454cce89933439f03572cd34b29eda8",
+      "plan_review_blob": "0f90d6be4dbb5193dc31df8291abac57b339e401",
+      "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/g1-live-hold-implementation-sol-20261021",
+      "branch": "launch/g1-live-hold-implementation-20261021",
+      "assigned_model": "gpt-6.1-sol",
+      "assigned_effort": "xhigh",
+      "effective_model": "not_independently_introspectable_no_substitution",
+      "escalation_reason": "Difficult atomic multi-episode safety workflow, cross-process OS admission/capability cutover, authenticated evidence chronology, immutable complete-prefix products and fail-closed legacy paths",
+      "evidence": "docs/implementation/evidence/G1-LIVE-HOLD/README.md",
+      "scientific_clearance": "T-OBS2-CLEARANCE-POLICY blocked; no threshold/manual alias installed",
+      "next": [
+        "process/race/crash/cutover schedules",
+        "more negative and product tamper tests",
+        "UI/official MCP",
+        "runtime images/byte/isolation/635 audit",
+        "independent exact-code review"
+      ]
+    }
+  },
+  "migrations": {
+    "old_migrations": [
+      {
+        "path": "services/foundation/migrations/001_foundation.sql",
+        "base_blob": "e48f951e9a12991154bdff170645ae737f73adcb",
+        "checkpoint_blob": "e48f951e9a12991154bdff170645ae737f73adcb",
+        "same": true
+      },
+      {
+        "path": "services/foundation/migrations/002_observed_archive.sql",
+        "base_blob": "567152e7005837519003b62d9fc798c022cd0812",
+        "checkpoint_blob": "567152e7005837519003b62d9fc798c022cd0812",
+        "same": true
+      }
+    ],
+    "003_live_hold": {
+      "path": "services/foundation/migrations/003_live_hold.sql",
+      "base_blob": null,
+      "checkpoint_blob": "0efa545d25d76e4da1004c0439bd7da0cf00eb5e",
+      "added": true
+    }
+  },
+  "contracts": {
+    "changed_paths": [
+      "A\tcontracts/service/__init__.py",
+      "A\tcontracts/service/bindings-v1.json",
+      "A\tcontracts/service/dictionary-v1.json",
+      "A\tcontracts/service/export.py",
+      "A\tcontracts/service/live_hold.py",
+      "A\tcontracts/service/live_safety.py",
+      "A\tcontracts/service/live_safety_admission.py",
+      "A\tcontracts/service/schemas/v1/installed-bundle.schema.json",
+      "A\tcontracts/service/schemas/v1/live-clearance-command.schema.json",
+      "A\tcontracts/service/schemas/v1/live-export-command.schema.json",
+      "A\tcontracts/service/schemas/v1/live-hold-authority.schema.json",
+      "A\tcontracts/service/schemas/v1/live-hold-command.schema.json",
+      "A\tcontracts/service/schemas/v1/live-hold-fact.schema.json",
+      "A\tcontracts/service/schemas/v1/live-review-command.schema.json",
+      "A\tcontracts/service/schemas/v1/live-safety-authority.schema.json",
+      "A\tcontracts/service/schemas/v1/live-safety-export.schema.json",
+      "A\tcontracts/service/schemas/v1/schema-set.json"
+    ],
+    "added_service_contract_path_count": 17,
+    "added_service_contract_paths": [
+      "contracts/service/__init__.py",
+      "contracts/service/bindings-v1.json",
+      "contracts/service/dictionary-v1.json",
+      "contracts/service/export.py",
+      "contracts/service/live_hold.py",
+      "contracts/service/live_safety.py",
+      "contracts/service/live_safety_admission.py",
+      "contracts/service/schemas/v1/installed-bundle.schema.json",
+      "contracts/service/schemas/v1/live-clearance-command.schema.json",
+      "contracts/service/schemas/v1/live-export-command.schema.json",
+      "contracts/service/schemas/v1/live-hold-authority.schema.json",
+      "contracts/service/schemas/v1/live-hold-command.schema.json",
+      "contracts/service/schemas/v1/live-hold-fact.schema.json",
+      "contracts/service/schemas/v1/live-review-command.schema.json",
+      "contracts/service/schemas/v1/live-safety-authority.schema.json",
+      "contracts/service/schemas/v1/live-safety-export.schema.json",
+      "contracts/service/schemas/v1/schema-set.json"
+    ],
+    "nonadd_contract_changes": []
+  },
+  "diff_path_counts": {
+    "total_changed_paths": 879,
+    "additions": 865,
+    "modifications": 14,
+    "deletions": 0,
+    "renames": 0
+  },
+  "golden_paths": [
+    {
+      "path": "contracts/domain/schemas/dgp-config.schema.json",
+      "inventory_blob": "bad35c18eefed6165ab933b9038d6177826d18a7",
+      "base_blob": "bad35c18eefed6165ab933b9038d6177826d18a7",
+      "checkpoint_blob": "bad35c18eefed6165ab933b9038d6177826d18a7",
+      "checkpoint_sha256": "fa6f2772ec72e5c04fda461aa8a8cb7c19f5cf3e15f1bdf4642021db8db4815f",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/estimand.schema.json",
+      "inventory_blob": "9f004314c944dab797643ad43d50884a97287da8",
+      "base_blob": "9f004314c944dab797643ad43d50884a97287da8",
+      "checkpoint_blob": "9f004314c944dab797643ad43d50884a97287da8",
+      "checkpoint_sha256": "05c964b2d29c7fc2a22572c8448e8039c7d7f665022f038eaa0296e8088aa4fb",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/evaluation-protocol.schema.json",
+      "inventory_blob": "b4cd68cd27e90ec47b38b430056ed50db8dcdc1d",
+      "base_blob": "b4cd68cd27e90ec47b38b430056ed50db8dcdc1d",
+      "checkpoint_blob": "b4cd68cd27e90ec47b38b430056ed50db8dcdc1d",
+      "checkpoint_sha256": "c8fbf0b5cad9527ce4de8d8d9dd9c10d030a6d1c1154146a4c0967712f09b0c6",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/evaluator-truth.schema.json",
+      "inventory_blob": "aae73417a14d141eab8aaf9002ccff5bad98397a",
+      "base_blob": "aae73417a14d141eab8aaf9002ccff5bad98397a",
+      "checkpoint_blob": "aae73417a14d141eab8aaf9002ccff5bad98397a",
+      "checkpoint_sha256": "5aa61410c27a885e16da2e7a3a2a8156aa1f73986e759c7066cc9853c650f0c4",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/evidence-record.schema.json",
+      "inventory_blob": "3501671e8662be893c54dbe8bbd965838a0df116",
+      "base_blob": "3501671e8662be893c54dbe8bbd965838a0df116",
+      "checkpoint_blob": "3501671e8662be893c54dbe8bbd965838a0df116",
+      "checkpoint_sha256": "4cd496e4d3e6eef6ebeb6a9e33dfa33308d442fa805cb2b42de536be7165e9b1",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/external-study.schema.json",
+      "inventory_blob": "d7f5cb3e0178883f0cfdfd71956e908796ee95c9",
+      "base_blob": "d7f5cb3e0178883f0cfdfd71956e908796ee95c9",
+      "checkpoint_blob": "d7f5cb3e0178883f0cfdfd71956e908796ee95c9",
+      "checkpoint_sha256": "c802d33cd3cab73f25ae2290185498d15bff0658364fad0607fa00829d563b95",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/fit-metadata.schema.json",
+      "inventory_blob": "a657d421044261658294af6872720d4d3b76a4c3",
+      "base_blob": "a657d421044261658294af6872720d4d3b76a4c3",
+      "checkpoint_blob": "a657d421044261658294af6872720d4d3b76a4c3",
+      "checkpoint_sha256": "1c2f6cd408eca8282ec0ddc8db6deb56ba720990a2431dbc79bd6f1249efcdb5",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/fit-request.schema.json",
+      "inventory_blob": "95f8c84ccdc5cabff3065ebb272229baa57d96cd",
+      "base_blob": "95f8c84ccdc5cabff3065ebb272229baa57d96cd",
+      "checkpoint_blob": "95f8c84ccdc5cabff3065ebb272229baa57d96cd",
+      "checkpoint_sha256": "7c163ec3a8b3f8047f9dc4af86e1615e6bb9dbdcd951f9efa6652bbd779fa313",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/gate-evidence.schema.json",
+      "inventory_blob": "419ecf8fd7864556c01480de222c7d8cc1c6a2e2",
+      "base_blob": "419ecf8fd7864556c01480de222c7d8cc1c6a2e2",
+      "checkpoint_blob": "419ecf8fd7864556c01480de222c7d8cc1c6a2e2",
+      "checkpoint_sha256": "83fd14cfaa63e0205f71c3d83a846fbb736d75f6bc75a443bd58378de92d78c7",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/interruption-result.schema.json",
+      "inventory_blob": "6a7ee5c6fc3a7ea725bfa837bbc4837ff8c9e51a",
+      "base_blob": "6a7ee5c6fc3a7ea725bfa837bbc4837ff8c9e51a",
+      "checkpoint_blob": "6a7ee5c6fc3a7ea725bfa837bbc4837ff8c9e51a",
+      "checkpoint_sha256": "757a43760f6b0586b9b87a865a65ab8be725472e3cbf43410a57afb924f3a265",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/learner-history.schema.json",
+      "inventory_blob": "d39a7f00ea368248204ee4f3013d16f09a18c248",
+      "base_blob": "d39a7f00ea368248204ee4f3013d16f09a18c248",
+      "checkpoint_blob": "d39a7f00ea368248204ee4f3013d16f09a18c248",
+      "checkpoint_sha256": "8a20cd303f76458182deb654903a99fb9e5365076d6bf5c28f36d1fcdc989f92",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/learner-input.schema.json",
+      "inventory_blob": "ec3516206aa1a0c05485395ab8b77afb5acd2012",
+      "base_blob": "ec3516206aa1a0c05485395ab8b77afb5acd2012",
+      "checkpoint_blob": "ec3516206aa1a0c05485395ab8b77afb5acd2012",
+      "checkpoint_sha256": "74533b319683b858fa9e2fd15be4bdd40dbe90729bab1ed41f31e84e1e62fe2b",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/observed-history.schema.json",
+      "inventory_blob": "782e8b2b0ea818b22c8fb2a1a57afe239e9cd48a",
+      "base_blob": "782e8b2b0ea818b22c8fb2a1a57afe239e9cd48a",
+      "checkpoint_blob": "782e8b2b0ea818b22c8fb2a1a57afe239e9cd48a",
+      "checkpoint_sha256": "19b9c363bb2a53a693a01d6c43541fc54b09f204481f40b03f80ebe8ae29c60a",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/observed-records.schema.json",
+      "inventory_blob": "14b6c8cfc67b3fc9adbf73b6e06abe92d82ed7f9",
+      "base_blob": "14b6c8cfc67b3fc9adbf73b6e06abe92d82ed7f9",
+      "checkpoint_blob": "14b6c8cfc67b3fc9adbf73b6e06abe92d82ed7f9",
+      "checkpoint_sha256": "206c08fe517e169adcab8ebc83572e616243056f23baf3a46089c2bbb76a00c3",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/replicate-result.schema.json",
+      "inventory_blob": "a208aaa37c843dc57599f12238b67b8fa7514d4b",
+      "base_blob": "a208aaa37c843dc57599f12238b67b8fa7514d4b",
+      "checkpoint_blob": "a208aaa37c843dc57599f12238b67b8fa7514d4b",
+      "checkpoint_sha256": "f047871e35ca18f029389cbb520208f866358f1a2745ea3028acec229e6211e8",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/reporting-decision.schema.json",
+      "inventory_blob": "c7783071edd092bb3a1e3a715a011d26e6ac3400",
+      "base_blob": "c7783071edd092bb3a1e3a715a011d26e6ac3400",
+      "checkpoint_blob": "c7783071edd092bb3a1e3a715a011d26e6ac3400",
+      "checkpoint_sha256": "3070db119c9b5f07ee1640fb8e8292a0a26a0a2c558461304db07b31e4c31b36",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/temporal.schema.json",
+      "inventory_blob": "70e092df9c35b9895d73972d343f5180d2bd9975",
+      "base_blob": "70e092df9c35b9895d73972d343f5180d2bd9975",
+      "checkpoint_blob": "70e092df9c35b9895d73972d343f5180d2bd9975",
+      "checkpoint_sha256": "61425e6683b44b1609161775266ffbfa8cb04f9fccdb37f4e8e54a42b9abac0d",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/schemas/threshold.schema.json",
+      "inventory_blob": "ecac818600a627f38a945b7a135a0357370a539f",
+      "base_blob": "ecac818600a627f38a945b7a135a0357370a539f",
+      "checkpoint_blob": "ecac818600a627f38a945b7a135a0357370a539f",
+      "checkpoint_sha256": "aa6e6644e9f03dfbea8c67c5cf0b5e8c192fb6df345b4b0b2981d42df696b44b",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/calibration-artifact.schema.json",
+      "inventory_blob": "0149ffb9b9b1c43d942eafec7098359c7b4eb303",
+      "base_blob": "0149ffb9b9b1c43d942eafec7098359c7b4eb303",
+      "checkpoint_blob": "0149ffb9b9b1c43d942eafec7098359c7b4eb303",
+      "checkpoint_sha256": "e1ba454cdb8b094c8be28c7327e949002665594ef835dacb10669accc2fe19ad",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/evaluator-request.schema.json",
+      "inventory_blob": "5254f66771ba9de9432211972a80ebfd36ce9b02",
+      "base_blob": "5254f66771ba9de9432211972a80ebfd36ce9b02",
+      "checkpoint_blob": "5254f66771ba9de9432211972a80ebfd36ce9b02",
+      "checkpoint_sha256": "fc06d3d1148f7fd0b54e6f1aa6e1621fe3cf040c0c788d015efe90f826cdc31a",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/evaluator-response.schema.json",
+      "inventory_blob": "2a35a48c442d86f2a3605ba74c1ee5bee6167539",
+      "base_blob": "2a35a48c442d86f2a3605ba74c1ee5bee6167539",
+      "checkpoint_blob": "2a35a48c442d86f2a3605ba74c1ee5bee6167539",
+      "checkpoint_sha256": "583ad3aa3dccab5e16dd57add158e35f8b1357d4762719d65d9866473045ca12",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/external-calibration-evidence.schema.json",
+      "inventory_blob": "04d0aa3476b5108d042d3b6651bb0c9c81d6ec9c",
+      "base_blob": "04d0aa3476b5108d042d3b6651bb0c9c81d6ec9c",
+      "checkpoint_blob": "04d0aa3476b5108d042d3b6651bb0c9c81d6ec9c",
+      "checkpoint_sha256": "1bb422e1188b9175c08701223d158463a591d62668b4de38e491fe738d71f3a6",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/iid-investigation.schema.json",
+      "inventory_blob": "5545b552455736b421dbf71ef731f98fa9187702",
+      "base_blob": "5545b552455736b421dbf71ef731f98fa9187702",
+      "checkpoint_blob": "5545b552455736b421dbf71ef731f98fa9187702",
+      "checkpoint_sha256": "1e4700b72070e1f1e15bb96de40450b887e0eb1aa656d87c3ba30c555e25d16b",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/observed-export.schema.json",
+      "inventory_blob": "54204a9d0c29ee8240f2ea54e9e2dff209f9b913",
+      "base_blob": "54204a9d0c29ee8240f2ea54e9e2dff209f9b913",
+      "checkpoint_blob": "54204a9d0c29ee8240f2ea54e9e2dff209f9b913",
+      "checkpoint_sha256": "fd0bbdc4059c6298b46d20893c060121c501d9be14ba21a7f09e8f8071c2f304",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/observed-replay.schema.json",
+      "inventory_blob": "af27485ec43de8fdba8163311a2e9f2659c6dc43",
+      "base_blob": "af27485ec43de8fdba8163311a2e9f2659c6dc43",
+      "checkpoint_blob": "af27485ec43de8fdba8163311a2e9f2659c6dc43",
+      "checkpoint_sha256": "6ef37a10ede0d68755f8366985e56d77e4008936a2bbd18f95dfb06908892a63",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/probability-evidence.schema.json",
+      "inventory_blob": "56d427c1c2a4dd5b154c2481aec8422908e3f28f",
+      "base_blob": "56d427c1c2a4dd5b154c2481aec8422908e3f28f",
+      "checkpoint_blob": "56d427c1c2a4dd5b154c2481aec8422908e3f28f",
+      "checkpoint_sha256": "359083c701598b3155c121baa6286876ab11d91223b8b7337f60777f5f9b0a4f",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/probability-paired-path.schema.json",
+      "inventory_blob": "018fcae7146348c89082cd55470df07335c9066d",
+      "base_blob": "018fcae7146348c89082cd55470df07335c9066d",
+      "checkpoint_blob": "018fcae7146348c89082cd55470df07335c9066d",
+      "checkpoint_sha256": "37d9da109f513e21177e2b68c97f08d0115e4254100dc1e85b390d150f79d086",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/probability-pilot-plan.schema.json",
+      "inventory_blob": "be9a37d90c3d6680793d0d249e4af3506e0463a1",
+      "base_blob": "be9a37d90c3d6680793d0d249e4af3506e0463a1",
+      "checkpoint_blob": "be9a37d90c3d6680793d0d249e4af3506e0463a1",
+      "checkpoint_sha256": "3fb722e7e696c47cc0120aeb85e83297dfc640e40fe79fed815245a01e99624a",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/probability-pilot-trial.schema.json",
+      "inventory_blob": "8e9dfc412dcbc65ee22a3917d22c7c61c6a119c8",
+      "base_blob": "8e9dfc412dcbc65ee22a3917d22c7c61c6a119c8",
+      "checkpoint_blob": "8e9dfc412dcbc65ee22a3917d22c7c61c6a119c8",
+      "checkpoint_sha256": "7797e384511fbae85ad8e0e90b19ea3932482c8c2a75627c5ac13782f158b109",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/probability-structural-proof.schema.json",
+      "inventory_blob": "265ed808d46717e49a559e2beedfc5b03894a728",
+      "base_blob": "265ed808d46717e49a559e2beedfc5b03894a728",
+      "checkpoint_blob": "265ed808d46717e49a559e2beedfc5b03894a728",
+      "checkpoint_sha256": "e0779d40cf3e900efef2d38d1d35bbbcd72465533ab88804b4a467e747b141bb",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/probability-truth-filter-receipt.schema.json",
+      "inventory_blob": "f639a96247bdd4fd74a0533d1c9937ede028a7d8",
+      "base_blob": "f639a96247bdd4fd74a0533d1c9937ede028a7d8",
+      "checkpoint_blob": "f639a96247bdd4fd74a0533d1c9937ede028a7d8",
+      "checkpoint_sha256": "f2103c596867c9448bccbe87ff721745f8338b745b95a9d95a81fe393d2aa3b5",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/run-manifest.schema.json",
+      "inventory_blob": "60896bdd8e00081a6f5fb6274901bccc79088a49",
+      "base_blob": "60896bdd8e00081a6f5fb6274901bccc79088a49",
+      "checkpoint_blob": "60896bdd8e00081a6f5fb6274901bccc79088a49",
+      "checkpoint_sha256": "419a91ab249e7b9ec6bf0c69d36a869376af52abd73c2af4a77f1a8d5f0e8f48",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/run-result.schema.json",
+      "inventory_blob": "0d448a631418fe08bc12c690afe12042568cddb6",
+      "base_blob": "0d448a631418fe08bc12c690afe12042568cddb6",
+      "checkpoint_blob": "0d448a631418fe08bc12c690afe12042568cddb6",
+      "checkpoint_sha256": "43f2ca8af4b0fe652c9f8e6642f3287027e34e8740cce811b6ae894c83e152d3",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/seed-ledger.schema.json",
+      "inventory_blob": "6fbd248f34a58397cf79787915e65b60e928b85d",
+      "base_blob": "6fbd248f34a58397cf79787915e65b60e928b85d",
+      "checkpoint_blob": "6fbd248f34a58397cf79787915e65b60e928b85d",
+      "checkpoint_sha256": "2e5dc9941738a7e0f066bde2e06f7cab4d6a1c5ebd1f0cc8b208c0437ff0cc83",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/symptom-pilot-binding.schema.json",
+      "inventory_blob": "397d3b68d04666799fcec55240025c81a0e1bf6c",
+      "base_blob": "397d3b68d04666799fcec55240025c81a0e1bf6c",
+      "checkpoint_blob": "397d3b68d04666799fcec55240025c81a0e1bf6c",
+      "checkpoint_sha256": "bbc6965631aa2443f91ad9d3700779ed426d192b574fe39be42744e58d5bcbef",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/trusted-export-authority.schema.json",
+      "inventory_blob": "ff1e1e082b3cfba01eac983dc9e4720a5b0cf0b9",
+      "base_blob": "ff1e1e082b3cfba01eac983dc9e4720a5b0cf0b9",
+      "checkpoint_blob": "ff1e1e082b3cfba01eac983dc9e4720a5b0cf0b9",
+      "checkpoint_sha256": "52b0341f37dd9783da57e7e8e793b6bbaf0af19a0d0e193c7a08f2a666d198c1",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/trusted-iid-investigation-authority.schema.json",
+      "inventory_blob": "099f136caaf0c94d1e163531553968275f6436fb",
+      "base_blob": "099f136caaf0c94d1e163531553968275f6436fb",
+      "checkpoint_blob": "099f136caaf0c94d1e163531553968275f6436fb",
+      "checkpoint_sha256": "863d56cb3ae566fe4b92465731add0d3dc26634e8e51ffe91aba362e21214e60",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/schemas/trusted-run-authority.schema.json",
+      "inventory_blob": "744cc2c76b182c40f8e979333f114c0260722bdc",
+      "base_blob": "744cc2c76b182c40f8e979333f114c0260722bdc",
+      "checkpoint_blob": "744cc2c76b182c40f8e979333f114c0260722bdc",
+      "checkpoint_sha256": "356d4e6fb9598d1b5aeb358338f53a674d59b3eeb5ea2a34a22d198fc72555ce",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/dictionary-v1.json",
+      "inventory_blob": "5a6dcfeabf75a8a262cffeb56e8d20ac9795ff96",
+      "base_blob": "5a6dcfeabf75a8a262cffeb56e8d20ac9795ff96",
+      "checkpoint_blob": "5a6dcfeabf75a8a262cffeb56e8d20ac9795ff96",
+      "checkpoint_sha256": "3ef0512b6c4c83c972d0c42843cde260eba91ca7468bffa513842020a26412d5",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/bindings-v1.json",
+      "inventory_blob": "02a49d4594e035af3f0e44a520d05434c73b6058",
+      "base_blob": "02a49d4594e035af3f0e44a520d05434c73b6058",
+      "checkpoint_blob": "02a49d4594e035af3f0e44a520d05434c73b6058",
+      "checkpoint_sha256": "0f48859258c76d56e4969cf87f54d94c70242f384ede632988e5c07c7796971d",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/runs/dictionary-v1.json",
+      "inventory_blob": "4cb0f65c26cc7c6cb21cd9352e70a34491386365",
+      "base_blob": "4cb0f65c26cc7c6cb21cd9352e70a34491386365",
+      "checkpoint_blob": "4cb0f65c26cc7c6cb21cd9352e70a34491386365",
+      "checkpoint_sha256": "81637308dbc9eee63bddb3fca54db4f8f21d84fd598774804013af8189d7f8b3",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "docs/implementation/g1-technical-plan-20261021.md",
+      "inventory_blob": "5d46eb071485a9d5f2ed0473880a75fcab181556",
+      "base_blob": "5d46eb071485a9d5f2ed0473880a75fcab181556",
+      "checkpoint_blob": "5d46eb071485a9d5f2ed0473880a75fcab181556",
+      "checkpoint_sha256": "730871eadff578f6e51fd75035876fb338bd9c168b71d84021b3e287664ef2e2",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/dgp/parameters-v1.json",
+      "inventory_blob": "9b67acbd5b2e63c952918b29fbe161adf4e208b9",
+      "base_blob": "9b67acbd5b2e63c952918b29fbe161adf4e208b9",
+      "checkpoint_blob": "9b67acbd5b2e63c952918b29fbe161adf4e208b9",
+      "checkpoint_sha256": "f273d92792e09570c19a9145c09da08e3c214ac6d520059f12b3c26809e5b22d",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "docs/spec/dgp-reference.md",
+      "inventory_blob": "62f7894b887acbaab603b33da4f90cc85405c8a3",
+      "base_blob": "62f7894b887acbaab603b33da4f90cc85405c8a3",
+      "checkpoint_blob": "62f7894b887acbaab603b33da4f90cc85405c8a3",
+      "checkpoint_sha256": "16b61de53f7b9fb6e837db63d89ccbc0efc105300d8bbd80ceec6cfbbf216b84",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/dgp/scenarios-v1.json",
+      "inventory_blob": "b5b542bfbb83e970f57af0676b78b9b942f97263",
+      "base_blob": "b5b542bfbb83e970f57af0676b78b9b942f97263",
+      "checkpoint_blob": "b5b542bfbb83e970f57af0676b78b9b942f97263",
+      "checkpoint_sha256": "ed5e29aa398b615c623e24d218b8442f3ab14c2bf4187e6657b2589bde7809ac",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "docs/spec/scenario-catalog.md",
+      "inventory_blob": "a5e6b6c5b6fc855090b94ddf86cbe3647a8f2975",
+      "base_blob": "a5e6b6c5b6fc855090b94ddf86cbe3647a8f2975",
+      "checkpoint_blob": "a5e6b6c5b6fc855090b94ddf86cbe3647a8f2975",
+      "checkpoint_sha256": "ef8f5720ac05b887d2def3f44b09dcf29be352474940bc8ed8ec7ba49d6eee40",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/dgp/timing-v1.json",
+      "inventory_blob": "e336c9f22a5734fe3a33da3f3f2d4b97a9d4ab7d",
+      "base_blob": "e336c9f22a5734fe3a33da3f3f2d4b97a9d4ab7d",
+      "checkpoint_blob": "e336c9f22a5734fe3a33da3f3f2d4b97a9d4ab7d",
+      "checkpoint_sha256": "336a3a9e5182212cf26f873359c82e08f92f154a5dbe34ceb280cf6a5feed87b",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/domain/temporal-v2.json",
+      "inventory_blob": "ce009c021e65bfca5b8ab6f9b630ab2013767944",
+      "base_blob": "ce009c021e65bfca5b8ab6f9b630ab2013767944",
+      "checkpoint_blob": "ce009c021e65bfca5b8ab6f9b630ab2013767944",
+      "checkpoint_sha256": "fd2fe478e1fbf5237a307af8a2067fd6d485183763086ac7e10c133fda002275",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/dgp/calibration-binding-v1.schema.json",
+      "inventory_blob": "f2cbfd79e0732cc336a7b0ed9194a8ecdc25b361",
+      "base_blob": "f2cbfd79e0732cc336a7b0ed9194a8ecdc25b361",
+      "checkpoint_blob": "f2cbfd79e0732cc336a7b0ed9194a8ecdc25b361",
+      "checkpoint_sha256": "cfbaa02466c698c2ab24457eeddfd94bc18e25264491442d9f5e6b268f2154c6",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "contracts/dgp/truth-fixtures-v1.json",
+      "inventory_blob": "f327e36e2264d3a8cd5e6da270a7e0196f4355b6",
+      "base_blob": "f327e36e2264d3a8cd5e6da270a7e0196f4355b6",
+      "checkpoint_blob": "f327e36e2264d3a8cd5e6da270a7e0196f4355b6",
+      "checkpoint_sha256": "059032cf5e0e1c6849eab8ed42237a0ddf2255366410d1be4bfbf5e99f75fcae",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "docs/implementation/g1-estint-probability-precision-proposal-r1-20261021.md",
+      "inventory_blob": "233d78d5f9233499e566c87ecf34d3d4f12e3785",
+      "base_blob": "233d78d5f9233499e566c87ecf34d3d4f12e3785",
+      "checkpoint_blob": "233d78d5f9233499e566c87ecf34d3d4f12e3785",
+      "checkpoint_sha256": "087e61f462c4447697f40de8471c818de58346e0b2a8f330854392585f43e989",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "tests/contracts/fixtures/estimands-v1.json",
+      "inventory_blob": "92c9d25c9d4c40347bed75bdb237c7634f465903",
+      "base_blob": "92c9d25c9d4c40347bed75bdb237c7634f465903",
+      "checkpoint_blob": "92c9d25c9d4c40347bed75bdb237c7634f465903",
+      "checkpoint_sha256": "6bfa95f18fcd8cd3e1932ab12526c92a2304e7d05b868e1e8b6edb4c1eb67b94",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    },
+    {
+      "path": "tests/contracts/fixtures/observed-entities-v1.json",
+      "inventory_blob": "9a4c6c941667ac6f6fb164443c81b285804d29a2",
+      "base_blob": "9a4c6c941667ac6f6fb164443c81b285804d29a2",
+      "checkpoint_blob": "9a4c6c941667ac6f6fb164443c81b285804d29a2",
+      "checkpoint_sha256": "782b8ca7d704270c94cee94906d7765becc39615d475e3b413a6db16f66cb6fa",
+      "same_base_checkpoint": true,
+      "inventory_blob_matches_base": true,
+      "inventory_sha256_matches_checkpoint": true
+    }
+  ]
+}

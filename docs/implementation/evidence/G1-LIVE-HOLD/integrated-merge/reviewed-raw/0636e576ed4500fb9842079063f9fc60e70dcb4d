@@ -1,0 +1,36 @@
+# G1 live-hold compatibility audit (45ccc7f)
+
+Source-byte and ledger inventory only at incomplete 45ccc7f checkpoint; independent code review ongoing; no runtime/test/behavior/acceptance claim.
+
+Checkout `C:/Users/erics/Documents/Projects/REMission-worktrees/g1lh-compat2-luna-261021` at `45ccc7cf8c89a7fffa5497ac3a1e1067be1e31f6` against accepted base `ec18cb4020ba239710a3fd615e365d5cd72b4d80`. Assignment: `gpt-6-luna/high`; effective model introspection is unavailable, with no substitution.
+
+## Immutable v1 artifacts
+Compared 53/53 historical paths using Git blob bytes. Base identity matches: True; checkpoint equals base: True; historical SHA-256 matches checkpoint Git bytes: True. Physical checkout SHA-256 was computed separately for 53 files; 30 differ bytewise from Git blobs, and all 53 normalize to the corresponding Git bytes after newline normalization.
+
+## Ledger
+Coverage rows: 635 at base and 635 at checkpoint; exact ordered rows: True. Task rows: 23 and 23; exact ordered rows: True. Top-level additions: ['live_hold_implementation']; removals: []. The only changed existing top-level section is `observed_representation_v2`, which has nested plan/task state, status, review, and integration metadata changes at `['observed_representation_v2.implementation_status', 'observed_representation_v2.integrated_verification', 'observed_representation_v2.repair_01.disposition', 'observed_representation_v2.subtasks.T-OBS2-ARCHIVE.evidence', 'observed_representation_v2.subtasks.T-OBS2-ARCHIVE.status', 'observed_representation_v2.subtasks.T-OBS2-COMPAT.evidence', 'observed_representation_v2.subtasks.T-OBS2-COMPAT.status', 'observed_representation_v2.subtasks.T-OBS2-DIARY.evidence', 'observed_representation_v2.subtasks.T-OBS2-DIARY.status', 'observed_representation_v2.subtasks.T-OBS2-HOLD.evidence', 'observed_representation_v2.subtasks.T-OBS2-HOLD.status', 'observed_representation_v2.subtasks.T-OBS2-LINKS.evidence', 'observed_representation_v2.subtasks.T-OBS2-LINKS.status', 'observed_representation_v2.subtasks.T-OBS2-LIVE-HOLD.dependency_status', 'observed_representation_v2.subtasks.T-OBS2-LIVE-HOLD.status', 'observed_representation_v2.subtasks.T-OBS2-SUPPORT.evidence', 'observed_representation_v2.subtasks.T-OBS2-SUPPORT.status']`; the original `tasks` and `coverage` row arrays are unchanged. Checkpoint link inventory: `{"task_count": 23, "unique_task_id_count": 23, "dependency_edge_count": 52, "dependency_dangling": [], "task_test_reference_count": 26, "unique_task_test_ids": 26, "task_test_dangling": [], "task_requirement_reference_count": 1341, "task_requirement_dangling": [], "coverage_count": 635, "unique_coverage_requirement_ids": 635, "coverage_task_reference_count": 1341, "coverage_test_reference_count": 635, "coverage_task_dangling": [], "coverage_test_dangling": []}`.
+
+## Migration identity and service additions
+Existing 001/002 unchanged: True. Migration 003 blob `56cbb7f8d710f5451e923ac8c2c52a613f23edb0` equals blob `56cbb7f8d710f5451e923ac8c2c52a613f23edb0` at frozen revision `1096d6da86048e7a53f98ed70abdd85f6f497aed`: True; the Git-object diff is included in the JSON. New 004 blob `c5a13f7601f62f5b65d59afd36c976226e82bbd9` (1786 bytes); the source includes tables `['live_hold_additional_tasks', 'live_hold_task_bindings', 'live_hold_additional_task_events']`, trigger `['followup_binding_relation']`, and schema migration marker `['4']`.
+
+Service bindings are additive: live hold `{'id': 'LIVE-HOLD-01', 'sha256': 'a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3', 'version': '1.0.0'}`, live safety `{'id': 'LIVE-SAFETY-EXPORT', 'sha256': 'a6dece1e9d0e5933f3701789e5f9a562a0fee083587a4a3e302e52e0d971f1a3', 'version': '1.0.0'}`, schema-set `{'id': 'LIVE-SAFETY-SERVICE-SCHEMAS', 'sha256': '6af91c0e91a7c41fcea42f09cd4440454435dbd88c612fcf0ae3edfc0d16131c', 'version': '1.0.0'}`, observed-domain versions `['1.0.0', '2.0.0']`; the schema set lists 10 schema/config files. Additive `contracts/service` entries:
+- `A contracts/service/__init__.py` — blob `fbf88a0c378dcec230bfe27a8e072e2dce7428b0`
+- `A contracts/service/bindings-v1.json` — blob `bd1cc5be90811fb024e0c6974fb12d85301c5787`
+- `A contracts/service/dictionary-v1.json` — blob `850272c3b7d69757c2fc124ff71f7892b9e15952`
+- `A contracts/service/export.py` — blob `6dc7fe1bf85e60deabcc9b0d9f66b451e45a19eb`
+- `A contracts/service/live_hold.py` — blob `27a899de5af2ef9e4400abef97c62ed523ba37e9`
+- `A contracts/service/live_safety.py` — blob `f3827d19a94d5ff370ffe532290191cb7a9b889c`
+- `A contracts/service/live_safety_admission.py` — blob `5247d1d7e99a6686b9163642e031858c14295845`
+- `A contracts/service/schemas/v1/installed-bundle.schema.json` — blob `811fea1e2a298e6ec8101716e05779d13347cf90`
+- `A contracts/service/schemas/v1/live-clearance-command.schema.json` — blob `ae86545cf4844d9d77d8fc104857ed93ea1b9733`
+- `A contracts/service/schemas/v1/live-export-command.schema.json` — blob `89fa9655c62bde40b93962a9ceeb4fdbfe07143e`
+- `A contracts/service/schemas/v1/live-hold-authority.schema.json` — blob `956b5a4d29be7d289f196c133255f983a75c0bd5`
+- `A contracts/service/schemas/v1/live-hold-command.schema.json` — blob `d3f17002d31dc7736896712ac9ee304dfe81500b`
+- `A contracts/service/schemas/v1/live-hold-fact.schema.json` — blob `0200a115d2eec70eaee0cd67b259f7c8f8b5f0c4`
+- `A contracts/service/schemas/v1/live-review-command.schema.json` — blob `38d35e3687b764bd9043ea7cd4397e3271e958b1`
+- `A contracts/service/schemas/v1/live-safety-authority.schema.json` — blob `85d443a400b1304f75ef473de3f75ecaa3ef8ddd`
+- `A contracts/service/schemas/v1/live-safety-export.schema.json` — blob `4f89c36419caab1709d37010ace1df594e66873f`
+- `A contracts/service/schemas/v1/schema-set.json` — blob `3967b24f34b1e2dc008812b2e76166c944295feb`
+- `A contracts/service/spec-v1.json` — blob `2330afc2d252f471fd94dd2ad01b8577aee3ce40`
+
+This report makes no claim about schema validity, runtime behavior, test outcomes, engineering acceptance, scientific clearance, clinical review, or gate acceptance.

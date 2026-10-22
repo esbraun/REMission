@@ -1,0 +1,506 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "media_type": {
+          "enum": [
+            "application/json",
+            "text/markdown",
+            "text/plain"
+          ],
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "configuration",
+            "observed",
+            "replay",
+            "observed_manifest",
+            "private_truth",
+            "seed_ledger",
+            "calibration",
+            "evaluator_request",
+            "evaluator_result",
+            "run_manifest"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "bytes",
+        "role",
+        "media_type"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "Bindings": {
+      "additionalProperties": false,
+      "description": "Only nonsecret exact version/hash references may cross the export boundary.",
+      "properties": {
+        "analytic_fixtures": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "calibration_schema": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "catalog": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "dgp": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "equations": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "parameters": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "probability_precision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "scenarios": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "temporal": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "timing": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "protocol",
+        "dgp",
+        "parameters",
+        "equations",
+        "scenarios",
+        "catalog",
+        "timing",
+        "temporal",
+        "calibration_schema",
+        "analytic_fixtures",
+        "probability_precision"
+      ],
+      "title": "Bindings",
+      "type": "object"
+    },
+    "Partition": {
+      "additionalProperties": false,
+      "properties": {
+        "cell_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Cell Id",
+          "type": "string"
+        },
+        "cohort_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Cohort Id",
+          "type": "string"
+        },
+        "history": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "preset": {
+          "enum": [
+            "catalog_cell",
+            "smoke",
+            "demonstration",
+            "evaluation"
+          ],
+          "title": "Preset",
+          "type": "string"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/RecordBinding"
+          },
+          "title": "Records",
+          "type": "array"
+        },
+        "replay": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "unit_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Unit Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "unit_id",
+        "cell_id",
+        "preset",
+        "cohort_id",
+        "replicate",
+        "patient_id",
+        "history",
+        "replay",
+        "records"
+      ],
+      "title": "Partition",
+      "type": "object"
+    },
+    "Producer": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "generator",
+            "evaluator",
+            "contract_fixture"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "role"
+      ],
+      "title": "Producer",
+      "type": "object"
+    },
+    "RecordBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "exclusion_reason": {
+          "anyOf": [
+            {
+              "const": "administrative_event_not_live_authority",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exclusion Reason"
+        },
+        "import_to_event_store": {
+          "title": "Import To Event Store",
+          "type": "boolean"
+        },
+        "payload_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "seed_key_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Seed Key Sha256"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        }
+      },
+      "required": [
+        "record_id",
+        "payload_sha256",
+        "source",
+        "seed_key_sha256",
+        "import_to_event_store",
+        "exclusion_reason"
+      ],
+      "title": "RecordBinding",
+      "type": "object"
+    },
+    "Runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "image_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Image Sha256",
+          "type": "string"
+        },
+        "numerical_lock": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "numpy_version": {
+          "const": "2.5.4",
+          "title": "Numpy Version",
+          "type": "string"
+        },
+        "precision": {
+          "const": "float64",
+          "title": "Precision",
+          "type": "string"
+        },
+        "prng": {
+          "const": "PCG64DXSM",
+          "title": "Prng",
+          "type": "string"
+        },
+        "python_version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Python Version",
+          "type": "string"
+        },
+        "seed_derivation": {
+          "const": "remission-seed-v1",
+          "title": "Seed Derivation",
+          "type": "string"
+        },
+        "service_lock": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "image_sha256",
+        "numerical_lock",
+        "service_lock",
+        "python_version",
+        "numpy_version",
+        "prng",
+        "seed_derivation",
+        "precision"
+      ],
+      "title": "Runtime",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "synthetic_fhir_shaped",
+            "synthetic_oura_like",
+            "patient_report",
+            "synthetic_trial",
+            "simulation",
+            "research_configuration"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "adapter",
+        "raw_sha256"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:runs:1.0.0:observed-export",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bindings": {
+      "$ref": "#/$defs/Bindings"
+    },
+    "contract_version": {
+      "const": "1.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "cutoff": {
+      "format": "date-time",
+      "title": "Cutoff",
+      "type": "string"
+    },
+    "execution": {
+      "enum": [
+        "contract_fixture",
+        "engine_run"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "observed_export",
+      "title": "Kind",
+      "type": "string"
+    },
+    "partitions": {
+      "items": {
+        "$ref": "#/$defs/Partition"
+      },
+      "minItems": 1,
+      "title": "Partitions",
+      "type": "array"
+    },
+    "producer": {
+      "$ref": "#/$defs/Producer"
+    },
+    "run_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "run_manifest": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "runtime": {
+      "$ref": "#/$defs/Runtime"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_commit": {
+      "pattern": "^[a-f0-9]{40}$",
+      "title": "Source Commit",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "partial",
+        "complete"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "contract_version",
+    "id",
+    "run_id",
+    "run_manifest",
+    "producer",
+    "execution",
+    "source_commit",
+    "runtime",
+    "bindings",
+    "cutoff",
+    "created_at",
+    "status",
+    "partitions"
+  ],
+  "title": "ObservedExport",
+  "type": "object"
+}

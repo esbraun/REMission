@@ -1,0 +1,17 @@
+import hashlib,json,subprocess
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'.review-artifacts'
+def git(*args,data=None):return subprocess.check_output(['git',*args],cwd=ROOT,input=data)
+assert git('rev-parse','HEAD').decode().strip()=='ab353bb93737da541e8d366acd28c35c86814bc1'
+assert not git('diff','--name-only') and not git('diff','--cached','--name-only')
+def identify(path):
+ raw=path.read_bytes();blob=git('hash-object','-w','--stdin',data=raw).decode().strip()
+ assert git('cat-file','blob',blob)==raw
+ return {'path':path.relative_to(ROOT).as_posix(),'raw_git_blob':blob,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+items=[identify(p) for p in sorted(OUT.iterdir()) if p.is_file() and p.name!='manifest.json']
+manifest={'head':'ab353bb93737da541e8d366acd28c35c86814bc1','accepted_base':'ec18cb4020ba239710a3fd615e365d5cd72b4d80',
+ 'supplement_parent':'c6e3adca7adda5eb19833ee28ce468777172ff38','disposition':'changes_requested PLAN ONLY',
+ 'model':'assigned gpt-6-astra/medium; independent effective-model introspection unavailable','artifacts':items,
+ 'verification':'actual hash-object -w and cat-file byte roundtrip; tracked candidate unchanged; manifest excludes itself'}
+(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps({'artifacts':items,'manifest':identify(OUT/'manifest.json')},indent=2))

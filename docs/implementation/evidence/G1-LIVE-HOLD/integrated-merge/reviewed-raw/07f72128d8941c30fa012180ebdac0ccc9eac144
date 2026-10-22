@@ -1,0 +1,34 @@
+import unittest,inspect,json
+from datetime import timedelta
+from dataclasses import replace
+from test_live_hold import LiveWorkflowTests,NOW
+from live_helpers import live_fixture
+import observed_v2_fixtures as fixtures
+from services.foundation.live_hold import current_archive_history,current_closure,LiveError
+class ClosureOracle(LiveWorkflowTests):
+ def runTest(self):
+  first=self.enter();late=NOW+timedelta(hours=2)
+  original=fixtures.build;source=inspect.getsource(original)
+  source=source.replace("prior=next(r for r in history().records if r.kind=='hold_review_evidence')","prior=next(r for r in history().records if r.record_id=='hold-task-1')")
+  source=source.replace("finding='Late structural concern correction; retains hold'","trigger='Corrected follow-up instruction; original reference superseded'")
+  source=source.replace("add('hold_review_evidence',prior.event_at,version='2.0.0',process='hold_review',**fields)","add('follow_up',prior.event_at,identifier='hold-task-1-correction',**fields)")
+  namespace=dict(fixtures.__dict__);exec(compile(source,'independent-followup-fixture','exec'),namespace)
+  fixtures.build=namespace['build']
+  try:fixture,trust,addition,_=live_fixture(self.root/'correction',late_trigger_correction_at=late,export_name='followup-correction')
+  finally:fixtures.build=original
+  authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants});self.install_next(authority)
+  self.settings=replace(self.settings,clock=lambda:late,observed_archives={**self.settings.observed_archives,'correction':(fixture['raw'],self.root/'correction/staging',trust)});self.restart_client()
+  r=self.client.post('/api/observed-archives/correction',json={'mode':'archive_only'},headers=self.headers('followup-correction'));self.assertEqual(r.status_code,200,r.text)
+  e=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0]
+  with self.store.transaction() as db:
+   h=current_archive_history(self.settings,db,self.command['archive_id'],self.command['partition_id'],'SYN-02');trigger=next(r for r in h.records if r.record_id==self.command['trigger_refs'][0]['record_id'])
+   with self.assertRaises(LiveError) as caught:current_closure(h,trigger,late)
+   print('recursive closure rejects',caught.exception,flush=True)
+  review=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews',json=self.review_input(e),headers=self.headers('stale-nested-review'));print('review',review.status_code,review.text,flush=True)
+  if review.status_code==200:
+   clear=self.review_input(e)
+   for k in ['items','rationale','current_assessment_attested']:clear.pop(k)
+   clear.update(review_id=review.json()['review_id'],review_sha256=review.json()['review_sha256'])
+   result=self.client.post('/api/patients/SYN-02/live-holds/'+first['episode_id']+'/clearance',json=clear,headers=self.headers('stale-nested-clear'));print('clearance',result.status_code,result.text,flush=True)
+  self.assertEqual(review.status_code,409,'Current review must reject an exact top-level ref whose nested follow-up is superseded')
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([ClosureOracle()])).wasSuccessful())

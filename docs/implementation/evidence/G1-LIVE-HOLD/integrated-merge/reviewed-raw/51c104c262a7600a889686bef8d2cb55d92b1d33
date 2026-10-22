@@ -1,0 +1,22 @@
+import unittest,json
+from datetime import timedelta
+from dataclasses import replace
+from test_live_hold import LiveWorkflowTests,NOW
+from live_helpers import live_fixture
+from contracts.domain.evidence_v2 import exact_ref
+class NamespaceOracle(LiveWorkflowTests):
+ def runTest(self):
+  first=self.enter();late=NOW+timedelta(hours=2)
+  fixture,trust,addition,_=live_fixture(self.root/'correction',late_trigger_correction_at=late,export_name='new-corrected-package')
+  authority=self.settings.installed.authority.model_copy(update={'grants':self.settings.installed.authority.grants+addition.authority.grants});self.install_next(authority)
+  self.settings=replace(self.settings,clock=lambda:late,observed_archives={**self.settings.observed_archives,'correction':(fixture['raw'],self.root/'correction/staging',trust)});self.restart_client()
+  r=self.client.post('/api/observed-archives/correction',json={'mode':'archive_only'},headers=self.headers('corrected-package'));self.assertEqual(r.status_code,200,r.text)
+  corrected=next(r for r in fixture['history'].records if r.kind=='hold_review_evidence' and r.revision==2)
+  with self.store.transaction() as db:self.assertIsNone(db.execute('SELECT 1 FROM observed_archive_entries WHERE archive_id=? AND record_id=?',(self.command['archive_id'],corrected.record_id)).fetchone())
+  e=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];request=self.review_input(e)
+  false_ref=dict(store='archive',namespace_id=self.command['archive_id'],partition_id=self.command['partition_id'],**exact_ref(corrected).model_dump(mode='json'));request['items'][0]['evidence_refs']=[false_ref]
+  url='/api/patients/SYN-02/live-holds/'+first['episode_id']+'/reviews';bad=self.client.post(url,json=request,headers=self.headers('wrong-package-ref'));print('wrong-package-root',bad.status_code,bad.text,flush=True)
+  e=self.client.get('/api/patients/SYN-02/live-holds').json()['episodes'][0];goodrequest=self.review_input(e);goodrequest['items'][0]['evidence_refs']=[dict(false_ref,namespace_id=addition.authority.grants[0].archive_id)]
+  good=self.client.post(url,json=goodrequest,headers=self.headers('correct-package-ref'));print('correct-package-root',good.status_code,good.text,flush=True);self.assertEqual(good.status_code,200,good.text)
+  self.assertEqual(bad.status_code,409,'An archive evidence ref must exist in the exact named archive, not merely another registered package')
+raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([NamespaceOracle()])).wasSuccessful())

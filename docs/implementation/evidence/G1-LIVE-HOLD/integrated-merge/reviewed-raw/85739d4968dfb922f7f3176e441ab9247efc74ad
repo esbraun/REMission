@@ -1,0 +1,33 @@
+{
+  "head": "9ea9545444a1a3d45f6cdf2382b7078eeb08636a",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,nosuid,size=512m",
+    "-e",
+    "PYTHONPATH=/app:/app/tests/integration/replay:/app/tests/run_contracts",
+    "--mount",
+    "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lh-r3-crit-261021,target=/app,readonly",
+    "-w",
+    "/app",
+    "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "python",
+    ".review-artifacts/namespace-oracle.py"
+  ],
+  "exit_code": 0,
+  "stdout": "wrong-package-root 409 {\"code\":\"hold_dependencies_unavailable\",\"detail\":\"hold dependencies unavailable\"}\ncorrect-package-root 200 {\"schema_version\":\"1.0.0\",\"contract\":\"LIVE-HOLD-01\",\"synthetic\":true,\"status\":\"committed\",\"operation_id\":\"review-op-97cc71fcc67d43d3a4f5d53fe14304c7\",\"operation_type\":\"review\",\"semantic_sha256\":\"56ca32567d1564f56bb04d57a11b3f0b2c80698498bb904995d42d43552531d4\",\"patient_id\":\"SYN-02\",\"owner_id\":\"alice\",\"actor_id\":\"alice\",\"authority_generation\":2,\"authority_sha256\":\"34a16e37ab33ee97f41ee375e88fc68b6450bf7ee825f0e1bb512f77e8cf230b\",\"review_rules_sha256\":\"7dcc7e8eb5704ce4b60b11adfc3b2c084b2adb9583966d6694f85f33c9435a88\",\"live_received_at\":\"2026-10-21T14:00:00+00:00\",\"operation_sequence\":4,\"patient_sequence\":5,\"before_versions\":{\"version\":3,\"state_version\":3,\"consent_version\":1,\"eligibility_version\":3},\"after_versions\":{\"version\":4,\"state_version\":4,\"consent_version\":1,\"eligibility_version\":4},\"decision_id\":\"decision-92c5e89466664b8d3d5ca89ac82d199e\",\"audit_id\":\"audit-c129e2fa32fa41a8a22da2be4c1eb7b4\",\"review_id\":\"review-18825c3ef0a147929772429101075e15\",\"review_sha256\":\"fda93104dc56d877fdec135ef38f06078fc40140ae48f0d25ff67661d73aae62\",\"episode_id\":\"episode-98df04dc722592e2fafea4c398d705d215b2e9b1\",\"episode_generation\":1,\"task_ids\":[\"hold-review-b0e56c6758e35bbd67e0f087c207b93de1d2cb28\"]}\n",
+  "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\nrunTest (__main__.NamespaceOracle.runTest) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 2.591s\n\nOK\n"
+}

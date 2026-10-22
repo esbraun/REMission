@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "remission-g1-live-hold-20261021-f8e99b9e-service",
+    "python",
+    "-c",
+    "import sqlite3,json; d=sqlite3.connect('/data/remission.sqlite'); n=d.execute(\"update sessions set expires_at=0 where account_id='alice'\").rowcount; d.commit(); print(json.dumps({'expired_alice_sessions':n}))"
+  ],
+  "exit": 0,
+  "stdout": "{\"expired_alice_sessions\": 2}\n",
+  "stderr": ""
+}

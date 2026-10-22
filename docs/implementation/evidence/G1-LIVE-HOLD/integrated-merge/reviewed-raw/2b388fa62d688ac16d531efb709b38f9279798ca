@@ -1,0 +1,9 @@
+import pathlib,subprocess,json,hashlib
+root=pathlib.Path.cwd();ev=root/'.review-artifacts';entries=[]
+for p in sorted(ev.iterdir()):
+ if p.is_file() and p.name!='manifest.json':
+  raw=p.read_bytes();oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();back=subprocess.check_output(['git','cat-file','blob',oid]);assert back==raw
+  entries.append({'path':p.name,'raw_git_blob':oid,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'cat_file_byte_verified':True})
+manifest={'candidate':'4f0588f882b7554a62c40620c630bf669faa3663','base':'ec18cb4020ba239710a3fd615e365d5cd72b4d80','disposition':'bounded early audit; P1 changes requested; not whole-package acceptance','artifacts':entries}
+raw=json.dumps(manifest,indent=2).encode();(ev/'manifest.json').write_bytes(raw);oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw
+print(json.dumps(manifest,indent=2));print('MANIFEST',oid)

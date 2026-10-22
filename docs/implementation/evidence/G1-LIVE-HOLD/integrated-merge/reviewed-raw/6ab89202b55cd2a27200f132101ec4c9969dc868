@@ -1,0 +1,6 @@
+import json,pathlib,subprocess,sys
+p=pathlib.Path('.review-artifacts/ec49/browser');d=json.loads(pathlib.Path('.review-artifacts/ec49/deployment/deployment.json').read_bytes());c=d['service_container'];mode=sys.argv[1]
+code="import sqlite3,json,hashlib; d=sqlite3.connect('/data/remission.sqlite'); tables=[x[0] for x in d.execute(\"select name from sqlite_master where type='table' and name not in ('sessions','login_attempts') order by name\")]; out={t:[repr(tuple(r)) for r in d.execute('select * from '+t+' order by rowid')] for t in tables}; print(json.dumps({'tables':out,'sha256':hashlib.sha256(json.dumps(out,sort_keys=True).encode()).hexdigest()},sort_keys=True))"
+if mode=='revoke': code="import sqlite3,json; d=sqlite3.connect('/data/remission.sqlite'); n=d.execute(\"update sessions set revoked=1 where account_id='alice'\").rowcount; d.commit(); print(json.dumps({'revoked_alice_sessions':n}))"
+cmd=['docker','exec',c,'python','-c',code] if mode!='restart' else ['docker','restart',c]
+r=subprocess.run(cmd,capture_output=True);out={'command':cmd,'exit':r.returncode,'stdout':r.stdout.decode(),'stderr':r.stderr.decode()};(p/(mode+'.json')).write_text(json.dumps(out,indent=2));print(json.dumps({'mode':mode,'exit':r.returncode}));assert r.returncode==0

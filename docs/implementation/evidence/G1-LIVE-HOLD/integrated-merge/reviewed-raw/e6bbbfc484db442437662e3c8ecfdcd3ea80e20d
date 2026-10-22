@@ -1,0 +1,33 @@
+{
+  "candidate": "4f0588f882b7554a62c40620c630bf669faa3663",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--read-only",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,nosuid,size=512m",
+    "--mount",
+    "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\g1lh-pre-crit-261021,target=/app,readonly",
+    "-w",
+    "/app",
+    "-e",
+    "PYTHONPATH=/app:/app/tests/integration/replay",
+    "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+    "python",
+    "/app/.review-artifacts/pass2-oracles.py"
+  ],
+  "exit_code": 0,
+  "stdout": "neither_target followup_task_relation_mismatch\nboth_targets CHECK constraint failed: (anchor_task_id IS NOT NULL)+(additional_task_id IS NOT NULL)=1\ntask_target_mismatch CHECK constraint failed: task_id=COALESCE(anchor_task_id,additional_task_id)\norphan_target followup_task_relation_mismatch\nwrong_episode followup_task_relation_mismatch\nwrong_generation followup_task_relation_mismatch\norphan_additional_task FOREIGN KEY constraint failed\norphan_event FOREIGN KEY constraint failed\nvalid_new_target accepted\nduplicate_episode_generation_binding UNIQUE constraint failed: live_hold_task_bindings.episode_id, live_hold_task_bindings.generation, live_hold_task_bindings.full_binding_sha256\nlive_hold_tasks_update immutable_record\nlive_hold_tasks_delete immutable_record\nlive_hold_task_events_update immutable_record\nlive_hold_task_events_delete immutable_record\nlive_hold_additional_tasks_update immutable_record\nlive_hold_additional_tasks_delete immutable_record\nlive_hold_task_bindings_update immutable_record\nlive_hold_task_bindings_delete immutable_record\nlive_hold_additional_task_events_update immutable_record\nlive_hold_additional_task_events_delete immutable_record\noriginal receipt bytes and single task preserved after strengthen/restart; current task count 2\nreview preserves all task events; clearance closes both selected-generation tasks only; other episode remains held\n",
+  "stderr": "/usr/local/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\ntest_constraints (__main__.Pass2.test_constraints) ... ok\ntest_receipt_history (__main__.Pass2.test_receipt_history) ... ok\ntest_plural_clearance_isolation (__main__.Pass2.test_plural_clearance_isolation) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 5.255s\n\nOK\n"
+}

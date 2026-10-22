@@ -1,0 +1,5 @@
+import sys,json,pathlib
+sys.path.insert(0,'tooling/foundation');from capture import run
+p=pathlib.Path('.review-artifacts/ec49');b=json.loads((p/'build/source-images.json').read_bytes());tag=b['prefix']+'-client:review'
+for cmd in [['docker','build','--network','default','--file','tooling/foundation/service.Dockerfile','--target','client','--tag',tag,'.'],['docker','run','--rm','--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,nosuid,size=768m',tag,'sh','-c','cp -R /client /tmp/check && cd /tmp/check && npm run typecheck && npm run test && npm run build']]:
+ r,m=run(cmd,p/'client-checks');assert r.returncode==0;print(json.dumps({'command':cmd,'exit':r.returncode,'streams':m['streams']}))

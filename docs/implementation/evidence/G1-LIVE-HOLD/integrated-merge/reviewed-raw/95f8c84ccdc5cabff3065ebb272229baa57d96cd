@@ -1,0 +1,227 @@
+{
+  "$defs": {
+    "MethodContext": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_information": {
+          "const": "available_observed_history_only",
+          "title": "Allowed Information",
+          "type": "string"
+        },
+        "comparator_estimand": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "comparator_information": {
+          "const": "same_permitted_history",
+          "title": "Comparator Information",
+          "type": "string"
+        },
+        "dgp": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "estimand": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "failure_policy": {
+          "const": "retain_all_attempts_fail_or_abstain_never_fabricate",
+          "title": "Failure Policy",
+          "type": "string"
+        },
+        "input_data": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "model": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "observation_cutoff": {
+          "format": "date-time",
+          "title": "Observation Cutoff",
+          "type": "string"
+        },
+        "prior": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "protocol": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "scenario": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "seed": {
+          "$ref": "#/$defs/SeedKey"
+        },
+        "source_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "truth_access": {
+          "const": "denied",
+          "title": "Truth Access",
+          "type": "string"
+        }
+      },
+      "required": [
+        "estimand",
+        "dgp",
+        "scenario",
+        "input_data",
+        "prior",
+        "model",
+        "protocol",
+        "observation_cutoff",
+        "seed",
+        "allowed_information",
+        "truth_access",
+        "comparator_estimand",
+        "comparator_information",
+        "source_ids",
+        "failure_policy"
+      ],
+      "title": "MethodContext",
+      "type": "object"
+    },
+    "SeedKey": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "enum": [
+            "fixture",
+            "development",
+            "confirmation",
+            "truth",
+            "fit",
+            "assignment"
+          ],
+          "title": "Namespace",
+          "type": "string"
+        },
+        "patient": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient",
+          "type": "string"
+        },
+        "process": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Process",
+          "type": "string"
+        },
+        "protocol": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "replicate": {
+          "minimum": 0,
+          "title": "Replicate",
+          "type": "integer"
+        },
+        "scenario": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Scenario",
+          "type": "string"
+        },
+        "time_index": {
+          "title": "Time Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "namespace",
+        "protocol",
+        "scenario",
+        "replicate",
+        "patient",
+        "time_index",
+        "process"
+      ],
+      "title": "SeedKey",
+      "type": "object"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "title": "VersionRef",
+      "type": "object"
+    }
+  },
+  "$id": "urn:remission:domain:1.0.0:fit-request",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "backend": {
+      "const": "pymc",
+      "title": "Backend",
+      "type": "string"
+    },
+    "configuration": {
+      "$ref": "#/$defs/VersionRef"
+    },
+    "context": {
+      "$ref": "#/$defs/MethodContext"
+    },
+    "kind": {
+      "const": "fit_request",
+      "title": "Kind",
+      "type": "string"
+    },
+    "precision": {
+      "const": "float64",
+      "title": "Precision",
+      "type": "string"
+    },
+    "sampler": {
+      "const": "native_nuts",
+      "title": "Sampler",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "const": true,
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "kind",
+    "context",
+    "backend",
+    "sampler",
+    "precision",
+    "configuration"
+  ],
+  "title": "FitRequest",
+  "type": "object"
+}

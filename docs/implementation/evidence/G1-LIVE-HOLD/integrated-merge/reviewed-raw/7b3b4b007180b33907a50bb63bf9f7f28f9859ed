@@ -1,0 +1,6 @@
+import pathlib,json,base64,hashlib,subprocess
+p=pathlib.Path('docs/implementation/evidence/G1-LIVE-HOLD/raw-supplement-review-and-compatibility.json');checks=[]
+for x in json.loads(p.read_bytes()):
+ raw=base64.b64decode(x['base64'],validate=True);oid=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest();stored=subprocess.check_output(['git','cat-file','blob',x['git_blob']]);checks.append(dict(git_blob=x['git_blob'],bytes=len(raw),length_ok=len(raw)==x['bytes'],sha256_ok=hashlib.sha256(raw).hexdigest()==x['sha256'],git_hash_ok=oid==x['git_blob'],exact_stored_bytes=raw==stored))
+result=dict(head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),source=str(p),count=len(checks),all_valid=all(all(v for k,v in x.items() if k.endswith('_ok') or k=='exact_stored_bytes') for x in checks),checks=checks)
+pathlib.Path('.review-artifacts/envelope-checks.json').write_text(json.dumps(result,indent=2));print('envelopes',result['count'],'all_valid',result['all_valid'])

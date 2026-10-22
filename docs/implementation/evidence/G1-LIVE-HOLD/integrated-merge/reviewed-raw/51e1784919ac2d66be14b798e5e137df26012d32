@@ -1,0 +1,10 @@
+import pathlib,subprocess,json,hashlib
+p=pathlib.Path('.review-artifacts');entries=[]
+for file in sorted(p.glob('pass2-*')):
+ if file.name=='pass2-manifest.json':continue
+ raw=file.read_bytes();oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw
+ entries.append({'path':file.name,'raw_git_blob':oid,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'cat_file_byte_verified':True})
+prior=json.loads((p/'manifest.json').read_text())
+for item in prior['artifacts']:
+ assert hashlib.sha256((p/item['path']).read_bytes()).hexdigest()==item['sha256']
+data={'candidate':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'merge_base':subprocess.check_output(['git','merge-base','HEAD','ec18cb4020ba239710a3fd615e365d5cd72b4d80'],text=True).strip(),'prior_manifest_sha1':subprocess.check_output(['git','hash-object','--no-filters',str(p/'manifest.json')],text=True).strip(),'prior_files_unchanged':True,'artifacts':entries};raw=json.dumps(data,indent=2).encode();(p/'pass2-manifest.json').write_bytes(raw);oid=subprocess.check_output(['git','hash-object','-w','--stdin'],input=raw).decode().strip();assert subprocess.check_output(['git','cat-file','blob',oid])==raw;print(json.dumps(data,indent=2));print('MANIFEST',oid)
