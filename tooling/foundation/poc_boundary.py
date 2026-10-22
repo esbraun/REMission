@@ -20,13 +20,13 @@ def main():
     build = json.loads(args.build.read_bytes()); deployment = json.loads(args.deployment.read_bytes())
     args.evidence.mkdir(parents=True, exist_ok=True)
     commands = []
-    def command(argv):
+    def command(argv, expected=0):
         start = time.monotonic()
         result = subprocess.run(argv, capture_output=True)
         commands.append(dict(command=argv, exit=result.returncode, seconds=time.monotonic()-start,
                              stdout=result.stdout.decode(errors='replace'), stderr=result.stderr.decode(errors='replace')))
         (args.evidence/'commands.json').write_text(json.dumps(commands, indent=2)+'\n', encoding='utf-8')
-        if result.returncode: raise RuntimeError('boundary probe failed; inspect commands.json')
+        if result.returncode != expected: raise RuntimeError('boundary probe failed; inspect commands.json')
         return result.stdout.decode()
     for role, uid in [('service',10001), ('learner',10002), ('generator',20000)]:
         expected = copied(role)
@@ -56,27 +56,37 @@ assert set(product)=={'name','records'} and len(product['records'])==2
 print(json.dumps(dict(service_generator_rpc=True,observed_records=len(projection['records']),day=json.loads(p['state_json'])['simulation']['day'])))
 """
     command(['docker','exec',deployment['service_container'],'python','-c',code])
-    probe = """import importlib.util,json,os,urllib.request
+    probe = """import importlib.util,json,os,urllib.request,urllib.error
 from pathlib import Path
 from contracts.domain.boundaries import LearnerHistory
 assert os.getuid()==10002 and importlib.util.find_spec('services.generator') is None
 assert not Path('/app/services/generator').exists() and not Path('/data/remission.sqlite').exists()
 projection=LearnerHistory.model_validate_json(Path('/observed/poc-boundary-observed.json').read_bytes())
 assert all(getattr(r,'seed',None) is None for r in projection.records)
+request=urllib.request.Request(os.environ['GENERATOR_URL'],data=json.dumps(dict(seed=1,index=0,patient_id='boundary-positive',through_day=0,actions=[])).encode(),headers={'Content-Type':'application/json'})
 try:
- urllib.request.urlopen(os.environ['GENERATOR_URL'],timeout=1)
-except OSError:
- print(json.dumps(dict(uid=os.getuid(),generator_rpc_denied=True,generator_source=False,service_database=False,typed_observed_records=len(projection.records))))
-else:
- raise AssertionError('learner reached private generator')
+ with urllib.request.urlopen(request,timeout=1) as response:
+  reached=True;status=response.status
+except urllib.error.HTTPError as error:
+ reached=True;status=error.code
+except (urllib.error.URLError,TimeoutError,ConnectionError) as error:
+ reached=False;status=type(error).__name__
+assert not reached,'private generator reached HTTP '+str(status)
+print(json.dumps(dict(uid=os.getuid(),generator_rpc_denied=True,transport_failure=status,generator_source=False,service_database=False,typed_observed_records=len(projection.records))))
 """
+    # Deliberately remove the network boundary: this SAME denial probe must fail.
+    command(['docker','run','--rm','--network',deployment['network'],*COMMON,
+             '--env','GENERATOR_URL=http://'+address+':8780/generate',
+             '--mount','type=volume,source='+deployment['volumes']['exports']+',target=/observed,readonly',
+             build['images']['learner'],'python','-c',probe],expected=1)
+    assert 'private generator reached HTTP 200' in commands[-1]['stderr']
     command(['docker','run','--rm','--name','remission-poc13-boundary-'+uuid.uuid4().hex[:8], '--network','none',*COMMON,
              '--env','GENERATOR_URL=http://'+address+':8780/generate',
              '--mount','type=volume,source='+deployment['volumes']['exports']+',target=/observed,readonly',
              build['images']['learner'],'python','-c',probe])
     (args.evidence/'result.json').write_text(json.dumps(dict(status='passed', source_head=build['source_head'],
         images=build['images'],url=deployment['url'],runtime=build['runtime'],generator_no_mount_or_host_port=True,
-        service_rpc=True,learner_network='none',learner_public_projection_only=True),indent=2)+'\n',encoding='utf-8')
+        service_rpc=True,reachable_misconfiguration_rejected=True,learner_network='none',learner_public_projection_only=True),indent=2)+'\n',encoding='utf-8')
     print('Copied source, actual service RPC, learner source/mount/network denial and observed-only consumption passed.')
 
 
