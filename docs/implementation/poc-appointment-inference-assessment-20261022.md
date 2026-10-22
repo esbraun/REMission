@@ -1,10 +1,10 @@
 # Appointment inference and StochTree: bounded assessment
 
-2026-10-22. Astra/medium; isolated branch `plan/poc-appointment-inference-stochtree-20261022`, clean base `3ab331dd09cb0676ae327c8f0d03e107c826148f`. **Proposal, unaccepted pending separate Astra critique.** No fits, installations, dependency changes, model imports or live service inspection were performed.
+2026-10-22. Astra/medium; isolated branch `plan/poc-appointment-inference-stochtree-20261022`, clean base `3ab331dd09cb0676ae327c8f0d03e107c826148f`. **Supporting assessment: APPT-01–05/A1–A4 plan accepted by root after independent report blob `e64614862337a8c219eaaafcc88e9cee3c505757`; canonical promotion is linked below. A5/StochTree remains conditional and deferred.** No fits, installations, dependency changes, model imports or live service inspection were performed.
 
 **Recommend separating appointment prediction from background fitting now. Defer StochTree adoption; consider only one optional, matched single-decision BCF comparator after its scientific contract is reviewed.** StochTree is an alternative statistical model family, not a drop-in inference engine for the existing PyMC posterior. Fast prediction from saved artifacts is available conceptually with either family. Changing families is unnecessary to obtain that architectural separation.
 
-The concrete proposed requirements and task/test ledger are in the [appointment amendment](../spec/poc-appointment-inference-proposal-20261022.md). This assessment does not enable StochTree, ADVI, a frozen-population approximation or online updating. The selected PyMC/native NUTS backend and mandatory PoC science remain in force.
+The [promotion record](../spec/poc-appointment-inference-proposal-20261022.md) points to canonical APPT requirements and the existing A1–A4 task/test ledger, all implementation not started. This assessment does not enable StochTree, ADVI, a frozen-population approximation or online updating. The selected PyMC/native NUTS backend and mandatory PoC science remain in force.
 
 ## Correcting the earlier practicality framing
 
@@ -55,4 +55,4 @@ If justified later, use one explicit MCMC BCF specification against the matched 
 
 Verified clean assigned branch/base; read entry point, runtime/delegation contracts, plan, active PoC/POC-VAL, estimand and library contracts, analytics service seams, prior memo and frozen acceptance/failure evidence. No `AGENTS.md` was found within this checkout. Reviewed primary website, API, source metadata and papers above. Documentation diff/link checks are recorded in the handoff. No fit/test/runtime result is claimed.
 
-Unknowns: genuine cohort fit throughput; standalone posterior artifact hydration and scenario latency; fresh-versus-stale estimate impact; clinically acceptable freshness/latency; pinned StochTree feature/release compatibility and small-panel calibration; valid early-history matched comparator availability. Independent Astra critique is required before implementation or canonical requirements promotion.
+Unknowns: genuine cohort fit throughput; standalone posterior artifact hydration and scenario latency; fresh-versus-stale estimate impact; clinically acceptable freshness/latency; pinned StochTree feature/release compatibility and small-panel calibration; valid early-history matched comparator availability. The independent plan critique accepted APPT-01–05/A1–A4 for canonical promotion; exact implementation/source/runtime review remains required before dependent source work. No comparator contract or backend exception has been accepted.

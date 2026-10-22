@@ -10,7 +10,7 @@ Start with [scope and invariants](docs/spec/00-scope-and-invariants.md), then th
 
 Remaining analytics implementation: [POC4–6 technical contract](docs/implementation/poc-analytics-contract-20261021.md) proposes the next bounded source changes and first real-fit slice on accepted POC1–3. It is a plan, not implemented or independently accepted analytics.
 
-Pending independent critique: [appointment inference proposal](docs/spec/poc-appointment-inference-proposal-20261022.md) separates background posterior refresh from appointment predictions; the [StochTree assessment](docs/implementation/poc-appointment-inference-assessment-20261022.md) evaluates one possible future comparator. Neither changes the accepted backend or enables another model.
+Accepted appointment requirements: [APPT-01–05](docs/spec/poc-amendment-20261021.md#appt-0105--background-refresh-and-appointment-prediction) separate background posterior refresh from versioned appointment predictions; [POC-VAL](docs/spec/07-validation-protocol.md#appt-04--appointment-timeliness-and-freshness) owns accuracy/freshness/latency measurement. A1–A4 remain not started in the [existing ledger](docs/implementation/poc-analysis-task-ledger.json). The [proposal promotion record](docs/spec/poc-appointment-inference-proposal-20261022.md) preserves review provenance; [StochTree/A5](docs/implementation/poc-appointment-inference-assessment-20261022.md) remains conditional/deferred, with no installation or backend exception.
 
 ## Implementation coordination
 
