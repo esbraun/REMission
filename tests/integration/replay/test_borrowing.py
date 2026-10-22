@@ -186,7 +186,12 @@ class BorrowingRoutesTests(unittest.TestCase):
         self.assertEqual(self.client.get('/api/patients/POC-TEST/analysis-comparisons').json()['comparisons'],[saved.json()])
         with self.store.transaction(write=True) as db:
             db.execute('UPDATE patients SET cutoff=? WHERE id=?',((ORIGIN+timedelta(days=42)).isoformat(),'POC-TEST'))
-        self.assertEqual(self.client.get('/api/patients/POC-TEST/analysis-comparisons').json()['comparisons'],[saved.json()])
+        later=self.client.get('/api/patients/POC-TEST/analysis-comparisons').json()['comparisons'][0]
+        original=saved.json()
+        self.assertEqual({k:v for k,v in later.items() if k!='appointment'},
+            {k:v for k,v in original.items() if k!='appointment'})
+        self.assertEqual(later['appointment']['status'],'unavailable')
+        self.assertNotEqual(later['appointment'],original['appointment'])
         self.assertEqual(self.client.post('/api/patients/POC-TEST/analysis-comparisons',json=dict(left=pair['left'],right=pair['left']),headers=self.headers('same-attempt')).status_code,409)
 
     def test_source_admission_receipt_intents_and_guarded_result_sources(self):

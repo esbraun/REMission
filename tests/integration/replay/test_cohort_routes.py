@@ -1,9 +1,13 @@
 """Actual auth/CSRF/owned cohort routes; no fit result or executable bypass."""
 import unittest
+import json
+from datetime import timedelta
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from services.foundation.app import Settings,create_app
 from services.foundation.cli import DEMO_PASSWORDS
+from services.foundation.store import canonical,instant
+from services.foundation.workflow import state_for
 import test_cohort_service as service_cases
 
 URL='http://127.0.0.1:8765'
@@ -15,6 +19,12 @@ class CohortRoutes(unittest.TestCase):
 
     def setUp(self):
         service_cases.CohortStoreTests.setUp(self)
+        # Export-only contract fixtures omit workflow. Route freshness also
+        # verifies the actual current state's supported no-prompt policy.
+        with self.store.transaction(write=True) as db:
+            for row in db.execute("SELECT id,state_json FROM patients WHERE id LIKE 'COHORT-%'").fetchall():
+                state=json.loads(row['state_json']);state['workflow']=state_for('ASSIGN-02')['workflow']
+                db.execute('UPDATE patients SET state_json=? WHERE id=?',(canonical(state),row['id']))
         self.app=create_app(Settings(self.store.path,self.store.installed,clock=self.store.clock,live_export_root=self.root/'exports'))
         self.client=TestClient(self.app,base_url=URL);self.addCleanup(self.client.close)
         self.login(self.client,'alice')
@@ -58,6 +68,21 @@ class CohortRoutes(unittest.TestCase):
         response=self.client.get(path);self.assertEqual(response.status_code,200,response.text)
         value=response.json()['attempts'][0];self.assertEqual(value['kind'],'cohort_visit_analysis');self.assertFalse(value['stale'])
         self.assertEqual(self.client.get(path+'/'+product.attempt_id).json()['id'],product.attempt_id)
+        with self.store.transaction(write=True) as db:
+            row=db.execute("SELECT payload FROM events WHERE patient_id='COHORT-11' AND kind='daily_report' ORDER BY available_at LIMIT 1").fetchone()
+            original=json.loads(row[0]);record=dict(original)
+            record.update(record_id='cohort-same-cutoff-correction',revision=original['revision']+1,
+                supersedes=original['record_id'],record_status='corrected',sleep_quality=6.)
+            record['available_at']=(instant(self.cutoff)-timedelta(minutes=1)).isoformat()
+            record['recorded_at']=record['available_at'];encoded=canonical(record)
+            db.execute('INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                (record['record_id'],'COHORT-11',record['kind'],record['lineage_id'],record['revision'],record['supersedes'],
+                 encoded,'0'*64,encoded.encode(),'0'*64,record['event_at'],record['recorded_at'],record['available_at'],3,self.store.clock().isoformat()))
+        corrected=self.client.get(path+'/'+product.attempt_id).json()
+        self.assertTrue(corrected['stale'])
+        statuses={m['patient_id']:m['status'] for m in corrected['member_information']}
+        self.assertEqual(statuses['COHORT-11'],'dated');self.assertEqual(statuses['COHORT-07'],'current')
+        self.assertEqual(corrected['manifest_sha256'],value['manifest_sha256'])
         with self.store.transaction(write=True) as db:db.execute("UPDATE patients SET version=4 WHERE id='COHORT-11'")
         self.assertTrue(self.client.get(path+'/'+product.attempt_id).json()['stale'])
         with self.store.transaction(write=True) as db:db.execute("UPDATE patients SET owner_id='bob' WHERE id='COHORT-11'")

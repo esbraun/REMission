@@ -606,14 +606,32 @@ def create_app(settings: Settings) -> FastAPI:
 
     def owned_analysis_view(db,owner,row,cutoff):
         from .analysis import view
+        from .appointment import current_information
         frozen=json.loads(row['request_json'])
-        if frozen.get('kind')!='poc_visit_cohort_input':return view(row,cutoff)
+        if frozen.get('kind')!='poc_visit_cohort_input':
+            patient=own(db,row['patient_id'],owner)
+            return view(row,cutoff,current=current_information(db,patient))
         from .cohort_analysis import view as cohort_view
         members=frozen['cohort']['manifest']['members']
         current=[own(db,m['patient_id'],owner) for m in members]
         expected=instant(frozen['cohort']['manifest']['cutoff'])
         changed=next((p['cutoff'] for p in current if instant(p['cutoff'])!=expected),cutoff)
-        return cohort_view(row,changed,current_versions={p['id']:p['version'] for p in current})
+        return cohort_view(row,changed,current_versions={p['id']:p['version'] for p in current},
+            current_information={p['id']:current_information(db,p) for p in current})
+
+    def comparison_view(db,owner,value):
+        """Freshness belongs to the read envelope, not the immutable comparison."""
+        from .appointment import public_summary
+        attempts=[]
+        for saved in value['attempts']:
+            row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=?',
+                (saved['id'],owner)).fetchone()
+            if row is None:raise AnalysisError('Saved comparison attempt unavailable.')
+            patient=own(db,row['patient_id'],owner)
+            attempts.append(dict(id=row['job_id'],serving=owned_analysis_view(db,owner,row,patient['cutoff'])['serving']))
+        available=all(a['serving']['summary_available'] for a in attempts)
+        status=('dated' if any(a['serving']['status']=='dated' for a in attempts) else 'current') if available else 'unavailable'
+        return public_summary(dict(value,appointment=dict(status=status,attempts=attempts)))
 
     @app.post('/api/cohort-analyses/preview')
     async def preview_cohort_analysis(request: Request):
@@ -672,10 +690,12 @@ def create_app(settings: Settings) -> FastAPI:
                 if candidate:owned_analysis_view(db,current['account_id'],candidate,candidate['cutoff'])
             payload=data.model_dump();scope=patient_id+':analysis-comparison'
             key,prior=mutation_receipt(db,current,request,scope,payload)
-            if prior:return prior
+            from .appointment import public_summary
+            if prior:return public_summary(prior)
             from .analysis import compare
             try:response=compare(db,patient_id,current['account_id'],data.left,data.right,settings.live_export_root)
             except ValueError as error:raise APIError(409,'comparison_unavailable',str(error)) from error
+            response=comparison_view(db,current['account_id'],response)
             save_mutation(db,current,key,scope,payload,response)
             return JSONResponse(response,status_code=201)
 
@@ -694,8 +714,9 @@ def create_app(settings: Settings) -> FastAPI:
                             if patient_id not in {m['patient_id'] for m in members}:continue
                             for member in members:own(db,member['patient_id'],current['account_id'])
                         elif anchor!=patient_id:continue
-                        saved.append(value)
-                return dict(comparisons=saved)
+                        saved.append(comparison_view(db,current['account_id'],value))
+                from .appointment import public_summary
+                return dict(comparisons=public_summary(saved))
             except ValueError as error:raise APIError(409,'comparison_unavailable',str(error)) from error
 
     @app.get('/api/patients/{patient_id}/analyses/{job_id}')
