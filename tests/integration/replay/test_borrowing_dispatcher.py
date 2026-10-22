@@ -25,7 +25,9 @@ class DispatcherDeadlineTests(unittest.TestCase):
             elif argv[:2]==['docker','inspect']:
                 # The worker finished AFTER the frozen cap between polls.
                 clock[0]=7201.
-                response=b'[{"State":{"Running":false,"ExitCode":0,"OOMKilled":false}}]'
+                response=json.dumps([dict(Image='sha256:'+'a'*64,State=dict(Running=False,ExitCode=0,OOMKilled=False))]).encode()
+            elif argv[:3]==['docker','image','inspect']:
+                response=('sha256:'+'a'*64).encode()
             return subprocess.CompletedProcess(argv,0,response,b'')
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);deployment=root/'deployment.json'
@@ -41,6 +43,16 @@ class DispatcherDeadlineTests(unittest.TestCase):
             self.assertTrue(any(argv[:2]==['docker','stop'] for argv in calls))
             self.assertTrue(any('fail' in argv for argv in calls))
             self.assertFalse(any('ingest' in argv for argv in calls))
+
+    def test_exec_scratch_is_borrow_only_and_keeps_other_limits(self):
+        ordinary=analysis_dispatcher.worker_limits(False)
+        borrowed=analysis_dispatcher.worker_limits(True)
+        self.assertEqual(ordinary,analysis_dispatcher.COMMON)
+        index=ordinary.index('--tmpfs')+1
+        self.assertEqual(borrowed[:index],ordinary[:index])
+        self.assertEqual(borrowed[index+1:],ordinary[index+1:])
+        self.assertEqual(ordinary[index],'/tmp:rw,nosuid,size=256m')
+        self.assertEqual(borrowed[index],'/tmp:rw,exec,nosuid,nodev,size=512m')
 
 
 if __name__=='__main__':unittest.main()

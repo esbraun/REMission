@@ -38,6 +38,13 @@ def check_deadline(deadline):
     if time.monotonic()>deadline:raise TimeoutError('fit-watchdog-deadline-exceeded')
 
 
+def worker_limits(borrowing):
+    result=list(COMMON)
+    if borrowing:
+        result[result.index('--tmpfs')+1]='/tmp:rw,exec,nosuid,nodev,size=512m'
+    return result
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--deployment',type=Path,required=True);parser.add_argument('--once',action='store_true')
     args=parser.parse_args()
@@ -73,6 +80,7 @@ def main():
             time.sleep(2)
             continue
         identifier=job['attempt_id'];token=job['claim_token'];directory=root/identifier
+        borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
         attempt_started=time.monotonic()
         directory.mkdir(exist_ok=False)
         (directory/'input.json').write_text(json.dumps(job['input'],sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
@@ -86,6 +94,13 @@ def main():
         save()
         launched=False
         try:
+            execution_image=image
+            if borrowing:
+                execution_image=command(['docker','image','inspect',image,'--format','{{.Id}}']).stdout.decode().strip()
+                manifest.update(requested_learner_image=image,learner_image=execution_image,
+                    input_sha256=hashlib.sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+                    execution_policy='poc-borrow-native-cvm-v1',scratch='/tmp:rw,exec,nosuid,nodev,size=512m')
+                save()
             for volume in (input_volume,output_volume):
                 command(['docker','volume','create','--label','remission.task='+prefix,volume])
             command(['docker','create','--name',helper,*COMMON,'--cap-add','CHOWN','--user','0:0',
@@ -95,15 +110,15 @@ def main():
             command(['docker','cp',str(directory/'input.json'),helper+':/input/input.json'])
             command(['docker','start','--attach',helper])
             command(['docker','rm',helper])
-            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*COMMON,
+            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*worker_limits(borrowing),
                 '--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
-                '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
-                image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
+                '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+execution_image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
+                execution_image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
             launched=True
             manifest.update(status='running',inventory=json.loads(command(['docker','inspect',learner]).stdout)[0])
+            if borrowing and manifest['inventory']['Image']!=execution_image:raise RuntimeError('borrow actual image differs from frozen launch identity')
             save()
             last=None
-            borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
             watchdog_seconds=7200 if borrowing else 4*3600
             manifest['watchdog_seconds']=watchdog_seconds
             deadline=(attempt_started if borrowing else time.monotonic())+watchdog_seconds

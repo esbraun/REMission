@@ -149,6 +149,11 @@ def ingest(store,job,token,directory):
             raise AnalysisError('Frozen result identity/hash/cutoff mismatch')
         source_hash=json.loads(row['request_json']).get('source_set_sha256')
         if source_hash!=getattr(result,'source_set_sha256',None):raise AnalysisError('Frozen result source hash mismatch')
+        if isinstance(result,BorrowAnalysisResult) and result.status=='completed':
+            from contracts.domain.borrowing import parse_input
+            from contracts.domain.borrow_runtime import validate_execution
+            try:validate_execution(result.diagnostics.get('execution',{}),parse_input(row['request_json']))
+            except ValueError as error:raise AnalysisError('Completed borrowing result lacks qualified execution binding') from error
         db.execute('UPDATE analysis_attempts SET status=?,stage=?,failure_reason=?,result_json=?,artifact_root=?,finished_at=? WHERE job_id=?',
             (result.status,'complete' if result.status=='completed' else result.status,result.reason,result.model_dump_json(),str(directory),timestamp(store.clock()),job))
         db.execute('UPDATE pending_work SET status=?,reason=? WHERE id=?',(result.status,result.reason or 'Visit analysis complete',job))

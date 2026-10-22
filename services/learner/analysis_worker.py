@@ -8,6 +8,7 @@ import resource
 import os
 import time
 import traceback
+import gc
 
 import numpy as np
 import xarray as xr
@@ -67,25 +68,25 @@ def run(source, out):
         if borrowed:
             from methods.visit.borrow_model import build_joint
             from methods.visit.source_precision import validate as validate_bridge
-            model=build_joint(data,product.sources,configuration)
+            from methods.visit.borrow_execution import POLICY_REF,compilation_options,sample as borrow_sample
+            from contracts.domain.borrow_runtime import runtime_origin
+            origin=runtime_origin(os.environ.get('REMISSION_LEARNER_IMAGE',''),os.environ.get('REMISSION_SOURCE_COMMIT',''))
+            result['diagnostics']['execution']=dict(policy=POLICY_REF,input_sha256=input_hash,
+                history_sha256=product.history_sha256,cutoff=product.history.cutoff.isoformat(),
+                source_set_sha256=product.source_set_sha256,configuration=product.request.configuration.model_dump(),
+                numerical_seeds=product.numerical_seeds.model_dump(),native_compilations=[],
+                prior_lifetime='prior first/save/release before posterior construction',
+                **origin)
+            publish(out/'diagnostics.json',result['diagnostics'])
             prior_model=build_joint(data,product.sources,configuration,guide=False,prior_predictive=True)
             prior_variables=['burden','sigma_isi','sigma_quality','source_g','source_bias','source_tau','p_adherence']
-            initial=model.initial_point();profile={}
-            for name,compile_fn in [('logp',model.compile_logp),('gradient',model.compile_dlogp)]:
-                begin=time.monotonic();fn=compile_fn();compiled=time.monotonic()-begin
-                timings=[]
-                for _ in range(20):
-                    begin=time.perf_counter();value=fn(initial);timings.append(time.perf_counter()-begin)
-                    if not np.isfinite(value).all():raise ValueError('nonfinite initial full-model '+name)
-                profile[name]=dict(compile_seconds=compiled,median_seconds=float(np.median(timings)),p95_seconds=float(np.quantile(timings,.95)))
-            result['diagnostics']['full_model_profile']=profile
-            publish(out/'diagnostics.json',result['diagnostics'])
         else:
             model=build(data);prior_model=build(data,guide=False)
             prior_variables=['burden','sigma_isi','sigma_quality']
         # Retain the original generative prior, not the data-conditioned guide.
         with prior_model:
-            prior=pm.sample_prior_predictive(draws=64,random_seed=product.numerical_seeds.prior_check if borrowed else seed+313,var_names=prior_variables)
+            prior=pm.sample_prior_predictive(draws=64,random_seed=product.numerical_seeds.prior_check if borrowed else seed+313,var_names=prior_variables,
+                **(dict(compile_kwargs=compilation_options()) if borrowed else {}))
         if borrowed:
             induced=np.asarray(prior['prior']['source_g'].values)
             np.savez_compressed(out/'source-prior-predictive.npz',g=induced,p_adherence=prior['prior']['p_adherence'].values)
@@ -103,11 +104,22 @@ def run(source, out):
         np.savez_compressed(out/'prior-predictive.npz',isi=prior_isi,quality=prior_quality)
         result['diagnostics']['prior_predictive']=dict(draws=64,isi_range=[float(prior_isi.min()),float(prior_isi.max())],
             note='Prior simulation at actual observed grid; descriptive model check, not calibration')
+        if borrowed:
+            # The large unconditioned prior graph/arrays must not coexist with
+            # posterior compilation. Saved predictive arrays remain artifacts.
+            del prior_model,prior,induced,prior_isi,prior_quality
+            gc.collect()
+            result['diagnostics']['execution']['prior_released_before_posterior']=True
+            publish(out/'diagnostics.json',result['diagnostics'])
+            model=build_joint(data,product.sources,configuration)
+        def native_compiled(value):
+            result['diagnostics']['execution']['native_compilations'].append(value)
+            publish(out/'diagnostics.json',result['diagnostics'])
         attempts = []
         trace = None
         for extension in (False,True):
             fit_start = time.monotonic()
-            trace = sample(model,seed+int(extension),extended=extension)
+            trace = borrow_sample(model,seed+int(extension),extended=extension,on_compile=native_compiled) if borrowed else sample(model,seed+int(extension),extended=extension)
             stage(dict(stage="diagnostics"))
             fit_diagnostics = diagnostics(trace)
             filename = "posterior-extension.nc" if extension else "posterior.nc"
