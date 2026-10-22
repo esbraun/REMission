@@ -1,0 +1,31 @@
+# Cohort initializer wrapper correction
+
+Assigned Sol/high, no helpers. Branch `launch/poc-cohort-init-wrapper-fix-20261022` starts from accepted main `f8b7fe302e5609e434263f7e5a9c0a326e2e8f6b` in the existing isolated `cohort-native-sol-261022` worktree. Previous source branch55 and all operational artifacts remain preserved. This is an inactive source correction; independent exact-candidate review and refreshed copied learner proof remain required.
+
+## Observed failure and correction
+
+The separately authorized genuine-day14 setup probe failed before any NUTS transition: report blob `439593b1987ad43724e663c574b83e459412fa50`,25-capture manifest `65491506efd2db031b7a47add37c373c90310ee4`. Original prior64/save/release passed, and the support initializer compiled as the required CVM. The adapter then incorrectly passed PyMC's original reseeding Python wrapper to `verify_cvm`; that wrapper has no `maker`. Container `6c61c4601f4e7f8cc9564d348ba5fd374cd66893574787c138278030e36a9f42` exited1/PID0/notOOM; watchdog30848 exited without killing. No genuine-input retry occurred.
+
+Pinned `make_initial_point_fn` returns a `functools.wraps(func)` Python wrapper with `__wrapped__` pointing to the actual compiled Function. The wrapper discovers/reseeds the original RNGs and returns the original dictionary. `maker` is not copied onto it. Existing lightweight doubles incorrectly stored `maker` directly in their instance dictionary, concealing this distinction.
+
+The correction captures the exact Function returned by the owned initializer compiler during each original maker call. It requires one compilation, asserts that the original seeded wrapper's `__wrapped__` is that exact Function, and checks this identity again before use. Actual CVM/query verification and point custody refer to the captured Function; evaluation still calls the unchanged original reseeding wrapper. No maker is invented or attached, no RNG discovery/reseeding algorithm is copied, and no default mode or library source is mutated. Missing, foreign or duplicate captures and a changed wrapper identity reject. Existing owner, incoming-query, raw-array and `finally` restoration controls remain.
+
+Only `methods/visit/cohort_execution.py` changes production behavior. Stage policy, execution contracts, model/geometry/priors/likelihood, configuration, sample seeds/settings, dispatcher, service ingest and unconditional cohort admission closure are unchanged.
+
+## Verification
+
+`python -P artifacts/init-wrapper-fix/run_controls.py`: **42 tests passed in37.890s**, exit0, PID0, notOOM. The original40 controls remain, plus a capture-negative regression and one explicitly authorized actual pinned-API regression. See [evidence manifest](evidence/cohort-initializer-wrapper-fix-20261022/manifest.json).
+
+The doubles now expose `maker` as a property outside the instance dictionary copied by `wraps`, reproducing the observed API distinction. Tests preserve original arguments and reseeding, check actual Function identities, and reject missing/foreign/duplicate captures and subsequent identity tampering with cleanup. Existing observer/compile failures, owner/reentrancy, raw float32/nonfinite/layout rejection, recording custody, fit indices, dispatcher deadlines and temporary Store/read controls pass.
+
+The one actual regression creates one float64 Normal model in the exact dependency image `sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa`. It uses production `owned_callables` and original PyMC initializer with its original prior/jitter path, checks actual CVM/query custody and finite raw float64 layout, and obtains identical original points for repeat seed739. It proves the wrapper has no maker, verifies the captured actual Function, and checks original model/compiler references restored. NUTS sampling/steps fail fast if invoked; none ran. This is a tiny API regression, not genuine cohort qualification.
+
+Unit-role container `6fbef0123ad373b120bf5fbfac4ed2937b5f867150d22a27e979fe990b4be429` ran with source read-only, UID10002, network none, read-only root,2CPU/2GiB with swap cap, PID64, BLAS1 and private512MiB executable scratch. Literal-container hidden180s watchdog17140 was prearmed before start, observed terminal0, and exited. No operational Store, authority or private generation archive was mounted. Model construction and initializer compilation were authorized only for the declared tiny regression. No full-cohort model, NUTS transition or fit ran in these controls.
+
+## Role proof and next bounded probe
+
+Build the learner from the exact frozen candidate with the unchanged Dockerfile/runtime/locks, then independently verify actual copied source/import/role absence. Service5f's64 consumed source files are unchanged; retain its original actual-source55 association and prove equivalence to this candidate rather than claiming new code in that image.
+
+A later genuine probe requires separate root approval after exact source/role review. Preserve the already accepted335568-byte public input blob `e8d5c1aa51867d0317e937afe7331b479a4473dd`, raw SHA256 `0be1e829af83456980639e7c93553f30abfda13925d8cd40733665423b29c044`, canonical hash `dbca579b9c4ae174c2ec7c8ce89762b4b5c8d010bdc000164ca3df180722e889`, immutable day14 H* `7f8d004352d7e68e667bff84e51b36a404653091c05f36594a4fef380f837563`, versions19, attempt and numerical seeds. Current operational Store remains42 and is not relabeled. The numerical runner remains blob `7b03c1557107817c1d39c3d80efd39e327de9b84`; only a fresh operator plan/source/image/container/output location should change. Keep prior64, original4-chain1000+1000 setup and the stop before any sampling transition; no draw reduction or completion claim.
+
+Prepare fresh ignored `artifacts/native-qualification-wrapper-fix/` paths and new literal-container name/watchdog. Preserve all prior failure directories and use host `PYTHONSAFEPATH=1` for the operator and watchdog to avoid the earlier filename shadow. Freeze the exact new plan/operator/image association before seeking approval. No source overlays or DB/authority/private archive mounts in the learner. Successful tiny tests and copied-role proof do not establish genuine support/jitter/gradient/recording qualification, throughput, posterior diagnostics, extensions, fitted effects, ingest or activation.
