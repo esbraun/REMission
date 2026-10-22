@@ -1,18 +1,24 @@
 """Mocked structural provenance controls, NOT actual VM/COPY qualification."""
 import copy
+import os
 import unittest
+from unittest.mock import patch
 from contracts.domain.cohort import make_cohort_input
 from contracts.domain.cohort_runtime import execution_binding,validate_execution,INITIALIZER_NATIVE_OPTIMIZER
 from contracts.domain.analysis import sha
 from contracts.domain.borrow_runtime import POLICY,NATIVE_OPTIMIZER
 from tests.contracts.test_cohort import database,export
+from tests.contracts.test_cohort_qualification import qualified_input
 
 
 class CohortRuntimeControls(unittest.TestCase):
+    def setUp(self):
+        self.env=patch.dict(os.environ,dict(REMISSION_COHORT_REVIEWED_LEARNER_IMAGE='sha256:'+'1'*64,
+            REMISSION_COHORT_REVIEWED_SOURCE_COMMIT='2'*40))
+        self.env.start();self.addCleanup(self.env.stop)
+
     def test_exact_joint_binding_and_negative_map_seed_origin_prior_controls(self):
-        db=database()
-        try:product=make_cohort_input(export(db),'mocked-structural-control')
-        finally:db.close()
+        product=make_cohort_input(qualified_input().cohort,'mocked-structural-control')
         trusted=execution_binding(product,dict(learner_image='sha256:'+'1'*64,source_commit='2'*40))
         execution=copy.deepcopy(trusted)
         execution.update(kind='cohort_native_execution_v1',prior_released_before_posterior=True,
@@ -39,7 +45,11 @@ class CohortRuntimeControls(unittest.TestCase):
                 lambda x:x['callable_custody'][1].update(compiled_optimizer=NATIVE_OPTIMIZER)]:
             changed=copy.deepcopy(execution);mutate(changed)
             with self.assertRaises(ValueError):validate_execution(changed,product,trusted)
+        with patch.dict(os.environ,dict(REMISSION_COHORT_REVIEWED_LEARNER_IMAGE='sha256:'+'3'*64)):
+            with self.assertRaises(ValueError):validate_execution(execution,product,trusted)
         with self.assertRaises(ValueError):validate_execution(execution,product,None)
+        with self.assertRaises(ValueError):validate_execution(execution,
+            make_cohort_input(product.cohort,'different-ordinary-attempt'),trusted)
         extended=copy.deepcopy(execution)
         extended['native_compilations'].append(dict(extended['native_compilations'][0],
             index=2,fit='extension',fit_seed=product.numerical_seeds.nuts+1))
@@ -52,6 +62,32 @@ class CohortRuntimeControls(unittest.TestCase):
                 lambda x:x['callable_custody'][1].update(invocation=9)]:
             changed=copy.deepcopy(extended);mutate(changed)
             with self.assertRaises(ValueError):validate_execution(changed,product,trusted)
+
+    def test_runtime_configuration_is_lazy_deny_default_and_exact(self):
+        from contracts.domain.cohort_runtime import reviewed_runtime
+        from contracts.domain.borrow_runtime import execution_binding as legacy_binding
+        from contracts.domain.borrowing import SourceBundle, make_borrow_input
+        from pathlib import Path
+        origin=dict(learner_image='sha256:'+'1'*64,source_commit='2'*40)
+        product=qualified_input()
+        source=SourceBundle.model_validate_json((Path(__file__).resolve().parents[2]/'services/foundation/studies/source-7c97862d.json').read_bytes())
+        legacy=make_borrow_input(product.cohort.histories[0],'legacy-structural',source)
+        for config in ({},dict(REMISSION_COHORT_REVIEWED_LEARNER_IMAGE=origin['learner_image']),
+                dict(REMISSION_COHORT_REVIEWED_SOURCE_COMMIT=origin['source_commit']),
+                dict(REMISSION_COHORT_REVIEWED_LEARNER_IMAGE='bad',REMISSION_COHORT_REVIEWED_SOURCE_COMMIT='bad')):
+            with self.subTest(config=config),patch.dict(os.environ,config,clear=True):
+                with self.assertRaises(ValueError):execution_binding(product,origin)
+                # Shared legacy modules remain usable with absent/invalid cohort config.
+                from contracts.domain.borrow_runtime import runtime_origin
+                self.assertEqual(runtime_origin(**dict(image=origin['learner_image'],source=origin['source_commit'])),origin)
+                self.assertEqual(legacy_binding(legacy,origin)['kind'],'borrow_host_launch_v1')
+        for changed in [dict(origin,learner_image='sha256:'+'3'*64),dict(origin,source_commit='3'*40),
+                dict(origin,extra='untrusted'),{},None]:
+            with self.assertRaises(ValueError):reviewed_runtime(changed)
+        db=database()
+        try:fixture=make_cohort_input(export(db),'structural-unqualified')
+        finally:db.close()
+        with self.assertRaises(ValueError):execution_binding(fixture,origin)
 
 
 if __name__=='__main__':unittest.main()

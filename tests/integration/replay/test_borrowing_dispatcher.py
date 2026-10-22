@@ -16,7 +16,8 @@ class DispatcherDeadlineTests(unittest.TestCase):
             for mismatch in (None,'binding','actual-image','deadline'):
                 with self.subTest(configuration=configuration,mismatch=mismatch),tempfile.TemporaryDirectory() as directory:
                     root=Path(directory);deployment=root/'deployment.json';calls=[];clock=[0.]
-                    deployment.write_text(json.dumps(dict(service_container='test-service',learner_image='mutable-tag',prefix='test',source_commit='a'*40)))
+                    deployment.write_text(json.dumps(dict(service_container='test-service',learner_image='mutable-tag',prefix='test',source_commit='a'*40,
+                        cohort_reviewed_runtime=dict(learner_image='sha256:'+'a'*64,source_commit='a'*40))))
                     job=dict(attempt_id='analysis-cohort',claim_token='PRIVATE-CLAIM',input=dict(kind='poc_visit_cohort_input',request=dict(configuration=dict(id=configuration))))
                     digest='sha256:'+'a'*64
                     def command(argv,check=True):
@@ -46,7 +47,40 @@ class DispatcherDeadlineTests(unittest.TestCase):
                     else:
                         self.assertIn('/tmp:rw,exec,nosuid,nodev,size=512m',launches[0])
                         self.assertIn(digest,launches[0]);self.assertNotIn('PRIVATE-CLAIM',launches[0])
+                        self.assertIn('REMISSION_COHORT_REVIEWED_LEARNER_IMAGE='+digest,launches[0])
+                        self.assertIn('REMISSION_COHORT_REVIEWED_SOURCE_COMMIT='+'a'*40,launches[0])
+                        self.assertEqual(launches[0][launches[0].index('--memory-swap')+1],'2g')
+                        self.assertEqual(launches[0][launches[0].index('--pids-limit')+1],'64')
+                        for env in ('OPENBLAS_NUM_THREADS=1','OMP_NUM_THREADS=1','MKL_NUM_THREADS=1','NUMEXPR_NUM_THREADS=1'):
+                            self.assertIn(env,launches[0])
                     if mismatch:self.assertFalse(any('ingest' in a for a in calls))
+
+    def test_cohort_deployment_misconfiguration_is_recorded_before_launch(self):
+        digest='sha256:'+'a'*64;source='a'*40
+        for config in (None,{},dict(learner_image=digest),dict(learner_image=digest,source_commit=source,extra=True),
+                dict(learner_image='sha256:'+'b'*64,source_commit=source),
+                dict(learner_image=digest,source_commit='b'*40)):
+            with self.subTest(config=config),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);deployment=root/'deployment.json';calls=[]
+                deployment.write_text(json.dumps(dict(service_container='test-service',learner_image='tag',prefix='test',
+                    source_commit=source,cohort_reviewed_runtime=config)))
+                job=dict(attempt_id='analysis-config',claim_token='PRIVATE-CLAIM',input=dict(kind='poc_visit_cohort_input'))
+                def command(argv,check=True):
+                    calls.append(argv);response=b''
+                    if argv[:6]==['docker','exec','test-service','python','-m','services.foundation.analysis_cli']:
+                        response=json.dumps(job).encode() if argv[6]=='claim' else b'{}'
+                    elif argv[:3]==['docker','image','inspect']:response=digest.encode()
+                    return subprocess.CompletedProcess(argv,0,response,b'')
+                with patch.object(sys,'argv',['analysis_dispatcher','--deployment',str(deployment),'--once']), \
+                        patch.object(analysis_dispatcher,'exclusive',return_value=Mock()), \
+                        patch.object(analysis_dispatcher,'require_dispatchable'), \
+                        patch.object(analysis_dispatcher,'command',side_effect=command):analysis_dispatcher.main()
+                result=json.loads((root/'analysis-jobs/analysis-config/dispatch.json').read_bytes())
+                self.assertEqual(result['status'],'failed')
+                self.assertFalse(any(a[:2]==['docker','run'] or 'bind-execution' in a for a in calls))
+                self.assertTrue(any('fail' in a for a in calls))
+                # Host never supplies configuration overrides to the service.
+                self.assertTrue(all(a[2]=='test-service' for a in calls if a[:2]==['docker','exec']))
 
     def test_host_cohort_and_protocol_admission_remain_closed_legacy_v0_unchanged(self):
         from tests.contracts.test_cohort import database,export
