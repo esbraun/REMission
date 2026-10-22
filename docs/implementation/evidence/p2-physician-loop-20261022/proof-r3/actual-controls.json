@@ -1,0 +1,88 @@
+{
+  "remission-p2-sol-copied-loop-r2": {
+    "Id": "1e39c1e51e0ca0b346c46cbe65917ebdfb1ad8b4eb853845b0a0ea993380c551",
+    "Image": "sha256:2f8edd7cba3b05b9bbc5fed493cd5bd40b1281a0323a543fc09c028ec1786eb7",
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "2026-10-22T15:03:30.523372518Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 0,
+      "Restarting": false,
+      "Running": false,
+      "StartedAt": "2026-10-22T15:02:42.280677399Z",
+      "Status": "exited"
+    },
+    "Path": "python",
+    "Args": [
+      "-m",
+      "unittest",
+      "test_nof1_loop.Nof1LoopTests",
+      "tests.contracts.test_nof1_clock",
+      "-v"
+    ],
+    "Config": {
+      "User": "10001:10001",
+      "Labels": {}
+    },
+    "HostConfig": {
+      "Memory": 1073741824,
+      "NanoCpus": 500000000,
+      "NetworkMode": "none",
+      "ReadonlyRootfs": true,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,nosuid,nodev,noexec,size=256m"
+      }
+    },
+    "Mounts": []
+  },
+  "remission-p2-sol-copied-p1-r2": {
+    "Id": "b104c6fae0912b804de573bf519faf844435fcac55d0430d188892f28e072258",
+    "Image": "sha256:2f8edd7cba3b05b9bbc5fed493cd5bd40b1281a0323a543fc09c028ec1786eb7",
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "2026-10-22T15:03:57.895487518Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 0,
+      "Restarting": false,
+      "Running": false,
+      "StartedAt": "2026-10-22T15:03:30.978727879Z",
+      "Status": "exited"
+    },
+    "Path": "python",
+    "Args": [
+      "/app/run_p1_controls.py"
+    ],
+    "Config": {
+      "User": "10001:10001",
+      "Labels": {}
+    },
+    "HostConfig": {
+      "Memory": 1073741824,
+      "NanoCpus": 500000000,
+      "NetworkMode": "none",
+      "ReadonlyRootfs": true,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,nosuid,nodev,noexec,size=256m"
+      }
+    },
+    "Mounts": []
+  }
+}

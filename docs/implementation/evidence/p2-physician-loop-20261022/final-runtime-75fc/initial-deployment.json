@@ -1,0 +1,153 @@
+{
+  "prefix": "remission-p2-sol-687e16e7",
+  "source_head": "9b73f612c270ba6b25b9123328521521f826e476",
+  "url": "http://127.0.0.1:8782",
+  "port": 8782,
+  "service_image": "sha256:048507889efd507bd211978e044e21d11053b0101e7a969699dc6a51083b1113",
+  "generator_image": "sha256:bec9b330b57ea28e4b3a7a0c3d3437c71733b5949b6f5b9109baf301c9b20642",
+  "network": "remission-p2-sol-687e16e7-app",
+  "volumes": {
+    "database": "remission-p2-sol-687e16e7-database",
+    "fixtures": "remission-p2-sol-687e16e7-fixtures",
+    "exports": "remission-p2-sol-687e16e7-exports"
+  },
+  "service_container": "remission-p2-sol-687e16e7-service",
+  "generator_container": "remission-p2-sol-687e16e7-generator",
+  "health": {
+    "status": "ok",
+    "synthetic": true,
+    "runtime": "foundation-live-hold-v1",
+    "capability": "LIVE-HOLD-01/1.0.0",
+    "database_instance_id": "c4ee2922-69fe-4222-9988-2077b328f125",
+    "authority_generation": 1
+  },
+  "analysis_dispatcher_started": false,
+  "existing_deployments_untouched": true,
+  "service_selected_state": {
+    "Id": "53b789b4cbd0f0e1e064695deddaa75fe08a908a644fe4ae7e79355215453f36",
+    "Image": "sha256:048507889efd507bd211978e044e21d11053b0101e7a969699dc6a51083b1113",
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 4908,
+      "Restarting": false,
+      "Running": true,
+      "StartedAt": "2026-10-22T14:50:04.794239295Z",
+      "Status": "running"
+    },
+    "Path": "python",
+    "Args": [
+      "-m",
+      "uvicorn",
+      "services.foundation.server:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8765",
+      "--no-access-log"
+    ],
+    "Config": {
+      "User": "10001:10001",
+      "Labels": {
+        "remission.attempt": null,
+        "remission.analysis": null
+      }
+    },
+    "HostConfig": {
+      "Memory": 1073741824,
+      "NanoCpus": 500000000,
+      "NetworkMode": "remission-p2-sol-687e16e7-app",
+      "ReadonlyRootfs": true,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,nodev,size=256m"
+      }
+    },
+    "Mounts": [
+      {
+        "Destination": "/data",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-p2-sol-687e16e7-database",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/remission-p2-sol-687e16e7-database/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/exports",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-p2-sol-687e16e7-exports",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/remission-p2-sol-687e16e7-exports/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/fixtures",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-p2-sol-687e16e7-fixtures",
+        "Propagation": "",
+        "RW": false,
+        "Source": "/var/lib/docker/volumes/remission-p2-sol-687e16e7-fixtures/_data",
+        "Type": "volume"
+      }
+    ]
+  },
+  "generator_selected_state": {
+    "Id": "801ec6a027a5d5ee92bb8fe2fe0ac5ca3350b1270cd27ce38984728a74816c09",
+    "Image": "sha256:bec9b330b57ea28e4b3a7a0c3d3437c71733b5949b6f5b9109baf301c9b20642",
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 4818,
+      "Restarting": false,
+      "Running": true,
+      "StartedAt": "2026-10-22T14:50:04.180352375Z",
+      "Status": "running"
+    },
+    "Path": "python",
+    "Args": [
+      "-m",
+      "services.generator.server"
+    ],
+    "Config": {
+      "User": "20000:20000",
+      "Labels": {
+        "remission.attempt": null,
+        "remission.analysis": null
+      }
+    },
+    "HostConfig": {
+      "Memory": 1073741824,
+      "NanoCpus": 500000000,
+      "NetworkMode": "remission-p2-sol-687e16e7-app",
+      "ReadonlyRootfs": true,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,nodev,size=256m"
+      }
+    },
+    "Mounts": []
+  }
+}

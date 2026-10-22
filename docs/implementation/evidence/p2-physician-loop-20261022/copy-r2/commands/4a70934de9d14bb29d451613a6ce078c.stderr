@@ -1,0 +1,44 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from p2-loop.Dockerfile
+#1 transferring dockerfile: 929B 0.0s done
+#1 WARN: InvalidDefaultArgInFrom: Default value for ARG ${SERVICE_BASE} results in empty or invalid base image name (line 4)
+#1 WARN: InvalidDefaultArgInFrom: Default value for ARG ${CONTROLS_BASE} results in empty or invalid base image name (line 8)
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/remission-p2-sol-service-base:5c95
+#2 DONE 0.1s
+
+#3 [service 1/3] FROM docker.io/library/remission-p2-sol-service-base:5c95@sha256:0df955d338db2d118c8d705d7d01ea6dbb7c9d188c79618a8c17a605075a4a5d
+#3 resolve docker.io/library/remission-p2-sol-service-base:5c95@sha256:0df955d338db2d118c8d705d7d01ea6dbb7c9d188c79618a8c17a605075a4a5d 0.0s done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 28B
+#4 transferring context: 318.56kB 0.2s done
+#4 DONE 0.2s
+
+#3 [service 1/3] FROM docker.io/library/remission-p2-sol-service-base:5c95@sha256:0df955d338db2d118c8d705d7d01ea6dbb7c9d188c79618a8c17a605075a4a5d
+#3 CACHED
+
+#5 [service 2/3] COPY services/foundation/app.py services/foundation/simulation.py services/foundation/workflow.py services/foundation/nof1.py services/foundation/nof1_clock.py /app/services/foundation/
+#5 DONE 0.1s
+
+#6 [service 3/3] COPY web/dist/ /app/web/dist/
+#6 DONE 0.0s
+
+#7 exporting to image
+#7 exporting layers 0.1s done
+#7 exporting manifest sha256:ec3d3bbc572c74e04bb39e37db49a9ed9f8b776a24620fd6e44655a881fd3bb6 0.0s done
+#7 exporting config sha256:6bba959d1e8c993b47230f5b92253daaa8774aa055e42263179b7618cebfc715 0.0s done
+#7 exporting attestation manifest sha256:c4902811fa6de022b122517c1a57e07845ec1cf2a72876f8be875c4f4b9b605c 0.0s done
+#7 exporting manifest list sha256:d73c2919b5f09c09d1326489fb310f2c337d8cf9502848c89380115a8c882383 0.0s done
+#7 naming to docker.io/library/remission-p2-sol-service:r2 done
+#7 unpacking to docker.io/library/remission-p2-sol-service:r2 0.1s done
+#7 DONE 0.4s
+
+ [33m2 warnings found (use docker --debug to expand):
+[0m - InvalidDefaultArgInFrom: Default value for ARG ${SERVICE_BASE} results in empty or invalid base image name (line 4)
+ - InvalidDefaultArgInFrom: Default value for ARG ${CONTROLS_BASE} results in empty or invalid base image name (line 8)
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/z02jf275y3eoaw3ruh9q7n4sp
