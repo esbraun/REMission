@@ -691,7 +691,7 @@ def create_app(settings: Settings) -> FastAPI:
             payload=data.model_dump();scope=patient_id+':analysis-comparison'
             key,prior=mutation_receipt(db,current,request,scope,payload)
             from .appointment import public_summary
-            if prior:return public_summary(prior)
+            if prior:return comparison_view(db,current['account_id'],prior)
             from .analysis import compare
             try:response=compare(db,patient_id,current['account_id'],data.left,data.right,settings.live_export_root)
             except ValueError as error:raise APIError(409,'comparison_unavailable',str(error)) from error
