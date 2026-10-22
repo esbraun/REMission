@@ -65,6 +65,9 @@ def require_dispatchable(input_value):
     # independently of parser/worker/ingestion labels and without importing PyMC.
     if input_value.get('kind')=='poc_protocol_input':
         raise ValueError('protocol configuration is not executable in P1')
+    if input_value.get('kind')=='poc_visit_cohort_input':
+        from contracts.domain.cohort import CohortInput,require_executable
+        require_executable(CohortInput.model_validate_json(json.dumps(input_value)))
 
 
 def main():
@@ -92,9 +95,15 @@ def main():
             (saved/('restart-'+stamp+'.stdout')).write_bytes(logs.stdout)
             (saved/('restart-'+stamp+'.stderr')).write_bytes(logs.stderr)
             command(['docker','cp',name+':/output/.',str(saved/('restart-output-'+stamp))],check=False)
+        if inventory['State']['Running']:
+            command(['docker','kill',name],check=False)
+            stopped=inspect_container(name,check=False)
+            if stopped.returncode or json.loads(stopped.stdout)['State']['Running']:
+                raise RuntimeError('Prior worker termination unconfirmed; retain live handle '+name)
     cli('interrupt')
     print(json.dumps(dict(stage='dispatcher-ready',pid=os.getpid(),source_head=state['source_commit'],learner_image=image)),flush=True)
     while True:
+        attempt_started=time.monotonic()  # Includes claim RPC, before service started_at.
         job=cli('claim')
         if job is None:
             if args.once:
@@ -104,7 +113,10 @@ def main():
         require_dispatchable(job['input'])
         identifier=job['attempt_id'];token=job['claim_token'];directory=root/identifier
         borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
-        attempt_started=time.monotonic()
+        cohort=job['input'].get('kind')=='poc_visit_cohort_input'
+        native=borrowing or cohort
+        watchdog_seconds=7200 if native else 4*3600
+        deadline=attempt_started+watchdog_seconds if native else None
         directory.mkdir(exist_ok=False)
         (directory/'input.json').write_text(json.dumps(job['input'],sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
         # Claim token stays with the host supervisor, never with the learner.
@@ -117,12 +129,14 @@ def main():
         save()
         launched=False
         try:
+            if native:check_deadline(deadline)
             execution_image=image
-            if borrowing:
+            if native:
                 execution_image=command(['docker','image','inspect',image,'--format','{{.Id}}']).stdout.decode().strip()
                 manifest.update(requested_learner_image=image,learner_image=execution_image,
                     input_sha256=hashlib.sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest(),
-                    execution_policy='poc-borrow-native-cvm-v1',scratch='/tmp:rw,exec,nosuid,nodev,size=512m')
+                    execution_policy='poc-cohort-native-cvm-v1' if cohort else 'poc-borrow-native-cvm-v1',
+                    scratch='/tmp:rw,exec,nosuid,nodev,size=512m')
                 origin=dict(learner_image=execution_image,source_commit=state['source_commit'])
                 trusted=cli('bind-execution','--job',identifier,'--token',token,'--value',json.dumps(origin,sort_keys=True))
                 if any(trusted.get(k)!=v for k,v in dict(input_sha256=manifest['input_sha256'],**origin).items()):
@@ -138,18 +152,18 @@ def main():
             command(['docker','cp',str(directory/'input.json'),helper+':/input/input.json'])
             command(['docker','start','--attach',helper])
             command(['docker','rm',helper])
-            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*worker_limits(borrowing),
+            if native:check_deadline(deadline)
+            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*worker_limits(native),
                 '--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
                 '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+execution_image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
                 execution_image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
             launched=True
             manifest.update(status='running',inventory=json.loads(inspect_container(learner).stdout))
-            if borrowing and manifest['inventory']['Image']!=execution_image:raise RuntimeError('borrow actual image differs from frozen launch identity')
+            if native and manifest['inventory']['Image']!=execution_image:raise RuntimeError('native actual image differs from frozen launch identity')
             save()
             last=None
-            watchdog_seconds=7200 if borrowing else 4*3600
             manifest['watchdog_seconds']=watchdog_seconds
-            deadline=(attempt_started if borrowing else time.monotonic())+watchdog_seconds
+            if not native:deadline=time.monotonic()+watchdog_seconds
             while True:
                 inventory=json.loads(inspect_container(learner).stdout)
                 # Check BEFORE trusting terminal state: completion between polls

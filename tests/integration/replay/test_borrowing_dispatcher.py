@@ -11,6 +11,72 @@ import analysis_dispatcher
 
 
 class DispatcherDeadlineTests(unittest.TestCase):
+    def test_cohort_v0_v1_use_native_binding_digest_scratch_and_policy(self):
+        for configuration in ('poc-visit-cohort-v1','poc-visit-cohort-borrow-v1'):
+            for mismatch in (None,'binding','actual-image','deadline'):
+                with self.subTest(configuration=configuration,mismatch=mismatch),tempfile.TemporaryDirectory() as directory:
+                    root=Path(directory);deployment=root/'deployment.json';calls=[];clock=[0.]
+                    deployment.write_text(json.dumps(dict(service_container='test-service',learner_image='mutable-tag',prefix='test',source_commit='a'*40)))
+                    job=dict(attempt_id='analysis-cohort',claim_token='PRIVATE-CLAIM',input=dict(kind='poc_visit_cohort_input',request=dict(configuration=dict(id=configuration))))
+                    digest='sha256:'+'a'*64
+                    def command(argv,check=True):
+                        calls.append(argv);response=b''
+                        if argv[:6]==['docker','exec','test-service','python','-m','services.foundation.analysis_cli']:
+                            op=argv[6]
+                            if op=='claim':response=json.dumps(job).encode()
+                            elif op=='interrupt':response=b'{}'
+                            elif op=='bind-execution':
+                                response=json.dumps(dict(learner_image=digest,source_commit='a'*40,input_sha256='wrong' if mismatch=='binding' else __import__('hashlib').sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest())).encode()
+                            elif op=='ingest':response=b'{"status":"completed"}'
+                            else:response=b'{}'
+                        elif argv[:3]==['docker','image','inspect']:response=digest.encode()
+                        elif argv[:2]==['docker','inspect']:
+                            if mismatch=='deadline':clock[0]=7201.
+                            response=json.dumps(dict(Image='wrong' if mismatch=='actual-image' else digest,State=dict(Running=False,ExitCode=0,OOMKilled=False))).encode()
+                        elif argv[:2]==['docker','cp'] and Path(argv[-1]).name=='output':Path(argv[-1]).mkdir()
+                        return subprocess.CompletedProcess(argv,0,response,b'')
+                    # Explicit orchestration double only: production admission remains closed.
+                    with patch.object(sys,'argv',['analysis_dispatcher','--deployment',str(deployment),'--once']),patch.object(analysis_dispatcher,'exclusive',return_value=Mock()),patch.object(analysis_dispatcher,'require_dispatchable'),patch.object(analysis_dispatcher,'command',side_effect=command),patch.object(analysis_dispatcher.time,'monotonic',side_effect=lambda:clock[0]):
+                        analysis_dispatcher.main()
+                    result=json.loads((root/'analysis-jobs/analysis-cohort/dispatch.json').read_bytes())
+                    self.assertEqual(result['execution_policy'],'poc-cohort-native-cvm-v1')
+                    self.assertEqual(result['status'],'failed' if mismatch else 'completed')
+                    launches=[a for a in calls if a[:2]==['docker','run']]
+                    if mismatch=='binding':self.assertEqual(launches,[])
+                    else:
+                        self.assertIn('/tmp:rw,exec,nosuid,nodev,size=512m',launches[0])
+                        self.assertIn(digest,launches[0]);self.assertNotIn('PRIVATE-CLAIM',launches[0])
+                    if mismatch:self.assertFalse(any('ingest' in a for a in calls))
+
+    def test_host_cohort_and_protocol_admission_remain_closed_legacy_v0_unchanged(self):
+        from tests.contracts.test_cohort import database,export
+        from contracts.domain.cohort import make_cohort_input
+        db=database()
+        try:product=make_cohort_input(export(db),'host-closed-control')
+        finally:db.close()
+        with self.assertRaisesRegex(ValueError,'qualification'):
+            analysis_dispatcher.require_dispatchable(product.model_dump(mode='json'))
+        with self.assertRaisesRegex(ValueError,'protocol'):
+            analysis_dispatcher.require_dispatchable(dict(kind='poc_protocol_input'))
+        self.assertIsNone(analysis_dispatcher.require_dispatchable(dict(kind='poc_visit_input')))
+
+    def test_slow_claim_consumes_native_deadline_before_launch(self):
+        calls=[];clock=[0.]
+        job=dict(attempt_id='analysis-slow-claim',claim_token='PRIVATE',input=dict(kind='poc_visit_borrow_input'))
+        def command(argv,check=True):
+            calls.append(argv);response=b''
+            if argv[:6]==['docker','exec','test-service','python','-m','services.foundation.analysis_cli']:
+                if argv[6]=='claim':clock[0]=7201.;response=json.dumps(job).encode()
+                else:response=b'{}'
+            return subprocess.CompletedProcess(argv,0,response,b'')
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);deployment=root/'deployment.json'
+            deployment.write_text(json.dumps(dict(service_container='test-service',learner_image='image',prefix='test',source_commit='a'*40)))
+            with patch.object(sys,'argv',['analysis_dispatcher','--deployment',str(deployment),'--once']),patch.object(analysis_dispatcher,'exclusive',return_value=Mock()),patch.object(analysis_dispatcher,'command',side_effect=command),patch.object(analysis_dispatcher.time,'monotonic',side_effect=lambda:clock[0]):analysis_dispatcher.main()
+            result=json.loads((root/'analysis-jobs/analysis-slow-claim/dispatch.json').read_bytes())
+            self.assertEqual(result['status'],'failed');self.assertIn('deadline',result['failure'])
+            self.assertFalse(any(a[:2]==['docker','run'] for a in calls))
+
     def test_terminal_completion_after_cap_is_failed_without_ingestion(self):
         calls=[];clock=[0.]
         job=dict(attempt_id='analysis-late-terminal',claim_token='token',input=dict(kind='poc_visit_borrow_input'))

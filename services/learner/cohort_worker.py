@@ -23,7 +23,8 @@ from contracts.domain.cohort_runtime import execution_binding
 from methods.visit.cohort_model import cohort_inputs, build_cohort, build_cohort_borrow
 from methods.visit.cohort_geometry import patient_parameters
 from methods.visit.model import diagnostics
-from methods.visit.borrow_execution import compilation_options, sample
+from methods.visit.borrow_execution import compilation_options
+from methods.visit.cohort_execution import owned_callables, fit_callback, sample
 from methods.visit.numerics import integrate, predictive
 
 
@@ -69,12 +70,15 @@ def run(product, out):
         layout=cohort_coordinate_layout(product.cohort,borrowed=borrowed)
         origin=runtime_origin(os.environ.get('REMISSION_LEARNER_IMAGE',''),os.environ.get('REMISSION_SOURCE_COMMIT',''))
         d['execution']=execution_binding(product,origin)
-        d['execution'].update(kind='cohort_native_execution_v1',native_compilations=[])
+        custody_binding=sha(d['execution'])
+        d['execution'].update(kind='cohort_native_execution_v1',native_compilations=[],callable_custody=[])
+        def observed_callable(value):
+            d['execution']['callable_custody'].append(value);save()
         stage(dict(stage='fitting'));save()
         prior_model=(build_cohort_borrow(data,product.sources,configuration,guide=False,prior_predictive=True)
             if borrowed else build_cohort(data,guide=False,prior_predictive=True))
         variables=['burden','sigma_isi','sigma_quality','p_adherence']+(['source_g'] if borrowed else [])
-        with prior_model:
+        with prior_model, owned_callables(prior_model,fit='prior',binding_sha256=custody_binding,on_event=observed_callable):
             prior=pm.sample_prior_predictive(draws=64,random_seed=product.numerical_seeds.prior_check,
                 var_names=variables,compile_kwargs=compilation_options())
         for index,(patient,x) in enumerate(data):
@@ -88,11 +92,13 @@ def run(product, out):
         del prior_model,prior,isi,quality;gc.collect()
         d['execution']['prior_released_before_posterior']=True;save()
         model=build_cohort_borrow(data,product.sources,configuration) if borrowed else build_cohort(data)
-        def compiled(value):d['execution']['native_compilations'].append(value);save()
         d['fits']=[]
         for extension in (False,True):
             stage(dict(stage='fitting',extension=extension));fit_start=time.monotonic()
-            trace=sample(model,seed+int(extension),extended=extension,on_compile=compiled,expected_layout=layout['layout'])
+            compiled=fit_callback(d['execution']['native_compilations'],extension=extension,
+                seed=seed+int(extension),on_record=save)
+            trace=sample(model,seed+int(extension),extended=extension,on_compile=compiled,expected_layout=layout['layout'],
+                binding_sha256=custody_binding,on_event=observed_callable)
             stage(dict(stage='diagnostics'));checks=diagnostics(trace)
             name='posterior-extension.nc' if extension else 'posterior.nc';trace.to_netcdf(out/name,engine='netcdf4')
             d['fits'].append(dict(extension=extension,seed=seed+int(extension),seconds=time.monotonic()-fit_start,

@@ -67,7 +67,7 @@ def native_call(function, point, variables):
 
 
 @contextmanager
-def guarded_native(model, on_compile, expected_layout=None):
+def guarded_native(model, on_compile, expected_layout=None, *, point_provider=None):
     """Inspect the actual function returned to unchanged PyMC init_nuts/BaseHMC.
 
     This temporary instance wrapper forwards every argument and returns the
@@ -88,7 +88,7 @@ def guarded_native(model, on_compile, expected_layout=None):
         actual = verify_cvm(function._pytensor_function)
         point = kwargs.get('initial_point')
         if point is None:
-            point = model.initial_point()
+            point = model.initial_point() if point_provider is None else point_provider()
         _, mapping = coordinate_map(point, model.continuous_value_vars)
         optimizer=optimizer_identity(function._pytensor_function.maker.mode.provided_optimizer)
         if optimizer!=NATIVE_OPTIMIZER or (expected_layout is not None and mapping!=expected_layout):
