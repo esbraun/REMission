@@ -22,7 +22,7 @@ from methods.visit.borrow_execution import compilation_options, verify_cvm, nati
 from tests.contracts.test_cohort import database, export
 
 
-MODE=Mode(linker='py',optimizer='fast_compile')
+MODE=Mode(linker='cvm',optimizer='fast_compile')
 
 
 def density(data, p):
