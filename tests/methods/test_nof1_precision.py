@@ -36,7 +36,7 @@ class PrecisionSourceTests(unittest.TestCase):
         self.assertEqual(len(calls), 2)  # one ISI block and one quality block
         for purpose in ("N0", "N1"):
             settings = configuration(purpose)
-            self.assertEqual(settings["measurement_kernel"]["source_git_blob"], "a0f1fdeddb87c639b6f0a4c0d9aecd923aa5ece4")
+            self.assertEqual(settings["measurement_kernel"]["source_git_blob"], "595eabdb2260b3318effe405fd93d44ab427069e")
             self.assertFalse(settings["executable"])
 
 

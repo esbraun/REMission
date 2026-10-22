@@ -1,5 +1,7 @@
 # N measurement precision repair checkpoint
 
+**Later status:** frozen candidate `cc2dca7626e3417f0feaa54d9007aea539189f8a` remains numerically unqualified. Subsequent composed-model evidence exposed registered-RV cloning in its then-final helper despite scalar passes. See [the RV-binding repair checkpoint](poc-n-measurement-rv-repair-20261022.md) for the additive correction and current candidate; all observations below remain historical and are not relabeled as a successful N qualification.
+
 2026-10-22. **Source repair candidate; not executable admission or numerical acceptance.** Own worktree `C:/Users/erics/Documents/Projects/REMission-worktrees/poc-n-methods-sol-261022`, branch `launch/poc-n-methods-20261022`, verified clean starting head `f9419a6e4da40ce16451bbb0fd63eae95d12eed5`, accepted base `2c100bcdc45c96c9f973d702ef4ea895571d1bb7`. Assigned actual selector remains `gpt-6.1-sol/high`. Historical commits and ignored raw roots are preserved.
 
 ## Preserved failure and cause
