@@ -110,10 +110,13 @@ def fit(data: FeatureData, *, provenance_seed: str) -> WCLSResult:
         return abstain('independent fit/wcls-unused-provenance seed namespace required')
     if statsmodels.__version__ != SETTINGS['statsmodels']:
         return abstain('unqualified statsmodels version; requires '+SETTINGS['statsmodels'])
+    support_reasons = []
     if g < 8:
-        return abstain('insufficient contributing participants: G<8')
+        support_reasons.append('insufficient contributing participants: G<8')
     if n <= 6:
-        return abstain('insufficient retained rewards: N<=K')
+        support_reasons.append('insufficient retained rewards: N<=K')
+    if support_reasons:
+        return WCLSResult('abstained', tuple(support_reasons), identity, counts)
     x = design(observed)
     y = np.asarray([r.reward for r in observed], dtype=np.float64)
     p = np.asarray([r.probability for r in observed], dtype=np.float64)

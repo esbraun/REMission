@@ -116,11 +116,12 @@ def _row(history, decision, active):
     lower = at-timedelta(days=6)
     delivered = [r for r in active.values() if r.kind == 'delivery' and r.option == 'support_prompt'
                  and r.stage == 'delivered' and lower <= r.event_at < at and r.available_at < at]
-    _require(len({(r.assignment_id, r.event_at) for r in delivered}) == len(delivered), 'duplicate delivered prompt')
+    _require(len({r.assignment_id for r in delivered}) == len(delivered)
+             and len({r.event_at for r in delivered}) == len(delivered), 'duplicate delivered prompt')
     for record in delivered:
         owner = active.get(record.assignment_id)
         _require(owner is not None and owner.kind == 'assignment' and owner.option == 'support_prompt'
-                 and owner.event_at <= record.event_at, 'unowned public prompt delivery')
+                 and owner.event_at == record.event_at-timedelta(hours=8), 'unowned public prompt delivery')
         hours = (record.event_at-origin).total_seconds()/3600
         _require((hours-8) % 24 == 0, 'prompt delivery must be at public 20:00 night boundary')
     sources = ([previous.record_id] if previous else []) + [r.record_id for r in delivered]

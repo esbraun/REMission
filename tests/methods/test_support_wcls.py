@@ -238,10 +238,13 @@ class WCLSTests(unittest.TestCase):
         singular = replace(data, rows=tuple(replace(r, controls=(*r.controls[:2], 0., *r.controls[3:])) for r in data.rows))
         self.assertIn('rank deficient', fit(singular, provenance_seed=SEED).reasons[0])
         self.assertIn('G<8', fit(numerical_data(groups=7), provenance_seed=SEED).reasons[0])
+        self.assertEqual(fit(numerical_data(groups=8), provenance_seed=SEED).status, 'estimated')
         corrupt = replace(data, rows=(replace(data.rows[0], probability=.6), *data.rows[1:]))
         self.assertEqual(fit(corrupt, provenance_seed=SEED).status, 'abstained')
         self.assertEqual(fit(data, provenance_seed='wrong').status, 'abstained')
-        self.assertEqual(fit(replace(data, rows=data.rows[:6]), provenance_seed=SEED).status, 'abstained')
+        small = fit(replace(data, rows=data.rows[:6]), provenance_seed=SEED)
+        self.assertEqual(small.status, 'abstained')
+        self.assertTrue(any('N<=K' in reason for reason in small.reasons))
 
     def test_missing_contexts_and_sensitivity_failure_preserve_primary(self):
         data = numerical_data()
