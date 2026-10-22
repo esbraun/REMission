@@ -2,14 +2,14 @@
 import argparse
 import json
 from pathlib import Path
-from .analysis import claim, progress, ingest, fail, interrupt
+from .analysis import claim, progress, ingest, fail, interrupt, bind_execution
 from .configuration import environment_settings
 from .store import Store, canonical
 
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('command',choices=['claim','progress','ingest','fail','interrupt'])
+    parser.add_argument('command',choices=['claim','progress','ingest','fail','interrupt','bind-execution'])
     parser.add_argument('--job');parser.add_argument('--token');parser.add_argument('--value');parser.add_argument('--directory',type=Path)
     args=parser.parse_args()
     settings=environment_settings()
@@ -23,6 +23,8 @@ def main():
             parser.error('job and token required')
         if args.command=='progress':
             response=progress(store,args.job,args.token,json.loads(args.value))
+        elif args.command=='bind-execution':
+            response=bind_execution(store,args.job,args.token,json.loads(args.value))
         elif args.command=='fail':
             response=fail(store,args.job,args.token,args.value or 'dispatcher-failure')
         else:

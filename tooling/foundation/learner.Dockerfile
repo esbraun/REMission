@@ -8,7 +8,9 @@ COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/serv
 COPY services/learner/worker.py /app/services/learner/worker.py
 COPY services/learner/export_observed.py /app/services/learner/export_observed.py
 COPY services/learner/live_product.py /app/services/learner/live_product.py
-COPY contracts/domain/analysis.py /app/contracts/domain/
+COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/domain/
+COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
+COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py /app/contracts/domain/
 COPY methods/visit/ /app/methods/visit/
 COPY services/learner/analysis_worker.py /app/services/learner/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py

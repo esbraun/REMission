@@ -1,0 +1,116 @@
+{
+  "source_head": "b295285a2b421a996aa66cf0ef4d373a61cd93c1",
+  "container_id": "95e9ccf638c22a70412e4b29864a2a989abb1b13cd1794ae58fb03e4b680e94c",
+  "container_name": "/remission-pa3-sol261022-model-tests-b295",
+  "image": "sha256:74f7a18d41bf2dad73558165087da4996092c0b8a120a2c4f668257a6b29ad46",
+  "user": "10001:10001",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": true,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 137,
+    "Error": "",
+    "StartedAt": "2026-10-22T07:49:49.060894689Z",
+    "FinishedAt": "2026-10-22T08:08:14.613959631Z"
+  },
+  "limits": {
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ]
+  },
+  "mounts": [],
+  "command": [
+    "docker",
+    "run",
+    "--name",
+    "remission-pa3-sol261022-model-tests-b295",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,nosuid,size=512m",
+    "sha256:74f7a18d41bf2dad73558165087da4996092c0b8a120a2c4f668257a6b29ad46",
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests/integration/replay",
+    "-p",
+    "test_borrowing.py",
+    "-v"
+  ],
+  "wall_seconds": 1105.8321814537048,
+  "exit": 137,
+  "stdout": {
+    "path": "4e7b6b6ceea54fe88727e71930dc2d12.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "4e7b6b6ceea54fe88727e71930dc2d12.stderr",
+    "bytes": 1278,
+    "sha256": "ffccb25bfe3fb8b165bb02492beb85aaef4832ec0fce13dd6e4b23f5b5cc12f8"
+  },
+  "last_observed_stage": "test_joint_exact_guide_identity_and_original_prior_parameterization compilation; exact compile_fn/logp/dlogp subcall uninstrumented",
+  "checks_completed": [
+    "authenticated source admission and source-hash ingestion guard",
+    "frozen source identity, old reader shape and independent numerical seed intents"
+  ],
+  "checks_not_completed": [
+    "joint exact guide identity",
+    "joint-minus-original normalized source terms and new priors",
+    "full-model gradient qualification",
+    "all later native fits/postfit/effect checks"
+  ],
+  "monitor": {
+    "container": "remission-pa3-sol261022-model-tests-b295",
+    "elapsed_seconds": 1106.05446267128,
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": true,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 137,
+      "Error": "",
+      "StartedAt": "2026-10-22T07:49:49.060894689Z",
+      "FinishedAt": "2026-10-22T08:08:14.613959631Z"
+    },
+    "resource_cap_applied": false,
+    "snapshot_before_stop": false
+  },
+  "artifacts": {
+    "build": "artifacts/pa3/model-build/source-images.json",
+    "capture": "artifacts/pa3/model-tests/4e7b6b6ceea54fe88727e71930dc2d12.json",
+    "monitor": "artifacts/pa3/model-compile-monitor"
+  },
+  "notes": [
+    "OOMKilled=true is authoritative; not an observation timeout or voluntary resource-cap stop.",
+    "The post-launch30minute monitor observed termination at1106seconds and did not stop the container.",
+    "No NUTS, posterior estimate or accepted effect was produced.",
+    "No named input/output volume was used by this copied test; /tmp compiler cache was tmpfs and was not captured before this earlier OOM.",
+    "Original image/container and capture remain preserved; no rerun/relabeling."
+  ]
+}

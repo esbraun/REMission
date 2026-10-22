@@ -1,0 +1,123 @@
+/app/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/app/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/usr/local/lib/python3.13/site-packages/pytensor/link/c/cmodule.py:2940: UserWarning: PyTensor could not link to a BLAS installation. Operations that might benefit from BLAS will be severely degraded.
+This usually happens when PyTensor is installed via pip. We recommend it be installed via conda/mamba/pixi instead.
+Alternatively, you can use an experimental backend such as Numba or JAX that perform their own BLAS optimizations, by setting `pytensor.config.mode == 'NUMBA'` or passing `mode='NUMBA'` when compiling a PyTensor function.
+For more options and details see https://pytensor.readthedocs.io/en/latest/troubleshooting.html#how-do-i-configure-test-my-blas-library
+  warnings.warn(
+/usr/local/lib/python3.13/site-packages/pytensor/tensor/rewriting/elemwise.py:1033: UserWarning: Loop fusion failed because the resulting node would exceed the kernel argument limit.
+  warn(
+SequentialGraphRewriter apply ofg_inner_graph
+Traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/pytensor/graph/rewriting/basic.py", line 311, in apply
+    sub_prof = rewriter.apply(fgraph)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/graph/rewriting/basic.py", line 214, in apply
+    return self.fn(*args, **kwargs)
+           ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py", line 178, in ofg_inner_graph
+    rewrite_inner_graph(
+    ~~~~~~~~~~~~~~~~~~~^
+        fgraph,
+        ^^^^^^^
+        lambda op: isinstance(op, OpFromGraph) and not isinstance(op, OpWithCoreShape),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rewrite_ofg_inner_graph,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py", line 107, in rewrite_inner_graph
+    rewrite(linker, inner_op, inner_node, inner, mode=mode)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/functools.py", line 934, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py", line 131, in rewrite_ofg_inner_graph
+    raise NotImplementedError(
+    ...<2 lines>...
+    )
+NotImplementedError: Linker WrapLinker has not registered an OpFromGraph inner-graph rewrite
+
+Traceback (most recent call last):
+  File "/app/pa3_compile_probe.py", line 159, in <module>
+    run(args.input,args.output,args.phase,args.seconds,args.coordinates,args.monitor_policy,args.reference)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/pa3_compile_probe.py", line 95, in run
+    begin=time.monotonic();fn=model.compile_dlogp(**({'mode':trace.mode} if trace else {})) if gradient else model.compile_logp()
+                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pymc/model/core.py", line 608, in compile_dlogp
+    return self.compile_fn(
+           ~~~~~~~~~~~~~~~^
+        inputs=self.value_vars,
+        ^^^^^^^^^^^^^^^^^^^^^^^
+        outs=self.dlogp(vars=vars, jacobian=jacobian),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **compile_kwargs,
+        ^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/pymc/model/core.py", line 1852, in compile_fn
+    fn = compile(inputs, outs, mode=mode, **kwargs)
+  File "/usr/local/lib/python3.13/site-packages/pymc/pytensorf.py", line 1007, in compile
+    pytensor_function = pytensor.function(
+        inputs,
+    ...<3 lines>...
+        **kwargs,
+    )
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/maker.py", line 261, in function
+    return m.create()
+           ~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/maker.py", line 689, in create
+    _fn, _i, _o = self.linker.make_thunk(
+                  ~~~~~~~~~~~~~~~~~~~~~~^
+        input_storage=input_storage_lists, storage_map=storage_map
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/basic.py", line 513, in make_thunk
+    make_all = [self.linkers[0].make_all(**kwargs)]
+                ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/basic.py", line 1843, in make_all
+    thunks += [node.op.make_thunk(node, storage_map, compute_map, no_recycling)]
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/op.py", line 125, in make_thunk
+    return self.make_c_thunk(node, storage_map, compute_map, no_recycling)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/op.py", line 84, in make_c_thunk
+    outputs = cl.make_thunk(
+        input_storage=node_input_storage, output_storage=node_output_storage
+    )
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/basic.py", line 1185, in make_thunk
+    cthunk, module, in_storage, out_storage, error_storage = self.__compile__(
+                                                             ~~~~~~~~~~~~~~~~^
+        input_storage, output_storage, storage_map, cache
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/basic.py", line 1102, in __compile__
+    thunk, module = self.cthunk_factory(
+                    ~~~~~~~~~~~~~~~~~~~^
+        error_storage,
+        ^^^^^^^^^^^^^^
+    ...<3 lines>...
+        cache,
+        ^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/basic.py", line 1623, in cthunk_factory
+    module = cache.module_from_key(key=key, lnk=self)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/cmodule.py", line 1239, in module_from_key
+    module = lnk.compile_cmodule(location)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/basic.py", line 1524, in compile_cmodule
+    module = c_compiler.compile_str(
+        module_name=mod.code_hash,
+    ...<5 lines>...
+        preargs=preargs,
+    )
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/cmodule.py", line 2644, in compile_str
+    return dlimport(lib_filename)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/link/c/cmodule.py", line 335, in dlimport
+    rval = __import__(module_name, {}, {}, [module_name])
+ImportError: /tmp/pytensor/compiledir_Linux-6.18-microsoft-standard-WSL2-x86_64-with-glibc2.36--3.13.7-64/tmpszwd84a6/me4db793a1ed42ad14df08d84353ddf87db86542cbf5c3e16e6501df3c2fa2621.so: failed to map segment from shared object

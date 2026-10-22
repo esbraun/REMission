@@ -25,6 +25,9 @@ def preflight_current(records):
 
 
 def _parse_record(raw):
+    if json.loads(raw).get('schema_version') == '2.1.0':
+        from contracts.domain.protocol import RECORD_ADAPTER_V21
+        return RECORD_ADAPTER_V21.validate_json(raw)
     if json.loads(raw).get('schema_version') == '2.0.0':
         from contracts.domain.observed_v2 import RECORD_ADAPTER_V2
         return RECORD_ADAPTER_V2.validate_json(raw)
@@ -90,8 +93,13 @@ def append_event(db, record, raw: bytes, *, received_at: datetime | None = None)
         return False
     prior = history(db, record.patient_id)
     from contracts.domain.observed_v2 import ObservedHistoryV2
-    model = ObservedHistoryV2 if record.schema_version == '2.0.0' or prior.schema_version == '2.0.0' else ObservedHistory
-    model.model_validate_json(canonical(dict(schema_version="2.0.0" if model is ObservedHistoryV2 else "1.0.0", synthetic=True, kind="observed_history", patient_id=record.patient_id,
+    if record.schema_version=='2.1.0' or prior.schema_version=='2.1.0':
+        from contracts.domain.protocol import ObservedHistoryV21
+        model,version=ObservedHistoryV21,'2.1.0'
+    elif record.schema_version=='2.0.0' or prior.schema_version=='2.0.0':
+        model,version=ObservedHistoryV2,'2.0.0'
+    else:model,version=ObservedHistory,'1.0.0'
+    model.model_validate_json(canonical(dict(schema_version=version, synthetic=True, kind="observed_history", patient_id=record.patient_id,
                                                      records=[*[r.model_dump(mode="json") for r in prior.records], record.model_dump(mode="json")])))
     db.execute("INSERT INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (record.record_id, record.patient_id, record.kind,
         record.lineage_id, record.revision, record.duplicate_of, encoded, digest(encoded), raw, digest(raw),

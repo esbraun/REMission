@@ -1,0 +1,237 @@
+{
+  "status": "frozen author evidence; independent acceptance pending",
+  "test_source_head": "a2e1fb60d8859a8ffbfba1e889650af74c75693f",
+  "profile_source_head": "527450c6d8be75939c7007e79c9b5cb9b82ea211",
+  "kernel_sha256": "dd9138677c56b4f5a66508287a3e23916fa41272878a158b7ab4393867ac9fb2",
+  "q64_gradient_result": "4/4 tests passed;24 fixed-vector scalar-normalized likelihood and finite directional derivative comparisons",
+  "profile": {
+    "scope": "two summary likelihood terms only; not full local model/NUTS or accepted inference",
+    "order": 64,
+    "source_set_sha256": "11420d1f40754021a13cd7fed1152bc824d6b669af233efe60a0dc4facec9ddb",
+    "logp": -3.2710438653506224,
+    "gradient": [
+      -1.1505927332917342e-05,
+      -0.39594385057771864,
+      0.3957429820015087,
+      -4.066676897549391e-05,
+      -8.7983128433817e-06,
+      6.765819099400659e-07,
+      1.1303981917676478,
+      -3.7562602737388543e-06,
+      -2.824456021813965e-06,
+      -2.4400061385305266e-05,
+      4.445345907578247e-06,
+      -0.12092275538467277,
+      -0.44472411491616565,
+      -1.3697556890802653
+    ],
+    "compile_seconds": {
+      "logp": 1.0091362269595265,
+      "gradient": 5.379649552050978
+    },
+    "timing": {
+      "logp": {
+        "repeats": 100,
+        "median_seconds": 0.0019072259892709553,
+        "p95_seconds": 0.0021178076742216943
+      },
+      "gradient": {
+        "repeats": 100,
+        "median_seconds": 0.002832290017977357,
+        "p95_seconds": 0.0030917467607650905
+      }
+    },
+    "cgroup_peak_memory_bytes": 464343040,
+    "source_sha256": "dd9138677c56b4f5a66508287a3e23916fa41272878a158b7ab4393867ac9fb2"
+  },
+  "records": [
+    {
+      "role": "tests-q64",
+      "container": "remission-pa3-sol261022-gradients-q64",
+      "metadata": {
+        "command": [
+          "docker",
+          "run",
+          "--name",
+          "remission-pa3-sol261022-gradients-q64",
+          "--network",
+          "none",
+          "--cpus",
+          "2",
+          "--memory",
+          "2g",
+          "--read-only",
+          "--cap-drop",
+          "ALL",
+          "--security-opt",
+          "no-new-privileges",
+          "--tmpfs",
+          "/tmp:rw,nosuid,size=256m",
+          "-e",
+          "PA3_TEST_QUADRATURE_ORDER=64",
+          "remission-pa3-sol261022-tests-q64:candidate",
+          "discover",
+          "-s",
+          "tests/methods",
+          "-p",
+          "test_pa3_bridge.py",
+          "-v"
+        ],
+        "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+        "started_unix": 1792653944.0820055,
+        "elapsed_seconds": 28.639710426330566,
+        "exit": 0,
+        "streams": {
+          "stdout": {
+            "path": "fafac3c10e61406cb381966dc67b7d32.stdout",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "path": "fafac3c10e61406cb381966dc67b7d32.stderr",
+            "bytes": 757,
+            "sha256": "f5d1d1552515976d2e05790d8bda960cc3a10e43ec49c311e74c193a75717387"
+          }
+        },
+        "source_head": "a2e1fb60d8859a8ffbfba1e889650af74c75693f",
+        "timeout_seconds": null,
+        "timed_out": false
+      },
+      "inspection": {
+        "Id": "72ec96aa0c01c45d11dd4a9a573db9e49b68729811594a55d541c16acde30504",
+        "Image": "sha256:b403248f7cbfbc56b95036d5f71163e217bb836fe53c5aa6d1ca79bb25d84215",
+        "User": "10002:10002",
+        "State": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-22T07:25:44.190680624Z",
+          "FinishedAt": "2026-10-22T07:26:12.558680447Z"
+        },
+        "HostConfig": {
+          "NetworkMode": "none",
+          "NanoCpus": 2000000000,
+          "Memory": 2147483648,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        },
+        "Mounts": []
+      },
+      "metadata_sha256": "2f8fa836bb59fe6b45de458a2d1269bf8cdd82b6f5c72b1be7552fc7e16abc4e",
+      "stream_hashes_verified": {
+        "stdout": true,
+        "stderr": true
+      }
+    },
+    {
+      "role": "profile-q64",
+      "container": "remission-pa3-sol261022-profile-q64",
+      "metadata": {
+        "command": [
+          "docker",
+          "run",
+          "--name",
+          "remission-pa3-sol261022-profile-q64",
+          "--network",
+          "none",
+          "--cpus",
+          "2",
+          "--memory",
+          "2g",
+          "--read-only",
+          "--cap-drop",
+          "ALL",
+          "--security-opt",
+          "no-new-privileges",
+          "--tmpfs",
+          "/tmp:rw,nosuid,size=256m",
+          "--mount",
+          "type=volume,src=remission-pa3-sol-bdab456a6b93-public-input,dst=/input,readonly",
+          "--entrypoint",
+          "python",
+          "remission-pa3-sol261022-profile-q64:candidate",
+          "/app/profile_pa3_bridge.py",
+          "--sources",
+          "/input/source-7c97862d.json"
+        ],
+        "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+        "started_unix": 1792654091.052364,
+        "elapsed_seconds": 30.41859769821167,
+        "exit": 0,
+        "streams": {
+          "stdout": {
+            "path": "557d322f9111420fb5423a0472bae129.stdout",
+            "bytes": 988,
+            "sha256": "f9afe7e0d5b7eea7f3d932b1ad6aaf9b261edac7a77c5995098480b27c1b975c"
+          },
+          "stderr": {
+            "path": "557d322f9111420fb5423a0472bae129.stderr",
+            "bytes": 340,
+            "sha256": "ca6841c0dd9a76f4854d1aea70e829d97795dae828e552df2066db81d23d3c9b"
+          }
+        },
+        "source_head": "527450c6d8be75939c7007e79c9b5cb9b82ea211",
+        "timeout_seconds": null,
+        "timed_out": false
+      },
+      "inspection": {
+        "Id": "f12a4c248d466fa0902a8e2b635f78f3067f536a833bf3e2b1861d8c0ffd40ed",
+        "Image": "sha256:02d75cb226a922bd930b934aab723b24b82fa68b3df5e61d8ea3680fa952696d",
+        "User": "10002:10002",
+        "State": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-22T07:28:11.167787409Z",
+          "FinishedAt": "2026-10-22T07:28:41.317918593Z"
+        },
+        "HostConfig": {
+          "NetworkMode": "none",
+          "NanoCpus": 2000000000,
+          "Memory": 2147483648,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        },
+        "Mounts": [
+          {
+            "Type": "volume",
+            "Name": "remission-pa3-sol-bdab456a6b93-public-input",
+            "Source": "/var/lib/docker/volumes/remission-pa3-sol-bdab456a6b93-public-input/_data",
+            "Destination": "/input",
+            "Driver": "local",
+            "Mode": "z",
+            "RW": false,
+            "Propagation": ""
+          }
+        ]
+      },
+      "metadata_sha256": "348e7b3de6f292ea29e8ea03efb427ca756b1d549bcf8107a2dcfdfd6129bbec",
+      "stream_hashes_verified": {
+        "stdout": true,
+        "stderr": true
+      }
+    }
+  ]
+}

@@ -24,6 +24,8 @@ docs/implementation/evidence/G1-FOUNDATION-20261021/accepted-g0-closure-review.m
 # Foundation source hashes/build context use identical bytes on Windows/Linux.
 services/** text eol=lf
 tooling/foundation/** text eol=lf
+tests/methods/test_pa3_numba.py text eol=lf
+tests/methods/test_pa3_cvm.py text eol=lf
 tests/integration/replay/** text eol=lf
 web/** text eol=lf
 web/src/style.css text eol=crlf
@@ -140,7 +142,45 @@ docs/implementation/evidence/G1-OBS-REP/integrated/c/**/*.json -text
 docs/implementation/evidence/G1-OBS-REP/integrated/roles/**/*.log binary
 docs/implementation/evidence/G1-OBS-REP/integrated/roles/**/*.json -text
 # LIVE-HOLD implementation raw evidence only: preserve exact command bytes.
+
+# PA3 bounded generated evidence has reproducible JSON bytes on Windows too.
+docs/implementation/evidence/pa3-prefit-20261022/**/*.json text eol=lf
+docs/implementation/evidence/pa3-q64-kernel-20261022/*.json text eol=lf
+services/foundation/studies/*.json text eol=lf
+tests/integration/replay/fixtures/pa3-legacy-v0-*.json -text
+docs/implementation/evidence/pa3-legacy-receipt-20261022/* -text
+docs/implementation/evidence/pa3-model-oom-20261022/*.json text eol=lf
+docs/implementation/evidence/pa3-model-oom-20261022/*.log -text
+docs/implementation/evidence/pa3-model-diagnosis-20261022/* -text
+docs/implementation/evidence/pa3-app-checks-20261022/* -text
+docs/implementation/evidence/pa3-monitor-loader-failure-20261022/* -text
+docs/implementation/evidence/pa3-v1-boundary-20261022/* -text
+docs/implementation/evidence/pa3-monitor-gradient-20261022/* -text
+docs/implementation/evidence/pa3-native-compile-api-20261022/* -text
+docs/implementation/evidence/pa3-numba-source-20261022/* -text
+docs/implementation/evidence/pa3-numba-timeout-20261022/* -text
+docs/implementation/evidence/pa3-cvm-api-20261022/* -text
+docs/implementation/evidence/pa3-cvm-source-20261022/* -text
 docs/implementation/evidence/G1-LIVE-HOLD/c/* -text
 docs/implementation/evidence/G1-LIVE-HOLD/raw-inputs.json -text whitespace=cr-at-eol
 docs/implementation/evidence/G1-LIVE-HOLD/deployment/c/* -text whitespace=cr-at-eol
 docs/implementation/evidence/G1-LIVE-HOLD/** -text whitespace=cr-at-eol
+
+docs/implementation/evidence/pa3-cvm-numerical-20261022/* -text
+
+docs/implementation/evidence/pa3-borrow-worker-20261022/* -text
+
+docs/implementation/evidence/pa3-borrow-host-binding-20261022/* -text
+
+docs/implementation/evidence/pa3-actual-profile-source-20261022/* -text
+docs/implementation/evidence/pa3-actual-profile-numerical-20261022/* -text
+docs/implementation/evidence/pa3-service-preparation-20261022/* -text
+docs/implementation/evidence/pa3-dispatcher-repair-20261022/* -text
+docs/implementation/evidence/pa3-service-maintenance-20261022/* -text whitespace=cr-at-eol
+docs/implementation/evidence/p1-protocol-boundary-20261022/* -text whitespace=cr-at-eol
+docs/implementation/evidence/p1-protocol-repair-20261022/* -text whitespace=cr-at-eol
+docs/implementation/evidence/pa3-diagnostic-inspect-repair-20261022/* -text whitespace=cr-at-eol
+docs/implementation/evidence/p2-physician-loop-20261022/** -text whitespace=cr-at-eol
+docs/implementation/evidence/p2-physician-loop-20261022/**/*.stderr binary
+docs/implementation/evidence/p2-physician-loop-20261022/**/*.stdout binary
+docs/implementation/evidence/pa3-native-terminal-20261022/* -text whitespace=cr-at-eol

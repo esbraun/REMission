@@ -1,0 +1,47 @@
+{
+  "capture": "artifacts/pa3/cvm-build-6ede/commands/01a9c8ef551e4b62a5f59de857d547b9.json",
+  "command": [
+    "docker",
+    "run",
+    "--name",
+    "remission-pa3-sol261022-cvm-controls-6ede",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,exec,nosuid,nodev,size=512m",
+    "--user",
+    "10002:10002",
+    "--entrypoint",
+    "python",
+    "sha256:b02a38ed1fd03841494935e03246ab0dbec419905e3e90b5a2f393cacd57d45e",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/app/tests/methods",
+    "-p",
+    "test_pa3_cvm.py",
+    "-v"
+  ],
+  "metadata": {
+    "bytes": 53066,
+    "sha256": "bfbe953fd152ccdaec315bbce221fa1190c987872018c4d04b2d76f29d79f402"
+  },
+  "stderr": {
+    "bytes": 1543,
+    "sha256": "170d1c5df30fe5cc0dd03285b98eccadcc8178a1012970084927879e37755957"
+  },
+  "stdout": {
+    "bytes": 878,
+    "sha256": "ce5f8693e61977e23384d2e7f8b8be30fe7aa916d7984d5507a6268582cc345e"
+  }
+}

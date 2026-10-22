@@ -1,0 +1,49 @@
+{
+  "actual_image": "sha256:4ca2b71643fae1ecf02180ae4bf02581ff2287e39c73eb8abfa0c88bc537b168",
+  "container": "98272c307f8e3dbebdea167c616e9335a6767eedfb1147828d6aef89bbc81081",
+  "copy_commands": [
+    [
+      "docker",
+      "cp",
+      "98272c307f8e3dbebdea167c616e9335a6767eedfb1147828d6aef89bbc81081:/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py",
+      "artifacts/pa3/native-compile-api-b88/mcmc.py"
+    ],
+    [
+      "docker",
+      "cp",
+      "98272c307f8e3dbebdea167c616e9335a6767eedfb1147828d6aef89bbc81081:/usr/local/lib/python3.13/site-packages/pymc/step_methods/hmc/base_hmc.py",
+      "artifacts/pa3/native-compile-api-b88/base_hmc.py"
+    ],
+    [
+      "docker",
+      "cp",
+      "98272c307f8e3dbebdea167c616e9335a6767eedfb1147828d6aef89bbc81081:/usr/local/lib/python3.13/site-packages/pymc/model/core.py",
+      "artifacts/pa3/native-compile-api-b88/core.py"
+    ]
+  ],
+  "excerpts": {
+    "bytes": 10349,
+    "sha256": "4965bbcc5cd610a42f018608f32933affb63206816b6b5fe69117a59ca0ed110"
+  },
+  "files": {
+    "artifacts/pa3/native-compile-api-b88/base_hmc.py": {
+      "bytes": 10589,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pymc/step_methods/hmc/base_hmc.py",
+      "sha256": "fdaafcec275b1e9ccdb5a6f3f68755ecc53cd31a30bb2dee32cc9ba83c050dc8"
+    },
+    "artifacts/pa3/native-compile-api-b88/core.py": {
+      "bytes": 102189,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pymc/model/core.py",
+      "sha256": "600604d9aa656e5bab97d3be6f3406c385d2a5e4d65cf7718a8b6e7cf1f21cb5"
+    },
+    "artifacts/pa3/native-compile-api-b88/mcmc.py": {
+      "bytes": 75960,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py",
+      "sha256": "7cef345ba8fc1819c6aeae96ee034b9bf135aa101a8ef6e829a911bd0255214d"
+    }
+  },
+  "image_source_head": "f0e2a93c9b6a6db2ad9b060f26c6691a1af38fa1",
+  "no_more_writes_to_raw_root": true,
+  "observer_head": "e292c00835059ed462b6166f217c99d734ab2728",
+  "scope": "Source text copied from the already stopped own image container; no container/model/sampler execution, config change, imports or benchmark. Existing frozen output roots were not written."
+}

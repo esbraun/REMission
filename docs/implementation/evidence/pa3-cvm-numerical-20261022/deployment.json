@@ -1,0 +1,130 @@
+{
+  "compilation_policy": {
+    "actual_vm": "pytensor.link.c.cvm.CVM",
+    "c_thunks": true,
+    "callbacks_empty": true,
+    "candidate_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run"
+      ],
+      "name": "OPT_FAST_RUN",
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "coordinates_file": "docs/implementation/evidence/pa3-model-diagnosis-20261022/coordinates-coordinates.json",
+    "coordinates_origin": {
+      "image": "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+      "source": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a"
+    },
+    "coordinates_sha256": "2d7078e36f45edf6ee1f42c2734f653d47a31440afff7b1605578938b4d32504",
+    "default_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run"
+      ],
+      "name": "OPT_FAST_RUN",
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "default_optimizer_sha256": "a43a5c7932f4c2c1d7e072170c7ef9e2fbebd9c79557434adf80207a30c79afd",
+    "diagnostic_gradient_sha256": "aefb5e4d6b18fc91b4b75b972eb2986afa75f1c89bf313ec93de2efaa1278126",
+    "diagnostic_only": true,
+    "excluded_tags": [],
+    "fd": {
+      "absolute_tolerance": 1e-05,
+      "coordinates_per_point": 47,
+      "points": 3,
+      "relative_tolerance": 0.0001,
+      "step": 1e-05
+    },
+    "guided_reference_sha256": "92115c3d8f1bba77bbd2e6c4eb034c0d63a9906e7516740fcbf549bab94e94db",
+    "id": "pa3-cvm-target-qualification-v1",
+    "input_files": {
+      "input.json": "74139ac2dfdc945dd1eb0be1e176f2ec66386dee39a09717c1f5a0b8da8551ac",
+      "points.json": "dd561b80f8dfa7fcdd6d89d2d82cc32856db6eba07c7be7f765daab2503b9fc3",
+      "sources.json": "9c541a723c558f6aa01818b4789ed7c68172c17a790fe130043be305acaba079"
+    },
+    "input_origin_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "inventory_byte_cap": 2097152,
+    "inventory_node_cap": 10000,
+    "original_image": "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+    "per_op_python_thunks": "Possible ordinary operation fallback; not equivalent to whole-VM fallback",
+    "phase_seconds": 600,
+    "readonly_volumes": {
+      "coordinates": "remission-pa3-compile-591d3d5c8737-coordinates",
+      "diagnostic-gradient": "remission-pa3-monitor-14765e7bb9df-output",
+      "guided-logp": "remission-pa3-compile-591d3d5c8737-guided-logp"
+    },
+    "requested_linker": "VMLinker",
+    "rule": "Diagnostic CVM execution linker with original optimizer query, no exclusions/additions/Monitor/callbacks. All original full-target/native gates;600phase/shared1800suite/2CPU2GiB unchanged. No production/sampler/math change.",
+    "suite_seconds": 1800,
+    "use_cloop": true,
+    "version": "1.0.0",
+    "whole_vm_fallback_allowed": false
+  },
+  "compilation_policy_sha256": "bd708a70ed2f3a0df8ffc6985479e3269c8160571f8fbc97bfab364b0afd8892",
+  "image": "sha256:b02a38ed1fd03841494935e03246ab0dbec419905e3e90b5a2f393cacd57d45e",
+  "input_files": {
+    "input.json": {
+      "bytes": 29841,
+      "sha256": "74139ac2dfdc945dd1eb0be1e176f2ec66386dee39a09717c1f5a0b8da8551ac"
+    },
+    "points.json": {
+      "bytes": 5542,
+      "sha256": "dd561b80f8dfa7fcdd6d89d2d82cc32856db6eba07c7be7f765daab2503b9fc3"
+    },
+    "sources.json": {
+      "bytes": 1904,
+      "sha256": "9c541a723c558f6aa01818b4789ed7c68172c17a790fe130043be305acaba079"
+    }
+  },
+  "limits": {
+    "cpu": 2,
+    "memory_bytes": 2147483648,
+    "network": "none",
+    "readonly_root": true,
+    "uid": "10002:10002"
+  },
+  "phase_seconds": 600,
+  "phases": [
+    "guided-gradient",
+    "guided-native-logp-gradient",
+    "guided-logp",
+    "original-logp",
+    "original-gradient",
+    "local-logp",
+    "changed-logp"
+  ],
+  "prefix": "remission-pa3-compile-65b3d087a2ee",
+  "reference_volumes": {
+    "coordinates": "remission-pa3-compile-591d3d5c8737-coordinates",
+    "diagnostic-gradient": "remission-pa3-monitor-14765e7bb9df-output",
+    "guided-logp": "remission-pa3-compile-591d3d5c8737-guided-logp"
+  },
+  "reused_coordinates_origin": {
+    "image": "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+    "source": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a"
+  },
+  "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "source_head": "c3900aeeb92c03415a0191a2e03ee8a979aa8e04",
+  "suite_seconds": 1800,
+  "target_rule": "Diagnostic CVM linker/original optimizer, unchanged math/prior/guide/Q64; no NUTS or production change.",
+  "volumes": {
+    "changed-logp": "remission-pa3-compile-65b3d087a2ee-changed-logp",
+    "coordinates": "remission-pa3-compile-591d3d5c8737-coordinates",
+    "guided-gradient": "remission-pa3-compile-65b3d087a2ee-guided-gradient",
+    "guided-logp": "remission-pa3-compile-65b3d087a2ee-guided-logp",
+    "guided-native-logp-gradient": "remission-pa3-compile-65b3d087a2ee-guided-native-logp-gradient",
+    "input": "remission-pa3-compile-65b3d087a2ee-input",
+    "local-logp": "remission-pa3-compile-65b3d087a2ee-local-logp",
+    "original-gradient": "remission-pa3-compile-65b3d087a2ee-original-gradient",
+    "original-logp": "remission-pa3-compile-65b3d087a2ee-original-logp"
+  }
+}

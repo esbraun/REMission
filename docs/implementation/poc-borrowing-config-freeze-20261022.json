@@ -1,0 +1,38 @@
+{
+  "status": "pre-fit numerical freeze; no native V1 fit or app acceptance",
+  "primary": {
+    "configuration": "poc-visit-borrow-v1/1.0.0",
+    "model": "rounded-clipped-state-space-borrow-v1/1.0.0",
+    "prior": "poc-visit-joint-mixture-v1/1.0.0",
+    "bridge": "poc-source-marginal-v1/1.0.0",
+    "production_quadrature_order": 64,
+    "qualification_double_order": 128,
+    "node_weight_sha256": "07c193f1d9cfa97f56d3576503734db8807f133185a90cac05109a572cda92ba",
+    "double_node_weight_sha256": "cb19875caa91ccb71fe82a7b5c91fbacc4e0d120093839fd35e5373206cd6188",
+    "normalized_algorithm_source_sha256": "dd9138677c56b4f5a66508287a3e23916fa41272878a158b7ab4393867ac9fb2",
+    "normalized_rounding_numerics_source_sha256": "fd0d64d7ee9e29ed3f7d24c05d4526e09cf5357ae0e96a8c577e4b09d4deab14",
+    "prefit_manifest_sha256": "cbd93ee9da9435d5bcbf73b6615d829cc2ef8242d0365b7d6602f509e0754eac",
+    "prefit_points_sha256": "54aa447addaee73b5ec496db406adf4843dece81d6fc6abe688d5948fb8cfa06",
+    "original_model_priors_and_native_nuts": "V0 1.1.1 unchanged; four chains1000tune/1000saved, .995target_accept, depth12; one2000/2000 extension; original gates",
+    "source_likelihood": "0.5*N(d|g+bias,SE^2+tau^2)+0.5*N(d|0,SE^2+100), full normalized constants, bias N(0,.5^2), common tau HalfNormal(1)",
+    "posterior_bridge": "all retained draws Q64/Q128; exactly32 chain-balanced points frozen before independent public-model forward reference; finite-suite normal-approximate bounds remain separate from effect integration",
+    "reference_family": {"points": 120, "studies": 2, "orders_reserved": 3, "looks": 6, "bonferroni_tests": 4320, "alpha": 0.01, "trajectories_per_batch": [4096,8192,16384,32768,65536,131072], "batches": 8},
+    "caps_seconds": {"prefit_reference": 1800, "postfit_bridge": 900, "effect_integration": 1800, "whole_dispatcher": 7200},
+    "expected_effect": "Existing K1024..65536 eight-batch integration, original uninflated variance/bootstrap/doubling/mean gates unchanged"
+  },
+  "tau2_sensitivity": {"configuration": "poc-visit-borrow-tau2-v1/1.0.0", "tau_prior": "HalfNormal(2)", "quadrature_order": 64, "all_other_gates": "same as primary; distinct config hash and fit/rollout seeds"},
+  "doubled_fit_diagnostic": {
+    "configuration": "poc-visit-borrow-q128-check-v1/1.0.0",
+    "scope": "Q128 posterior comparison fit only; no UI production option or production promotion",
+    "interpretation": "Root-routed independent Astra clarification received2026-10-22 before execution",
+    "quadrature_order": 128,
+    "deterministic_check_order": 256,
+    "prefit": "Check the same fixed88 points at128/256; original independent reference streams/summaries may be reused only through explicit hashes",
+    "postfit": "All retained draws128/256, separately frozen32 exact-adherence MC points, original native and expected-effect gates",
+    "multiplicity": "Separate diagnostic qualification family, conservative N4320/z and six looks unchanged; do not pool with primary family or claim original16/32/64 allocation covers128",
+    "posterior_sensitivity": "64-vs128 posterior effect mean difference <=max(.05,2 combined mean MCSE), SD/endpoints <=max(.05,2 combined block-bootstrap MCSE); both fits pass precision"
+  },
+  "seed_rule": "poc-pa3-seeds-v1: first4 SHA256 digest bytes, unsignedbigendian, canonical array [namespace,scenario_index,study_index,panel_index,patient_index,cutoff_day,purpose]; fit namespacepa3-fit-20261021-v1; purpose includes config hash and immutable attempt identity; separate nuts/effect-rollout/prior-check/bridge-reference purposes. Actual integers and hashes saved before each fit. No outcome seed enters learner.",
+  "clock_labels": "Local cutoff14 predicts next42 days through56/recall43..56; cutoff42 predicts through84/recall71..84; source endpoint is independently source-relative42/recall29..42",
+  "failure_rule": "Failure/timeout retains artifacts and exposes no accepted interval; classify unresolved quadrature before moment bias; measured significant moment bias stops dependent V1 acceptance for independent bounded repair"
+}

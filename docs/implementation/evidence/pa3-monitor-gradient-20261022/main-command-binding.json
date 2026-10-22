@@ -1,0 +1,60 @@
+{
+  "capture": "artifacts/pa3/monitor-run-b88/commands/c26f5f819f2a4b249362da91e743a629.json",
+  "command": [
+    "docker",
+    "run",
+    "--name",
+    "remission-pa3-monitor-14765e7bb9df-gradient",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,exec,nosuid,nodev,size=512m",
+    "--user",
+    "10002:10002",
+    "--mount",
+    "type=volume,src=remission-pa3-compile-591d3d5c8737-input,dst=/input,readonly",
+    "--mount",
+    "type=volume,src=remission-pa3-compile-591d3d5c8737-coordinates,dst=/mapped,readonly",
+    "--mount",
+    "type=volume,src=remission-pa3-compile-591d3d5c8737-guided-logp,dst=/reference,readonly",
+    "--mount",
+    "type=volume,src=remission-pa3-monitor-14765e7bb9df-output,dst=/output",
+    "sha256:4ca2b71643fae1ecf02180ae4bf02581ff2287e39c73eb8abfa0c88bc537b168",
+    "--input",
+    "/input",
+    "--output",
+    "/output",
+    "--phase",
+    "guided-gradient",
+    "--seconds",
+    "600",
+    "--coordinates",
+    "/mapped/coordinates.json",
+    "--monitor-policy",
+    "/app/pa3-monitor-policy.json",
+    "--reference",
+    "/reference/guided-logp.json"
+  ],
+  "metadata": {
+    "bytes": 52662,
+    "sha256": "4f463903989ed02731823cdfa3cc469a4dbf8d2842d8af5df8b263c590921887"
+  },
+  "note": "Exact named main docker-run selected by argv; docker logs retained separately in raw manifest.",
+  "stderr": {
+    "bytes": 2869,
+    "sha256": "0eab7d044cd36b768b427ae76cd8eb6b8a9940ba634ff08b34eb37482b19c24d"
+  },
+  "stdout": {
+    "bytes": 3727,
+    "sha256": "9e5430a4941063568cc648d457c6561974ad83a9fa59706a1195aea8d8597008"
+  }
+}

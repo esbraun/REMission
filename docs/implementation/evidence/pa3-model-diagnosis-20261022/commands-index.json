@@ -1,0 +1,881 @@
+[
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-pa3-sol261022-compile-1bf:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657854.0303483,
+    "elapsed_seconds": 0.1939563751220703,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "041086d103ab4a28a033c34963ec30f1.stdout",
+        "bytes": 72,
+        "sha256": "effb563a64640acb0058037a7145575e8599d6cb8abc6702c08c8830479c68e8"
+      },
+      "stderr": {
+        "path": "041086d103ab4a28a033c34963ec30f1.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "logs",
+      "remission-pa3-compile-591d3d5c8737-coordinates"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657874.9721885,
+    "elapsed_seconds": 0.1687169075012207,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "0634e53078084d5faeb1c2f71f550160.stdout",
+        "bytes": 2344,
+        "sha256": "f04a6c9d9ab8a54ae216969c755c5ad802f3c1092c0b3e3a3984fdd80b230400"
+      },
+      "stderr": {
+        "path": "0634e53078084d5faeb1c2f71f550160.stderr",
+        "bytes": 340,
+        "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 30,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657855.4300144,
+    "elapsed_seconds": 0.15602731704711914,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "0cbc7c5da11c40cd8db792140e8ee873.stdout",
+        "bytes": 51,
+        "sha256": "01b02d7c166261448441660aff278017a529e60acc7bb984ccc4bc7220ff43ed"
+      },
+      "stderr": {
+        "path": "0cbc7c5da11c40cd8db792140e8ee873.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "artifacts\\pa3\\compile-diagnosis-eb4\\input/.",
+      "remission-pa3-compile-591d3d5c8737-transfer:/input/"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657857.0775418,
+    "elapsed_seconds": 0.19231295585632324,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "143d7a3aa4604e69840989791eec7506.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "143d7a3aa4604e69840989791eec7506.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "start",
+      "--attach",
+      "remission-pa3-compile-591d3d5c8737-transfer"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657857.3742685,
+    "elapsed_seconds": 0.40776658058166504,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "21ae69e039174042a7e430a9e9ea4e8c.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "21ae69e039174042a7e430a9e9ea4e8c.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient:/output",
+      "artifacts\\pa3\\compile-diagnosis-eb4\\guided-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792658521.3084967,
+    "elapsed_seconds": 0.18730854988098145,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "226012910a6747bb9cf015de3471d355.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "226012910a6747bb9cf015de3471d355.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "logs",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792658521.0507817,
+    "elapsed_seconds": 0.15221929550170898,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "3227b8f65e6340b7aa239db60ea2dd08.stdout",
+        "bytes": 2173,
+        "sha256": "d30cf9a191a3d128fdd588ff91ea7dd796eb2a6e0124cc48904eed8a37029c55"
+      },
+      "stderr": {
+        "path": "3227b8f65e6340b7aa239db60ea2dd08.stderr",
+        "bytes": 531,
+        "sha256": "58d7668db5875ce022c3157159055ad5b0532da2e4521838539d40405d9b99ea"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 30,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792658520.7929451,
+    "elapsed_seconds": 0.15134191513061523,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "36d3d5184f5542448734223bdb354f11.stdout",
+        "bytes": 9999,
+        "sha256": "ec265a2a92bee433bea44de425a39f527a24a270087e0834ae166c36ca933d11"
+      },
+      "stderr": {
+        "path": "36d3d5184f5542448734223bdb354f11.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-foundation-runtime:candidate",
+      "--format",
+      "{{.Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657854.3388298,
+    "elapsed_seconds": 0.17619609832763672,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "3cfe737b1d0a4314ab36543d52c97e08.stdout",
+        "bytes": 72,
+        "sha256": "29d92418a76e61e826cde82251c6d8948b98b1046e6c976d81d120a17aebabd9"
+      },
+      "stderr": {
+        "path": "3cfe737b1d0a4314ab36543d52c97e08.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,nosuid,size=512m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-input,dst=/input,readonly",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-guided-gradient,dst=/output",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-coordinates,dst=/mapped,readonly",
+      "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+      "--input",
+      "/input",
+      "--output",
+      "/output",
+      "--phase",
+      "guided-gradient",
+      "--seconds",
+      "600",
+      "--coordinates",
+      "/mapped/coordinates.json"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657920.0154214,
+    "elapsed_seconds": 600.0169813632965,
+    "exit": 124,
+    "streams": {
+      "stdout": {
+        "path": "439b9833de6f48beacf7ef9eaad451b1.stdout",
+        "bytes": 2173,
+        "sha256": "d30cf9a191a3d128fdd588ff91ea7dd796eb2a6e0124cc48904eed8a37029c55"
+      },
+      "stderr": {
+        "path": "439b9833de6f48beacf7ef9eaad451b1.stderr",
+        "bytes": 531,
+        "sha256": "58d7668db5875ce022c3157159055ad5b0532da2e4521838539d40405d9b99ea"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 600,
+    "timed_out": true
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-local-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657856.1980498,
+    "elapsed_seconds": 0.16359472274780273,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "4716c3aead1c48489dece02819d8bea4.stdout",
+        "bytes": 46,
+        "sha256": "06e39e64a40d2446bf91ee0a296a1b6b90816da22815bbcfe5bfcccdd53d9195"
+      },
+      "stderr": {
+        "path": "4716c3aead1c48489dece02819d8bea4.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-changed-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657856.4591703,
+    "elapsed_seconds": 0.1686115264892578,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "478dbaf933e14834a3677fef0bab429e.stdout",
+        "bytes": 48,
+        "sha256": "846ac7a77341ddaa0161f2faa2cab9da7ea26eee9aaffd6f348f4bd1195d3fa1"
+      },
+      "stderr": {
+        "path": "478dbaf933e14834a3677fef0bab429e.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-pa3-compile-591d3d5c8737-guided-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657919.1530168,
+    "elapsed_seconds": 0.15785670280456543,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "5e9d15fec6ca48f7aac7ecd8bec3476d.stdout",
+        "bytes": 9973,
+        "sha256": "8a72486dbe79bf6fab9ac01c22c6034c25b19f8bdc52c768c2dd5ce93ceee4ee"
+      },
+      "stderr": {
+        "path": "5e9d15fec6ca48f7aac7ecd8bec3476d.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-coordinates"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657854.897063,
+    "elapsed_seconds": 0.16546988487243652,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "6337c22d908b4acc8d319ecc119f39dd.stdout",
+        "bytes": 47,
+        "sha256": "fb961676af76c0515f83729ba48b282639d028759df358d193e403c4d12b2954"
+      },
+      "stderr": {
+        "path": "6337c22d908b4acc8d319ecc119f39dd.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "remission-pa3-compile-591d3d5c8737-guided-logp:/output",
+      "artifacts\\pa3\\compile-diagnosis-eb4\\guided-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657919.7133617,
+    "elapsed_seconds": 0.16664552688598633,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "63fb3e46b37044e0b3b95f252328f589.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "63fb3e46b37044e0b3b95f252328f589.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-original-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657855.9420726,
+    "elapsed_seconds": 0.16843247413635254,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "655259f39d964f3e869d1468f89f9fd9.stdout",
+        "bytes": 53,
+        "sha256": "630e2ebbc69f0ff1db7d957a8dbbce5b6e9551f5dbf5ba9ad1b3eefb7e3aff3f"
+      },
+      "stderr": {
+        "path": "655259f39d964f3e869d1468f89f9fd9.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-original-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657855.68187,
+    "elapsed_seconds": 0.17055583000183105,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "673a02ebe9b44df1af27cfe10f1501f5.stdout",
+        "bytes": 49,
+        "sha256": "ba5dcd7517743dc3b9d224c6b59a2ee72f300c7a3c98aac3e736771e46a72a3c"
+      },
+      "stderr": {
+        "path": "673a02ebe9b44df1af27cfe10f1501f5.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-pa3-compile-591d3d5c8737-guided-logp",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,nosuid,size=512m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-input,dst=/input,readonly",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-guided-logp,dst=/output",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-coordinates,dst=/mapped,readonly",
+      "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+      "--input",
+      "/input",
+      "--output",
+      "/output",
+      "--phase",
+      "guided-logp",
+      "--seconds",
+      "600",
+      "--coordinates",
+      "/mapped/coordinates.json"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657875.5708385,
+    "elapsed_seconds": 43.48859691619873,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "8b10100f8ce044af824d2a8875bcb0f4.stdout",
+        "bytes": 3455,
+        "sha256": "1ab4df69fcac564ca537a5e8836a7b8b23a6c4d6d6acedaec17b7d3dae2d0599"
+      },
+      "stderr": {
+        "path": "8b10100f8ce044af824d2a8875bcb0f4.stderr",
+        "bytes": 340,
+        "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 600,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-pa3-compile-591d3d5c8737-coordinates"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657874.6944866,
+    "elapsed_seconds": 0.1586315631866455,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "af9b5fcfd0644f89baaa1f13db079e8f.stdout",
+        "bytes": 9182,
+        "sha256": "f8e77a14679de9ed24c6ea8c1c445917da26266b5b4d30769efca57c42d261e3"
+      },
+      "stderr": {
+        "path": "af9b5fcfd0644f89baaa1f13db079e8f.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "create",
+      "--name",
+      "remission-pa3-compile-591d3d5c8737-transfer",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,nosuid,size=512m",
+      "--user",
+      "0:0",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-input,dst=/input",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-coordinates,dst=/out/0",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-guided-logp,dst=/out/1",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-guided-gradient,dst=/out/2",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-original-logp,dst=/out/3",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-original-gradient,dst=/out/4",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-local-logp,dst=/out/5",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-changed-logp,dst=/out/6",
+      "--entrypoint",
+      "python",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "-c",
+      "from pathlib import Path;root=Path('/input');[(p.chmod(0o444)) for p in root.iterdir()];root.chmod(0o555);[(Path('/out')/str(i)).chmod(0o777) for i in range(7)]"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657856.7389677,
+    "elapsed_seconds": 0.21848368644714355,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "c2386a72f26343c38123effe4714d53d.stdout",
+        "bytes": 65,
+        "sha256": "88adf7df35715aec879386729fd33f4879fda468d0004b02edf8f88a953945ac"
+      },
+      "stderr": {
+        "path": "c2386a72f26343c38123effe4714d53d.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792658520.136455,
+    "elapsed_seconds": 0.15242958068847656,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "ce3de950bdff4341ac70561fcf14e771.stdout",
+        "bytes": 10153,
+        "sha256": "d49bd9a224881525fa73fceec3e405858fa21f25a22974b1e94eb7576b9754b0"
+      },
+      "stderr": {
+        "path": "ce3de950bdff4341ac70561fcf14e771.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "kill",
+      "remission-pa3-compile-591d3d5c8737-guided-gradient"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792658520.3848796,
+    "elapsed_seconds": 0.30068325996398926,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "ce704aeb986f4ed0afefb742b76162cf.stdout",
+        "bytes": 51,
+        "sha256": "01b02d7c166261448441660aff278017a529e60acc7bb984ccc4bc7220ff43ed"
+      },
+      "stderr": {
+        "path": "ce704aeb986f4ed0afefb742b76162cf.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+    "timeout_seconds": 30,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-input"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657854.6422935,
+    "elapsed_seconds": 0.1658785343170166,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "e1119ec6c51448e9ae68c6f7770e7425.stdout",
+        "bytes": 41,
+        "sha256": "9261c60255b443f6a310e61eac3dd24b1d8e52e3b40ba27909fbbd71a644a179"
+      },
+      "stderr": {
+        "path": "e1119ec6c51448e9ae68c6f7770e7425.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657857.876998,
+    "elapsed_seconds": 0.0327761173248291,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "e5365d1503b84de0bd3782cb6bab7722.stdout",
+        "bytes": 41,
+        "sha256": "9b4acda2675b13979eb758484ec09aaf67ebab58db9fc4d3b90183989ba0b597"
+      },
+      "stderr": {
+        "path": "e5365d1503b84de0bd3782cb6bab7722.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-pa3-compile-591d3d5c8737-coordinates",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,nosuid,size=512m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-input,dst=/input,readonly",
+      "--mount",
+      "type=volume,src=remission-pa3-compile-591d3d5c8737-coordinates,dst=/output",
+      "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+      "--input",
+      "/input",
+      "--output",
+      "/output",
+      "--phase",
+      "coordinates",
+      "--seconds",
+      "600"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657858.0048163,
+    "elapsed_seconds": 16.583796501159668,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "eb1ba5b6ff8048fcb813f6bc358894b4.stdout",
+        "bytes": 2344,
+        "sha256": "f04a6c9d9ab8a54ae216969c755c5ad802f3c1092c0b3e3a3984fdd80b230400"
+      },
+      "stderr": {
+        "path": "eb1ba5b6ff8048fcb813f6bc358894b4.stderr",
+        "bytes": 340,
+        "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 600,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "logs",
+      "remission-pa3-compile-591d3d5c8737-guided-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657919.4255166,
+    "elapsed_seconds": 0.16373610496520996,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "ef8095224c22408789d4c32f9514dbfe.stdout",
+        "bytes": 3455,
+        "sha256": "1ab4df69fcac564ca537a5e8836a7b8b23a6c4d6d6acedaec17b7d3dae2d0599"
+      },
+      "stderr": {
+        "path": "ef8095224c22408789d4c32f9514dbfe.stderr",
+        "bytes": 340,
+        "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 30,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "remission-pa3-compile-591d3d5c8737-coordinates:/output",
+      "artifacts\\pa3\\compile-diagnosis-eb4\\coordinates"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657875.2645133,
+    "elapsed_seconds": 0.17548394203186035,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "f1422b000a964ebc84c9a772c8417740.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "f1422b000a964ebc84c9a772c8417740.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "remission-pa3-compile-591d3d5c8737-guided-logp"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+    "started_unix": 1792657855.1647878,
+    "elapsed_seconds": 0.16716289520263672,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "f5717d9f690f40818091ed5ac8c12f8a.stdout",
+        "bytes": 47,
+        "sha256": "45fa88a4649a4f1b476c9a7dc5963553d82ad8c33c4ee61f259070336e36b589"
+      },
+      "stderr": {
+        "path": "f5717d9f690f40818091ed5ac8c12f8a.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+    "timeout_seconds": 60,
+    "timed_out": false
+  }
+]

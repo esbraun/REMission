@@ -1,0 +1,88 @@
+{
+  "Args": [
+    "-c",
+    "import hashlib,json,stat;from pathlib import Path\nr={}\nfor d in Path('/proof').iterdir():\n r[d.name]={str(p.relative_to(d)):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'mode':oct(stat.S_IMODE(p.stat().st_mode)),'uid':p.stat().st_uid,'gid':p.stat().st_gid} for p in sorted(d.rglob('*')) if p.is_file()}\nprint(json.dumps(r,sort_keys=True))\n"
+  ],
+  "HostConfig": {
+    "CapDrop": [
+      "ALL"
+    ],
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": null
+  },
+  "Id": "eafcfd7baddb45b7a276434f5e4fae45a0cbc300537f6ef8bab368f88eae3d5f",
+  "Image": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "Mounts": [
+    {
+      "Destination": "/proof/coordinates",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-pa3-compile-c24275b9ddcb-coordinates",
+      "Propagation": "",
+      "RW": false,
+      "Source": "/var/lib/docker/volumes/remission-pa3-compile-c24275b9ddcb-coordinates/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/proof/guided-gradient",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-pa3-compile-c24275b9ddcb-guided-gradient",
+      "Propagation": "",
+      "RW": false,
+      "Source": "/var/lib/docker/volumes/remission-pa3-compile-c24275b9ddcb-guided-gradient/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/proof/guided-logp",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-pa3-compile-c24275b9ddcb-guided-logp",
+      "Propagation": "",
+      "RW": false,
+      "Source": "/var/lib/docker/volumes/remission-pa3-compile-c24275b9ddcb-guided-logp/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/proof/guided-native-logp-gradient",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-pa3-compile-c24275b9ddcb-guided-native-logp-gradient",
+      "Propagation": "",
+      "RW": false,
+      "Source": "/var/lib/docker/volumes/remission-pa3-compile-c24275b9ddcb-guided-native-logp-gradient/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/proof/input",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-pa3-compile-c24275b9ddcb-input",
+      "Propagation": "",
+      "RW": false,
+      "Source": "/var/lib/docker/volumes/remission-pa3-compile-c24275b9ddcb-input/_data",
+      "Type": "volume"
+    }
+  ],
+  "Path": "python",
+  "State": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "2026-10-22T12:19:13.511056335Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "2026-10-22T12:19:13.342093643Z",
+    "Status": "exited"
+  },
+  "User": "10002:10002"
+}

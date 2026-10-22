@@ -1,0 +1,44 @@
+/app/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/app/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+/usr/local/lib/python3.13/site-packages/pytensor/link/c/cmodule.py:2940: UserWarning: PyTensor could not link to a BLAS installation. Operations that might benefit from BLAS will be severely degraded.
+This usually happens when PyTensor is installed via pip. We recommend it be installed via conda/mamba/pixi instead.
+Alternatively, you can use an experimental backend such as Numba or JAX that perform their own BLAS optimizations, by setting `pytensor.config.mode == 'NUMBA'` or passing `mode='NUMBA'` when compiling a PyTensor function.
+For more options and details see https://pytensor.readthedocs.io/en/latest/troubleshooting.html#how-do-i-configure-test-my-blas-library
+  warnings.warn(
+/usr/local/lib/python3.13/site-packages/pytensor/tensor/rewriting/elemwise.py:1033: UserWarning: Loop fusion failed because the resulting node would exceed the kernel argument limit.
+  warn(
+SequentialGraphRewriter apply ofg_inner_graph
+Traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/pytensor/graph/rewriting/basic.py", line 311, in apply
+    sub_prof = rewriter.apply(fgraph)
+  File "/usr/local/lib/python3.13/site-packages/pytensor/graph/rewriting/basic.py", line 214, in apply
+    return self.fn(*args, **kwargs)
+           ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py", line 178, in ofg_inner_graph
+    rewrite_inner_graph(
+    ~~~~~~~~~~~~~~~~~~~^
+        fgraph,
+        ^^^^^^^
+        lambda op: isinstance(op, OpFromGraph) and not isinstance(op, OpWithCoreShape),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rewrite_ofg_inner_graph,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py", line 107, in rewrite_inner_graph
+    rewrite(linker, inner_op, inner_node, inner, mode=mode)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/functools.py", line 934, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py", line 131, in rewrite_ofg_inner_graph
+    raise NotImplementedError(
+    ...<2 lines>...
+    )
+NotImplementedError: Linker WrapLinker has not registered an OpFromGraph inner-graph rewrite
+
+Using NumPy C-API based implementation for BLAS functions.
+Using NumPy C-API based implementation for BLAS functions.

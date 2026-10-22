@@ -18,7 +18,14 @@ def main():
             patient_id=context.observed_projection.patient_id,independent_hold_status=context.independent_hold_status,statistical_engine='unavailable')))
         return
     raw=Path("/observed/history.json").read_bytes()
-    history=ObservedHistory.model_validate_json(raw)
+    version=json.loads(raw).get('schema_version')
+    if version=='2.1.0':
+        from contracts.domain.protocol import ObservedHistoryV21
+        history=ObservedHistoryV21.model_validate_json(raw)
+    elif version=='2.0.0':
+        from contracts.domain.observed_v2 import ObservedHistoryV2
+        history=ObservedHistoryV2.model_validate_json(raw)
+    else:history=ObservedHistory.model_validate_json(raw)
     print(json.dumps({"status":"observed_contract_validated","patient_id":history.patient_id,"record_count":len(history.records),"statistical_engine":"unavailable"}))
 
 

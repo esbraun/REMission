@@ -1,0 +1,49 @@
+{
+  "image": "sha256:518d958df2bed76fb631e4f2e99994a301f2c38e1991877fdb353fe143547b9a",
+  "input_files": {
+    "input.json": {
+      "bytes": 29841,
+      "sha256": "74139ac2dfdc945dd1eb0be1e176f2ec66386dee39a09717c1f5a0b8da8551ac"
+    },
+    "points.json": {
+      "bytes": 5542,
+      "sha256": "dd561b80f8dfa7fcdd6d89d2d82cc32856db6eba07c7be7f765daab2503b9fc3"
+    },
+    "sources.json": {
+      "bytes": 1904,
+      "sha256": "9c541a723c558f6aa01818b4789ed7c68172c17a790fe130043be305acaba079"
+    }
+  },
+  "limits": {
+    "cpu": 2,
+    "memory_bytes": 2147483648,
+    "network": "none",
+    "readonly_root": true,
+    "uid": "10002:10002"
+  },
+  "phase_seconds": 600,
+  "phases": [
+    "coordinates",
+    "guided-logp",
+    "guided-gradient",
+    "original-logp",
+    "original-gradient",
+    "local-logp",
+    "changed-logp"
+  ],
+  "prefix": "remission-pa3-compile-591d3d5c8737",
+  "runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "source_head": "eb4b944dbcc70c6d32cda1eb3636510ca7bd2a7a",
+  "suite_seconds": 1800,
+  "target_rule": "Unchanged exact guide/original priors/Q64/optimizer; one model per process. No native NUTS in diagnosis.",
+  "volumes": {
+    "changed-logp": "remission-pa3-compile-591d3d5c8737-changed-logp",
+    "coordinates": "remission-pa3-compile-591d3d5c8737-coordinates",
+    "guided-gradient": "remission-pa3-compile-591d3d5c8737-guided-gradient",
+    "guided-logp": "remission-pa3-compile-591d3d5c8737-guided-logp",
+    "input": "remission-pa3-compile-591d3d5c8737-input",
+    "local-logp": "remission-pa3-compile-591d3d5c8737-local-logp",
+    "original-gradient": "remission-pa3-compile-591d3d5c8737-original-gradient",
+    "original-logp": "remission-pa3-compile-591d3d5c8737-original-logp"
+  }
+}

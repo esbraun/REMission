@@ -1,7 +1,13 @@
 """Private bounded HTTP process. No database, evaluator output or host port."""
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from .restricted import generate
+from .restricted import generate as generate_v1
+from .restricted_v2 import generate as generate_v2
+
+
+def generate(request):
+    # No optional version/default is inserted into the original v1 request.
+    return generate_v2(request) if request.get('law_version') == 'poc-longitudinal-v2' else generate_v1(request)
 
 
 class Handler(BaseHTTPRequestHandler):

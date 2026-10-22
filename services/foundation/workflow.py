@@ -55,6 +55,9 @@ def record_header(record_id: str, patient_id: str, at: datetime) -> dict:
 
 def history(db, patient_id: str) -> ObservedHistory:
     records = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id", (patient_id,))]
+    if any(r['schema_version'] == '2.1.0' for r in records):
+        from contracts.domain.protocol import ObservedHistoryV21
+        return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
     if any(r['schema_version'] == '2.0.0' for r in records):
         from contracts.domain.observed_v2 import ObservedHistoryV2
         return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
@@ -80,6 +83,9 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
     from .live_journal import initialize_journal, overlay, summary, dispute_reviews, active_episodes
     initialize_journal(db,patient_id,receipt_at)
     state = overlay(db,patient_id,state)
+    if state.get('simulation',{}).get('nof1'):
+        from .nof1 import reconcile
+        state=reconcile(db,row,state,receipt_at)
     db.execute('UPDATE patients SET state_json=? WHERE id=?',(canonical(state),patient_id))
     # Non-live mutations invalidate review usability without an extra version bump.
     # A freshly recorded review targets this exact resulting version and is retained.
@@ -96,6 +102,17 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
     actions = ['behavioral_continue', 'behavioral_escalate'] if 'simulation' in state else ["MED_A", "MED_B", "behavioral_continue", "behavioral_escalate", "usual_care"]
     eligibility = [dict(action=action, status="excluded" if state["workflow"]["hold_reasons"] else "eligible",
                         reasons=state["workflow"]["hold_reasons"]) for action in actions]
+    nof1=None
+    if state.get('simulation',{}).get('family')=='nof1_med':
+        from .nof1 import readiness
+        from contracts.domain.protocol import NOF1_REF
+        reasons=readiness(db,row,state,at,receipt_at)
+        eligibility.extend(dict(action=action,status='requires_prescriber_review' if reasons else 'eligible',reasons=reasons)
+                           for action in ('MED_A','MED_B'))
+        eligibility.append(dict(action='no_prompt',status='excluded' if state['workflow']['hold_reasons'] else 'eligible',reasons=state['workflow']['hold_reasons']))
+        nof1=dict(template=NOF1_REF,
+            readiness_reasons=reasons,review_assertions_are_synthetic=True,
+            loop=state['simulation'].get('nof1'),analysis_status='unavailable_methods_pending')
     snapshot = DecisionSnapshot.model_validate_json(canonical(dict(**record_header(identifier, patient_id, at),
         kind="decision_snapshot", cutoff=timestamp(at), patient_version=row["version"], state_version=row["state_version"],
         consent_version=row["consent_version"], eligibility_version=row["eligibility_version"], workflow=state["workflow"],
@@ -105,6 +122,7 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
         posterior=None, evidence=[], policy=SUPPORT)))
     projected = history(db, patient_id).project(at).model_dump(mode="json")
     options = eligibility if state["stage"] != "ASSIGN-07" else [e for e in eligibility if e["action"].startswith("behavioral_")]
+    if nof1 is not None:options=[e for e in options if e['action']=='behavioral_continue']
     ordinary = state["stage"] in ("ASSIGN-02", "ASSIGN-07") and state["workflow"]["data_readiness"] == "ready" and not state["workflow"]["hold_reasons"]
     if state.get('simulation', {}).get('day', 0) >= 84:
         ordinary = False
@@ -129,6 +147,10 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
         display['estimates']['reason']='Visit analysis is available in Analysis; ordinary options have no superiority ranking'
         display['labels'].append('Generated longitudinal observations; fictional clock')
         display['plan'] = state['plan']
+    if nof1 is not None:
+        display['nof1']=nof1
+        display['engines']['nof1']='Fixed synthetic physician loop; analysis methods unavailable'
+        display['estimates']['reason']='N0/N1 analysis is unavailable pending accepted methods; no estimated winner'
     encoded = canonical(display)
     db.execute("INSERT INTO decisions VALUES (?,?,?,?,?)", (identifier, patient_id, snapshot.model_dump_json(), encoded, digest(encoded)))
     db.execute("UPDATE patients SET current_decision=?,cutoff=? WHERE id=?", (identifier, timestamp(at), patient_id))

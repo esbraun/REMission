@@ -1,0 +1,161 @@
+{
+  "generator": {
+    "CapDrop": [
+      "ALL"
+    ],
+    "Id": "e49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236",
+    "Image": "sha256:5d546abd1448e46d5d45ac4a3d98c31899631f968f93d21b163797ff0674ded9",
+    "Memory": 2147483648,
+    "Mounts": [],
+    "Name": "/remission-poc13-ac8e16e0-generator",
+    "NanoCpus": 2000000000,
+    "Networks": {
+      "remission-poc13-ac8e16e0-app": {
+        "Aliases": [
+          "generator"
+        ],
+        "DNSNames": [
+          "remission-poc13-ac8e16e0-generator",
+          "generator",
+          "e49137ed1ba2"
+        ],
+        "DriverOpts": null,
+        "EndpointID": "4917549584db0cba07737047de44c9e3c84e88bcf1207d45f8116ca14f143a81",
+        "Gateway": "192.168.176.1",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "GwPriority": 0,
+        "IPAMConfig": null,
+        "IPAddress": "192.168.176.2",
+        "IPPrefixLen": 20,
+        "IPv6Gateway": "",
+        "Links": null,
+        "MacAddress": "42:4a:1a:03:19:55",
+        "NetworkID": "b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a"
+      }
+    },
+    "Ports": {},
+    "ReadonlyRootfs": true,
+    "RestartPolicy": {
+      "MaximumRetryCount": 0,
+      "Name": "no"
+    },
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 59631,
+      "Restarting": false,
+      "Running": true,
+      "StartedAt": "2026-10-22T09:09:49.440288475Z",
+      "Status": "running"
+    },
+    "Tmpfs": {
+      "/tmp": "rw,noexec,nosuid,size=128m"
+    },
+    "User": "20000:20000"
+  },
+  "service": {
+    "CapDrop": [
+      "ALL"
+    ],
+    "Id": "cdb12d7e4d6a69f0144ccc9d54d79666faeda066fa2d09008027ecb207b2932a",
+    "Image": "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+    "Memory": 2147483648,
+    "Mounts": [
+      {
+        "Destination": "/data",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-poc13-ac8e16e0-database",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/exports",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-poc13-ac8e16e0-exports",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-exports/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/fixtures",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-poc13-ac8e16e0-fixtures",
+        "Propagation": "",
+        "RW": false,
+        "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-fixtures/_data",
+        "Type": "volume"
+      }
+    ],
+    "Name": "/remission-poc13-ac8e16e0-service",
+    "NanoCpus": 2000000000,
+    "Networks": {
+      "remission-poc13-ac8e16e0-app": {
+        "Aliases": null,
+        "DNSNames": [
+          "remission-poc13-ac8e16e0-service",
+          "cdb12d7e4d6a"
+        ],
+        "DriverOpts": null,
+        "EndpointID": "2bc29c98bff12a37348361651ed6bca4076d2cce18d7237fad513cfa898b7705",
+        "Gateway": "192.168.176.1",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "GwPriority": 0,
+        "IPAMConfig": null,
+        "IPAddress": "192.168.176.3",
+        "IPPrefixLen": 20,
+        "IPv6Gateway": "",
+        "Links": null,
+        "MacAddress": "be:08:14:a1:fe:d4",
+        "NetworkID": "b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a"
+      }
+    },
+    "Ports": {
+      "8765/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "8780"
+        }
+      ]
+    },
+    "ReadonlyRootfs": true,
+    "RestartPolicy": {
+      "MaximumRetryCount": 0,
+      "Name": "no"
+    },
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 59686,
+      "Restarting": false,
+      "Running": true,
+      "StartedAt": "2026-10-22T09:09:50.024921426Z",
+      "Status": "running"
+    },
+    "Tmpfs": {
+      "/tmp": "rw,noexec,nosuid,size=128m"
+    },
+    "User": "10001:10001"
+  }
+}

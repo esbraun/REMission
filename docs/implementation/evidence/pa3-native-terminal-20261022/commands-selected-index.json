@@ -1,0 +1,169 @@
+[
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-ac8e16e0-generator",
+      "--format",
+      " {\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Path\":{{json .Path}},\"Args\":{{json .Args}},\"Config\":{\"User\":{{json (index .Config \"User\")}},\"Labels\":{{with index .Config \"Labels\"}}{\"remission.attempt\":{{json (index . \"remission.attempt\")}},\"remission.analysis\":{{json (index . \"remission.analysis\")}}}{{else}}{}{{end}}},\"HostConfig\":{\"Memory\":{{json (index .HostConfig \"Memory\")}},\"NanoCpus\":{{json (index .HostConfig \"NanoCpus\")}},\"NetworkMode\":{{json (index .HostConfig \"NetworkMode\")}},\"ReadonlyRootfs\":{{json (index .HostConfig \"ReadonlyRootfs\")}},\"CapDrop\":{{json (index .HostConfig \"CapDrop\")}},\"SecurityOpt\":{{json (index .HostConfig \"SecurityOpt\")}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}}},\"Mounts\":{{json .Mounts}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.1539309024810791,
+    "exit": 0,
+    "source_head": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+    "started_unix": 1792682379.8696847,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "4273a729df494f5d82dabc1d8e93d25c.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 771,
+        "path": "4273a729df494f5d82dabc1d8e93d25c.stdout",
+        "sha256": "3861df73742d2394bd0bad1506b2a4c0a4a6d03b28bbfe802fa7140593013313"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "exec",
+      "remission-poc13-ac8e16e0-service",
+      "python",
+      "-c",
+      "\nimport hashlib,json,os,sqlite3\nfrom pathlib import Path\nfrom urllib.parse import quote\ndef canonical(x):return json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False)\ndef sha(x):return hashlib.sha256(canonical(x).encode()).hexdigest()\npath=Path(os.environ.get('REMISSION_DATABASE','/data/remission.sqlite')).resolve(strict=True)\ndb=sqlite3.connect('file:'+quote(str(path),safe='/')+'?mode=ro',uri=True,timeout=5)\ndb.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');db.execute('BEGIN')\ndef encode(x):\n if isinstance(x,bytes):return {'blob_bytes':len(x),'blob_sha256':hashlib.sha256(x).hexdigest()}\n return x\nallowed=['patients','events','decisions','bundles','tasks','receipts','ingestion_receipts','replay_runs','pending_work','drafts','state_changes','observed_archives','observed_archive_entries','observed_archive_artifacts','service_control','live_authority_history','live_activation_receipts','live_hold_operations','live_hold_episodes','live_hold_reviews','live_hold_tasks','live_hold_task_events','live_hold_keys','live_patient_journals','live_safety_facts','live_projection_receipts','live_export_receipts','live_hold_additional_tasks','live_hold_task_bindings','live_hold_additional_task_events','analysis_attempts']\ntables={r[0] for r in db.execute(\"SELECT name FROM sqlite_master WHERE type='table'\")}\nprotected={}\nfor table in allowed:\n if table not in tables:continue\n info=db.execute('PRAGMA table_info(\"'+table+'\")').fetchall()\n keys=[r['name'] for r in sorted(info,key=lambda r:r['pk']) if r['pk']]\n rows=[{k:encode(row[k]) for k in row.keys()} for row in db.execute('SELECT * FROM \"'+table+'\"')]\n hashes=sorted(sha(row) for row in rows)\n protected[table]={'rows':len(rows),'rows_sha256':sha(hashes),'row_hashes':hashes,'primary_key_columns':keys}\nqueue=[dict(r) for r in db.execute(\"SELECT job_id,patient_id,status,stage,created_at,input_sha256,history_sha256 FROM analysis_attempts WHERE status='queued' ORDER BY created_at,job_id\")]\nrunning=[dict(r) for r in db.execute(\"SELECT job_id,patient_id,status,stage,created_at,input_sha256 FROM analysis_attempts WHERE status='running' ORDER BY created_at,job_id\")]\nattempt='analysis-4ff86193058d4d13a1600f0423e91f12'\nrow=db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(attempt,)).fetchone()\nassert row is not None\nproduct=json.loads(row['request_json']);h=product['history'];patient=db.execute('SELECT * FROM patients WHERE id=?',(row['patient_id'],)).fetchone()\nfrom services.foundation.workflow import history\nfrom services.foundation.store import instant\nfrom contracts.domain.analysis import project_history\nprojected=project_history(history(db,row['patient_id']).project(instant(patient['cutoff']))).model_dump(mode='json')\nactual=sha(product)\nchecks={'queued':row['status']=='queued','stage_queued':row['stage']=='queued','kind_borrow':product['kind']=='poc_visit_borrow_input','canonical_input':actual==row['input_sha256']=='3761da9e876d3830106e5edc47a7b5b930764f934facc95c8b6328b84e65e5a2','history':sha(h)==row['history_sha256']=='ce5a5a2bbf99405d2457654791f3ac9a263f669770b075ac1dfa1cff0f4ac00c','current_db_projection':sha(projected)==row['history_sha256'],'cutoff':all(instant(value)==instant('2026-01-15T12:00:00Z') for value in [row['cutoff'],patient['cutoff'],h['cutoff']]),'configuration':product['request']['configuration']['sha256']=='114d69435430a98d60d1724a30ba89073efebd5ba0e1b7bdae55ddb3f3a90675','source_set':product['source_set_sha256']=='11420d1f40754021a13cd7fed1152bc824d6b669af233efe60a0dc4facec9ddb','nuts_seed':product['numerical_seeds']['nuts']==3859568062,'prior_seed':product['numerical_seeds']['prior_check']==2854342402,'effect_seed':product['numerical_seeds']['effect_rollout']==2134078996,'bridge_seed':product['numerical_seeds']['bridge_reference']==4047038903,'unclaimed':row['claim_token'] is None,'unstarted':row['started_at'] is None,'no_result':row['result_json'] is None,'oldest':bool(queue) and queue[0]['job_id']==attempt,'no_running':not running}\nreceipts=[]\nfor receipt in db.execute('SELECT * FROM receipts'):\n response=json.loads(receipt['response'])\n if isinstance(response,dict) and response.get('id')==attempt:\n  receipts.append({'owner_id':receipt['owner_id'],'scope':receipt['scope'],'key_sha256':hashlib.sha256(receipt['key'].encode()).hexdigest(),'session_id_sha256':hashlib.sha256(receipt['session_id'].encode()).hexdigest(),'payload_sha256':receipt['payload_sha256'],'response_sha256':hashlib.sha256(receipt['response'].encode()).hexdigest(),'attempt_id':response['id']})\ncontrol=db.execute('SELECT database_instance_id,authority_generation,database_device,database_inode,lock_device,lock_inode FROM service_control WHERE singleton=1').fetchone()\nstats={}\nfor label,p in [('database',path),('lock',Path(str(path)+'.admission.lock'))]:\n s=p.stat();stats[label]={'device':s.st_dev,'inode':s.st_ino,'bytes':s.st_size,'uid':s.st_uid,'gid':s.st_gid}\ncontrol=dict(control);checks['authority_file_identity']=(control['database_device'],control['database_inode'],control['lock_device'],control['lock_inode'])==(stats['database']['device'],stats['database']['inode'],stats['lock']['device'],stats['lock']['inode'])\nout={'database_mode':'uri mode=ro; query_only=ON; explicit read transaction; no immutable/WAL bypass','query_only':db.execute('PRAGMA query_only').fetchone()[0],'total_changes':db.total_changes,'schema_versions':[r[0] for r in db.execute('SELECT version FROM schema_migrations ORDER BY version')],'journal_mode':db.execute('PRAGMA journal_mode').fetchone()[0],'database_control':control,'file_identities':stats,'protected_tables':protected,'queue':queue,'running':running,'attempt_checks':checks,'attempt':{'id':attempt,'patient_id':row['patient_id'],'canonical_input_sha256':actual,'request_row_utf8_sha256':hashlib.sha256(row['request_json'].encode()).hexdigest(),'history_sha256':row['history_sha256'],'current_projection_sha256':sha(projected),'cutoff':row['cutoff'],'configuration':product['request']['configuration'],'numerical_seeds':product['numerical_seeds'],'source_set_sha256':product['source_set_sha256'],'immutable_identity_sha256':sha({k:row[k] for k in ['job_id','patient_id','owner_id','previous_attempt','request_json','input_sha256','history_sha256','cutoff','configuration_json','cohort_json','created_at']})},'receipt_identities':receipts,'panel':{'seed':json.loads(patient['state_json'])['simulation']['seed'],'index':json.loads(patient['state_json'])['simulation']['index'],'day':json.loads(patient['state_json'])['simulation']['day']}}\n\nresult=json.loads(row['result_json']) if row['result_json'] else None\nartifact_checks=[]\nif result:\n for a in result['artifacts']:\n  f=Path(row['artifact_root'])/a['path'];artifact_checks.append({'path':a['path'],'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'matches':hashlib.sha256(f.read_bytes()).hexdigest()==a['sha256']})\nout['terminal_attempt']={'id':row['job_id'],'patient_id':row['patient_id'],'status':row['status'],'stage':row['stage'],'started_at':row['started_at'],'finished_at':row['finished_at'],'failure_reason':row['failure_reason'],'result_status':result['status'] if result else None,'result_canonical_sha256':sha(result) if result else None,'artifact_root':row['artifact_root'],'artifact_checks':artifact_checks,'trusted_launch':json.loads(row['progress_json']).get('trusted_launch')}\nout['pending_work']=[dict(r) for r in db.execute('SELECT id,status,reason FROM pending_work WHERE id=?',(attempt,))]\n\ndb.rollback();db.close();print(canonical(out))\n"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.6790957450866699,
+    "exit": 0,
+    "source_head": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+    "started_unix": 1792682381.1639907,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "6f38635042c94b4b8bceb9a361a04a58.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 28825,
+        "path": "6f38635042c94b4b8bceb9a361a04a58.stdout",
+        "sha256": "9b5d41cdcb5bcdcea15c9ba7b3cf6cf0badc893142c087e135b0be35bd4f6323"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-ac8e16e0-service",
+      "--format",
+      " {\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Path\":{{json .Path}},\"Args\":{{json .Args}},\"Config\":{\"User\":{{json (index .Config \"User\")}},\"Labels\":{{with index .Config \"Labels\"}}{\"remission.attempt\":{{json (index . \"remission.attempt\")}},\"remission.analysis\":{{json (index . \"remission.analysis\")}}}{{else}}{}{{end}}},\"HostConfig\":{\"Memory\":{{json (index .HostConfig \"Memory\")}},\"NanoCpus\":{{json (index .HostConfig \"NanoCpus\")}},\"NetworkMode\":{{json (index .HostConfig \"NetworkMode\")}},\"ReadonlyRootfs\":{{json (index .HostConfig \"ReadonlyRootfs\")}},\"CapDrop\":{{json (index .HostConfig \"CapDrop\")}},\"SecurityOpt\":{{json (index .HostConfig \"SecurityOpt\")}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}}},\"Mounts\":{{json .Mounts}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.15748167037963867,
+    "exit": 0,
+    "source_head": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+    "started_unix": 1792682379.6167712,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "b31bd6db9b28444b8ce1296e07aa092d.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1483,
+        "path": "b31bd6db9b28444b8ce1296e07aa092d.stdout",
+        "sha256": "d3ddf2e9057ee43afc448f52b1fbfe4a82c3b59a19a14b87ec7561980d868620"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12:/output",
+      "artifacts\\pa3\\native-terminal-r1-3c6\\worker-output"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.24199891090393066,
+    "exit": 0,
+    "source_head": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+    "started_unix": 1792682380.1435518,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "ba7a04e54b5a48719e6949427593533c.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "ba7a04e54b5a48719e6949427593533c.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12:/input/input.json",
+      "artifacts\\pa3\\native-terminal-r1-3c6\\worker-input.json"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.16601777076721191,
+    "exit": 0,
+    "source_head": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+    "started_unix": 1792682380.4885063,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "bb7273dafe21414286d25b10395ab938.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "bb7273dafe21414286d25b10395ab938.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12",
+      "--format",
+      " {\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Path\":{{json .Path}},\"Args\":{{json .Args}},\"Config\":{\"User\":{{json (index .Config \"User\")}},\"Labels\":{{with index .Config \"Labels\"}}{\"remission.attempt\":{{json (index . \"remission.attempt\")}},\"remission.analysis\":{{json (index . \"remission.analysis\")}}}{{else}}{}{{end}}},\"HostConfig\":{\"Memory\":{{json (index .HostConfig \"Memory\")}},\"NanoCpus\":{{json (index .HostConfig \"NanoCpus\")}},\"NetworkMode\":{{json (index .HostConfig \"NetworkMode\")}},\"ReadonlyRootfs\":{{json (index .HostConfig \"ReadonlyRootfs\")}},\"CapDrop\":{{json (index .HostConfig \"CapDrop\")}},\"SecurityOpt\":{{json (index .HostConfig \"SecurityOpt\")}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}}},\"Mounts\":{{json .Mounts}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-native-run-sol-261022",
+    "elapsed_seconds": 0.15256834030151367,
+    "exit": 0,
+    "source_head": "90dcb9feedf1c543da1e21286296eda1a119f53c",
+    "started_unix": 1792682379.3618743,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "c03813297dc840dd97deb4edf7e81f7f.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1463,
+        "path": "c03813297dc840dd97deb4edf7e81f7f.stdout",
+        "sha256": "efdc73cef0455a3358cff28729e6c933b60135b9d29ddb26b8ec7b7806eced2d"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 60
+  }
+]

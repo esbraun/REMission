@@ -1,0 +1,2135 @@
+[
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-before",
+      "--network",
+      "none",
+      "--cpus",
+      "0.5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--user",
+      "10001:10001",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-protocol-native-sol-261022,target=/source,readonly",
+      "--workdir",
+      "/source",
+      "--env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "--env",
+      "PYTHONPATH=/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/contracts",
+      "-p",
+      "test_protocol_boundary.py",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 2.468078136444092,
+    "exit": 1,
+    "raw_metadata": "artifacts/p1/repair-before/16ba270f83d04644808bf4d08dc07717.json",
+    "raw_metadata_sha256": "bc11f9a3e16ef7622dbee990b1186b01dfb6fd40c43c6bc9f929a5dbebe01b5b",
+    "source_head": "8f4b21f907ff7f8e36c69e63ad349e14395da256",
+    "source_snapshot_sha256": "40c96414fd2ad9400237db19210cb2c43d55a1d66c7c87d39c0f6226ba2978bf",
+    "started_unix": 1792677953.6457536,
+    "streams": {
+      "stderr": {
+        "bytes": 4510,
+        "path": "16ba270f83d04644808bf4d08dc07717.stderr",
+        "sha256": "7e38549a1262b75b5121a223f0d3784f1ea8df90d79b63a65107b35673fc6aab"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "16ba270f83d04644808bf4d08dc07717.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": null
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-after",
+      "--network",
+      "none",
+      "--cpus",
+      "0.5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--user",
+      "10001:10001",
+      "--mount",
+      "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/poc-protocol-native-sol-261022,target=/source,readonly",
+      "--workdir",
+      "/source",
+      "--env",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "--env",
+      "PYTHONPATH=/source",
+      "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/contracts",
+      "-p",
+      "test_protocol_boundary.py",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 2.388615608215332,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-after/deaeb5f88f914bfb8f299c2e2aaa4e9f.json",
+    "raw_metadata_sha256": "4cb43a88a8885658983ed49bc229dc20fcf47b57684876791acc066e7b3aa595",
+    "source_head": "8f4b21f907ff7f8e36c69e63ad349e14395da256",
+    "source_snapshot_sha256": "3fb46afc720104e4a6adc1aa0d38a0d99024dd1b508068bb53687804b8c9ecd0",
+    "started_unix": 1792677986.1762633,
+    "streams": {
+      "stderr": {
+        "bytes": 2285,
+        "path": "deaeb5f88f914bfb8f299c2e2aaa4e9f.stderr",
+        "sha256": "e4bd1079487a1099415e1faaae3ef4c10a7083df0dfac9910cac0735c516d576"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "deaeb5f88f914bfb8f299c2e2aaa4e9f.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": null
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-p1-native-sol-7c20-service-base:retained",
+      "--format",
+      "{{json .Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.33759474754333496,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/035c3537521540c0860c28eace2e7a19.json",
+    "raw_metadata_sha256": "1efc2c864e1c3c3abb0187931354cc758a040cdbfc19a3b1dfa269ea7da20d6e",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678105.295489,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "035c3537521540c0860c28eace2e7a19.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 74,
+        "path": "035c3537521540c0860c28eace2e7a19.stdout",
+        "sha256": "c79225ba97db442c3f00cad473ee231c6ab8027ccebabd6f324d5f307bbbb973"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-p1-native-sol-7c20-service:candidate",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.32790637016296387,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/06721161a7f844fcb6f3e99eb4be08e0.json",
+    "raw_metadata_sha256": "ab0a5724030ce695387844e8c667e01b9cc3fd604a5cecbaf3a0ad45d6589d5f",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678109.5232844,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "06721161a7f844fcb6f3e99eb4be08e0.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2487,
+        "path": "06721161a7f844fcb6f3e99eb4be08e0.stdout",
+        "sha256": "8b4ece0b917e133686fe29f595efc8f9c5529fee72794e031991214f039feb83"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "artifacts/p1/repair-source/COPY.Dockerfile",
+      "--build-arg",
+      "SERVICE_BASE=remission-p1-native-sol-7c20-service-base:retained",
+      "--build-arg",
+      "LEARNER_BASE=remission-p1-native-sol-7c20-learner-base:retained",
+      "--build-arg",
+      "CONTROLS_BASE=remission-p1-native-sol-7c20-controls-base:retained",
+      "--target",
+      "controls",
+      "--tag",
+      "remission-p1-native-sol-7c20-controls:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.9137184619903564,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/3319ea58acad4822936cb48c1fc4309c.json",
+    "raw_metadata_sha256": "ae7e393309a3aa05bf18575799a84f42d86e27ed75b148966c9e1f6ff10d2a63",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678112.3928747,
+    "streams": {
+      "stderr": {
+        "bytes": 2776,
+        "path": "3319ea58acad4822936cb48c1fc4309c.stderr",
+        "sha256": "6f56690fc3009bd6d55dd5d4020d19e04f527b8cd3866df0aef91c97c80a50ec"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "3319ea58acad4822936cb48c1fc4309c.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "artifacts/p1/repair-source/COPY.Dockerfile",
+      "--build-arg",
+      "SERVICE_BASE=remission-p1-native-sol-7c20-service-base:retained",
+      "--build-arg",
+      "LEARNER_BASE=remission-p1-native-sol-7c20-learner-base:retained",
+      "--build-arg",
+      "CONTROLS_BASE=remission-p1-native-sol-7c20-controls-base:retained",
+      "--target",
+      "learner",
+      "--tag",
+      "remission-p1-native-sol-7c20-learner:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.5828478336334229,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/468b44e1336c44238dbc6565761b8989.json",
+    "raw_metadata_sha256": "b3e328302e9d9b7a15f40f8fd7199d26d7b3048654fb1e04d829b32b59902bd8",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678110.062817,
+    "streams": {
+      "stderr": {
+        "bytes": 2459,
+        "path": "468b44e1336c44238dbc6565761b8989.stderr",
+        "sha256": "9f52bd901f1f8dca51f499672bc5be10b7128adf856d26545113dd5e266c39e9"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "468b44e1336c44238dbc6565761b8989.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "tag",
+      "sha256:5ee445f4823e4dc1f4f02392b73b90b78960c5798a2ff216685d5d63ec8d8b2b",
+      "remission-p1-native-sol-7c20-service-base:retained"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.19840717315673828,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/4dd7c69a6de54d9f9e06c0753c93f23b.json",
+    "raw_metadata_sha256": "5a0a9c46656c1fdde9c5f4997fd3e8690da0ce00b633b8713cc116e971c2ff3b",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678104.9256916,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "4dd7c69a6de54d9f9e06c0753c93f23b.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "4dd7c69a6de54d9f9e06c0753c93f23b.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "build",
+      "--network",
+      "none",
+      "--file",
+      "artifacts/p1/repair-source/COPY.Dockerfile",
+      "--build-arg",
+      "SERVICE_BASE=remission-p1-native-sol-7c20-service-base:retained",
+      "--build-arg",
+      "LEARNER_BASE=remission-p1-native-sol-7c20-learner-base:retained",
+      "--build-arg",
+      "CONTROLS_BASE=remission-p1-native-sol-7c20-controls-base:retained",
+      "--target",
+      "service",
+      "--tag",
+      "remission-p1-native-sol-7c20-service:candidate",
+      "."
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.723433494567871,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/56381d2e9ed640629e1e0e927273f6c4.json",
+    "raw_metadata_sha256": "722b714f4acc11321e986527361732f731fa74d479ece6e3324b8a35a282fc26",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678107.6534328,
+    "streams": {
+      "stderr": {
+        "bytes": 2561,
+        "path": "56381d2e9ed640629e1e0e927273f6c4.stderr",
+        "sha256": "16b1783330a004d09be4147c4084b6df6569d6e08e106cbb6eea97cc30fe2f2e"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "56381d2e9ed640629e1e0e927273f6c4.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-p1-native-sol-7c20-controls-base:retained",
+      "--format",
+      "{{json .Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.38892340660095215,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/7df50916c3a340a4adea17225f30e1c9.json",
+    "raw_metadata_sha256": "007574a2facf120ec04dad30b68582a65b687e26d156427e98faf242d0983f08",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678107.0622144,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "7df50916c3a340a4adea17225f30e1c9.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 74,
+        "path": "7df50916c3a340a4adea17225f30e1c9.stdout",
+        "sha256": "190faac3c404f95837c721bcf6fd7c9e065385a4c4c829883a25c42e2fc87cd6"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-p1-native-sol-7c20-controls:candidate",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.4208333492279053,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/8c0ce5ea5dbf455982a445c39322c9e9.json",
+    "raw_metadata_sha256": "9a7a44d3df55bf687502d0d9850f353b9a8b7e7897a3a81d8241d81a8f0ae019",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678114.5341334,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "8c0ce5ea5dbf455982a445c39322c9e9.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3523,
+        "path": "8c0ce5ea5dbf455982a445c39322c9e9.stdout",
+        "sha256": "ab4c3184d224b6af5e65c3be530d635b023a934d1feb1c17c8451364dd2a0a37"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "tag",
+      "sha256:3f8a3f859f811c11079ce521728d7c147506092e53cfec04a9e3099b6d75e6c4",
+      "remission-p1-native-sol-7c20-learner-base:retained"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.2641024589538574,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/8c1253b0dba94a079c473552ca5f54fb.json",
+    "raw_metadata_sha256": "8d7ef11d2853a0f076fbb67092a31c85b6c15f897a623f575df8a2728c441f85",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678105.8014255,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "8c1253b0dba94a079c473552ca5f54fb.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "8c1253b0dba94a079c473552ca5f54fb.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.04472541809082031,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/b148d084b12c460d82dd7102b57fedbf.json",
+    "raw_metadata_sha256": "1c3994c98948e629c95ac8e1e5f60854caa0fcddff07bf428290004475b12a82",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678104.7440479,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "b148d084b12c460d82dd7102b57fedbf.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "b148d084b12c460d82dd7102b57fedbf.stdout",
+        "sha256": "bf2ba107c2c17b290b6a32e313ae424be0eaad24a2a96bedf6ff43c239e526b3"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "tag",
+      "sha256:7804b693efdde93b27afd32a8099762f21b59dd13583fdaa439ce751cb200833",
+      "remission-p1-native-sol-7c20-controls-base:retained"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.29474902153015137,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/d35f310365954cb7940c45660cb0752a.json",
+    "raw_metadata_sha256": "143809f9202f3bb482561f2c2fd94ad877f1f943879997a15eff502ab3fddb22",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678106.5697255,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "d35f310365954cb7940c45660cb0752a.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "d35f310365954cb7940c45660cb0752a.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-p1-native-sol-7c20-learner-base:retained",
+      "--format",
+      "{{json .Id}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.1998271942138672,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/d3d23891572946fdab4d11b0352512b2.json",
+    "raw_metadata_sha256": "54ec791628b4f51a36663b479445931ad89ac4d45a597721359af331b6c50f28",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678106.202341,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "d3d23891572946fdab4d11b0352512b2.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 74,
+        "path": "d3d23891572946fdab4d11b0352512b2.stdout",
+        "sha256": "1841c8f32c0f89484bcd78079e66e2cd293473e02823917d9935c0a3a0294a0b"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "remission-p1-native-sol-7c20-learner:candidate",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.3086118698120117,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-copy-7c20/commands/dd8457e362464aa088676cfe49690c51.json",
+    "raw_metadata_sha256": "9b967cb63ad69cc2b72ff02a080abf50d14d5abaa65b2562be2b8f3264ba9431",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678111.866661,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "dd8457e362464aa088676cfe49690c51.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2561,
+        "path": "dd8457e362464aa088676cfe49690c51.stdout",
+        "sha256": "2b9c3914b4b4488cdef8211b8e26400c31dbbb80b1749ece291907b71f7e8db2"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 90
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-controls-7c20",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "1g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=256m",
+      "--user",
+      "10001:10001",
+      "--env",
+      "MPLCONFIGDIR=/tmp/matplotlib",
+      "--env",
+      "PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64",
+      "sha256:24fcd00563071feb11d18f82acb8f85393dd28f6ba4aa2ecfe7ce17d0c13bda8",
+      "python",
+      "/app/run_p1_controls.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 27.038896322250366,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-controls-7c20/commands/ae03d7a5be9c477aafd25cc9a4fe29cf.json",
+    "raw_metadata_sha256": "ab88713927f4194c20fe2fac87a12f6a5be7bfc2853bdb65fe6ad2e00232adf6",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678162.505636,
+    "streams": {
+      "stderr": {
+        "bytes": 5690,
+        "path": "ae03d7a5be9c477aafd25cc9a4fe29cf.stderr",
+        "sha256": "0fcb35fd07b4e428d2f9f6114fe8b563dd6fda769a3d96ab7a5fd72376da3253"
+      },
+      "stdout": {
+        "bytes": 13512,
+        "path": "ae03d7a5be9c477aafd25cc9a4fe29cf.stdout",
+        "sha256": "01155a46bc78dc711b9bc6a126a0e7bdf8f949e3c83345fe108f00c9d257e1c0"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 180
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-controls-7c20",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.17409133911132812,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-controls-7c20/commands/c7f2c064126248fbb188149ba569d1c1.json",
+    "raw_metadata_sha256": "df2a645f8e2a247837fd0cdd9570ccf390d2fbb5cde43de8a952b254621773da",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678189.6720219,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "c7f2c064126248fbb188149ba569d1c1.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1044,
+        "path": "c7f2c064126248fbb188149ba569d1c1.stdout",
+        "sha256": "2d29e26d281410f77e2434f6f3e2c30547448600548ba922d87b9c7005502b33"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 30
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-proof-7c20-controls-new",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15928292274475098,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/10c9663f5dc840a5b7055697ebd00d84.json",
+    "raw_metadata_sha256": "47cf019ba71048bcbd5f4f12aabd4b154c80b92b2376921c6d1c2fe114ba8860",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678216.1912951,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "10c9663f5dc840a5b7055697ebd00d84.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1053,
+        "path": "10c9663f5dc840a5b7055697ebd00d84.stdout",
+        "sha256": "64c93c3ca20926d5c9e0ea1e04961daf3f0b220abff9484299c3150ec47732a0"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-proof-7c20-learner-new",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.16643667221069336,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/2063bfd1452f45cbb8d7bd5cf7db437f.json",
+    "raw_metadata_sha256": "a98820e792dbc44eedd4c62717bfdc3ecaa05584c43d05cbbd34dc1229223bc4",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678213.455963,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "2063bfd1452f45cbb8d7bd5cf7db437f.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1052,
+        "path": "2063bfd1452f45cbb8d7bd5cf7db437f.stdout",
+        "sha256": "40e077442263e67133361ba25af0c68f594ad8a31ff485b33ce8429de2a6f3af"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-proof-7c20-service-parent",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15918445587158203,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/25fc8b8bf0e5405c9cafc80073e3dcbd.json",
+    "raw_metadata_sha256": "02cd6456b79d9ec72ab84e087933f4f516302b493efa4adb7f2e9b3412cc0222",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678209.5449674,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "25fc8b8bf0e5405c9cafc80073e3dcbd.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1055,
+        "path": "25fc8b8bf0e5405c9cafc80073e3dcbd.stdout",
+        "sha256": "de8ccea21d5459999400391e82a22eb07fba59610aaa48b6ee6ba017c624ad80"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json (index .Config \"Entrypoint\")}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.21112322807312012,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/3c5ce3c9ca5b4fb7afb1a34d2795caa3.json",
+    "raw_metadata_sha256": "0e88f0c9c0ef6c6e9b7bf40fd7c6c96c033ed18b8ea9aab68ce1454e57ce5908",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678213.728431,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "3c5ce3c9ca5b4fb7afb1a34d2795caa3.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2668,
+        "path": "3c5ce3c9ca5b4fb7afb1a34d2795caa3.stdout",
+        "sha256": "44074f09157c5dd9d47c82cf3ea7265d137c7a9826a5828e9cafa5d5cc2747fa"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-proof-7c20-service-new",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15893268585205078,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/548ac7080acd454e89fc9cb1c73d0ec3.json",
+    "raw_metadata_sha256": "df0f90e8c47c785d77f1c493f44b8fe6293841dc4302577cb53eb7596e05c993",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678210.8824885,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "548ac7080acd454e89fc9cb1c73d0ec3.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1052,
+        "path": "548ac7080acd454e89fc9cb1c73d0ec3.stdout",
+        "sha256": "29b687f0c9b9b30dabdae52413c42b6fd66c9611d4b2fb11334f1e644c369fd9"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-proof-7c20-controls-new",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:24fcd00563071feb11d18f82acb8f85393dd28f6ba4aa2ecfe7ce17d0c13bda8",
+      "python",
+      "-c",
+      "import hashlib,json,pathlib;print(json.dumps({str(p.relative_to('/app')):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(pathlib.Path('/app').rglob('*')) if p.is_file()},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.622821569442749,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/5b13315dfca44badb3bfc31459ae80ad.json",
+    "raw_metadata_sha256": "108eb42e50848fdff9e02b88cd071c0023a2d8b409dfcd48682bce1285ed6d95",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678215.458035,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "5b13315dfca44badb3bfc31459ae80ad.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 14774,
+        "path": "5b13315dfca44badb3bfc31459ae80ad.stdout",
+        "sha256": "ffc8b0bd958308647989de316423884ab0f19029b72241a6bde7987b329a5eb6"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-proof-7c20-learner-new",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "python",
+      "-c",
+      "import hashlib,json,pathlib;print(json.dumps({str(p.relative_to('/app')):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(pathlib.Path('/app').rglob('*')) if p.is_file()},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.5455458164215088,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/63ddf07b26c34a3d8bc88dda8bb00889.json",
+    "raw_metadata_sha256": "59f9a0060c7e87d35dfe2435e7d092b4ac4fdd26fe1702e5daa96efa1977da21",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678212.8015747,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "63ddf07b26c34a3d8bc88dda8bb00889.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 5514,
+        "path": "63ddf07b26c34a3d8bc88dda8bb00889.stdout",
+        "sha256": "89e54af0f3353310f4f3425c29680dceef21c92e1ccfdde744d36e26ecc7d5fd"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:0df955d338db2d118c8d705d7d01ea6dbb7c9d188c79618a8c17a605075a4a5d",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json (index .Config \"Entrypoint\")}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.20793843269348145,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/64726f189c8c4332a117eee619ded83a.json",
+    "raw_metadata_sha256": "cda8e6bc8f678a11b8a0c0e18fbbe56c78815fd49c4c8aa2961bcc69add6eae3",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678211.165124,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "64726f189c8c4332a117eee619ded83a.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2664,
+        "path": "64726f189c8c4332a117eee619ded83a.stdout",
+        "sha256": "e4124432b8046117a93b79672bea928573ce12c31b17eb4fe6dec357bd19ff19"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-proof-7c20-controls-parent",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:7804b693efdde93b27afd32a8099762f21b59dd13583fdaa439ce751cb200833",
+      "python",
+      "-c",
+      "import hashlib,json,pathlib;print(json.dumps({str(p.relative_to('/app')):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(pathlib.Path('/app').rglob('*')) if p.is_file()},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.5724470615386963,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/69d8811013a0450fb27d47b56e30da97.json",
+    "raw_metadata_sha256": "d3b47621cc2203d5f1d418e33b49c2d20f9fe44088d71ebc6b4a9f39932f50a8",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678214.0810106,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "69d8811013a0450fb27d47b56e30da97.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 14773,
+        "path": "69d8811013a0450fb27d47b56e30da97.stdout",
+        "sha256": "5e89e28f2620f9876ba55807d1a549c7340397c474ac79d899d57059e108dced"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:5ee445f4823e4dc1f4f02392b73b90b78960c5798a2ff216685d5d63ec8d8b2b",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json (index .Config \"Entrypoint\")}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.2051234245300293,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/79f62b32eb6a40f49f4bae66b3f9d824.json",
+    "raw_metadata_sha256": "61519306b67e07dc1918e4f9a2452f4a077d99090a3499e0881d51af86d648fe",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678209.8134947,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "79f62b32eb6a40f49f4bae66b3f9d824.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2516,
+        "path": "79f62b32eb6a40f49f4bae66b3f9d824.stdout",
+        "sha256": "19c5f3f12119c6c05cb877d9658da2db1a2d285657ab96ed173080a92f92c583"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:3f8a3f859f811c11079ce521728d7c147506092e53cfec04a9e3099b6d75e6c4",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json (index .Config \"Entrypoint\")}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.20450425148010254,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/7e768e53781449f8b51d74d510b9938c.json",
+    "raw_metadata_sha256": "80320ab6d23173c770b1a2819c6f3d4aff5caa363b7818a26a13181534516b5f",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678212.4851081,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "7e768e53781449f8b51d74d510b9938c.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2594,
+        "path": "7e768e53781449f8b51d74d510b9938c.stdout",
+        "sha256": "acf8af2d9b465093a1a95c3765584baa5e75a44e37d5ce85757ef355e58e122b"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:7804b693efdde93b27afd32a8099762f21b59dd13583fdaa439ce751cb200833",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json (index .Config \"Entrypoint\")}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.23465943336486816,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/81b62b0237a0486baf0841a31888824b.json",
+    "raw_metadata_sha256": "3323925b54279deec3bc0d1d56c2f83ab2c95c7e21776e83eb4766046794e7d7",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678215.071563,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "81b62b0237a0486baf0841a31888824b.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3404,
+        "path": "81b62b0237a0486baf0841a31888824b.stdout",
+        "sha256": "5559a0834f5add00beecbc613fd019115b88273213eb5301d847aca8dcb85342"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:24fcd00563071feb11d18f82acb8f85393dd28f6ba4aa2ecfe7ce17d0c13bda8",
+      "--format",
+      "{\"Id\":{{json .Id}},\"RootFS\":{{json .RootFS}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json (index .Config \"Entrypoint\")}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.21251773834228516,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/a1f02c9dbebd40878bd14a072b5270b5.json",
+    "raw_metadata_sha256": "e742cd868168760c32b409d9eac59544a6e3efea0b22d4af84528fcc88da1af9",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678216.454966,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "a1f02c9dbebd40878bd14a072b5270b5.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 3700,
+        "path": "a1f02c9dbebd40878bd14a072b5270b5.stdout",
+        "sha256": "25ee4eeee97246bce3fb989cef2d18d6f8b8803cedf15fb181c6038b6070d0ae"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-proof-7c20-learner-parent",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:3f8a3f859f811c11079ce521728d7c147506092e53cfec04a9e3099b6d75e6c4",
+      "python",
+      "-c",
+      "import hashlib,json,pathlib;print(json.dumps({str(p.relative_to('/app')):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(pathlib.Path('/app').rglob('*')) if p.is_file()},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.5210707187652588,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/b6ace70b74bd4c33904bd517155ee811.json",
+    "raw_metadata_sha256": "78867c8bca3d0f35b51316f8b195ab3b9c4e48d11caad4682860d98c08539901",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678211.5054662,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "b6ace70b74bd4c33904bd517155ee811.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 5514,
+        "path": "b6ace70b74bd4c33904bd517155ee811.stdout",
+        "sha256": "03bb36f0fc1919a64d3e0e07e2b33a6518e7080e4beb7505dd4869dce4f39f2d"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-proof-7c20-controls-parent",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15766000747680664,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/bcd8125eeb6b423d848d4123af2469a8.json",
+    "raw_metadata_sha256": "17177ffd49b92d65d83d0bbf6df92e74f7af0e172c893acf46a58cfd671854dd",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678214.785633,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "bcd8125eeb6b423d848d4123af2469a8.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1056,
+        "path": "bcd8125eeb6b423d848d4123af2469a8.stdout",
+        "sha256": "b1a064444038aad22150cc74d8a94cf07235bf834e8fd6086c68d1be22a367c3"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-proof-7c20-service-new",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:0df955d338db2d118c8d705d7d01ea6dbb7c9d188c79618a8c17a605075a4a5d",
+      "python",
+      "-c",
+      "import hashlib,json,pathlib;print(json.dumps({str(p.relative_to('/app')):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(pathlib.Path('/app').rglob('*')) if p.is_file()},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.6364142894744873,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/d15a555bba64422ebd6434bb118f98cf.json",
+    "raw_metadata_sha256": "30f138d80299783cd706aaf5a335b29716b1f0b215dc6bfbaa5d463d3a24a944",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678210.1407495,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "d15a555bba64422ebd6434bb118f98cf.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 8725,
+        "path": "d15a555bba64422ebd6434bb118f98cf.stdout",
+        "sha256": "ae9c7df9bfb182cac5173eeaf175230eb6cbe3881fcf22b9afc5d3c43c34a381"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-repair-proof-7c20-learner-parent",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.16669845581054688,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/da3c0963fb7546f59e734c6569bc0181.json",
+    "raw_metadata_sha256": "7602ae84012a3fccd649beb9740b68631b58eb931dfcd99b072d16d320080ddb",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678212.1841226,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "da3c0963fb7546f59e734c6569bc0181.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1054,
+        "path": "da3c0963fb7546f59e734c6569bc0181.stdout",
+        "sha256": "97cf2246c8dbdefd21f0e67dcd566b0d1cb1d3f5eb844ab623d8707a7292dd96"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-repair-proof-7c20-service-parent",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:5ee445f4823e4dc1f4f02392b73b90b78960c5798a2ff216685d5d63ec8d8b2b",
+      "python",
+      "-c",
+      "import hashlib,json,pathlib;print(json.dumps({str(p.relative_to('/app')):{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(pathlib.Path('/app').rglob('*')) if p.is_file()},sort_keys=True))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.6165685653686523,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-proof-7c20/commands/fedfed2d2482442696c2c5a7b0bd2007.json",
+    "raw_metadata_sha256": "c55530edbb09c4562d8d2606503ba046159af949e778d6995637c075262ec48b",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678208.8116224,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "fedfed2d2482442696c2c5a7b0bd2007.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 8725,
+        "path": "fedfed2d2482442696c2c5a7b0bd2007.stdout",
+        "sha256": "07669d71f3cea6175eba6cd542ea24282d006ea156d65366a89e0896efdb80d4"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-service-purity",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.16893291473388672,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/054cfbe924ee47689fec8b60352e8f39.json",
+    "raw_metadata_sha256": "7d18c8166a593ffb844365fab52f3b715090cd96b6f40912fd9044b25f96b8b7",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678231.5324187,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "054cfbe924ee47689fec8b60352e8f39.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1042,
+        "path": "054cfbe924ee47689fec8b60352e8f39.stdout",
+        "sha256": "249030e47fc51b8bfe4dc08ac0c7b4fc73732bfd71c4926b8e0f8572ab2a28ad"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "stop",
+      "--time",
+      "10",
+      "remission-p1-native-sol-7c20-generator"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 10.350871801376343,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/0b8fbfade0b44728b13c6de87ec1f4e0.json",
+    "raw_metadata_sha256": "8fb5d68e51597d415d22516212b145d906215ec907a4c8fd744d2c10e857a769",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678240.271199,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "0b8fbfade0b44728b13c6de87ec1f4e0.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 94,
+        "path": "0b8fbfade0b44728b13c6de87ec1f4e0.stdout",
+        "sha256": "f4c3a0d1918db9f48ce31796ab99bfc9ddae07fe100c4f9f1aff634787335413"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "create",
+      "--label",
+      "remission.task=remission-p1-native-sol-7c20",
+      "remission-p1-native-sol-7c20-input"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.17182302474975586,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/15cc1921593f48debf49dc00263d5d4b.json",
+    "raw_metadata_sha256": "c1d037ea8199412892142da0585f692bc0ea11497932cdc927fae8a30d5a5d7d",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678226.645853,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "15cc1921593f48debf49dc00263d5d4b.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 35,
+        "path": "15cc1921593f48debf49dc00263d5d4b.stdout",
+        "sha256": "f5e27063acc25284d99e7dd76a9408372038512498e3e77e80314b47f0413d51"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "volume",
+      "ls",
+      "-q",
+      "--filter",
+      "name=^remission-p1-native-sol-7c20-input$"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15254473686218262,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/2a7abb601b9d444a89fa566c0d127a0d.json",
+    "raw_metadata_sha256": "816c551306b35bda3d29d0ac47c99f5e27564edc8d19d462d141a09958909384",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678226.1165912,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "2a7abb601b9d444a89fa566c0d127a0d.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "2a7abb601b9d444a89fa566c0d127a0d.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-7c20-service-purity",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:0df955d338db2d118c8d705d7d01ea6dbb7c9d188c79618a8c17a605075a4a5d",
+      "python",
+      "-c",
+      "import importlib.util,json,pathlib,sys;import services.foundation.app,services.foundation.protocol;assert importlib.util.find_spec('services.generator') is None;assert not pathlib.Path('/app/services/generator').exists();assert 'pymc' not in sys.modules;print(json.dumps({'service_imports':True,'private_generator_absent':True,'pymc_not_imported':True}))"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.950810194015503,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/2c024142bc4f431c87966e46facebdf8.json",
+    "raw_metadata_sha256": "f84825a00483da76ff16a1d7294db9fe605843b67f9ee043e6ec6d6c8e146727",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678229.4617088,
+    "streams": {
+      "stderr": {
+        "bytes": 340,
+        "path": "2c024142bc4f431c87966e46facebdf8.stderr",
+        "sha256": "362fde1ba368d2b3b818b4eead67f716225cc089873d6f13204e2aae796eec5d"
+      },
+      "stdout": {
+        "bytes": 87,
+        "path": "2c024142bc4f431c87966e46facebdf8.stdout",
+        "sha256": "c1e38785bb090ad6a220984265f6d8e5cc59215c1a0c76f4100311b722df874d"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-probe-input-rw",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.18059802055358887,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/3d49ce1009c046a1865c532edaeecdf0.json",
+    "raw_metadata_sha256": "443b5a8d6d100c294c176e6f05f4184a504fee6a5b203157145f7196402966ec",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678235.2022018,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "3d49ce1009c046a1865c532edaeecdf0.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1257,
+        "path": "3d49ce1009c046a1865c532edaeecdf0.stdout",
+        "sha256": "bef9516be830bf3fc933e75ff935a63797b0217ede3d2bcdd3a488175318d4a0"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-probe-positive",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.16367816925048828,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/58df184e9d3a4fdd89240c6a866dbe71.json",
+    "raw_metadata_sha256": "85d8effa795f5b32b48a6f87da9a877278c7b1ac20f1f2f15969eb3250c72608",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678239.9470243,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "58df184e9d3a4fdd89240c6a866dbe71.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1258,
+        "path": "58df184e9d3a4fdd89240c6a866dbe71.stdout",
+        "sha256": "19b22683aac885eebf2549e66a0d96ef5bee4ae0811cf20445be44fda4b134d0"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "create",
+      "--name",
+      "remission-p1-native-sol-7c20-stage",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--cap-add",
+      "CHOWN",
+      "--user",
+      "0:0",
+      "--mount",
+      "type=volume,source=remission-p1-native-sol-7c20-input,target=/input",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "python",
+      "-c",
+      "import os;os.chmod('/input',0o755);os.chmod('/input/input.json',0o444);os.chown('/input/input.json',10002,10002)"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.2508511543273926,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/68a67a6b894444a28f314f8598e6bb6e.json",
+    "raw_metadata_sha256": "7626c761d346010699367198da8d574ebcada25b6e20a7f48fe15bf8ec44f64d",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678226.9675212,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "68a67a6b894444a28f314f8598e6bb6e.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 65,
+        "path": "68a67a6b894444a28f314f8598e6bb6e.stdout",
+        "sha256": "ce6e91d17be37d5f846b707c55cb15a2f02c617f61cc1200a62ef01c260d0089"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-generator",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15889263153076172,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/71204716ebc3468b883b773944eb0d49.json",
+    "raw_metadata_sha256": "98a4a3e8ae5c198d80a997ef460f6223134a9f91c509ad74e91e6c37a3448441",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678229.1654701,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "71204716ebc3468b883b773944eb0d49.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1225,
+        "path": "71204716ebc3468b883b773944eb0d49.stdout",
+        "sha256": "64519bca6f5faee8c1bb4e6a15b7a39c6b705f1a14e4bf2c4bb53d348a8bd536"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-probe-source-exposed",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15845155715942383,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/8863c979781f4298aa1294e1199f8300.json",
+    "raw_metadata_sha256": "5df2f69d059914e9063e86b2034d6521f27bdf8a55276ed969377bd8449d87d9",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678233.403356,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "8863c979781f4298aa1294e1199f8300.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1502,
+        "path": "8863c979781f4298aa1294e1199f8300.stdout",
+        "sha256": "bd6bdce3ac760dd4311e90d5d5a0c741da34fbc0cd032a9de09421a1072dbd8e"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-7c20-probe-source-exposed",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,source=remission-p1-native-sol-7c20-input,target=/input,readonly",
+      "--mount",
+      "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022\\services\\generator,target=/app/services/generator,readonly",
+      "--env",
+      "P1_GENERATOR_URL=http://192.168.208.2:8780/generate",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "python",
+      "/app/protocol_probe.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.4354331493377686,
+    "exit": 1,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/97f4f82e9cc64e6cb29de3e42262c874.json",
+    "raw_metadata_sha256": "fd8ac53ab12971424238c7863fae3f4a9fb489df9cb3697223d36cdec6dbd55e",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678231.81531,
+    "streams": {
+      "stderr": {
+        "bytes": 503,
+        "path": "97f4f82e9cc64e6cb29de3e42262c874.stderr",
+        "sha256": "2a6f6c80e09d0d73a8f63fa7371fd071301ea98ee0890c3682ec32620f703d27"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "97f4f82e9cc64e6cb29de3e42262c874.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "network",
+      "create",
+      "--label",
+      "remission.task=remission-p1-native-sol-7c20",
+      "remission-p1-native-sol-7c20-boundary"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.19794058799743652,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/9ce592bc49cf47ed8480cb30846323b5.json",
+    "raw_metadata_sha256": "46d1b986a5edd1414bd90c21da50a7ed241191ff3970c6ea02b279f71972581e",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678228.381591,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "9ce592bc49cf47ed8480cb30846323b5.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 65,
+        "path": "9ce592bc49cf47ed8480cb30846323b5.stdout",
+        "sha256": "f37dddb049c4fa53806989fa397a0ead42998d1f95030d5c954057682b3ff23b"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--detach",
+      "--name",
+      "remission-p1-native-sol-7c20-generator",
+      "--label",
+      "remission.task=remission-p1-native-sol-7c20",
+      "--network",
+      "remission-p1-native-sol-7c20-boundary",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "sha256:bec9b330b57ea28e4b3a7a0c3d3437c71733b5949b6f5b9109baf301c9b20642"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.35627007484436035,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/b269c8a0be324988a0500618a6d50dcd.json",
+    "raw_metadata_sha256": "28e1a345b216f15f0ecf3bd2ada52c388288b2658fbaab4421e62b846629d23b",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678228.6829038,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "b269c8a0be324988a0500618a6d50dcd.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 65,
+        "path": "b269c8a0be324988a0500618a6d50dcd.stdout",
+        "sha256": "03f267ed1dec4aa8537714b25ff86237197afcf24b0e49646885eaac42641dfa"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-probe-connected",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15978789329528809,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/bf7ba5e44a2948c1bc39d79a52e158c6.json",
+    "raw_metadata_sha256": "2ba45b3d68ba4445aa1bc01f9118609004e610afbae50f205090f0ab26f220ca",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678237.8099115,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "bf7ba5e44a2948c1bc39d79a52e158c6.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1350,
+        "path": "bf7ba5e44a2948c1bc39d79a52e158c6.stdout",
+        "sha256": "a152529130acf52d646f809907e5298ca2327a66436b99877ce4242387d5e0e1"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-generator",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15677714347839355,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/daba0b6aa9b74d5fabd39f52e980f2b7.json",
+    "raw_metadata_sha256": "e259f583adb21d5253e8a28300033329a2b01e3c053838e3ad6b3d0d63c754f5",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678250.734412,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "daba0b6aa9b74d5fabd39f52e980f2b7.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1125,
+        "path": "daba0b6aa9b74d5fabd39f52e980f2b7.stdout",
+        "sha256": "a09acc07f894fc72cdefb0f83a40893f48268540fe9a50ffe4d50db47afa4f9f"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "start",
+      "--attach",
+      "remission-p1-native-sol-7c20-stage"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.2967970371246338,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/de3e19f13f0a49ac9e0d352fc1c1f250.json",
+    "raw_metadata_sha256": "dda30d36d70ca2bc64168b655258f1c2ab055c7ecdfa7fbf3e298902b21daf62",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678227.7078302,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "de3e19f13f0a49ac9e0d352fc1c1f250.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "de3e19f13f0a49ac9e0d352fc1c1f250.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "network",
+      "ls",
+      "-q",
+      "--filter",
+      "name=^remission-p1-native-sol-7c20-boundary$"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15071415901184082,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/e21a1b3788fa4460a18bd19c3e4ef98b.json",
+    "raw_metadata_sha256": "73bdf4b269d38a3cf50200baa8edc74802bb603352c636232cc8b2fcee48e9c9",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678226.3900447,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "e21a1b3788fa4460a18bd19c3e4ef98b.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "e21a1b3788fa4460a18bd19c3e4ef98b.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-7c20-probe-connected",
+      "--network",
+      "remission-p1-native-sol-7c20-boundary",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,source=remission-p1-native-sol-7c20-input,target=/input,readonly",
+      "--env",
+      "P1_GENERATOR_URL=http://192.168.208.2:8780/generate",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "python",
+      "/app/protocol_probe.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 2.144723415374756,
+    "exit": 1,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/e7a51fc75de54d9a91ffc84a47ee74e9.json",
+    "raw_metadata_sha256": "1ceecb24929426051f6c4c21e67e5a61bd17a405914ff2b65170f3653e2a2195",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678235.5251505,
+    "streams": {
+      "stderr": {
+        "bytes": 351,
+        "path": "e7a51fc75de54d9a91ffc84a47ee74e9.stderr",
+        "sha256": "c5376d37b5381a26471358682199dfc33d7c89b407b23deb71a4d096c5361a09"
+      },
+      "stdout": {
+        "bytes": 68,
+        "path": "e7a51fc75de54d9a91ffc84a47ee74e9.stdout",
+        "sha256": "b1ace34e4be124b5dbbfaef83b0bb27fe3969edb710d08fbbb565e8bb885d8f1"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "cp",
+      "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022\\artifacts\\p1\\repair-controls-7c20\\input.json",
+      "remission-p1-native-sol-7c20-stage:/input/input.json"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.22843146324157715,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/ef3af553db0c46f684f7b0a6607541ed.json",
+    "raw_metadata_sha256": "7bfe3da75866329bf899e7a086f5ef1ce9fa6b183eda03572889fb2a7f44589c",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678227.3426325,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "ef3af553db0c46f684f7b0a6607541ed.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "ef3af553db0c46f684f7b0a6607541ed.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "inspect",
+      "remission-p1-native-sol-7c20-stage",
+      "--format",
+      "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json (index .HostConfig \"Tmpfs\")}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 0.15683341026306152,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/f0a6bf853640435aa591272446be954b.json",
+    "raw_metadata_sha256": "9e7453eb6fc4fea4a38afbbd94e83add94c48ad7047875cdc94e433eaee3833d",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678228.1215062,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "f0a6bf853640435aa591272446be954b.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1239,
+        "path": "f0a6bf853640435aa591272446be954b.stdout",
+        "sha256": "8201f4f5e1ed9418dbcabfc8d4fc1e4c1ecbbc3f8ca8484427302ec0e80b5592"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-7c20-probe-input-rw",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,source=remission-p1-native-sol-7c20-input,target=/input",
+      "--env",
+      "P1_GENERATOR_URL=http://192.168.208.2:8780/generate",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "python",
+      "/app/protocol_probe.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.3952674865722656,
+    "exit": 1,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/faefbb3cf664420c95bdf6ec24644547.json",
+    "raw_metadata_sha256": "2fdfd2937c652bd9d500146c80e22615aa3dcc15c173d047af790238cbb240a9",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678233.7034316,
+    "streams": {
+      "stderr": {
+        "bytes": 437,
+        "path": "faefbb3cf664420c95bdf6ec24644547.stderr",
+        "sha256": "b0df488e8c07119a8dce44b2b49a7d7548ee71aeda9ce584780cd319054a8260"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "faefbb3cf664420c95bdf6ec24644547.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  },
+  {
+    "command": [
+      "docker",
+      "run",
+      "--name",
+      "remission-p1-native-sol-7c20-probe-positive",
+      "--network",
+      "none",
+      "--cpus",
+      ".5",
+      "--memory",
+      "512m",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,nodev,size=128m",
+      "--user",
+      "10002:10002",
+      "--mount",
+      "type=volume,source=remission-p1-native-sol-7c20-input,target=/input,readonly",
+      "--env",
+      "P1_GENERATOR_URL=http://192.168.208.2:8780/generate",
+      "sha256:2881abd830510915c5892e8952717b807ba0672e46560d04294a2af6a346770b",
+      "python",
+      "/app/protocol_probe.py"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-protocol-native-sol-261022",
+    "elapsed_seconds": 1.705003261566162,
+    "exit": 0,
+    "raw_metadata": "artifacts/p1/repair-boundary-7c20/commands/fd528b1c3cc54886800cc379f1636d5a.json",
+    "raw_metadata_sha256": "147a6f8cde85bc9cbf4d37353a39ee76ed5dd3ef02ec223d8723d7fc6aa87c50",
+    "source_head": "7c20a3926b410a3cf7359bde3e1a857dae2de046",
+    "source_snapshot_sha256": "1193090cc0106f58eff8cd647074247dd60c07d202563565af146b33d86be669",
+    "started_unix": 1792678238.106107,
+    "streams": {
+      "stderr": {
+        "bytes": 0,
+        "path": "fd528b1c3cc54886800cc379f1636d5a.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 514,
+        "path": "fd528b1c3cc54886800cc379f1636d5a.stdout",
+        "sha256": "238c5420a2acff09b17cdef51bf3a8eba22d5a012da9e53219d7b7ed2a9e0d5b"
+      }
+    },
+    "timed_out": false,
+    "timeout_seconds": 45
+  }
+]

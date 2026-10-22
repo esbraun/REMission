@@ -1,0 +1,75 @@
+{
+  "CapDrop": [
+    "ALL"
+  ],
+  "Id": "45d79d133ddff0719f2f35a71f250c5cc35db3b35e80d35bc3e947404a400781",
+  "Image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+  "Memory": 2147483648,
+  "Mounts": [
+    {
+      "Destination": "/backup",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "/run/desktop/mnt/host/c/Users/erics/Documents/Projects/REMission-worktrees/poc-native-run-sol-261022/artifacts/pa3/private-maintenance-r1-9e97",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/data",
+      "Driver": "local",
+      "Mode": "z",
+      "Name": "remission-poc13-ac8e16e0-database",
+      "Propagation": "",
+      "RW": true,
+      "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data",
+      "Type": "volume"
+    }
+  ],
+  "Name": "/remission-poc13-ac8e16e0-pa3-backup-r1-9e97",
+  "NanoCpus": 2000000000,
+  "Networks": {
+    "none": {
+      "Aliases": null,
+      "DNSNames": null,
+      "DriverOpts": null,
+      "EndpointID": "",
+      "Gateway": "",
+      "GlobalIPv6Address": "",
+      "GlobalIPv6PrefixLen": 0,
+      "GwPriority": 0,
+      "IPAMConfig": null,
+      "IPAddress": "",
+      "IPPrefixLen": 0,
+      "IPv6Gateway": "",
+      "Links": null,
+      "MacAddress": "",
+      "NetworkID": "f99015e033a2dba67b73dd8b29ea88a3cef32f10233f2dc5904a2a1d5266dbce"
+    }
+  },
+  "Ports": {},
+  "ReadonlyRootfs": true,
+  "RestartPolicy": {
+    "MaximumRetryCount": 0,
+    "Name": "no"
+  },
+  "SecurityOpt": [
+    "no-new-privileges"
+  ],
+  "State": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "2026-10-22T13:03:58.140774863Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "2026-10-22T13:03:57.102464768Z",
+    "Status": "exited"
+  },
+  "Tmpfs": {
+    "/tmp": "rw,noexec,nosuid,size=128m"
+  },
+  "User": "10001:10001"
+}

@@ -10,7 +10,10 @@ def admit(source: Path, destination: Path):
     wrapper=json.loads(raw)
     if not isinstance(wrapper,dict):
         raise ValueError('observed history wrapper required')
-    if wrapper.get('schema_version') == '2.0.0':
+    if wrapper.get('schema_version') == '2.1.0':
+        from contracts.domain.protocol import ObservedHistoryV21
+        observed=ObservedHistoryV21.model_validate_json(raw)
+    elif wrapper.get('schema_version') == '2.0.0':
         from contracts.domain.observed_v2 import ObservedHistoryV2
         observed=ObservedHistoryV2.model_validate_json(raw)
     else:

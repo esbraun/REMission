@@ -9,7 +9,7 @@ import time
 import uuid
 
 
-def run(command,evidence):
+def run(command,evidence, *, timeout_seconds=None):
     evidence=Path(evidence)
     evidence.mkdir(parents=True,exist_ok=True)
     stem = uuid.uuid4().hex
@@ -23,14 +23,20 @@ def run(command,evidence):
             raw=source.read_bytes();source_snapshot[name]=dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
     head=subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()
     start = time.time()
-    result = subprocess.run(command, capture_output=True)
+    timed_out=False
+    try:
+        result = subprocess.run(command, capture_output=True, timeout=timeout_seconds)
+    except subprocess.TimeoutExpired as error:
+        timed_out=True
+        result=subprocess.CompletedProcess(command,124,error.stdout or b'',error.stderr or b'')
     paths = {}
     for name, payload in [('stdout', result.stdout), ('stderr', result.stderr)]:
         path = evidence / (stem + '.' + name)
         path.write_bytes(payload)
         paths[name] = dict(path=path.name, bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest())
     metadata = dict(command=command, cwd=str(Path.cwd()), started_unix=start,
-                    elapsed_seconds=time.time()-start, exit=result.returncode, streams=paths,source_head=head,source_snapshot=source_snapshot)
+                    elapsed_seconds=time.time()-start, exit=result.returncode, streams=paths,source_head=head,source_snapshot=source_snapshot,
+                    timeout_seconds=timeout_seconds,timed_out=timed_out)
     (evidence / (stem + '.json')).write_text(json.dumps(metadata, indent=2)+'\n', encoding='utf-8')
     return result,metadata
 

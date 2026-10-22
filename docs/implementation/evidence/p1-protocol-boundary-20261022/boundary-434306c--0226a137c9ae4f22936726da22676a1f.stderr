@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/app/protocol_probe.py", line 37, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/app/protocol_probe.py", line 19, in main
+    assert any(p[4]=='/input' and 'ro' in p[5].split(',') for p in mounts),'public input is not read-only'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: public input is not read-only

@@ -13,7 +13,9 @@ COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contra
 COPY contracts/runs/observed_v2.py contracts/runs/coverage_v2.py contracts/runs/admission_v2.py contracts/runs/bindings-v2.json /app/contracts/runs/
 COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/service/live_safety.py contracts/service/live_safety_admission.py contracts/service/bindings-v1.json contracts/service/spec-v1.json /app/contracts/service/
 COPY services/foundation/ /app/services/foundation/
-COPY contracts/domain/analysis.py /app/contracts/domain/
+COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/domain/
+COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
+COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py /app/contracts/domain/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 COPY --from=client /client/dist/ /app/web/dist/
@@ -29,4 +31,5 @@ COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
 COPY services/learner/worker.py services/learner/export_observed.py services/learner/live_product.py /app/services/learner/
 COPY methods/visit/ /app/methods/visit/
 COPY services/learner/analysis_worker.py /app/services/learner/
+COPY tooling/foundation/analysis_dispatcher.py /app/analysis_dispatcher.py
 CMD ["python","-m","unittest","discover","-s","tests/integration/replay","-v"]

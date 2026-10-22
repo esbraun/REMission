@@ -1,0 +1,65 @@
+/source/contracts/domain/borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+/source/contracts/domain/borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+test_closed_purposes_real_prior_sentinel_and_no_execution (test_protocol_boundary.ProtocolBoundaryTests.test_closed_purposes_real_prior_sentinel_and_no_execution) ... ERROR
+test_exact_hash_owner_temporal_and_stale_lineage_negatives (test_protocol_boundary.ProtocolBoundaryTests.test_exact_hash_owner_temporal_and_stale_lineage_negatives) ... ok
+test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi (test_protocol_boundary.ProtocolBoundaryTests.test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi) ... ERROR
+test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar (test_protocol_boundary.ProtocolBoundaryTests.test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar) ... ERROR
+
+======================================================================
+ERROR: test_closed_purposes_real_prior_sentinel_and_no_execution (test_protocol_boundary.ProtocolBoundaryTests.test_closed_purposes_real_prior_sentinel_and_no_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_protocol_boundary.py", line 77, in test_closed_purposes_real_prior_sentinel_and_no_execution
+    value=product(purpose);raw=canonical(value.model_dump(mode='json'))
+  File "/source/tests/contracts/test_protocol_boundary.py", line 26, in product
+    family=IDENTITIES[purpose]['family'];h=reduced(family,recursive=family=='support')
+                                           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/tests/contracts/test_protocol_boundary.py", line 22, in reduced
+    return project_protocol(full,ORIGIN+timedelta(days=2),family=family,origin=ORIGIN)
+  File "/source/services/foundation/protocol.py", line 173, in project_protocol
+    values=[reduce(record) for record in records.values()]
+            ~~~~~~^^^^^^^^
+  File "/source/services/foundation/protocol.py", line 153, in reduce
+    value.update(decision_snapshot=exact(record.decision_snapshot,{'decision_snapshot'}),context=context,
+    ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'update'
+
+======================================================================
+ERROR: test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi (test_protocol_boundary.ProtocolBoundaryTests.test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_protocol_boundary.py", line 93, in test_nonexecutable_result_cannot_fabricate_fit_or_reuse_isi
+    value=product(purpose);context=value.request.context
+  File "/source/tests/contracts/test_protocol_boundary.py", line 26, in product
+    family=IDENTITIES[purpose]['family'];h=reduced(family,recursive=family=='support')
+                                           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/tests/contracts/test_protocol_boundary.py", line 22, in reduced
+    return project_protocol(full,ORIGIN+timedelta(days=2),family=family,origin=ORIGIN)
+  File "/source/services/foundation/protocol.py", line 173, in project_protocol
+    values=[reduce(record) for record in records.values()]
+            ~~~~~~^^^^^^^^
+  File "/source/services/foundation/protocol.py", line 153, in reduce
+    value.update(decision_snapshot=exact(record.decision_snapshot,{'decision_snapshot'}),context=context,
+    ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'update'
+
+======================================================================
+ERROR: test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar (test_protocol_boundary.ProtocolBoundaryTests.test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_protocol_boundary.py", line 39, in test_recursive_forbidden_full_audit_perturbations_do_not_change_hstar
+    before=project_protocol(full,ORIGIN+timedelta(days=2),family=family,origin=ORIGIN)
+  File "/source/services/foundation/protocol.py", line 173, in project_protocol
+    values=[reduce(record) for record in records.values()]
+            ~~~~~~^^^^^^^^
+  File "/source/services/foundation/protocol.py", line 153, in reduce
+    value.update(decision_snapshot=exact(record.decision_snapshot,{'decision_snapshot'}),context=context,
+    ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'update'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.055s
+
+FAILED (errors=3)

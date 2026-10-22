@@ -1,0 +1,43 @@
+{
+  "elapsed_seconds": 474.0628134999424,
+  "independent_fd": {
+    "absolute_tolerance": 1e-05,
+    "coordinates_per_point": 47,
+    "passed": true,
+    "points": 3,
+    "reference_sha256": "92115c3d8f1bba77bbd2e6c4eb034c0d63a9906e7516740fcbf549bab94e94db",
+    "relative_tolerance": 0.0001
+  },
+  "phase_elapsed_seconds": 471.68706630007364,
+  "phase_limit_seconds": 600,
+  "reason": null,
+  "scope": "Diagnostic MonitorMode linker only, unchanged default optimizer/target; no NUTS, production timeliness or full-target acceptance.",
+  "status": "evaluated-gradient-diagnostic-only",
+  "trace": {
+    "byte_cap": 8388608,
+    "bytes": 4060959,
+    "callback_body_seconds": 0.826606089132838,
+    "default_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run"
+      ],
+      "name": "OPT_FAST_RUN",
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "default_optimizer_sha256": "a43a5c7932f4c2c1d7e072170c7ef9e2fbebd9c79557434adf80207a30c79afd",
+    "diagnostic_linker": "MonitorMode WrapLinkerMany(OpWiseCLinker)",
+    "event_cap": 10000,
+    "events": 10000,
+    "finished": true,
+    "inventory_complete": true,
+    "limitation": "Callback body time includes metadata/file writes; dispatch overhead is additional. Diagnostic-linker timings do not establish ordinary-linker production timeliness.",
+    "localization_allowed": false,
+    "ordinary_linker": "NumbaLinker",
+    "truncated": true
+  }
+}

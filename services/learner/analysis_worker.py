@@ -8,13 +8,19 @@ import resource
 import os
 import time
 import traceback
+import gc
 
 import numpy as np
 import xarray as xr
 import pymc as pm
 from contracts.domain.analysis import AnalysisInput, AnalysisResult, CONFIG_REF, ESTIMAND_REF, canonical, sha
+from contracts.domain.borrowing import (BorrowAnalysisInput,BorrowAnalysisResult,BRIDGE_REF,admitted_configuration,parse_input)
 from methods.visit.model import build, inputs, sample, diagnostics
 from methods.visit.numerics import integrate, predictive
+
+
+class BridgeAbstention(Exception):
+    """A retained numerical gate failure; no accepted interval is published."""
 
 
 def publish(path,value):
@@ -27,9 +33,14 @@ def run(source, out):
     started = time.monotonic()
     out.mkdir(parents=True,exist_ok=True)
     raw = source.read_bytes()
-    product = AnalysisInput.model_validate_json(raw)
+    product = parse_input(raw)
+    if product.kind=='poc_protocol_input':
+        from contracts.domain.protocol_request import require_executable
+        require_executable(product)
+    borrowed=isinstance(product,BorrowAnalysisInput)
+    configuration=admitted_configuration(product.request.configuration) if borrowed else None
     input_hash = sha(product.model_dump(mode="json"))
-    seed = int(hashlib.sha256(canonical(product.request.context.seed.model_dump()).encode()).hexdigest()[:8],16)
+    seed = product.numerical_seeds.nuts if borrowed else int(hashlib.sha256(canonical(product.request.context.seed.model_dump()).encode()).hexdigest()[:8],16)
     result = dict(schema_version="1.0.0",synthetic=True,kind="poc_visit_result",attempt_id=product.attempt_id,
         input_sha256=input_hash,history_sha256=product.history_sha256,cutoff=product.history.cutoff.isoformat(),
         configuration=CONFIG_REF,estimand=ESTIMAND_REF,status="failed",reason="worker-incomplete",effect=None,
@@ -38,6 +49,15 @@ def run(source, out):
             "Physician-selected treatment; exploratory conditional model predictions require exchangeability and model assumptions.",
             "Quality/ISI reduced H* only; function and diary excluded. MCAR observation assumption.",
             "Population and individual treatment effects can remain prior-driven with limited local arm support."])
+    if borrowed:
+        result.update(schema_version='1.1.0',kind='poc_visit_borrow_result',configuration=product.request.configuration.model_dump(),
+                      source_set_sha256=product.source_set_sha256,bridge=BRIDGE_REF)
+        result['limitations'][1]='One-patient local model with two summary-only fictional sources under shared population/adherence/process/measurement assumptions.'
+        result['limitations'].extend(['Two aggregate contrasts do not separately identify both treatments, adherence, heterogeneity or this patient response.',
+            'Robust mixture/tau limit influence; they do not establish transport or resolve absent local conflict information.',
+            'Public-model bridge reference is a numerical check, not PA6 private conditional truth or recovery accuracy.'])
+        result['diagnostics']['sources']=dict(bundle=product.sources.model_dump(mode='json'),source_set_sha256=product.source_set_sha256,
+            configuration=configuration,numerical_seeds=product.numerical_seeds.model_dump(),likelihood_ownership=[s.study_id for s in product.sources.studies])
     def stage(value):
         publish(out/"progress.json",dict(attempt_id=product.attempt_id,input_sha256=input_hash,**value))
     try:
@@ -48,10 +68,33 @@ def run(source, out):
             consumed_ids=data["record_ids"],likelihood_blocks=data["likelihood_blocks"],likelihood="one total ISI per14-night recall plus available quality")
         if len(data["arms"])<2:
             result["limitations"].append("Only one or zero local treatment arms observed; the other arm relies on the declared prior.")
-        model = build(data)
+        if borrowed:
+            from methods.visit.borrow_model import build_joint
+            from methods.visit.source_precision import validate as validate_bridge
+            from methods.visit.borrow_execution import POLICY_REF,compilation_options,sample as borrow_sample
+            from contracts.domain.borrow_runtime import runtime_origin,coordinate_layout
+            origin=runtime_origin(os.environ.get('REMISSION_LEARNER_IMAGE',''),os.environ.get('REMISSION_SOURCE_COMMIT',''))
+            result['diagnostics']['execution']=dict(policy=POLICY_REF,input_sha256=input_hash,
+                history_sha256=product.history_sha256,cutoff=product.history.cutoff.isoformat(),
+                source_set_sha256=product.source_set_sha256,configuration=product.request.configuration.model_dump(),
+                numerical_seeds=product.numerical_seeds.model_dump(),native_compilations=[],
+                prior_lifetime='prior first/save/release before posterior construction',
+                **origin)
+            publish(out/'diagnostics.json',result['diagnostics'])
+            prior_model=build_joint(data,product.sources,configuration,guide=False,prior_predictive=True)
+            prior_variables=['burden','sigma_isi','sigma_quality','source_g','source_bias','source_tau','p_adherence']
+        else:
+            model=build(data);prior_model=build(data,guide=False)
+            prior_variables=['burden','sigma_isi','sigma_quality']
         # Retain the original generative prior, not the data-conditioned guide.
-        with build(data,guide=False):
-            prior=pm.sample_prior_predictive(draws=64,random_seed=seed+313, var_names=['burden','sigma_isi','sigma_quality'])
+        with prior_model:
+            prior=pm.sample_prior_predictive(draws=64,random_seed=product.numerical_seeds.prior_check if borrowed else seed+313,var_names=prior_variables,
+                **(dict(compile_kwargs=compilation_options()) if borrowed else {}))
+        if borrowed:
+            induced=np.asarray(prior['prior']['source_g'].values)
+            np.savez_compressed(out/'source-prior-predictive.npz',g=induced,p_adherence=prior['prior']['p_adherence'].values)
+            result['diagnostics']['source_prior_predictive']=dict(draws=64,mean=float(induced.mean()),sd=float(induced.std(ddof=1)),
+                interval=np.quantile(induced,[.025,.975]).tolist(),note='Original unconditioned population prior and Beta(1,1) adherence induced marginal; no local adherence conditioning, guide pseudo-prior or source likelihood in prior simulation')
         def observed_predictive(group,seed_suffix):
             rng=np.random.default_rng(np.random.SeedSequence([seed,seed_suffix]))
             burden=np.asarray(group['burden'].values)
@@ -64,16 +107,27 @@ def run(source, out):
         np.savez_compressed(out/'prior-predictive.npz',isi=prior_isi,quality=prior_quality)
         result['diagnostics']['prior_predictive']=dict(draws=64,isi_range=[float(prior_isi.min()),float(prior_isi.max())],
             note='Prior simulation at actual observed grid; descriptive model check, not calibration')
+        if borrowed:
+            # The large unconditioned prior graph/arrays must not coexist with
+            # posterior compilation. Saved predictive arrays remain artifacts.
+            del prior_model,prior,induced,prior_isi,prior_quality
+            gc.collect()
+            result['diagnostics']['execution']['prior_released_before_posterior']=True
+            publish(out/'diagnostics.json',result['diagnostics'])
+            model=build_joint(data,product.sources,configuration)
+        def native_compiled(value):
+            result['diagnostics']['execution']['native_compilations'].append(value)
+            publish(out/'diagnostics.json',result['diagnostics'])
         attempts = []
         trace = None
         for extension in (False,True):
             fit_start = time.monotonic()
-            trace = sample(model,seed+int(extension),extended=extension)
+            trace = borrow_sample(model,seed+int(extension),extended=extension,on_compile=native_compiled,expected_layout=coordinate_layout(product.history)) if borrowed else sample(model,seed+int(extension),extended=extension)
             stage(dict(stage="diagnostics"))
             fit_diagnostics = diagnostics(trace)
             filename = "posterior-extension.nc" if extension else "posterior.nc"
             trace.to_netcdf(out/filename,engine="netcdf4")
-            attempts.append(dict(extension=extension,seconds=time.monotonic()-fit_start,diagnostics=fit_diagnostics,artifact=filename))
+            attempts.append(dict(extension=extension,seed=seed+int(extension),seconds=time.monotonic()-fit_start,diagnostics=fit_diagnostics,artifact=filename))
             result["diagnostics"]["fits"] = attempts
             publish(out/"diagnostics.json",result["diagnostics"])
             if fit_diagnostics["accepted"]:
@@ -83,6 +137,16 @@ def run(source, out):
             result.update(status="abstained",reason="nuts-diagnostics-unmet")
         else:
             posterior = trace["posterior"]
+            if borrowed:
+                bridge=validate_bridge(posterior,product,configuration,out,stage)
+                result['diagnostics']['bridge_precision']=bridge
+                result['diagnostics']['source_posterior']=dict(g_mean=float(posterior['source_g'].mean()),
+                    informative_responsibilities=np.asarray(posterior['source_responsibility'].mean(dim=['chain','draw']).values).tolist(),
+                    total_source_logp_mean=float(posterior['source_logp'].sum(dim='source').mean()),
+                    note='Normalized informative component responsibility, not effective patient count')
+                if bridge['status']!='accepted':
+                    result.update(status='abstained',reason='bridge-precision-unmet')
+                    raise BridgeAbstention()
             replicated_isi,replicated_quality=observed_predictive(posterior,315)
             np.savez_compressed(out/'observed-posterior-predictive.npz',isi=replicated_isi,quality=replicated_quality)
             result['diagnostics']['observed_posterior_predictive']=dict(isi_mean=replicated_isi.mean(axis=(0,1)).tolist(),observed_isi=data['isi'].tolist(),
@@ -90,7 +154,7 @@ def run(source, out):
             parameters = {k:np.asarray(posterior[k].values) for k in ("b","a","rho","sigma_e","sigma_isi","p_adherence")}
             parameters.update(beta_c=posterior["patient_beta"].values[...,0],beta_e=posterior["patient_beta"].values[...,1],current_e=posterior["error"].values[...,-1])
             stage(dict(stage="rollouts"))
-            effect, integration = integrate(parameters,day=data["day"],current_c=data["c"][-1],current_e=data["e"][-1],seed=seed,stage=stage)
+            effect, integration = integrate(parameters,day=data["day"],current_c=data["c"][-1],current_e=data["e"][-1],seed=product.numerical_seeds.effect_rollout if borrowed else seed,stage=stage)
             result["diagnostics"]["integration"] = integration
             if effect is None:
                 result.update(status="abstained",reason="numerical-precision-unmet")
@@ -109,6 +173,8 @@ def run(source, out):
                 else:
                     result.update(status="completed",reason=None,effect=dict(mean=float(effect.mean()),sd=float(effect.std(ddof=1)),
                         lower=float(np.quantile(effect,.025)),upper=float(np.quantile(effect,.975)),unit="ISI_points",kind="conditional_expected_assignment_contrast"))
+    except BridgeAbstention:
+        pass
     except Exception as error:
         (out/"failure.log").write_text(traceback.format_exc(),encoding="utf-8")
         result.update(status="failed",reason=f"{type(error).__name__}: {str(error)[:180]}")
@@ -120,7 +186,7 @@ def run(source, out):
                      learner_image=os.environ.get('REMISSION_LEARNER_IMAGE','not-recorded'),source_commit=os.environ.get('REMISSION_SOURCE_COMMIT','not-recorded')))
     publish(out/"diagnostics.json",result["diagnostics"])
     result["artifacts"] = [dict(path=p.name,sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in sorted(out.iterdir()) if p.is_file() and p.name not in ("result.json","progress.json") and p.suffix!=".partial"]
-    parsed = AnalysisResult.model_validate_json(canonical(result))
+    parsed = (BorrowAnalysisResult if borrowed else AnalysisResult).model_validate_json(canonical(result))
     publish(out/"result.json",parsed.model_dump(mode="json"))
     stage(dict(stage="complete" if result["status"]=="completed" else result["status"]))
     return result

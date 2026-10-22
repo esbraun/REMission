@@ -1,0 +1,60 @@
+{
+  "actual_image": "sha256:40d2b1da0fc713f97b6ffb997f96585b27a50dd297099e3412d27ccc06f3c566",
+  "container": "0f8c7196d201a8509622fe9edc82e55d14c168388027794eb0fb86cf80d4d073",
+  "copy_commands": [
+    [
+      "docker",
+      "cp",
+      "0f8c7196d201a8509622fe9edc82e55d14c168388027794eb0fb86cf80d4d073:/usr/local/lib/python3.13/site-packages/pytensor/compile/mode.py",
+      "artifacts/pa3/cvm-source-api/mode.py"
+    ],
+    [
+      "docker",
+      "cp",
+      "0f8c7196d201a8509622fe9edc82e55d14c168388027794eb0fb86cf80d4d073:/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py",
+      "artifacts/pa3/cvm-source-api/rewriting.py"
+    ],
+    [
+      "docker",
+      "cp",
+      "0f8c7196d201a8509622fe9edc82e55d14c168388027794eb0fb86cf80d4d073:/usr/local/lib/python3.13/site-packages/pytensor/link/vm.py",
+      "artifacts/pa3/cvm-source-api/vm.py"
+    ],
+    [
+      "docker",
+      "cp",
+      "0f8c7196d201a8509622fe9edc82e55d14c168388027794eb0fb86cf80d4d073:/usr/local/lib/python3.13/site-packages/pymc/pytensorf.py",
+      "artifacts/pa3/cvm-source-api/pytensorf.py"
+    ]
+  ],
+  "excerpts": {
+    "bytes": 6512,
+    "sha256": "0735a4f8960cc9db67ed75e57bad3a6fde82b35db2807c2dd43157e8a71872f2"
+  },
+  "executable_source": "c2046d5bae9919c2f926386b66e82654169a3df1",
+  "files": {
+    "artifacts/pa3/cvm-source-api/mode.py": {
+      "bytes": 20789,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pytensor/compile/mode.py",
+      "sha256": "dd2feeec619a1ff4f2cfaafa890b8278cac88e9c600d3b5c41da2a9270b6c659"
+    },
+    "artifacts/pa3/cvm-source-api/pytensorf.py": {
+      "bytes": 37470,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pymc/pytensorf.py",
+      "sha256": "835ad6f67d32e249de852a627e4f8aa19a34b330571c18833192053b22d8d4c7"
+    },
+    "artifacts/pa3/cvm-source-api/rewriting.py": {
+      "bytes": 8827,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pytensor/compile/rewriting.py",
+      "sha256": "29c55d53e3a329abfb149e48c5ee5fa5406c309b31793c66ae4c6788432c82e4"
+    },
+    "artifacts/pa3/cvm-source-api/vm.py": {
+      "bytes": 50565,
+      "container_path": "/usr/local/lib/python3.13/site-packages/pytensor/link/vm.py",
+      "sha256": "a4ea3bcdbf2ca7d3a1680fef0f18183d814988d886ca27bd72d96b3cdd3cdec8"
+    }
+  },
+  "no_more_writes_to_raw_root": true,
+  "observer_head": "6e750ae9da313ce8986246f0b969229f3e2bd91d",
+  "scope": "Four installed source files copied read-only from the already stopped owned container; no container/model/import/graph/compiler/sampler execution or config change. API availability only, no resource/timing/numerical acceptance."
+}

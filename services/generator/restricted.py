@@ -29,6 +29,11 @@ def clip(value, low, high):
 
 
 def generate(request):
+    return _generate(request, (2, 4))
+
+
+def _generate(request, coefficients, *, protocol=None):
+    """Private preparation seam; ordinary RPC accepts only generate's v1 request."""
     if set(request) != {'seed', 'index', 'patient_id', 'through_day', 'actions'}:
         raise ValueError('invalid_generator_request')
     seed, index, through = (request[k] for k in ('seed', 'index', 'through_day'))
@@ -49,16 +54,17 @@ def generate(request):
         previous = action['day']
     records = []
 
-    def add(kind, day, values, *, delivery=False):
+    def add(kind, day, values, *, delivery=False, suffix=''):
         at = START + timedelta(days=day, minutes=-1)
         if delivery:
             at = START + timedelta(days=day - 1, hours=8)
-        identifier = f'{patient}-{kind}-{day}'
-        envelope = dict(schema_version='1.0.0', synthetic=True, record_id=identifier, patient_id=patient,
+        identifier = f'{patient}-{kind}-{day}' + suffix
+        envelope = dict(schema_version='2.0.0' if protocol and kind == 'daily_report' else '1.0.0', synthetic=True, record_id=identifier, patient_id=patient,
             event_at=at.isoformat(), recorded_at=at.isoformat(), available_at=at.isoformat(),
             lineage_id=identifier, revision=1, supersedes=None, duplicate_of=None, record_status='active', kind=kind, **values)
         raw = json.dumps(envelope, sort_keys=True, separators=(',', ':'), allow_nan=False)
-        envelope['source'] = dict(id=VERSION, version='1.0.0', adapter='simulation', raw_sha256=hashlib.sha256(raw.encode()).hexdigest())
+        envelope['source'] = dict(id='poc-longitudinal-v2' if protocol else VERSION, version='2.0.0' if protocol else '1.0.0',
+            adapter='patient_report' if protocol and kind == 'daily_report' else 'simulation', raw_sha256=hashlib.sha256(raw.encode()).hexdigest())
         records.append(dict(record=envelope, raw_source=raw))
 
     baseline = 16 + 6 * uniform(seed, index, 0, 'baseline')
@@ -75,14 +81,21 @@ def generate(request):
         carry_continue = .65 * carry_continue + .35 * int(taken and action['option'] == 'behavioral_continue')
         carry_escalate = .8 * carry_escalate + .2 * int(taken and action['option'] == 'behavioral_escalate')
         error = .55 * error + .8 * normal(seed, index, day, 'process')
-        burden = baseline + .55 * math.sin(2 * math.pi * day / 21) + error - 2 * response * carry_continue - 4 * response * carry_escalate
+        burden = baseline + .55 * math.sin(2 * math.pi * day / 21) + error - coefficients[0] * response * carry_continue - coefficients[1] * response * carry_escalate
+        if protocol:
+            burden += protocol.medication_burden(day, response)
         burdens.append(burden)
         if day > 0:
+            if protocol:
+                protocol.deliveries(day, add)
             if action:
                 add('delivery', day, dict(assignment_id=action['assignment_id'], option=action['option'],
                     stage='taken' if taken else 'not_taken', adherence=float(taken), rescue=False, protocol_deviations=[]), delivery=True)
             missing = uniform(seed, index, day, 'missing') < .1
-            add('daily_report', day, dict(sleep_quality=None if missing else round(clip(10 - burden / 3 + .45 * normal(seed, index, day, 'quality'), 0, 10), 3),
+            quality_mean = 10 - burden / 3
+            if protocol:
+                quality_mean += protocol.support_quality(day, response)
+            add('daily_report', day, dict(sleep_quality=None if missing else round(clip(quality_mean + .45 * normal(seed, index, day, 'quality'), 0, 10), 3),
                 function=None if missing else round(clip(9 - burden / 4 + .5 * normal(seed, index, day, 'function'), 0, 10), 3),
                 diary_sleep_minutes=None if missing else round(clip(470 - 8 * burden + 20 * normal(seed, index, day, 'minutes'), 0, 1440), 1),
                 adverse_symptoms=[], goals=['Improve reported sleep'], burden=None if missing else float(bool(action)),
