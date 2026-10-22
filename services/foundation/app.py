@@ -19,7 +19,8 @@ from contracts.domain.common import Action, StrictModel
 from contracts.domain.entities import Approval, DecisionSnapshot, ViewContext
 from contracts.domain.boundaries import ContractViolation, validate_approval
 from .store import Store, canonical, digest, instant, timestamp
-from .workflow import create_decision, current_safety, history, record_header, state_for
+from .workflow import create_decision, current_safety, history, record_header, state_for, patient_clock, preserve_simulation
+from .simulation import SimulationError
 from .replay import append_event, apply_current_state, parse_observed
 from contracts.service.live_hold import InstalledBundle, InvalidationInput, ReviewInput, ClearanceInput, ExportInput
 from .admission import AdmissionError
@@ -46,6 +47,7 @@ class Settings:
     source_commit: str | None = None
     runtime_ref: dict | None = None
     admission_timeout: float = 5
+    generator_url: str | None = None
 
     @property
     def secure_cookie(self):
@@ -107,6 +109,16 @@ class ArchiveInput(StrictModel):
     mode: Literal['archive_only', 'clinical_observation_import']
 
 
+class PanelInput(StrictModel):
+    seed: int = Field(ge=0, le=2147483647)
+    count: int = Field(default=12, ge=2, le=24)
+
+
+class AdvanceInput(StrictModel):
+    expected_version: int = Field(gt=0)
+    mode: Literal['day', 'visit']
+
+
 def create_app(settings: Settings) -> FastAPI:
     store = Store(settings.database,settings.installed,clock=settings.clock)
     store.gate.timeout=settings.admission_timeout
@@ -129,6 +141,10 @@ def create_app(settings: Settings) -> FastAPI:
     @app.exception_handler(LiveError)
     async def live_error(_request,error):
         return JSONResponse({'code':error.code,'detail':error.code.replace('_',' ')},status_code=error.status)
+
+    @app.exception_handler(SimulationError)
+    async def simulation_error(_request, error):
+        return JSONResponse({'code': error.code, 'detail': error.detail}, status_code=error.status)
 
     @app.middleware("http")
     async def headers(request, call_next):
@@ -441,7 +457,50 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction() as db:
             current=session(db,request)
             rows=db.execute("SELECT id,name,state_json,cutoff,version FROM patients WHERE owner_id=? ORDER BY id",(current["account_id"],)).fetchall()
-            return {"patients":[dict(id=r["id"],name=r["name"],state=json.loads(r["state_json"]),cutoff=r["cutoff"],version=r["version"]) for r in rows],"denominator":len(rows)}
+            selected = db.execute("SELECT response FROM receipts WHERE owner_id=? AND scope='generated-panel' ORDER BY rowid DESC LIMIT 1", (current['account_id'],)).fetchone()
+            generated = json.loads(selected[0]) if selected else None
+            return {"patients":[dict(id=r["id"],name=r["name"],state=json.loads(r["state_json"]),cutoff=r["cutoff"],version=r["version"]) for r in rows],"denominator":len(rows), 'generated': generated}
+
+    def mutation_receipt(db, current, request, scope, payload):
+        key = request.headers.get('idempotency-key', '')
+        if not key or len(key) > 128:
+            raise APIError(422, 'idempotency_required', 'Supply a bounded stable idempotency key')
+        prior = db.execute('SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?', (current['account_id'], current['token_hash'], key)).fetchone()
+        if prior and (prior['scope'] != scope or prior['payload_sha256'] != digest(canonical(payload))):
+            raise APIError(409, 'idempotency_conflict', 'This key already identifies different content')
+        return key, json.loads(prior['response']) if prior else None
+
+    def save_mutation(db, current, key, scope, payload, response):
+        db.execute('INSERT INTO receipts VALUES(?,?,?,?,?,?)', (current['account_id'], current['token_hash'], key, scope, digest(canonical(payload)), canonical(response)))
+
+    @app.post('/api/panels/generate')
+    async def generated_panel(request: Request):
+        data = await body(request, PanelInput)
+        with store.transaction(write=True) as db:
+            current = session(db, request, mutation=True)
+            payload = data.model_dump()
+            key, prior = mutation_receipt(db, current, request, 'generated-panel', payload)
+            if prior:
+                return prior
+            from .simulation import generate_panel
+            response = generate_panel(db, settings, current['account_id'], data.seed, data.count, settings.clock())
+            save_mutation(db, current, key, 'generated-panel', payload, response)
+            return response
+
+    @app.post('/api/patients/{patient_id}/advance')
+    async def advance_patient(patient_id: str, request: Request):
+        data = await body(request, AdvanceInput)
+        with store.transaction(write=True) as db:
+            current = session(db, request, mutation=True)
+            patient = own(db, patient_id, current['account_id'])
+            payload = data.model_dump()
+            key, prior = mutation_receipt(db, current, request, patient_id + ':advance', payload)
+            if prior:
+                return prior
+            from .simulation import advance
+            response = advance(db, settings, patient, data.expected_version, data.mode, settings.clock())
+            save_mutation(db, current, key, patient_id + ':advance', payload, response)
+            return response
 
     @app.get("/api/patients/{patient_id}")
     def workspace(patient_id: str,request: Request):
@@ -458,7 +517,7 @@ def create_app(settings: Settings) -> FastAPI:
     @app.get("/api/patients/{patient_id}/history/{bundle_id}")
     def historical(patient_id: str,bundle_id: str,request: Request):
         with store.transaction() as db:
-            current=session(db,request);own(db,patient_id,current["account_id"])
+            current=session(db,request);patient=own(db,patient_id,current["account_id"])
             row=db.execute("SELECT * FROM bundles WHERE id=? AND patient_id=?",(bundle_id,patient_id)).fetchone()
             if not row:raise APIError(404,"not_found","Resource not found")
             return {"mode":"historical","patient_id":patient_id,"snapshot_id":bundle_id,"display":json.loads(row["display"]),"display_sha256":row["display_sha256"],"auth_generation":current["token_hash"]}
@@ -466,11 +525,11 @@ def create_app(settings: Settings) -> FastAPI:
     @app.get("/api/patients/{patient_id}/history/{bundle_id}/later-outcomes")
     def later(patient_id: str,bundle_id: str,request: Request):
         with store.transaction() as db:
-            current=session(db,request);own(db,patient_id,current["account_id"])
+            current=session(db,request);patient=own(db,patient_id,current["account_id"])
             bundle=db.execute("SELECT display FROM bundles WHERE id=? AND patient_id=?",(bundle_id,patient_id)).fetchone()
             if not bundle:raise APIError(404,"not_found","Resource not found")
             cutoff=instant(json.loads(bundle[0])["workspace"]["snapshot"]["cutoff"])
-            values=[r.model_dump(mode="json") for r in history(db,patient_id).as_known_at(settings.clock()) if r.kind in ("isi","daily_report") and r.available_at>=cutoff]
+            values=[r.model_dump(mode="json") for r in history(db,patient_id).as_known_at(patient_clock(patient, settings.clock())) if r.kind in ("isi","daily_report") and r.available_at>=cutoff]
             return {"label":"Retrospective later outcomes; not available to the original decision","records":values}
 
     @app.get("/api/patients/{patient_id}/events/{record_id}")
@@ -506,13 +565,15 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction(write=True) as db:
             now=settings.clock()
             current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
+            received_at = now
+            now = patient_clock(patient, now)
             prior=db.execute("SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?",(current["account_id"],current["token_hash"],key)).fetchone()
             if prior:
                 if prior["scope"]!=patient_id or prior["payload_sha256"]!=digest(encoded):raise APIError(409,"idempotency_conflict","This key already identifies different content")
                 return json.loads(prior["response"])
             from .live_journal import active_episodes
             if active_episodes(db,patient_id):raise APIError(409,'active_live_hold','Current independent clinical hold requires owned review')
-            if any(r.kind=="intercurrent_event" and r.event_type=="death" for r in current_safety(db,patient_id,now)):
+            if any(r.kind=="intercurrent_event" and r.event_type=="death" for r in current_safety(db,patient_id,received_at)):
                 raise APIError(409,"outside_scope","A deceased patient cannot receive a new ordinary approval")
             decision=read_decision(db,patient);snapshot=DecisionSnapshot.model_validate_json(decision["snapshot"])
             workspace=json.loads(decision["display"])
@@ -525,15 +586,18 @@ def create_app(settings: Settings) -> FastAPI:
             due=instant(data.follow_up_at)
             if due<=now or due>now+timedelta(days=365):raise APIError(422,"invalid_follow_up","Follow-up must be in the next 365 days")
             bundle_id=approval.record_id;task_id="follow-up-"+uuid.uuid4().hex
-            saved=dict(workspace=workspace,approval=approval.model_dump(mode="json"),rationale=data.rationale,follow_up=dict(id=task_id,owner_id=current["account_id"],due_at=timestamp(due),status="pending"),audit=dict(actor=current["account_id"],change="ordinary synthetic approval",at=timestamp(now)))
+            saved=dict(workspace=workspace,approval=approval.model_dump(mode="json"),rationale=data.rationale,follow_up=dict(id=task_id,owner_id=current["account_id"],due_at=timestamp(due),status="pending"),audit=dict(actor=current["account_id"],change="ordinary synthetic approval",at=timestamp(received_at)))
             saved_bytes=canonical(saved)
             db.execute("INSERT INTO bundles VALUES(?,?,?,?,?,?)",(bundle_id,patient_id,snapshot.record_id,saved_bytes,digest(saved_bytes),timestamp(now)))
             db.execute("INSERT INTO tasks VALUES(?,?,?,?,?,?)",(task_id,patient_id,bundle_id,current["account_id"],timestamp(due),canonical(saved["follow_up"])))
             if settings.fault:settings.fault("after_follow_up")
-            state=state_for("ASSIGN-03");state["plan"]={"option":data.option,"approved_at":timestamp(now),"rationale":data.rationale,"bundle_id":bundle_id}
+            state=preserve_simulation(json.loads(patient['state_json']), state_for("ASSIGN-03"));state["plan"]={"option":data.option,"approved_at":timestamp(now),"rationale":data.rationale,"bundle_id":bundle_id}
+            if 'simulation' in state:
+                from .simulation import assign
+                assign(db, patient, state, approval, now, received_at)
             db.execute("UPDATE patients SET version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,state_json=? WHERE id=?",(canonical(state),patient_id))
-            db.execute("INSERT INTO state_changes VALUES(?,?,?,?,?)",("audit-"+uuid.uuid4().hex,patient_id,current["account_id"],timestamp(now),canonical(saved["audit"])))
-            create_decision(db,patient_id,now)
+            db.execute("INSERT INTO state_changes VALUES(?,?,?,?,?)",("audit-"+uuid.uuid4().hex,patient_id,current["account_id"],timestamp(received_at),canonical(saved["audit"])))
+            create_decision(db,patient_id,received_at)
             response={"status":"approved","bundle_id":bundle_id,"task_id":task_id,"display_sha256":digest(saved_bytes)}
             db.execute("INSERT INTO receipts VALUES(?,?,?,?,?,?)",(current["account_id"],current["token_hash"],key,patient_id,digest(encoded),canonical(response)))
             db.execute("DELETE FROM drafts WHERE owner_id=? AND patient_id=?",(current["account_id"],patient_id))
@@ -562,7 +626,7 @@ def create_app(settings: Settings) -> FastAPI:
                 raise APIError(409,"engine_unavailable","Protocol engines remain unavailable")
             if data.stage!="ASSIGN-09" and any(r.kind=="intercurrent_event" and r.event_type=="death" for r in current_safety(db,patient_id,now)):
                 raise APIError(409,"outside_scope","A deceased patient cannot reenter ordinary approval")
-            state=state_for(data.stage,data.reason);state["plan"]=json.loads(patient["state_json"])["plan"]
+            state=preserve_simulation(json.loads(patient['state_json']), state_for(data.stage,data.reason));state["plan"]=json.loads(patient["state_json"])["plan"]
             db.execute("UPDATE patients SET version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,state_json=? WHERE id=?",(canonical(state),patient_id))
             db.execute("INSERT INTO state_changes VALUES(?,?,?,?,?)",("state-"+uuid.uuid4().hex,patient_id,current["account_id"],timestamp(now),canonical(data.model_dump())))
             create_decision(db,patient_id,now)
@@ -577,8 +641,10 @@ def create_app(settings: Settings) -> FastAPI:
                 raise APIError(409, 'independent_hold_live_integration_required', str(error))
             raise APIError(422,"invalid_observed_record","Observed record failed source/timing/field validation")
         with store.transaction(write=True) as db:
-            current=session(db,request,mutation=True);own(db,patient_id,current["account_id"])
+            current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
             if record.patient_id!=patient_id:raise APIError(404,"not_found","Resource not found")
+            if 'simulation' in json.loads(patient['state_json']) and record.kind not in ('intercurrent_event', 'consent'):
+                raise APIError(409, 'simulation_observations_only', 'Use simulated advancement to generate this patient\'s reports.')
             key=request.headers.get("idempotency-key", "")
             if not key:raise APIError(422,"idempotency_required","Supply a transport key")
             run_id="live:"+current["account_id"]+":"+patient_id;raw=data.raw_source.encode();payload_hash=digest(canonical(data.model_dump()))
@@ -623,7 +689,9 @@ def create_app(settings: Settings) -> FastAPI:
         except ValueError:raise APIError(422,"timezone_required","Report event requires a valid explicit UTC offset")
         if event_at>now:raise APIError(422,"future_observation","Report event cannot be in the future")
         with store.transaction(write=True) as db:
-            current=session(db,request,mutation=True);own(db,patient_id,current["account_id"])
+            current=session(db,request,mutation=True);patient=own(db,patient_id,current["account_id"])
+            if 'simulation' in json.loads(patient['state_json']):
+                raise APIError(409, 'simulation_observations_only', 'Use simulated advancement to generate this patient\'s reports.')
             key=request.headers.get("idempotency-key","")
             if not key:raise APIError(422,"idempotency_required","Supply the original report key")
             run_id="report:"+current["account_id"]+":"+patient_id;payload_hash=digest(canonical(data.model_dump()))

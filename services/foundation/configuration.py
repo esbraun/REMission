@@ -28,4 +28,5 @@ def environment_settings():
     return Settings(database=Path(os.environ.get('REMISSION_DATABASE','/data/remission.sqlite')),installed=installed,
         origin=os.environ.get('REMISSION_ORIGIN','http://127.0.0.1:8765'),web_root=Path(os.environ.get('REMISSION_WEB_ROOT','/app/web/dist')),
         observed_archives=archives,live_export_root=Path(os.environ['REMISSION_LIVE_EXPORT_ROOT']) if os.environ.get('REMISSION_LIVE_EXPORT_ROOT') else None,
-        source_commit=os.environ.get('REMISSION_SOURCE_COMMIT'),runtime_ref=json.loads(Path(runtime).read_bytes()) if runtime else None)
+        source_commit=os.environ.get('REMISSION_SOURCE_COMMIT'),runtime_ref=json.loads(Path(runtime).read_bytes()) if runtime else None,
+        generator_url=os.environ.get('REMISSION_GENERATOR_URL'))

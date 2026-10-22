@@ -6,7 +6,7 @@ from pydantic import TypeAdapter
 from contracts.domain.entities import ObservedRecord
 from contracts.domain.boundaries import ObservedHistory
 from .store import Store, canonical, digest, instant, timestamp
-from .workflow import create_decision, current_safety, history, state_for
+from .workflow import create_decision, current_safety, history, state_for, preserve_simulation
 
 ADAPTER = TypeAdapter(ObservedRecord)
 INGESTIBLE = {"patient", "consent", "encounter", "medication_order", "medication_exposure", "observation", "intercurrent_event", "oura_like", "daily_report", "isi"}
@@ -106,7 +106,9 @@ def apply_current_state(db, patient_id: str, at: datetime, *, advance_by: int = 
     # symptom/learner projections retain strict-before availability.
     known_safety = current_safety(db, patient_id, at)
     held = any(r.kind == "intercurrent_event" and r.event_type in ("death", "admission", "regimen_change", "steroid_change", "fever_suspected_infection", "confusion", "fall") and r.record_status != "retracted" for r in known_safety)
-    state = state_for("ASSIGN-09", "Known safety event requires clinical review") if held else json.loads(row["state_json"])
+    previous = json.loads(row['state_json'])
+    state = preserve_simulation(previous, state_for("ASSIGN-09", "Known safety event requires clinical review")) if held else previous
+    state['plan'] = previous['plan']
     consent_version=1+db.execute("SELECT count(*) FROM events WHERE patient_id=? AND kind='consent'",(patient_id,)).fetchone()[0]
     db.execute("UPDATE patients SET version=version+?,state_version=state_version+?,eligibility_version=eligibility_version+?,consent_version=?,state_json=? WHERE id=?",
                (advance_by,advance_by,advance_by,consent_version,canonical(state),patient_id))
