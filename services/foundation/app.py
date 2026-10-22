@@ -25,6 +25,7 @@ from .replay import append_event, apply_current_state, parse_observed
 from contracts.service.live_hold import InstalledBundle, InvalidationInput, ReviewInput, ClearanceInput, ExportInput
 from .admission import AdmissionError
 from .live_hold import LiveError
+from .analysis import AnalysisError
 
 COOKIE = "remission_session"
 HASHER = PasswordHasher()
@@ -81,6 +82,11 @@ class StateInput(StrictModel):
     expected_version: int = Field(gt=0)
     stage: Literal["ASSIGN-01", "ASSIGN-02", "ASSIGN-03", "ASSIGN-04", "ASSIGN-05", "ASSIGN-06", "ASSIGN-07", "ASSIGN-08", "ASSIGN-09", "ASSIGN-10"]
     reason: str = Field(min_length=1, max_length=256)
+
+
+class AnalysisSubmission(StrictModel):
+    expected_version: int = Field(gt=0)
+    previous_attempt: str | None = None
 
 
 class DraftInput(StrictModel):
@@ -514,6 +520,41 @@ def create_app(settings: Settings) -> FastAPI:
             result["mode"]="current";result["auth_generation"]=current["token_hash"]
             return result
 
+    @app.post('/api/patients/{patient_id}/analyses')
+    async def submit_analysis(patient_id: str, request: Request):
+        data=await body(request,AnalysisSubmission)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True)
+            patient=own(db,patient_id,current['account_id'])
+            payload=data.model_dump()
+            key,prior=mutation_receipt(db,current,request,patient_id+':analysis',payload)
+            if prior:
+                return prior
+            from .analysis import submit
+            try:
+                response=submit(db,patient,current['account_id'],data.expected_version,data.previous_attempt,settings.clock())
+            except (AnalysisError,ValueError) as error:
+                raise APIError(409,'analysis_unavailable',str(error)) from error
+            save_mutation(db,current,key,patient_id+':analysis',payload,response)
+            return JSONResponse(response,status_code=202)
+
+    @app.get('/api/patients/{patient_id}/analyses')
+    def analyses(patient_id: str,request: Request):
+        with store.transaction() as db:
+            current=session(db,request);patient=own(db,patient_id,current['account_id'])
+            from .analysis import view
+            return dict(attempts=[view(row,patient['cutoff']) for row in db.execute('SELECT * FROM analysis_attempts WHERE patient_id=? AND owner_id=? ORDER BY created_at DESC,rowid DESC',(patient_id,current['account_id']))])
+
+    @app.get('/api/patients/{patient_id}/analyses/{job_id}')
+    def analysis_status(patient_id: str,job_id: str,request: Request):
+        with store.transaction() as db:
+            current=session(db,request);patient=own(db,patient_id,current['account_id'])
+            row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND patient_id=? AND owner_id=?',(job_id,patient_id,current['account_id'])).fetchone()
+            if row is None:
+                raise APIError(404,'not_found','Resource not found')
+            from .analysis import view
+            return view(row,patient['cutoff'])
+
     @app.get("/api/patients/{patient_id}/history/{bundle_id}")
     def historical(patient_id: str,bundle_id: str,request: Request):
         with store.transaction() as db:
@@ -554,6 +595,10 @@ def create_app(settings: Settings) -> FastAPI:
             current=session(db,request)
             row=db.execute("SELECT w.id,w.status,w.reason FROM pending_work w JOIN patients p ON w.patient_id=p.id WHERE w.id=? AND p.owner_id=?",(job_id,current["account_id"])).fetchone()
             if not row:raise APIError(404,"not_found","Resource not found")
+            analysis=db.execute('SELECT a.*,p.cutoff AS current_cutoff FROM analysis_attempts a JOIN patients p ON p.id=a.patient_id WHERE a.job_id=? AND a.owner_id=?',(job_id,current['account_id'])).fetchone()
+            if analysis:
+                from .analysis import view
+                return view(analysis,analysis['current_cutoff'])
             return dict(row)
 
     @app.post("/api/patients/{patient_id}/approve")

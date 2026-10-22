@@ -14,7 +14,7 @@ def run(command,evidence):
     evidence.mkdir(parents=True,exist_ok=True)
     stem = uuid.uuid4().hex
     source_paths=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','--',
-        'contracts','services','tests','web/src','web/package.json','web/package-lock.json','tooling/foundation',
+        'contracts','services','methods/visit','tests','web/src','web/package.json','web/package-lock.json','tooling/foundation',
         '.gitattributes','.dockerignore','docs/implementation/g0-task-test-ledger-20261020.json']).decode('utf-8').splitlines()
     source_snapshot={}
     for name in sorted(set(source_paths)):

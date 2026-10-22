@@ -21,7 +21,7 @@ def main():
     runtime();head=command(['git','rev-parse','HEAD']).stdout.decode().strip()
     lock=ROOT/'web/package-lock.json';lock_before=lock.read_bytes()
     source={}
-    for directory in ['contracts/domain','contracts/runs','contracts/service','services/foundation','services/learner','services/generator','web','tooling/foundation','tests/integration/replay','tests/generator','tests/run_contracts']:
+    for directory in ['contracts/domain','contracts/runs','contracts/service','methods/visit','services/foundation','services/learner','services/generator','web','tooling/foundation','tests/integration/replay','tests/generator','tests/run_contracts']:
         for path in (ROOT/directory).rglob('*'):
             if path.is_file() and not any(p in ('node_modules','dist','__pycache__') for p in path.parts):
                 source[path.relative_to(ROOT).as_posix()]=dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest())

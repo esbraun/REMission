@@ -1,0 +1,10 @@
+# Rendered sibling-panel reconciliation regression
+
+Use the official Playwright MCP against an independently reserved own deployment and actual copied assets. Do not use intercepted responses or claim that Node helper tests exercise React reconciliation. The assertion recipe checks rendered panel multiplicity and current context, rather than comparing source-key spellings.
+
+1. Sign in, generate a small panel and select patientA. Approve a plan, advance to day14 and open Analysis through actual controls. Invoke `analysis-reconciliation.js` with this page,14,and patientA's visible name. Require exactly one simulation heading, one next-visit control, one single-day control and one current patient heading.
+2. Submit the real async analysis and observe actual running/fitting. Use the visible current-decision controls to approve a plan if required, then advance to day28 while the fit is still running. Invoke the same assertion with28/patientA. There must be no retained day14 SimulationPanel above the patient context, no duplicate controls and only one day28 simulation heading. Capture the full DOM snapshot and desktop screenshot. The previous duplicate sibling-key implementation reproduces the stale day14 panel under this schedule.
+3. Switch via My panel to patientB at day0; open Analysis. Invoke with0/patientB and require no patientA attempts or draft. Return via My panel to patientA/day28 and invoke again. Navigate Current decision→Analysis twice and invoke after each return; all counts must stay one. This covers keyed sibling removal/insertion plus patient,decision and view changes.
+4. Reload, require the same current day and one set of controls, then inspect a narrow viewport and the browser console. Preserve source/image identities, each actual transition and assertion output. Release MCP under the root's scheduling when finished.
+
+The author has released MCP; the independent reviewer owns8778 and performs this rendered regression after the committed repair. The build still executes existing typecheck/helper tests. Original fit artifacts and original duplicated-panel evidence remain preserved and are not relabeled as repaired evidence.

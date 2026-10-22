@@ -1,0 +1,109 @@
+{
+  "id": "PA1-THIN-PA2",
+  "status": "author-affected-checks-complete-independent-final-review-pending",
+  "owner": "/root/poc_v0_xhigh_sol",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "effort_escalation_reason": "Rounded/clipped latent state-space likelihood, per-draw expected-effect integration precision gates and isolated transactional SQLite ingestion have coupled correctness risks.",
+  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/poc-v0x-sol-261021",
+  "branch": "launch/poc-v0-analysis-xhigh-20261021",
+  "initial_head": "918f11c99512468509929d7bad960750558eaceb",
+  "integration_base": "a7ab7e60a8146ace6342efd8d51a0bd1013566ad",
+  "early_core_checkpoints": [
+    "7d004172696fdead17d5ebde274cbebe47e3d95d",
+    "e7b3cf7e8a0eb086c8aa25c36c91c957e7fa7e49",
+    "8aa43f12c84a060f8c53aeaa16e1cc6060bbd183"
+  ],
+  "dependencies": [
+    "POC1\u20133 accepted PR21",
+    "accepted analytics contract ae974268",
+    "pinned runtime ce346fea"
+  ],
+  "requirements": [
+    "PA1",
+    "thin PA2",
+    "POC-4",
+    "EST-VISIT:poc-hstar-v1"
+  ],
+  "truth": "No evaluator truth in this first slice; learner posterior is never truth.",
+  "tests": [
+    {
+      "id": "COPIED-CONTRACT-SERVICE",
+      "command": "python -m unittest discover -s tests/integration/replay -v",
+      "result": "86total:82passed,4schema4-only explicit skips;180.188s in copied5dfd",
+      "evidence": "evidence/pa12-20261021/app-runtime-summary.json"
+    },
+    {
+      "id": "HISTORICAL-004",
+      "result": "4 original tests passed9.002s in whole pinned004SERVICEa92",
+      "report": "94092e7d6bdc31363b06fe2812397e5a04910462"
+    },
+    {
+      "id": "COPIED-003-004-005-CHAIN",
+      "result": "normal,beforecommit rollback/retry,aftercommit reopen passed; existing bytes/identity/generation/FKs retained",
+      "evidence": "evidence/pa12-20261021/copied-migration-chain.json"
+    },
+    {
+      "id": "ROLE-BOUNDARIES",
+      "result": "baseline passes; deliberate source/RWinput/network positive controls rejected",
+      "evidence": "evidence/pa12-20261021/boundary-qualification.json"
+    },
+    {
+      "id": "APP-AND-BROWSER",
+      "result": "actual day14/day28 accepted,ordinary approval during fit,stale result,real running interruption,retry,ownership,context,persistence,history,desktop+narrow+keyboard",
+      "evidence": "evidence/pa12-20261021/app-runtime-summary.json"
+    },
+    {
+      "id": "62E-AFFECTED-UI-AND-ROLE-REFRESH",
+      "result": "newcopiedbuild:typecheck+6helpertests+VitePASS;32learnerfile+allroleboundary/source/mount/networkpositivecontrolsPASS;exactprotectedDBrowsretainedafterredeploy;realrendered14\u219228PASSindependent,remainingfinalreviewpending",
+      "evidence": "evidence/pa12-20261021/source-carry-and-ui-repair.json"
+    },
+    {
+      "id": "046-AFFECTED-UI-COPY-REFRESH",
+      "result": "actual typecheck+6helpertests+VitePASS;new copiedsource/H*/mount/networkpositivecontrolPASS;all protected DBrows unchanged afterredeploy;no unchanged MCMC/migration rerun",
+      "evidence": "evidence/pa12-20261021/boundary-qualification-final.json"
+    }
+  ],
+  "retained_failures": [
+    "Initial readonlyroot default PyTensor cache failure; repaired temporary cache.",
+    "Early rho0 gradient,whole-stage timeout,source/support qualification and2UI findings repaired and independently checked.",
+    "Original parameterization345then318divergences ABSTAINED; exactguide1.1.0 sixthen7 ABSTAINED. Distinct1.1.1 precision retry passed unchanged gates.",
+    "First actual UIjob182328 failedPREPARING staging order; retained. Initial running-restart interpretation withdrawn asUNVERIFIED. Minimal dcd fix then separate actual-runningff70 interruption passed.",
+    "Unchanged-lock offline npm failures retained; authorized pinned-network fallback passed.",
+    "Initial whole004 harness/chainpermissions,capture receipt-table typo,unsupported MCP selectors,immediate restart navigation race,wrong healthroute retained and corrected.",
+    "Independent finalbrowser P1:identical sibling panel keys left duplicate stale SimulationPanel after14\u219228. Repaired62e with component prefixes; independent actual14\u219228PASS, remainingfinalbrowserpending.",
+    "Independent keyboardP2:62e hash-only popstate cleared workspace.046same-path guard+pathdependency repair; actual final independent regression pending. Initial local patch quoting/report encoding harness failures retained and corrected."
+  ],
+  "actual_fit": "Actual app day14 and day28 completed/ingested with0divergences and accepted effect/integration gates; frozen computational pilot independently reproduced",
+  "reviewer": "/root/poc_analytics_critic_astra",
+  "review_disposition": "Scoped source/equivalence/computational/migration acceptance; exact046 final independent copied-browser readiness pending;root alone opensPR/merges",
+  "later_pending": [
+    "PA3 borrowing",
+    "PA4 N-of-1",
+    "PA5 support/MRT",
+    "PA6 truth and accuracy/timeliness ablations/study",
+    "PA7 complete reproduction",
+    "human factors",
+    "clinical review",
+    "clinical validation"
+  ],
+  "executable_code_head": "0464f58a4279410fb922bc0234f23b887ad4983e",
+  "copied_image_source_head": "0464f58a4279410fb922bc0234f23b887ad4983e",
+  "host_only_difference": "BC\u2192dcd2host staging-order lines;dcd\u219262e3component-key prefixes+browserrecipe;62e\u2192046samepathpopstateguard/currentpathdependency+browserrecipe. Statistical/backend copied bytes unchanged.",
+  "configuration": "poc-visit-v1/1.1.1: original model/priors,exact guide,native4chains,target_accept0.995,unchanged gates",
+  "actual_attempts": {
+    "day14": "analysis-5746f0fea4964d77b5a1cf5aeb552f01",
+    "day28": "analysis-cf09f16c64464846949631d1abf5fea0",
+    "interrupted": "analysis-ff70a3e2b55f491cac3ca0cf83865e1c",
+    "staging_failure": "analysis-182328b5382a4382bb28b1d68fcea000"
+  },
+  "verification_report": "poc-analysis-verification-20261021.md",
+  "browser_released": true,
+  "scoped_independent_acceptance": [
+    "45source/equivalence8d4d2a371fb8123bf4826c13ba0c13374ec379ab",
+    "6frefreshd0c4ce022dc25f0b0c0294bec7360b23801a7bb1",
+    "frozen c081/1fa computational reproduction07a75b15e30167091d5a72227b140bc4b61429f1",
+    "copied migratione703a67794bbbc9a71ddc870163fe4058ca66cc9"
+  ],
+  "actual_fit_image_source_head": "bc9723722e22ab08d4eb20c605ea49d666b1d107"
+}

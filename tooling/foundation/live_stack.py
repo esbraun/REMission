@@ -20,6 +20,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=8769)
     parser.add_argument('--service-image',required=True);parser.add_argument('--learner-image',required=True)
     parser.add_argument('--generator-image')
+    parser.add_argument('--analysis-dispatcher',action='store_true')
     parser.add_argument('--evidence',type=Path,required=True);args=parser.parse_args()
     args.evidence.mkdir(parents=True,exist_ok=True);captures=[]
     prefix=('remission-poc13-' if args.generator_image else 'remission-g1-live-hold-20261021-')+uuid.uuid4().hex[:8]
@@ -101,6 +102,12 @@ def main():
         old_stopped=True,old_restart_disabled=True,new_private_volume=True,source_hashes=expected,
         fixture_claim='contract_fixture only; upstream scientific producer not qualified',browser_cases='not yet executed')
     (args.evidence/'deployment.json').write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
+    if args.analysis_dispatcher:
+        log=(args.evidence/'dispatcher.log').open('ab')
+        child=subprocess.Popen([sys.executable,str(ROOT/'tooling/foundation/analysis_dispatcher.py'),
+            '--deployment',str((args.evidence/'deployment.json').resolve())],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform=='win32' else 0)
+        (args.evidence/'dispatcher.json').write_text(json.dumps(dict(pid=child.pid,log=str(log.name)))+'\n',encoding='utf-8')
     print(json.dumps(state,indent=2))
 
 

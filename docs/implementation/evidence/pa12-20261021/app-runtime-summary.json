@@ -1,0 +1,743 @@
+{
+  "code_head": "dcd6a958b59f619a6b473160442ca16639a40259",
+  "copied_source_head": "bc9723722e22ab08d4eb20c605ea49d666b1d107",
+  "port": 8777,
+  "prefix": "remission-poc13-37271e30",
+  "jobs": [
+    {
+      "job": "analysis-5746f0fea4964d77b5a1cf5aeb552f01",
+      "input": [
+        {
+          "path": "dispatch.json",
+          "sha256": "ff3e95949a4286f929c2605845dfe4c1e30bb04c2bd0c3a855378ba6e0666ceb",
+          "size": 8869
+        },
+        {
+          "path": "input.json",
+          "sha256": "74139ac2dfdc945dd1eb0be1e176f2ec66386dee39a09717c1f5a0b8da8551ac",
+          "size": 29841
+        },
+        {
+          "path": "progress.json",
+          "sha256": "281f16291160afa10472800b0f9e84da78873913907345db163d2c2a00d2e121",
+          "size": 690
+        },
+        {
+          "path": "worker.stderr",
+          "sha256": "2f73a42c6b32b91547c805614ac0c2b34c9ad81ed434d4fe1748cbb31b7fd4b3",
+          "size": 749
+        },
+        {
+          "path": "worker.stdout",
+          "sha256": "498bacf168d0a7a185c4aadddeefb84809411e5e0544fb1c718170b83c5bff80",
+          "size": 11663
+        },
+        {
+          "path": "output\\diagnostics.json",
+          "sha256": "e57fcf715bc567f460f278045c391107279a92b071037bf589e8b9f6203f9e0a",
+          "size": 9585
+        },
+        {
+          "path": "output\\expected-effect.npz",
+          "sha256": "5e453c5951544dfea7e34992d2d1a95aea6f690870380056958cc0bfa30f4ffb",
+          "size": 33138
+        },
+        {
+          "path": "output\\observed-posterior-predictive.npz",
+          "sha256": "b35da59dbf9b900d25b19bf0637c12cad4ea1c29d930dab781d56dfbee79c033",
+          "size": 103524
+        },
+        {
+          "path": "output\\posterior.nc",
+          "sha256": "99422459449cf7d8b3b682a83631dcc95a84b981de8cc9ff36823a3dfa46a989",
+          "size": 6147124
+        },
+        {
+          "path": "output\\predictive-endpoint.npz",
+          "sha256": "c368d33295a02b0fccb3d722567132dbcc0b1f060fa851a40aed657715441e85",
+          "size": 7560
+        },
+        {
+          "path": "output\\prior-predictive.npz",
+          "sha256": "6da87e48a53e6a58d17ad8dbd2406d0d6bacc01d6ac81942727fe1e3b7cac74b",
+          "size": 2924
+        },
+        {
+          "path": "output\\progress.json",
+          "sha256": "102552f77d64496a13ab4074e46f3d95ceb5b46bc5287e1da8fcc1250048e815",
+          "size": 160
+        },
+        {
+          "path": "output\\result.json",
+          "sha256": "9f4bc1ce5ddf921fea3de714b86bb9d8c8826f2b8b1109365190d6d5a6434efd",
+          "size": 11658
+        },
+        {
+          "path": "output\\worker.stderr",
+          "sha256": "2f73a42c6b32b91547c805614ac0c2b34c9ad81ed434d4fe1748cbb31b7fd4b3",
+          "size": 749
+        },
+        {
+          "path": "output\\worker.stdout",
+          "sha256": "498bacf168d0a7a185c4aadddeefb84809411e5e0544fb1c718170b83c5bff80",
+          "size": 11663
+        }
+      ],
+      "status": "completed",
+      "effect": {
+        "kind": "conditional_expected_assignment_contrast",
+        "lower": -6.595377735038776,
+        "mean": 1.808535432732219,
+        "sd": 4.07828319026414,
+        "unit": "ISI_points",
+        "upper": 9.431948642116515
+      },
+      "seconds": 122.4910906960722,
+      "peak_memory_bytes": 956211200,
+      "divergences": 0,
+      "maximum_rhat": 1.0025129001986022,
+      "minimum_bulk_ess": 1272.0366371842606,
+      "minimum_tail_ess": 982.4872238546985,
+      "extension": false,
+      "integration": {
+        "attempted": [
+          {
+            "K": 1024,
+            "L": 15.93562666304245,
+            "U": 0.00013631827395559507,
+            "changes": null,
+            "interval": [
+              -6.614845813655863,
+              9.448690466936766
+            ],
+            "mean_integration_se": 0.00018460652341913264,
+            "mean_pass": true,
+            "raw_effect_variance": 16.632103925670947,
+            "residual_variance": 0.00013072548437813408,
+            "sd": 4.078247653793348,
+            "seconds": 5.1623230369295925,
+            "stability_pass": false,
+            "stability_tolerance": 0.07983890445902285,
+            "uninflated_effect_variance": 16.631973200186568,
+            "variance_pass": true
+          },
+          {
+            "K": 2048,
+            "L": 15.935381526135746,
+            "U": 6.724257598392351e-05,
+            "changes": [
+              3.553647079268529e-05,
+              0.01946807861708777,
+              0.016741824820250883
+            ],
+            "interval": [
+              -6.595377735038776,
+              9.431948642116515
+            ],
+            "mean_integration_se": 0.00012965586757251242,
+            "mean_pass": true,
+            "raw_effect_variance": 16.632393779991055,
+            "residual_variance": 6.446572453468435e-05,
+            "sd": 4.07828319026414,
+            "seconds": 9.130674017011188,
+            "stability_pass": true,
+            "stability_tolerance": 0.07983829037782747,
+            "uninflated_effect_variance": 16.63232931426652,
+            "variance_pass": true
+          }
+        ],
+        "bootstrap": {
+          "block": 20,
+          "resamples": 1000,
+          "seed": 721981
+        },
+        "gaussian_integration": "exact conditional AR plus endpoint measurement",
+        "memory": "streamed eight adherence batches; no M x K x horizon allocation",
+        "seconds": 9.130929101025686,
+        "status": "accepted"
+      },
+      "effect_mcmc": {
+        "accepted": true,
+        "ess_bulk": {
+          "effect": 3886.8665389796074
+        },
+        "ess_tail": {
+          "effect": 3319.898028999997
+        },
+        "mcse": {
+          "effect": 0.06558525415987021
+        },
+        "rhat": {
+          "effect": 1.000247503074501
+        }
+      },
+      "isolation": {
+        "Id": "e22e35def81c76aed0ca142f920ea3f7c869777b641e3111ade8a42587bafb64",
+        "Image": "sha256:1248d11435bb709dea9c7474c181a12468118ee99fde3797be2dbe92e16ebe9c",
+        "State": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-22T06:00:43.009687276Z",
+          "FinishedAt": "2026-10-22T06:02:48.768036086Z"
+        },
+        "Mounts": [
+          {
+            "Type": "volume",
+            "Name": "remission-poc13-37271e30-analysis-5746f0fea4964d77b5a1cf5aeb552f01-input",
+            "Source": "/var/lib/docker/volumes/remission-poc13-37271e30-analysis-5746f0fea4964d77b5a1cf5aeb552f01-input/_data",
+            "Destination": "/input",
+            "Driver": "local",
+            "Mode": "z",
+            "RW": false,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "remission-poc13-37271e30-analysis-5746f0fea4964d77b5a1cf5aeb552f01-output",
+            "Source": "/var/lib/docker/volumes/remission-poc13-37271e30-analysis-5746f0fea4964d77b5a1cf5aeb552f01-output/_data",
+            "Destination": "/output",
+            "Driver": "local",
+            "Mode": "z",
+            "RW": true,
+            "Propagation": ""
+          }
+        ],
+        "config": {
+          "User": "10002:10002",
+          "Env": [
+            "REMISSION_LEARNER_IMAGE=sha256:1248d11435bb709dea9c7474c181a12468118ee99fde3797be2dbe92e16ebe9c",
+            "REMISSION_SOURCE_COMMIT=bc9723722e22ab08d4eb20c605ea49d666b1d107",
+            "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+            "PYTHON_VERSION=3.13.7",
+            "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "PYTHONUNBUFFERED=1",
+            "OMP_NUM_THREADS=1",
+            "OPENBLAS_NUM_THREADS=1",
+            "MKL_NUM_THREADS=1",
+            "PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64",
+            "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+            "PYTHONPATH=/app",
+            "MPLCONFIGDIR=/tmp/matplotlib"
+          ],
+          "WorkingDir": "/app",
+          "Labels": {
+            "remission.analysis": "remission-poc13-37271e30",
+            "remission.attempt": "analysis-5746f0fea4964d77b5a1cf5aeb552f01"
+          }
+        },
+        "host": {
+          "NetworkMode": "none",
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ],
+          "NanoCpus": 2000000000,
+          "Memory": 2147483648,
+          "Tmpfs": {
+            "/tmp": "rw,nosuid,size=256m"
+          }
+        }
+      },
+      "input_volume": "remission-poc13-37271e30-analysis-5746f0fea4964d77b5a1cf5aeb552f01-input",
+      "output_volume": "remission-poc13-37271e30-analysis-5746f0fea4964d77b5a1cf5aeb552f01-output"
+    },
+    {
+      "job": "analysis-cf09f16c64464846949631d1abf5fea0",
+      "input": [
+        {
+          "path": "dispatch.json",
+          "sha256": "29a7f7b1bdd33bbe7edc51ece82195d9689154c9c4743ee0abb7477e6002c3d5",
+          "size": 8869
+        },
+        {
+          "path": "input.json",
+          "sha256": "f1f3cdd6b528f40899349835d361500f4f9ae5992d195cac6464fda6aa05bf72",
+          "size": 56350
+        },
+        {
+          "path": "progress.json",
+          "sha256": "e854a1c621e3f08a54d4d64334eccf6955de23cebda704bf3abe7665eeb0e62a",
+          "size": 160
+        },
+        {
+          "path": "worker.stderr",
+          "sha256": "90f9661ac487f3b5755612409112f62db6065ca913182c2c572d3df8639d1abb",
+          "size": 749
+        },
+        {
+          "path": "worker.stdout",
+          "sha256": "c1fedc9f6baebeb81ef506098bcc5c791d02020f03432937d5464a66af51ed79",
+          "size": 15832
+        },
+        {
+          "path": "output\\diagnostics.json",
+          "sha256": "af28836a153207c3e9cd534a4c48a8be8474ad1d1c11b5844eb7276152c95bfb",
+          "size": 13844
+        },
+        {
+          "path": "output\\expected-effect.npz",
+          "sha256": "9c008413aef0ea157e97454e4c57e07891357b211fe39a54fbd1154c74ddc7a2",
+          "size": 33085
+        },
+        {
+          "path": "output\\observed-posterior-predictive.npz",
+          "sha256": "58e8d40f7350f02e36f4129cde41adca7ae6b694ef0d4b0442dbcae6b2ba3b07",
+          "size": 229196
+        },
+        {
+          "path": "output\\posterior.nc",
+          "sha256": "3542f45fff20a9cc6daf8704f9c60dff0b25fd74d0f566807d043a1275787f76",
+          "size": 8387424
+        },
+        {
+          "path": "output\\predictive-endpoint.npz",
+          "sha256": "0cbc660318c8d413f52b18b299ac04af88ad23b4d1225460c0f439c7c420d537",
+          "size": 6671
+        },
+        {
+          "path": "output\\prior-predictive.npz",
+          "sha256": "0f9b933aa477e17231b06f53dc2a53e42f6b762a0b83472b9d3ba75cfd549f5c",
+          "size": 5455
+        },
+        {
+          "path": "output\\progress.json",
+          "sha256": "e854a1c621e3f08a54d4d64334eccf6955de23cebda704bf3abe7665eeb0e62a",
+          "size": 160
+        },
+        {
+          "path": "output\\result.json",
+          "sha256": "69873291865b1aa8cb5383bcebb6a69b225011daec806944431e77be63a46fc0",
+          "size": 15827
+        },
+        {
+          "path": "output\\worker.stderr",
+          "sha256": "90f9661ac487f3b5755612409112f62db6065ca913182c2c572d3df8639d1abb",
+          "size": 749
+        },
+        {
+          "path": "output\\worker.stdout",
+          "sha256": "c1fedc9f6baebeb81ef506098bcc5c791d02020f03432937d5464a66af51ed79",
+          "size": 15832
+        }
+      ],
+      "status": "completed",
+      "effect": {
+        "kind": "conditional_expected_assignment_contrast",
+        "lower": -3.6429866995244855,
+        "mean": -0.4411916333422638,
+        "sd": 1.689874630581409,
+        "unit": "ISI_points",
+        "upper": 3.311055188279583
+      },
+      "seconds": 210.57208071195055,
+      "peak_memory_bytes": 1077415936,
+      "divergences": 0,
+      "maximum_rhat": 1.0034081000494628,
+      "minimum_bulk_ess": 1785.2686378646445,
+      "minimum_tail_ess": 1418.8435434307091,
+      "extension": false,
+      "integration": {
+        "attempted": [
+          {
+            "K": 1024,
+            "L": 2.6778954409028994,
+            "U": 3.3806032172196176e-05,
+            "changes": null,
+            "interval": [
+              -3.640647238828059,
+              3.3092379637567126
+            ],
+            "mean_integration_se": 9.193208386112567e-05,
+            "mean_pass": true,
+            "raw_effect_variance": 2.855582711345176,
+            "residual_variance": 3.189001449735684e-05,
+            "sd": 1.6898469490889334,
+            "seconds": 4.479042635066435,
+            "stability_pass": false,
+            "stability_tolerance": 0.03272855292189313,
+            "uninflated_effect_variance": 2.8555508213306786,
+            "variance_pass": true
+          },
+          {
+            "K": 2048,
+            "L": 2.678296685184202,
+            "U": 1.663303056363604e-05,
+            "changes": [
+              2.7681492475561953e-05,
+              0.002339460696426432,
+              0.0018172245228704753
+            ],
+            "interval": [
+              -3.6429866995244855,
+              3.311055188279583
+            ],
+            "mean_integration_se": 6.448455350631661e-05,
+            "mean_pass": true,
+            "raw_effect_variance": 2.855676267082653,
+            "residual_variance": 1.5750232345837435e-05,
+            "sd": 1.689874630581409,
+            "seconds": 8.320185626042075,
+            "stability_pass": true,
+            "stability_tolerance": 0.032731004782525094,
+            "uninflated_effect_variance": 2.8556605168503073,
+            "variance_pass": true
+          }
+        ],
+        "bootstrap": {
+          "block": 20,
+          "resamples": 1000,
+          "seed": 721981
+        },
+        "gaussian_integration": "exact conditional AR plus endpoint measurement",
+        "memory": "streamed eight adherence batches; no M x K x horizon allocation",
+        "seconds": 8.320496870088391,
+        "status": "accepted"
+      },
+      "effect_mcmc": {
+        "accepted": true,
+        "ess_bulk": {
+          "effect": 5597.187999388341
+        },
+        "ess_tail": {
+          "effect": 3529.18528768859
+        },
+        "mcse": {
+          "effect": 0.022764381948664314
+        },
+        "rhat": {
+          "effect": 0.9996417452240907
+        }
+      },
+      "isolation": {
+        "Id": "c594f91c8a7c8598c6dc3a4d299cfe14239fc420e90a98118af75204a5d72b55",
+        "Image": "sha256:1248d11435bb709dea9c7474c181a12468118ee99fde3797be2dbe92e16ebe9c",
+        "State": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-22T06:03:19.523895646Z",
+          "FinishedAt": "2026-10-22T06:06:53.52457236Z"
+        },
+        "Mounts": [
+          {
+            "Type": "volume",
+            "Name": "remission-poc13-37271e30-analysis-cf09f16c64464846949631d1abf5fea0-input",
+            "Source": "/var/lib/docker/volumes/remission-poc13-37271e30-analysis-cf09f16c64464846949631d1abf5fea0-input/_data",
+            "Destination": "/input",
+            "Driver": "local",
+            "Mode": "z",
+            "RW": false,
+            "Propagation": ""
+          },
+          {
+            "Type": "volume",
+            "Name": "remission-poc13-37271e30-analysis-cf09f16c64464846949631d1abf5fea0-output",
+            "Source": "/var/lib/docker/volumes/remission-poc13-37271e30-analysis-cf09f16c64464846949631d1abf5fea0-output/_data",
+            "Destination": "/output",
+            "Driver": "local",
+            "Mode": "z",
+            "RW": true,
+            "Propagation": ""
+          }
+        ],
+        "config": {
+          "User": "10002:10002",
+          "Env": [
+            "REMISSION_LEARNER_IMAGE=sha256:1248d11435bb709dea9c7474c181a12468118ee99fde3797be2dbe92e16ebe9c",
+            "REMISSION_SOURCE_COMMIT=bc9723722e22ab08d4eb20c605ea49d666b1d107",
+            "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+            "PYTHON_VERSION=3.13.7",
+            "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "PYTHONUNBUFFERED=1",
+            "OMP_NUM_THREADS=1",
+            "OPENBLAS_NUM_THREADS=1",
+            "MKL_NUM_THREADS=1",
+            "PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64",
+            "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+            "PYTHONPATH=/app",
+            "MPLCONFIGDIR=/tmp/matplotlib"
+          ],
+          "WorkingDir": "/app",
+          "Labels": {
+            "remission.analysis": "remission-poc13-37271e30",
+            "remission.attempt": "analysis-cf09f16c64464846949631d1abf5fea0"
+          }
+        },
+        "host": {
+          "NetworkMode": "none",
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ],
+          "NanoCpus": 2000000000,
+          "Memory": 2147483648,
+          "Tmpfs": {
+            "/tmp": "rw,nosuid,size=256m"
+          }
+        }
+      },
+      "input_volume": "remission-poc13-37271e30-analysis-cf09f16c64464846949631d1abf5fea0-input",
+      "output_volume": "remission-poc13-37271e30-analysis-cf09f16c64464846949631d1abf5fea0-output"
+    }
+  ],
+  "persistence": {
+    "status": "passed",
+    "protected_rows_unchanged": true,
+    "stale_real_claim_denied_without_mutation": true,
+    "state": {
+      "tables": {
+        "analysis_attempts": "c99a42bcd1b57f69c5b3d2ed7221e564f79e5e8e8d538a55055f4f5e3d1b5a8e",
+        "bundles": "9d0d8d21e06427488b1cb04b481cb0aeb8e5e934e460e9e217c2317b62f9f35a",
+        "receipts": "53ba6b6f7fd5565f037cd3e0f6edd17627558d66b0d6616da276ac361607591b",
+        "decisions": "ad7e8773d870727318ef1326d090ec03e45e241fe6f812c53bbdd3ff4c966385",
+        "patients": "cc91f39d70ed016a97d86b1f0e9c158fd85cdbfedd76a98e034f671276e340ca"
+      },
+      "attempts": [
+        {
+          "job_id": "analysis-182328b5382a4382bb28b1d68fcea000",
+          "status": "failed",
+          "stage": "failed",
+          "cutoff": "2026-01-15T12:00:00+00:00",
+          "input_sha256": "45faab04277c32b0f98fd41e86d5390fe90f2e37a20c2acef556dca7a2f7230f",
+          "history_sha256": "b0904f5ecd80781b474fa42d0b74f0e3a36cdb33d364535cf5f1d548ddcce034",
+          "failure_reason": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import os;os.chmod('/input',0o755);os.chown('/input/input.json',10002,10002);os.chmod('/input/input.json',0o444);os.chown('/output',10002,10002);os.chmod('/output',0o700)\n                                                                                 ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 1] Operation not permitted: '/input/input.json'\n",
+          "created_at": "2026-10-22T05:43:00.493634+00:00",
+          "started_at": "2026-10-22T05:43:03.000817+00:00",
+          "finished_at": "2026-10-22T05:43:05.124880+00:00"
+        },
+        {
+          "job_id": "analysis-ff70a3e2b55f491cac3ca0cf83865e1c",
+          "status": "failed",
+          "stage": "failed",
+          "cutoff": "2026-01-15T12:00:00+00:00",
+          "input_sha256": "a912742ce6b5a666e867b3243c40cb3bd999f129c4fad50867348bcd7664b638",
+          "history_sha256": "b0904f5ecd80781b474fa42d0b74f0e3a36cdb33d364535cf5f1d548ddcce034",
+          "failure_reason": "dispatcher-restarted; interrupted attempt retained",
+          "created_at": "2026-10-22T05:58:47.135096+00:00",
+          "started_at": "2026-10-22T05:58:49.557717+00:00",
+          "finished_at": "2026-10-22T06:00:04.449199+00:00"
+        },
+        {
+          "job_id": "analysis-5746f0fea4964d77b5a1cf5aeb552f01",
+          "status": "completed",
+          "stage": "complete",
+          "cutoff": "2026-01-15T12:00:00+00:00",
+          "input_sha256": "bd87e18876b697ff73b795cd7c4cb4dfb032d25455e0559905680c04ebaf0a27",
+          "history_sha256": "b0904f5ecd80781b474fa42d0b74f0e3a36cdb33d364535cf5f1d548ddcce034",
+          "failure_reason": null,
+          "created_at": "2026-10-22T06:00:39.377883+00:00",
+          "started_at": "2026-10-22T06:00:41.242685+00:00",
+          "finished_at": "2026-10-22T06:02:51.633708+00:00"
+        },
+        {
+          "job_id": "analysis-cf09f16c64464846949631d1abf5fea0",
+          "status": "completed",
+          "stage": "complete",
+          "cutoff": "2026-01-29T12:00:00+00:00",
+          "input_sha256": "750e75d6dd2dcbca5ea9dc32b801cc0235c26da4f93dc17cef87952f10278886",
+          "history_sha256": "fa7a1aebb7b1737d8afdfe7f7324835d0a04e9725ab25f7337dcd7898dd7bb4d",
+          "failure_reason": null,
+          "created_at": "2026-10-22T06:03:15.227208+00:00",
+          "started_at": "2026-10-22T06:03:17.956113+00:00",
+          "finished_at": "2026-10-22T06:06:56.886607+00:00"
+        }
+      ],
+      "stale_real_claim_denied_without_mutation": true,
+      "patient": [
+        {
+          "id": "POC-96893765ba474fae9774fc5d48a65525",
+          "version": 5,
+          "cutoff": "2026-01-29T12:00:00+00:00"
+        }
+      ],
+      "bundles": [
+        {
+          "id": "approval-6b797a3ca1fe44a8bf12288b178546e6",
+          "display_sha256": "56e40608e5b50f9b6f5c38ea95dc5bd5c00161699ada9ac2646e8bb7a0b3f0e1"
+        },
+        {
+          "id": "approval-7b95eeff20d74b8e913db38e83d25104",
+          "display_sha256": "77d71246ee614c7fc8811feaab7d6d663592ed1b416489aa301e12840bdf27d2"
+        }
+      ]
+    }
+  },
+  "copied_tests": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,size=256m",
+      "-e",
+      "PYTHONPATH=/app:/app/tests/integration/replay",
+      "sha256:5dfd1c3a24ee5c0dee94902731c481b3adb37af02b0a722e8ac5c25cb77fb2a0",
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests/integration/replay",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-v0x-sol-261021",
+    "started_unix": 1792648680.4705217,
+    "elapsed_seconds": 185.20321798324585,
+    "exit": 0,
+    "streams": {
+      "stdout": {
+        "path": "3a882065c41a4bdc8d830903cc761e32.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "3a882065c41a4bdc8d830903cc761e32.stderr",
+        "bytes": 16733,
+        "sha256": "8a789ea2b2da5830c975f66374f79be55b5f6889ce7a13fa946db33dd6e1652b"
+      }
+    },
+    "source_head": "dcd6a958b59f619a6b473160442ca16639a40259"
+  },
+  "test_disposition": "86 tests:82 passed;4 schema4-only tests explicitly skipped and separately passed in complete pinned004 service",
+  "browser": {
+    "released": true,
+    "desktop": [
+      1440,
+      1000
+    ],
+    "narrow": [
+      390,
+      844
+    ],
+    "captures": [
+      {
+        "path": "browser\\bob-ownership.yml",
+        "sha256": "63f3375af34da2b044d19019bebef6f48eff0bc0f6c5b90a4890992a93ee1d65",
+        "bytes": 1027
+      },
+      {
+        "path": "browser\\console.log",
+        "sha256": "c0cdf0319e0da1984e6265c4710fb02c632a558ed0adef735fb9be26a4f67893",
+        "bytes": 416
+      },
+      {
+        "path": "browser\\day14-stale-desktop.png",
+        "sha256": "efdab414c8e2ad3fa5ffb0c0bbf7bbbfae447e4600f47672b0a0362454bee7c5",
+        "bytes": 75500
+      },
+      {
+        "path": "browser\\day28-after-restart-desktop.png",
+        "sha256": "9b00ac7b5a72f3fc4e0698d7449dfe5a861c62e03da4cc7d69c9e6431856871f",
+        "bytes": 66112
+      },
+      {
+        "path": "browser\\day28-desktop-compact.png",
+        "sha256": "8bbf63f2503d2532dc4c01f8d8b0480722f8a5387070eeb9ea203f9dfb879252",
+        "bytes": 88113
+      },
+      {
+        "path": "browser\\day28-desktop.png",
+        "sha256": "f3851caacc04435a6bc38c65e28489620abe4124f8e2f26506ed6d2e363befe5",
+        "bytes": 873828
+      },
+      {
+        "path": "browser\\day28-diagnostics.yml",
+        "sha256": "1870e09b21331262500f896c7c218d8b9a4ea250f4b6f88e02ca6f97b0d01ed6",
+        "bytes": 17400
+      },
+      {
+        "path": "browser\\day28-narrow-keyboard.yml",
+        "sha256": "e18b3c1651846863e947ca4d09adf91f15bb3604241d3c9892f6c353d463222b",
+        "bytes": 2672
+      },
+      {
+        "path": "browser\\day28-narrow.png",
+        "sha256": "a039955af500f0a099d39b86531230ba0269cd635d5a44b2d67fe0d62270c7d4",
+        "bytes": 77323
+      },
+      {
+        "path": "browser\\day28-persistence.yml",
+        "sha256": "80e50044ede522cf41dedb6ccf2831c6d91f39e81cc5e7e957c701e93ec0e9b0",
+        "bytes": 4622
+      },
+      {
+        "path": "browser\\history-later-outcomes.yml",
+        "sha256": "a4adeae608570e15ccd96e2695efeacc5950b7c401f9e596162c6c4ced048035",
+        "bytes": 29912
+      },
+      {
+        "path": "browser\\network.log",
+        "sha256": "e21ab8cf6435be2c231956bf08baf9d32e1e58fc94746d9ff506cc97ea3b954e",
+        "bytes": 478
+      },
+      {
+        "path": "browser\\original-history.yml",
+        "sha256": "4c37b484286453cc6d36dd05b3f8d25ab20dcd1a6ab0c1827ed8e0bd9709cfae",
+        "bytes": 4055
+      },
+      {
+        "path": "browser\\restart-first-navigation-race.yml",
+        "sha256": "a53d086bce3f1f45d763026e3787c55b78774c110d5f775510b1d7c713884593",
+        "bytes": 306
+      },
+      {
+        "path": "browser\\running-before-restart-progress.json",
+        "sha256": "4f235e2912dba2dbdf1f9148409ad3a481eb4b1cdaf854ccae77db5fd1c20d8a",
+        "bytes": 159
+      },
+      {
+        "path": "browser\\running-before-restart.json",
+        "sha256": "32680eb8dc87dfe8d6078dac621d52bd5bac4dcd8b6d4fd340f721fd575a29ed",
+        "bytes": 9943
+      },
+      {
+        "path": "browser\\running-before-restart.png",
+        "sha256": "65a36505dadbc07680a8f35cfd9551cf83cc3eecb7e0ecdb82b433d74b774c9f",
+        "bytes": 46331
+      },
+      {
+        "path": "browser\\running-before-restart.yml",
+        "sha256": "aa5b7178a7007b1802c0101d00bc12b517917cd498d4008ec2d5bd0eb8bafdae",
+        "bytes": 2848
+      }
+    ],
+    "console": "Total messages: 0 (Errors: 0, Warnings: 0)\nReturning 2 messages for level \"warning\"\n\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8777/api/patients/POC-96893765ba474fae9774fc5d48a65525:0\n[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8777/api/patients/POC-96893765ba474fae9774fc5d48a65525/draft:0",
+    "network": "4. [GET] http://127.0.0.1:8777/api/session => [200] OK\n5. [GET] http://127.0.0.1:8777/api/patients => [200] OK\n6. [GET] http://127.0.0.1:8777/api/patients/POC-96893765ba474fae9774fc5d48a65525 => [200] OK\n7. [GET] http://127.0.0.1:8777/api/patients/POC-96893765ba474fae9774fc5d48a65525/draft => [200] OK\n8. [GET] http://127.0.0.1:8777/api/patients/POC-96893765ba474fae9774fc5d48a65525/analyses => [200] OK\n\nNote: 3 static requests not shown, run with \"static\" option to see them.",
+    "qualification": "Author BC/dcd evidence is retained and qualified by independent P1 duplicate sibling keys and62e P2 skip/hash workspace loss.62e keys regression passed;046keyboard fix final independent review pending. No earlier captures relabeled."
+  },
+  "raw_captures_root": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-v0x-sol-261021\\artifacts\\pa12"
+}

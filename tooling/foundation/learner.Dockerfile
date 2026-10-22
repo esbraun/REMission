@@ -1,4 +1,5 @@
 FROM remission-foundation-runtime:candidate
+ENV PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64 MPLCONFIGDIR=/tmp/matplotlib
 COPY contracts/domain/__init__.py contracts/domain/common.py contracts/domain/entities.py contracts/domain/boundaries.py contracts/domain/estimands.py /app/contracts/domain/
 COPY contracts/runs/__init__.py contracts/runs/common.py contracts/runs/observed.py contracts/runs/admission.py contracts/runs/bindings-v1.json /app/contracts/runs/
 COPY contracts/domain/observed_v2.py contracts/domain/evidence_v2.py /app/contracts/domain/
@@ -7,6 +8,9 @@ COPY contracts/service/__init__.py contracts/service/live_hold.py contracts/serv
 COPY services/learner/worker.py /app/services/learner/worker.py
 COPY services/learner/export_observed.py /app/services/learner/export_observed.py
 COPY services/learner/live_product.py /app/services/learner/live_product.py
+COPY contracts/domain/analysis.py /app/contracts/domain/
+COPY methods/visit/ /app/methods/visit/
+COPY services/learner/analysis_worker.py /app/services/learner/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 USER 10002:10002
