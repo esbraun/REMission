@@ -23,12 +23,24 @@ def export_cohort(db, owner, patient_versions, cutoff, *, cohort_id, research_ru
     """CORE export inside the caller's transaction; no private state leaves it.
 
     Membership is resolved against owned rows and their persisted panel ID.
-    Registered research-run membership still needs its artifact admission seam;
+    Research membership resolves only from trusted run-export registration;
     a caller-provided string never authorizes research mixing.
     """
     from contracts.domain.cohort import CohortHistory, CohortManifest, COORDINATE_REF
+    from .cohort_registration import registration, is_research_member
     if research_run_id is not None:
-        raise AnalysisError('Registered research-run membership is not implemented; cohort export rejected.')
+        try:
+            cohort=registration(db,owner,research_run_id,cohort_id,cutoff)
+        except ValueError as error:
+            raise AnalysisError(str(error)) from error
+        if patient_versions!={m.patient_id:m.patient_version for m in cohort.manifest.members}:
+            raise AnalysisError('Registered research-run roster/version mismatch.')
+        for member in cohort.manifest.members:
+            row=db.execute('SELECT owner_id,version,cutoff FROM patients WHERE id=?',(member.patient_id,)).fetchone()
+            if (row is None or row['owner_id']!=owner or row['version']!=member.patient_version
+                    or instant(row['cutoff'])<cohort.manifest.cutoff):
+                raise AnalysisError('Registered research member changed or is unavailable.')
+        return cohort
     if len(patient_versions) != 12:
         raise AnalysisError('Select exactly twelve distinct owned patients.')
     histories, members, panels = [], [], set()
@@ -42,7 +54,7 @@ def export_cohort(db, owner, patient_versions, cutoff, *, cohort_id, research_ru
         simulation = json.loads(row['state_json']).get('simulation', {})
         if simulation.get('law_version') != 'poc-longitudinal-v1' or 'panel_id' not in simulation:
             raise AnalysisError('Every cohort member must use the compatible v1 panel.')
-        if simulation.get('research_run_id') is not None:
+        if simulation.get('research_run_id') is not None or is_research_member(db,patient_id):
             raise AnalysisError('Research members require registered run membership; interactive export rejected.')
         if cutoff > instant(row['cutoff']):
             raise AnalysisError('Every cohort member must have reached the common cutoff.')
