@@ -1,6 +1,6 @@
 # README handoff — 2026-10-22
 
-Added the root [README](../../../README.md) as an engineer and physician-super-user entry point. It describes the supported synthetic patient workflow and single-patient V0 analysis, distinguishes research UI from qualified methods, links to canonical runtime/specification/runbook sources, and states synthetic-data and clinical-use boundaries. It does not claim support for general cohorts, qualified borrowing, N-of-1 analysis, MRT/WCLS, adaptive support, the bounded validation study, or clinical validation.
+Added the root [README](../../../readme.md) as an engineer and physician-super-user entry point. It describes the supported synthetic patient workflow and single-patient V0 analysis, distinguishes research UI from qualified methods, links to canonical runtime/specification/runbook sources, and states synthetic-data and clinical-use boundaries. It does not claim support for general cohorts, qualified borrowing, N-of-1 analysis, MRT/WCLS, adaptive support, the bounded validation study, or clinical validation.
 
 ## Sources checked
 
