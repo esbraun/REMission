@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+import uuid
 
 from capture import run
 
@@ -19,6 +20,10 @@ CHANGES={
 }
 LIMITS=['--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL',
         '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m','--user','10001:10001']
+# Select at Docker's output boundary, BEFORE capture.run persists any bytes.
+# Config.Env is never requested, captured or copied into the handoff.
+IMAGE_FORMAT='{"Id":{{json .Id}},"Created":{{json .Created}},"RootFS":{{json .RootFS}},"config":{"User":{{json .Config.User}},"WorkingDir":{{json .Config.WorkingDir}},"Entrypoint":{{json .Config.Entrypoint}},"Cmd":{{json .Config.Cmd}},"ExposedPorts":{{json .Config.ExposedPorts}}}}'
+CONTAINER_FORMAT='{"Id":{{json .Id}},"Image":{{json .Image}},"Path":{{json .Path}},"Args":{{json .Args}},"State":{{json .State}},"User":{{json .Config.User}},"Mounts":{{json .Mounts}},"HostConfig":{"Memory":{{json .HostConfig.Memory}},"NanoCpus":{{json .HostConfig.NanoCpus}},"NetworkMode":{{json .HostConfig.NetworkMode}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}}}}'
 SCAN="""import hashlib,json;from pathlib import Path
 r={}
 for p in sorted(Path('/app').rglob('*')):
@@ -68,9 +73,7 @@ def main():
     image=command(['docker','image','inspect',service,'--format','{{.Id}}']).decode().strip()
     images={}
     for role,identity in [('base',BASE),('service',image),('learner',LEARNER),('generator',GENERATOR)]:
-        item=json.loads(command(['docker','image','inspect',identity]))[0]
-        images[role]={key:item[key] for key in ['Id','Created','RootFS']}
-        images[role]['config']={key:item['Config'].get(key) for key in ['User','WorkingDir','Entrypoint','Cmd','ExposedPorts']}
+        images[role]=json.loads(command(['docker','image','inspect',identity,'--format',IMAGE_FORMAT]))
     assert images['base']['RootFS']['Layers']==images['service']['RootFS']['Layers'][:len(images['base']['RootFS']['Layers'])]
     assert images['base']['config']==images['service']['config']
     save('images.json',images)
@@ -78,15 +81,15 @@ def main():
     command(['docker','build','--network','none','--build-arg','SERVICE_BASE='+service,'-f',
         'tooling/foundation/pa3-service-controls.Dockerfile','-t',controls,'.'],180)
     test_image=command(['docker','image','inspect',controls,'--format','{{.Id}}']).decode().strip()
-    save('controls-image.json',json.loads(command(['docker','image','inspect',test_image]))[0])
-    prefix='remission-pa3-sol261022-service-4a'
+    save('controls-image.json',json.loads(command(['docker','image','inspect',test_image,'--format',IMAGE_FORMAT])))
+    prefix='remission-pa3-sol261022-service-'+uuid.uuid4().hex[:10]
     states={}
     def container(suffix,identity,argv,seconds=60):
         name=prefix+'-'+suffix;start=time.monotonic()
         p,m=run(['docker','run','--name',name,*LIMITS,identity,*argv],root/'commands',timeout_seconds=seconds)
-        state=json.loads(command(['docker','inspect',name]))[0]
+        state=json.loads(command(['docker','inspect',name,'--format',CONTAINER_FORMAT]))
         if state['State']['Running']:
-            command(['docker','kill',name]);state=json.loads(command(['docker','inspect',name]))[0]
+            command(['docker','kill',name]);state=json.loads(command(['docker','inspect',name,'--format',CONTAINER_FORMAT]))
         if state['State']['Running']:raise RuntimeError('own container still running '+name)
         elapsed=time.monotonic()-start
         states[suffix]=dict(container=state,command=m,wall_seconds=elapsed)
@@ -120,7 +123,7 @@ def main():
         dispatcher=dict(path='analysis_dispatcher.py',**source['tooling/foundation/analysis_dispatcher.py']['physical'],source_commit=SOURCE),
         activation_requires='separate reviewed maintenance/SQLite protection, oldest-queue audit and explicit root authorization')
     save('deployment-prepared.json',deployment)
-    save('result.json',dict(status='prepared_not_deployed',observer_commit=head,production_source=SOURCE,service_image=image,
+    save('result.json',dict(status='prepared_not_deployed',observer_commit=head,production_source=SOURCE,service_image=image,container_prefix=prefix,
         controls_image=test_image,tests=TESTS,scope='four non-fitting temp-DB controls, CLI help, consumer purity, full /app inheritance hash audit; no app DB/deploy/claim/fit'))
     manifest={str(p.relative_to(root)).replace('\\','/'):digest(p.read_bytes()) for p in sorted(root.rglob('*')) if p.is_file()}
     save('raw-manifest.json',dict(files=manifest,files_count=len(manifest),status='frozen; no more writes'))
