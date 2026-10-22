@@ -1,0 +1,245 @@
+/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py lines620..658
+620: def sample(
+621:     draws: int = 1000,
+622:     *,
+623:     tune: int | None = None,
+624:     chains: int | None = None,
+625:     cores: int | None = None,
+626:     random_seed: RandomState = None,
+627:     progressbar: bool | ProgressBarOptions = True,
+628:     progressbar_theme: Theme | str | None = None,
+629:     quiet: bool = False,
+630:     step=None,
+631:     var_names: Sequence[str] | None = None,
+632:     nuts_sampler: Literal["pymc", "nutpie", "numpyro", "blackjax"] | None = None,
+633:     initvals: StartDict | Sequence[StartDict | None] | None = None,
+634:     init: str = "auto",
+635:     jitter_max_retries: int = 10,
+636:     n_init: int = 200_000,
+637:     trace: TraceOrBackend | None = None,
+638:     discard_tuned_samples: bool = True,
+639:     compute_convergence_checks: bool = True,
+640:     keep_warning_stat: bool = False,
+641:     return_inferencedata: bool = True,
+642:     idata_kwargs: dict[str, Any] | None = None,
+643:     nuts_sampler_kwargs: dict[str, Any] | None = None,
+644:     callback=None,
+645:     mp_ctx=None,
+646:     blas_cores: int | None | Literal["auto"] = "auto",
+647:     model: Model | None = None,
+648:     backend: str | None = None,
+649:     compile_kwargs: dict | None = None,
+650:     **kwargs,
+651: ) -> DataTree | MultiTrace | ZarrTrace:
+652:     r"""Draw samples from the posterior using the given step methods.
+653: 
+654:     Multiple step methods are supported via compound step methods.
+655: 
+656:     Parameters
+657:     ----------
+658:     draws : int
+
+/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py lines768..773
+768:     backend: str, optional.
+769:         Which computational backend to use. Recommended to be one of "numba", "c", and "jax".
+770:         May require installing extra dependencies.
+771:     compile_kwargs: dict, optional
+772:         Dictionary with keyword argument to pass to the functions compiled by the step methods.
+773:         ``compile_kwargs["mode"]`` cannot be combined with ``backend``.
+
+/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py lines895..898
+895:     compile_kwargs = resolve_backend_compile_kwargs(backend, compile_kwargs)
+896:     mp_ctx = _initialize_multiprocessing_context(
+897:         mp_ctx, mode=compile_kwargs.get("mode"), quiet=quiet
+898:     )
+
+/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py lines1031..1050
+1031:     if exclusive_nuts and not provided_steps:
+1032:         # Special path for NUTS initialization
+1033:         if "nuts" in kwargs:
+1034:             nuts_kwargs = kwargs.pop("nuts")
+1035:             [kwargs.setdefault(k, v) for k, v in nuts_kwargs.items()]
+1036:         with joined_blas_limiter():
+1037:             initial_points, step = init_nuts(
+1038:                 init=init,
+1039:                 chains=chains,
+1040:                 n_init=n_init,
+1041:                 model=model,
+1042:                 random_seed=random_seed_list,
+1043:                 progressbar=progress_bool,
+1044:                 quiet=quiet,
+1045:                 jitter_max_retries=jitter_max_retries,
+1046:                 tune=tune,
+1047:                 initvals=initvals,
+1048:                 compile_kwargs=compile_kwargs,
+1049:                 **kwargs,
+1050:             )
+
+/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py lines1843..1870
+1843:     init = init.lower()
+1844: 
+1845:     if init == "auto":
+1846:         init = "jitter+adapt_diag"
+1847: 
+1848:     if compile_kwargs is None:
+1849:         compile_kwargs = {}
+1850: 
+1851:     random_seed_list = _get_seeds_per_chain(random_seed, chains)
+1852: 
+1853:     if not quiet:
+1854:         _log.info(f"Initializing NUTS using {init}...")
+1855: 
+1856:     cb = []
+1857:     if "advi" in init:
+1858:         from pymc.variational.callbacks import CheckParametersConvergence
+1859: 
+1860:         cb = [
+1861:             CheckParametersConvergence(tolerance=1e-2, diff="absolute"),
+1862:             CheckParametersConvergence(tolerance=1e-2, diff="relative"),
+1863:         ]
+1864: 
+1865:     logp_dlogp_func = model.logp_dlogp_function(ravel_inputs=True, **compile_kwargs)
+1866:     logp_dlogp_func.trust_input = True
+1867: 
+1868:     def model_logp_fn(ip: PointType) -> np.ndarray:
+1869:         q, _ = DictToArrayBijection.map(ip)
+1870:         return logp_dlogp_func([q], extra_vars={})[0]
+
+/usr/local/lib/python3.13/site-packages/pymc/sampling/mcmc.py lines1990..2014
+1990:         cov = np.eye(initial_point_model_size)
+1991:         potential = quadpotential.QuadPotentialFullAdapt(
+1992:             initial_point_model_size, mean, cov, 10, rng=random_seed_list[0]
+1993:         )
+1994:     elif init == "jitter+adapt_full":
+1995:         mean = np.mean(apoints_data, axis=0)
+1996:         initial_point = initial_points[0]
+1997:         initial_point_model_size = sum(initial_point[n.name].size for n in model.value_vars)
+1998:         cov = np.eye(initial_point_model_size)
+1999:         potential = quadpotential.QuadPotentialFullAdapt(
+2000:             initial_point_model_size, mean, cov, 10, rng=random_seed_list[0]
+2001:         )
+2002:     else:
+2003:         raise ValueError(f"Unknown initializer: {init}.")
+2004: 
+2005:     step = pm.NUTS(
+2006:         potential=potential,
+2007:         model=model,
+2008:         rng=random_seed_list[0],
+2009:         initial_point=initial_points[0],
+2010:         logp_dlogp_func=logp_dlogp_func,
+2011:         **kwargs,
+2012:     )
+2013: 
+2014:     # Filter deterministics from initial_points
+
+/usr/local/lib/python3.13/site-packages/pymc/step_methods/hmc/base_hmc.py lines130..153
+130:             and used for accept/reject random selections. The step's ``Generator``
+131:             will also be used to spawn independent ``Generators`` that will be used
+132:             by the ``potential`` attribute.
+133:         **pytensor_kwargs: passed to PyTensor functions
+134:         """
+135:         self._model = modelcontext(model)
+136: 
+137:         if vars is None:
+138:             vars = self._model.continuous_value_vars
+139:         else:
+140:             vars = get_value_vars_from_user_vars(vars, self._model)
+141:         super().__init__(
+142:             vars,
+143:             blocked=blocked,
+144:             model=self._model,
+145:             dtype=dtype,
+146:             rng=rng,
+147:             initial_point=initial_point,
+148:             **pytensor_kwargs,
+149:         )
+150: 
+151:         self.adapt_step_size = adapt_step_size
+152:         self.Emax = Emax
+153:         self.iter_count = 0
+
+/usr/local/lib/python3.13/site-packages/pymc/model/core.py lines492..518
+492:     def logp_dlogp_function(
+493:         self,
+494:         grad_vars=None,
+495:         tempered=False,
+496:         initial_point: PointType | None = None,
+497:         ravel_inputs: bool | None = None,
+498:         **kwargs,
+499:     ):
+500:         """Compile a PyTensor function that computes logp and gradient.
+501: 
+502:         Parameters
+503:         ----------
+504:         grad_vars : list of random variables, optional
+505:             Compute the gradient with respect to those variables. If None,
+506:             use all free random variables of this model.
+507:         tempered : bool
+508:             Compute the tempered logp `free_logp + alpha * observed_logp`.
+509:             `alpha` can be changed using `ValueGradFunction.set_weights([alpha])`.
+510:         """
+511:         if grad_vars is None:
+512:             grad_vars = self.continuous_value_vars
+513:         else:
+514:             grad_vars = get_value_vars_from_user_vars(grad_vars, self)
+515:             for i, var in enumerate(grad_vars):
+516:                 if var.dtype not in continuous_types:
+517:                     raise ValueError(f"Can only compute the gradient of continuous types: {var}")
+518: 
+
+/usr/local/lib/python3.13/site-packages/pymc/model/core.py lines534..557
+534:     def _logp_dlogp_function(
+535:         self, grad_vars, *, tempered=False, ravel_inputs=None, initial_point, **kwargs
+536:     ):
+537:         grad_vars = list(grad_vars)
+538:         if tempered:
+539:             costs = [self.varlogp, self.datalogp]
+540:         else:
+541:             costs = [self.logp()]
+542: 
+543:         input_vars = {i for i in graph_inputs(costs) if not isinstance(i, Constant)}
+544:         extra_vars_and_values = {
+545:             var: initial_point[var.name]
+546:             for var in self.value_vars
+547:             if var in input_vars and var not in grad_vars
+548:         }
+549:         return ValueGradFunction(
+550:             costs,
+551:             grad_vars,
+552:             extra_vars_and_values,
+553:             model=self,
+554:             initial_point=initial_point,
+555:             ravel_inputs=ravel_inputs,
+556:             **kwargs,
+557:         )
+
+/usr/local/lib/python3.13/site-packages/pymc/model/core.py lines240..268
+240:         cost = rewrite_pregrad(cost)
+241: 
+242:         if compute_grads:
+243:             grads = pytensor.grad(cost, grad_vars, disconnected_inputs="ignore")
+244:             for grad_wrt, var in zip(grads, grad_vars):
+245:                 grad_wrt.name = f"{var.name}_grad"
+246:             grads = pt.join(
+247:                 0, *[as_tensor(grad, allow_xtensor_conversion=True).ravel() for grad in grads]
+248:             )
+249:             outputs = [cost, grads]
+250:         else:
+251:             outputs = [cost]
+252: 
+253:         if ravel_inputs:
+254:             if initial_point is None:
+255:                 initial_point = modelcontext(model).initial_point()
+256:             outputs, raveled_grad_vars = join_nonshared_inputs(
+257:                 point=initial_point, inputs=grad_vars, outputs=outputs, make_inputs_shared=False
+258:             )
+259:             inputs = [raveled_grad_vars]
+260:         else:
+261:             if ravel_inputs is None:
+262:                 warnings.warn(
+263:                     "ValueGradFunction will become a function of raveled inputs.\n"
+264:                     "Specify `ravel_inputs` to suppress this warning. Note that setting `ravel_inputs=False` will be forbidden in a future release."
+265:                 )
+266:             inputs = grad_vars
+267: 
+268:         self._pytensor_function = compile(inputs, outputs, givens=givens, **kwargs)
