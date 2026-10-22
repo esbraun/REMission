@@ -284,7 +284,7 @@ def comparison_root(root,owner,patient):
 
 def compare(db,patient,owner,left,right,root):
     if left==right:raise AnalysisError('Choose two distinct V0/V1 attempts.')
-    rows=[db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND patient_id=? AND owner_id=?',(job,patient,owner)).fetchone() for job in (left,right)]
+    rows=[db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=? AND (patient_id=? OR EXISTS(SELECT 1 FROM json_each(cohort_json) WHERE value=?))',(job,owner,patient,patient)).fetchone() for job in (left,right)]
     if any(row is None for row in rows):raise AnalysisError('Comparison attempt is unavailable.')
     if any(row['status'] in ('queued','running') for row in rows):raise AnalysisError('Both attempts must finish before freezing a comparison.')
     inputs=[json.loads(row['request_json']) for row in rows]
@@ -293,8 +293,9 @@ def compare(db,patient,owner,left,right,root):
             raise AnalysisError('Cannot pair a cohort posterior with a single-patient fit.')
         from .cohort_analysis import comparison
         manifest=comparison(rows)
-        manifest.update(patient_id=patient,owner_id=owner)
-        return publish_comparison(manifest,root,owner,patient)
+        anchor=min(m['patient_id'] for m in manifest['manifest']['members'])
+        manifest.update(patient_id=anchor,owner_id=owner)
+        return publish_comparison(manifest,root,owner,anchor)
     contexts=[v['request']['context'] for v in inputs]
     if len({row['history_sha256'] for row in rows})!=1 or len({row['cutoff'] for row in rows})!=1:
         raise AnalysisError('Pairing requires identical patient H* and observation cutoff.')

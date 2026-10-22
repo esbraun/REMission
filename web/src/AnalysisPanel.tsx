@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { AnalysisAttempt, StudyBundle, Workspace } from './types';
+import type { AnalysisAttempt, CohortPreview, CohortSelection, Panel, StudyBundle, Workspace } from './types';
 import { analysisMessage, definitiveRejection } from './analysis-state.mjs';
 
 type Request = <T>(url: string, options?: RequestInit) => Promise<T>;
@@ -16,6 +16,16 @@ export function SourceDetails({ bundle }: { bundle: StudyBundle }) {
 }
 
 export function AnalysisResultView({ attempt }: { attempt: AnalysisAttempt }) {
+  if (attempt.kind === 'cohort_visit_analysis') return <article className="analysis-attempt" aria-labelledby={`attempt-${attempt.id}`}>
+    <h3 id={`attempt-${attempt.id}`}>{attempt.configuration.id} · {attempt.status} · joint twelve-patient analysis</h3>
+    <p className="hash">Attempt {attempt.id}<br/>Cohort {attempt.manifest.cohort_id}<br/>Manifest SHA256 {attempt.manifest_sha256}</p>
+    <p>One shared posterior, observation cutoff {date(attempt.cutoff)}. Each patient retains a separate conditional expected contrast; no average replaces these effects.</p>
+    {attempt.sources ? <SourceDetails bundle={attempt.sources}/> : <p>V0 uses the original prior and the twelve selected available histories, without external summaries.</p>}
+    {attempt.stale ? <p className="warning">One or more current member versions or cutoffs differ from this frozen cohort. This is an earlier cohort result.</p> : null}
+    {attempt.failure_reason ? <p className="error">{attempt.failure_reason}. No accepted effect interval is available.</p> : null}
+    {attempt.result ? <><div className="table-wrap"><table><caption>Expected next 42-day ISI contrast, escalation minus continuation, by patient</caption><thead><tr><th>Patient</th><th>Status</th><th>Mean</th><th>95% posterior interval</th></tr></thead><tbody>{attempt.result.patients.map(patient => <tr key={patient.patient_id}><td className="hash">{patient.patient_id}</td><td>{patient.status}{patient.reason ? ` · ${patient.reason}` : ''}</td><td>{patient.effect ? number(patient.effect.mean) : 'No accepted estimate'}</td><td>{patient.effect ? `${number(patient.effect.lower)} to ${number(patient.effect.upper)}` : 'Unavailable'}</td></tr>)}</tbody></table></div><ul>{attempt.result.limitations.map(text => <li key={text}>{text}</li>)}</ul><details><summary>Actual joint and per-patient diagnostics</summary><pre className="source-json">{JSON.stringify(attempt.result.diagnostics, null, 2)}</pre></details></> : <p role="status">{analysisMessage(attempt.status)}</p>}
+    <details><summary>Frozen twelve-member identity</summary><pre className="source-json">{JSON.stringify(attempt.manifest, null, 2)}</pre><p className="hash">Input SHA256 {attempt.input_sha256}<br/>Cohort H* SHA256 {attempt.cohort_sha256}</p></details>
+  </article>;
   const result = attempt.result;
   return <article className="analysis-attempt" aria-labelledby={`attempt-${attempt.id}`}>
     <h3 id={`attempt-${attempt.id}`}>{attempt.configuration.id} · {attempt.status}</h3>
@@ -102,10 +112,77 @@ export function AnalysisPanel({ workspace, request, refresh }: { workspace: Work
     <button disabled={!allowed || pending || submitting || loading || needsRefresh || (mode !== 'v0' && !source)} onClick={() => void submit()}>{submitting ? 'Submitting analysis…' : submitted.current ? 'Retry original analysis request' : mode === 'v0' ? 'Run V0 visit analysis' : 'Run V1 borrowed visit analysis'}</button>
     {needsRefresh ? <button className="secondary" onClick={refresh}>Refresh patient information</button> : null}
     {!allowed ? <p>Generate a v1 patient, choose a behavioral plan and advance to day 14 to run this representative.</p> : null}
+    <details><summary>Joint visit analysis of twelve explicitly selected patients</summary><CohortSetup workspace={workspace} request={request} bundles={bundles} refresh={refresh} submitted={() => setRevision(value => value + 1)}/></details>
     {loading ? <p role="status">Loading saved analysis attempts…</p> : null}
     {failure ? <p role="alert" className="error">{failure}</p> : null}
     <div aria-live="polite">{pending ? <p>Analysis {attempts.find(item => ['queued', 'running'].includes(item.status))?.stage}. Ordinary approval remains available.</p> : null}</div>
     {attempts.map(attempt => <AnalysisResultView key={attempt.id} attempt={attempt}/>)}
     {!loading && !attempts.length ? <p>No saved analysis attempts at this patient yet.</p> : null}
+  </section>;
+}
+
+function CohortSetup({ workspace, request, bundles, refresh, submitted }: { workspace: Workspace; request: Request; bundles: StudyBundle[]; refresh: () => void; submitted: () => void }) {
+  const [patients, setPatients] = useState<Panel['patients']>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [cohortId, setCohortId] = useState(() => `cohort-${crypto.randomUUID()}`);
+  const [cutoff, setCutoff] = useState(workspace.snapshot.cutoff);
+  const [research, setResearch] = useState(false); const [run, setRun] = useState('');
+  const [source, setSource] = useState(''); const [mode, setMode] = useState<'v0' | 'borrow'>('v0');
+  const [preview, setPreview] = useState<{ value: CohortPreview; selection: CohortSelection } | null>(null);
+  const [approved, setApproved] = useState(false); const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false); const [failure, setFailure] = useState('');
+  const intent = useRef<{ key: string; payload: CohortSelection & { approved_manifest_sha256: string; previous_attempt: null } } | null>(null);
+  const active = useRef(true);
+  const currentRequest = useRef(request); currentRequest.current = request;
+  useEffect(() => {
+    active.current = true; const controller = new AbortController();
+    void currentRequest.current<Panel>('/api/patients', { signal: controller.signal }).then(value => { if (active.current && !controller.signal.aborted) { setPatients(value.patients); setLoading(false); } })
+      .catch(error => { if (active.current && !controller.signal.aborted) { setFailure(String(error)); setLoading(false); } });
+    return () => { active.current = false; controller.abort(); };
+  }, []); // Parent is keyed by patient, authentication generation and snapshot.
+  function invalidate() { setPreview(null); setApproved(false); setFailure(''); }
+  async function refreshOwned() {
+    invalidate(); setLoading(true);
+    try { const value = await request<Panel>('/api/patients'); if (active.current) { setPatients(value.patients); setSelected(ids => ids.filter(id => value.patients.some(patient => patient.id === id))); } }
+    catch (error) { if (active.current) setFailure(String(error)); }
+    finally { if (active.current) setLoading(false); }
+  }
+  async function review() {
+    const selection: CohortSelection = { cohort_id: cohortId, cutoff, research_run_id: research ? run : null, source_bundle_id: mode === 'v0' ? null : source,
+      patient_versions: Object.fromEntries(patients.filter(patient => selected.includes(patient.id)).map(patient => [patient.id, patient.version])) };
+    setBusy(true); setFailure(''); setApproved(false);
+    try { const value = await request<CohortPreview>('/api/cohort-analyses/preview', { method: 'POST', body: JSON.stringify(selection) }); if (active.current) setPreview({ value, selection }); }
+    catch (error) { if (active.current) { setPreview(null); setFailure(String(error)); } }
+    finally { if (active.current) setBusy(false); }
+  }
+  async function submit() {
+    if (!preview || !approved || !preview.value.executable) return;
+    intent.current ??= { key: crypto.randomUUID(), payload: { ...preview.selection, approved_manifest_sha256: preview.value.manifest_sha256, previous_attempt: null } };
+    setBusy(true); setFailure('');
+    try { const frozen = intent.current; await request('/api/cohort-analyses', { method: 'POST', headers: { 'Idempotency-Key': frozen.key }, body: JSON.stringify(frozen.payload) }); if (active.current) { intent.current = null; invalidate(); submitted(); } }
+    catch (error) { if (active.current) { if (definitiveRejection(error)) { intent.current = null; setPreview(null); setApproved(false); } setFailure(String(error)); } }
+    finally { if (active.current) setBusy(false); }
+  }
+  const locked = busy || Boolean(intent.current);
+  const ready = selected.length === 12 && selected.includes(workspace.patient_id) && (!research || Boolean(run)) && (mode === 'v0' || Boolean(source));
+  return <section aria-labelledby="cohort-title"><h3 id="cohort-title">Review a joint twelve-patient cohort</h3>
+    <p>Include this patient and eleven other owned patients at one reached observation cutoff. The service checks panel/run compatibility, ownership, versions and every reduced history. Research membership requires a separately trusted, registered export; entering a run ID does not register or authenticate it.</p>
+    <button className="secondary" disabled={locked || loading} onClick={() => void refreshOwned()}>Refresh owned patient versions</button>
+    <fieldset disabled={locked || loading}><legend>Explicit cohort membership · {selected.length} of 12 selected</legend>
+      {patients.map(patient => <label className="checkbox" key={patient.id}><input type="checkbox" checked={selected.includes(patient.id)} disabled={selected.length >= 12 && !selected.includes(patient.id)} onChange={event => { invalidate(); setSelected(value => event.target.checked ? [...value, patient.id] : value.filter(id => id !== patient.id)); }}/>{patient.name} · {patient.id} · version {patient.version} · cutoff {date(patient.cutoff)}</label>)}
+      <label htmlFor="cohort-id">Cohort ID</label><input id="cohort-id" value={cohortId} onChange={event => { invalidate(); setCohortId(event.target.value); }}/>
+      <label htmlFor="cohort-cutoff">Common observation cutoff, with UTC offset</label><input id="cohort-cutoff" value={cutoff} onChange={event => { invalidate(); setCutoff(event.target.value); }}/>
+      <label className="checkbox"><input type="checkbox" checked={research} onChange={event => { invalidate(); setResearch(event.target.checked); }}/>Use an already registered research cohort</label>
+      {research ? <><label htmlFor="cohort-run">Registered research run ID</label><input id="cohort-run" value={run} onChange={event => { invalidate(); setRun(event.target.value); }}/></> : null}
+      <label htmlFor="cohort-mode">Joint model</label><select id="cohort-mode" value={mode} onChange={event => { invalidate(); setMode(event.target.value as 'v0' | 'borrow'); }}><option value="v0">V0 · original prior, no external summaries</option><option value="borrow">V1 · two approved summaries once, tau HalfNormal(1)</option></select>
+      {mode === 'borrow' ? <><label htmlFor="cohort-source">Approved source bundle</label><select id="cohort-source" value={source} onChange={event => { invalidate(); setSource(event.target.value); }}><option value="">Choose a fictional source bundle</option>{bundles.map(bundle => <option key={bundle.bundle_id} value={bundle.bundle_id}>{bundle.label ?? bundle.bundle_id}</option>)}</select></> : null}
+    </fieldset>
+    <button className="secondary" disabled={!ready || locked || loading} onClick={() => void review()}>{busy ? 'Checking cohort…' : 'Review the complete frozen cohort'}</button>
+    {loading ? <p role="status">Loading owned patients…</p> : null}
+    {preview ? <><p className="hash">Manifest SHA256 {preview.value.manifest_sha256}<br/>Cohort H* SHA256 {preview.value.cohort_sha256}<br/>Configuration {preview.value.configuration.id}<br/>Source set {preview.value.source_set_sha256 ?? 'None'}</p><details><summary>All twelve reviewed members and history identities</summary><pre className="source-json">{JSON.stringify(preview.value.manifest, null, 2)}</pre></details>
+      {!preview.value.executable ? <p role="status" className="warning">Analysis unavailable: {preview.value.unavailable_reason}. No cohort job has been submitted.</p> : null}
+      <label className="checkbox"><input type="checkbox" disabled={locked || !preview.value.executable} checked={approved} onChange={event => setApproved(event.target.checked)}/>I approve this exact twelve-member manifest, cutoff and model configuration.</label>
+      <button disabled={!approved || !preview.value.executable || busy} onClick={() => void submit()}>{intent.current ? 'Retry the original cohort request' : 'Submit this approved joint analysis'}</button></> : null}
+    {failure ? <p role="alert" className="error">{failure}. <button className="secondary" disabled={locked} onClick={() => { refresh(); void refreshOwned(); }}>Refresh patient information</button></p> : null}
   </section>;
 }

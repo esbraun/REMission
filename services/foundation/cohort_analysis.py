@@ -134,6 +134,7 @@ def comparison(rows):
         attempts=[dict(id=r['job_id'],configuration=p.request.configuration.model_dump(),input_sha256=r['input_sha256'],
             status=r['status'],failure_reason=r['failure_reason'],
             patients=CohortResult.model_validate_json(r['result_json']).model_dump(mode='json')['patients'] if r['result_json'] else None,
+            worker_seconds=json.loads(r['result_json'])['diagnostics'].get('seconds') if r['result_json'] else None,
             source_set_sha256=p.source_set_sha256,fit_seed=p.numerical_seeds.nuts) for r,p in zip(rows,inputs,strict=True)],
         limitations=['One shared joint posterior per attempt; no averaged-effect substitute.',
             'No independent conditional truth, recovery accuracy, clinical superiority or study acceptance.'])

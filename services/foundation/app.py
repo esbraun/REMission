@@ -604,12 +604,55 @@ def create_app(settings: Settings) -> FastAPI:
             save_mutation(db,current,key,patient_id+':analysis',payload,response)
             return JSONResponse(response,status_code=202)
 
+    def owned_analysis_view(db,owner,row,cutoff):
+        from .analysis import view
+        frozen=json.loads(row['request_json'])
+        if frozen.get('kind')!='poc_visit_cohort_input':return view(row,cutoff)
+        from .cohort_analysis import view as cohort_view
+        members=frozen['cohort']['manifest']['members']
+        current=[own(db,m['patient_id'],owner) for m in members]
+        expected=instant(frozen['cohort']['manifest']['cutoff'])
+        changed=next((p['cutoff'] for p in current if instant(p['cutoff'])!=expected),cutoff)
+        return cohort_view(row,changed,current_versions={p['id']:p['version'] for p in current})
+
+    @app.post('/api/cohort-analyses/preview')
+    async def preview_cohort_analysis(request: Request):
+        from contracts.domain.cohort import CohortSelection,require_executable
+        data=await body(request,CohortSelection)
+        with store.transaction() as db:
+            current=session(db,request,mutation=True)
+            for patient in data.patient_versions:own(db,patient,current['account_id'])
+            from .analysis import prepare_cohort
+            try:product=prepare_cohort(db,current['account_id'],**data.model_dump(mode='json'))
+            except (AnalysisError,ValueError) as error:raise APIError(409,'cohort_unavailable',str(error)) from error
+            try:require_executable(product);available=True;reason=None
+            except ValueError as error:available=False;reason=str(error)
+            return dict(manifest=product.cohort.manifest.model_dump(mode='json'),manifest_sha256=product.cohort.manifest_sha256,
+                cohort_sha256=product.cohort_sha256,configuration=product.request.configuration.model_dump(),
+                source_set_sha256=product.source_set_sha256,executable=available,unavailable_reason=reason)
+
+    @app.post('/api/cohort-analyses')
+    async def submit_cohort_analysis(request: Request):
+        from contracts.domain.cohort import CohortSubmission
+        data=await body(request,CohortSubmission)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True)
+            for patient in data.patient_versions:own(db,patient,current['account_id'])
+            payload=data.model_dump(mode='json');scope='cohort-analysis:'+data.cohort_id
+            key,prior=mutation_receipt(db,current,request,scope,payload)
+            if prior:return prior
+            from .cohort_analysis import submit
+            try:response=submit(db,current['account_id'],now=settings.clock(),**payload)
+            except (AnalysisError,ValueError) as error:raise APIError(409,'cohort_unavailable',str(error)) from error
+            save_mutation(db,current,key,scope,payload,response)
+            return JSONResponse(response,status_code=202)
+
     @app.get('/api/patients/{patient_id}/analyses')
     def analyses(patient_id: str,request: Request):
         with store.transaction() as db:
             current=session(db,request);patient=own(db,patient_id,current['account_id'])
-            from .analysis import view
-            return dict(attempts=[view(row,patient['cutoff']) for row in db.execute('SELECT * FROM analysis_attempts WHERE patient_id=? AND owner_id=? ORDER BY created_at DESC,rowid DESC',(patient_id,current['account_id']))])
+            rows=db.execute('SELECT * FROM analysis_attempts WHERE owner_id=? AND (patient_id=? OR EXISTS(SELECT 1 FROM json_each(cohort_json) WHERE value=?)) ORDER BY created_at DESC,rowid DESC',(current['account_id'],patient_id,patient_id))
+            return dict(attempts=[owned_analysis_view(db,current['account_id'],row,patient['cutoff']) for row in rows])
 
     @app.get('/api/patients/{patient_id}/analysis-sources')
     def analysis_sources(patient_id: str,request: Request):
@@ -624,6 +667,9 @@ def create_app(settings: Settings) -> FastAPI:
         data=await body(request,ComparisonSubmission)
         with store.transaction(write=True) as db:
             current=session(db,request,mutation=True);own(db,patient_id,current['account_id'])
+            for job in (data.left,data.right):
+                candidate=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=?',(job,current['account_id'])).fetchone()
+                if candidate:owned_analysis_view(db,current['account_id'],candidate,candidate['cutoff'])
             payload=data.model_dump();scope=patient_id+':analysis-comparison'
             key,prior=mutation_receipt(db,current,request,scope,payload)
             if prior:return prior
@@ -638,18 +684,28 @@ def create_app(settings: Settings) -> FastAPI:
         with store.transaction() as db:
             current=session(db,request);own(db,patient_id,current['account_id'])
             from .analysis import comparisons
-            try:return dict(comparisons=comparisons(settings.live_export_root,current['account_id'],patient_id))
+            try:
+                anchors={patient_id,*[r['patient_id'] for r in db.execute('SELECT DISTINCT patient_id FROM analysis_attempts WHERE owner_id=? AND EXISTS(SELECT 1 FROM json_each(cohort_json) WHERE value=?)',(current['account_id'],patient_id))]}
+                saved=[]
+                for anchor in sorted(anchors):
+                    for value in comparisons(settings.live_export_root,current['account_id'],anchor):
+                        if value.get('kind')=='poc_cohort_v0_v1_comparison':
+                            members=value['manifest']['members']
+                            if patient_id not in {m['patient_id'] for m in members}:continue
+                            for member in members:own(db,member['patient_id'],current['account_id'])
+                        elif anchor!=patient_id:continue
+                        saved.append(value)
+                return dict(comparisons=saved)
             except ValueError as error:raise APIError(409,'comparison_unavailable',str(error)) from error
 
     @app.get('/api/patients/{patient_id}/analyses/{job_id}')
     def analysis_status(patient_id: str,job_id: str,request: Request):
         with store.transaction() as db:
             current=session(db,request);patient=own(db,patient_id,current['account_id'])
-            row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND patient_id=? AND owner_id=?',(job_id,patient_id,current['account_id'])).fetchone()
+            row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=? AND (patient_id=? OR EXISTS(SELECT 1 FROM json_each(cohort_json) WHERE value=?))',(job_id,current['account_id'],patient_id,patient_id)).fetchone()
             if row is None:
                 raise APIError(404,'not_found','Resource not found')
-            from .analysis import view
-            return view(row,patient['cutoff'])
+            return owned_analysis_view(db,current['account_id'],row,patient['cutoff'])
 
     @app.get("/api/patients/{patient_id}/history/{bundle_id}")
     def historical(patient_id: str,bundle_id: str,request: Request):
@@ -693,8 +749,7 @@ def create_app(settings: Settings) -> FastAPI:
             if not row:raise APIError(404,"not_found","Resource not found")
             analysis=db.execute('SELECT a.*,p.cutoff AS current_cutoff FROM analysis_attempts a JOIN patients p ON p.id=a.patient_id WHERE a.job_id=? AND a.owner_id=?',(job_id,current['account_id'])).fetchone()
             if analysis:
-                from .analysis import view
-                return view(analysis,analysis['current_cutoff'])
+                return owned_analysis_view(db,current['account_id'],analysis,analysis['current_cutoff'])
             return dict(row)
 
     @app.post("/api/patients/{patient_id}/approve")
