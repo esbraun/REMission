@@ -18486,7 +18486,7 @@
   },
   "scientific_contract_implementation": {
     "task": "T-G1-CLEARANCE-BURDEN-CONTRACTS",
-    "status": "in_progress_profile_temporal_core_first_boundary",
+    "status": "in_progress_report_graph_precision_arithmetic_core_second_boundary",
     "accepted_plan": "5409d54f570040b435a729769ba2d9353b7daffb",
     "plan_blob": "e5a67a4ad7e37b82cb591226e6b522d767f59db8",
     "independent_ready_plan_report": "5e020233cb78c30a63f57122cebb5e69f81704fc",
@@ -18536,6 +18536,44 @@
           "tests/contracts/test_scientific_profile_v13.py::ScientificProfileV13Tests.test_temporal_graph_rejects_H_G_mix_and_missing_current_factor"
         ],
         "status": "graph_core_observed_pass_full_record_likelihood_integration_pending"
+      },
+      {
+        "requirement_ids": [
+          "OBS-REP-02",
+          "REPORT-STATUS-01",
+          "TIME-01"
+        ],
+        "task": "T-G1-CLEARANCE-BURDEN-CONTRACTS",
+        "tests": [
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_shared_parent_response_receipt_state_positive_and_strict_cutoff",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_missing_and_delayed_pending_are_metadata_without_invented_rating",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_graph_requires_actual_order_exact_scope_and_shared_delay",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_equal_time_is_not_strict_analysis_visibility",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_nested_response_correction_invalidates_later_state_exact_closure",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_correction_old_cutoff_and_retraction_null_not_zero",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_reporting_input_uses_separate_current_pain_and_no_report_draw",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_prior_recorded_upload_survives_death_but_new_decision_does_not",
+          "tests/contracts/test_report_status_v21.py::ReportStatusV21Tests.test_unknown_version_kind_and_cross_version_correction_refused"
+        ],
+        "status": "finite_core_observed_pass_not_execution_or_full_package_qualification"
+      },
+      {
+        "requirement_ids": [
+          "EST-MRT-BURDEN",
+          "BURDEN-PRECISION-01",
+          "TRUTH-02"
+        ],
+        "task": "T-G1-CLEARANCE-BURDEN-CONTRACTS",
+        "tests": [
+          "tests/contracts/test_burden_precision_v21.py::BurdenPrecisionV21Tests.test_literal125_exact_oracle_random_denominator_and_null_roster",
+          "tests/contracts/test_burden_precision_v21.py::BurdenPrecisionV21Tests.test_n1_q1_and_small_q_not_inverse_expected_denominator",
+          "tests/contracts/test_burden_precision_v21.py::BurdenPrecisionV21Tests.test_pooled_exact_box_positive_despite_empty_individual_trials",
+          "tests/contracts/test_burden_precision_v21.py::BurdenPrecisionV21Tests.test_accepted_derivatives_against_independent_centered_finite_differences",
+          "tests/contracts/test_burden_precision_v21.py::BurdenPrecisionV21Tests.test_truth_pools_numerators_not_batch_ratios_or_descendant_units",
+          "tests/contracts/test_burden_precision_v21.py::BurdenPrecisionV21Tests.test_two_adjacent_refinements_use_paired_all_trial_influences_and_final_limit"
+        ],
+        "status": "finite_core_observed_pass_not_execution_or_full_package_qualification"
       }
     ],
     "versions": {
@@ -18550,9 +18588,15 @@
     "current_checks": {
       "profile_generation": "passed",
       "profile_export": "passed",
-      "focused_finite_tests": 6,
+      "focused_finite_tests": 22,
       "qualified_runtime": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
-      "source_binding": "raw command-start source snapshots; containing milestone checkpoint supplied separately"
+      "source_binding": "raw command-start source snapshots; containing milestone checkpoint supplied separately",
+      "report_tests": 10,
+      "precision_tests": 6,
+      "profile_tests": 6,
+      "legacy_dgp_export": "passed",
+      "legacy_domain_v2_export": "passed",
+      "initial_report_failure": "boolean numeric Literal coercion; retained; strict integer support repair rerun passes"
     },
     "helper": {
       "assigned": "gpt-6-luna/high",
@@ -18573,10 +18617,10 @@
       "threshold": "T-OBS2-CLEARANCE-POLICY blocked until separate exact-code/source/activation gates"
     },
     "remaining": [
-      "typed OBS/TIME reporting inputs and strict2.1 history",
-      "public/private run coverage/source/execution/authority/schema bindings",
-      "burden precision target/pilot/evidence validation and independent finite probes",
-      "service/learner strict dispatch and actual visible rating/archive review UI",
+      "assessment/review intrinsic mapping acceptance then dependent implementation",
+      "complete expected source coverage, execution/completion/authority and target/private IO/schema bindings",
+      "qualified structural proof and full precision evidence/refinement/provenance validation",
+      "service/learner strict dispatch and actual rating/archive review UI",
       "full affected legacy/schema/source/private-boundary/runtime/MCP verification",
       "frozen candidate and different Astra exact-head/base code review"
     ],
@@ -18586,6 +18630,15 @@
       "resource feasibility",
       "scientific fullG1/G2-G7 acceptance",
       "human or clinical acceptance"
-    ]
+    ],
+    "assessment_mapping": {
+      "status": "UNACCEPTED independent critique pending; dependent source unwritten",
+      "proposal_checkpoint": "3eaf38be17a40fed890840bc5d7f84be1dfd9468",
+      "proposal_blob": "0b9a1dd7ea4dacafaa677dc33101a8a5354775f6",
+      "corrected_handoff_blob": "c2d8479ce77128665cf7c152205a41adeb66f729",
+      "source_manifest_blob": "b457c80cf9a1afe2825ed83cdc570ab48a2525ce",
+      "original_bad_handoff_id": "c070b606a7af0b7723db6315e869f3f13fd31a95",
+      "binary_readback": "actual committed blobs equal disk; bad ID exit128 raw retained"
+    }
   }
 }

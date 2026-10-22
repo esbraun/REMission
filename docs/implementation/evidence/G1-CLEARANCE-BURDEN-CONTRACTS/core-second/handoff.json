@@ -1,0 +1,61 @@
+{
+  "status": "IN_PROGRESS partial source checkpoint, not final review/acceptance",
+  "parent": "3eaf38be17a40fed890840bc5d7f84be1dfd9468",
+  "integration_base": "0e1a11faa01d267fe1cdb06d07c0c06dcc2d5b55",
+  "model": "gpt-6.1-sol",
+  "effort": "xhigh",
+  "actual_tests": 22,
+  "check": {
+    "stdout": {
+      "path": "ab7b24f81bc7413fa2246b5b53dd65b2.stdout",
+      "bytes": 171,
+      "sha256": "82b8930ca62eb760db874ebe3f298075de5cf7275f0aef092e998b810f69b1c9"
+    },
+    "stderr": {
+      "path": "ab7b24f81bc7413fa2246b5b53dd65b2.stderr",
+      "bytes": 4145,
+      "sha256": "abab0dc9b2debe260950d635965dd174c2b9323394e90f83219e8274aa8aaa75"
+    }
+  },
+  "source": [
+    {
+      "path": "contracts/domain/observed_v21.py",
+      "bytes": 20062,
+      "sha256": "50c9cf04dd278fec1a667f37cf2b12fbd795168ea253eed0185ac050394b061b"
+    },
+    {
+      "path": "contracts/domain/evidence_v21.py",
+      "bytes": 11247,
+      "sha256": "db8acd047d974289548c39a004fd7e02cd235d4fd558d6136bd5c2c664bc97f0"
+    },
+    {
+      "path": "contracts/runs/burden_precision.py",
+      "bytes": 12978,
+      "sha256": "fcce4eb6ad08ded236e92d047f1a6d0be86bc4d7a0ff8b82ce47acde3be11076"
+    },
+    {
+      "path": "tests/contracts/test_report_status_v21.py",
+      "bytes": 14638,
+      "sha256": "2cdb7a09b68e0ecfe84bf59ffec0ac6438f276721314f77c7a01c867d74fad85"
+    },
+    {
+      "path": "tests/contracts/test_burden_precision_v21.py",
+      "bytes": 7082,
+      "sha256": "d62728493716a620a6c3af0f78925096c71719ef088e1964a5575bf12fafa81f"
+    }
+  ],
+  "initial_failure": "report boolean Literal coercion; de0ab73dd59549a6b03c82f28fa5502b.stderr preserved and repaired",
+  "assessment_mapping": "UNACCEPTED; dependent assessment/review seam unwritten",
+  "remaining": [
+    "full run/schema/coverage/execution/authority binding",
+    "full precision IO/proofs/provenance qualification",
+    "service/learner/UI/images/MCP",
+    "frozen candidate and different Astra exact-head review"
+  ],
+  "nonclaims": [
+    "actual production engines",
+    "stochastic pilot or independent execution qualification",
+    "source grants or LIVE authority",
+    "scientific or clinical acceptance"
+  ]
+}

@@ -1,0 +1,24 @@
+test_correction_old_cutoff_and_retraction_null_not_zero (test_report_status_v21.ReportStatusV21Tests.test_correction_old_cutoff_and_retraction_null_not_zero) ... ok
+test_equal_time_is_not_strict_analysis_visibility (test_report_status_v21.ReportStatusV21Tests.test_equal_time_is_not_strict_analysis_visibility) ... ok
+test_graph_requires_actual_order_exact_scope_and_shared_delay (test_report_status_v21.ReportStatusV21Tests.test_graph_requires_actual_order_exact_scope_and_shared_delay) ... ok
+test_missing_and_delayed_pending_are_metadata_without_invented_rating (test_report_status_v21.ReportStatusV21Tests.test_missing_and_delayed_pending_are_metadata_without_invented_rating) ... ok
+test_prior_recorded_upload_survives_death_but_new_decision_does_not (test_report_status_v21.ReportStatusV21Tests.test_prior_recorded_upload_survives_death_but_new_decision_does_not) ... ok
+test_reporting_input_uses_separate_current_pain_and_no_report_draw (test_report_status_v21.ReportStatusV21Tests.test_reporting_input_uses_separate_current_pain_and_no_report_draw) ... ok
+test_shared_parent_response_receipt_state_positive_and_strict_cutoff (test_report_status_v21.ReportStatusV21Tests.test_shared_parent_response_receipt_state_positive_and_strict_cutoff) ... ok
+test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias (test_report_status_v21.ReportStatusV21Tests.test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias) ... 
+  test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias (test_report_status_v21.ReportStatusV21Tests.test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias) (kind='report_upload_receipt', key='upload_delay_days') ... FAIL
+test_unknown_version_kind_and_cross_version_correction_refused (test_report_status_v21.ReportStatusV21Tests.test_unknown_version_kind_and_cross_version_correction_refused) ... ok
+
+======================================================================
+FAIL: test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias (test_report_status_v21.ReportStatusV21Tests.test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias) (kind='report_upload_receipt', key='upload_delay_days')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/source/tests/contracts/test_report_status_v21.py", line 115, in test_strict_fields_reject_private_channels_coercions_missing_rating_zero_alias
+    with self.subTest(kind=kind,key=key),self.assertRaises(ValueError):parse(model,value)
+                                         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.025s
+
+FAILED (failures=1)
