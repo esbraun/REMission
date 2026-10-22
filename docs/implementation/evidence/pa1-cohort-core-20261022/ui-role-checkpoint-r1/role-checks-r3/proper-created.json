@@ -1,0 +1,59 @@
+{
+  "Id": "7e672da5bf39e72da68a5d0a633f01688ac680f741f97ebc14ad917b5e476e66",
+  "Image": "sha256:9127af9d2dec1d29751ca1b7425016afad35d7dabde94c9776a32c4aa760c73e",
+  "State": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "0001-01-01T00:00:00Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "0001-01-01T00:00:00Z",
+    "Status": "created"
+  },
+  "Path": "python",
+  "Args": [
+    "-c",
+    "import json,os\nfrom pathlib import Path\nfrom contracts.domain.borrowing import parse_input\nfrom contracts.domain.cohort import require_executable\nfrom services.learner.analysis_worker import run\nfrom services.learner.cohort_worker import run as direct\nassert not Path('/app/services/generator').exists(),'private source exposed'\nmounts=[line.split() for line in Path('/proc/self/mountinfo').read_text().splitlines()]\nassert any(p[4]=='/input' and 'ro' in p[5].split(',') for p in mounts),'public input is not read-only'\ndenials=[]\nfor name,reason in [('interactive','qualification'),('fixture','contract fixture')]:\n    path=Path('/input')/(name+'.json');value=parse_input(path.read_bytes())\n    for stage,call in [('contract',lambda:require_executable(value)),('dispatch',lambda:run(path,Path('/out')/name)),('worker',lambda:direct(value,Path('/out')/(name+'-direct')))]:\n        try:call()\n        except ValueError as error:\n            assert reason in str(error),str(error);denials.append(dict(input=name,stage=stage,reason=str(error)))\n        else:raise AssertionError('unqualified cohort was admitted')\nassert not any(p.is_file() for p in Path('/out').rglob('*'))\nprint(json.dumps(dict(typed_inputs=2,denials=denials,results_written=0,models_built=0)))\n"
+  ],
+  "Config": {
+    "User": "10002:10002",
+    "Labels": {}
+  },
+  "HostConfig": {
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": {
+      "/tmp": "rw,exec,nosuid,nodev,size=512m"
+    }
+  },
+  "Mounts": [
+    {
+      "Destination": "/input",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-checks-r3\\input",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/out",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-cohort-resume-sol-261022\\artifacts\\cohort\\role-checks-r3\\output",
+      "Type": "bind"
+    }
+  ]
+}

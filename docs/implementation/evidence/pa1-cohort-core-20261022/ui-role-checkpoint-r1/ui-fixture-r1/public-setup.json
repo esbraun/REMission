@@ -1,0 +1,521 @@
+{
+  "source": "45d35071036ca3b635ae60e97ca04e924d98f74e",
+  "url": "http://127.0.0.1:8784",
+  "panel": {
+    "status": "generated",
+    "panel_id": "panel-166ed078cbfe4190ac85630042e66c7f",
+    "seed": 20261022,
+    "count": 12,
+    "patient_ids": [
+      "POC-26c99cf6512c405eafe13cd36610e5eb",
+      "POC-096bb5da742f475ab0a33f9f6c975bdf",
+      "POC-0329195dc54645f0b094d0bdf7a6e184",
+      "POC-4988842c23f447cda71e21ba9c4e2649",
+      "POC-38c17e088e4a49418018faae76e2669c",
+      "POC-65df36b72dfa4505b2179755702263f2",
+      "POC-4198b50a7fb143158753cb2832aa823b",
+      "POC-fea24a109547408396f8dea946ba5c76",
+      "POC-237591ca2f3e43c0b4d96269f01c21e8",
+      "POC-b623f8b6e3394d6cb3682bef71445344",
+      "POC-85b17130a8eb4246bf74a2876b8c1961",
+      "POC-953cd7841e354510b12c4d4980eaf040"
+    ]
+  },
+  "prepared": [
+    {
+      "patient_id": "POC-26c99cf6512c405eafe13cd36610e5eb",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-096bb5da742f475ab0a33f9f6c975bdf",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-0329195dc54645f0b094d0bdf7a6e184",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-4988842c23f447cda71e21ba9c4e2649",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-38c17e088e4a49418018faae76e2669c",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-65df36b72dfa4505b2179755702263f2",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-4198b50a7fb143158753cb2832aa823b",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-fea24a109547408396f8dea946ba5c76",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-237591ca2f3e43c0b4d96269f01c21e8",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-b623f8b6e3394d6cb3682bef71445344",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    },
+    {
+      "patient_id": "POC-85b17130a8eb4246bf74a2876b8c1961",
+      "version": 3,
+      "cutoff": "2026-01-15T12:00:00Z",
+      "day": 14,
+      "history_count": 1
+    }
+  ],
+  "browser_patient": "POC-953cd7841e354510b12c4d4980eaf040",
+  "browser_precondition": {
+    "day": 0,
+    "history_count": 0
+  },
+  "claim": "Actual existing v1 generator invoked through ordinary API. Eleven ordinary API fixture approvals/advances only; browser still must exercise its own twelfth patient. Not a trusted research enrollment, fit or study.",
+  "calls": [
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/login",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/panels/generate",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-26c99cf6512c405eafe13cd36610e5eb",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-26c99cf6512c405eafe13cd36610e5eb/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-26c99cf6512c405eafe13cd36610e5eb",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-26c99cf6512c405eafe13cd36610e5eb/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-26c99cf6512c405eafe13cd36610e5eb",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-096bb5da742f475ab0a33f9f6c975bdf",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-096bb5da742f475ab0a33f9f6c975bdf/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-096bb5da742f475ab0a33f9f6c975bdf",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-096bb5da742f475ab0a33f9f6c975bdf/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-096bb5da742f475ab0a33f9f6c975bdf",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-0329195dc54645f0b094d0bdf7a6e184",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-0329195dc54645f0b094d0bdf7a6e184/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-0329195dc54645f0b094d0bdf7a6e184",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-0329195dc54645f0b094d0bdf7a6e184/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-0329195dc54645f0b094d0bdf7a6e184",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-4988842c23f447cda71e21ba9c4e2649",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-4988842c23f447cda71e21ba9c4e2649/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-4988842c23f447cda71e21ba9c4e2649",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-4988842c23f447cda71e21ba9c4e2649/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-4988842c23f447cda71e21ba9c4e2649",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-38c17e088e4a49418018faae76e2669c",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-38c17e088e4a49418018faae76e2669c/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-38c17e088e4a49418018faae76e2669c",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-38c17e088e4a49418018faae76e2669c/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-38c17e088e4a49418018faae76e2669c",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-65df36b72dfa4505b2179755702263f2",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-65df36b72dfa4505b2179755702263f2/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-65df36b72dfa4505b2179755702263f2",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-65df36b72dfa4505b2179755702263f2/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-65df36b72dfa4505b2179755702263f2",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-4198b50a7fb143158753cb2832aa823b",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-4198b50a7fb143158753cb2832aa823b/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-4198b50a7fb143158753cb2832aa823b",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-4198b50a7fb143158753cb2832aa823b/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-4198b50a7fb143158753cb2832aa823b",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-fea24a109547408396f8dea946ba5c76",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-fea24a109547408396f8dea946ba5c76/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-fea24a109547408396f8dea946ba5c76",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-fea24a109547408396f8dea946ba5c76/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-fea24a109547408396f8dea946ba5c76",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-237591ca2f3e43c0b4d96269f01c21e8",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-237591ca2f3e43c0b4d96269f01c21e8/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-237591ca2f3e43c0b4d96269f01c21e8",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-237591ca2f3e43c0b4d96269f01c21e8/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-237591ca2f3e43c0b4d96269f01c21e8",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-b623f8b6e3394d6cb3682bef71445344",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-b623f8b6e3394d6cb3682bef71445344/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-b623f8b6e3394d6cb3682bef71445344",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-b623f8b6e3394d6cb3682bef71445344/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-b623f8b6e3394d6cb3682bef71445344",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-85b17130a8eb4246bf74a2876b8c1961",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-85b17130a8eb4246bf74a2876b8c1961/approve",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-85b17130a8eb4246bf74a2876b8c1961",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/session",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-85b17130a8eb4246bf74a2876b8c1961/advance",
+      "status": 200,
+      "mutation": true
+    },
+    {
+      "path": "/api/patients/POC-85b17130a8eb4246bf74a2876b8c1961",
+      "status": 200,
+      "mutation": false
+    },
+    {
+      "path": "/api/patients/POC-953cd7841e354510b12c4d4980eaf040",
+      "status": 200,
+      "mutation": false
+    }
+  ]
+}
