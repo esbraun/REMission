@@ -11,7 +11,9 @@ from scipy.stats import norm, halfnorm, beta as beta_law
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from qualify_cohort_symbolic import database, export, cohort_inputs, build_cohort, original_point, density, MODE
-from methods.visit.borrow_execution import compilation_options, verify_cvm
+from methods.visit.borrow_execution import compilation_options, verify_cvm, optimizer_identity
+from contracts.domain.borrow_runtime import OPTIMIZER
+from pytensor.compile.mode import get_default_mode
 
 
 def independent_factors(data,p):
@@ -50,16 +52,24 @@ def clean(value):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
-    started=time.monotonic();db=database();cohort=export(db);db.close();data=cohort_inputs(cohort)
+    started=time.monotonic()
+    # Check known public configuration before any model graph is built. The
+    # pinned image's defaults are inherited, not overridden by launcher mode.
+    baseline=compilation_options()
+    actual_optimizer=optimizer_identity(get_default_mode().provided_optimizer)
+    assert actual_optimizer==OPTIMIZER
+    preflight=dict(guard_pass=True,optimizer=actual_optimizer,linker=type(baseline['mode'].linker).__name__)
+    db=database();cohort=export(db);db.close();data=cohort_inputs(cohort)
     model=build_cohort(data,guide=False);point=original_point(model,12,len(data[0][1]['nights']))
     expected=independent_factors(data,point)
     result=dict(source='Original12-member graph and exact interior physical point from r2, unchanged fixture/model/settings',
-        no_fit=True,independent_density=density(data,point),independent_factors=expected,point=point,modes={})
+        no_fit=True,preflight=preflight,independent_density=density(data,point),independent_factors=expected,point=point,modes={})
     assert abs(sum(np.sum(v) for v in expected.values())-result['independent_density'])<1e-9
     def save():args.output.write_text(json.dumps(clean(result),indent=2,allow_nan=False)+'\n')
     args.output.parent.mkdir(parents=True,exist_ok=True);save()
     labels=[rv.name for rv in model.free_RVs]+[rv.name for rv in model.observed_RVs]+[rv.name for rv in model.potentials]
-    for name,mode in [('diagnostic_fast_compile_cvm',MODE),('production_unchanged_cvm',compilation_options()['mode'])]:
+    for name in ['diagnostic_fast_compile_cvm','production_unchanged_cvm']:
+        mode=MODE if name=='diagnostic_fast_compile_cvm' else compilation_options()['mode']
         began=time.monotonic();values=copy.deepcopy(point)
         factors=model.compile_logp(sum=False,jacobian=False,mode=mode)
         actual=factors(values)
