@@ -15,21 +15,38 @@ def active_overlap(db, patients):
     return None
 
 
-def view(row, current_cutoff, *, current_versions=None):
+def view(row, current_cutoff, *, current_versions=None, current_information=None):
     product=CohortInput.model_validate_json(row['request_json'])
     manifest=product.cohort.manifest
     day=(manifest.cutoff-manifest.origin).days
     versions={m.patient_id:m.patient_version for m in manifest.members}
-    stale=instant(row['cutoff'])!=instant(current_cutoff) or current_versions!=versions
+    from .appointment import checked_result, metadata, public_summary
+    member_status=[]
+    for member in manifest.members:
+        current=(current_information or {}).get(member.patient_id)
+        changed=(current is None or current['reason'] is not None
+            or current['history_sha256']!=member.history_sha256
+            or current['provenance_sha256']!=member.provenance_sha256
+            or current['patient_version']!=member.patient_version
+            or instant(current['cutoff'])!=manifest.cutoff)
+        member_status.append(dict(patient_id=member.patient_id,status='dated' if changed else 'current',
+            current_patient_version=current['patient_version'] if current else None,
+            current_history_sha256=current['history_sha256'] if current else None,
+            reason=(current['reason'] if current else 'current_history_unverified') or
+                ('member_history_version_or_cutoff_changed' if changed else None)))
+    stale=instant(row['cutoff'])!=instant(current_cutoff) or current_versions!=versions or any(m['status']!='current' for m in member_status)
+    reason=('whole_cohort_current_history_unverified' if current_information is None else
+        'cohort_cutoff_member_history_or_version_changed' if stale else None)
+    result,result_error=checked_result(row)
     return dict(id=row['job_id'],kind='cohort_visit_analysis',patient_id=row['patient_id'],
         patient_ids=[m.patient_id for m in manifest.members],cohort=json.loads(row['cohort_json']),
         manifest=manifest.model_dump(mode='json'),manifest_sha256=product.cohort.manifest_sha256,
         cohort_sha256=product.cohort_sha256,status=row['status'],stage=row['stage'],cutoff=row['cutoff'],
-        stale=stale,staleness_reason=('whole_cohort_current_versions_unverified' if current_versions is None
-            else 'cohort_cutoff_or_member_version_changed' if stale else None),configuration=json.loads(row['configuration_json']),
+        stale=stale,staleness_reason=reason,member_information=member_status,
+        serving=metadata(row,stale=stale,reason=reason,result=result,result_error=result_error),configuration=json.loads(row['configuration_json']),
         previous_attempt=row['previous_attempt'],created_at=row['created_at'],started_at=row['started_at'],
-        finished_at=row['finished_at'],failure_reason=row['failure_reason'],progress=json.loads(row['progress_json']),
-        result=json.loads(row['result_json']) if row['result_json'] else None,input_sha256=row['input_sha256'],
+        finished_at=row['finished_at'],failure_reason=public_summary(row['failure_reason']),progress=public_summary(json.loads(row['progress_json'])),
+        result=result,input_sha256=row['input_sha256'],
         history_sha256=row['history_sha256'],sources=product.sources.model_dump(mode='json') if product.sources else None,
         source_set_sha256=product.source_set_sha256,cutoff_day=day,forecast_endpoint_day=day+42,
         recall_first_night=day+29,recall_last_night=day+42)

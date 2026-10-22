@@ -87,16 +87,27 @@ def prepare_cohort(db, owner, patient_versions, cutoff, *, cohort_id, source_bun
     return make_cohort_input(cohort, 'analysis-'+uuid.uuid4().hex, sources)
 
 
-def view(row, cutoff):
+def view(row, cutoff, *, current=None):
     if json.loads(row['request_json']).get('kind')=='poc_visit_cohort_input':
         from .cohort_analysis import view as cohort_view
         return cohort_view(row,cutoff)
     frozen=json.loads(row['request_json']);h=frozen['history'];day=(instant(h['cutoff'])-instant(h['origin'])).days
+    from .appointment import checked_result, metadata, public_summary
+    stale=instant(row['cutoff']) != instant(cutoff)
+    reason='observation_cutoff_changed' if stale else None
+    if current is None:
+        stale=True;reason='current_history_unverified'
+    elif current['reason']:
+        stale=True;reason=current['reason']
+    elif current['history_sha256']!=row['history_sha256']:
+        stale=True;reason=reason or 'same_cutoff_history_or_lineage_changed'
+    result,result_error=checked_result(row)
     return dict(id=row['job_id'],kind='visit_analysis',patient_id=row['patient_id'],status=row['status'],stage=row['stage'],
-        cutoff=row['cutoff'],stale=instant(row['cutoff']) != instant(cutoff),configuration=json.loads(row['configuration_json']),
+        cutoff=row['cutoff'],stale=stale,staleness_reason=reason,configuration=json.loads(row['configuration_json']),
         cohort=json.loads(row['cohort_json']),previous_attempt=row['previous_attempt'],created_at=row['created_at'],
-        started_at=row['started_at'],finished_at=row['finished_at'],failure_reason=row['failure_reason'],
-        progress=json.loads(row['progress_json']),result=json.loads(row['result_json']) if row['result_json'] else None,
+        started_at=row['started_at'],finished_at=row['finished_at'],failure_reason=public_summary(row['failure_reason']),
+        progress=public_summary(json.loads(row['progress_json'])),result=result,
+        serving=metadata(row,stale=stale,reason=reason,result=result,result_error=result_error,current=current),
         input_sha256=row['input_sha256'],history_sha256=row['history_sha256'],sources=frozen.get('sources'),
         source_set_sha256=frozen.get('source_set_sha256'),cutoff_day=day,forecast_endpoint_day=day+42,
         recall_first_night=day+29,recall_last_night=day+42)
@@ -287,6 +298,9 @@ def compare(db,patient,owner,left,right,root):
     rows=[db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=? AND (patient_id=? OR EXISTS(SELECT 1 FROM json_each(cohort_json) WHERE value=?))',(job,owner,patient,patient)).fetchone() for job in (left,right)]
     if any(row is None for row in rows):raise AnalysisError('Comparison attempt is unavailable.')
     if any(row['status'] in ('queued','running') for row in rows):raise AnalysisError('Both attempts must finish before freezing a comparison.')
+    from .appointment import checked_result
+    if any(checked_result(row)[1] for row in rows):
+        raise AnalysisError('Stored comparison summary is incompatible or unaccepted.')
     inputs=[json.loads(row['request_json']) for row in rows]
     if any(p.get('kind')=='poc_visit_cohort_input' for p in inputs):
         if not all(p.get('kind')=='poc_visit_cohort_input' for p in inputs):
@@ -312,6 +326,7 @@ def compare(db,patient,owner,left,right,root):
         effect=result['effect'] if result else None
         attempts.append(dict(id=row['job_id'],configuration=value['configuration'],input_sha256=value['input_sha256'],
             status=value['status'],failure_reason=value['failure_reason'],effect=effect,
+            published_at=row['finished_at'],data_through=row['cutoff'],
             interval_width=effect['upper']-effect['lower'] if effect else None,
             worker_seconds=result['diagnostics'].get('seconds') if result else None,
             sources=value['sources'],source_set_sha256=value['source_set_sha256']))
