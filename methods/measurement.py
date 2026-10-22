@@ -10,6 +10,7 @@ import pymc as pm
 import pytensor
 import pytensor.tensor as pt
 from pytensor.graph.basic import Constant
+from pytensor.graph.replace import clone_replace
 from pytensor.graph.traversal import graph_inputs
 
 
@@ -26,7 +27,7 @@ def normal_logcdf(value):
             if scalar.ndim!=0 or float(scalar) not in (2.,-1.):
                 raise ValueError('Unexpected float32 constant in pinned Normal log-CDF')
             replacements[variable]=pt.as_tensor_variable(np.float64(scalar))
-    return pytensor.clone_replace(expression,replace=replacements,rebuild_strict=False)
+    return clone_replace(expression,replace=replacements,rebuild_strict=False)
 
 
 def log_bin(value,mean,sd,step,maximum):
