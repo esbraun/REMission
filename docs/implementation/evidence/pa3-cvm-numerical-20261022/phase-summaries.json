@@ -1,0 +1,473 @@
+{
+  "changed-logp": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 36935,
+      "sha256": "f1f333722417c7f74f30fa1f7768a8069261a53a0739d3a0c38638b2b0833b15"
+    },
+    "last_marker": {
+      "elapsed_seconds": 40.23252492607571,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 184995840,
+        "memory.peak": 495198208
+      },
+      "peak_rss_kib": 216112,
+      "phase": "changed-logp",
+      "stage": "published"
+    },
+    "nodes": 76,
+    "operation_classes": {
+      "pytensor.tensor.basic.MakeVector": 2,
+      "pytensor.tensor.blas.gemv.Gemv": 1,
+      "pytensor.tensor.elemwise.CAReduce": 1,
+      "pytensor.tensor.elemwise.DimShuffle": 20,
+      "pytensor.tensor.elemwise.Elemwise": 30,
+      "pytensor.tensor.math.Sum": 12,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 3,
+      "pytensor.tensor.subtensor.Subtensor": 7
+    },
+    "returned": true
+  },
+  "guided-gradient": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 660133,
+      "sha256": "21b7ce8d4d80c271c6f1ac267e1b4f85b92340fc814d220056ccd0fb7128c163"
+    },
+    "last_marker": {
+      "elapsed_seconds": 472.0147054929985,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 10054,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 267055104,
+        "memory.peak": 2147483648
+      },
+      "peak_rss_kib": 343860,
+      "phase": "guided-gradient",
+      "stage": "published"
+    },
+    "nodes": 1988,
+    "operation_classes": {
+      "pytensor.compile.builders.OpFromGraph": 2,
+      "pytensor.tensor.basic.ARange": 1,
+      "pytensor.tensor.basic.Alloc": 10,
+      "pytensor.tensor.basic.AllocDiag": 2,
+      "pytensor.tensor.basic.AllocEmpty": 3,
+      "pytensor.tensor.basic.ExtractDiag": 3,
+      "pytensor.tensor.basic.Join": 5,
+      "pytensor.tensor.basic.MakeVector": 2,
+      "pytensor.tensor.basic.Split": 4,
+      "pytensor.tensor.blas.gemm.Dot22": 2,
+      "pytensor.tensor.blas.gemm.Dot22Scalar": 1,
+      "pytensor.tensor.blas.gemm.Gemm": 2,
+      "pytensor.tensor.blas.gemv.Gemv": 4,
+      "pytensor.tensor.blas.ger.Ger": 5,
+      "pytensor.tensor.elemwise.CAReduce": 1,
+      "pytensor.tensor.elemwise.DimShuffle": 1684,
+      "pytensor.tensor.elemwise.Elemwise": 81,
+      "pytensor.tensor.linalg.decomposition.cholesky.Cholesky": 1,
+      "pytensor.tensor.linalg.solvers.psd.CholeskySolve": 2,
+      "pytensor.tensor.linalg.solvers.triangular.SolveTriangular": 5,
+      "pytensor.tensor.math.Sum": 50,
+      "pytensor.tensor.shape.Shape_i": 1,
+      "pytensor.tensor.subtensor.AdvancedIncSubtensor": 6,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 5,
+      "pytensor.tensor.subtensor.IncSubtensor": 12,
+      "pytensor.tensor.subtensor.Subtensor": 94
+    },
+    "returned": true
+  },
+  "guided-logp": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 50071,
+      "sha256": "b0a4a03fba36713800d85f00eb6ea78ef154c4184e512de309a9469bfcb1c02d"
+    },
+    "last_marker": {
+      "elapsed_seconds": 49.18631739390548,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 193896448,
+        "memory.peak": 496279552
+      },
+      "peak_rss_kib": 220060,
+      "phase": "guided-logp",
+      "stage": "published"
+    },
+    "nodes": 115,
+    "operation_classes": {
+      "pytensor.tensor.basic.Alloc": 4,
+      "pytensor.tensor.basic.AllocEmpty": 1,
+      "pytensor.tensor.basic.ExtractDiag": 1,
+      "pytensor.tensor.basic.Join": 4,
+      "pytensor.tensor.basic.MakeVector": 2,
+      "pytensor.tensor.blas.gemm.Gemm": 1,
+      "pytensor.tensor.blas.gemv.Gemv": 2,
+      "pytensor.tensor.elemwise.CAReduce": 2,
+      "pytensor.tensor.elemwise.DimShuffle": 28,
+      "pytensor.tensor.elemwise.Elemwise": 37,
+      "pytensor.tensor.linalg.decomposition.cholesky.Cholesky": 1,
+      "pytensor.tensor.linalg.solvers.psd.CholeskySolve": 1,
+      "pytensor.tensor.linalg.solvers.triangular.SolveTriangular": 1,
+      "pytensor.tensor.math.Sum": 13,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 5,
+      "pytensor.tensor.subtensor.Subtensor": 12
+    },
+    "returned": true
+  },
+  "guided-native-logp-gradient": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 673218,
+      "sha256": "6da22aaffbf74453b93b7ffa746c8eccee8a195be1bb89885a1f80d6115d6944"
+    },
+    "last_marker": {
+      "elapsed_seconds": 472.92338648298755,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 10133,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 243552256,
+        "memory.peak": 2147483648
+      },
+      "peak_rss_kib": 329688,
+      "phase": "guided-native-logp-gradient",
+      "stage": "published"
+    },
+    "nodes": 2024,
+    "operation_classes": {
+      "pytensor.compile.builders.OpFromGraph": 2,
+      "pytensor.tensor.basic.Alloc": 9,
+      "pytensor.tensor.basic.AllocDiag": 2,
+      "pytensor.tensor.basic.AllocEmpty": 3,
+      "pytensor.tensor.basic.ExtractDiag": 3,
+      "pytensor.tensor.basic.Join": 5,
+      "pytensor.tensor.basic.MakeVector": 2,
+      "pytensor.tensor.basic.Split": 4,
+      "pytensor.tensor.blas.gemm.Dot22": 2,
+      "pytensor.tensor.blas.gemm.Dot22Scalar": 1,
+      "pytensor.tensor.blas.gemm.Gemm": 2,
+      "pytensor.tensor.blas.gemv.Gemv": 4,
+      "pytensor.tensor.blas.ger.Ger": 5,
+      "pytensor.tensor.elemwise.CAReduce": 1,
+      "pytensor.tensor.elemwise.DimShuffle": 1700,
+      "pytensor.tensor.elemwise.Elemwise": 82,
+      "pytensor.tensor.linalg.decomposition.cholesky.Cholesky": 1,
+      "pytensor.tensor.linalg.solvers.psd.CholeskySolve": 2,
+      "pytensor.tensor.linalg.solvers.triangular.SolveTriangular": 5,
+      "pytensor.tensor.math.Sum": 58,
+      "pytensor.tensor.shape.SpecifyShape": 3,
+      "pytensor.tensor.subtensor.AdvancedIncSubtensor": 6,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 5,
+      "pytensor.tensor.subtensor.IncSubtensor": 12,
+      "pytensor.tensor.subtensor.Subtensor": 105
+    },
+    "returned": true
+  },
+  "local-logp": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 17006,
+      "sha256": "840a74f3c4409ff5cc340b19e2d38d011fad1558583e0c393ba67dff816deb4c"
+    },
+    "last_marker": {
+      "elapsed_seconds": 13.47453491599299,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 171593728,
+        "memory.peak": 301985792
+      },
+      "peak_rss_kib": 204424,
+      "phase": "local-logp",
+      "stage": "published"
+    },
+    "nodes": 39,
+    "operation_classes": {
+      "pytensor.tensor.basic.MakeVector": 1,
+      "pytensor.tensor.blas.gemv.Gemv": 1,
+      "pytensor.tensor.elemwise.DimShuffle": 8,
+      "pytensor.tensor.elemwise.Elemwise": 16,
+      "pytensor.tensor.math.Sum": 7,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 3,
+      "pytensor.tensor.subtensor.Subtensor": 3
+    },
+    "returned": true
+  },
+  "original-gradient": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 626656,
+      "sha256": "88064abd1da2842e75bda9e244c60384512ac47a7f5597774ae7661f2e6ca0f2"
+    },
+    "last_marker": {
+      "elapsed_seconds": 458.9386799419299,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 10208,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 261083136,
+        "memory.peak": 2147483648
+      },
+      "peak_rss_kib": 336836,
+      "phase": "original-gradient",
+      "stage": "published"
+    },
+    "nodes": 1892,
+    "operation_classes": {
+      "pytensor.compile.builders.OpFromGraph": 2,
+      "pytensor.tensor.basic.Alloc": 2,
+      "pytensor.tensor.basic.AllocEmpty": 1,
+      "pytensor.tensor.basic.Join": 1,
+      "pytensor.tensor.basic.MakeVector": 2,
+      "pytensor.tensor.blas.gemv.Gemv": 2,
+      "pytensor.tensor.blas.ger.Ger": 1,
+      "pytensor.tensor.elemwise.CAReduce": 1,
+      "pytensor.tensor.elemwise.DimShuffle": 1669,
+      "pytensor.tensor.elemwise.Elemwise": 63,
+      "pytensor.tensor.math.Sum": 43,
+      "pytensor.tensor.shape.Shape_i": 1,
+      "pytensor.tensor.shape.SpecifyShape": 2,
+      "pytensor.tensor.subtensor.AdvancedIncSubtensor": 3,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 3,
+      "pytensor.tensor.subtensor.IncSubtensor": 7,
+      "pytensor.tensor.subtensor.Subtensor": 89
+    },
+    "returned": true
+  },
+  "original-logp": {
+    "compiled_linker": "VMLinker",
+    "compiled_optimizer": {
+      "exclude": [],
+      "extra_rewrites": [],
+      "include": [
+        "fast_run",
+        "local_check_parameter_to_ninf_switch",
+        "random_make_inplace"
+      ],
+      "name": null,
+      "position_cutoff": "inf",
+      "require": [],
+      "subquery": {},
+      "type": "RewriteDatabaseQuery"
+    },
+    "execution_vm": {
+      "c_thunks": true,
+      "callback_empty": true,
+      "callback_input_empty": true,
+      "limitation": "Actual whole VM is checked; individual operations may use ordinary per-op Python thunks.",
+      "linker": "VMLinker",
+      "use_cloop": true,
+      "vm_type": "pytensor.link.c.cvm.CVM"
+    },
+    "inventory": {
+      "bytes": 36935,
+      "sha256": "f1f333722417c7f74f30fa1f7768a8069261a53a0739d3a0c38638b2b0833b15"
+    },
+    "last_marker": {
+      "elapsed_seconds": 40.509274087962694,
+      "memory": {
+        "events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0
+        },
+        "memory.current": 185253888,
+        "memory.peak": 495415296
+      },
+      "peak_rss_kib": 216080,
+      "phase": "original-logp",
+      "stage": "published"
+    },
+    "nodes": 76,
+    "operation_classes": {
+      "pytensor.tensor.basic.MakeVector": 2,
+      "pytensor.tensor.blas.gemv.Gemv": 1,
+      "pytensor.tensor.elemwise.CAReduce": 1,
+      "pytensor.tensor.elemwise.DimShuffle": 20,
+      "pytensor.tensor.elemwise.Elemwise": 30,
+      "pytensor.tensor.math.Sum": 12,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 3,
+      "pytensor.tensor.subtensor.Subtensor": 7
+    },
+    "returned": true
+  }
+}

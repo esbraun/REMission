@@ -1,0 +1,303 @@
+{
+  "status": "passed",
+  "images": 5,
+  "containers": 1,
+  "selected": {
+    "base": {
+      "Id": "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+      "Created": "2026-10-22T08:42:44.298607834Z",
+      "RootFS": {
+        "Layers": [
+          "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+          "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+          "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+          "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+          "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+          "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+          "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+          "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+          "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+          "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+          "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+          "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+          "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+          "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:a1cf2f53f38529aaf6e4f22e8a594d086a14f97121080adfc97b9e3d80c8b8be",
+          "sha256:0aa51d5ba4071d7d0acc0812119407985b7217301f11b830c5f69c946c7c1d32",
+          "sha256:490686b1f7eaba5cde9762af266e3c14c88dcf22d36500f62de89ac076702778",
+          "sha256:f7e3ca525192969201336bad34733200e1e2764e8f6c46c07da689c44531deb4",
+          "sha256:243c4a3a3ae1577f7621987749d42dd73a67ece9c29faf3ce65d46096ee2da32",
+          "sha256:4fd177439b65fd5c1e3d8c21a998e93bb9eefab9a5f9fa65cb9f8d81247e2d0f",
+          "sha256:531925a0334c564962dd3ce3c5c535d0962330b6d332998d6a6810f144b01bb1",
+          "sha256:937069f94e620f514344280a9b9064b88628892ac22647355514ff915301d5dc",
+          "sha256:f68f15a47e618f4e98b20f6ec7257a00951546bb61d44fb2c78c880f63ada80f",
+          "sha256:019d90af7532b69247c8a7a0db9e38337f4871f9bf50b081afb9169ec55db0ee",
+          "sha256:4dbc4b4244e29dec6f06150038b4968a2dde904e0a71488d3c442345989850ee"
+        ],
+        "Type": "layers"
+      },
+      "config": {
+        "User": "10001:10001",
+        "WorkingDir": "/app",
+        "Entrypoint": null,
+        "Cmd": [
+          "python",
+          "-m",
+          "uvicorn",
+          "services.foundation.server:app",
+          "--host",
+          "0.0.0.0",
+          "--port",
+          "8765",
+          "--no-access-log"
+        ],
+        "ExposedPorts": {
+          "8765/tcp": {}
+        }
+      }
+    },
+    "service": {
+      "Id": "sha256:3936fda06b66a1b6ce42c29d9132dc589d10dfc893db7ef1435676a78fdc0a30",
+      "Created": "2026-10-22T12:14:08.430214655Z",
+      "RootFS": {
+        "Layers": [
+          "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+          "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+          "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+          "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+          "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+          "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+          "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+          "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+          "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+          "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+          "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+          "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+          "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+          "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:a1cf2f53f38529aaf6e4f22e8a594d086a14f97121080adfc97b9e3d80c8b8be",
+          "sha256:0aa51d5ba4071d7d0acc0812119407985b7217301f11b830c5f69c946c7c1d32",
+          "sha256:490686b1f7eaba5cde9762af266e3c14c88dcf22d36500f62de89ac076702778",
+          "sha256:f7e3ca525192969201336bad34733200e1e2764e8f6c46c07da689c44531deb4",
+          "sha256:243c4a3a3ae1577f7621987749d42dd73a67ece9c29faf3ce65d46096ee2da32",
+          "sha256:4fd177439b65fd5c1e3d8c21a998e93bb9eefab9a5f9fa65cb9f8d81247e2d0f",
+          "sha256:531925a0334c564962dd3ce3c5c535d0962330b6d332998d6a6810f144b01bb1",
+          "sha256:937069f94e620f514344280a9b9064b88628892ac22647355514ff915301d5dc",
+          "sha256:f68f15a47e618f4e98b20f6ec7257a00951546bb61d44fb2c78c880f63ada80f",
+          "sha256:019d90af7532b69247c8a7a0db9e38337f4871f9bf50b081afb9169ec55db0ee",
+          "sha256:4dbc4b4244e29dec6f06150038b4968a2dde904e0a71488d3c442345989850ee",
+          "sha256:094318a1ad8d0ebc1d94799019a260e9cc4f8af3f19357914a7827b462b0a910",
+          "sha256:f2d1f94856cd0cb776216bcd7a6eb5cb5da10344effbe2ac7d58f78875e11b37"
+        ],
+        "Type": "layers"
+      },
+      "config": {
+        "User": "10001:10001",
+        "WorkingDir": "/app",
+        "Entrypoint": null,
+        "Cmd": [
+          "python",
+          "-m",
+          "uvicorn",
+          "services.foundation.server:app",
+          "--host",
+          "0.0.0.0",
+          "--port",
+          "8765",
+          "--no-access-log"
+        ],
+        "ExposedPorts": {
+          "8765/tcp": {}
+        }
+      }
+    },
+    "learner": {
+      "Id": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+      "Created": "2026-10-22T11:34:16.035146559Z",
+      "RootFS": {
+        "Layers": [
+          "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+          "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+          "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+          "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+          "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+          "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+          "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+          "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+          "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+          "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+          "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+          "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+          "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+          "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:a1cf2f53f38529aaf6e4f22e8a594d086a14f97121080adfc97b9e3d80c8b8be",
+          "sha256:0aa51d5ba4071d7d0acc0812119407985b7217301f11b830c5f69c946c7c1d32",
+          "sha256:490686b1f7eaba5cde9762af266e3c14c88dcf22d36500f62de89ac076702778",
+          "sha256:f7e3ca525192969201336bad34733200e1e2764e8f6c46c07da689c44531deb4",
+          "sha256:243c4a3a3ae1577f7621987749d42dd73a67ece9c29faf3ce65d46096ee2da32",
+          "sha256:329ee4078e179f9c7b8c7c5cf575e8c09c2f6150a8bbf3ae736336f446218eac",
+          "sha256:5b1014374861d5aa41d6b77bc89052921ae9a4e7c0c41996aeb118da17069c2a",
+          "sha256:62bdc07a78fe0e3a1a8071457d06bb1a9f0f6e2b8206ea4415d8ac3206f0fecd",
+          "sha256:4883cb13bb8e67166b8f4d6536744d6590c0c8006bd9b5784e92b66931e1bdd8",
+          "sha256:42c3eecd5809d559ab016f40332586461927aae4e9b2a6045372b0429e44e057",
+          "sha256:bcf57a423103bac6a6b3d22a01a181b223c4524c6239128d66033427917d5155",
+          "sha256:e4201ee95249e9df4148848f240f483c94c718e94f7df388c757a2969c567949",
+          "sha256:19b4d934fdf67ea552d7eb07713de03eedc75e1390fb96fd43ac72d77253755f",
+          "sha256:e4ac8a7597de6bf7bf7fd45a9962b463bd8e10fcc27f83db8052ae02ef70d53d"
+        ],
+        "Type": "layers"
+      },
+      "config": {
+        "User": "10002:10002",
+        "WorkingDir": "/app",
+        "Entrypoint": null,
+        "Cmd": [
+          "python",
+          "-m",
+          "services.learner.worker"
+        ],
+        "ExposedPorts": null
+      }
+    },
+    "generator": {
+      "Id": "sha256:5d546abd1448e46d5d45ac4a3d98c31899631f968f93d21b163797ff0674ded9",
+      "Created": "2026-10-22T07:49:17.476117448Z",
+      "RootFS": {
+        "Layers": [
+          "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+          "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+          "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+          "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+          "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+          "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+          "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+          "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+          "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+          "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+          "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+          "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+          "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+          "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:1285dac76e7e839e93306c1e199dd7fa63ed13c16502027813fd561cf4c1822b"
+        ],
+        "Type": "layers"
+      },
+      "config": {
+        "User": "20000:20000",
+        "WorkingDir": "/app",
+        "Entrypoint": null,
+        "Cmd": [
+          "python",
+          "-m",
+          "services.generator.server"
+        ],
+        "ExposedPorts": null
+      }
+    },
+    "controls": {
+      "Id": "sha256:f32dd3e88e04cae279abdf7e90d11b4467b087b6d42b19f16fa92632291d1d2e",
+      "Created": "2026-10-22T12:14:12.164626085Z",
+      "RootFS": {
+        "Layers": [
+          "sha256:aca83606673032726b42f8e1396ceb979c32bfb26b602732baf699053e46b33e",
+          "sha256:99475d775e47e923dd65c7c14945683dffc418483f11a91a8ee3f02e9f8f4f92",
+          "sha256:c10ac4a2df206abc2da3247148c23e9452fca03a21a4d39470441f4056a5687d",
+          "sha256:c2c788f065069e98eaac7abf46867084cc98d030bd014b2ecd3fcf0375f3b2f9",
+          "sha256:492cb04cfab9f28d3ee942ae13d2183560b9e4852d7381611da42e369be9791b",
+          "sha256:5756475acb47ba7d3e55d27db208ca339a303c01de1ecabdf4f0390600daf733",
+          "sha256:fd68f608e17fb6ac6446edb7fd0225f331588e9a81f470f08d5043f97a220b42",
+          "sha256:37ef2c0c5d13dae48f6b167bdb6f428de2a936499c273ae38d28c5bfda55bdad",
+          "sha256:b323f6dff06f00f836844f4b613c06ead6604f6b92d3bde65e7364c6eae6ea44",
+          "sha256:b1b1d3dc2414f3aaf91501ecc68275c59bd80133a29938f7f43128736853f3f2",
+          "sha256:40f64b092693317928b378b2285996161deef6087e2bbb1430134e7470e55581",
+          "sha256:17a951335de7df34f19b676fabbadfb1cc5b536ef9d360ed6a8b6fbac3ae925a",
+          "sha256:186a91b134a1c3615eefa8ff9758aa6acc8dedb9e1e9ca8f5c1db147007beb14",
+          "sha256:94b9f83becd8648a13eba97270dce6db827a703ebd6fe72431eda5ef7d7dadc5",
+          "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "sha256:a1cf2f53f38529aaf6e4f22e8a594d086a14f97121080adfc97b9e3d80c8b8be",
+          "sha256:0aa51d5ba4071d7d0acc0812119407985b7217301f11b830c5f69c946c7c1d32",
+          "sha256:490686b1f7eaba5cde9762af266e3c14c88dcf22d36500f62de89ac076702778",
+          "sha256:f7e3ca525192969201336bad34733200e1e2764e8f6c46c07da689c44531deb4",
+          "sha256:243c4a3a3ae1577f7621987749d42dd73a67ece9c29faf3ce65d46096ee2da32",
+          "sha256:4fd177439b65fd5c1e3d8c21a998e93bb9eefab9a5f9fa65cb9f8d81247e2d0f",
+          "sha256:531925a0334c564962dd3ce3c5c535d0962330b6d332998d6a6810f144b01bb1",
+          "sha256:937069f94e620f514344280a9b9064b88628892ac22647355514ff915301d5dc",
+          "sha256:f68f15a47e618f4e98b20f6ec7257a00951546bb61d44fb2c78c880f63ada80f",
+          "sha256:019d90af7532b69247c8a7a0db9e38337f4871f9bf50b081afb9169ec55db0ee",
+          "sha256:4dbc4b4244e29dec6f06150038b4968a2dde904e0a71488d3c442345989850ee",
+          "sha256:094318a1ad8d0ebc1d94799019a260e9cc4f8af3f19357914a7827b462b0a910",
+          "sha256:f2d1f94856cd0cb776216bcd7a6eb5cb5da10344effbe2ac7d58f78875e11b37",
+          "sha256:c403f3e457553dcc969ecb4090f5579e9dc55267c275eb2d9b4607352ed4c826",
+          "sha256:86fae29db28c9d3bcfef1e0dcf96c87f30cd8a1a14a11e595455a1bd4936dd54",
+          "sha256:586ce54c6f78e27594096ee7e8b95f6bc4a49b3e8bcb431af16cf688ef72f412",
+          "sha256:a312a338fdda3fd819799dbc797f9815436cfe83e882dcd029e19e50b7c823fe"
+        ],
+        "Type": "layers"
+      },
+      "config": {
+        "User": "10001:10001",
+        "WorkingDir": "/app",
+        "Entrypoint": null,
+        "Cmd": [
+          "python",
+          "-m",
+          "uvicorn",
+          "services.foundation.server:app",
+          "--host",
+          "0.0.0.0",
+          "--port",
+          "8765",
+          "--no-access-log"
+        ],
+        "ExposedPorts": {
+          "8765/tcp": {}
+        }
+      }
+    },
+    "own_completed_control": {
+      "Id": "1649c451fdcbee59d7c69a79dbd25db9bdbd36865599607a2599d501430efed3",
+      "Image": "sha256:f32dd3e88e04cae279abdf7e90d11b4467b087b6d42b19f16fa92632291d1d2e",
+      "Path": "python",
+      "Args": [
+        "-c",
+        "import unittest;names=['test_borrowing.JointTargetTests.test_real_frozen_pre_v1_input_result_canonical_identity', 'test_borrowing.BorrowingRoutesTests.test_genuine_pre_v1_stored_receipt_replays_with_optional_defaults', 'test_borrowing.BorrowingRoutesTests.test_source_admission_receipt_intents_and_guarded_result_sources', 'test_borrowing.BorrowingRoutesTests.test_host_binding_survives_progress_and_vetoes_forged_completed_execution'];suite=unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName(n) for n in names);r=unittest.TextTestRunner(verbosity=2).run(suite);raise SystemExit(not r.wasSuccessful())"
+      ],
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T12:14:23.426437358Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T12:14:18.967721795Z",
+        "Status": "exited"
+      },
+      "User": "10001:10001",
+      "Mounts": [],
+      "HostConfig": {
+        "Memory": 2147483648,
+        "NanoCpus": 2000000000,
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Tmpfs": {
+          "/tmp": "rw,exec,nosuid,nodev,size=512m"
+        }
+      }
+    }
+  },
+  "source": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+  "scope": "exact whitelist and safe optional image-map index; actual current image IDs selected before check; no Env requested"
+}

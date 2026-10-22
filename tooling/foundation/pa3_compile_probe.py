@@ -44,6 +44,136 @@ def check_fd(values,baseline,names,binding):
             if not all(__import__('math').isfinite(v) for v in (a,b)) or abs(a-b)>1e-5+1e-4*abs(b):raise ValueError('equal-coordinate gradient FD gate unmet')
 
 
+def run_borrow_profile(input_root,output,phase,seconds,policy_path,coordinates=None,reference=None,separate=None):
+    """Actual frozen borrowing intent, one graph/process; never samples a chain."""
+    started=time.monotonic();output.mkdir(parents=True,exist_ok=True)
+    def marker(stage,**extra):
+        memory={}
+        for name in ('memory.current','memory.peak'):
+            path=Path('/sys/fs/cgroup')/name
+            if path.exists():memory[name]=int(path.read_text())
+        path=Path('/sys/fs/cgroup/memory.events')
+        if path.exists():memory['events']={k:int(v) for k,v in (row.split() for row in path.read_text().splitlines())}
+        row=dict(phase=phase,stage=stage,elapsed_seconds=time.monotonic()-started,memory=memory,
+                 peak_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,**extra)
+        with (output/(phase+'-events.jsonl')).open('a') as stream:stream.write(json.dumps(row,sort_keys=True)+'\n');stream.flush()
+        print(json.dumps(row,sort_keys=True),flush=True)
+        if time.monotonic()-started>=seconds:raise TimeoutError('actual-H* profile phase deadline')
+    marker('before-imports')
+    import copy
+    import numpy as np
+    from contracts.domain.analysis import sha,canonical
+    from contracts.domain.borrowing import BorrowAnalysisInput,BORROW_CONFIG_REF,admitted_configuration
+    from contracts.domain.borrow_runtime import coordinate_layout,NATIVE_OPTIMIZER
+    from methods.visit.model import inputs
+    from methods.visit.borrow_model import build_joint
+    from methods.visit import borrow_execution as execution
+    from pa3_monitor import save_inventory
+    marker('after-imports')
+    policy=json.loads(policy_path.read_bytes())
+    if (policy['id']!='pa3-actual-borrow-profile-v1' or policy['version']!='1.0.0' or phase not in policy['phases']
+            or policy['phase_seconds']!=600 or policy['suite_seconds']!=1800 or not 0<seconds<=600):
+        raise ValueError('unfrozen actual-H* profile policy/phase/deadline')
+    files={n:hashlib.sha256((input_root/n).read_bytes()).hexdigest() for n in ('input.json','points.json','sources.json')}
+    if files!=policy['input_files']:raise ValueError('actual-H* physical input binding mismatch')
+    product=BorrowAnalysisInput.model_validate_json((input_root/'input.json').read_bytes())
+    frozen=json.loads((input_root/'points.json').read_bytes())
+    if (product.attempt_id!=policy['attempt_id'] or product.history_sha256!=policy['history_sha256']
+            or sha(product.model_dump(mode='json'))!=policy['input_sha256'] or product.request.configuration.model_dump()!=BORROW_CONFIG_REF
+            or product.numerical_seeds.model_dump()!=policy['numerical_seeds'] or product.source_set_sha256!=policy['source_set_sha256']
+            or frozen['history_sha256']!=product.history_sha256 or json.loads((input_root/'sources.json').read_bytes())!=product.sources.model_dump(mode='json')):
+        raise ValueError('actual attempt/history/config/source/seed mismatch; no fallback to legacy')
+    config=admitted_configuration(product.request.configuration)
+    if config['quadrature_order']!=64 or config.get('diagnostic_only'):raise ValueError('actual production Q64 required')
+    binding=dict(attempt_id=product.attempt_id,input_sha256=policy['input_sha256'],history_sha256=product.history_sha256,
+        cutoff=product.history.cutoff.isoformat(),source_set_sha256=product.source_set_sha256,
+        configuration=product.request.configuration.model_dump(),numerical_seeds=product.numerical_seeds.model_dump(),input_files=files,
+        execution_policy=execution.POLICY_REF)
+    points=[{k:np.asarray(v,dtype='float64') for k,v in row.items()} for row in frozen['guided_points']]
+    expected=coordinate_layout(product.history)
+    if len(points)!=3 or expected[-1]['stop']!=47:raise ValueError('frozen actual day14/all47x3 profile required')
+    marker('input-verified',binding=binding)
+    marker('before-model-construction');model=build_joint(inputs(product.history),product.sources,config);marker('after-model-construction')
+    names=[v.name for v in model.value_vars]
+    if names!=[m['name'] for m in expected] or any(set(point)!=set(names) for point in points):raise ValueError('actual model coordinate names differ')
+    options=execution.compilation_options()
+    result=dict(phase=phase,status='not-qualified',binding=binding,compilation_policy_sha256=hashlib.sha256(policy_path.read_bytes()).hexdigest(),
+                boundary='Actual-H* native full-model profile only; no posterior/fit or accepted-result publication')
+    def inventory(function):
+        value=save_inventory(function,output,dict(policy,id='pa3-cvm-target-qualification-v1'))
+        if value['compiled_optimizer']!=NATIVE_OPTIMIZER:raise ValueError('actual compiled optimizer differs')
+        result['inventory']=value;marker('optimized-inventory-saved')
+    if phase=='coordinates':
+        marker('before-coordinate-jacobian-compile');begin=time.monotonic()
+        fn=model.compile_fn(model.replace_rvs_by_values([model['prior_normal_coordinates'],model['guide_log_jacobian']]),
+                            inputs=model.value_vars,on_unused_input='ignore',**options)
+        result['compile_seconds']=time.monotonic()-begin;execution.verify_cvm(fn.f);marker('after-coordinate-jacobian-compile');inventory(fn.f)
+        originals=[];jacobians=[]
+        for index,point in enumerate(points):
+            _,mapping=execution.coordinate_map(point,model.continuous_value_vars)
+            if mapping!=expected:raise ValueError('actual point shape/dtype/offset mismatch')
+            u,jac=fn(point);converted={k:v for k,v in point.items() if k!='guide_innovation'}
+            converted.update(mu_b=19+5*u[0],b_raw=u[1],population_beta=4*u[2:4],beta_raw=u[4:6],a=u[6],innovation=u[7:])
+            originals.append({k:np.asarray(v).tolist() for k,v in converted.items()});jacobians.append(float(jac));marker('mapped-point',index=index)
+        result.update(original_points=originals,log_jacobians=jacobians,native_coordinate_map=expected,
+            mapping='Actual ce5a guide map; mu_b19+5u0,b_rawu1,beta4u[2:4],beta_rawu[4:6],a u6,innovationu[7:]; log80+guide Jacobian')
+        actual_fn=fn.f
+    else:
+        mapped=json.loads(coordinates.read_bytes())
+        if mapped['binding']!=binding or mapped['native_coordinate_map']!=expected:raise ValueError('actual coordinate source/binding mismatch')
+        native=phase=='guided-native-logp-gradient';gradient=phase!='guided-logp';compiles=[]
+        marker('before-gradient-compile' if gradient else 'before-logp-compile');begin=time.monotonic()
+        if native:
+            with execution.guarded_native(model,compiles.append,expected):
+                fn=model.logp_dlogp_function(grad_vars=model.continuous_value_vars,ravel_inputs=True,initial_point=points[0],**options)
+            fn.trust_input=True;actual_fn=fn._pytensor_function
+        else:
+            fn=model.compile_dlogp(**options) if gradient else model.compile_logp(**options);actual_fn=fn.f
+        result['compile_seconds']=time.monotonic()-begin;execution.verify_cvm(actual_fn);marker('after-gradient-compile' if gradient else 'after-logp-compile');inventory(actual_fn)
+        values=[];finite=[];native_logp=[];timings=[];first=[]
+        def evaluate(point):
+            if native:
+                value,grad,mapping=execution.native_call(fn,point,model.continuous_value_vars)
+                if mapping!=expected:raise ValueError('native call map changed')
+                return grad,float(value)
+            value=fn(point)
+            if not np.isfinite(value).all():raise ValueError('actual-H* nonfinite evaluation')
+            return value,None
+        for index,point in enumerate(points):
+            marker('before-point',index=index);begin=time.perf_counter();value,logp=evaluate(point)
+            first.append(dict(index=index,seconds=time.perf_counter()-begin));values.append(np.asarray(value).tolist())
+            if native:native_logp.append(logp)
+            if not gradient:
+                fd=[]
+                for name in names:
+                    for cell in np.ndindex(point[name].shape):
+                        left=copy.deepcopy(point);right=copy.deepcopy(point);left[name][cell]-=1e-5;right[name][cell]+=1e-5
+                        fd.append(float((fn(right)-fn(left))/(2e-5)))
+                    marker('finite-difference-variable',index=index,variable=name)
+                finite.append(fd)
+            for _ in range(20):
+                begin=time.perf_counter();evaluate(point);timings.append(time.perf_counter()-begin)
+            marker('after-point',index=index)
+        result.update(values=values,value_variable_order=names,median_seconds=float(np.median(timings)),p95_seconds=float(np.quantile(timings,.95)),point_first_calls=first)
+        if not gradient:result['coordinate_finite_difference']=finite
+        else:
+            baseline=json.loads(reference.read_bytes());check_fd(values,baseline,names,binding)
+            result['independent_fd']=dict(passed=True,points=3,coordinates_per_point=47,absolute_tolerance=1e-5,relative_tolerance=1e-4,
+                reference_sha256=hashlib.sha256(reference.read_bytes()).hexdigest())
+            if native:
+                old=json.loads(separate.read_bytes())
+                if old['binding']!=binding or old['value_variable_order']!=names:raise ValueError('separate native agreement binding differs')
+                for a,b in zip(native_logp,baseline['values'],strict=True):
+                    if not np.isfinite(a) or abs(a-b)>1e-8:raise ValueError('actual native/separate logp disagreement')
+                for row,prior in zip(values,old['values'],strict=True):
+                    for a,b in zip(row,prior,strict=True):
+                        if abs(a-b)>1e-5+1e-4*abs(b):raise ValueError('actual native/separate gradient disagreement')
+                result.update(native_logp=native_logp,native_coordinate_map=expected,native_compilations=compiles,
+                              separate_gradient_sha256=hashlib.sha256(separate.read_bytes()).hexdigest())
+    marker('before-terminal-publication');result.update(status='evaluated',elapsed_seconds=time.monotonic()-started)
+    publish(output/(phase+'.json'),result);marker('published')
+
+
 def run(input_root,output,phase,seconds,coordinates=None,monitor_policy=None,reference=None,numba_policy=None,diagnostic_reference=None,cvm_policy=None):
     started=time.monotonic();output.mkdir(parents=True,exist_ok=True)
     def marker(stage,**extra):
@@ -233,5 +363,10 @@ if __name__=='__main__':
     parser.add_argument('--seconds',type=float,required=True);parser.add_argument('--coordinates',type=Path)
     parser.add_argument('--monitor-policy',type=Path);parser.add_argument('--reference',type=Path)
     policies=parser.add_mutually_exclusive_group();policies.add_argument('--numba-policy',type=Path);policies.add_argument('--cvm-policy',type=Path)
+    policies.add_argument('--borrow-profile-policy',type=Path)
+    parser.add_argument('--separate-gradient',type=Path)
     parser.add_argument('--diagnostic-reference',type=Path);args=parser.parse_args()
-    run(args.input,args.output,args.phase,args.seconds,args.coordinates,args.monitor_policy,args.reference,args.numba_policy,args.diagnostic_reference,args.cvm_policy)
+    if args.borrow_profile_policy:
+        if args.monitor_policy or args.diagnostic_reference:parser.error('actual-H* profile cannot select Monitor/legacy gradient references')
+        run_borrow_profile(args.input,args.output,args.phase,args.seconds,args.borrow_profile_policy,args.coordinates,args.reference,args.separate_gradient)
+    else:run(args.input,args.output,args.phase,args.seconds,args.coordinates,args.monitor_policy,args.reference,args.numba_policy,args.diagnostic_reference,args.cvm_policy)

@@ -1,0 +1,32 @@
+{
+  "commands": [
+    [
+      "docker",
+      "stop",
+      "--time",
+      "10",
+      "remission-poc13-ac8e16e0-service"
+    ],
+    [
+      "docker",
+      "rename",
+      "remission-poc13-ac8e16e0-service",
+      "remission-poc13-ac8e16e0-service-held-for-recovery"
+    ],
+    [
+      "docker",
+      "rename",
+      "remission-poc13-ac8e16e0-service-pre-pa3-4a",
+      "remission-poc13-ac8e16e0-service"
+    ],
+    [
+      "docker",
+      "start",
+      "remission-poc13-ac8e16e0-service"
+    ]
+  ],
+  "first_failed_attempt_rollback": "Actually restarted same original cdb12d7 container; retained raw rollback.json",
+  "first_recovery": "Stop and retain replacement; rename original retained container back to canonical name; start original against SAME original files. No database restore or inode replacement.",
+  "private_backup": "ACL current account+SYSTEM; outside HTTP/web/fixtures/exports trees, no backup DB payload in evidence",
+  "successful_maintenance_rollback_executed": false
+}

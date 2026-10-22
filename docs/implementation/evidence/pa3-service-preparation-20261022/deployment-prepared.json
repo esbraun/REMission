@@ -1,0 +1,35 @@
+{
+  "activation_requires": "separate reviewed maintenance/SQLite protection, oldest-queue audit and explicit root authorization",
+  "dispatcher": {
+    "bytes": 11027,
+    "path": "analysis_dispatcher.py",
+    "sha256": "568ce1c35fa8a2bc1dd38edf748661a439c5137e86ace93d3273b453bd18b39f",
+    "source_commit": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3"
+  },
+  "generator_container": "remission-poc13-ac8e16e0-generator",
+  "generator_image": "sha256:5d546abd1448e46d5d45ac4a3d98c31899631f968f93d21b163797ff0674ded9",
+  "inherited_base_image": "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+  "inherited_service_build_source": "5843caaa0dd58c5c7f97cbbcd9d1146f00b3b628",
+  "learner_image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+  "network": "remission-poc13-ac8e16e0-app",
+  "port": 8780,
+  "prefix": "remission-poc13-ac8e16e0",
+  "preparation_observer_commit": "bc09674e15d96854bb4ab616ed5fc006edadf3a7",
+  "previous_manifest_physical": {
+    "bytes": 5523,
+    "sha256": "af422d938c662d990a6c92ce2b65d055a89ee57c84244daac5dca953e878cc62"
+  },
+  "runtime_image": "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa",
+  "service_container": "remission-poc13-ac8e16e0-service",
+  "service_image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+  "service_source_commit": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3",
+  "source_commit": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3",
+  "status": "prepared_not_deployed",
+  "url": "http://127.0.0.1:8780",
+  "volumes": {
+    "database": "remission-poc13-ac8e16e0-database",
+    "exports": "remission-poc13-ac8e16e0-exports",
+    "fixtures": "remission-poc13-ac8e16e0-fixtures",
+    "historical": "remission-poc13-ac8e16e0-historical"
+  }
+}

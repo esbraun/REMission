@@ -1,0 +1,213 @@
+{
+  "Id": "60e851ab7f069801e82f69ce39392d6934dc41d487e0633b468f25800dc7ef88",
+  "Created": "2026-10-22T11:45:14.560902951Z",
+  "Path": "python",
+  "Args": [
+    "-c",
+    "import unittest;names=['test_pa3_borrow_profile','test_pa3_cvm.CvmControls'];suite=unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName(n) for n in names);r=unittest.TextTestRunner(verbosity=2).run(suite);raise SystemExit(not r.wasSuccessful())"
+  ],
+  "State": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-10-22T11:45:14.630223151Z",
+    "FinishedAt": "2026-10-22T11:45:17.209277629Z"
+  },
+  "Image": "sha256:b25ee64bc6ddb00535021cc5d31248fcea6cc843f0e59dd9a237189aa9c6ceee",
+  "ResolvConfPath": "/var/lib/docker/containers/60e851ab7f069801e82f69ce39392d6934dc41d487e0633b468f25800dc7ef88/resolv.conf",
+  "HostnamePath": "/var/lib/docker/containers/60e851ab7f069801e82f69ce39392d6934dc41d487e0633b468f25800dc7ef88/hostname",
+  "HostsPath": "/var/lib/docker/containers/60e851ab7f069801e82f69ce39392d6934dc41d487e0633b468f25800dc7ef88/hosts",
+  "LogPath": "/var/lib/docker/containers/60e851ab7f069801e82f69ce39392d6934dc41d487e0633b468f25800dc7ef88/60e851ab7f069801e82f69ce39392d6934dc41d487e0633b468f25800dc7ef88-json.log",
+  "Name": "/remission-pa3-sol261022-actual-profile-controls-bf38",
+  "RestartCount": 0,
+  "Driver": "overlayfs",
+  "Platform": "linux",
+  "MountLabel": "",
+  "ProcessLabel": "",
+  "AppArmorProfile": "",
+  "ExecIDs": null,
+  "HostConfig": {
+    "Binds": null,
+    "ContainerIDFile": "",
+    "LogConfig": {
+      "Type": "json-file",
+      "Config": {}
+    },
+    "NetworkMode": "none",
+    "PortBindings": {},
+    "RestartPolicy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "CapAdd": null,
+    "CapDrop": [
+      "ALL"
+    ],
+    "CgroupnsMode": "private",
+    "Dns": null,
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": {
+      "/tmp": "rw,exec,nosuid,nodev,size=512m"
+    },
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 2147483648,
+    "NanoCpus": 2000000000,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 4294967296,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": null,
+    "Ulimits": null,
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": [
+      "/proc/acpi",
+      "/proc/asound",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/sys/devices/virtual/powercap",
+      "/sys/firmware"
+    ],
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ]
+  },
+  "Storage": {
+    "RootFS": {
+      "Snapshot": {
+        "Name": "overlayfs"
+      }
+    }
+  },
+  "Mounts": [],
+  "Config": {
+    "Hostname": "60e851ab7f06",
+    "Domainname": "",
+    "User": "10002:10002",
+    "AttachStdin": false,
+    "AttachStdout": true,
+    "AttachStderr": true,
+    "Tty": false,
+    "OpenStdin": false,
+    "StdinOnce": false,
+    "Env": [
+      "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+      "PYTHON_VERSION=3.13.7",
+      "PYTHON_SHA256=5462f9099dfd30e238def83c71d91897d8caa5ff6ebc7a50f14d4802cdaaa79a",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "PYTHONUNBUFFERED=1",
+      "OMP_NUM_THREADS=1",
+      "OPENBLAS_NUM_THREADS=1",
+      "MKL_NUM_THREADS=1",
+      "PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64",
+      "LD_LIBRARY_PATH=/opt/foundation/sqlite",
+      "PYTHONPATH=/app:/app/tooling/foundation:/app/tests/methods",
+      "MPLCONFIGDIR=/tmp/matplotlib"
+    ],
+    "Cmd": [
+      "-c",
+      "import unittest;names=['test_pa3_borrow_profile','test_pa3_cvm.CvmControls'];suite=unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName(n) for n in names);r=unittest.TextTestRunner(verbosity=2).run(suite);raise SystemExit(not r.wasSuccessful())"
+    ],
+    "Image": "sha256:b25ee64bc6ddb00535021cc5d31248fcea6cc843f0e59dd9a237189aa9c6ceee",
+    "Volumes": null,
+    "WorkingDir": "/app",
+    "Entrypoint": [
+      "python"
+    ],
+    "Labels": {}
+  },
+  "NetworkSettings": {
+    "SandboxID": "",
+    "SandboxKey": "",
+    "Ports": {},
+    "Networks": {
+      "none": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "DriverOpts": null,
+        "GwPriority": 0,
+        "NetworkID": "f99015e033a2dba67b73dd8b29ea88a3cef32f10233f2dc5904a2a1d5266dbce",
+        "EndpointID": "",
+        "Gateway": "",
+        "IPAddress": "",
+        "MacAddress": "",
+        "IPPrefixLen": 0,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DNSNames": null
+      }
+    }
+  },
+  "ImageManifestDescriptor": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "digest": "sha256:ebb2e4d1a731e7a6e70ec03ac293cf7e7adc9e31351b9858acca93c0d8243c57",
+    "size": 7300,
+    "platform": {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  }
+}
