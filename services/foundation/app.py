@@ -14,7 +14,7 @@ from argon2.exceptions import VerifyMismatchError, VerificationError
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import Field
+from pydantic import Field, RootModel
 from contracts.domain.common import Action, StrictModel
 from contracts.domain.entities import Approval, DecisionSnapshot, ViewContext
 from contracts.domain.boundaries import ContractViolation, validate_approval
@@ -125,6 +125,13 @@ class ArchiveInput(StrictModel):
 class PanelInput(StrictModel):
     seed: int = Field(ge=0, le=2147483647)
     count: int = Field(default=12, ge=2, le=24)
+
+
+from contracts.domain.protocol import ProtocolPanel
+
+
+class PanelRequest(RootModel[PanelInput | ProtocolPanel]):
+    pass
 
 
 class AdvanceInput(StrictModel):
@@ -488,7 +495,7 @@ def create_app(settings: Settings) -> FastAPI:
 
     @app.post('/api/panels/generate')
     async def generated_panel(request: Request):
-        data = await body(request, PanelInput)
+        data = (await body(request, PanelRequest)).root
         with store.transaction(write=True) as db:
             current = session(db, request, mutation=True)
             payload = data.model_dump()
@@ -496,7 +503,8 @@ def create_app(settings: Settings) -> FastAPI:
             if prior:
                 return prior
             from .simulation import generate_panel
-            response = generate_panel(db, settings, current['account_id'], data.seed, data.count, settings.clock())
+            response = generate_panel(db, settings, current['account_id'], data.seed, data.count, settings.clock(),
+                                      protocol=data if isinstance(data, ProtocolPanel) else None)
             save_mutation(db, current, key, 'generated-panel', payload, response)
             return response
 

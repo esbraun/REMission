@@ -25,6 +25,9 @@ def preflight_current(records):
 
 
 def _parse_record(raw):
+    if json.loads(raw).get('schema_version') == '2.1.0':
+        from contracts.domain.protocol import RECORD_ADAPTER_V21
+        return RECORD_ADAPTER_V21.validate_json(raw)
     if json.loads(raw).get('schema_version') == '2.0.0':
         from contracts.domain.observed_v2 import RECORD_ADAPTER_V2
         return RECORD_ADAPTER_V2.validate_json(raw)

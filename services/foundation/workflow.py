@@ -55,6 +55,9 @@ def record_header(record_id: str, patient_id: str, at: datetime) -> dict:
 
 def history(db, patient_id: str) -> ObservedHistory:
     records = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id", (patient_id,))]
+    if any(r['schema_version'] == '2.1.0' for r in records):
+        from contracts.domain.protocol import ObservedHistoryV21
+        return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
     if any(r['schema_version'] == '2.0.0' for r in records):
         from contracts.domain.observed_v2 import ObservedHistoryV2
         return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
