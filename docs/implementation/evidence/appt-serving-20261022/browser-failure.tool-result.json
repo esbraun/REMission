@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "### Result\n{\n  \"attempts\": [\n    {\n      \"id\": \"analysis-c90a79a3b95b46f793fd6aa2f97e27fd\",\n      \"status\": \"failed\",\n      \"cutoff\": \"2026-01-15T12:00:00+00:00\",\n      \"forecast_endpoint_day\": 56,\n      \"published_at\": \"2026-10-22T19:59:01.262512+00:00\",\n      \"result\": null,\n      \"reason\": \"Synthetic browser fault injection: intentionally failed before fitting; no posterior produced\"\n    }\n  ],\n  \"visible_failure\": true,\n  \"pending_count\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('async () => { const response=await fetch(\\'/api/patients/POC-b81f253306bd4926a6afc2763cb8e2a9/analyses\\'); const value=await response.json(); return {attempts:value.attempts.map(a=>({id:a.id,status:a.status,cutoff:a.cutoff,forecast_endpoint_day:a.forecast_endpoint_day,published_at:a.serving.published_at,result:a.result,reason:a.failure_reason})),visible_failure:document.body.textContent.includes(\\'Latest refresh failed\\'),pending_count:value.attempts.filter(a=>a.status===\\'queued\\'||a.status===\\'running\\').length}; }');\n```"
+    }
+  ]
+}

@@ -151,7 +151,7 @@
     "later_pending": ["PA1 cohort completion and PA2 consumption", "PA4", "PA5", "PA6", "PA7", "human factors", "clinical review", "clinical validation"]
   },
   "appointment_inference_20261022": {
-    "status": "accepted-plan-not-started",
+    "status": "bounded_source_implemented_pending_independent_review_and_positive_fit_smoke",
     "plan_review_blob": "e64614862337a8c219eaaafcc88e9cee3c505757",
     "proposal_head": "fcb032ef97c8e432bd798383ce3ea8fa82ab292e",
     "proposal_base": "3ab331dd09cb0676ae327c8f0d03e107c826148f",
@@ -161,7 +161,13 @@
       "docs/implementation/poc-analytics-contract-20261021.md#appointment-integration-seams",
       "docs/spec/06-service-and-ui.md#ui-validation--rendering-verified-research-evidence"
     ],
-    "owner": "future orchestrator-assigned isolated Sol worker",
+    "owner": "/root/poc_appointment_serving_sol",
+    "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/appt-serving-sol-261022",
+    "branch": "launch/poc-appointment-serving-20261022",
+    "accepted_base": "4a84755509ffdc399787b4ebb84eb938aab15594",
+    "source_candidate": "c7d6a8277215b05029142b80e65ea2fc0719740a",
+    "handoff": "docs/implementation/poc-appointment-serving-handoff-20261022.md",
+    "evidence_manifest": "docs/implementation/evidence/appt-serving-20261022/manifest.json",
     "model": "gpt-6.1-sol",
     "reasoning_effort": "high",
     "independent_reviewer": "separate gpt-6-astra/medium exact implementation head/base; not assigned",
@@ -173,7 +179,7 @@
           "APPT-01",
           "APPT-02"
         ],
-        "status": "not_started",
+        "status": "implemented_envelope_tests_pending_independent_review_positive_fit_smoke",
         "seam": "existing analysis.submit/view/ingest, Store attempts and typed result metadata",
         "depends_on": [
           "accepted APPT plan and existing artifact/result contracts"
@@ -190,7 +196,7 @@
           "APPT-02",
           "APPT-03"
         ],
-        "status": "not_started",
+        "status": "bounded_stored_pair_summary_only_pending_review_no_posterior_hydration",
         "seam": "existing posterior/result artifacts and rollout functions; background eligible-pair precomputation",
         "depends_on": [
           "A1",
@@ -210,7 +216,7 @@
           "APPT-03",
           "APPT-05"
         ],
-        "status": "not_started",
+        "status": "implemented_browser_smoke_pending_independent_review_and_positive_fit_render",
         "seam": "existing patient analysis/research views and decision/advance controls",
         "depends_on": [
           "A1",
@@ -229,7 +235,7 @@
           "APPT-05",
           "POC-VAL"
         ],
-        "status": "not_started",
+        "status": "opportunistic_read_ack_smoke_only_required_study_unexecuted",
         "seam": "existing run manifests/report and paired scientific metrics",
         "depends_on": [
           "A1",
@@ -271,9 +277,11 @@
       ]
     },
     "open_evidence": [
-      "posterior hydration/roundtrip",
-      "same-time H* freshness implementation",
-      "foreground/freshness measurements",
+      "independent exact-head source/base review and final disposition",
+      "positive real-fit saved-summary API/browser smoke; current/dated positive summaries tested with explicitly labeled envelope fixtures only",
+      "posterior hydration/roundtrip remains unimplemented and unnecessary for the bounded stored pair; any new scenario requires separate qualification",
+      "artifact generation timestamps were not stored by the existing worker; actual status/result publication timestamp is shown, generation time explicitly not recorded",
+      "representative foreground/freshness latency distributions and paired accuracy/timeliness study; small opportunistic smoke samples are not A4 acceptance or SLA/p95 evidence",
       "genuine joint12 throughput",
       "N fitting/activation and unexecuted study cells remain open; inactive N source accepted separately"
     ]
