@@ -93,8 +93,8 @@ def build_cohort(data, *, guide=True, prior_predictive=False):
         deliveries = 0 if prior_predictive else sum(d['deliveries'] for _, d in data)
         observed = 0 if prior_predictive else sum(len(d['quality']) for _, d in data)
         reports = 0 if prior_predictive else sum(d['day'] for _, d in data)
-        pm.Beta('p_adherence', 1+taken, 1+deliveries-taken)
-        pm.Beta('observation_rate', 1+observed, 1+reports-observed)
+        pm.Beta('p_adherence', np.float64(1+taken), np.float64(1+deliveries-taken))
+        pm.Beta('observation_rate', np.float64(1+observed), np.float64(1+reports-observed))
     return model
 
 
