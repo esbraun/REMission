@@ -1,0 +1,47 @@
+{
+  "capture": "artifacts/pa3/numba-build-c204/commands/a928e86fc7284767a22afedaae19696c.json",
+  "command": [
+    "docker",
+    "run",
+    "--name",
+    "remission-pa3-sol261022-numba-controls-c204",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,exec,nosuid,nodev,size=512m",
+    "--user",
+    "10002:10002",
+    "--entrypoint",
+    "python",
+    "sha256:40d2b1da0fc713f97b6ffb997f96585b27a50dd297099e3412d27ccc06f3c566",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/app/tests/methods",
+    "-p",
+    "test_pa3_numba.py",
+    "-v"
+  ],
+  "metadata": {
+    "bytes": 52593,
+    "sha256": "cfbfb016fd8b9a7ebbe35ac44d3e60feeb707477f74abb3237acaf20ba51881f"
+  },
+  "stderr": {
+    "bytes": 1171,
+    "sha256": "6869b3c918ceafef53a52a13ea152c7f046da7830c6277cbd5b320db43aa3711"
+  },
+  "stdout": {
+    "bytes": 878,
+    "sha256": "f072861d3460b824de0c0738f5cabf7df16b4e62c3654208268c8753b9faacf4"
+  }
+}
