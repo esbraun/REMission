@@ -1,0 +1,36 @@
+setUpClass (tests.run_contracts.test_support_research_producer.SupportProducerTests) ... ERROR
+test_assignment_linkage_and_causal_clock_negatives (tests.methods.test_support_wcls.PublicFeatureTests.test_assignment_linkage_and_causal_clock_negatives) ... ok
+test_exact_reduced_hash_binding (tests.methods.test_support_wcls.PublicFeatureTests.test_exact_reduced_hash_binding) ... ok
+test_invalid_missing_context_withholds_only_sensitivity (tests.methods.test_support_wcls.PublicFeatureTests.test_invalid_missing_context_withholds_only_sensitivity) ... ok
+test_missing_never_zero_and_pending_excluded (tests.methods.test_support_wcls.PublicFeatureTests.test_missing_never_zero_and_pending_excluded) ... ok
+test_no_history_and_equal_time_report_unavailable (tests.methods.test_support_wcls.PublicFeatureTests.test_no_history_and_equal_time_report_unavailable) ... ok
+test_prior_available_and_public_six_nights (tests.methods.test_support_wcls.PublicFeatureTests.test_prior_available_and_public_six_nights) ... ok
+test_propensity_and_source_negatives (tests.methods.test_support_wcls.PublicFeatureTests.test_propensity_and_source_negatives) ... ok
+test_record_order_and_irregular_common_cutoff (tests.methods.test_support_wcls.PublicFeatureTests.test_record_order_and_irregular_common_cutoff) ... ok
+test_boundary_orientation_and_equal_decision_averaging (tests.methods.test_support_wcls.SensitivityTests.test_boundary_orientation_and_equal_decision_averaging) ... ok
+test_missing_context_affects_average_without_changing_primary (tests.methods.test_support_wcls.SensitivityTests.test_missing_context_affects_average_without_changing_primary) ... ok
+test_nine_interior_cells_and_exact_anchor (tests.methods.test_support_wcls.SensitivityTests.test_nine_interior_cells_and_exact_anchor) ... ok
+test_independent_normal_equations_cluster_sandwich_and_t (tests.methods.test_support_wcls.WCLSTests.test_independent_normal_equations_cluster_sandwich_and_t) ... ok
+test_missing_contexts_and_sensitivity_failure_preserve_primary (tests.methods.test_support_wcls.WCLSTests.test_missing_contexts_and_sensitivity_failure_preserve_primary) ... ok
+test_order_and_reward_translation (tests.methods.test_support_wcls.WCLSTests.test_order_and_reward_translation) ... ok
+test_rank_clusters_propensity_and_seed_reject (tests.methods.test_support_wcls.WCLSTests.test_rank_clusters_propensity_and_seed_reject) ... ok
+
+======================================================================
+ERROR: setUpClass (tests.run_contracts.test_support_research_producer.SupportProducerTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/src/tests/run_contracts/test_support_research_producer.py", line 55, in setUpClass
+    product=producer.trajectory('UNIT-SUPPORT',mode,seed=12345,index=2,assignment_seed='UNIT-only',
+        run_id='UNIT-run',partition_id='UNIT-'+mode,runtime=cls.pins,source_commit=cls.source,
+        plan_sha=cls.plan_sha,root=folder,horizon=8,now=lambda:WALL,on_persist=persisted.append)
+  File "/src/services/generator/research_support.py", line 214, in trajectory
+    event_artifact=_write(root,name+'-events',f'{partition_id}/events/{day}.json',[r.model_dump(mode='json') for r in events])
+  File "/src/services/generator/research_support.py", line 68, in _write
+    with target.open('xb') as handle:handle.write(raw)
+                                     ~~~~~~~~~~~~^^^^^
+TypeError: a bytes-like object is required, not 'str'
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.069s
+
+FAILED (errors=1)

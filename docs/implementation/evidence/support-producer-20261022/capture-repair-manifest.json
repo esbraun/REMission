@@ -1,0 +1,254 @@
+{
+  "version": "support-capture-repair-evidence-v1",
+  "pre_repair_head": "b5b170d0bb065d35cbff5c0fe3872702c0ce04fe",
+  "review_base": "2a343d6ac6649ffbfb6e1c43682541800f34438d",
+  "review_requested": true,
+  "independent_r1_review_blob": "3d990a10e2940f4212e2c38922fca3148504bccf",
+  "independent_r1_raw_manifest_blob": "67b90470ee1058e8212cca60c1615d75ef29de32",
+  "historical_raw_manifest_blob": "570760a0a04016d0ff10a57e132b16e761cc377e",
+  "historical_manifest_scope": "Historical raw-manifest.json unchanged; 131 current entries unchanged, original harness bytes verified at pre_repair_head; historical unrestricted captures remain historical.",
+  "unit_only": true,
+  "genuine_production_executed": false,
+  "role_images_built": false,
+  "application_or_scientific_source_changed": false,
+  "smoke_cid": "6a8a1d30f4457ab25f3fb8c0e523af300cb00bb5055d127a291173dce42768cc",
+  "capture_schema": "Pre-capture Docker --format whitelist, never full Config or Env",
+  "test_scope": "One existing representative S0/masked/randomized projection and no-leakage control via actual repaired harness, plus stdlib actual-capture schema/caps/watchdog/source/historical assertions; prior independent 41-control suite remains applicable to unchanged functional source.",
+  "entries": [
+    {
+      "path": "contracts/domain/evidence_v2.py",
+      "bytes": 15995,
+      "sha256": "921790181dfcb8f3bb20550a121a5199ff92c7bed4550d272fe470499ce01db1",
+      "git_blob": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7"
+    },
+    {
+      "path": "contracts/domain/observed_v2.py",
+      "bytes": 18246,
+      "sha256": "b5dca0d77f210c8ad769b632705fa1ab068b58215a2588dcca7e7d65ef7f3940",
+      "git_blob": "166b840341235e00bd229d9739d8928ea9980250"
+    },
+    {
+      "path": "contracts/domain/protocol.py",
+      "bytes": 8184,
+      "sha256": "631a29ee6097e2e3c1ba2069f30e6fff69f58d0be70d3f6b28a3982bccf7ce53",
+      "git_blob": "bba50e7461f7e7b2612ddfed0d6af8cbc4b5ce70"
+    },
+    {
+      "path": "contracts/domain/protocol_analysis.py",
+      "bytes": 15029,
+      "sha256": "192d20c82bb4c01452614f9c24130c8e532d822f4c25e8c910351f6ccc4c3f3c",
+      "git_blob": "0e12393ccd812742b3cb7b6c1a2a20e2db403e5a"
+    },
+    {
+      "path": "contracts/domain/protocol_request.py",
+      "bytes": 11781,
+      "sha256": "2037a65440a53d154b0d08b6e9b1e685dcdae40c815dfe94f799957888dd0855",
+      "git_blob": "87857fd44436081bc78f7cb5353c953fed50efd4"
+    },
+    {
+      "path": "contracts/runs/common.py",
+      "bytes": 5996,
+      "sha256": "d9d4035427f03711f985650ea776a7e848009cde7d7438bd30e564bf78f0dc2e",
+      "git_blob": "fac3c565773e5da75ee544207ac7f6f5c0214f7b"
+    },
+    {
+      "path": "contracts/runs/coverage_v2.py",
+      "bytes": 10251,
+      "sha256": "38017c7d793f9cfa7a390f3e4d5d3d57cb89ed3d8d5ed9ba6171b96044a9fedf",
+      "git_blob": "f88b41afb5e569ac672ce95e5db60adba4b1b70e"
+    },
+    {
+      "path": "contracts/runs/support_research.py",
+      "bytes": 11597,
+      "sha256": "d22c9e6af9300c11386300112696fa5e16d2c8d0ef40458b993ea677f8acdee6",
+      "git_blob": "2e2019322cb31a81b1d277f049f33be41845700a"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/cid.txt",
+      "bytes": 64,
+      "sha256": "982e88f6b8b6eab2ed9e882f112a73a278183f42a3aab2a1e8e2aa7fe37d7377",
+      "git_blob": "db6ff1b937cadb1c6de5999143b75c92e5a467be"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/command.json",
+      "bytes": 3642,
+      "sha256": "dd8f7def3f0d3620fe08f9bbc9d55e16b7685f11b9f8ffd5bafd4599c789291a",
+      "git_blob": "0ebd5078eede0e77d15da3c581f4e2c82dda050a"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/container-terminal.json",
+      "bytes": 856,
+      "sha256": "255dc33a8626310673dee765b5b98e51a3e62f6c1f502bca8569cfa7bf04a1bb",
+      "git_blob": "f4f8544ff839e27ad8f5abd8206275597b2631a4"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/create.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/create.stdout",
+      "bytes": 66,
+      "sha256": "31f58856d61f52e61dc3de9a47f7a412db8db0f6be30f22f07ade1d1a51e135f",
+      "git_blob": "c74c1d578e0fd83a33a286c74b27e8c69be896f4"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/result.json",
+      "bytes": 238,
+      "sha256": "1b2db1662763c29f9adad305c7b8b7af0a5b43e1736229910969f5db0c08f833",
+      "git_blob": "8104d5f89c2137d197a882d222c6afa6d6f3bf84"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/terminal.stderr",
+      "bytes": 302,
+      "sha256": "ab633c650f326b972c4e4a7ef6bebda076c9bfbadfbd0d96581d2988adfa58e0",
+      "git_blob": "18cc4d2a15d297accc86da89343f25236fa64bbc"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/terminal.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/verification.json",
+      "bytes": 1102,
+      "sha256": "131695cbce8f70f5baf89cff3e92f4c6a4ac373301354db24d42f5f4914e4625",
+      "git_blob": "15ec49125dc258d3bb5c77e22754fa4f98aad2ef"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/verify_capture.py",
+      "bytes": 5864,
+      "sha256": "3beae48c7fc83f4707580dd76ef2289d74a47c3d71d9e41b3b72b23365363578",
+      "git_blob": "badb19478b1b231825a93ae20622d8fb464ff860"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/watchdog-ready.json",
+      "bytes": 167,
+      "sha256": "2a483f758f097504089f095344bdc3d3fa51f7404a99ab85cb328e9f8496b0a7",
+      "git_blob": "aa9f69419ff9e80cd9a2aea8fbc0c760b806c088"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/watchdog-terminal.json",
+      "bytes": 538,
+      "sha256": "00d0f62a791f298044dc8c47274c4c09885959036a507e354d907d7f0e1b020f",
+      "git_blob": "a193d86de7fa364ff10e6b8ceba94479d9422f8d"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/watchdog.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/capture-repair-01/watchdog.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/probe_roles.py",
+      "bytes": 1740,
+      "sha256": "2ec37eb5b4216dc4c07c185d87bb4304c3360c2ec2cfdc22e99294a3518564e7",
+      "git_blob": "1d9355faf4489072f6a963e5575f875ba298e8f4"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/raw-manifest.json",
+      "bytes": 28202,
+      "sha256": "0de6c34670cd621296eab4af730ec34ee3ddbac9f826c4569fc4e8dd0e50ea54",
+      "git_blob": "570760a0a04016d0ff10a57e132b16e761cc377e"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/run_support_once.py",
+      "bytes": 6876,
+      "sha256": "a27c871628ef5ab3d87195fa0a576a213913036e8a7d65a44c65a7b0a9a977b9",
+      "git_blob": "b37112c886e0dde687693d5f3f35b2465f8dfdb1"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/run_unit_batch.py",
+      "bytes": 6946,
+      "sha256": "6bc1b59c07ff20b4ba9f7dd1f68626bdebe22f84d61e3d8c8e4da25d96f0783c",
+      "git_blob": "7142aaca8a73d1b17dcd508eb2e36b01a0ad4f90"
+    },
+    {
+      "path": "docs/implementation/evidence/support-producer-20261022/support_roles.Dockerfile",
+      "bytes": 1636,
+      "sha256": "47687d5af3c7ad3ab5f947eb57e6f7717e39a426e93a00abb38ad2634f58eeaf",
+      "git_blob": "3ce8824aa603e0678c9db4d4299cadf19acaf50d"
+    },
+    {
+      "path": "docs/implementation/poc-support-producer-handoff-20261022.md",
+      "bytes": 16167,
+      "sha256": "399371ec3348d74881d04098dfee423d1841266ff297a1530b7f3846055a4d51",
+      "git_blob": "0b1fa05013b71532c51e51040d02c5d63213bb21"
+    },
+    {
+      "path": "methods/support/data.py",
+      "bytes": 12527,
+      "sha256": "eb8af3b75325dcbd4da05725317e4d40307514b7a680deae8ff2d4001406c1a2",
+      "git_blob": "59c0e81bda31a89437ad5a36647a2ccca3a7fbac"
+    },
+    {
+      "path": "methods/support/wcls.py",
+      "bytes": 8542,
+      "sha256": "c79cef14ea813b23583fc0d3580910c5c724deb3941f92f106d6bfc7f1fb8462",
+      "git_blob": "79d2ce8e509ba588cd4fc14e59fb0351ae01d4cf"
+    },
+    {
+      "path": "services/foundation/protocol.py",
+      "bytes": 16730,
+      "sha256": "2623bb80a32bdbbaf6ea00dc9c80bcfe0558cca1d2c39fd96e87cedb8b1e0932",
+      "git_blob": "99023a11fb71933903e0925f44afb1944c96bda7"
+    },
+    {
+      "path": "services/generator/research_support.py",
+      "bytes": 25497,
+      "sha256": "cb04e73ad74294be16725f458973fc6e67d4e7d3a7a4d509f22bc63259ca67f1",
+      "git_blob": "8582c5c4842f0e93a59cee5b6ce0654fc9a3ac31"
+    },
+    {
+      "path": "services/generator/restricted.py",
+      "bytes": 6595,
+      "sha256": "67798d59360623e757dfb3ae7d0726570448831e840a2838835bb5d3ddf5fa1c",
+      "git_blob": "98412e5b3789abfa974d004adec28ff5eda8a293"
+    },
+    {
+      "path": "services/generator/restricted_v2.py",
+      "bytes": 4592,
+      "sha256": "41d3f63faf0becdcfc1c84698ddadde1955adaef04b751daa54a39a14b8e8a94",
+      "git_blob": "a034179a6acf979c4c8988cf759f2bcbcddc0b6c"
+    },
+    {
+      "path": "tests/contracts/test_protocol_boundary.py",
+      "bytes": 15864,
+      "sha256": "821dbae762d3c790bfeb8b72a70172ab6309fcd82e9e6da57ed74a41b1a97857",
+      "git_blob": "8e8fb6349ecd20998fc8fcc3863fcbf9d67459d6"
+    },
+    {
+      "path": "tests/methods/test_support_wcls.py",
+      "bytes": 19317,
+      "sha256": "952fdcd47fe43655c9bca6970963b9b1d7982999de47a843a5187ca87bf91d40",
+      "git_blob": "93e31419e78c326eae59a1aab6be25eaeafd1967"
+    },
+    {
+      "path": "tests/run_contracts/test_support_research_producer.py",
+      "bytes": 26450,
+      "sha256": "4224e1f041e0b03dccd2e255cc786852420d2028252410dca43065a92f492602",
+      "git_blob": "195ae31bd9ef412555b55b0e6b3f4f90460b9563"
+    },
+    {
+      "path": "tooling/foundation/requirements.lock",
+      "bytes": 1454,
+      "sha256": "1c17072ac81418856175a2df7afda837626721fcf0523501f7793e37ab46b004",
+      "git_blob": "28e25ca8b5e54533b33c26675469815820110574"
+    },
+    {
+      "path": "tooling/library/requirements.lock",
+      "bytes": 4970,
+      "sha256": "a68ed00335bdba1e6a3272292fd53a2db7ac0897b61400472780903b58141d71",
+      "git_blob": "5e87365032d5c95650203d8681612853bc84771b"
+    }
+  ],
+  "blob_encoding": "raw bytes, git hash-object --no-filters"
+}

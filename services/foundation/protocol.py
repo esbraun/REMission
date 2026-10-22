@@ -1,13 +1,11 @@
 """Owned observed protocol projection; no activation, controller or estimator."""
 import json
 from contracts.domain.analysis import canonical,sha,FIXED_SUPPORT_REF
-from contracts.domain.boundaries import validate_assignment,validate_approval
+from contracts.domain.boundaries import validate_assignment,validate_approval,lineage_heads,visible_records
 from contracts.domain.evidence_v2 import resolve,projection_hash,validate_outcome_link,validate_support_decision
 from contracts.domain.protocol import LAW,PROTOCOL_REFS
 from contracts.domain.protocol_analysis import (ProtocolHistory,REDUCED_MODELS,ReducedRef,
                                                ReducedHeader,reduced_header)
-from .store import instant
-from .workflow import history,patient_clock
 
 
 def _available(history,record,cutoff):
@@ -72,6 +70,13 @@ def validate_support_v21(history,decision,cutoff):
         resolve(history,ref,cutoff=cutoff)
     if (snapshot.workflow.clinical=='clinical_hold' or snapshot.workflow.hold_reasons) and decision.availability!='unavailable':
         raise ValueError('held_support_cannot_assign')
+    # Availability remains a protocol eligibility decision even when the final
+    # action is ordinary no-prompt (S0 or a burden-masked S1 point).
+    consents=[r for r in history.records if r.kind=='consent' and r.component=='mrt_bandit']
+    heads=lineage_heads(visible_records(consents,decision.cutoff,inclusive=True))
+    current=max(heads,key=lambda r:(r.available_at,r.recorded_at,r.revision,r.record_id),default=None)
+    if decision.availability!='unavailable' and (current is None or not current.permits('mrt_bandit',decision.cutoff)):
+        raise ValueError('support_component_consent_oversight_required')
     restriction=decision.policy_constraint
     if restriction.snapshot_ref is not None:
         frozen=resolve(history,restriction.snapshot_ref,{'protocol_snapshot'},cutoff=cutoff)
@@ -91,9 +96,17 @@ def validate_support_v21(history,decision,cutoff):
         consents=[r for r in history.records if r.kind=='consent']
         _validate_assignment_known(assignment,approval,snapshot,consents)
         if (assignment.event_at<decision.distribution_persisted_at or assignment.option not in decision.probabilities
-                or not assignment.experimental or assignment.component!='mrt_bandit' or assignment.seed.namespace!='assignment'
-                or assignment.probability!=decision.probabilities[assignment.option] or assignment.probability<=0):
+                or decision.probabilities[assignment.option]<=0):
             raise ValueError('support_draw_probability_execution_or_persistence_mismatch')
+        if decision.availability=='randomized':
+            if (not assignment.experimental or assignment.component!='mrt_bandit' or assignment.seed is None
+                    or assignment.seed.namespace!='assignment' or assignment.probability!=decision.probabilities[assignment.option]
+                    or set(approval.permitted_options)!={'support_prompt','no_prompt'}):
+                raise ValueError('support_draw_probability_execution_or_persistence_mismatch')
+        elif (assignment.experimental or assignment.component is not None or assignment.seed is not None
+                or assignment.probability is not None or assignment.option!='no_prompt'
+                or approval.purpose!='ordinary_treatment' or approval.option!='no_prompt'):
+            raise ValueError('deterministic_support_requires_ordinary_no_prompt')
     return decision
 
 
@@ -149,8 +162,15 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
                 raise ValueError('owned_assignment_approval_and_decision_required')
             _validate_assignment_known(record,approval,decision,[r for r in full.records if r.kind=='consent'])
             if record.experimental and record.seed.namespace!='assignment':raise ValueError('independent_protocol_execution_key_required')
-            if not record.experimental and (record.option not in ('behavioral_continue','no_prompt') or record.support_policy.model_dump()!=FIXED_SUPPORT_REF):
-                raise ValueError('fixed_protocol_background_or_no_prompt_required')
+            if not record.experimental:
+                owners=[r for r in full.records if r.kind=='support_decision' and r.schema_version=='2.1.0'
+                        and r.assignment_id==record.record_id]
+                if owners:
+                    if len(owners)!=1 or owners[0].availability!='deterministic':
+                        raise ValueError('unique_deterministic_support_owner_required')
+                    validate_support_v21(full,owners[0],cutoff)
+                elif record.option not in ('behavioral_continue','no_prompt') or record.support_policy.model_dump()!=FIXED_SUPPORT_REF:
+                    raise ValueError('fixed_protocol_background_or_no_prompt_required')
         elif record.kind=='protocol_snapshot':
             validate_snapshot(full,record,cutoff)
             value.update(consent_refs=[exact(r,{'consent'}) for r in record.consent_refs],approval_refs=[exact(r,{'approval'}) for r in record.approval_refs],
@@ -189,6 +209,8 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
 
 
 def export_histories(db,owner,patient_ids,cutoff):
+    from .store import instant
+    from .workflow import history,patient_clock
     if not patient_ids or len(set(patient_ids))!=len(patient_ids):raise ValueError('unique_owned_protocol_cohort_required')
     result=[]
     for patient_id in sorted(patient_ids):

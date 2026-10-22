@@ -1,0 +1,80 @@
+test_actual_projection_S0_masked_S1_randomized_and_no_leakage (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_actual_projection_S0_masked_S1_randomized_and_no_leakage) ... ok
+test_burden_and_persistence_before_draw (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_burden_and_persistence_before_draw) ... ok
+test_cutoff_prefix_frozen_after_later_data_and_order (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_cutoff_prefix_frozen_after_later_data_and_order) ... ERROR
+test_exact_noon_delivery_and_strict_report_clocks (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_exact_noon_delivery_and_strict_report_clocks) ... ok
+test_generator_prefix_pairing_missing_and_policy_response (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_generator_prefix_pairing_missing_and_policy_response) ... ERROR
+test_interrupted_prepare_has_no_complete_index_and_private_root_is_separate (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_interrupted_prepare_has_no_complete_index_and_private_root_is_separate) ... ok
+test_malformed_deterministic_randomized_mix_rejected_by_projection (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_malformed_deterministic_randomized_mix_rejected_by_projection) ... ok
+test_positive_zero_closure_and_omission_tamper_member_rejection (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_positive_zero_closure_and_omission_tamper_member_rejection) ... ok
+test_public_consent_expiry_withdrawal_oversight_hold_pause (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_public_consent_expiry_withdrawal_oversight_hold_pause) ... ok
+test_unavailable_actual_projection (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_unavailable_actual_projection) ... ERROR
+
+======================================================================
+ERROR: test_cutoff_prefix_frozen_after_later_data_and_order (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_cutoff_prefix_frozen_after_later_data_and_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/src/tests/run_contracts/test_support_research_producer.py", line 197, in test_cutoff_prefix_frozen_after_later_data_and_order
+    self.assertEqual(early,self.project(full=history(list(reversed(full.records))),cutoff=cutoff))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/src/tests/run_contracts/test_support_research_producer.py", line 70, in project
+    return project_protocol(full,cutoff or START+timedelta(days=8),family='support',origin=START,
+        verify_closure=self.proof(mode,full,**proof))
+  File "/src/services/foundation/protocol.py", line 208, in project_protocol
+    values=[reduce(record) for record in records.values()]
+            ~~~~~~^^^^^^^^
+  File "/src/services/foundation/protocol.py", line 182, in reduce
+    if record.schema_version=='2.1.0':validate_support_v21(full,record,cutoff)
+                                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/src/services/foundation/protocol.py", line 61, in validate_support_v21
+    validate_support_decision(history,decision)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/src/contracts/domain/evidence_v2.py", line 46, in validate_support_decision
+    raise ValueError('incomplete_or_changed_context_projection')
+ValueError: incomplete_or_changed_context_projection
+
+======================================================================
+ERROR: test_generator_prefix_pairing_missing_and_policy_response (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_generator_prefix_pairing_missing_and_policy_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/src/tests/run_contracts/test_support_research_producer.py", line 214, in test_generator_prefix_pairing_missing_and_policy_response
+    data=build_features([PublicHistory(s1.patient_id,START,START+timedelta(days=8),tuple(self.project().records))])
+  File "/src/methods/support/data.py", line 199, in build_features
+    row, status = _row(history, decision, active)
+                  ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/src/methods/support/data.py", line 123, in _row
+    _require(owner is not None and owner.kind == 'assignment' and owner.option == 'support_prompt'
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             and owner.event_at == record.event_at-timedelta(hours=8), 'unowned public prompt delivery')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/src/methods/support/data.py", line 57, in _require
+    raise InvalidInput(reason)
+methods.support.data.InvalidInput: unowned public prompt delivery
+
+======================================================================
+ERROR: test_unavailable_actual_projection (tests.run_contracts.test_support_research_producer.SupportProducerTests.test_unavailable_actual_projection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/src/tests/run_contracts/test_support_research_producer.py", line 125, in test_unavailable_actual_projection
+    projected=project_protocol(full,START+timedelta(days=3),family='support',origin=START)
+  File "/src/services/foundation/protocol.py", line 209, in project_protocol
+    return ProtocolHistory.model_validate_json(canonical(dict(schema_version='2.0.0',synthetic=True,kind='poc_protocol_history',version='poc-analysis-history-v1-protocol-v2',
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        patient_id=full.patient_id,family=family,cutoff=cutoff.isoformat(),origin=origin.isoformat(),protocol=PROTOCOL_REFS[family],records=values,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        provenance=[reduced_header(r) for r in projected.provenance if r.kind in selected])))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/pydantic/main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ProtocolHistory
+  Value error, one quality/missingness indicator per night required [type=value_error, input_value={'cutoff': '2026-01-04T12...history-v1-protocol-v2'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+----------------------------------------------------------------------
+Ran 10 tests in 2.543s
+
+FAILED (errors=3)
