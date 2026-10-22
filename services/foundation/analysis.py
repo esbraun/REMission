@@ -1,8 +1,10 @@
 """Owned, frozen analysis attempts and guarded result ingestion. Never fits here."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import secrets
+import tempfile
 import uuid
 
 from contracts.domain.analysis import (AnalysisInput, AnalysisResult, CONFIG_REF, ESTIMAND_REF,
@@ -193,10 +195,19 @@ def compare(db,patient,owner,left,right,root):
     destination=comparison_root(root,owner,patient);destination.mkdir(parents=True,exist_ok=True)
     path=destination/(identifier+'.json');encoded=canonical(manifest)+'\n'
     if path.is_symlink():raise AnalysisError('Invalid comparison artifact.')
+    descriptor,temporary=tempfile.mkstemp(prefix='.comparison-',suffix='.partial',dir=destination)
     try:
-        with path.open('x',encoding='utf-8',newline='\n') as stream:stream.write(encoded)
-    except FileExistsError:
-        if path.read_text(encoding='utf-8')!=encoded:raise AnalysisError('Frozen comparison checksum changed.')
+        with os.fdopen(descriptor,'w',encoding='utf-8',newline='\n') as stream:
+            stream.write(encoded);stream.flush();os.fsync(stream.fileno())
+        try:
+            # Link only complete bytes, atomically and without overwriting an
+            # immutable artifact published by an earlier successful request.
+            os.link(temporary,path)
+        except FileExistsError:
+            if path.is_symlink() or path.read_text(encoding='utf-8')!=encoded:
+                raise AnalysisError('Frozen comparison checksum changed.')
+    finally:
+        Path(temporary).unlink(missing_ok=True)
     return manifest
 
 

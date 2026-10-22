@@ -169,6 +169,15 @@ class BorrowingRoutesTests(unittest.TestCase):
         second=self.client.post('/api/patients/POC-TEST/analyses',json=dict(legacy,mode='borrow',source_bundle_id='source-7c97862d'),headers=self.headers('borrow-pair'))
         self.assertEqual(second.status_code,202,second.text);claim(self.store);interrupt(self.store)
         pair=dict(left=first.json()['id'],right=second.json()['id'])
+        with patch('services.foundation.analysis.os.link',side_effect=OSError('injected-before-publication')):
+            with self.assertRaisesRegex(OSError,'injected-before-publication'):
+                self.client.post('/api/patients/POC-TEST/analysis-comparisons',json=pair,headers=self.headers('comparison-1'))
+        self.assertEqual(self.client.get('/api/patients/POC-TEST/analysis-comparisons').json()['comparisons'],[])
+        destination=next((self.root/'exports/comparisons').iterdir())
+        self.assertEqual(list(destination.glob('comparison-*.json')),[])
+        # A process killed before its finally block can leave a partial temp.
+        # Such bytes have no final identity and never enter the saved list.
+        (destination/'.comparison-interrupted.partial').write_text('{')
         saved=self.client.post('/api/patients/POC-TEST/analysis-comparisons',json=pair,headers=self.headers('comparison-1'))
         self.assertEqual(saved.status_code,201,saved.text)
         self.assertTrue(all(v['effect'] is None for v in saved.json()['attempts']))
