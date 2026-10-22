@@ -1,5 +1,7 @@
 # REMission development plan
 
+**Immediate scope (2026-10-21):** build and test the [functioning synthetic PoC](docs/spec/poc-amendment-20261021.md), including generated patient panels, interactive decisions and outcomes, real fitting and bounded ablation. That amendment controls immediate acceptance wherever older full-program requirements below conflict; full G0-G7 and human/clinical work remain later scope.
+
 Revision: 2026-10-20. Build a synthetic research demonstration for adult outpatient leukemia chemotherapy insomnia care. No clinical efficacy, clinical validation, or executed model-validation result is claimed.
 
 This file is the authoritative navigation index. Requirements live in the linked canonical specifications; the [execution entry point](implementation-prompt.md) defines how future workers load context.

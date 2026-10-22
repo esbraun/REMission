@@ -1,5 +1,7 @@
 # Scope and shared invariants
 
+**Immediate PoC precedence (2026-10-21):** the [PoC amendment](poc-amendment-20261021.md) controls active scope, sequencing and acceptance over conflicting full-program requirements below. Execute POC-1 through POC-6 and POC-VAL; retain relevant invariants and independent review. Exhaustive G0-G7 counts, deferred engines and human/clinical gates are later work, not prerequisites for synthetic PoC operation. Existing historical evidence retains its original scope.
+
 Specification revision: 2026-10-19. Status: requirements only; no implementation or validation result is asserted.
 
 **Read first:** [plan index](../../plan.md). Read linked scenario and evidence entries only when needed.
