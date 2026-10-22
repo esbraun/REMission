@@ -100,6 +100,11 @@ def main():
                 manifest.update(requested_learner_image=image,learner_image=execution_image,
                     input_sha256=hashlib.sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest(),
                     execution_policy='poc-borrow-native-cvm-v1',scratch='/tmp:rw,exec,nosuid,nodev,size=512m')
+                origin=dict(learner_image=execution_image,source_commit=state['source_commit'])
+                trusted=cli('bind-execution','--job',identifier,'--token',token,'--value',json.dumps(origin,sort_keys=True))
+                if any(trusted.get(k)!=v for k,v in dict(input_sha256=manifest['input_sha256'],**origin).items()):
+                    raise RuntimeError('host execution binding was not confirmed by service')
+                manifest['trusted_launch']=trusted
                 save()
             for volume in (input_volume,output_volume):
                 command(['docker','volume','create','--label','remission.task='+prefix,volume])

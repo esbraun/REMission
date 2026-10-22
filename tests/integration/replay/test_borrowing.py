@@ -217,5 +217,61 @@ class BorrowingRoutesTests(unittest.TestCase):
         saved=self.client.get('/api/jobs/'+created['id']).json()
         self.assertIsNone(saved['result']['effect']);self.assertEqual(saved['status'],'abstained')
 
+    def test_host_binding_survives_progress_and_vetoes_forged_completed_execution(self):
+        """Temporary test DB/unit artifact markers only; no fitted posterior."""
+        from services.foundation.analysis import bind_execution,progress
+        from contracts.domain.borrow_runtime import POLICY_REF,NATIVE_OPTIMIZER,coordinate_layout
+        import hashlib
+        response=self.client.post('/api/patients/POC-TEST/analyses',json=dict(expected_version=1,mode='borrow',source_bundle_id='source-7c97862d'),headers=self.headers('execution-control'))
+        self.assertEqual(response.status_code,202,response.text)
+        created=response.json();job=claim(self.store);product=parse_input(canonical(job['input']))
+        origin=dict(learner_image='sha256:'+'a'*64,source_commit='b'*40)
+        base=dict(policy=POLICY_REF,input_sha256=created['input_sha256'],history_sha256=product.history_sha256,
+            cutoff=product.history.cutoff.isoformat(),source_set_sha256=product.source_set_sha256,
+            configuration=product.request.configuration.model_dump(),numerical_seeds=product.numerical_seeds.model_dump(),
+            prior_released_before_posterior=True,**origin,
+            native_compilations=[dict(index=1,seconds=.1,coordinate_map=coordinate_layout(product.history),compiled_optimizer=NATIVE_OPTIMIZER,
+                actual_vm=dict(vm_type='pytensor.link.c.cvm.CVM',linker='VMLinker',use_cloop=True,c_thunks=True,callback_empty=True,callback_input_empty=True))])
+        directory=self.root/'host-binding-control';directory.mkdir()
+        artifacts=[]
+        for name in ['expected-effect.npz','bridge-precision.json','bridge-marginals.npz']:
+            payload=b'UNIT BOUNDARY CONTROL ONLY - NOT NUMERICAL POSTERIOR'
+            (directory/name).write_bytes(payload);artifacts.append(dict(path=name,sha256=hashlib.sha256(payload).hexdigest()))
+        result=dict(schema_version='1.1.0',synthetic=True,kind='poc_visit_borrow_result',attempt_id=job['attempt_id'],
+            input_sha256=created['input_sha256'],history_sha256=product.history_sha256,source_set_sha256=product.source_set_sha256,
+            cutoff=created['cutoff'],configuration=BORROW_CONFIG_REF,estimand=product.request.context.estimand.model_dump(),bridge=BRIDGE_REF,
+            status='completed',reason=None,effect=dict(mean=0.,sd=1.,lower=-2.,upper=2.,unit='ISI_points',kind='conditional_expected_assignment_contrast'),
+            diagnostics=dict(fits=[dict(diagnostics=dict(accepted=True))],effect_mcmc=dict(accepted=True),integration=dict(status='accepted'),bridge_precision=dict(status='accepted'),execution=base),
+            artifacts=artifacts,limitations=['UNIT BOUNDARY CONTROL ONLY - NOT AN ACTUAL FIT'])
+        def write(): (directory/'result.json').write_text(canonical(result))
+        write()
+        with self.assertRaisesRegex(AnalysisError,'execution binding'):
+            ingest(self.store,job['attempt_id'],job['claim_token'],directory)
+        with self.assertRaises(AnalysisError):
+            bind_execution(self.store,job['attempt_id'],'wrong-token',origin)
+        binding=bind_execution(self.store,job['attempt_id'],job['claim_token'],origin)
+        self.assertEqual(bind_execution(self.store,job['attempt_id'],job['claim_token'],origin),binding)
+        with self.assertRaisesRegex(AnalysisError,'already bound'):
+            bind_execution(self.store,job['attempt_id'],job['claim_token'],dict(origin,learner_image='sha256:'+'c'*64))
+        progress(self.store,job['attempt_id'],job['claim_token'],dict(stage='fitting',attempt_id=job['attempt_id'],input_sha256=created['input_sha256']))
+        with self.store.transaction() as db:
+            saved=db.execute('SELECT request_json,input_sha256,progress_json FROM analysis_attempts WHERE job_id=?',(job['attempt_id'],)).fetchone()
+            self.assertEqual(json.loads(saved['progress_json'])['trusted_launch'],binding)
+            self.assertEqual(saved['input_sha256'],sha(json.loads(saved['request_json'])))
+        with self.assertRaises(AnalysisError):
+            progress(self.store,job['attempt_id'],job['claim_token'],dict(stage='fitting',attempt_id=job['attempt_id'],input_sha256=created['input_sha256'],trusted_launch=dict(origin)))
+        for change in ['origin','missing-map','offset','dtype','optimizer']:
+            modified=copy.deepcopy(base)
+            if change=='origin':modified['learner_image']='sha256:'+'c'*64
+            elif change=='missing-map':del modified['native_compilations'][0]['coordinate_map']
+            elif change=='offset':modified['native_compilations'][0]['coordinate_map'][1]['start']=0
+            elif change=='dtype':modified['native_compilations'][0]['coordinate_map'][0]['dtype']='float32'
+            else:modified['native_compilations'][0]['compiled_optimizer']=dict(NATIVE_OPTIMIZER,exclude=['fusion'])
+            result['diagnostics']['execution']=modified;write()
+            with self.assertRaisesRegex(AnalysisError,'execution binding'):
+                ingest(self.store,job['attempt_id'],job['claim_token'],directory)
+        result['diagnostics']['execution']=base;write()
+        self.assertEqual(ingest(self.store,job['attempt_id'],job['claim_token'],directory)['status'],'completed')
+
 
 if __name__=='__main__':unittest.main()

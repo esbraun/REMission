@@ -7,7 +7,7 @@ import pymc as pm
 from pytensor.compile.mode import Mode, get_default_mode
 from pytensor.link.c.cvm import CVM
 from contracts.domain.analysis import CONFIG
-from contracts.domain.borrow_runtime import OPTIMIZER, POLICY, POLICY_REF
+from contracts.domain.borrow_runtime import OPTIMIZER, POLICY, POLICY_REF, NATIVE_OPTIMIZER
 
 
 def optimizer_identity(query):
@@ -67,7 +67,7 @@ def native_call(function, point, variables):
 
 
 @contextmanager
-def guarded_native(model, on_compile):
+def guarded_native(model, on_compile, expected_layout=None):
     """Inspect the actual function returned to unchanged PyMC init_nuts/BaseHMC.
 
     This temporary instance wrapper forwards every argument and returns the
@@ -80,6 +80,9 @@ def guarded_native(model, on_compile):
 
     def checked(*args, **kwargs):
         nonlocal calls
+        supplied=kwargs.get('grad_vars',args[0] if args else None)
+        if supplied is not None and [v.name for v in supplied]!=[v.name for v in model.continuous_value_vars]:
+            raise ValueError('forwarded native grad_vars differ from full model order')
         before = time.monotonic()
         function = original(*args, **kwargs)
         actual = verify_cvm(function._pytensor_function)
@@ -87,9 +90,12 @@ def guarded_native(model, on_compile):
         if point is None:
             point = model.initial_point()
         _, mapping = coordinate_map(point, model.continuous_value_vars)
+        optimizer=optimizer_identity(function._pytensor_function.maker.mode.provided_optimizer)
+        if optimizer!=NATIVE_OPTIMIZER or (expected_layout is not None and mapping!=expected_layout):
+            raise ValueError('actual native coordinate map/optimizer differs from input-derived model')
         calls += 1
         on_compile(dict(index=calls, seconds=time.monotonic()-before, actual_vm=actual, coordinate_map=mapping,
-                        compiled_optimizer=optimizer_identity(function._pytensor_function.maker.mode.provided_optimizer)))
+                        compiled_optimizer=optimizer))
         return function
 
     model.logp_dlogp_function = checked
@@ -104,11 +110,11 @@ def guarded_native(model, on_compile):
             model.logp_dlogp_function = previous
 
 
-def sample(model, seed, *, extended=False, on_compile):
+def sample(model, seed, *, extended=False, on_compile, expected_layout):
     # Same original native PyMC call/settings/seeding/initialization as V0;
     # compile_kwargs is the only added sampler argument. No provided step.
     kwargs = compilation_options()
-    with model, guarded_native(model, on_compile):
+    with model, guarded_native(model, on_compile, expected_layout):
         return pm.sample(draws=CONFIG['extension_draws'] if extended else CONFIG['draws'],
             tune=CONFIG['extension_tune'] if extended else CONFIG['tune'], chains=4, cores=1,
             random_seed=seed, nuts_sampler='pymc', target_accept=CONFIG['target_accept'],

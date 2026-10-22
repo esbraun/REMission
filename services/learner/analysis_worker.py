@@ -69,7 +69,7 @@ def run(source, out):
             from methods.visit.borrow_model import build_joint
             from methods.visit.source_precision import validate as validate_bridge
             from methods.visit.borrow_execution import POLICY_REF,compilation_options,sample as borrow_sample
-            from contracts.domain.borrow_runtime import runtime_origin
+            from contracts.domain.borrow_runtime import runtime_origin,coordinate_layout
             origin=runtime_origin(os.environ.get('REMISSION_LEARNER_IMAGE',''),os.environ.get('REMISSION_SOURCE_COMMIT',''))
             result['diagnostics']['execution']=dict(policy=POLICY_REF,input_sha256=input_hash,
                 history_sha256=product.history_sha256,cutoff=product.history.cutoff.isoformat(),
@@ -119,7 +119,7 @@ def run(source, out):
         trace = None
         for extension in (False,True):
             fit_start = time.monotonic()
-            trace = borrow_sample(model,seed+int(extension),extended=extension,on_compile=native_compiled) if borrowed else sample(model,seed+int(extension),extended=extension)
+            trace = borrow_sample(model,seed+int(extension),extended=extension,on_compile=native_compiled,expected_layout=coordinate_layout(product.history)) if borrowed else sample(model,seed+int(extension),extended=extension)
             stage(dict(stage="diagnostics"))
             fit_diagnostics = diagnostics(trace)
             filename = "posterior-extension.nc" if extension else "posterior.nc"

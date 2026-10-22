@@ -19,6 +19,7 @@ class DispatcherDeadlineTests(unittest.TestCase):
             if argv[:3]==['docker','exec','test-service']:
                 operation=argv[6]
                 if operation=='claim':response=json.dumps(job).encode()
+                elif operation=='bind-execution':response=json.dumps(dict(learner_image='sha256:'+'a'*64,source_commit='test-head',input_sha256=__import__('hashlib').sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest())).encode()
                 elif operation=='interrupt':response=b'{"interrupted":0}'
                 elif operation=='ingest':self.fail('Late worker must never reach ingestion')
                 else:response=b'{}'

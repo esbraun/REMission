@@ -36,9 +36,16 @@ class BorrowExecutionTests(unittest.TestCase):
 
         original = model.logp_dlogp_function
         with patch.object(pm, 'sample', side_effect=sample):
-            self.assertIs(execution.sample(model, 739, on_compile=guarded.append), sentinel)
+            expected=[dict(name='theta',shape=[2],dtype='float64',start=0,stop=2)]
+            self.assertIs(execution.sample(model, 739, on_compile=guarded.append,expected_layout=expected), sentinel)
             self.assertIs(v0_sample(model, 739), sentinel)
         self.assertEqual(model.logp_dlogp_function, original)
+        with execution.guarded_native(model, lambda value:None):
+            with self.assertRaisesRegex(ValueError, 'forwarded native grad_vars'):
+                model.logp_dlogp_function(grad_vars=[], **execution.compilation_options())
+            # Satisfy the mandatory real compile/evidence control after the
+            # rejected subset, keeping the wrapper's no-call veto meaningful.
+            model.logp_dlogp_function(ravel_inputs=True, **execution.compilation_options())
         self.assertEqual(captures[0].keys()-captures[1].keys(), {'compile_kwargs'})
         self.assertEqual({k:v for k,v in captures[0].items() if k != 'compile_kwargs'}, captures[1])
         self.assertEqual(execution.optimizer_identity(captures[0]['compile_kwargs']['mode'].provided_optimizer), OPTIMIZER)

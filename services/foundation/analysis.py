@@ -91,8 +91,31 @@ def progress(store, job, token, value):
         row=running(db,job,token)
         if value.get('attempt_id')!=job or value.get('input_sha256')!=row['input_sha256']:
             raise AnalysisError('Progress identity mismatch')
-        db.execute('UPDATE analysis_attempts SET stage=?,progress_json=? WHERE job_id=?',(value['stage'],canonical(value),job))
+        persisted=dict(value)
+        trusted=json.loads(row['progress_json']).get('trusted_launch')
+        if trusted is not None:persisted['trusted_launch']=trusted
+        db.execute('UPDATE analysis_attempts SET stage=?,progress_json=? WHERE job_id=?',(value['stage'],canonical(persisted),job))
         db.execute('UPDATE pending_work SET reason=? WHERE id=?',('Visit analysis '+value['stage'],job))
+
+
+def bind_execution(store,job,token,origin):
+    """Host CLI only, before launch. The isolated learner never receives token."""
+    from contracts.domain.borrowing import parse_input,BorrowAnalysisInput
+    from contracts.domain.borrow_runtime import runtime_origin,execution_binding
+    if set(origin)!={'learner_image','source_commit'}:raise AnalysisError('Invalid host launch fields')
+    try:runtime_origin(origin['learner_image'],origin['source_commit'])
+    except ValueError as error:raise AnalysisError('Invalid trusted host origin') from error
+    with store.transaction(write=True) as db:
+        row=running(db,job,token);product=parse_input(row['request_json'])
+        if not isinstance(product,BorrowAnalysisInput):
+            raise AnalysisError('V0 does not select borrowing execution binding')
+        binding=execution_binding(product,origin)
+        saved=json.loads(row['progress_json']);previous=saved.get('trusted_launch')
+        if previous is None and row['stage']!='preparing':raise AnalysisError('Host launch must be frozen before fitting')
+        if previous is not None and previous!=binding:raise AnalysisError('Immutable host launch already bound')
+        saved['trusted_launch']=binding
+        db.execute('UPDATE analysis_attempts SET progress_json=? WHERE job_id=?',(canonical(saved),job))
+    return binding
 
 
 def fail(store, job, token, reason):
@@ -152,7 +175,7 @@ def ingest(store,job,token,directory):
         if isinstance(result,BorrowAnalysisResult) and result.status=='completed':
             from contracts.domain.borrowing import parse_input
             from contracts.domain.borrow_runtime import validate_execution
-            try:validate_execution(result.diagnostics.get('execution',{}),parse_input(row['request_json']))
+            try:validate_execution(result.diagnostics.get('execution',{}),parse_input(row['request_json']),json.loads(row['progress_json']).get('trusted_launch'))
             except ValueError as error:raise AnalysisError('Completed borrowing result lacks qualified execution binding') from error
         db.execute('UPDATE analysis_attempts SET status=?,stage=?,failure_reason=?,result_json=?,artifact_root=?,finished_at=? WHERE job_id=?',
             (result.status,'complete' if result.status=='completed' else result.status,result.reason,result.model_dump_json(),str(directory),timestamp(store.clock()),job))
