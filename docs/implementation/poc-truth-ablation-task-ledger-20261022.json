@@ -1,33 +1,285 @@
 {
   "id": "POC-TRUTH-ABLATION-PLAN-20261022",
   "version": "1.0.0",
-  "status": "proposal-independent-critique-pending",
+  "status": "TA1-implementation-candidate-independent-review-pending",
   "base": "9a3768222f7df3b4a4228f7100f63f9f8eee600e",
   "branch": "docs/poc-truth-ablation-plan-20261022",
   "plan": "poc-truth-ablation-plan-20261022.md",
-  "scope": "Documentation amendment only; no implementation/model execution/admission/production access",
-  "requirements": ["TRUTH-01", "TRUTH-02", "TIME-01", "DGP-03", "POC-4", "POC-5", "POC-6", "POC-VAL", "APPT-01", "APPT-02", "APPT-03", "APPT-04", "APPT-05", "BAYES-02", "MRT-01", "MISS-01"],
-  "configurations": ["V0", "V1", "N0", "N1", "S0", "S1", "S2"],
-  "counts": {"patients": 12, "horizon_days": 84, "visit_cutoffs": [14, 42, 84], "visit_forecast_days": 42, "nof1_review_days": [36, 72], "exploration_initial": 3, "exploration_cap": 8, "confirmation_initial": 30, "confirmation_cap": 100},
+  "scope": "Accepted bounded plan; TA1 independent v1 numerical implementation and one unqualified exploratory day14 history result. TA2 admission/accuracy and TA3-6 remain open.",
+  "requirements": [
+    "TRUTH-01",
+    "TRUTH-02",
+    "TIME-01",
+    "DGP-03",
+    "POC-4",
+    "POC-5",
+    "POC-6",
+    "POC-VAL",
+    "APPT-01",
+    "APPT-02",
+    "APPT-03",
+    "APPT-04",
+    "APPT-05",
+    "BAYES-02",
+    "MRT-01",
+    "MISS-01"
+  ],
+  "configurations": [
+    "V0",
+    "V1",
+    "N0",
+    "N1",
+    "S0",
+    "S1",
+    "S2"
+  ],
+  "counts": {
+    "patients": 12,
+    "horizon_days": 84,
+    "visit_cutoffs": [
+      14,
+      42,
+      84
+    ],
+    "visit_forecast_days": 42,
+    "nof1_review_days": [
+      36,
+      72
+    ],
+    "exploration_initial": 3,
+    "exploration_cap": 8,
+    "confirmation_initial": 30,
+    "confirmation_cap": 100
+  },
   "tasks": [
-    {"id": "TA1", "status": "not-started", "requirements": ["TRUTH-01", "TRUTH-02", "TIME-01"], "depends_on": ["independent plan acceptance"], "deliverable": "Actual independent v1 H*-conditional filter and 42-night contrast for one frozen day14 history, plus reduced numerical cross-check; no production computed badge", "tests": ["TA-T1", "TA-T2", "TA-T3", "TA-T4"]},
-    {"id": "TA2", "status": "not-started", "requirements": ["TRUTH-02", "DGP-03"], "depends_on": ["TA1"], "deliverable": "Restricted evaluator artifact binding, real-history refinement/error qualification and denied learner access", "tests": ["TA-T5", "TA-T6"]},
-    {"id": "TA3", "status": "not-started", "requirements": ["TRUTH-01", "TRUTH-02", "MRT-01", "MISS-01"], "depends_on": ["TA1"], "deliverable": "V2 N and support truth, expected WCLS projection and policy value; S2 algorithm evaluation also requires TA4", "tests": ["TA-T7", "TA-T8"]},
-    {"id": "TA4", "status": "external-method-dependencies-open", "requirements": ["POC-4", "POC-6", "BAYES-02", "APPT-05"], "depends_on": ["observed genuine joint V0 qualification", "reviewed cohort admission generalization", "V1/later-cutoff qualification", "N operational fits/jobs/admission", "S1 app job integration", "S2 fit/predict/update"], "deliverable": "Seven actually executable condition paths without bypassing existing runtime/input controls", "tests": ["existing method diagnostic/role/job gates with observed evidence"]},
-    {"id": "TA5", "status": "not-started", "requirements": ["POC-5", "POC-VAL", "DGP-03"], "depends_on": ["TA2", "TA3", "TA4"], "deliverable": "Bounded paired study orchestration over existing immutable run artifacts and complete attempted-result rows", "tests": ["TA-T9"]},
-    {"id": "TA6", "status": "not-started", "requirements": ["POC-VAL", "POC-5", "APPT-01", "APPT-02", "APPT-03", "APPT-04", "APPT-05"], "depends_on": ["TA5", "exploration then fresh frozen confirmation"], "deliverable": "Accuracy/timeliness report, saved research results view and appointment saved-read integration", "tests": ["TA-T10"]}
+    {
+      "id": "TA1",
+      "status": "implemented-unqualified-candidate-review-pending",
+      "requirements": [
+        "TRUTH-01",
+        "TRUTH-02",
+        "TIME-01"
+      ],
+      "depends_on": [
+        "independent plan acceptance"
+      ],
+      "deliverable": "Actual independent v1 H*-conditional filter and 42-night contrast for one frozen day14 history, plus reduced numerical cross-check; no production computed badge",
+      "tests": [
+        "TA-T1",
+        "TA-T2",
+        "TA-T3",
+        "TA-T4"
+      ],
+      "owner_thread": "/root/conditional_truth_first_sol",
+      "agent_model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "effort_escalation_reason": "Difficult numerical implementation: independent conditional particle integration with invariant full-prefix rejuvenation, clipped shared-recall likelihood and separate quadrature/Kalman checks.",
+      "worktree_path": "C:/Users/erics/Documents/Projects/REMission-worktrees/truth-first-sol-261022",
+      "task_branch": "feat/poc-conditional-truth-first-20261022",
+      "base_commit": "50ea16c34f1d5a77b6dfba34230141a4827d28ff",
+      "executed_source_commit": "32facee851a12958e1a5a8a50d01e1096d2f16ac",
+      "handoff": "poc-truth-ta1-handoff-20261022.md",
+      "raw_manifest": "evidence/truth-ta1-20261022/raw-manifest.json",
+      "result": "evidence/truth-ta1-20261022/real-01-result.json",
+      "result_git_blob": "a634ff5ba2a7761f549f469c3577d4688e0900b3",
+      "real_stage_raw_manifest_git_blob": "f7ce6a6a8da6939977f36feaa1968ec3025f262c",
+      "write_paths": [
+        "methods/truth",
+        "services/evaluator/restricted.py",
+        "tests/methods/test_restricted_truth.py",
+        "docs/implementation/poc-truth-ablation-plan-20261022.md",
+        "docs/implementation/poc-truth-ablation-task-ledger-20261022.json",
+        "docs/implementation/poc-truth-ta1-handoff-20261022.md",
+        "docs/implementation/evidence/truth-ta1-20261022"
+      ],
+      "numerical_evidence": {
+        "unit_01": {
+          "tests": 14,
+          "passed": 13,
+          "failed": 1,
+          "seconds": 1.391,
+          "reason": "Default-sd q=0 fixture did not force severe collapse; retained failure; root authorized explicit Gaussian concentration fixture without changing threshold or seed."
+        },
+        "unit_02": {
+          "tests": 14,
+          "passed": 14,
+          "seconds": 1.218,
+          "source": "32facee851a12958e1a5a8a50d01e1096d2f16ac"
+        },
+        "real_01": {
+          "attempts": 1,
+          "status": "exploratory_unqualified",
+          "estimate": -1.6843423175122614,
+          "within_empirical_filter_rollout_mcse": 0.0017432013449994468,
+          "particles": 1024,
+          "future_trajectories": 20000,
+          "independent_filters": 1,
+          "elapsed_seconds": 0.3139137449907139,
+          "peak_process_rss_kib": 116412,
+          "invocation_git_blob": "3a8a91a3f224504bd2c4ff044cddd564b4194f52",
+          "invocation_sha256": "b452fe355f92a64c3221a0eafff13a705ea49901112759c442c02b88fdf4374c",
+          "patient_id": "p-08aa51d3e737479495085ea07881adcf",
+          "history_sha256": "5bd8d8ebcd84ff862cb3caa8255f7b9cb8eba73aba3e2d2a7a721993743b3289",
+          "endpoint_absolute_day": 56,
+          "recall_absolute_nights": [
+            43,
+            56
+          ]
+        }
+      }
+    },
+    {
+      "id": "TA2",
+      "status": "not-started",
+      "requirements": [
+        "TRUTH-02",
+        "DGP-03"
+      ],
+      "depends_on": [
+        "TA1"
+      ],
+      "deliverable": "Restricted evaluator artifact binding, real-history refinement/error qualification and denied learner access",
+      "tests": [
+        "TA-T5",
+        "TA-T6"
+      ]
+    },
+    {
+      "id": "TA3",
+      "status": "not-started",
+      "requirements": [
+        "TRUTH-01",
+        "TRUTH-02",
+        "MRT-01",
+        "MISS-01"
+      ],
+      "depends_on": [
+        "TA1"
+      ],
+      "deliverable": "V2 N and support truth, expected WCLS projection and policy value; S2 algorithm evaluation also requires TA4",
+      "tests": [
+        "TA-T7",
+        "TA-T8"
+      ]
+    },
+    {
+      "id": "TA4",
+      "status": "external-method-dependencies-open",
+      "requirements": [
+        "POC-4",
+        "POC-6",
+        "BAYES-02",
+        "APPT-05"
+      ],
+      "depends_on": [
+        "observed genuine joint V0 qualification",
+        "reviewed cohort admission generalization",
+        "V1/later-cutoff qualification",
+        "N operational fits/jobs/admission",
+        "S1 app job integration",
+        "S2 fit/predict/update"
+      ],
+      "deliverable": "Seven actually executable condition paths without bypassing existing runtime/input controls",
+      "tests": [
+        "existing method diagnostic/role/job gates with observed evidence"
+      ]
+    },
+    {
+      "id": "TA5",
+      "status": "not-started",
+      "requirements": [
+        "POC-5",
+        "POC-VAL",
+        "DGP-03"
+      ],
+      "depends_on": [
+        "TA2",
+        "TA3",
+        "TA4"
+      ],
+      "deliverable": "Bounded paired study orchestration over existing immutable run artifacts and complete attempted-result rows",
+      "tests": [
+        "TA-T9"
+      ]
+    },
+    {
+      "id": "TA6",
+      "status": "not-started",
+      "requirements": [
+        "POC-VAL",
+        "POC-5",
+        "APPT-01",
+        "APPT-02",
+        "APPT-03",
+        "APPT-04",
+        "APPT-05"
+      ],
+      "depends_on": [
+        "TA5",
+        "exploration then fresh frozen confirmation"
+      ],
+      "deliverable": "Accuracy/timeliness report, saved research results view and appointment saved-read integration",
+      "tests": [
+        "TA-T10"
+      ]
+    }
   ],
   "tests": [
-    {"id": "TA-T1", "status": "planned", "evidence": "Independent rounded/clipped Normal bin probabilities, tail checks, ISI recall and one-total likelihood"},
-    {"id": "TA-T2", "status": "planned", "evidence": "Analytic and separately coded quadrature/Kalman conditional overlap with refinement"},
-    {"id": "TA-T3", "status": "planned", "evidence": "Intervention descendants, arm swap/sign, retained policy, zero effect and exact short adherence tree"},
-    {"id": "TA-T4", "status": "planned", "evidence": "Realized private seed/state and excluded public field cannot change H*-truth; corrections/cutoffs remain authoritative"},
-    {"id": "TA-T5", "status": "planned", "evidence": "32 filters at approved levels, two successive refinements, quadrature/within/between budgets; cap/zero-SE/collapse failures"},
-    {"id": "TA-T6", "status": "planned", "evidence": "Restricted artifact authority and hash/source/runtime/patient negatives; actual denied learner truth access"},
-    {"id": "TA-T7", "status": "planned", "evidence": "Medication residual state, B-cessation rebound distinct from missed dose, washout and frozen support"},
-    {"id": "TA-T8", "status": "planned", "evidence": "Clipped excursion, expected WCLS projection, rank deficiency, missing-reward denominator, policy-dependent histories and burden"},
-    {"id": "TA-T9", "status": "planned", "evidence": "Same V/N input/cutoff, independent fit seeds, paired support exogenous streams, no forced balance/seed search, resume preserves all attempts"},
-    {"id": "TA-T10", "status": "planned", "evidence": "All seven condition/status denominators, paired cohort MC uncertainty, stage timing/RSS/yield, saved-read latency/freshness and reproduction"}
+    {
+      "id": "TA-T1",
+      "status": "focused-candidate-checks-executed-review-pending",
+      "evidence": "Independent rounded/clipped Normal bin probabilities, tail checks, ISI recall and one-total likelihood",
+      "observed_evidence": "Fourteen focused unit/overlap checks pass in UNIT-02; one retained UNIT-01 fixture failure. See TA1 handoff and raw manifest; real-history accuracy not qualified."
+    },
+    {
+      "id": "TA-T2",
+      "status": "focused-candidate-checks-executed-review-pending",
+      "evidence": "Analytic and separately coded quadrature/Kalman conditional overlap with refinement",
+      "observed_evidence": "Fourteen focused unit/overlap checks pass in UNIT-02; one retained UNIT-01 fixture failure. See TA1 handoff and raw manifest; real-history accuracy not qualified."
+    },
+    {
+      "id": "TA-T3",
+      "status": "focused-candidate-checks-executed-review-pending",
+      "evidence": "Intervention descendants, arm swap/sign, retained policy, zero effect and exact short adherence tree",
+      "observed_evidence": "Fourteen focused unit/overlap checks pass in UNIT-02; one retained UNIT-01 fixture failure. See TA1 handoff and raw manifest; real-history accuracy not qualified."
+    },
+    {
+      "id": "TA-T4",
+      "status": "focused-candidate-checks-executed-review-pending",
+      "evidence": "Realized private seed/state and excluded public field cannot change H*-truth; corrections/cutoffs remain authoritative",
+      "observed_evidence": "Fourteen focused unit/overlap checks pass in UNIT-02; one retained UNIT-01 fixture failure. See TA1 handoff and raw manifest; real-history accuracy not qualified."
+    },
+    {
+      "id": "TA-T5",
+      "status": "planned",
+      "evidence": "32 filters at approved levels, two successive refinements, quadrature/within/between budgets; cap/zero-SE/collapse failures",
+      "partial_evidence": "Time/slice cap, impossible weights and severe-collapse negatives executed in focused tests; 32-filter three-level real-history refinement remains unexecuted."
+    },
+    {
+      "id": "TA-T6",
+      "status": "planned",
+      "evidence": "Restricted artifact authority and hash/source/runtime/patient negatives; actual denied learner truth access"
+    },
+    {
+      "id": "TA-T7",
+      "status": "planned",
+      "evidence": "Medication residual state, B-cessation rebound distinct from missed dose, washout and frozen support"
+    },
+    {
+      "id": "TA-T8",
+      "status": "planned",
+      "evidence": "Clipped excursion, expected WCLS projection, rank deficiency, missing-reward denominator, policy-dependent histories and burden"
+    },
+    {
+      "id": "TA-T9",
+      "status": "planned",
+      "evidence": "Same V/N input/cutoff, independent fit seeds, paired support exogenous streams, no forced balance/seed search, resume preserves all attempts"
+    },
+    {
+      "id": "TA-T10",
+      "status": "planned",
+      "evidence": "All seven condition/status denominators, paired cohort MC uncertainty, stage timing/RSS/yield, saved-read latency/freshness and reproduction"
+    }
   ],
   "preserved_status_limits": [
     "Joint genuine n12/day14 V0 setup is not a full fit; zero sampler transitions in supplied setup evidence",
@@ -37,6 +289,17 @@
     "Genuine support producer run was in progress at assignment; no outputs inspected or results claimed",
     "Existing analytic truth and precision contracts are not a longitudinal evaluator",
     "Canonical private TruthRequest currently rejects restricted profile bindings",
-    "Human/clinical gates remain later work"
-  ]
+    "Human/clinical gates remain later work",
+    "TA1 has one exploratory unqualified day14 result; rollout MCSE excludes conditioning error and no-collapse is not accuracy qualification",
+    "TA2 artifact/admission, matched estimator SE, finite-grid discrepancy and full 32-filter refinement remain pending",
+    "TA1 runtime is independent evaluator development, not a Bayesian fit or appointment latency benchmark"
+  ],
+  "plan_acceptance": {
+    "reviewed_head": "6b0e20148847d2607e50cfb6a78316feb1c7d08a",
+    "reviewed_base": "9a3768222f7df3b4a4228f7100f63f9f8eee600e",
+    "critique_git_blob": "523eef6cce4b59495c57de66fc5ea3c61c6c8fd5",
+    "critique_manifest_git_blob": "da62308365f0d7cf16f29bda5d14aa1b74ff7d8b",
+    "accepted_merge": "50ea16c34f1d5a77b6dfba34230141a4827d28ff",
+    "disposition": "ready_to_ship for plan only"
+  }
 }
