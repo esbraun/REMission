@@ -1,0 +1,125 @@
+{
+  "actual_worker_id": "93cf67b550a31198b070dafebf2140d64651cfc4b8ac76f777f26ae519f0059b",
+  "all_artifact_hashes_verified": true,
+  "artifact_count": 9,
+  "authority_identity_same": true,
+  "cgroup_peak_memory_bytes": 2147483648,
+  "changed_tables": [
+    "analysis_attempts",
+    "pending_work",
+    "service_control"
+  ],
+  "clinical_protected_tables_unchanged": true,
+  "dispatcher_elapsed_wall_seconds": 6904.386209011078,
+  "divergences": 0,
+  "effect": {
+    "kind": "conditional_expected_assignment_contrast",
+    "lower": -4.4482125911296055,
+    "mean": -1.3714275588888156,
+    "sd": 1.734069589960427,
+    "unit": "ISI_points",
+    "upper": 2.612575974856203
+  },
+  "effect_mcmc": {
+    "accepted": true,
+    "ess_bulk": {
+      "effect": 3756.0233331549384
+    },
+    "ess_tail": {
+      "effect": 2485.753461466699
+    },
+    "mcse": {
+      "effect": 0.0320986733256002
+    },
+    "rhat": {
+      "effect": 1.0013966175772815
+    }
+  },
+  "ess_bulk_min": 1770.1572730590274,
+  "ess_tail_min": 1494.5344138420994,
+  "extension": false,
+  "fit_count": 1,
+  "host_dispatcher_origin": "55c07c8ac15d5b55d4d7acdff273570422cd3b01",
+  "host_dispatcher_sha256": "e4befae1c1b9d1684430f3d375308cee059504799a8087683d117e28766c5e1b",
+  "integration": {
+    "attempted": [
+      {
+        "K": 1024,
+        "L": 2.7175256332177233,
+        "U": 4.1717079512844036e-05,
+        "changes": null,
+        "interval": [
+          -4.456798957893496,
+          2.6160483047117573
+        ],
+        "mean_integration_se": 0.0001021237968262589,
+        "mean_pass": true,
+        "raw_effect_variance": 3.00823555484967,
+        "residual_variance": 3.9321732084757336e-05,
+        "sd": 1.734426578108647,
+        "seconds": 6.001821215962991,
+        "stability_pass": false,
+        "stability_tolerance": 0.03296983853899029,
+        "uninflated_effect_variance": 3.0081962331175855,
+        "variance_pass": true
+      },
+      {
+        "K": 2048,
+        "L": 2.7164721310025213,
+        "U": 2.0159106469205625e-05,
+        "changes": [
+          0.00035698814821993885,
+          0.008586366763890574,
+          0.003472329855554346
+        ],
+        "interval": [
+          -4.4482125911296055,
+          2.612575974856203
+        ],
+        "mean_integration_se": 7.099138410611112e-05,
+        "mean_pass": true,
+        "raw_effect_variance": 3.0069973428255232,
+        "residual_variance": 1.908045143032583e-05,
+        "sd": 1.734069589960427,
+        "seconds": 10.06221279699821,
+        "stability_pass": true,
+        "stability_tolerance": 0.03296344721659142,
+        "uninflated_effect_variance": 3.006978262374093,
+        "variance_pass": true
+      }
+    ],
+    "bootstrap": {
+      "block": 20,
+      "resamples": 1000,
+      "seed": 721981
+    },
+    "gaussian_integration": "exact conditional AR plus endpoint measurement",
+    "memory": "streamed eight adherence batches; no M x K x horizon allocation",
+    "seconds": 10.062471779994667,
+    "status": "accepted"
+  },
+  "learner_image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+  "limitations": [
+    "One actual synthetic single-patient borrowing job; no full cohort/PA2/study/clinical efficacy claim.",
+    "Cgroup peak reached exact2GiB cap without OOM; memory headroom is not established.",
+    "Public interval crosses zero; no superiority claim.",
+    "Independent terminal/posterior review still required."
+  ],
+  "maximum_tree_depth": 7,
+  "observed_utc": "2026-10-22T15:19:41.845146+00:00",
+  "original_attempt": "analysis-4ff86193058d4d13a1600f0423e91f12",
+  "original_input_identity_same": true,
+  "owner_poll_exit_code": 0,
+  "process_peak_memory_kib": 787020,
+  "rhat_max": 1.004962563033925,
+  "service_and_worker_results_exact": true,
+  "service_result_status": "completed",
+  "service_status": "completed",
+  "source_commit": "4a340baf63fdb0f9a6f4fb065166232dafd10ca3",
+  "source_posterior_checks_accepted": true,
+  "submission_receipt_identity_same": true,
+  "unified_exec_session_id": 25783,
+  "watchdog_seconds": 7200,
+  "worker_finished_at": "2026-10-22T15:13:49.376786918Z",
+  "worker_seconds": 6895.380284336046
+}
