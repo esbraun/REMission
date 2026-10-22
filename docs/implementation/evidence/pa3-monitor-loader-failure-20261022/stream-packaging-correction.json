@@ -1,0 +1,73 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--name",
+    "remission-pa3-monitor-f8ad8a6e60dc-gradient",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "2g",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,nosuid,size=512m",
+    "--user",
+    "10002:10002",
+    "--mount",
+    "type=volume,src=remission-pa3-compile-591d3d5c8737-input,dst=/input,readonly",
+    "--mount",
+    "type=volume,src=remission-pa3-compile-591d3d5c8737-coordinates,dst=/mapped,readonly",
+    "--mount",
+    "type=volume,src=remission-pa3-compile-591d3d5c8737-guided-logp,dst=/reference,readonly",
+    "--mount",
+    "type=volume,src=remission-pa3-monitor-f8ad8a6e60dc-output,dst=/output",
+    "sha256:4ca2b71643fae1ecf02180ae4bf02581ff2287e39c73eb8abfa0c88bc537b168",
+    "--input",
+    "/input",
+    "--output",
+    "/output",
+    "--phase",
+    "guided-gradient",
+    "--seconds",
+    "600",
+    "--coordinates",
+    "/mapped/coordinates.json",
+    "--monitor-policy",
+    "/app/pa3-monitor-policy.json",
+    "--reference",
+    "/reference/guided-logp.json"
+  ],
+  "cwd": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021",
+  "started_unix": 1792660264.262027,
+  "elapsed_seconds": 222.3538258075714,
+  "exit": 1,
+  "streams": {
+    "stdout": {
+      "path": "109c0b66677d4c36bd574da07b02e283.stdout",
+      "bytes": 1779,
+      "sha256": "ce49e35bed8758b224cbd22e88fb3851759c6f8f34b9f61eff9880a275022961"
+    },
+    "stderr": {
+      "path": "109c0b66677d4c36bd574da07b02e283.stderr",
+      "bytes": 7181,
+      "sha256": "054ea542c952148b0060a292e6adef8c91cd9c390539ed1bf8fbc99c09764499"
+    }
+  },
+  "source_head": "2ef76986a84e80d7907d9ffdc5cab0faea22c3a6",
+  "timeout_seconds": 600,
+  "timed_out": false,
+  "capture_metadata": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\poc-borrow-sol-261021\\artifacts\\pa3\\monitor-run-f0\\commands\\109c0b66677d4c36bd574da07b02e283.json",
+  "original_wrong_empty_files": [
+    "process.stdout",
+    "process.stderr"
+  ],
+  "wrong_file_bytes": 0,
+  "wrong_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "correction": "Packaging loop previously overwrote stream copies with later ownership-helper docker-run output. Original empty files/history retained. These uniquely named streams select the exact named main gradient container; no execution changed or rerun."
+}
