@@ -1,0 +1,49 @@
+{
+  "attempt_id": "analysis-4ff86193058d4d13a1600f0423e91f12",
+  "configuration": {
+    "id": "poc-visit-borrow-v1",
+    "sha256": "114d69435430a98d60d1724a30ba89073efebd5ba0e1b7bdae55ddb3f3a90675",
+    "version": "1.0.0"
+  },
+  "fd": {
+    "absolute_tolerance": 1e-05,
+    "coordinates_per_point": 47,
+    "native_logp_absolute_tolerance": 1e-08,
+    "points": 3,
+    "relative_tolerance": 0.0001,
+    "step": 1e-05
+  },
+  "history_sha256": "ce5a5a2bbf99405d2457654791f3ac9a263f669770b075ac1dfa1cff0f4ac00c",
+  "id": "pa3-actual-borrow-profile-v1",
+  "input_file": "docs/implementation/evidence/pa3-v1-boundary-20261022/input.json",
+  "input_files": {
+    "input.json": "1d057fb21b7b439d15b07bd4ef9dcaac315910174886550ce0548f002607d5ab",
+    "points.json": "74d22a519bbd4ba5d5cf1a249f0ff1457cfa087a040aac4783cd5b30d994e850",
+    "sources.json": "9c541a723c558f6aa01818b4789ed7c68172c17a790fe130043be305acaba079"
+  },
+  "input_sha256": "3761da9e876d3830106e5edc47a7b5b930764f934facc95c8b6328b84e65e5a2",
+  "inventory_byte_cap": 2097152,
+  "inventory_node_cap": 10000,
+  "numerical_seeds": {
+    "bridge_reference": 4047038903,
+    "effect_rollout": 2134078996,
+    "namespace": "pa3-fit-20261021-v1",
+    "nuts": 3859568062,
+    "prior_check": 2854342402,
+    "recipe": "poc-pa3-seeds-v1"
+  },
+  "optimizer": "original default query plus ordinary PyMC parameter/inplace registrations; no exclusions",
+  "phase_seconds": 600,
+  "phases": [
+    "coordinates",
+    "guided-logp",
+    "guided-gradient",
+    "guided-native-logp-gradient"
+  ],
+  "points_file": "tooling/foundation/pa3-borrow-profile-points.json",
+  "scope": "Only actual frozen4ff/ce5a native model profile. No NUTS/fit/ingestion. New coordinate/FD/separate outputs only; no b090 cache/reference/timing substitution.",
+  "source_set_sha256": "11420d1f40754021a13cd7fed1152bc824d6b669af233efe60a0dc4facec9ddb",
+  "suite_seconds": 1800,
+  "version": "1.0.0",
+  "worker_execution_policy": "poc-borrow-native-cvm-v1"
+}
