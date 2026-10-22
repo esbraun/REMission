@@ -55,7 +55,7 @@ if isinstance(value,BorrowAnalysisInput):
  artifact_sha=sha(value.sources.model_dump(mode='json'))
  assert artifact_sha==APPROVED_BUNDLES[value.sources.bundle_id],'unapproved public source artifact'
  assert value.source_set_sha256==value.sources.source_set_sha256,'source set identity mismatch'
- value.sources.at_cutoff(value.cutoff)
+ value.sources.at_cutoff(value.history.cutoff)
  source_identity=dict(bundle_id=value.sources.bundle_id,source_set_sha256=value.source_set_sha256,
   approved_artifact_sha256=artifact_sha,study_ids=[s.study_id for s in value.sources.studies],quadrature_order=configuration['quadrature_order'])
 history=json.dumps(value.history.model_dump(mode='json'))
