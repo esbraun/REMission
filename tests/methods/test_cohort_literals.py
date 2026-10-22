@@ -16,20 +16,28 @@ class CohortLiteralControls(unittest.TestCase):
         try:data=cohort_inputs(export(db))
         finally:db.close()
         model=build_cohort(data,guide=False)
-        x=pt.dscalar('x')
-        cases=[('sd_b',1.4,halfnorm.logpdf(1.4,scale=3),-1.4/9),
-               ('mu_b',18.2,norm.logpdf(18.2,19,5),-(18.2-19)/25)]
-        for name,point,expected,gradient in cases:
+        cases=[]
+        for name,point,scale in [('sd_b',1.4,3),('sd_beta',np.array([.8,1.1]),1),
+                ('sigma_e',1.1,2),('sigma_isi',1.3,2),('sigma_quality',.6,1)]:
+            cases.append((name,point,halfnorm.logpdf(point,scale=scale),-np.asarray(point)/scale**2,1))
+        for name,point,location,scale in [('mu_b',18.2,19,5),('population_beta',np.array([1.,2.]),0,4),
+                ('a',.4,0,1),('b_raw',np.linspace(-.2,.3,12),0,1),
+                ('beta_raw',np.linspace(-.3,.2,24).reshape(12,2),0,1),
+                ('innovation',np.sin(np.arange(12*28)).reshape(12,28)/10,0,1)]:
+            cases.append((name,point,norm.logpdf(point,location,scale),-(np.asarray(point)-location)/scale**2,2))
+        cases.append(('rho',.2,-np.log(1.9),0.,2))
+        for name,point,expected,gradient,count in cases:
             with self.subTest(name=name):
                 rv=model[name]
-                parameters=rv.owner.inputs[-2:] if name=='mu_b' else rv.owner.inputs[-1:]
+                parameters=rv.owner.inputs[-count:]
                 self.assertTrue(all(v.dtype=='float64' for v in parameters))
+                x=rv.type()
                 expression=pm.logp(rv,x)
-                fn=pytensor.function([x],[expression,pt.grad(expression,x)],**compilation_options())
+                fn=pytensor.function([x],[expression,pt.grad(expression.sum(),x)],**compilation_options())
                 verify_cvm(fn)
                 actual,derivative=fn(point)
-                self.assertAlmostEqual(float(actual),expected,delta=1e-12)
-                self.assertAlmostEqual(float(derivative),gradient,delta=1e-12)
+                np.testing.assert_allclose(actual,expected,rtol=0,atol=1e-12)
+                np.testing.assert_allclose(derivative,gradient,rtol=0,atol=1e-12)
 
 
 if __name__=='__main__':unittest.main()

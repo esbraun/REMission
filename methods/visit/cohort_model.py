@@ -37,11 +37,11 @@ def build_cohort(data, *, guide=True, prior_predictive=False):
     with pm.Model(coords=dict(patient=patients, night=data[0][1]['nights'],
             arm=['continue', 'escalate'], latent=np.arange(layout['dimension']))) as model:
         sd_b = pm.HalfNormal('sd_b', np.float64(3))
-        sd_beta = pm.HalfNormal('sd_beta', 1, dims='arm')
-        rho = pm.Uniform('rho', -.95, .95)
-        sigma_e = pm.HalfNormal('sigma_e', 2)
-        sigma_isi = pm.HalfNormal('sigma_isi', 2)
-        sigma_quality = pm.HalfNormal('sigma_quality', 1)
+        sd_beta = pm.HalfNormal('sd_beta', np.float64(1), dims='arm')
+        rho = pm.Uniform('rho', np.float64(-.95), np.float64(.95))
+        sigma_e = pm.HalfNormal('sigma_e', np.float64(2))
+        sigma_isi = pm.HalfNormal('sigma_isi', np.float64(2))
+        sigma_quality = pm.HalfNormal('sigma_quality', np.float64(1))
         lag = np.arange(n)[:, None]-np.arange(n)[None, :]
         powers = [pt.as_tensor_variable(np.float64(1.))]
         for _ in range(1, n):
@@ -59,7 +59,7 @@ def build_cohort(data, *, guide=True, prior_predictive=False):
                 variances.extend([pt.ones(len(d['isi']))*(sigma_isi**2+CONFIG['guide_isi_variance_floor']),
                     pt.ones(len(d['quality']))*(sigma_quality**2+CONFIG['guide_quality_variance_floor'])])
                 centered.extend([d['isi']-19., d['quality']-(10-19/3)])
-            eta = pm.Normal('guide_innovation', 0, 1, dims='latent')
+            eta = pm.Normal('guide_innovation', np.float64(0), np.float64(1), dims='latent')
             u, correction, jacobian = gaussian_guide(pt.concatenate(designs, axis=0),
                 pt.concatenate(variances), pt.as_tensor_variable(np.concatenate(centered)), eta)
             pm.Deterministic('prior_normal_coordinates', u, dims='latent')
@@ -74,11 +74,11 @@ def build_cohort(data, *, guide=True, prior_predictive=False):
             innovation = pm.Deterministic('innovation', local[:, 3:], dims=('patient', 'night'))
         else:
             mu_b = pm.Normal('mu_b', np.float64(19), np.float64(5))
-            beta = pm.Normal('population_beta', 0, 4, dims='arm')
-            a = pm.Normal('a', 0, 1)
-            b_raw = pm.Normal('b_raw', 0, 1, dims='patient')
-            beta_raw = pm.Normal('beta_raw', 0, 1, dims=('patient', 'arm'))
-            innovation = pm.Normal('innovation', 0, 1, dims=('patient', 'night'))
+            beta = pm.Normal('population_beta', np.float64(0), np.float64(4), dims='arm')
+            a = pm.Normal('a', np.float64(0), np.float64(1))
+            b_raw = pm.Normal('b_raw', np.float64(0), np.float64(1), dims='patient')
+            beta_raw = pm.Normal('beta_raw', np.float64(0), np.float64(1), dims=('patient', 'arm'))
+            innovation = pm.Normal('innovation', np.float64(0), np.float64(1), dims=('patient', 'night'))
         b = pm.Deterministic('b', mu_b+sd_b*b_raw, dims='patient')
         individual = pm.Deterministic('patient_beta', beta+sd_beta*beta_raw, dims=('patient', 'arm'))
         error = pm.Deterministic('error', sigma_e*pt.dot(innovation, transition.T), dims=('patient', 'night'))
@@ -108,8 +108,8 @@ def build_cohort_borrow(data, sources, configuration, *, guide=True, prior_predi
             sd_b=model['sd_b'], sd_beta_c=model['sd_beta'][0], sd_beta_e=model['sd_beta'][1],
             p=model['p_adherence'], rho=model['rho'], sigma_e=model['sigma_e'], sigma_isi=model['sigma_isi'], a=model['a'])
         g = pm.Deterministic('source_g', tensor_marginal(theta, configuration['quadrature_order']))
-        bias = pm.Normal('source_bias', 0, .5, dims='source')
-        tau = pm.HalfNormal('source_tau', configuration['tau_prior_scale'])
+        bias = pm.Normal('source_bias', np.float64(0), np.float64(.5), dims='source')
+        tau = pm.HalfNormal('source_tau', np.float64(configuration['tau_prior_scale']))
         terms, weights = zip(*(tensor_mixture(s.d, s.se, g, bias[i], tau) for i, s in enumerate(sources.studies)), strict=True)
         pm.Deterministic('source_logp', pt.stack(terms), dims='source')
         pm.Deterministic('source_responsibility', pt.stack(weights), dims='source')
