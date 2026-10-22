@@ -42,22 +42,40 @@ def freeze(studies):
         multiplicity_scope='approximate normal-mean Bonferroni bound conditional on fixed points; six scheduled looks; no alpha reuse')
 
 
+def diagnosis(reference_pass, significant_discrepancy, resolution_pass):
+    if not resolution_pass:
+        return 'quadrature-resolution-unmet'
+    if significant_discrepancy:
+        return 'moment-approximation-failure'
+    return 'accepted' if reference_pass else 'reference-precision-unmet'
+
+
 def run(manifest, out, order):
     out.mkdir(parents=True,exist_ok=False)
+    manifest=dict(manifest,production_order=order,qualification_version='pa3-prefit-v1.0.1',
+        deadline_rule='check before/after each batch, point publication and final acceptance; external watchdog cap+60 seconds')
     (out/'frozen-manifest.json').write_text(canonical(manifest)+'\n')
-    started=time.monotonic(); points=[]; cap=manifest['seconds_cap']
+    started=time.monotonic(); points=[]; cap=manifest['seconds_cap']; timed_out=False
+    def expired():return time.monotonic()-started>cap
     for i, theta in enumerate(manifest['vectors']):
+        if expired():timed_out=True;break
         g=marginal(theta,order); doubled=marginal(theta,2*order)
         resolution=abs(doubled-g)
         streams=[np.random.default_rng(s) for s in manifest['reference_seed_keys'][i]]
         count=0; total=0.; square=0.; looks=[]
         epsilon=min(manifest['epsilon_per_study'])
         for size in manifest['looks']:
-            if time.monotonic()-started > cap:
-                break
+            if expired():timed_out=True;break
+            completed_batches=0
             for rng in streams:
+                if expired():timed_out=True;break
                 values=forward(theta,size-count,rng)
                 total+=float(values.sum()); square+=float(values@values)
+                completed_batches+=1
+                if expired():timed_out=True;break
+            if timed_out:
+                looks.append(dict(per_batch=size,status='interrupted',completed_batches=completed_batches))
+                break
             count=size
             n=8*count; mean=total/n; variance=max(0.,(square-total**2/n)/(n-1)); se=(variance/n)**.5
             bound=abs(g-mean)+manifest['z']*se
@@ -68,27 +86,29 @@ def run(manifest, out, order):
             if bound <= epsilon:
                 break
         last=looks[-1] if looks else {}
+        if expired():timed_out=True
         point=dict(index=i, theta=theta, order=order, g=g, doubled_g=doubled,
             resolution_difference=resolution, resolution_tolerance=epsilon/4,
             resolution_pass=resolution<=epsilon/4, looks=looks,
-            accepted=bool(last.get('reference_pass') and resolution<=epsilon/4),
-            diagnosis=('moment-approximation-failure' if last.get('moment_failure') else
-                'accepted' if last.get('reference_pass') and resolution<=epsilon/4 else
-                'quadrature-resolution-unmet' if resolution>epsilon/4 else 'reference-precision-unmet'))
+            accepted=bool(not timed_out and last.get('reference_pass') and resolution<=epsilon/4),
+            diagnosis='qualification-timeout' if timed_out else diagnosis(last.get('reference_pass',False),last.get('moment_failure',False),resolution<=epsilon/4))
         points.append(point)
         (out/'points.json').write_text(canonical(points)+'\n')
         print(canonical(dict(index=i, diagnosis=point['diagnosis'], g=g, resolution=resolution,
             last=last, seconds=time.monotonic()-started)),flush=True)
-        if time.monotonic()-started>cap:
+        if timed_out:
             break
     peak=Path('/sys/fs/cgroup/memory.peak')
-    result=dict(status='accepted' if len(points)==88 and all(p['accepted'] for p in points) else 'not-qualified',
+    if expired():timed_out=True
+    result=dict(status='accepted' if not timed_out and len(points)==88 and all(p['accepted'] for p in points) else 'not-qualified',
         seconds=time.monotonic()-started, points_completed=len(points), order=order,
+        timed_out=timed_out,
         cgroup_peak_memory_bytes=int(peak.read_text()) if peak.exists() else None,
         diagnoses={name:sum(p['diagnosis']==name for p in points) for name in sorted({p['diagnosis'] for p in points})},
         manifest_sha256=hashlib.sha256((out/'frozen-manifest.json').read_bytes()).hexdigest(),
         points_sha256=hashlib.sha256((out/'points.json').read_bytes()).hexdigest())
     (out/'result.json').write_text(canonical(result)+'\n'); print(canonical(result),flush=True)
+    return result
 
 
 if __name__=='__main__':

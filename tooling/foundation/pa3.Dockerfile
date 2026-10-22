@@ -17,4 +17,5 @@ ENTRYPOINT ["python","/app/qualify_pa3_bridge.py"]
 FROM bridge-qualification AS pa3-tests
 COPY services/generator/ /app/services/generator/
 COPY tests/generator/ /app/tests/generator/
+COPY tooling/foundation/capture.py /app/capture.py
 ENTRYPOINT ["python","-m","unittest"]
