@@ -1,0 +1,320 @@
+{
+  "kind": "deterministic_UNIT_not_study",
+  "image": "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+  "watchdog_seconds": 120,
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697025.8590827,
+      "elapsed_seconds": 0.033148765563964844,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/00-stdout.bin",
+          "bytes": 41,
+          "sha256": "dc30017a7d20f23839f9f51cec171c54f33449277d07149b821312ba961e074c"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/00-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697025.8925407,
+      "elapsed_seconds": 0.06379461288452148,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/01-stdout.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/01-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "--format",
+        "{{.Id}}"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697025.9575694,
+      "elapsed_seconds": 0.17076373100280762,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/02-stdout.bin",
+          "bytes": 72,
+          "sha256": "417ac0f1bf61e4f5ce58b2c947a02aef618f18b49678c2ed578d1a56fa74cdb5"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/02-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5",
+        "--format",
+        "{{.Id}}"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697026.1288164,
+      "elapsed_seconds": 0.1726837158203125,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/03-stdout.bin",
+          "bytes": 72,
+          "sha256": "425a15449dc39b762a1dfa4806a835d8712b7907d85843e7b47e728fb822f232"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/03-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "create",
+        "--pull",
+        "never",
+        "--name",
+        "remission-s1-unit-48f22d566417",
+        "--network",
+        "none",
+        "--read-only",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--pids-limit",
+        "64",
+        "--user",
+        "10002:10002",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=128m,uid=10002,gid=10002",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022,target=/workspace,readonly",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022/artifacts/support-s1-unit/run-4,target=/output",
+        "--workdir",
+        "/workspace",
+        "sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7",
+        "python",
+        "-B",
+        "-c",
+        "import csv,json,platform,sys,numpy,scipy,statsmodels,unittest\nprint(json.dumps(dict(python=platform.python_version(),numpy=numpy.__version__,scipy=scipy.__version__,statsmodels=statsmodels.__version__)),flush=True)\nsuite=unittest.defaultTestLoader.discover('tests/methods',pattern='test_support*.py')\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nif not result.wasSuccessful(): raise SystemExit(1)\nsys.path.insert(0,'tests/methods')\nfrom test_support_wcls import numerical_data, SEED\nfrom methods.support.wcls import fit\nfrom dataclasses import asdict\ndata=numerical_data()\nwith open('/output/unit-fixture.csv','w',newline='') as stream:\n    writer=csv.writer(stream)\n    writer.writerow(['patient','reward','action','probability','q','available','prior_quality','missing_history','delivered','scaled_time'])\n    writer.writerows([[r.patient_id,r.reward,r.action,r.probability,.5,1,*r.controls[1:]] for r in data.rows])\nwith open('/output/python-result.json','w') as stream: json.dump(asdict(fit(data,provenance_seed=SEED)),stream,indent=2)\n"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697026.3018188,
+      "elapsed_seconds": 0.2162485122680664,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/04-stdout.bin",
+          "bytes": 65,
+          "sha256": "8f7f6888ef4d0c699bffd6539febd3ccc79aa48ca2ae46fb9bda6aadfc5d8f2c"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/04-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "start",
+        "--attach",
+        "remission-s1-unit-48f22d566417"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697026.5184848,
+      "elapsed_seconds": 2.180424213409424,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/05-stdout.bin",
+          "bytes": 83,
+          "sha256": "cfe6915caf155f49e3920cb312e85575611d7e4b74e3a8b5a596d585b30166fd"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/05-stderr.bin",
+          "bytes": 2185,
+          "sha256": "f3ba3880626fb635c9c19e615a387058d7318ce0bb1a77482c64b420a35e272c"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "remission-s1-unit-48f22d566417",
+        "--format",
+        "{{json .State}}|{{.Image}}|{{json .HostConfig.Resources}}|{{.HostConfig.NetworkMode}}|{{.HostConfig.ReadonlyRootfs}}|{{json .Mounts}}"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697028.6992066,
+      "elapsed_seconds": 0.15304303169250488,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/06-stdout.bin",
+          "bytes": 1258,
+          "sha256": "3a157f5cc8e3af7de30794daaefe6c196d181f05946ccbaa75cdf1c682318ec5"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/06-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "create",
+        "--pull",
+        "never",
+        "--name",
+        "remission-s1-unit-48f22d566417-r",
+        "--network",
+        "none",
+        "--read-only",
+        "--cpus",
+        "2",
+        "--memory",
+        "2g",
+        "--pids-limit",
+        "64",
+        "--user",
+        "10002:10002",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,size=128m,uid=10002,gid=10002",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022,target=/workspace,readonly",
+        "--mount",
+        "type=bind,source=C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022/artifacts/support-s1-unit/run-4,target=/output",
+        "sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5",
+        "Rscript",
+        "/workspace/docs/implementation/evidence/support-s1-20261022/reference.R"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697028.852627,
+      "elapsed_seconds": 0.24424505233764648,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/07-stdout.bin",
+          "bytes": 65,
+          "sha256": "3f4a710d485c6f3581550553fdfcf760c8f930830f57b930363c6581c7fef253"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/07-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "start",
+        "--attach",
+        "remission-s1-unit-48f22d566417-r"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697029.0973022,
+      "elapsed_seconds": 0.761415958404541,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/08-stdout.bin",
+          "bytes": 462,
+          "sha256": "2d1b832bb26d41939eaf08a173d4b1a41c36c4449c57f96f86aa4c4f2bef6b0f"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/08-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "remission-s1-unit-48f22d566417-r",
+        "--format",
+        "{{json .State}}|{{.Image}}|{{json .HostConfig.Resources}}|{{.HostConfig.NetworkMode}}|{{.HostConfig.ReadonlyRootfs}}|{{json .Mounts}}"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "started_unix": 1792697029.8590956,
+      "elapsed_seconds": 0.1547389030456543,
+      "streams": {
+        "stdout": {
+          "path": "artifacts/support-s1-unit/run-4/09-stdout.bin",
+          "bytes": 1258,
+          "sha256": "2d91402912c0897699a3c566088521752b16eac24d4ab168ff067ea9caba3f1d"
+        },
+        "stderr": {
+          "path": "artifacts/support-s1-unit/run-4/09-stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "source_head": "d14ea46383ab882a27b776917b1290e731ab9166",
+  "source_sha256": {
+    "methods/support/__init__.py": "8b4c795b4e71978bee2217af977cd072ee7da21eba102e3cce76ae0d2a32daf9",
+    "methods/support/data.py": "c5df8525937f7adeaebcdc42105a3ee9d260e001b65212d82182ffe23c635470",
+    "methods/support/wcls.py": "c2a516c8e1ca8b2301b21983be9683e809ec064b3bb4a7b62713fd8a14ab4cc3",
+    "tests/methods/test_support_wcls.py": "2ca695c3096bfa0d42a65f2d1bc45f750f16f715885ed70887aca1754b55f9d4",
+    "docs/implementation/evidence/support-s1-20261022/run_bounded.py": "3e64940d6a1d09ade42169804728ce98486c9a54849eba32fae2080d5deef4c0",
+    "docs/implementation/evidence/support-s1-20261022/reference.R": "656cfd945279b7a9bc9e74dcb1f847d93ba00cbd7ba79e6d95d670ff23d5fac5"
+  },
+  "test_exit_code": 0,
+  "timed_out": false,
+  "container": "remission-s1-unit-48f22d566417",
+  "selected_inspection": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-10-22T19:23:46.609347733Z\",\"FinishedAt\":\"2026-10-22T19:23:48.537669842Z\"}|sha256:be4bbf7978bb318b8c3d2901e8e9510b746aa8554d5c0dbfc8eea5928d9f07f7|{\"CpuShares\":0,\"Memory\":2147483648,\"NanoCpus\":2000000000,\"CgroupParent\":\"\",\"BlkioWeight\":0,\"BlkioWeightDevice\":[],\"BlkioDeviceReadBps\":[],\"BlkioDeviceWriteBps\":[],\"BlkioDeviceReadIOps\":[],\"BlkioDeviceWriteIOps\":[],\"CpuPeriod\":0,\"CpuQuota\":0,\"CpuRealtimePeriod\":0,\"CpuRealtimeRuntime\":0,\"CpusetCpus\":\"\",\"CpusetMems\":\"\",\"Devices\":[],\"DeviceCgroupRules\":null,\"DeviceRequests\":null,\"MemoryReservation\":0,\"MemorySwap\":4294967296,\"MemorySwappiness\":null,\"OomKillDisable\":null,\"PidsLimit\":64,\"Ulimits\":null,\"CpuCount\":0,\"CpuPercent\":0,\"IOMaximumIOps\":0,\"IOMaximumBandwidth\":0}|none|true|[{\"Type\":\"bind\",\"Source\":\"C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022/artifacts/support-s1-unit/run-4\",\"Destination\":\"/output\",\"Mode\":\"\",\"RW\":true,\"Propagation\":\"rprivate\"},{\"Type\":\"bind\",\"Source\":\"C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022\",\"Destination\":\"/workspace\",\"Mode\":\"\",\"RW\":false,\"Propagation\":\"rprivate\"}]",
+  "r_reference": {
+    "image": "sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5",
+    "container": "remission-s1-unit-48f22d566417-r",
+    "exit_code": 0,
+    "timed_out": false,
+    "selected_inspection": "{\"Status\":\"exited\",\"Running\":false,\"Paused\":false,\"Restarting\":false,\"OOMKilled\":false,\"Dead\":false,\"Pid\":0,\"ExitCode\":0,\"Error\":\"\",\"StartedAt\":\"2026-10-22T19:23:49.181016862Z\",\"FinishedAt\":\"2026-10-22T19:23:49.696529435Z\"}|sha256:2d24b2af23795f11935fd917486dd132c708f2d22e90cf706d540bcd647100d5|{\"CpuShares\":0,\"Memory\":2147483648,\"NanoCpus\":2000000000,\"CgroupParent\":\"\",\"BlkioWeight\":0,\"BlkioWeightDevice\":[],\"BlkioDeviceReadBps\":[],\"BlkioDeviceWriteBps\":[],\"BlkioDeviceReadIOps\":[],\"BlkioDeviceWriteIOps\":[],\"CpuPeriod\":0,\"CpuQuota\":0,\"CpuRealtimePeriod\":0,\"CpuRealtimeRuntime\":0,\"CpusetCpus\":\"\",\"CpusetMems\":\"\",\"Devices\":[],\"DeviceCgroupRules\":null,\"DeviceRequests\":null,\"MemoryReservation\":0,\"MemorySwap\":4294967296,\"MemorySwappiness\":null,\"OomKillDisable\":null,\"PidsLimit\":64,\"Ulimits\":null,\"CpuCount\":0,\"CpuPercent\":0,\"IOMaximumIOps\":0,\"IOMaximumBandwidth\":0}|none|true|[{\"Type\":\"bind\",\"Source\":\"C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022/artifacts/support-s1-unit/run-4\",\"Destination\":\"/output\",\"Mode\":\"\",\"RW\":true,\"Propagation\":\"rprivate\"},{\"Type\":\"bind\",\"Source\":\"C:/Users/erics/Documents/Projects/REMission-worktrees/support-s1-sol-261022\",\"Destination\":\"/workspace\",\"Mode\":\"\",\"RW\":false,\"Propagation\":\"rprivate\"}]"
+  }
+}
