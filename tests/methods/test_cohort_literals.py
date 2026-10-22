@@ -22,7 +22,8 @@ class CohortLiteralControls(unittest.TestCase):
         for name,point,expected,gradient in cases:
             with self.subTest(name=name):
                 rv=model[name]
-                self.assertTrue(all(v.dtype=='float64' for v in rv.owner.inputs[-2:]))
+                parameters=rv.owner.inputs[-2:] if name=='mu_b' else rv.owner.inputs[-1:]
+                self.assertTrue(all(v.dtype=='float64' for v in parameters))
                 expression=pm.logp(rv,x)
                 fn=pytensor.function([x],[expression,pt.grad(expression,x)],**compilation_options())
                 verify_cvm(fn)
