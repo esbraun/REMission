@@ -22,7 +22,7 @@ LIMITS=['--network','none','--cpus','2','--memory','2g','--read-only','--cap-dro
         '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m','--user','10001:10001']
 # Select at Docker's output boundary, BEFORE capture.run persists any bytes.
 # Config.Env is never requested, captured or copied into the handoff.
-IMAGE_FORMAT='{"Id":{{json .Id}},"Created":{{json .Created}},"RootFS":{{json .RootFS}},"config":{"User":{{json .Config.User}},"WorkingDir":{{json .Config.WorkingDir}},"Entrypoint":{{json .Config.Entrypoint}},"Cmd":{{json .Config.Cmd}},"ExposedPorts":{{json .Config.ExposedPorts}}}}'
+IMAGE_FORMAT='{"Id":{{json .Id}},"Created":{{json .Created}},"RootFS":{{json .RootFS}},"config":{"User":{{json (index .Config "User")}},"WorkingDir":{{json (index .Config "WorkingDir")}},"Entrypoint":{{json (index .Config "Entrypoint")}},"Cmd":{{json (index .Config "Cmd")}},"ExposedPorts":{{json (index .Config "ExposedPorts")}}}}'
 CONTAINER_FORMAT='{"Id":{{json .Id}},"Image":{{json .Image}},"Path":{{json .Path}},"Args":{{json .Args}},"State":{{json .State}},"User":{{json .Config.User}},"Mounts":{{json .Mounts}},"HostConfig":{"Memory":{{json .HostConfig.Memory}},"NanoCpus":{{json .HostConfig.NanoCpus}},"NetworkMode":{{json .HostConfig.NetworkMode}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}}}}'
 SCAN="""import hashlib,json;from pathlib import Path
 r={}
@@ -50,7 +50,7 @@ def main():
         (root/name).write_text(json.dumps(value,indent=2,sort_keys=True)+'\n',encoding='utf-8')
     def command(argv,seconds=60):
         p,m=run(argv,root/'commands',timeout_seconds=seconds)
-        if p.returncode:raise RuntimeError(str(m))
+        if p.returncode:raise RuntimeError('command failed; retained stderr '+str(root/'commands'/m['streams']['stderr']['path']))
         return p.stdout
     head=command(['git','rev-parse','HEAD']).decode().strip()
     # Compare the actual physical copied bytes with the accepted production source,
