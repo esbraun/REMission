@@ -51,7 +51,7 @@ class BridgeTests(unittest.TestCase):
 
     def test_tensor_values_gradients_and_normalized_mixture_scalar_reference(self):
         vector=pt.dvector('theta')
-        theta=dict(zip(FIELDS,vector))
+        theta={name:vector[i] for i,name in enumerate(FIELDS)}
         g=tensor_marginal(theta)
         total,responsibility=tensor_mixture(-1.4,.4,g,.2,.8)
         f=pytensor.function([vector],[g,total,responsibility,pt.grad(total,vector)])
