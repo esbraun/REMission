@@ -72,6 +72,7 @@ function App() {
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
   const [pendingApproval, setPendingApproval] = useState<string | null>(null);
   const [later, setLater] = useState<string | null>(null);
+  const [bootstrapVersion, setBootstrapVersion] = useState(0);
   const [refreshVersion, setRefreshVersion] = useState(0);
   const route = routeOf(path);
 
@@ -89,7 +90,15 @@ function App() {
     }
     return result as T;
   }
-  useEffect(() => { void request<Session>('/api/session').then(setSession).catch(e => setError(String(e))).finally(() => setBooting(false)); }, []);
+  useEffect(() => {
+    const ticket = gate.current.capture();
+    let active = true;
+    void request<Session>('/api/session')
+      .then(value => { if (active && gate.current.accepts(ticket)) setSession(value); })
+      .catch(e => { if (active && gate.current.accepts(ticket)) setError(String(e)); })
+      .finally(() => { if (active) setBooting(false); });
+    return () => { active = false; };
+  }, [bootstrapVersion]);
   useEffect(() => {
     function pop() { clearIdentity(); setPath(location.pathname); }
     function warn(event: BeforeUnloadEvent) { if (dirty) { event.preventDefault(); event.returnValue = ''; } }
@@ -147,7 +156,11 @@ function App() {
     catch (e) { if (gate.current.accepts(ticket)) setError(String(e)); }
   }
   function edit(values: Partial<Draft>) { if (draft) { setDraft({ ...draft, ...values }); setDirty(true); setReviewing(false); } }
-  function refresh() { gate.current.activate('refresh'); setWorkspace(null); setRefreshVersion(value => value + 1); }
+  function refresh() {
+    gate.current.invalidate(); setWorkspace(null);
+    if (!session?.principal) { setBooting(true); setBootstrapVersion(value => value + 1); }
+    else setRefreshVersion(value => value + 1);
+  }
   async function finishApproval(result: { bundle_id: string }, ticket: ReturnType<ContextGate['capture']>) {
     if (!gate.current.accepts(ticket)) return;
     setDirty(false); setPendingApproval(null); setReviewing(false); setNotice('Ordinary synthetic choice and follow-up persisted.'); navigate(`/patients/${route.patient}/history/${result.bundle_id}`, true);

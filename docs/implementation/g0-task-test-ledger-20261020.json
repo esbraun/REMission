@@ -18337,7 +18337,7 @@
   },
   "live_hold_implementation": {
     "task": "T-OBS2-LIVE-HOLD",
-    "status": "implementer_qualified_pending_independent_final_exact_review",
+    "status": "in_progress_independent_bootstrap_browser_P2_repair",
     "base": "ec18cb4020ba239710a3fd615e365d5cd72b4d80",
     "plan": "756ce26bf454cce89933439f03572cd34b29eda8",
     "plan_review_blob": "0f90d6be4dbb5193dc31df8291abac57b339e401",
@@ -18388,6 +18388,14 @@
       "tests/integration/replay/test_live_upgrade.py",
       "tests/integration/replay/test_live_safety_product.py",
       "docs/implementation/evidence/G1-LIVE-HOLD/release-handoff.md"
-    ]
+    ],
+    "previous_frozen_candidate": "6f40d4a29692d86e269b5598ffedd7b6bbbf2a05",
+    "bootstrap_repair": {
+      "scope": "web bootstrap recovery and stale response guard only; no backend/scientific contract change",
+      "evidence": "docs/implementation/evidence/G1-LIVE-HOLD/bootstrap-repair/README.md",
+      "supporting_context_tests": 4,
+      "rendered_app_regression": "official MCP recipes added, actual repaired-image execution pending",
+      "qualification": "old801/47da/6f40 evidence retained historical; new assets/images/copy/browser required"
+    }
   }
 }

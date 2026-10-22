@@ -21,6 +21,15 @@ test('logout and same-doctor login invalidate every pre-logout response', () => 
   assert.equal(gate.accepts(gate.capture()), true);
 });
 
+test('refresh rejects an earlier response even when the same workspace context returns', () => {
+  const gate = new ContextGate();
+  const old = gate.activate('alice/A/current');
+  gate.invalidate();
+  const current = gate.activate('alice/A/current');
+  assert.equal(gate.accepts(old), false);
+  assert.equal(gate.accepts(current), true);
+});
+
 test('delayed logout success and failure cannot notify a reauthenticated same-doctor workspace', async () => {
   for (const fails of [false, true]) {
     const gate = new ContextGate(); gate.activate('alice/A/current');
