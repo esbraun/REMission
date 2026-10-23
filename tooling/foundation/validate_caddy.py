@@ -1,4 +1,4 @@
-"""One frozen offline Caddy check; stdlib adapter to analysis_lifecycle, no pull."""
+"""Frozen Caddy validation and separately authorized one-pull acquisition."""
 import argparse
 import hashlib
 import json
@@ -80,7 +80,60 @@ def plan(name, folder):
                 image_format=IMAGE_FORMAT, container_format=CONTAINER_FORMAT,
                 workload_seconds=45, external_seconds=100, attempts=1,
                 acquisition_proposal=dict(argv=['docker', 'pull', '--platform', 'linux/amd64', IMAGE],
+                    launcher_argv=acquisition_argv(folder, '--acquire'),
+                    worker_argv=acquisition_argv(folder, '--acquisition-worker'),
+                    evidence=str((folder / 'acquisition').resolve()),
                     timeout_seconds=120, external_seconds=140, attempts=1, authorized=False))
+
+
+def acquisition_argv(folder, mode):
+    return [sys.executable, '-P', '-B', str(Path(__file__).resolve()), mode,
+            str((folder / 'plan.json').resolve()), '--authorization',
+            str((folder / 'acquisition-authorization.json').resolve())]
+
+
+def acquisition_authorized(path, authorization):
+    raw = path.read_bytes(); value = json.loads(raw)
+    expected = dict(authorized=True, scope='one-caddy-image-acquisition', plan_sha256=sha(raw),
+                    launcher_sha256=sha(Path(__file__).read_bytes()),
+                    evidence=str((path.parent / 'acquisition').resolve()),
+                    attempts=1, timeout_seconds=120, external_seconds=140, cloud=False)
+    if (authorization != (path.parent / 'acquisition-authorization.json').resolve()
+            or json.dumps(json.loads(authorization.read_bytes()), sort_keys=True) != json.dumps(expected, sort_keys=True)):
+        raise ValueError('root acquisition authorization must match exact plan, launcher and evidence')
+    if value != plan(value['name'], path.parent):
+        raise ValueError('frozen source, paths, commit or argv changed')
+    return value
+
+
+def acquire_worker(path, authorization):
+    frozen = acquisition_authorized(path, authorization)['acquisition_proposal']
+    folder = Path(frozen['evidence']) / 'attempt'; folder.mkdir(parents=True, exist_ok=False)
+    argv = frozen['argv']; child = None; failure = None; code = None; kill_requested = False
+    deadline = time.monotonic() + 120
+    try:
+        with (folder / 'stdout').open('wb') as out, (folder / 'stderr').open('wb') as err:
+            child = subprocess.Popen(argv, stdout=out, stderr=err,
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+            life.save(folder / 'child.json', dict(pid=child.pid, argv=argv, deadline=deadline))
+            code = child.wait(timeout=max(.001, deadline - time.monotonic()))
+            life.check_deadline(deadline)
+            if code != 0: raise RuntimeError('pull client failed')
+            acquisition_authorized(path, authorization)
+    except BaseException as error:
+        failure = 'STOP UNCONFIRMED: daemon pull may continue; ' + repr(error)
+    finally:
+        try:
+            if failure is not None and child is not None and child.poll() is None:
+                kill_requested = True; child.kill()
+            code = life.reap(child)
+        except BaseException as error:
+            failure = (failure or 'STOP UNCONFIRMED: daemon pull may continue') + '; reap ' + repr(error)
+        life.save(folder / 'terminal.json', dict(pid=child.pid if child else None, argv=argv,
+                  returncode=code, reaped=child is not None and child.returncode is not None,
+                  kill_requested=kill_requested, failure=failure,
+                  daemon_stop_confirmed=False, deadline=deadline))
+    if failure is not None or code != 0: raise RuntimeError(failure or 'pull failed; retain evidence')
 
 
 def authorized(path, authorization):
@@ -179,26 +232,41 @@ def worker(path, authorization):
     if failure is not None: raise RuntimeError(failure)
 
 
-def launch(path, authorization):
-    authorized(path, authorization)
-    folder = path.parent / 'launch'; folder.mkdir(exist_ok=False)
-    argv = [sys.executable, '-P', '-B', str(Path(__file__).resolve()), '--worker', str(path),
-            '--authorization', str(authorization)]
+def launch(path, authorization, acquisition=False):
+    frozen = acquisition_authorized(path, authorization) if acquisition else authorized(path, authorization)
+    folder = path.parent / ('acquisition/launch' if acquisition else 'launch')
+    folder.mkdir(parents=acquisition, exist_ok=False)
+    argv = (frozen['acquisition_proposal']['worker_argv'] if acquisition else
+            [sys.executable, '-P', '-B', str(Path(__file__).resolve()), '--worker', str(path),
+             '--authorization', str(authorization)])
+    deadline = time.monotonic() + (136 if acquisition else 100)
     child = None; failure = None; code = None
     try:
         with (folder / 'stdout').open('wb') as out, (folder / 'stderr').open('wb') as err:
             child = subprocess.Popen(argv, stdout=out, stderr=err,
                 creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
             life.save(folder / 'child.json', dict(pid=child.pid, argv=argv))
-            code = child.wait(timeout=100)
+            code = child.wait(timeout=max(.001, deadline - time.monotonic()))
+            if acquisition:
+                life.check_deadline(deadline)
+                receipt = json.loads((folder.parent / 'attempt/terminal.json').read_bytes())
+                if (type(receipt.get('pid')) is not int or type(receipt.get('returncode')) is not int
+                        or receipt['returncode'] != 0 or receipt.get('reaped') is not True
+                        or receipt.get('failure') is not None
+                        or receipt.get('argv') != frozen['acquisition_proposal']['argv']):
+                    raise ValueError('pull client success/reap receipt missing')
     except BaseException as error:
-        failure = 'STOP UNCONFIRMED ' + repr(error)
+        failure = ('STOP UNCONFIRMED: daemon pull may continue; ' if acquisition else 'STOP UNCONFIRMED ') + repr(error)
     finally:
-        code = life.reap(child)
+        try: code = life.reap(child)
+        except BaseException as error:
+            failure = (failure or ('STOP UNCONFIRMED: daemon pull may continue' if acquisition else 'STOP UNCONFIRMED')) + '; reap ' + repr(error)
         life.save(folder / 'terminal.json', dict(pid=child.pid if child else None,
-                  returncode=code, failure=failure, reaped=child is not None and child.returncode is not None))
+                  argv=argv, returncode=code, failure=failure,
+                  reaped=child is not None and child.returncode is not None))
     if failure is not None or code != 0:
-        raise RuntimeError(failure or 'Caddy validation worker failed; retain evidence')
+        raise RuntimeError((failure or 'worker failed; retain evidence') +
+                           ('; STOP UNCONFIRMED: daemon pull may continue; no retry' if acquisition else ''))
 
 
 def main():
@@ -206,6 +274,8 @@ def main():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--freeze', type=Path); mode.add_argument('--launch', type=Path)
     mode.add_argument('--worker', type=Path, help=argparse.SUPPRESS)
+    mode.add_argument('--acquire', type=Path)
+    mode.add_argument('--acquisition-worker', type=Path, help=argparse.SUPPRESS)
     parser.add_argument('--name'); parser.add_argument('--authorization', type=Path)
     args = parser.parse_args()
     if args.freeze:
@@ -214,6 +284,8 @@ def main():
         print(sha((args.freeze / 'plan.json').read_bytes()))
     elif args.authorization is None:
         parser.error('--authorization required')
+    elif args.acquire: launch(args.acquire.resolve(), args.authorization.resolve(), acquisition=True)
+    elif args.acquisition_worker: acquire_worker(args.acquisition_worker.resolve(), args.authorization.resolve())
     elif args.launch: launch(args.launch.resolve(), args.authorization.resolve())
     else: worker(args.worker.resolve(), args.authorization.resolve())
 
