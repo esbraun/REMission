@@ -1,0 +1,169 @@
+{
+  "firewalls": [
+    {
+      "allowed": [
+        {
+          "IPProtocol": "tcp",
+          "ports": [
+            "22"
+          ]
+        }
+      ],
+      "creationTimestamp": "2026-10-22T21:25:39.277-07:00",
+      "description": "",
+      "direction": "INGRESS",
+      "disabled": false,
+      "id": "3146489316045709100",
+      "kind": "compute#firewall",
+      "logConfig": {
+        "enable": false
+      },
+      "name": "remission-sim-20261023-iap-ssh",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "priority": 900,
+      "selfLink": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/firewalls/remission-sim-20261023-iap-ssh",
+      "sourceRanges": [
+        "35.235.240.0/20"
+      ],
+      "targetTags": [
+        "remission-sim-20261023"
+      ]
+    },
+    {
+      "creationTimestamp": "2026-10-22T21:25:30.005-07:00",
+      "denied": [
+        {
+          "IPProtocol": "all"
+        }
+      ],
+      "description": "",
+      "direction": "INGRESS",
+      "disabled": false,
+      "id": "8836493828379074390",
+      "kind": "compute#firewall",
+      "logConfig": {
+        "enable": false
+      },
+      "name": "remission-sim-20261023-deny-ingress",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "priority": 1000,
+      "selfLink": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/firewalls/remission-sim-20261023-deny-ingress",
+      "sourceRanges": [
+        "0.0.0.0/0"
+      ],
+      "targetTags": [
+        "remission-sim-20261023"
+      ]
+    },
+    {
+      "allowed": [
+        {
+          "IPProtocol": "tcp",
+          "ports": [
+            "3389"
+          ]
+        }
+      ],
+      "creationTimestamp": "2026-10-22T20:26:39.615-07:00",
+      "description": "Allow RDP from anywhere",
+      "direction": "INGRESS",
+      "disabled": false,
+      "id": "7587256221870550272",
+      "kind": "compute#firewall",
+      "logConfig": {
+        "enable": false
+      },
+      "name": "default-allow-rdp",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "priority": 65534,
+      "selfLink": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/firewalls/default-allow-rdp",
+      "sourceRanges": [
+        "0.0.0.0/0"
+      ]
+    },
+    {
+      "allowed": [
+        {
+          "IPProtocol": "tcp",
+          "ports": [
+            "0-65535"
+          ]
+        },
+        {
+          "IPProtocol": "udp",
+          "ports": [
+            "0-65535"
+          ]
+        },
+        {
+          "IPProtocol": "icmp"
+        }
+      ],
+      "creationTimestamp": "2026-10-22T20:26:39.603-07:00",
+      "description": "Allow internal traffic on the default network",
+      "direction": "INGRESS",
+      "disabled": false,
+      "id": "6378490702077586688",
+      "kind": "compute#firewall",
+      "logConfig": {
+        "enable": false
+      },
+      "name": "default-allow-internal",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "priority": 65534,
+      "selfLink": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/firewalls/default-allow-internal",
+      "sourceRanges": [
+        "10.128.0.0/9"
+      ]
+    },
+    {
+      "allowed": [
+        {
+          "IPProtocol": "tcp",
+          "ports": [
+            "22"
+          ]
+        }
+      ],
+      "creationTimestamp": "2026-10-22T20:26:39.609-07:00",
+      "description": "Allow SSH from anywhere",
+      "direction": "INGRESS",
+      "disabled": false,
+      "id": "2834064573071846656",
+      "kind": "compute#firewall",
+      "logConfig": {
+        "enable": false
+      },
+      "name": "default-allow-ssh",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "priority": 65534,
+      "selfLink": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/firewalls/default-allow-ssh",
+      "sourceRanges": [
+        "0.0.0.0/0"
+      ]
+    },
+    {
+      "allowed": [
+        {
+          "IPProtocol": "icmp"
+        }
+      ],
+      "creationTimestamp": "2026-10-22T20:26:39.620-07:00",
+      "description": "Allow ICMP from anywhere",
+      "direction": "INGRESS",
+      "disabled": false,
+      "id": "8684926021641137408",
+      "kind": "compute#firewall",
+      "logConfig": {
+        "enable": false
+      },
+      "name": "default-allow-icmp",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "priority": 65534,
+      "selfLink": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/firewalls/default-allow-icmp",
+      "sourceRanges": [
+        "0.0.0.0/0"
+      ]
+    }
+  ]
+}

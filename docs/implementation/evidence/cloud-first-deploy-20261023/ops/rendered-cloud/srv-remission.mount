@@ -1,0 +1,9 @@
+[Unit]
+Description=Retained REMission simulation disk
+
+[Mount]
+What=/dev/disk/by-id/google-remission-data
+Where=/srv/remission
+Type=ext4
+Options=nodev,nosuid
+TimeoutSec=30

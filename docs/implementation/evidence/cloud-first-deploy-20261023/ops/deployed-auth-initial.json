@@ -1,0 +1,131 @@
+{
+  "utc": "2026-10-23T04:41:07.758302+00:00",
+  "origin": "https://34.59.176.42",
+  "source": "286aa87a10a24ad9925c90be033e7d8c0570d99b",
+  "checks": [
+    {
+      "case": "anonymous-protected-read",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "code": "authentication_required"
+    },
+    {
+      "case": "anonymous-protected-write",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "code": "authentication_required"
+    },
+    {
+      "case": "wrong-password",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "code": "invalid_credentials"
+    },
+    {
+      "case": "unknown-account",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "code": "invalid_credentials"
+    },
+    {
+      "case": "correct-login",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "code": null
+    },
+    {
+      "case": "cookie-attributes",
+      "attributes": {
+        "secure": true,
+        "http_only": true,
+        "same_site_lax": true,
+        "path_root": true
+      },
+      "passed": true
+    },
+    {
+      "case": "correct-login",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "code": null
+    },
+    {
+      "case": "cookie-attributes",
+      "attributes": {
+        "secure": true,
+        "http_only": true,
+        "same_site_lax": true,
+        "path_root": true
+      },
+      "passed": true
+    },
+    {
+      "case": "owner-one-empty-panel",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "code": null
+    },
+    {
+      "case": "owner-two-empty-panel",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "code": null
+    },
+    {
+      "case": "missing-csrf-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true,
+      "code": "csrf_rejected"
+    },
+    {
+      "case": "foreign-origin-denied",
+      "status": 403,
+      "expected": 403,
+      "passed": true,
+      "code": "csrf_rejected"
+    },
+    {
+      "case": "correct-login",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "code": null
+    },
+    {
+      "case": "cookie-attributes",
+      "attributes": {
+        "secure": true,
+        "http_only": true,
+        "same_site_lax": true,
+        "path_root": true
+      },
+      "passed": true
+    },
+    {
+      "case": "logout",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "code": null
+    },
+    {
+      "case": "logout-old-session-denied",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "code": "authentication_required"
+    }
+  ],
+  "isolated_user_two_expiry_utc": "2026-10-23T05:11:06.923337+00:00",
+  "ttl_seconds": 1800,
+  "no_panel_generation_or_advance": true
+}

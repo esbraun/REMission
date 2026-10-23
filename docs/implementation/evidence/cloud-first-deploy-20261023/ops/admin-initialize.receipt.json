@@ -1,0 +1,26 @@
+{
+  "name": "admin-initialize",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=sudo docker compose -p remission-simulation -f /opt/remission-simulation/compose.json run --rm --no-deps -T --volume /opt/remission-simulation:/deployment:ro --volume /srv/remission/bootstrap:/fixtures:rw app python /deployment/admin.py initialize"
+  ],
+  "started_utc": "2026-10-23T04:35:31.558604+00:00",
+  "elapsed_seconds": 15.315796099952422,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "secret_input_pipe_only": false,
+  "secret_output_detected": false
+}

@@ -1,0 +1,37 @@
+{
+  "utc": "2026-10-23T04:43:03.298734+00:00",
+  "origin": "https://34.59.176.42",
+  "checks": [
+    {
+      "case": "old-user-one-session-revoked",
+      "status": 401,
+      "expected": 401,
+      "code": "authentication_required",
+      "passed": true
+    },
+    {
+      "case": "user-two-expiry-session-still-valid",
+      "status": 200,
+      "expected": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "case": "old-password-rejected",
+      "status": 401,
+      "expected": 401,
+      "code": "invalid_credentials",
+      "passed": true
+    },
+    {
+      "case": "reset-password-login",
+      "status": 200,
+      "expected": 200,
+      "code": null,
+      "passed": true
+    }
+  ],
+  "credentials_stable_readonly_private_file": true,
+  "isolated_user_two_expiry_utc": "2026-10-23T05:11:06.923337+00:00",
+  "no_panel_mutation": true
+}

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--strict-host-key-checking=yes",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=printf \"BOOT_ID \"; cat /proc/sys/kernel/random/boot_id; systemctl is-system-running || true; sudo systemctl status remission-simulation.service --no-pager --lines=14 || true; findmnt --mountpoint /srv/remission --output SOURCE,TARGET,FSTYPE,UUID || true; sudo stat -c \"%d:%i %s %n\" /srv/remission/data/remission.sqlite /srv/remission/data/remission.sqlite.admission.lock || true; sudo journalctl -u remission-simulation.service -b --no-pager -n 45"
+  ],
+  "utc": "2026-10-23T05:09:51.433898+00:00",
+  "elapsed_seconds": 7.523170700063929,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "read_only": true
+}

@@ -1,0 +1,31 @@
+{
+  "name": "deny-ingress-create-corrected",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "firewall-rules",
+    "create",
+    "remission-sim-20261023-deny-ingress",
+    "--network=default",
+    "--direction=INGRESS",
+    "--priority=1000",
+    "--target-tags=remission-sim-20261023",
+    "--source-ranges=0.0.0.0/0",
+    "--action=DENY",
+    "--rules=all",
+    "--format=json(id,name,network,direction,priority,targetTags,sourceRanges,denied)"
+  ],
+  "started_utc": "2026-10-23T04:25:26.097083+00:00",
+  "ended_utc": "2026-10-23T04:25:35.488450+00:00",
+  "elapsed_seconds": 9.39138299995102,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "remote_state": "client_completed"
+}

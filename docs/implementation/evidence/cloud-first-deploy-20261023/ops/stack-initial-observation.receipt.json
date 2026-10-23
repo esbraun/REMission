@@ -1,0 +1,26 @@
+{
+  "name": "stack-initial-observation",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--strict-host-key-checking=yes",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; sudo systemctl is-active remission-simulation.service; sudo docker compose -p remission-simulation -f /opt/remission-simulation/compose.json ps --format json; sudo docker ps --filter label=com.docker.compose.project=remission-simulation --format \"{{.ID}} {{.Names}} {{.Image}} {{.Status}} {{.Ports}}\"; free -b; df -B1 / /srv/remission; sudo docker stats --no-stream --format \"{{.Name}} {{.MemUsage}} {{.MemPerc}} {{.CPUPerc}} {{.PIDs}}\"; sudo stat -c \"%d:%i %s %n\" /srv/remission/data/remission.sqlite /srv/remission/data/remission.sqlite.admission.lock; cat /proc/sys/kernel/random/boot_id"
+  ],
+  "started_utc": "2026-10-23T04:39:23.184848+00:00",
+  "elapsed_seconds": 9.218347399961203,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "remote_state": "client_completed"
+}

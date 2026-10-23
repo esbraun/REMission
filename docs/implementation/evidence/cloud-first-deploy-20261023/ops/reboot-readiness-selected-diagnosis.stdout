@@ -1,0 +1,57 @@
+BOOT_ID 7ea8523f-5581-4038-b66c-a012f2c29fa2
+running
+● remission-simulation.service - REMission single-writer synthetic physician simulation
+     Loaded: loaded (/etc/systemd/system/remission-simulation.service; enabled; preset: enabled)
+     Active: active (exited) since Fri 2026-10-23 05:09:12 UTC; 47s ago
+    Process: 1173 ExecStart=/usr/bin/docker compose --project-name remission-simulation --file /opt/remission-simulation/compose.json up --detach --pull never --scale app=1 --wait --wait-timeout 120 (code=exited, status=0/SUCCESS)
+   Main PID: 1173 (code=exited, status=0/SUCCESS)
+        CPU: 409ms
+
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Started
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Starting
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Started
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Waiting
+Oct 23 05:09:10 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Healthy
+Oct 23 05:09:10 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Starting
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Started
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Waiting
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Waiting
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Waiting
+Oct 23 05:09:12 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Healthy
+Oct 23 05:09:12 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Healthy
+Oct 23 05:09:12 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Healthy
+Oct 23 05:09:12 remission-sim-20261023 systemd[1]: Finished remission-simulation.service - REMission single-writer synthetic physician simulation.
+SOURCE   TARGET         FSTYPE UUID
+/dev/sda /srv/remission ext4   6d567bb0-a7ec-4035-8842-eb72ec7b9eb4
+2048:131075 995328 /srv/remission/data/remission.sqlite
+2048:131076 0 /srv/remission/data/remission.sqlite.admission.lock
+Oct 23 05:08:54 remission-sim-20261023 systemd[1]: Starting remission-simulation.service - REMission single-writer synthetic physician simulation...
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_edge Creating
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_edge Creating
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_private Creating
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_private Creating
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_private Created
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_private Created
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Creating
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_edge Created
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Network remission-simulation_edge Created
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Created
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Creating
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Created
+Oct 23 05:08:57 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Creating
+Oct 23 05:08:58 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Created
+Oct 23 05:08:58 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Starting
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Started
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Starting
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Started
+Oct 23 05:08:59 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Waiting
+Oct 23 05:09:10 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Healthy
+Oct 23 05:09:10 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Starting
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Started
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Waiting
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Waiting
+Oct 23 05:09:11 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Waiting
+Oct 23 05:09:12 remission-sim-20261023 docker[1201]:  Container remission-simulation-app-1 Healthy
+Oct 23 05:09:12 remission-sim-20261023 docker[1201]:  Container remission-simulation-proxy-1 Healthy
+Oct 23 05:09:12 remission-sim-20261023 docker[1201]:  Container remission-simulation-generator-1 Healthy
+Oct 23 05:09:12 remission-sim-20261023 systemd[1]: Finished remission-simulation.service - REMission single-writer synthetic physician simulation.

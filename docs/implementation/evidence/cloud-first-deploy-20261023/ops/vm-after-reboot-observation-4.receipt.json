@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--strict-host-key-checking=yes",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; printf \"BOOT_ID \"; cat /proc/sys/kernel/random/boot_id; test \"$(cat /proc/sys/kernel/random/boot_id)\" != 8aeb65b4-3bb7-421e-8636-def33adf9f2a; sudo systemctl is-active remission-simulation.service; printf \"DISK_UUID \"; sudo blkid -s UUID -o value /dev/disk/by-id/google-remission-data; sudo stat -c \"%d:%i %s %n\" /srv/remission/data/remission.sqlite /srv/remission/data/remission.sqlite.admission.lock; sudo sha256sum /opt/remission-simulation/manifest.json; sudo python3 /opt/remission-simulation/prepare.py --verify /opt/remission-simulation; sudo docker inspect --format '{\"Name\":{{json .Name}},\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"Status\":{{json .State.Status}},\"OOMKilled\":{{.State.OOMKilled}}}' remission-simulation-app-1 remission-simulation-generator-1 remission-simulation-proxy-1; free -b; df -B1 / /srv/remission"
+  ],
+  "started_utc": "2026-10-23T05:07:39.853432+00:00",
+  "elapsed_seconds": 6.0612191000254825,
+  "returncode": 1,
+  "timeout": false,
+  "client_reaped": true
+}

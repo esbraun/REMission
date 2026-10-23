@@ -1,0 +1,26 @@
+{
+  "name": "reset-start-unit",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--strict-host-key-checking=yes",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=sudo systemctl start remission-simulation.service"
+  ],
+  "started_utc": "2026-10-23T04:42:45.667958+00:00",
+  "elapsed_seconds": 15.87581879994832,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "secret_output_detected": false
+}

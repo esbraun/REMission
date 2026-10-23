@@ -1,0 +1,30 @@
+{
+  "name": "iap-ssh-create",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "firewall-rules",
+    "create",
+    "remission-sim-20261023-iap-ssh",
+    "--network=default",
+    "--direction=INGRESS",
+    "--priority=900",
+    "--target-tags=remission-sim-20261023",
+    "--source-ranges=35.235.240.0/20",
+    "--allow=tcp:22",
+    "--format=json(id,name,network,direction,priority,targetTags,sourceRanges,allowed)"
+  ],
+  "started_utc": "2026-10-23T04:25:35.488901+00:00",
+  "ended_utc": "2026-10-23T04:25:44.647243+00:00",
+  "elapsed_seconds": 9.158354100072756,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "remote_state": "client_completed"
+}

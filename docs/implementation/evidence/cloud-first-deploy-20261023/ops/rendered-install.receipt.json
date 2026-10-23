@@ -1,0 +1,25 @@
+{
+  "name": "rendered-install",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; cd /home/eric_samuel_braun_gmail_com/rendered-cloud; printf \"%s  %s\\n\" caef64ea9b0c03525f25aea35dfc3589d0b19ce6c449afc753d7554846201f45 manifest.json | sha256sum -c -; python3 prepare.py --verify .; test ! -e /opt/remission-simulation; sudo install -d -o root -g root -m 0755 /opt/remission-simulation; sudo cp -a . /opt/remission-simulation/; sudo chown -R root:root /opt/remission-simulation; sudo chmod -R go-w /opt/remission-simulation; sudo python3 /opt/remission-simulation/prepare.py --verify /opt/remission-simulation; sudo stat -c \"%U:%G %a %n\" /opt/remission-simulation /opt/remission-simulation/*; sudo docker compose -p remission-simulation -f /opt/remission-simulation/compose.json config --quiet"
+  ],
+  "started_utc": "2026-10-23T04:33:28.621316+00:00",
+  "elapsed_seconds": 7.857416199985892,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "remote_state": "client_completed"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "https-ingress-create",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "firewall-rules",
+    "create",
+    "remission-sim-20261023-https",
+    "--network=default",
+    "--direction=INGRESS",
+    "--priority=900",
+    "--target-tags=remission-sim-20261023",
+    "--source-ranges=0.0.0.0/0",
+    "--allow=tcp:80,tcp:443",
+    "--format=json(id,name,network,direction,priority,targetTags,sourceRanges,allowed)"
+  ],
+  "started_utc": "2026-10-23T04:38:49.789059+00:00",
+  "elapsed_seconds": 9.077821800019592,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "remote_state": "client_completed"
+}

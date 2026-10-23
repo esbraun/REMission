@@ -1,0 +1,26 @@
+{
+  "name": "tls-no-sni",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--strict-host-key-checking=yes",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; openssl s_client -connect 34.59.176.42:443 -noservername -verify_ip 34.59.176.42 -verify_return_error </dev/null"
+  ],
+  "started_utc": "2026-10-23T04:44:11.976923+00:00",
+  "elapsed_seconds": 7.785626500030048,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "public_output_sanitized": "Removed unauthenticated OpenSSL TLS resumption material; original restricted in private subtree; no account/HTTP authentication sent on this connection."
+}

@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; id; uname -m; cat /etc/os-release; cat /proc/sys/kernel/random/boot_id; lsblk --paths --output NAME,SIZE,TYPE,FSTYPE,UUID,MOUNTPOINTS /dev/disk/by-id/google-remission-data; readlink -f /dev/disk/by-id/google-remission-data; sudo udevadm info --query=property --name=/dev/disk/by-id/google-remission-data | sed -n \"/^ID_SERIAL=/p;/^ID_MODEL=/p\"; free -b; df -B1 /"
+  ],
+  "started_utc": "2026-10-23T04:28:21.077500+00:00",
+  "elapsed_seconds": 13.490997500019148,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true
+}

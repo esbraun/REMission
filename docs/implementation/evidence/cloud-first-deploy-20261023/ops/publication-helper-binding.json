@@ -1,0 +1,37 @@
+{
+  "sdk": "590.0.0",
+  "source": "286aa87a10a24ad9925c90be033e7d8c0570d99b",
+  "helper_chain": "docker-credential-gcloud.cmd -> gcloud.cmd auth docker-helper",
+  "helper_files": [
+    {
+      "file": "bin/docker-credential-gcloud.cmd",
+      "sha256": "5f81583ee1af38b881d9ee29d405aa3be3ecf8e702b931bac2064e18c3ff7dd4",
+      "bytes": 200
+    },
+    {
+      "file": "bin/gcloud.cmd",
+      "sha256": "a1eccc60e26714cbff8c7f6a0aa8577a1f83073cdc33d80b671d0686f4ff2ef1",
+      "bytes": 11048
+    },
+    {
+      "file": "lib/gcloud.py",
+      "sha256": "c8acc602cebef4ca64ecfdb4f531718dd2dce85a86c735a52530f9555eb02962",
+      "bytes": 6579
+    }
+  ],
+  "private_config": "private/docker/config.json",
+  "private_config_sha256": "208f77db5970d4aa15c6d53d60388a5a2834eff10e7e7b1a769c4a687ed7b00c",
+  "acl": [
+    {
+      "identity": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "IsInherited": true
+    },
+    {
+      "identity": "eudaimonia\\erics",
+      "rights": "FullControl",
+      "IsInherited": true
+    }
+  ],
+  "no_token_print_or_global_config_change": true
+}
