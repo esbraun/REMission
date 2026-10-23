@@ -1,0 +1,137 @@
+{
+  "status": "passed-local-offline-Caddy-validation; refreshed-independent-review-required; integration-HOLD",
+  "recorded_utc": "2026-10-23T04:02:05.571731+00:00",
+  "owner": "/root/cloud_capname_execute_sol",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "worktree": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023",
+  "branch": "feat/poc-caddy-config-validation-20261023",
+  "source_commit": "042a922c597d3d7c5cb1d73bf5d265a2a86d2f16",
+  "review_base": "de4a0c5d8a8146a02101617c0fcf8f655aba6474",
+  "prior_astra_report": "67d1b24fc004298a5b2d8e1cc7e0847ea45e3abc",
+  "prior_astra_manifest": "77cb39e92d4267c059f35ce5b9d01ec7c1caa814",
+  "authorization": {
+    "issued_by": "root",
+    "consumed": true,
+    "launcher_count": 1,
+    "plan_sha256": "9d2ba7373c63f5ce51a9f0b29d9b5b9cc9f84a8a7cc776ad0e6cb31ab31dfe81",
+    "plan_raw_blob": "2bd980ca081f91fb323cb85afb5e033cd512b081",
+    "outer_returncode": 0,
+    "outer_elapsed_seconds": 2.6417407
+  },
+  "image": {
+    "Architecture": "amd64",
+    "Id": "sha256:04913b1da43339a40ad1ea87827d70a576ac5aa6cf674c6e24fdca675887533a",
+    "Os": "linux",
+    "RepoDigests": [
+      "caddy@sha256:04913b1da43339a40ad1ea87827d70a576ac5aa6cf674c6e24fdca675887533a"
+    ]
+  },
+  "cid": "708a1dd9f8f0ce6cb8a80fa9a5f072246b8440c0e7e15f5152f4093886710152",
+  "name": "remission-caddy-61f7a8e3d042",
+  "actual_stdout": [
+    "/usr/bin/caddy cap_net_bind_service=ep",
+    "Uid: 0 0 0 0",
+    "Gid: 0 0 0 0",
+    "CapPrm: 0000000000000400",
+    "CapEff: 0000000000000400",
+    "CapBnd: 0000000000000400",
+    "NoNewPrivs: 1",
+    "v2.11.7 h1:yj0Y4fYZGPkSvibBJ1sTWE33xC0fxztVyXEW5iIdUT4=",
+    "REMISSION_IPV4_VALIDATED",
+    "REMISSION_DNS_VALIDATED"
+  ],
+  "stderr_result": {
+    "valid_configuration_count": 2,
+    "warnings": "Both renderer-produced Caddyfiles emit formatting-only warnings; exact inputs retained."
+  },
+  "prestart": {
+    "user": "0:0",
+    "cap_add": [
+      "CAP_NET_BIND_SERVICE"
+    ],
+    "cap_drop": [
+      "ALL"
+    ],
+    "no_new_privileges": [
+      "no-new-privileges"
+    ],
+    "network": "none",
+    "port_bindings": {},
+    "readonly": true,
+    "memory": 134217728,
+    "memory_swap": 134217728,
+    "nano_cpus": 500000000,
+    "pids_limit": 64
+  },
+  "terminal": {
+    "Id": "708a1dd9f8f0ce6cb8a80fa9a5f072246b8440c0e7e15f5152f4093886710152",
+    "RestartCount": 0,
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "2026-10-23T04:00:12.338478788Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 0,
+      "Restarting": false,
+      "Running": false,
+      "StartedAt": "2026-10-23T04:00:12.077314172Z",
+      "Status": "exited"
+    }
+  },
+  "reap": {
+    "worker": {
+      "argv": [
+        "C:\\Python313\\python.exe",
+        "-P",
+        "-B",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\tooling\\foundation\\validate_caddy.py",
+        "--worker",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\artifacts\\caddy-capname-repair-20261023\\plan.json",
+        "--authorization",
+        "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\artifacts\\caddy-capname-repair-20261023\\authorization.json"
+      ],
+      "failure": null,
+      "pid": 4896,
+      "reaped": true,
+      "returncode": 0
+    },
+    "attach_returncode": 0,
+    "watchdog_returncode": 0,
+    "watchdog_pid": 35848,
+    "matching_ready_nonce_deadline": true,
+    "matching_independent_terminal": true,
+    "cleanup": []
+  },
+  "bounds": {
+    "worker_seconds": 45,
+    "parent_seconds": 100
+  },
+  "runtime_manifest": {
+    "bytes": 8275,
+    "sha256": "922153b89dfe16cf254f5f35f0422b35f77efc5bf8e7fbad3668ad25ae200a80",
+    "raw_blob": "df60c723482715142dbfb26bd232001c139ed62d"
+  },
+  "runtime_files": 17,
+  "source_input_bindings": 7,
+  "historical_manifests_verified": {
+    "09f7b35e0ba3250c4876794363f66ae9e601a2b5": 40,
+    "7c872ecf2c4ec993c953e3cc69ebcc9fde486d97": 14,
+    "dc6adb44488b10a6ae53d0eef2881029add8b477": 18
+  },
+  "resource_retained": true,
+  "repeat_pull": false,
+  "retry": false,
+  "extra_docker_commands": false,
+  "cloud_network_actions": false,
+  "limits": [
+    "Local released binary execution and exact IPv4/DNS example adaptation/provisioning only.",
+    "No production listening, actual allocated-origin rendering, public TLS issuance/renewal/no-SNI/browser trust, deployed authentication or persistence/container/VM-reboot proof.",
+    "Actual VM registry pull, GCP working-set/sizing and deployed CS-T3-T8/CS3-CS4 remain pending.",
+    "Prior app/generator fixture evidence retained within its original local scope; later analytics/scientific/human/clinical gates unfinished.",
+    "Both failed historical resources retained untouched; no cleanup, retry, repeat acquisition, PR, push or merge."
+  ],
+  "root_verified_thread": "01a166e9-6993-70a3-aa98-0e26e688f05d"
+}
