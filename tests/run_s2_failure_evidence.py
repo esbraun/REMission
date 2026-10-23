@@ -12,7 +12,7 @@ if __name__=='__main__':
     sys.path[:0]=[str(ROOT),str(ROOT/'tests')]
     forbidden={'numpy','scipy','pymc','pytensor','arviz','arviz_stats','xarray','netCDF4',
                'pandas','statsmodels','methods','probe_roles','run_support_once',
-               's2_numerics_unit','s2_numerics_oracle'}
+               's2_numerics_unit','s2_numerics_oracle','services','adapters','apps','sqlalchemy'}
     class Tripwire(importlib.abc.MetaPathFinder):
         def find_spec(self,fullname,path=None,target=None):
             if fullname.split('.')[0] in forbidden:raise AssertionError('host science/payload import forbidden')
@@ -20,6 +20,7 @@ if __name__=='__main__':
     folder=ROOT/'artifacts/s2-source-temp';folder.mkdir(parents=True,exist_ok=True);tempfile.tempdir=str(folder)
     with patch.object(subprocess,'Popen',side_effect=AssertionError('native children forbidden in S2 source controls')):
         suite=unittest.defaultTestLoader.loadTestsFromName('test_s2_failure_evidence')
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromName('test_s2_representation'))
         existing=unittest.defaultTestLoader.loadTestsFromName('test_s2_numerics_source')
         def current(items):
             for item in items:

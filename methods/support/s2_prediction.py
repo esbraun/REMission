@@ -85,7 +85,7 @@ def predict(request,arrays,patient_ids):
         request_sha256=sha(request.model_dump(mode='json')),target_id=request.target_id,
         context_id=request.context_id,context_version=request.context_version,
         status='numerical_unready',reason='',primary=None,
-        cells=[dict(delta0=a,delta1=b,precision=None) for a,b in CELLS],
+        cells=tuple(dict(delta0=a,delta1=b,precision=None) for a,b in CELLS),
         probability=.5,serving_authority=False,empirical_domain_only=True)
     timing=dict(expected_quality_seconds=0.,diagnostics_seconds=0.,distinct_diagnostic_arrays=0)
     member=request.members[target]
