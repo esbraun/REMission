@@ -126,10 +126,11 @@ class LifecycleControls(unittest.TestCase):
             folder=Path(temp)/'supervision';processes=[];started=[False];binding={}
             class Process:
                 def __init__(self,argv,**kwargs):
-                    self.pid=101+len(processes);self.returncode=None;self.watch=len(processes)==0;processes.append(self)
+                    self.pid=101+len(processes);self.returncode=None;self.watch=len(processes)==0;self.reaped=False;processes.append(self)
                     if self.watch:
                         binding.update(cid=CID,nonce=argv[-1],deadline=200.,pid=self.pid)
-                        if fault!='arm-timeout':life.save(folder/'watchdog-ready.json',binding)
+                        ready=dict(binding,pid=self.pid+1) if fault=='arm-pid' else binding
+                        if fault!='arm-timeout':life.save(folder/'watchdog-ready.json',ready)
                     else:
                         started[0]=True
                         if fault!='missing':life.save(folder/'watchdog-terminal.json',dict(cid=CID,nonce='foreign' if fault=='foreign' else binding['nonce'],
@@ -138,7 +139,7 @@ class LifecycleControls(unittest.TestCase):
                     if fault=='arm-exit' and self.watch:self.returncode=1
                     elif started[0] and ((order=='watch' and self.watch) or (order=='attach' and not self.watch)):self.returncode=0
                     return self.returncode
-                def wait(self,timeout):self.returncode=0;return 0
+                def wait(self,timeout):self.reaped=True;self.returncode=1 if fault=='arm-pid' else 0;return self.returncode
                 def kill(self):self.returncode=-9
             def observe(*args,**kwargs):return inventory(ExitCode=1 if fault=='nonzero' else 0) if started[0] else inventory('created')
             ticks=iter([100.]*8+[206.]*50) if fault=='arm-timeout' else None
@@ -148,16 +149,44 @@ class LifecycleControls(unittest.TestCase):
                 if fault:
                     with self.assertRaises(RuntimeError):life.supervise(CID,folder,200.)
                     self.assertTrue(stop.called)
+                    if fault=='arm-pid':stop.assert_called_once_with(CID)
                 else:self.assertEqual(life.supervise(CID,folder,200.),inventory())
             result=json.loads((folder/'supervision.json').read_bytes())
             self.assertTrue(all(p.returncode is not None for p in processes))
-            if fault in ('arm-timeout','arm-exit'):self.assertFalse(started[0])
+            if fault in ('arm-timeout','arm-exit','arm-pid'):self.assertFalse(started[0])
             self.assertEqual(result['failure'] is None,not bool(fault))
+            if not fault:
+                self.assertTrue(result['prearm']['identity_matched'])
+                self.assertTrue(result['prearm']['live_ack_before_start'])
+                self.assertEqual(result['prearm']['expected'],result['prearm']['received'])
+                self.assertEqual(result['prearm']['mismatch_fields'],[])
+            return result,processes
 
     def test_both_completion_orders_and_guarded_arm_terminal_failures(self):
         for order in ('watch','attach'):
             for fault in (None,'arm-exit','arm-timeout','missing','foreign','nonzero'):
                 with self.subTest(order=order,fault=fault):self.supervise_double(order,fault)
+
+    def test_mismatched_prearm_pid_refuses_start_reaps_owned_handle_and_retains_identities(self):
+        result,processes=self.supervise_double('watch','arm-pid')
+        self.assertEqual(len(processes),1)  # No attach/start Popen was created.
+        self.assertTrue(processes[0].reaped)
+        self.assertIn('invalid watchdog arm receipt',result['failure'])
+        arm=result['prearm']
+        self.assertEqual(arm['interpreter'],life.sys.executable)
+        self.assertEqual(arm['flags'],['-P','-B'])
+        self.assertEqual(arm['argv'][:3],[life.sys.executable,'-P','-B'])
+        self.assertEqual(arm['popen_pid'],101)
+        self.assertEqual(arm['expected'],dict(cid=CID,nonce=arm['argv'][-1],deadline=200.,pid=101))
+        self.assertEqual(arm['received'],dict(arm['expected'],pid=102))
+        self.assertEqual(arm['mismatch_fields'],['pid'])
+        self.assertFalse(arm['identity_matched']);self.assertFalse(arm['live_ack_before_start'])
+        self.assertEqual(arm['before_ready_poll'],dict(observed=True,returncode=None))
+        self.assertEqual(arm['after_ready_poll'],dict(observed=False,returncode=None))
+        self.assertEqual(result['processes']['watchdog'],dict(created=True,pid=101,reaped=True,returncode=1))
+        self.assertEqual(result['processes']['attach'],dict(created=False,pid=None,reaped=False,returncode=None))
+        self.assertEqual(result['host_descendant_termination'],'UNKNOWN')
+        self.assertEqual(result['terminal'],inventory('created'))
 
     def test_watchdog_launch_error_and_unobservable_final_state_retains_primary(self):
         with tempfile.TemporaryDirectory() as temp,patch.object(life,'inspect',side_effect=[inventory('created'),ValueError('daemon unavailable')]), \

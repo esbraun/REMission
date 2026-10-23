@@ -159,26 +159,46 @@ def supervise(cid, folder, deadline, on_poll=None):
     """Prearm, start, audit and reap one already created literal CID."""
     require_cid(cid);folder.mkdir(exist_ok=False)
     child=None;attached=None;primary=None;cleanup=[];terminal=None;codes={};nonce=secrets.token_hex(24)
+    expected=dict(cid=cid,nonce=nonce,deadline=deadline,pid=None)
+    prearm=dict(interpreter=sys.executable,flags=['-P','-B'],argv=None,popen_pid=None,
+        expected=expected,received=None,mismatch_fields=None,identity_matched=False,live_ack_before_start=False,
+        before_ready_poll=dict(observed=False,returncode=None),after_ready_poll=dict(observed=False,returncode=None))
+    processes={}
     try:
         check_deadline(deadline)
         if inspect(cid,deadline=deadline)['State']['Status']!='created':raise ValueError('workload already started')
         with (folder/'watchdog.stdout').open('wb') as wo, (folder/'watchdog.stderr').open('wb') as we, \
                 (folder/'attach.stdout').open('wb') as ao, (folder/'attach.stderr').open('wb') as ae:
-            child=subprocess.Popen([sys.executable,'-P','-B',str(Path(__file__).resolve()),'--watchdog-cid',cid,
-                '--folder',str(folder),'--deadline',str(deadline),'--nonce',nonce],stdout=wo,stderr=we,
-                creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
+            prearm['argv']=[sys.executable,'-P','-B',str(Path(__file__).resolve()),'--watchdog-cid',cid,
+                '--folder',str(folder),'--deadline',str(deadline),'--nonce',nonce]
+            prearm['creationflags']=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
+            child=subprocess.Popen(prearm['argv'],stdout=wo,stderr=we,creationflags=prearm['creationflags'])
+            prearm['popen_pid']=child.pid
+            expected['pid']=child.pid
             arm_deadline=min(deadline,time.monotonic()+5)
             while True:
                 check_deadline(arm_deadline)
-                if child.poll() is not None:raise RuntimeError('watchdog exited before start')
+                code=child.poll();prearm['before_ready_poll']=dict(observed=True,returncode=code)
+                if code is not None:raise RuntimeError('watchdog exited before start')
                 ready=folder/'watchdog-ready.json'
                 if ready.exists():
                     value=json.loads(ready.read_bytes())
-                    if value!=dict(cid=cid,nonce=nonce,deadline=deadline,pid=child.pid):raise ValueError('invalid watchdog arm receipt')
+                    # Only the four public identity fields enter diagnostics;
+                    # unexpected receipt values are never copied wholesale.
+                    prearm['received_type']=type(value).__name__
+                    if isinstance(value,dict):
+                        prearm['received']={key:value.get(key) for key in expected}
+                        prearm['mismatch_fields']=[key for key in expected if key not in value or value[key]!=expected[key]]
+                        if set(value)!=set(expected):prearm['mismatch_fields'].append('keys')
+                    else:prearm['mismatch_fields']=['receipt_type']
+                    if value!=expected:raise ValueError('invalid watchdog arm receipt')
+                    prearm['identity_matched']=True
                     break
                 time.sleep(.05)
             check_deadline(deadline)
-            if child.poll() is not None:raise RuntimeError('watchdog died after arming')
+            code=child.poll();prearm['after_ready_poll']=dict(observed=True,returncode=code)
+            if code is not None:raise RuntimeError('watchdog died after arming')
+            prearm['live_ack_before_start']=True
             attached=subprocess.Popen(['docker','start','--attach',cid],stdout=ao,stderr=ae,
                 creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
             while True:
@@ -207,7 +227,11 @@ def supervise(cid, folder, deadline, on_poll=None):
             try:cleanup.extend(stop_owned(cid))
             except BaseException as error:cleanup.append(dict(stop_error=repr(error)))
         for name,process in (('attach',attached),('watchdog',child)):
-            try:codes[name]=reap(process)
+            processes[name]=dict(created=process is not None,pid=process.pid if process is not None else None,
+                reaped=False,returncode=None)
+            try:
+                codes[name]=reap(process)
+                processes[name].update(reaped=process is not None,returncode=codes[name])
             except BaseException as error:cleanup.append(dict(process=name,reap_error=repr(error)))
         # Reaping a Docker client does not prove the owned workload stopped.
         try:
@@ -224,7 +248,8 @@ def supervise(cid, folder, deadline, on_poll=None):
             except BaseException as stop_error:
                 cleanup.append(dict(final_stop_error=repr(stop_error)))
                 terminal=None
-        result=dict(cid=cid,deadline=deadline,failure=primary,cleanup=cleanup,returncodes=codes,terminal=terminal)
+        result=dict(cid=cid,deadline=deadline,failure=primary,cleanup=cleanup,returncodes=codes,terminal=terminal,
+            prearm=prearm,processes=processes,host_descendant_termination='UNKNOWN')
         save(folder/'supervision.json',result)
     if terminal is None or any('reap_error' in event for event in cleanup):
         raise StopUnconfirmed('STOP UNCONFIRMED '+cid+'; retained supervision evidence')
