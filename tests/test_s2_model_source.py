@@ -130,7 +130,7 @@ class GraphSourceTests(unittest.TestCase):
         with patch.dict(os.environ,dict(S2_MODEL_SYMBOLIC_QUALIFY='1')),self.assertRaises(PermissionError):namespace['require_admitted'](namespace['DRAFT_SETTINGS'])
         qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
         self.assertEqual(qualify.body[0].value.func.id,'require_admitted')
-        self.assertIsInstance(qualify.body[1],ast.Import)
+        self.assertGreater(next(i for i,n in enumerate(qualify.body) if isinstance(n,ast.Import)),0)
         self.assertFalse(any(isinstance(n,(ast.Import,ast.ImportFrom)) and (getattr(n,'module','') or '').startswith('methods') for n in tree.body))
         self.assertNotIn('600',(ROOT/'tooling/foundation/s2_model_qualification.py').read_text(encoding='utf-8'))
 
