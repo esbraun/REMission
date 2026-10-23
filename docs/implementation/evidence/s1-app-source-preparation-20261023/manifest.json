@@ -1,0 +1,46 @@
+{
+  "version": "s1-app-source-checks-v1",
+  "source_candidate": "ca1b8432a5d4d692edb2ae24c7e13f6e656be9f5",
+  "plan_base": "fb83108a28ffb5fc2d6423d03b79b148a2f13f31",
+  "integration_base": "f124726432799103cde410ba98b7ab6992759591",
+  "scope": "source/structural fixtures only; no runtime/scientific computation",
+  "checks": {
+    "scalar": {
+      "passed": 13,
+      "skipped": 0,
+      "seconds": 2.858,
+      "scientific_imports": []
+    },
+    "frontend": {
+      "typecheck": "passed",
+      "node_tests": 6,
+      "build": "passed",
+      "node": "22.20.0",
+      "npm": "11.19.0"
+    },
+    "locks_and_methods": "unchanged",
+    "runtime": "not executed"
+  },
+  "raw_files": [
+    {
+      "path": "artifacts/source-checks/scalar-tests.log",
+      "bytes": 3754,
+      "sha256": "1f6259f234f0e1d5733079220b870d879ffaa83d12e60e15ed502505f6ddc71e"
+    },
+    {
+      "path": "artifacts/source-check-install.json",
+      "bytes": 310382,
+      "sha256": "ed63d3f764503053115fcb36e19e329496a4772bbc29da1445f1116d1201551e"
+    },
+    {
+      "path": "artifacts/source-check-requirements.txt",
+      "bytes": 408,
+      "sha256": "116574949693c14110b307fec4508253f5144fea24e664adedaf5665d593491f"
+    },
+    {
+      "path": "artifacts/source-checks/web-guidelines.md",
+      "bytes": 8055,
+      "sha256": "d246b026f4f29b5823a9cc857f9edf3d2507002e055e32040cadeaf3b38e0234"
+    }
+  ]
+}

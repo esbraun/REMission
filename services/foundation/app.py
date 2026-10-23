@@ -655,6 +655,9 @@ def create_app(settings: Settings) -> FastAPI:
         from .analysis import view
         from .appointment import current_information
         frozen=json.loads(row['request_json'])
+        if frozen.get('kind')=='poc_support_s1_input':
+            from .support_analysis import owned_view
+            return owned_view(db,row,settings.observed_archives)
         if frozen.get('kind')!='poc_visit_cohort_input':
             patient=own(db,row['patient_id'],owner)
             return view(row,cutoff,current=current_information(db,patient))
@@ -679,6 +682,33 @@ def create_app(settings: Settings) -> FastAPI:
         available=all(a['serving']['summary_available'] for a in attempts)
         status=('dated' if any(a['serving']['status']=='dated' for a in attempts) else 'current') if available else 'unavailable'
         return public_summary(dict(value,appointment=dict(status=status,attempts=attempts)))
+
+    @app.post('/api/support-s1-analyses')
+    async def submit_support_s1(request: Request):
+        from contracts.domain.support_s1 import S1Submission
+        from .support_analysis import submit
+        data=await body(request,S1Submission)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True)
+            try:
+                response=submit(db,current,request.headers.get('idempotency-key'),
+                    data.model_dump(mode='json'),settings.observed_archives,now=settings.clock())
+            except ValueError as error:raise APIError(409,'support_analysis_rejected',str(error)) from error
+            return JSONResponse(response,status_code=202)
+
+    @app.get('/api/support-s1-analyses')
+    def support_s1_attempts(request: Request,archive_id: str,cutoff_day: int):
+        from .support_analysis import owned_view
+        if cutoff_day not in (14,42,84):raise APIError(422,'invalid_cutoff','Select day14,42 or84')
+        with store.transaction() as db:
+            current=session(db,request)
+            archive=db.execute('SELECT 1 FROM observed_archives WHERE id=? AND owner_id=?',
+                (archive_id,current['account_id'])).fetchone()
+            if archive is None:raise APIError(404,'not_found','Resource not found')
+            rows=db.execute("SELECT * FROM analysis_attempts WHERE owner_id=? AND json_extract(request_json,'$.kind')='poc_support_s1_input' AND json_extract(request_json,'$.archive.archive_id')=? AND json_extract(request_json,'$.cutoff_day')=? ORDER BY created_at DESC,rowid DESC",
+                (current['account_id'],archive_id,cutoff_day)).fetchall()
+            from contracts.domain.support_s1 import CONFIG_REF
+            return dict(attempts=[owned_view(db,row,settings.observed_archives) for row in rows],configuration=CONFIG_REF)
 
     @app.post('/api/cohort-analyses/preview')
     async def preview_cohort_analysis(request: Request):

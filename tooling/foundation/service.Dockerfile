@@ -18,7 +18,7 @@ COPY services/foundation/ /app/services/foundation/
 COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/domain/
 COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
 COPY contracts/domain/cohort.py contracts/domain/cohort_runtime.py /app/contracts/domain/
-COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py /app/contracts/domain/
+COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py contracts/domain/support_s1.py /app/contracts/domain/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 COPY --from=client /client/dist/ /app/web/dist/
@@ -30,6 +30,7 @@ CMD ["python","-m","uvicorn","services.foundation.server:app","--host","0.0.0.0"
 FROM service AS integration-tests
 ENV PYTENSOR_FLAGS=base_compiledir=/tmp/pytensor,floatX=float64 MPLCONFIGDIR=/tmp/matplotlib
 COPY tests/integration/replay/ /app/tests/integration/replay/
+COPY tests/support_s1_fixtures.py /app/tests/
 COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
 COPY services/learner/worker.py services/learner/export_observed.py services/learner/live_product.py /app/services/learner/
 COPY methods/visit/ /app/methods/visit/
