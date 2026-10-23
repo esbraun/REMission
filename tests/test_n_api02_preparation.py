@@ -28,6 +28,58 @@ def unit_result(raw=b'UNIT byte fixture; no scientific format parsed on host'):
         artifacts={name:dict(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),base64=base64.b64encode(raw).decode()) for name in draft.ARTIFACTS})
 
 class DraftControls(unittest.TestCase):
+    def test_selected_metadata_missing_or_null_entrypoint_projects_null_only(self):
+        """Template source + selected-output double; no actual Go/Docker claim."""
+        payload='UNIT_NOT_EXECUTED'
+        binding=json.loads((ROOT/'docs/implementation/poc-n-api02-bindings-20261023.json').read_bytes())
+        for config in ({}, {'Entrypoint':None}):
+            calls=[]
+            def call(argv,label,deadline):
+                calls.append(label)
+                if label=='image':
+                    template=argv[argv.index('--format')+1]
+                    self.assertIn('{{json (index .Config "Entrypoint")}}',template)
+                    self.assertNotIn('.Config.Entrypoint',template)
+                    for required in ('User','WorkingDir','Cmd'):
+                        self.assertIn('{{json .Config.'+required+'}}',template)
+                    selected=copy.deepcopy(binding['qualified_image_config'])
+                    selected['Entrypoint']=config.get('Entrypoint')
+                    return json.dumps(selected)
+                if label=='absence':raise RuntimeError('BOUNDARY_AFTER_METADATA')
+                raise AssertionError('create forbidden')
+            plan=dict(binding,payload_sha256=hashlib.sha256(payload.encode()).hexdigest())
+            with self.assertRaisesRegex(RuntimeError,'BOUNDARY_AFTER_METADATA'):
+                draft._controller_body(plan,payload,ROOT,None,call)
+            self.assertEqual(calls,['image','absence'])
+
+    def test_selected_metadata_required_fields_and_wrong_entrypoints_reject_before_absence(self):
+        payload='UNIT_NOT_EXECUTED'
+        binding=json.loads((ROOT/'docs/implementation/poc-n-api02-bindings-20261023.json').read_bytes())
+        base=binding['qualified_image_config'];variants=[]
+        for entrypoint in ([],['unexpected'],'unexpected',0,False,{}):
+            v=copy.deepcopy(base);v['Entrypoint']=entrypoint;variants.append(v)
+        for field in base:
+            v=copy.deepcopy(base);v.pop(field);variants.append(v)
+            if field!='Entrypoint':
+                v=copy.deepcopy(base);v[field]=None;variants.append(v)
+        for raw in [*map(json.dumps,variants),'null','[]','{malformed']:
+            calls=[]
+            def call(argv,label,deadline):
+                calls.append(label);self.assertEqual(label,'image');return raw
+            with self.subTest(raw=raw[:100]),self.assertRaises((ValueError,TypeError)):
+                draft._controller_body(dict(binding,payload_sha256=hashlib.sha256(payload.encode()).hexdigest()),payload,ROOT,None,call)
+            self.assertEqual(calls,['image'])
+
+    def test_inspect_template_or_required_config_error_is_not_swallowed(self):
+        payload='UNIT_NOT_EXECUTED';calls=[]
+        def call(argv,label,deadline):
+            calls.append(label)
+            raise RuntimeError('selected inspect required Config/template failure')
+        with self.assertRaisesRegex(RuntimeError,'required Config/template failure'):
+            draft._controller_body(dict(learner_image='sha256:'+'a'*64,
+                payload_sha256=hashlib.sha256(payload.encode()).hexdigest()),payload,ROOT,None,call)
+        self.assertEqual(calls,['image'])
+
     def test_unknown_created_cid_stops_without_start_or_cleanup_guess(self):
         payload='UNIT_NOT_EXECUTED';image='sha256:'+'a'*64;config=dict(Id=image,User='10002:10002',WorkingDir='/app',Entrypoint=None,Cmd=['original'])
         plan=dict(learner_image=image,payload_sha256=hashlib.sha256(payload.encode()).hexdigest(),qualified_image_config=config)
