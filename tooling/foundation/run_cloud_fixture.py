@@ -29,6 +29,9 @@ PARENT = 'sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577fa
 BUDGETS = dict(fixture_seconds=180, generator_seconds=240, parent_seconds=300,
                external_seconds=400, cleanup_seconds=60)
 IMAGE_FORMAT = '{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"User":{{json .Config.User}}}'
+# A base image may omit Config.User entirely (the default root user). Parent
+# admission requires identity/platform only; role images still require exact UID.
+PARENT_IMAGE_FORMAT = '{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}}}'
 # Selection happens in Docker, before stdout; never emit complete Config/Env.
 CONTAINER_FORMAT = '{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Labels":{{json .Config.Labels}},"Path":{{json .Path}},"Args":{{json .Args}},"RestartCount":{{json .RestartCount}},"State":{{json .State}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"AutoRemove":{{json .HostConfig.AutoRemove}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"Mounts":{{json .Mounts}},"Networks":{{json .NetworkSettings.Networks}}}'
 NETWORK_FORMAT = '{"Id":{{json .Id}},"Name":{{json .Name}},"Internal":{{json .Internal}},"Labels":{{json .Labels}}}'
@@ -300,7 +303,7 @@ def execute(plan_path, auth_path):
                   authorization_sha256=digest(auth_path.read_bytes()), start_monotonic=start,
                   parent_deadline=parent_deadline, generator_deadline=start + 240,
                   fixture_limit_seconds=180, external_limit_seconds=400))
-        parent = json.loads(command(['docker', 'image', 'inspect', '--format', IMAGE_FORMAT, PARENT]))
+        parent = json.loads(command(['docker', 'image', 'inspect', '--format', PARENT_IMAGE_FORMAT, PARENT]))
         if parent['Id'] != PARENT or parent['Os'] != 'linux' or parent['Architecture'] != 'amd64':
             raise ValueError('foundation parent identity/platform mismatch')
         for role, image in IMAGES.items():

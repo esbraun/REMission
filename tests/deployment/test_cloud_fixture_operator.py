@@ -28,6 +28,43 @@ def plan():
 
 
 class FixtureOperatorTests(unittest.TestCase):
+    def test_parent_optional_user_does_not_bypass_image_identity_platform_or_role_user(self):
+        # Parent Config.User is optional; selecting it directly made Docker fail
+        # before admission. Role users remain mandatory and exact.
+        for parent_config in ({}, {'User': ''}, {'User': '0:0'}):
+            with self.subTest(parent_config=parent_config), tempfile.TemporaryDirectory() as directory:
+                folder = Path(directory); p = plan(); p['physical_sources'] = {'frozen': 'bytes'}
+                plan_path = folder / 'plan.json'; plan_path.write_text('{}')
+                auth = folder / 'auth.json'; auth.write_text('{}')
+                calls = []
+                def command(argv, **kwargs):
+                    calls.append(argv)
+                    if argv[-1] == operator.PARENT:
+                        self.assertEqual(argv, ['docker', 'image', 'inspect', '--format',
+                            '{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}}}', operator.PARENT])
+                        item = dict(Id=operator.PARENT, Os='linux', Architecture='amd64')
+                    else:
+                        self.assertEqual(argv[-2], operator.IMAGE_FORMAT)
+                        # Even default/absent role users must fail closed.
+                        item = dict(Id=operator.IMAGES['fixture'], Os='linux', Architecture='amd64', **parent_config)
+                    return SimpleNamespace(stdout=json.dumps(item).encode(), stderr=b'', returncode=0)
+                with patch.object(operator, 'authorize', return_value=p), patch.object(operator, 'physical_sources', return_value=p['physical_sources']), patch.object(operator.life, 'command', side_effect=command):
+                    with self.assertRaisesRegex(RuntimeError, 'image identity/platform/user mismatch'):
+                        operator.execute(plan_path, auth)
+                self.assertEqual(len(calls), 2)
+                self.assertEqual(json.loads((folder / 'attempt/result.json').read_bytes())['owned'], {})
+        for key, bad in [('Id', 'sha256:' + '0' * 64), ('Os', 'windows'), ('Architecture', 'arm64')]:
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as directory:
+                folder = Path(directory); p = plan(); p['physical_sources'] = {'frozen': 'bytes'}
+                plan_path = folder / 'plan.json'; plan_path.write_text('{}')
+                auth = folder / 'auth.json'; auth.write_text('{}')
+                value = dict(Id=operator.PARENT, Os='linux', Architecture='amd64'); value[key] = bad
+                with patch.object(operator, 'authorize', return_value=p), patch.object(operator, 'physical_sources', return_value=p['physical_sources']), patch.object(operator.life, 'command', return_value=SimpleNamespace(stdout=json.dumps(value).encode(), stderr=b'', returncode=0)) as command:
+                    with self.assertRaisesRegex(RuntimeError, 'parent identity/platform mismatch'):
+                        operator.execute(plan_path, auth)
+                self.assertEqual(command.call_count, 1)
+                self.assertEqual(json.loads((folder / 'attempt/result.json').read_bytes())['owned'], {})
+
     def test_prestart_rejects_swap_privilege_mount_network_and_command_drift(self):
         p = plan()
         # An independent selected-field Docker observation, including a Desktop
