@@ -1,0 +1,125 @@
+- generic [ref=f5e2]:
+  - link "Skip to main content" [ref=f5e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f5e4]:
+    - generic [ref=f5e5]:
+      - text: REMission
+      - generic [ref=f5e6]: Synthetic care workspace
+    - generic [ref=f5e7]:
+      - generic [ref=f5e8]: Synthetic Physician One
+      - button "Sign out" [ref=f5e9] [cursor=pointer]
+  - generic [ref=f5e10]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [ref=f5e11]:
+    - navigation "Workspace" [ref=f5e12]:
+      - link "My panel" [ref=f5e13] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f5e14]: 12 owned synthetic patients
+    - region "Patient context" [ref=f5e15]:
+      - generic [ref=f5e16]:
+        - paragraph [ref=f5e17]: POC-0bb7b661339c45b0b23ec0c6b029a71d · Current workspace
+        - heading "Synthetic Jordan 09" [level=1] [ref=f5e18]
+        - paragraph [ref=f5e19]: "ASSIGN-02: Initial ordinary choice"
+      - generic [ref=f5e20]:
+        - generic [ref=f5e21]:
+          - term [ref=f5e22]: Clinical
+          - definition [ref=f5e23]: initial assignment
+        - generic [ref=f5e24]:
+          - term [ref=f5e25]: Learning
+          - definition [ref=f5e26]: none
+        - generic [ref=f5e27]:
+          - term [ref=f5e28]: Data readiness
+          - definition [ref=f5e29]: ready
+        - generic [ref=f5e30]:
+          - term [ref=f5e31]: Observation cutoff
+          - definition [ref=f5e32]: Jan 15, 2026, 4:00 AM PST
+    - navigation "Patient views" [ref=f5e33]:
+      - link "Overview" [ref=f5e34] [cursor=pointer]:
+        - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/overview
+      - link "Current decision" [ref=f5e35] [cursor=pointer]:
+        - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/current
+      - link "Monitoring" [ref=f5e36] [cursor=pointer]:
+        - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/monitoring
+      - link "Analysis" [ref=f5e37] [cursor=pointer]:
+        - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/analysis
+      - link "Research" [ref=f5e38] [cursor=pointer]:
+        - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/research
+      - link "History" [ref=f5e39] [cursor=pointer]:
+        - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/history
+    - region [ref=f5e40]:
+      - paragraph [ref=f5e41]: Generated synthetic patient · UTC fictional clock
+      - heading "Simulation · day 14 of 84" [level=2] [ref=f5e42]
+      - paragraph [ref=f5e43]: "Seed 20261023. Next visit: day 28. Fixed support: no prompt. Daily reports describe one night; scheduled ISI describes the preceding 14 nights. Neither is a fitted treatment-effect estimate."
+      - paragraph [ref=f5e44]:
+        - text: "Latest scheduled ISI:"
+        - strong [ref=f5e45]: 14/28
+        - text: · 14-day recall from Jan 1, 2026, 11:00 AM to Jan 15, 2026, 11:00 AM UTC.
+      - generic [ref=f5e46]:
+        - button "Advance 1 day" [ref=f5e47] [cursor=pointer]
+        - button "Advance to next 14-day visit" [ref=f5e48] [cursor=pointer]
+      - paragraph [ref=f5e49]: 11 of 14 daily reports observed; 3 missing. Missing values remain gaps.
+      - figure "Reported sleep quality · 0–10" [ref=f5e50]:
+        - img "Reported sleep quality. Observed points by simulated day, with missing daily reports left as gaps. Values appear in the observation table." [ref=f5e52]:
+          - generic [ref=f5e53]: "0"
+          - generic [ref=f5e54]: "10"
+          - generic [ref=f5e55]: "0"
+          - generic [ref=f5e56]: "14"
+          - generic [ref=f5e57]: "28"
+          - generic [ref=f5e58]: "42"
+          - generic [ref=f5e59]: "56"
+          - generic [ref=f5e60]: "70"
+          - generic [ref=f5e61]: "84"
+      - figure "Reported function · 0–10" [ref=f5e77]:
+        - img "Reported function. Observed points by simulated day, with missing daily reports left as gaps. Values appear in the observation table." [ref=f5e79]:
+          - generic [ref=f5e80]: "0"
+          - generic [ref=f5e81]: "10"
+          - generic [ref=f5e82]: "0"
+          - generic [ref=f5e83]: "14"
+          - generic [ref=f5e84]: "28"
+          - generic [ref=f5e85]: "42"
+          - generic [ref=f5e86]: "56"
+          - generic [ref=f5e87]: "70"
+          - generic [ref=f5e88]: "84"
+      - figure "Scheduled ISI · lower scores indicate fewer symptoms · 0–28" [ref=f5e104]:
+        - img "Scheduled ISI · lower scores indicate fewer symptoms. Observed points by simulated day, with missing daily reports left as gaps. Values appear in the observation table." [ref=f5e106]:
+          - generic [ref=f5e107]: "0"
+          - generic [ref=f5e108]: "28"
+          - generic [ref=f5e109]: "0"
+          - generic [ref=f5e110]: "14"
+          - generic [ref=f5e111]: "28"
+          - generic [ref=f5e112]: "42"
+          - generic [ref=f5e113]: "56"
+          - generic [ref=f5e114]: "70"
+          - generic [ref=f5e115]: "84"
+      - paragraph [ref=f5e118]: Horizontal axes show simulated days 0–84. ISI points are separate assessments; no continuous daily ISI is implied. Exact values appear in observations below.
+      - group [ref=f5e119]:
+        - generic "Plan and delivery timeline · 1 decisions, 14 delivery records" [ref=f5e120] [cursor=pointer]
+    - region [ref=f5e121]:
+      - paragraph [ref=f5e122]: Observed-only synthetic analysis
+      - heading "Visit analysis" [level=2] [ref=f5e123]
+      - paragraph [ref=f5e124]: Opening this view reads saved summaries. Refresh analysis queues a frozen-cutoff background fit of the native PyMC model. V0 uses the original prior and this patient; V1 adds two approved fictional study summaries. Both predict the next 42 days under retained plans and fixed no-prompt support. You can continue eligible decisions and simulation while analysis is pending. No treatment is selected automatically.
+      - group "Analysis configuration" [ref=f5e125]:
+        - generic [ref=f5e127]:
+          - radio "V0 · no external borrowing" [checked] [ref=f5e128]
+          - text: V0 · no external borrowing
+        - generic [ref=f5e129]:
+          - radio "V1 · normalized robust source mixture, tau HalfNormal(1)" [ref=f5e130]
+          - text: V1 · normalized robust source mixture, tau HalfNormal(1)
+        - generic [ref=f5e131]:
+          - radio "V1 sensitivity · tau HalfNormal(2)" [ref=f5e132]
+          - text: V1 sensitivity · tau HalfNormal(2)
+      - button "Refresh analysis" [ref=f5e133] [cursor=pointer]
+      - group [ref=f5e134]:
+        - generic "Joint visit analysis of twelve explicitly selected patients" [ref=f5e135] [cursor=pointer]
+        - option "V0 · original prior, no external summaries" [selected]
+        - option "V1 · two approved summaries once, tau HalfNormal(1)"
+      - region [ref=f5e136]:
+        - heading "Saved result for this configuration" [level=3] [ref=f5e137]
+        - paragraph [ref=f5e138]: No compatible accepted stored summary is available. Refresh analysis can queue a new attempt; it does not provide immediate model advice.
+      - paragraph [ref=f5e139]: No saved analysis attempts at this patient yet.
+    - generic [ref=f5e140]:
+      - heading "Saved decisions" [level=2] [ref=f5e141]
+      - list [ref=f5e142]:
+        - listitem [ref=f5e143]:
+          - link "Ordinary choice · Jan 1, 2026, 4:00 AM PST" [ref=f5e144] [cursor=pointer]:
+            - /url: /patients/POC-0bb7b661339c45b0b23ec0c6b029a71d/history/approval-a9431f4f56c24424be8912ea2cc8b2ff
+    - generic [ref=f5e145]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.

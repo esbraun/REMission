@@ -1,0 +1,29 @@
+[
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "80"
+        ]
+      },
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "443"
+        ]
+      }
+    ],
+    "direction": "INGRESS",
+    "id": "1303826300271024689",
+    "name": "remission-sim-20261023-https",
+    "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+    "priority": 900,
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ],
+    "targetTags": [
+      "remission-sim-20261023"
+    ]
+  }
+]

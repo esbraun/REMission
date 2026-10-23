@@ -1,0 +1,45 @@
+BOOT_ID 8aeb65b4-3bb7-421e-8636-def33adf9f2a
+DISK_UUID 6d567bb0-a7ec-4035-8842-eb72ec7b9eb4
+2048:131075 987136 /srv/remission/data/remission.sqlite
+2048:131076 0 /srv/remission/data/remission.sqlite.admission.lock
+{"Name":"/remission-simulation-app-1","Id":"61d16ac9f3b9ca059dd76ecb458ff2c9bd372d52cf529d60ef4cb04bff8cbc51","Image":"sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72","Status":"running","OOMKilled":false}
+{"Name":"/remission-simulation-generator-1","Id":"6ab0e44c51bd1476c3b06e293d97589b9cb9464a2c093a7ef3cb1222d0450717","Image":"sha256:d64907d76a2810d2e6cad8acaa012f3df132ced69bfe2636c7eb07f7090b4eee","Status":"running","OOMKilled":false}
+{"Name":"/remission-simulation-proxy-1","Id":"1440ccbcafea9823dafda04f8c8ab511495641caf77ed2ec75e70c8e3eeef10c","Image":"sha256:04913b1da43339a40ad1ea87827d70a576ac5aa6cf674c6e24fdca675887533a","Status":"running","OOMKilled":false}
+metrics remission-simulation-app-1
+81428480
+148389888
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+metrics remission-simulation-generator-1
+14364672
+23146496
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+metrics remission-simulation-proxy-1
+16175104
+25501696
+low 0
+high 0
+max 0
+oom 0
+oom_kill 0
+oom_group_kill 0
+               total        used        free      shared  buff/cache   available
+Mem:      2072461312   737771520   879525888      860160   648204288  1334689792
+Swap:              0           0           0
+Filesystem       1B-blocks       Used   Available Use% Mounted on
+/dev/sdb1      20891439104 4984401920 14930714624  26% /
+/dev/sda       10464022528    1134592 10446110720   1% /srv/remission
+remission-simulation-proxy-1 15.01MiB / 256MiB 0.00% 6
+remission-simulation-app-1 75.83MiB / 1.93GiB 0.22% 2
+remission-simulation-generator-1 12.98MiB / 1.93GiB 0.02% 1
+-- No entries --
+journal_grep_exit=1

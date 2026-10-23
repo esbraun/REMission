@@ -1,0 +1,80 @@
+{
+  "status": "deployed-browser-persistence-expiry-review-pending",
+  "utc": "2026-10-23T04:49:05.453886+00:00",
+  "source": "286aa87a10a24ad9925c90be033e7d8c0570d99b",
+  "project": "remission-poc-esbraun",
+  "zone": "us-central1-a",
+  "vm": {
+    "name": "remission-sim-20261023",
+    "id": "4432355060784521012",
+    "machine": "e2-small",
+    "boot_disk_id": "4644810965315444532",
+    "boot_image_id": "3188631002576736407",
+    "stop_at_utc": "2026-10-25T04:24:25Z"
+  },
+  "data_disk": {
+    "disk_id": "5235658479375965986",
+    "device": "/dev/disk/by-id/google-remission-data",
+    "uuid": "6d567bb0-a7ec-4035-8842-eb72ec7b9eb4",
+    "vm_id": "4432355060784521012"
+  },
+  "address": {
+    "id": "6909638376882134844",
+    "ipv4": "34.59.176.42",
+    "origin": "https://34.59.176.42"
+  },
+  "rendered_manifest_sha256": "caef64ea9b0c03525f25aea35dfc3589d0b19ce6c449afc753d7554846201f45",
+  "published_images": {
+    "fixture": {
+      "selected_image_id": "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+      "tag": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-app:first-286aa87a10a2",
+      "registry_digest": "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+      "immutable_ref": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-app@sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+      "push_registry_local_agree": true
+    },
+    "generator": {
+      "selected_image_id": "sha256:d64907d76a2810d2e6cad8acaa012f3df132ced69bfe2636c7eb07f7090b4eee",
+      "tag": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-generator:first-286aa87a10a2",
+      "registry_digest": "sha256:d64907d76a2810d2e6cad8acaa012f3df132ced69bfe2636c7eb07f7090b4eee",
+      "immutable_ref": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-generator@sha256:d64907d76a2810d2e6cad8acaa012f3df132ced69bfe2636c7eb07f7090b4eee",
+      "push_registry_local_agree": true
+    }
+  },
+  "helper_version": "2.1.29",
+  "host_docker_version": "29.9.2",
+  "host_compose_version": "5.6.1",
+  "root_owns_billing_cleanup": true,
+  "incremental_budget_usd": 5,
+  "recorded_monthly_budget_usd": 20,
+  "current_spend": "unknown",
+  "actual_passes": [
+    "source/image closure",
+    "two-image publication",
+    "VM registry pull",
+    "new disk identity/first-use guard",
+    "manifest/root ownership",
+    "offline account initialization/provisioning",
+    "trusted IP TLS/health",
+    "no-SNI/IP/chain verification",
+    "anonymous and wrong/unknown credential denial",
+    "cookies/CSRF/origin",
+    "logout/old-session denial",
+    "password-reset revocation/new-login",
+    "held user2 session survives user1 reset+restart"
+  ],
+  "pending": [
+    "actual browser workflow/quality",
+    "negative patient ownership/stale/ineligible cases",
+    "saved history after container recreation and same-disk VM reboot",
+    "genuine session expiry at05:11:06.923337Z",
+    "post-workflow resource fit",
+    "independent final review"
+  ],
+  "scope_exclusions": [
+    "training/fitting",
+    "analytics acceptance",
+    "human/clinical validation",
+    "backup/rollback execution",
+    "long-duration certificate renewal observation"
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "utc": "2026-10-23T05:03:47.790519+00:00",
+  "checks": [
+    {
+      "case": "cross-owner-detail-0",
+      "status": 404,
+      "expected": 404,
+      "code": "not_found",
+      "passed": true
+    },
+    {
+      "case": "cross-owner-approve-0",
+      "status": 404,
+      "expected": 404,
+      "code": "not_found",
+      "passed": true
+    },
+    {
+      "case": "cross-owner-advance-0",
+      "status": 404,
+      "expected": 404,
+      "code": "not_found",
+      "passed": true
+    },
+    {
+      "case": "stale-approval-0",
+      "status": 409,
+      "expected": 409,
+      "code": "stale_approval",
+      "passed": true
+    },
+    {
+      "case": "stale-advance-0",
+      "status": 409,
+      "expected": 409,
+      "code": "stale_simulation",
+      "passed": true
+    },
+    {
+      "case": "ineligible-action-0",
+      "status": 409,
+      "expected": 409,
+      "code": "ineligible_action",
+      "passed": true
+    },
+    {
+      "case": "historical-write-0",
+      "status": 409,
+      "expected": 409,
+      "code": "historical_write",
+      "passed": true
+    },
+    {
+      "case": "cross-owner-detail-1",
+      "status": 404,
+      "expected": 404,
+      "code": "not_found",
+      "passed": true
+    },
+    {
+      "case": "cross-owner-approve-1",
+      "status": 404,
+      "expected": 404,
+      "code": "not_found",
+      "passed": true
+    },
+    {
+      "case": "cross-owner-advance-1",
+      "status": 404,
+      "expected": 404,
+      "code": "not_found",
+      "passed": true
+    },
+    {
+      "case": "stale-approval-1",
+      "status": 409,
+      "expected": 409,
+      "code": "stale_approval",
+      "passed": true
+    },
+    {
+      "case": "stale-advance-1",
+      "status": 409,
+      "expected": 409,
+      "code": "stale_simulation",
+      "passed": true
+    },
+    {
+      "case": "ineligible-action-1",
+      "status": 409,
+      "expected": 409,
+      "code": "ineligible_action",
+      "passed": true
+    },
+    {
+      "case": "historical-write-1",
+      "status": 409,
+      "expected": 409,
+      "code": "historical_write",
+      "passed": true
+    }
+  ],
+  "both_panels_count": [
+    12,
+    12
+  ],
+  "panels_disjoint": true,
+  "post_negative_clinical_panel_history_equality": true,
+  "analyses_empty_for_both": true,
+  "actual_cloud_action_binding": [
+    {
+      "owner_index": 0,
+      "patient_id": "POC-0bb7b661339c45b0b23ec0c6b029a71d",
+      "option": "behavioral_escalate",
+      "assignment_id": "assignment-bca4eb8b867346ffa6a74a9106846f8f",
+      "approved_history": "approval-a9431f4f56c24424be8912ea2cc8b2ff",
+      "delivery_records": 14,
+      "daily_reports": 14,
+      "observed_reports": 11,
+      "missing_reports": 3,
+      "action_consumption_chain_passed": true
+    },
+    {
+      "owner_index": 1,
+      "patient_id": "POC-05a4fb3106e74baeb9f411ec1fa28969",
+      "option": "behavioral_continue",
+      "assignment_id": "assignment-8302f84dee5b445ab75952fb642ce80d",
+      "approved_history": "approval-b8cd434cb703446983384c0f756dde6d",
+      "delivery_records": 14,
+      "daily_reports": 14,
+      "observed_reports": 13,
+      "missing_reports": 1,
+      "action_consumption_chain_passed": true
+    }
+  ],
+  "claim_scope": "Synthetic action-response engineering; prior paired causal-path proof reused, no clinical accuracy claim."
+}

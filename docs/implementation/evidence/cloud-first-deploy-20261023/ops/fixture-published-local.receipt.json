@@ -1,0 +1,24 @@
+{
+  "name": "fixture-published-local",
+  "argv": [
+    "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+    "--config",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\docker",
+    "--host",
+    "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "image",
+    "inspect",
+    "--format",
+    "{\"Id\":{{json .Id}},\"Os\":{{json .Os}},\"Architecture\":{{json .Architecture}},\"RepoDigests\":{{json .RepoDigests}}}",
+    "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-app:first-286aa87a10a2"
+  ],
+  "pid": 32604,
+  "started_utc": "2026-10-23T04:23:24.402481+00:00",
+  "ended_utc": "2026-10-23T04:23:24.486050+00:00",
+  "elapsed_seconds": 0.08357250003609806,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "timeout_seconds": 60,
+  "remote_operation_state": "client_completed"
+}

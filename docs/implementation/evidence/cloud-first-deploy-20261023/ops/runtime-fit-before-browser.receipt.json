@@ -1,0 +1,25 @@
+{
+  "name": "runtime-fit-before-browser",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--strict-host-key-checking=yes",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; sudo docker inspect --format '{\"Name\":{{json .Name}},\"Id\":{{json .Id}},\"Image\":{{json .Image}},\"ConfigImage\":{{json .Config.Image}},\"User\":{{json .Config.User}},\"Status\":{{json .State.Status}},\"Pid\":{{.State.Pid}},\"OOMKilled\":{{.State.OOMKilled}},\"ReadonlyRootfs\":{{.HostConfig.ReadonlyRootfs}},\"CapAdd\":{{json .HostConfig.CapAdd}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Memory\":{{.HostConfig.Memory}},\"PidsLimit\":{{.HostConfig.PidsLimit}},\"Ports\":{{json .NetworkSettings.Ports}},\"Mounts\":{{json .Mounts}}}' remission-simulation-app-1 remission-simulation-generator-1 remission-simulation-proxy-1; sudo docker network inspect --format '{\"Name\":{{json .Name}},\"Internal\":{{.Internal}},\"Driver\":{{json .Driver}}}' remission-simulation_private remission-simulation_edge; for container in remission-simulation-app-1 remission-simulation-generator-1 remission-simulation-proxy-1; do printf \"metrics %s\\n\" \"$container\"; sudo docker exec \"$container\" sh -c \"cat /sys/fs/cgroup/memory.current /sys/fs/cgroup/memory.peak /sys/fs/cgroup/memory.events\"; done; free -b; df -B1 / /srv/remission; sudo docker stats --no-stream --format \"{{.Name}} {{.MemUsage}} {{.CPUPerc}} {{.PIDs}}\"; sudo journalctl -k --since \"2026-10-23 04:24:25 UTC\" --grep \"Out of memory|Killed process|oom-kill\" --no-pager"
+  ],
+  "started_utc": "2026-10-23T04:44:19.763045+00:00",
+  "elapsed_seconds": 10.941406700061634,
+  "returncode": 1,
+  "timeout": false,
+  "client_reaped": true
+}

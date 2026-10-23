@@ -1,0 +1,25 @@
+{
+  "name": "host-setup",
+  "argv": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+    "-S",
+    "-B",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-generator-build-sol-261023\\artifacts\\cloud-sdk\\590.0.0\\google-cloud-sdk\\lib\\gcloud.py",
+    "--quiet",
+    "--configuration=remission-poc",
+    "--project=remission-poc-esbraun",
+    "compute",
+    "ssh",
+    "remission-sim-20261023",
+    "--zone=us-central1-a",
+    "--tunnel-through-iap",
+    "--ssh-key-file=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-first-deploy-sol-261023\\artifacts\\cloud-first-deploy-20261023\\private\\ssh\\remission_vm",
+    "--command=set -eu; cd /home/eric_samuel_braun_gmail_com/host-stage; printf \"%s  %s\\n\" 8fdd0e224b74ce4585f0f03bf3616b10eb053d3bcfe7f74ef591d299afe6c127 host-setup.sh e2f135ed6580d7f7fe169353ffc10f7016b042b2d5304104b746d9a93f523d39 new-disk-once.sh | sha256sum -c -; bash host-setup.sh; cat docker-package-selection.txt host-package-versions.txt"
+  ],
+  "started_utc": "2026-10-23T04:30:38.451258+00:00",
+  "elapsed_seconds": 45.91523699997924,
+  "returncode": 0,
+  "timeout": false,
+  "client_reaped": true,
+  "remote_state": "client_completed"
+}

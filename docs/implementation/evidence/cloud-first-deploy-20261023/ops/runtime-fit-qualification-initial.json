@@ -1,0 +1,205 @@
+{
+  "utc": "2026-10-23T04:49:05.453428+00:00",
+  "containers": [
+    {
+      "Name": "/remission-simulation-app-1",
+      "Id": "61d16ac9f3b9ca059dd76ecb458ff2c9bd372d52cf529d60ef4cb04bff8cbc51",
+      "Image": "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+      "ConfigImage": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-app@sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+      "User": "10001:10001",
+      "Status": "running",
+      "Pid": 10522,
+      "OOMKilled": false,
+      "ReadonlyRootfs": true,
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges:true"
+      ],
+      "Memory": 2147483648,
+      "PidsLimit": 256,
+      "Ports": {
+        "8765/tcp": null
+      },
+      "Mounts": [
+        {
+          "Destination": "/data",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/srv/remission/data",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/exports",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/srv/remission/exports",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/fixtures",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": false,
+          "Source": "/srv/remission/bootstrap",
+          "Type": "bind"
+        }
+      ]
+    },
+    {
+      "Name": "/remission-simulation-generator-1",
+      "Id": "6ab0e44c51bd1476c3b06e293d97589b9cb9464a2c093a7ef3cb1222d0450717",
+      "Image": "sha256:d64907d76a2810d2e6cad8acaa012f3df132ced69bfe2636c7eb07f7090b4eee",
+      "ConfigImage": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission/simulation-generator@sha256:d64907d76a2810d2e6cad8acaa012f3df132ced69bfe2636c7eb07f7090b4eee",
+      "User": "20000:20000",
+      "Status": "running",
+      "Pid": 10455,
+      "OOMKilled": false,
+      "ReadonlyRootfs": true,
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges:true"
+      ],
+      "Memory": 2147483648,
+      "PidsLimit": 256,
+      "Ports": {},
+      "Mounts": []
+    },
+    {
+      "Name": "/remission-simulation-proxy-1",
+      "Id": "1440ccbcafea9823dafda04f8c8ab511495641caf77ed2ec75e70c8e3eeef10c",
+      "Image": "sha256:04913b1da43339a40ad1ea87827d70a576ac5aa6cf674c6e24fdca675887533a",
+      "ConfigImage": "docker.io/library/caddy@sha256:04913b1da43339a40ad1ea87827d70a576ac5aa6cf674c6e24fdca675887533a",
+      "User": "0:0",
+      "Status": "running",
+      "Pid": 10664,
+      "OOMKilled": false,
+      "ReadonlyRootfs": true,
+      "CapAdd": [
+        "CAP_NET_BIND_SERVICE"
+      ],
+      "CapDrop": [
+        "ALL"
+      ],
+      "SecurityOpt": [
+        "no-new-privileges:true"
+      ],
+      "Memory": 268435456,
+      "PidsLimit": 256,
+      "Ports": {
+        "2019/tcp": null,
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "443"
+          }
+        ],
+        "443/udp": null,
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "80"
+          }
+        ]
+      },
+      "Mounts": [
+        {
+          "Destination": "/config",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/srv/remission/proxy-config",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/data",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": true,
+          "Source": "/srv/remission/proxy-data",
+          "Type": "bind"
+        },
+        {
+          "Destination": "/etc/caddy/Caddyfile",
+          "Mode": "",
+          "Propagation": "rprivate",
+          "RW": false,
+          "Source": "/opt/remission-simulation/Caddyfile",
+          "Type": "bind"
+        }
+      ]
+    }
+  ],
+  "networks": [
+    {
+      "Name": "remission-simulation_private",
+      "Internal": true,
+      "Driver": "bridge"
+    },
+    {
+      "Name": "remission-simulation_edge",
+      "Internal": false,
+      "Driver": "bridge"
+    }
+  ],
+  "cgroup_metrics": [
+    {
+      "container": "remission-simulation-app-1",
+      "memory_current_bytes": 63238144,
+      "memory_peak_bytes": 130007040,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    },
+    {
+      "container": "remission-simulation-generator-1",
+      "memory_current_bytes": 14172160,
+      "memory_peak_bytes": 23146496,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    },
+    {
+      "container": "remission-simulation-proxy-1",
+      "memory_current_bytes": 14041088,
+      "memory_peak_bytes": 19906560,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    }
+  ],
+  "required_selected_runtime_observations_passed": true,
+  "raw_composite_command_exit": 1,
+  "exit_interpretation": "Last journalctl --grep returned no matches/-- No entries -- and exit1; preceding ordered runtime/metrics commands completed under set -e. Original receipt preserved.",
+  "no_oom_entries_observed": true
+}

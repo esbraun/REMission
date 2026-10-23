@@ -1,0 +1,97 @@
+{
+  "disks": [
+    {
+      "architecture": "X86_64",
+      "autoDelete": true,
+      "boot": true,
+      "deviceName": "persistent-disk-0",
+      "diskSizeGb": "20",
+      "guestOsFeatures": [
+        {
+          "type": "UEFI_COMPATIBLE"
+        },
+        {
+          "type": "VIRTIO_SCSI_MULTIQUEUE"
+        },
+        {
+          "type": "GVNIC"
+        },
+        {
+          "type": "SEV_CAPABLE"
+        },
+        {
+          "type": "SEV_LIVE_MIGRATABLE_V2"
+        },
+        {
+          "type": "SUSPEND_SAFE_FPR"
+        }
+      ],
+      "index": 0,
+      "interface": "SCSI",
+      "kind": "compute#attachedDisk",
+      "licenses": [
+        "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-12-bookworm"
+      ],
+      "mode": "READ_WRITE",
+      "source": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/zones/us-central1-a/disks/remission-sim-20261023",
+      "type": "PERSISTENT"
+    },
+    {
+      "autoDelete": false,
+      "boot": false,
+      "deviceName": "remission-data",
+      "diskSizeGb": "10",
+      "index": 1,
+      "interface": "SCSI",
+      "kind": "compute#attachedDisk",
+      "mode": "READ_WRITE",
+      "source": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/zones/us-central1-a/disks/remission-sim-data-20261023",
+      "type": "PERSISTENT"
+    }
+  ],
+  "id": "4432355060784521012",
+  "name": "remission-sim-20261023",
+  "networkInterfaces": [
+    {
+      "accessConfigs": [
+        {
+          "kind": "compute#accessConfig",
+          "name": "external-nat",
+          "natIP": "34.59.176.42",
+          "networkTier": "PREMIUM",
+          "type": "ONE_TO_ONE_NAT"
+        }
+      ],
+      "fingerprint": "toXHlfGJoUA=",
+      "kind": "compute#networkInterface",
+      "name": "nic0",
+      "network": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/global/networks/default",
+      "networkIP": "10.128.0.2",
+      "stackType": "IPV4_ONLY",
+      "subnetwork": "https://www.googleapis.com/compute/v1/projects/remission-poc-esbraun/regions/us-central1/subnetworks/default"
+    }
+  ],
+  "scheduling": {
+    "automaticRestart": true,
+    "instanceTerminationAction": "STOP",
+    "onHostMaintenance": "MIGRATE",
+    "preemptible": false,
+    "provisioningModel": "STANDARD",
+    "terminationTime": "2026-10-25T04:24:25Z"
+  },
+  "serviceAccounts": [
+    {
+      "email": "remission-poc-runtime@remission-poc-esbraun.iam.gserviceaccount.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/cloud-platform"
+      ]
+    }
+  ],
+  "status": "RUNNING",
+  "tags": {
+    "fingerprint": "BL2m9azcFuE=",
+    "items": [
+      "remission-sim-20261023"
+    ]
+  }
+}

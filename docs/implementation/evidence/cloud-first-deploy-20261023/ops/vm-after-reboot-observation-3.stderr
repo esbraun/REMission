@@ -1,0 +1,11 @@
+
+Recommendation: To check for possible causes of SSH connectivity issues and get
+recommendations, rerun the ssh command with the --troubleshoot option.
+
+gcloud compute ssh remission-sim-20261023 --project=remission-poc-esbraun --zone=us-central1-a --ssh-key-file=C:\Users\erics\Documents\Projects\REMission-worktrees\cloud-first-deploy-sol-261023\artifacts\cloud-first-deploy-20261023\private\ssh\remission_vm --troubleshoot
+
+Or, to investigate an IAP tunneling issue:
+
+gcloud compute ssh remission-sim-20261023 --project=remission-poc-esbraun --zone=us-central1-a --ssh-key-file=C:\Users\erics\Documents\Projects\REMission-worktrees\cloud-first-deploy-sol-261023\artifacts\cloud-first-deploy-20261023\private\ssh\remission_vm --troubleshoot --tunnel-through-iap
+
+ERROR: (gcloud.compute.ssh) [C:\Users\erics\Documents\Projects\REMission-worktrees\cloud-generator-build-sol-261023\artifacts\cloud-sdk\590.0.0\google-cloud-sdk\bin\sdk\plink.exe] exited with return code [1].

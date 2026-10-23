@@ -1,0 +1,42 @@
+- generic [ref=f6e2]:
+  - link "Skip to main content" [ref=f6e3] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f6e4]:
+    - generic [ref=f6e5]:
+      - text: REMission
+      - generic [ref=f6e6]: Synthetic care workspace
+    - generic [ref=f6e7]:
+      - generic [ref=f6e8]: Synthetic Physician Two
+      - button "Sign out" [ref=f6e9] [cursor=pointer]
+  - generic [ref=f6e10]: Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring
+  - main [ref=f6e11]:
+    - navigation "Workspace" [ref=f6e16]:
+      - link "My panel" [active] [ref=f6e17] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f6e18]: 0 owned synthetic patients
+    - region [ref=f6e20]:
+      - heading "Generate a synthetic panel" [level=2] [ref=f6e21]
+      - paragraph [ref=f6e22]: Create fictional patients and explore your own decisions over 84 simulated days. The seed reproduces patient content and noise on the pinned runtime. Earlier generated patients and their history remain saved.
+      - generic [ref=f6e23]:
+        - generic [ref=f6e24]: Synthetic patient family
+        - combobox "Synthetic patient family" [ref=f6e25]:
+          - option "Ordinary behavioral care · v1" [selected]
+          - option "Fictional N-of-1 medication protocol · v2"
+        - group [ref=f6e26]:
+          - generic [ref=f6e27]:
+            - generic [ref=f6e28]:
+              - generic [ref=f6e29]: Panel seed
+              - spinbutton "Panel seed" [ref=f6e30]: "20261021"
+            - generic [ref=f6e31]:
+              - generic [ref=f6e32]: Patient count · 2–24
+              - spinbutton "Patient count · 2–24" [ref=f6e33]: "12"
+        - button "Generate and load panel" [ref=f6e34] [cursor=pointer]
+    - paragraph [ref=f6e35]: Your clinical workspace
+    - heading "My panel" [level=1] [ref=f6e36]
+    - paragraph [ref=f6e37]: Choose a synthetic patient. State and permissions come from the service; opening a workspace never assigns a treatment.
+    - generic [ref=f6e38]: Loaded patient group
+    - combobox "Loaded patient group" [ref=f6e39]:
+      - option "Foundation fixtures" [selected]
+      - option "All owned patients"
+    - status [ref=f6e40]: Showing 0 of 0 owned patients.
+    - generic [ref=f6e19]: Engineering foundation only. Human-factors, clinical review and clinical validation remain unexecuted.

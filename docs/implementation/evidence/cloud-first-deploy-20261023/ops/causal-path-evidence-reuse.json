@@ -1,0 +1,29 @@
+{
+  "status": "accepted-prior-local-evidence-reuse; actual-cloud-action-binding-pending-browser-pause",
+  "accepted_by_root": true,
+  "source": "286aa87a10a24ad9925c90be033e7d8c0570d99b",
+  "prior_accepted_merge": "a7ab7e60a8146ace6342efd8d51a0bd1013566ad",
+  "test_files_unchanged": true,
+  "test_file_hashes": {
+    "tests/generator/test_service.py": "76c53901ec4606bd795139981b36633ca1e7d5734e01ebd5967ee8872b88f6a5",
+    "tests/generator/test_restricted.py": "7352059e06a5e746d71756e71625e5ee41a4df12e0adbae4ed735dcf70e43dd1"
+  },
+  "actual_prior_log": {
+    "path": "docs\\implementation\\evidence\\POC-1-3-20261021\\service-tests-r3.log",
+    "sha256": "dde1a2f375328f63cde7e9e00466fb94ddf2c9d73426b7569d950c1b2e92a02b",
+    "raw_blob": "d71f917565dca3ab27af8f43a4363e0116a8bf6d",
+    "result": "9 passed;13.937s"
+  },
+  "reused_checks": [
+    "SimulationServiceTests.test_decide_advance_persist_history_and_matched_branches",
+    "RestrictedGeneratorTests.test_action_path_and_missingness_are_paired_across_branches",
+    "RestrictedGeneratorTests.test_zero_noise_first_night_and_persistent_exposure_analytic_case",
+    "RestrictedGeneratorTests.test_delivery_precedes_overnight_response_and_next_morning_report"
+  ],
+  "current_consumed_source_hashes": {
+    "simulation.py": "f9847ad960c4c0820bea6ca6acc8cbe64210d0f2151608b5544fcd001bd06446",
+    "restricted.py": "67798d59360623e757dfb3ae7d0726570448831e840a2838835bb5d3ddf5fa1c"
+  },
+  "v1_source_reason": "Ordinary generate(request) calls _generate(request,(2,4)), preserving original action-specific carry/adherence/burden/observed outcome math; new optional protocol branches are inactive for default ordinary v1 panels. Approval persists action schedule; advance posts it to private generator.",
+  "claim_boundary": "Synthetic action-response engineering; no numerical clinical accuracy, model fitting, new causal study or ablation acceptance."
+}

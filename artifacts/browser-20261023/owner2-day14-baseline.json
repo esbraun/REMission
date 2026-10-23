@@ -1,0 +1,357 @@
+{
+  "captured_at": "2026-10-23T04:59:24.488Z",
+  "origin": "https://34.59.176.42",
+  "patient_id": "POC-05a4fb3106e74baeb9f411ec1fa28969",
+  "name": "Synthetic Casey 11",
+  "simulation": {
+    "actions": [
+      {
+        "assignment_id": "assignment-8302f84dee5b445ab75952fb642ce80d",
+        "day": 0,
+        "option": "behavioral_continue"
+      }
+    ],
+    "day": 14,
+    "horizon_days": 84,
+    "index": 10,
+    "law_version": "poc-longitudinal-v1",
+    "origin": "2026-01-01T12:00:00+00:00",
+    "panel_id": "panel-dd80bf64a6204b6f992bc11e4c5292e5",
+    "seed": 20261024
+  },
+  "snapshot": {
+    "record_id": "decision-9437a36e6aba4ab33776ebe86c64cc4a",
+    "patient_version": 3,
+    "state_version": 3,
+    "consent_version": 1,
+    "eligibility_version": 3,
+    "cutoff": "2026-01-15T12:00:00Z"
+  },
+  "plan": {
+    "approved_at": "2026-01-01T12:00:00+00:00",
+    "assignment_id": "assignment-8302f84dee5b445ab75952fb642ce80d",
+    "bundle_id": "approval-b8cd434cb703446983384c0f756dde6d",
+    "decided_at": "2026-01-01T12:00:00+00:00",
+    "effective_at": "2026-01-01T20:00:00+00:00",
+    "option": "behavioral_continue",
+    "rationale": "Synthetic physician two exploration: continue the eligible behavioral plan, review reports and missingness at day14, and preserve an independent owner-specific decision history. No superiority claim.",
+    "received_at": "2026-10-23T04:59:03.470829+00:00"
+  },
+  "history": [
+    {
+      "id": "approval-b8cd434cb703446983384c0f756dde6d",
+      "approved_at": "2026-01-01T12:00:00+00:00",
+      "display_sha256": "7eeb7407aeb819f1b8484177cae7b3c0435f5c6153545625ab8ccb3b99c0ecf2"
+    }
+  ],
+  "observations": [
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-isi-0",
+      "kind": "isi",
+      "event_at": "2026-01-01T11:59:00Z",
+      "available_at": "2026-01-01T11:59:00Z",
+      "items": [
+        3,
+        3,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-patient-0",
+      "kind": "patient",
+      "event_at": "2026-01-01T11:59:00Z",
+      "available_at": "2026-01-01T11:59:00Z"
+    },
+    {
+      "record_id": "assignment-8302f84dee5b445ab75952fb642ce80d",
+      "kind": "assignment",
+      "event_at": "2026-01-01T12:00:00Z",
+      "available_at": "2026-01-01T12:00:00Z",
+      "option": "behavioral_continue"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-1",
+      "kind": "delivery",
+      "event_at": "2026-01-01T20:00:00Z",
+      "available_at": "2026-01-01T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-1",
+      "kind": "daily_report",
+      "event_at": "2026-01-02T11:59:00Z",
+      "available_at": "2026-01-02T11:59:00Z",
+      "missingness": "missing",
+      "sleep_quality": null,
+      "function": null
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-2",
+      "kind": "delivery",
+      "event_at": "2026-01-02T20:00:00Z",
+      "available_at": "2026-01-02T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-2",
+      "kind": "daily_report",
+      "event_at": "2026-01-03T11:59:00Z",
+      "available_at": "2026-01-03T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 3.405,
+      "function": 4.948
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-3",
+      "kind": "delivery",
+      "event_at": "2026-01-03T20:00:00Z",
+      "available_at": "2026-01-03T20:00:00Z",
+      "adherence": 0,
+      "option": "behavioral_continue",
+      "stage": "not_taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-3",
+      "kind": "daily_report",
+      "event_at": "2026-01-04T11:59:00Z",
+      "available_at": "2026-01-04T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 5.235,
+      "function": 4.517
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-4",
+      "kind": "delivery",
+      "event_at": "2026-01-04T20:00:00Z",
+      "available_at": "2026-01-04T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-4",
+      "kind": "daily_report",
+      "event_at": "2026-01-05T11:59:00Z",
+      "available_at": "2026-01-05T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 4.535,
+      "function": 5.556
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-5",
+      "kind": "delivery",
+      "event_at": "2026-01-05T20:00:00Z",
+      "available_at": "2026-01-05T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-5",
+      "kind": "daily_report",
+      "event_at": "2026-01-06T11:59:00Z",
+      "available_at": "2026-01-06T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 5.35,
+      "function": 5.402
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-6",
+      "kind": "delivery",
+      "event_at": "2026-01-06T20:00:00Z",
+      "available_at": "2026-01-06T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-6",
+      "kind": "daily_report",
+      "event_at": "2026-01-07T11:59:00Z",
+      "available_at": "2026-01-07T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 5.871,
+      "function": 4.932
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-7",
+      "kind": "delivery",
+      "event_at": "2026-01-07T20:00:00Z",
+      "available_at": "2026-01-07T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-7",
+      "kind": "daily_report",
+      "event_at": "2026-01-08T11:59:00Z",
+      "available_at": "2026-01-08T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 4.19,
+      "function": 5.778
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-8",
+      "kind": "delivery",
+      "event_at": "2026-01-08T20:00:00Z",
+      "available_at": "2026-01-08T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-8",
+      "kind": "daily_report",
+      "event_at": "2026-01-09T11:59:00Z",
+      "available_at": "2026-01-09T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 4.912,
+      "function": 5.307
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-9",
+      "kind": "delivery",
+      "event_at": "2026-01-09T20:00:00Z",
+      "available_at": "2026-01-09T20:00:00Z",
+      "adherence": 0,
+      "option": "behavioral_continue",
+      "stage": "not_taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-9",
+      "kind": "daily_report",
+      "event_at": "2026-01-10T11:59:00Z",
+      "available_at": "2026-01-10T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 4.448,
+      "function": 5.61
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-10",
+      "kind": "delivery",
+      "event_at": "2026-01-10T20:00:00Z",
+      "available_at": "2026-01-10T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-10",
+      "kind": "daily_report",
+      "event_at": "2026-01-11T11:59:00Z",
+      "available_at": "2026-01-11T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 4.983,
+      "function": 5.189
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-11",
+      "kind": "delivery",
+      "event_at": "2026-01-11T20:00:00Z",
+      "available_at": "2026-01-11T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-11",
+      "kind": "daily_report",
+      "event_at": "2026-01-12T11:59:00Z",
+      "available_at": "2026-01-12T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 5.872,
+      "function": 5.273
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-12",
+      "kind": "delivery",
+      "event_at": "2026-01-12T20:00:00Z",
+      "available_at": "2026-01-12T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-12",
+      "kind": "daily_report",
+      "event_at": "2026-01-13T11:59:00Z",
+      "available_at": "2026-01-13T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 4.808,
+      "function": 4.956
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-13",
+      "kind": "delivery",
+      "event_at": "2026-01-13T20:00:00Z",
+      "available_at": "2026-01-13T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-13",
+      "kind": "daily_report",
+      "event_at": "2026-01-14T11:59:00Z",
+      "available_at": "2026-01-14T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 5.998,
+      "function": 5.09
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-delivery-14",
+      "kind": "delivery",
+      "event_at": "2026-01-14T20:00:00Z",
+      "available_at": "2026-01-14T20:00:00Z",
+      "adherence": 1,
+      "option": "behavioral_continue",
+      "stage": "taken"
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-daily_report-14",
+      "kind": "daily_report",
+      "event_at": "2026-01-15T11:59:00Z",
+      "available_at": "2026-01-15T11:59:00Z",
+      "missingness": "observed",
+      "sleep_quality": 5.201,
+      "function": 4.568
+    },
+    {
+      "record_id": "POC-05a4fb3106e74baeb9f411ec1fa28969-isi-14",
+      "kind": "isi",
+      "event_at": "2026-01-15T11:59:00Z",
+      "available_at": "2026-01-15T11:59:00Z",
+      "items": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "follow-up-acf156c7157f4fceaa6a3c513074489f",
+      "due_at": "2026-01-15T12:00:00+00:00",
+      "owner_id": "ab3c2bb5-1ba2-43d0-a716-612e4a411656",
+      "payload": {
+        "due_at": "2026-01-15T12:00:00+00:00",
+        "id": "follow-up-acf156c7157f4fceaa6a3c513074489f",
+        "owner_id": "ab3c2bb5-1ba2-43d0-a716-612e4a411656",
+        "status": "pending"
+      }
+    }
+  ]
+}
