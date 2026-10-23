@@ -1,0 +1,42 @@
+{
+  "scalar_cases": [
+    {"id":"S2-HO32-01-interior","alpha":5.0,"tau":1.0,"b":[0.4,-0.2,0.1,0.2],"x":[7.0,0.0,2.0,0.25],"rho":0.5,"h":1,"e_T":0.1,"s_e":0.5,"s_Q":1.0,"r0":0.2,"r1":0.4,"expected_domain":"admit"},
+    {"id":"S2-HO32-02-negative-rho","alpha":4.0,"tau":-2.0,"b":[0.1,0.2,-0.1,0.3],"x":[7.0,1.0,3.0,0.14],"rho":-0.5,"h":2,"e_T":-1.0,"s_e":0.7,"s_Q":0.8,"r0":0.3,"r1":0.6,"expected_domain":"admit"},
+    {"id":"S2-HO32-03-upper-tail","alpha":49.2,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.2,"h":1,"e_T":0.1,"s_e":0.3,"s_Q":0.4,"r0":0.2,"r1":0.8,"expected_domain":"admit"},
+    {"id":"S2-HO32-04-lower-boundary","alpha":-39.5,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":1.0,"s_Q":1.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-05-upper-boundary","alpha":49.5,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":1.0,"s_Q":1.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-06-zero-sd-low-clip","alpha":-40.0,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.0,"r1":0.0,"expected_domain":"admit"},
+    {"id":"S2-HO32-07-exact-round-threshold","alpha":2.0005,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-08-below-round-threshold","alpha":2.000499999,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-09-above-round-threshold","alpha":2.000500001,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-10-upper-clipping","alpha":10.0,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.1,"r1":0.9,"expected_domain":"admit"},
+    {"id":"S2-HO32-11-lower-clipping-threshold","alpha":-0.0005,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.9,"r1":0.1,"expected_domain":"admit"},
+    {"id":"S2-HO32-12-broad-noise","alpha":3.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.9,"h":14,"e_T":0.3,"s_e":15.0,"s_Q":2.0,"r0":0.4,"r1":0.8,"expected_domain":"admit"},
+    {"id":"S2-HO32-13-min-positive-sd","alpha":3.0,"tau":0.5,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.000001,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-14-exact-zero-sd-branch","alpha":3.3335,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-15-max-sd-boundary","alpha":5.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":40.0,"r0":0.5,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-HO32-16-below-min-sd-reject","alpha":5.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.0,"s_Q":0.0000001,"r0":0.5,"r1":0.5,"expected_domain":"reject"},
+    {"id":"S2-HO32-17-above-max-sd-reject","alpha":5.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":41.0,"s_Q":0.0,"r0":0.5,"r1":0.5,"expected_domain":"reject"},
+    {"id":"S2-HO32-18-negative-rho-long-horizon","alpha":5.0,"tau":0.5,"b":[0.2,0.0,0.1,0.0],"x":[7.0,0.0,2.0,0.7],"rho":-0.95,"h":14,"e_T":1.2,"s_e":1.0,"s_Q":0.7,"r0":1.0,"r1":0.0,"expected_domain":"admit"},
+    {"id":"S2-HO32-19-positive-rho-long-horizon","alpha":5.0,"tau":0.5,"b":[0.2,0.0,0.1,0.0],"x":[7.0,0.0,2.0,0.7],"rho":0.95,"h":14,"e_T":1.2,"s_e":1.0,"s_Q":0.7,"r0":0.0,"r1":1.0,"expected_domain":"admit"},
+    {"id":"S2-HO32-20-zero-rho-h1","alpha":5.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":1.0,"s_e":0.8,"s_Q":0.7,"r0":0.2,"r1":0.7,"expected_domain":"admit"},
+    {"id":"S2-HO32-21-mid-rho-h2","alpha":5.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.5,"h":2,"e_T":1.0,"s_e":0.8,"s_Q":0.7,"r0":0.2,"r1":0.7,"expected_domain":"admit"},
+    {"id":"S2-HO32-22-zero-rho-h14","alpha":5.0,"tau":1.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":14,"e_T":1.0,"s_e":0.8,"s_Q":0.7,"r0":0.2,"r1":0.7,"expected_domain":"admit"},
+    {"id":"S2-HO32-23-negative-rho-boundary-h1","alpha":5.0,"tau":0.25,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":-0.95,"h":1,"e_T":0.5,"s_e":0.4,"s_Q":0.8,"r0":0.3,"r1":0.7,"expected_domain":"admit"},
+    {"id":"S2-HO32-24-positive-rho-boundary-h1","alpha":5.0,"tau":0.25,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.95,"h":1,"e_T":0.5,"s_e":0.4,"s_Q":0.8,"r0":0.3,"r1":0.7,"expected_domain":"admit"},
+    {"id":"S2-HO32-25-rho-outside-reject","alpha":5.0,"tau":0.25,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.951,"h":1,"e_T":0.5,"s_e":0.4,"s_Q":0.8,"r0":0.3,"r1":0.7,"expected_domain":"reject"},
+    {"id":"S2-HO32-26-horizon-outside-reject","alpha":5.0,"tau":0.25,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.5,"h":15,"e_T":0.5,"s_e":0.4,"s_Q":0.8,"r0":0.3,"r1":0.7,"expected_domain":"reject"},
+    {"id":"S2-HO32-27-mu-upper-outside-reject","alpha":50.001,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.5,"s_Q":0.5,"r0":0.5,"r1":0.5,"expected_domain":"reject"},
+    {"id":"S2-HO32-28-mu-lower-outside-reject","alpha":-40.001,"tau":0.0,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.5,"s_Q":0.5,"r0":0.5,"r1":0.5,"expected_domain":"reject"},
+    {"id":"S2-HO32-29-control-cancellation","alpha":5.0,"tau":0.00000001,"b":[100000000.0,-100000000.0,1.0,-0.99999999],"x":[1.0,1.0,1.0,1.0],"rho":0.0,"h":1,"e_T":0.0,"s_e":0.2,"s_Q":0.8,"r0":0.25,"r1":0.75,"expected_domain":"admit"},
+    {"id":"S2-HO32-30-exact-tau-zero","alpha":5.0,"tau":0.0,"b":[0.2,-0.1,0.05,0.1],"x":[7.0,0.5,2.0,0.4],"rho":0.6,"h":2,"e_T":0.8,"s_e":0.6,"s_Q":0.9,"r0":0.0,"r1":0.0,"expected_domain":"admit"},
+    {"id":"S2-HO32-31-all-missing-rates","alpha":5.0,"tau":0.05,"b":[0.0,0.0,0.0,0.0],"x":[0.0,0.0,0.0,0.0],"rho":0.3,"h":14,"e_T":0.02,"s_e":0.2,"s_Q":0.5,"r0":1.0,"r1":1.0,"expected_domain":"admit"},
+    {"id":"S2-HO32-32-asymmetric-near-reversal","alpha":5.0,"tau":-0.05,"b":[0.1,0.0,0.0,-0.1],"x":[7.0,1.0,1.0,0.7],"rho":-0.4,"h":2,"e_T":0.1,"s_e":0.7,"s_Q":0.9,"r0":0.0,"r1":1.0,"expected_domain":"admit"}
+  ],
+  "cdf_cases": [
+    {"id":"S2-HOCDF16-01","z":-40.0},{"id":"S2-HOCDF16-02","z":-12.0},{"id":"S2-HOCDF16-03","z":-8.0},{"id":"S2-HOCDF16-04","z":-5.0},
+    {"id":"S2-HOCDF16-05","z":-2.0},{"id":"S2-HOCDF16-06","z":-1.0},{"id":"S2-HOCDF16-07","z":-0.5},{"id":"S2-HOCDF16-08","z":-0.0000000001},
+    {"id":"S2-HOCDF16-09","z":0.0},{"id":"S2-HOCDF16-10","z":0.0000000001},{"id":"S2-HOCDF16-11","z":0.5},{"id":"S2-HOCDF16-12","z":1.0},
+    {"id":"S2-HOCDF16-13","z":2.0},{"id":"S2-HOCDF16-14","z":5.0},{"id":"S2-HOCDF16-15","z":8.0},{"id":"S2-HOCDF16-16","z":40.0}
+  ]
+}
