@@ -87,7 +87,7 @@ class Store:
         return db
 
     @contextmanager
-    def transaction(self, *, write: bool = False, prepare=None, authorize=None) -> Iterator[sqlite3.Connection]:
+    def transaction(self, *, write: bool = False, prepare=None, authorize=None, before_commit=None) -> Iterator[sqlite3.Connection]:
         with self.gate.hold():
             db = self.connect()
             try:
@@ -105,6 +105,8 @@ class Store:
                 if write:
                     from .live_journal import receive
                     receive(db,self.clock())
+                if before_commit:
+                    before_commit(db)  # e.g. bounded ingest after journal work
                 db.commit()
             except sqlite3.OperationalError as error:
                 db.rollback()

@@ -34,4 +34,5 @@ COPY services/learner/worker.py services/learner/export_observed.py services/lea
 COPY methods/visit/ /app/methods/visit/
 COPY services/learner/analysis_worker.py /app/services/learner/
 COPY tooling/foundation/analysis_dispatcher.py /app/analysis_dispatcher.py
+COPY tooling/foundation/analysis_lifecycle.py /app/analysis_lifecycle.py
 CMD ["python","-m","unittest","discover","-s","tests/integration/replay","-v"]

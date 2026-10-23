@@ -146,8 +146,62 @@ def submit(db, patient, owner, expected_version, previous, now, *, mode='v0',sou
     return view(db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(job,)).fetchone(),patient['cutoff'])
 
 
-def claim(store):
+def queued_request(db, *, owner, job, key, submission):
+    """Read one receipted ordinary cohort request; no claim/session secrets leave.
+
+    The caller uses the existing admitted Store read transaction. A missing
+    receipt is UNKNOWN submission outcome, never permission to submit again.
+    """
+    from contracts.domain.cohort import CohortInput, CohortSubmission, require_executable
+    submission=CohortSubmission.model_validate_json(canonical(submission)).model_dump(mode='json')
+    if not key or len(key)>128:raise AnalysisError('Bounded original receipt key required.')
+    receipts=db.execute('SELECT scope,payload_sha256,response FROM receipts WHERE owner_id=? AND key=?',
+        (owner,key)).fetchall()
+    if len(receipts)!=1:raise AnalysisError('Unknown or ambiguous submission receipt; retain original key.')
+    receipt=receipts[0];scope='cohort-analysis:'+submission['cohort_id']
+    if receipt['scope']!=scope or receipt['payload_sha256']!=sha(submission):
+        raise AnalysisError('Submission receipt selection mismatch.')
+    response=json.loads(receipt['response'])
+    if response.get('id')!=job:raise AnalysisError('Submission receipt job mismatch.')
+    active=db.execute("SELECT job_id,status FROM analysis_attempts WHERE status IN ('queued','running') ORDER BY job_id").fetchall()
+    if [(r['job_id'],r['status']) for r in active]!=[(job,'queued')]:
+        raise AnalysisError('Expected exactly the one reviewed queued attempt and no running attempt.')
+    row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=?',(job,owner)).fetchone()
+    if row is None or row['claim_token'] is not None or row['started_at'] is not None:
+        raise AnalysisError('Expected owned unclaimed queued attempt.')
+    product=CohortInput.model_validate_json(row['request_json']);require_executable(product)
+    frozen=product.model_dump(mode='json');manifest=product.cohort.manifest
+    if (product.attempt_id!=job or sha(frozen)!=row['input_sha256'] or manifest.owner_id!=owner
+            or product.cohort.manifest_sha256!=submission['approved_manifest_sha256']
+            or manifest.cohort_id!=submission['cohort_id'] or timestamp(manifest.cutoff)!=timestamp(instant(submission['cutoff']))
+            or manifest.research_run_id!=submission['research_run_id']
+            or {m.patient_id:m.patient_version for m in manifest.members}!=submission['patient_versions']
+            or submission['source_bundle_id'] is not None or product.sources is not None
+            or row['previous_attempt']!=submission['previous_attempt']):
+        raise AnalysisError('Frozen queued request differs from approved submission.')
+    # Rebuild through the existing public projection and ownership path. This
+    # detects version, cutoff, lineage or same-version H* changes before claim.
+    current=prepare_cohort(db,owner,submission['patient_versions'],submission['cutoff'],
+        cohort_id=submission['cohort_id'],research_run_id=submission['research_run_id'])
+    if current.cohort_sha256!=product.cohort_sha256:
+        raise AnalysisError('Current owned cohort changed since submission.')
+    return dict(schema='ordinary-queued-request-v1',attempt_id=job,owner_id=owner,
+        input_sha256=row['input_sha256'],input=frozen,submission=submission,
+        receipt=dict(key=key,scope=scope,payload_sha256=receipt['payload_sha256'],response_sha256=sha(response)),
+        active_attempts=[dict(attempt_id=job,status='queued')])
+
+
+def export_queued_request(store, **selection):
+    with store.transaction() as db:
+        return queued_request(db,**selection)
+
+
+def claim(store, *, expected=None):
     with store.transaction(write=True) as db:
+        if expected is not None:
+            proof=queued_request(db,**expected['selection'])
+            if sha(proof)!=expected['export_sha256']:
+                raise AnalysisError('Reviewed queued export changed before claim.')
         if db.execute("SELECT 1 FROM analysis_attempts WHERE status='running'").fetchone():
             return None
         row=db.execute("SELECT * FROM analysis_attempts WHERE status='queued' ORDER BY created_at,job_id LIMIT 1").fetchone()
@@ -230,7 +284,10 @@ def interrupt(store):
     return len(rows)
 
 
-def ingest(store,job,token,directory):
+def ingest(store,job,token,directory, *, accept_before=None):
+    def within_host_deadline(db):
+        if accept_before is not None and store.clock()>=instant(accept_before):
+            raise AnalysisError('Host absolute completion deadline exceeded before commit.')
     directory=Path(directory)
     if directory.is_symlink():
         raise AnalysisError('Invalid artifact directory')
@@ -264,7 +321,7 @@ def ingest(store,job,token,directory):
             raise AnalysisError('Completed result lacks accepted computational diagnostics')
         if isinstance(result,BorrowAnalysisResult) and (d.get('bridge_precision',{}).get('status')!='accepted' or not {'bridge-precision.json','bridge-marginals.npz'}<=names):
             raise AnalysisError('Completed borrowing result lacks accepted bridge precision')
-    with store.transaction(write=True) as db:
+    with store.transaction(write=True,before_commit=within_host_deadline) as db:
         row=running(db,job,token)
         if cohort_result:
             from contracts.domain.cohort import CohortInput,require_executable
@@ -283,6 +340,8 @@ def ingest(store,job,token,directory):
             except ValueError as error:raise AnalysisError('Completed borrowing result lacks qualified execution binding') from error
         frozen_result=result.model_dump_json()
         completed_at=store.clock()
+        if accept_before is not None and completed_at>=instant(accept_before):
+            raise AnalysisError('Host absolute completion deadline exceeded after validation.')
         if cohort_result and result.status=='completed':
             if row['started_at'] is None:
                 raise AnalysisError('Cohort completion lacks authoritative start time.')
