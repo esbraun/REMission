@@ -82,6 +82,10 @@ def completed_counterexample(product):
         seconds=.1,peak_rss_mib=12.,variance_pass=True,mean_pass=True,stability_pass=True)
     value['diagnostics'].update(fits=[dict(extended=False,diagnostics=fit)],effect_mcmc=effect_d,
         axes=dict(chains=4,draws=1000,target_ids=[product.target_id],patients=[m.patient_id for m in product.cohort]),
+        artifact_semantics=dict(schema='poc-nof1-file-semantics-v1',status='accepted',chains=4,draws=1000,
+            patients=[m.patient_id for m in product.cohort],target_ids=[product.target_id],
+            expected_axes=['chain','draw','target'],predictive_axes=['chain','draw','target','arm','night'],
+            expected_unit='quality_points',predictive_unit='reported_quality_points'),
         integration=dict(status='accepted',axes=['chain','draw','target'],target_ids=[product.target_id],
             unit='quality_points',kind='conditional_expected_assignment_contrast',
             bootstrap=dict(resamples=1000,block=20,seed=731981),seconds=.1,

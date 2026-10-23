@@ -270,7 +270,7 @@ class NEffect(StrictModel):
 
     @model_validator(mode='after')
     def interval(self):
-        if not -10<=self.lower<=self.mean<=self.upper<=10:
+        if not -10<=self.lower<=self.upper<=10 or not -10<=self.mean<=10:
             raise ValueError('ordered bounded expected quality contrast required')
         return self
 
@@ -380,6 +380,12 @@ def validate_summary(result):
                 max(0.,final['raw_effect_variance']-final['residual_variance']),rel_tol=1e-10,abs_tol=1e-12)
             or not math.isclose(final['mean_integration_se'],math.sqrt(U/(4*axes['draws'])),rel_tol=1e-10,abs_tol=1e-12)):
         raise ValueError('N residual-variance/mean-SE arithmetic mismatch')
+    expected_semantics=dict(schema='poc-nof1-file-semantics-v1',status='accepted',
+        chains=axes['chains'],draws=axes['draws'],patients=axes['patients'],target_ids=[result.target_id],
+        expected_axes=['chain','draw','target'],predictive_axes=['chain','draw','target','arm','night'],
+        expected_unit='quality_points',predictive_unit='reported_quality_points')
+    if d.get('artifact_semantics')!=expected_semantics:
+        raise ValueError('N scientific file semantic validation receipt required')
     names=[a.get('path') for a in result.artifacts]
     if len(names)!=len(ARTIFACT_NAMES) or set(names)!=ARTIFACT_NAMES:
         raise ValueError('complete separate N posterior/effect/predictive/ownership artifacts required')

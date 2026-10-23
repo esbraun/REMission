@@ -53,10 +53,14 @@ def worker_limits(borrowing, *, cohort=False):return list(COMMON)
 
 
 def worker_module(input_value):
+    if input_value.get('kind')=='poc_nof1_input':return 'services.learner.nof1_worker'
     return 'services.learner.support_s1_worker' if input_value.get('kind')=='poc_support_s1_input' else 'services.learner.analysis_worker'
 
 
 def require_dispatchable(input_value):
+    if input_value.get('kind')=='poc_nof1_input':
+        from contracts.domain.nof1_app import NInput
+        NInput.model_validate_json(json.dumps(input_value))
     if input_value.get('kind')=='poc_support_s1_input':
         from contracts.domain.support_s1 import S1Input
         S1Input.model_validate_json(json.dumps(input_value))
@@ -84,7 +88,10 @@ def absent(argv, *, deadline):
 def validate_deployment(state, deployment):
     require_cid(state['service_cid'])
     s1=state.get('operation')=='support-s1-day84-v1'
-    namespace=('remission-support-s1-http-261023','remission-support-s1-job-261023') if s1 else ('remission-cohort-day14-http-261022','remission-cohort-day14-job-261022')
+    nof1=state.get('operation')=='nof1-representative-v1'
+    namespace=(('remission-nof1-http-261023','remission-nof1-job-261023') if nof1 else
+        ('remission-support-s1-http-261023','remission-support-s1-job-261023') if s1 else
+        ('remission-cohort-day14-http-261022','remission-cohort-day14-job-261022'))
     if (state['service_container'],state['prefix'])!=namespace:
         raise ValueError('ordinary operation namespace differs from reviewed proposal')
     cohort_reviewed_runtime(state,state['learner_image'])
@@ -94,7 +101,7 @@ def validate_deployment(state, deployment):
     if (sha(proof)!=expected['export_sha256'] or proof.get('attempt_id')!=job
             or proof.get('owner_id')!=selection['owner'] or proof.get('submission')!=selection['submission']
             or proof.get('receipt',{}).get('key')!=selection['key']
-            or proof.get('input',{}).get('kind')!=('poc_support_s1_input' if s1 else 'poc_visit_cohort_input')
+            or proof.get('input',{}).get('kind')!=('poc_nof1_input' if nof1 else 'poc_support_s1_input' if s1 else 'poc_visit_cohort_input')
             or sha(proof['input'])!=proof.get('input_sha256')):
         raise ValueError('frozen actual queued export mismatch')
     require_dispatchable(proof['input'])
