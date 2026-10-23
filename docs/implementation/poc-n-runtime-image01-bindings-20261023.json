@@ -1,6 +1,6 @@
 {
   "kind": "poc-shared-image02-copy-proposal-v1",
-  "status": "PREPARED_CONDITIONAL_NO_GO",
+  "status": "PREPARED_ACCEPTED_DEPENDENCY_PENDING_OPERATION_REVIEW_NO_GO",
   "source_commit": "8b823991cc8c54688d8b2b7b887fed13bf669bb0",
   "reviewed_candidate": "80880e350c4addbaf89916bc7cf5f96c96ba1b06",
   "source_tree": "61b2ce2d8667c97f1541286fb7db9c956b5da0d4",
@@ -804,9 +804,34 @@
   },
   "host_controller": {
     "executable": "C:/Python313/python.exe",
-    "dependency_status": "PENDING",
-    "executable_sha256": "UNKNOWN",
-    "accepted_probe_receipt": "UNKNOWN",
-    "accepted_probe_checks": "UNKNOWN"
+    "executable_sha256": "d932e5e2f324d57f392e8fd063dcf6d0185be8a664c57c6d24e7762ed02c28ca",
+    "dependency_status": "ACCEPTED",
+    "accepted_probe_receipt": "2c794f3dae6a329da3d1f4fe2f6f7ac37bd3eec9",
+    "accepted_probe_checks": "f3db7afd0871343be05519d9c3e201fffea2d0e9",
+    "acceptance_review": "6f316215b0a317474f34021a789b3d041d90003e",
+    "acceptance_checks": "16720b003912dd878a2c2cf825014b60817a5d66",
+    "public_files": [
+      {
+        "path": "C:/Python313/python.exe",
+        "bytes": 105816,
+        "sha256": "d932e5e2f324d57f392e8fd063dcf6d0185be8a664c57c6d24e7762ed02c28ca"
+      },
+      {
+        "path": "C:/Python313/python313.dll",
+        "bytes": 6123864,
+        "sha256": "41ec4fc4e5bc8b207258590238f7f050b13fdfee84c4a7b1ecff6e945d031a10"
+      },
+      {
+        "path": "C:/Python313/Lib/subprocess.py",
+        "bytes": 91718,
+        "sha256": "970207fdd712c92f7dc14d1623d2574f7e0910ceb0b5c37652a7a0850f35a396"
+      }
+    ]
+  },
+  "direct_base_probe_evidence": {
+    "spec_sha256": "ff089bd97e101baf56ccd8cdf197c46297942d5e74a8a709a6f6b86db5aa066f",
+    "actual_index": "509071495911c6f9838207ebe745e59a04e8762b",
+    "handoff": "76be3f438c7c8a600e0f438cda91c23d37e6b793",
+    "scope": "DIRECT_BASE_IDENTITY_IMPORT_ONLY; no full watchdog ACK/image/historical cause/descendant proof"
   }
 }

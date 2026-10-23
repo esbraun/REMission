@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -80,21 +81,38 @@ class Image01Controls(unittest.TestCase):
             self.op.sha(self.op.git(ROOT,'show',self.op.SOURCE+':tooling/foundation/analysis_lifecycle.py')))
 
     def test_pending_host_dependency_stops_before_helper_reservation_or_Docker(self):
-        self.assertEqual(self.plan['host_controller']['dependency_status'],'PENDING')
+        self.plan['host_controller'].update(dependency_status='PENDING',executable_sha256='UNKNOWN',public_files=[])
+        for key in self.op.HOST_PROOF:self.plan['host_controller'][key]='UNKNOWN'
+        self.authorize()
         with patch.object(self.op,'load_lifecycle',side_effect=AssertionError('helper must not load')),\
                 patch.object(self.op,'command_attempt',side_effect=AssertionError('Docker must not run')):
             with self.assertRaisesRegex(RuntimeError,'PENDING'):self.op.execute(self.planpath,self.digest)
         self.assertFalse((self.folder/'results').exists())
 
     def test_accepted_host_fixture_still_rejects_other_interpreter_or_changed_bytes(self):
-        host=self.plan['host_controller'];host.update(dependency_status='ACCEPTED',
-            executable_sha256=self.op.sha(b'base'),accepted_probe_receipt='a'*40,accepted_probe_checks='b'*40)
-        self.authorize();self.op.validate_plan(self.planpath,self.digest)
+        self.op.validate_plan(self.planpath,self.digest)
         with patch.object(self.op.sys,'executable','C:/venv/python.exe'):
             with self.assertRaisesRegex(ValueError,'direct-base'):self.op.check_host_dependency(self.plan)
         fake=self.folder/'fake-base-bytes';fake.write_bytes(b'changed')
         with patch.object(self.op.sys,'executable','C:/Python313/python.exe'),patch.object(self.op,'ordinary',return_value=fake):
             with self.assertRaisesRegex(ValueError,'bytes changed'):self.op.check_host_dependency(self.plan)
+
+    def test_all_three_public_file_bytes_are_checked_without_running_them(self):
+        blobs=('444ad4330e159846dc13dae081d42904632cbf8e','0602c5617cba33e0df70cd0a4675db45457cccdb',
+            '8fd7313806418ecf05c533f7c31c381b256ba8b9')
+        public={row['path']:self.op.git(ROOT,'show',blob) for row,blob in zip(self.op.HOST_FILES,blobs)}
+        def file(path):return SimpleNamespace(read_bytes=lambda:public[path])
+        with patch.object(self.op.sys,'executable','C:/Python313/python.exe'),patch.object(self.op,'ordinary',side_effect=file):
+            self.op.check_host_dependency(self.plan)
+            for row in self.op.HOST_FILES:
+                original=public[row['path']];public[row['path']]=b'corrupt'
+                with self.subTest(path=row['path']),self.assertRaisesRegex(ValueError,'bytes changed'):
+                    self.op.check_host_dependency(self.plan)
+                public[row['path']]=original
+
+    def test_accepted_looking_references_cannot_replace_the_reviewed_real_probe(self):
+        self.plan['host_controller']['accepted_probe_receipt']='a'*40;self.authorize()
+        with self.assertRaisesRegex(ValueError,'exact accepted'):self.op.validate_plan(self.planpath,self.digest)
 
     def test_unreviewed_plan_hash_or_extra_inventory_fails_before_helper_execution(self):
         with patch.object(self.op,'load_lifecycle',side_effect=AssertionError('must not load')):

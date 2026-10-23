@@ -18,13 +18,23 @@ HERE=Path(__file__).resolve().parent
 
 SOURCE='8b823991cc8c54688d8b2b7b887fed13bf669bb0'
 TREE='61b2ce2d8667c97f1541286fb7db9c956b5da0d4'
-BINDINGS_SHA='fedb7b6064cb96289eb02c9586401f52703c906a6576d9a8a703adbfb83847b7'
-BINDINGS_BLOB='d5e80ae1163d7395b2b938672a7a5734e8c0d3ad'
+BINDINGS_SHA='edc335a40614d0a05031067589128816460fa1263052e5c7036213781be20061'
+BINDINGS_BLOB='d15240a54ff8c9330bfc29487e7448b7ba7a8d31'
 PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
 PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4',
     'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
     'controls':'sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85'}
 ROLES=('service','learner','controls')
+HOST_PROOF=dict(accepted_probe_receipt='2c794f3dae6a329da3d1f4fe2f6f7ac37bd3eec9',
+    accepted_probe_checks='f3db7afd0871343be05519d9c3e201fffea2d0e9',
+    acceptance_review='6f316215b0a317474f34021a789b3d041d90003e',
+    acceptance_checks='16720b003912dd878a2c2cf825014b60817a5d66')
+HOST_FILES=[dict(path='C:/Python313/python.exe',bytes=105816,
+    sha256='d932e5e2f324d57f392e8fd063dcf6d0185be8a664c57c6d24e7762ed02c28ca'),
+    dict(path='C:/Python313/python313.dll',bytes=6123864,
+        sha256='41ec4fc4e5bc8b207258590238f7f050b13fdfee84c4a7b1ecff6e945d031a10'),
+    dict(path='C:/Python313/Lib/subprocess.py',bytes=91718,
+        sha256='970207fdd712c92f7dc14d1623d2574f7e0910ceb0b5c37652a7a0850f35a396')]
 LIMITS=['--network','none','--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64',
     '--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
     '--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m','--restart','no']
@@ -151,13 +161,15 @@ def validate_plan(path,authorized):
                 or item['uid']!=('10002:10002' if role=='learner' else '10001:10001')):
             raise ValueError('literal role identity changed')
     host=plan['host_controller']
-    if (set(host)!={'executable','executable_sha256','dependency_status','accepted_probe_receipt','accepted_probe_checks'}
+    if (set(host)!={'executable','executable_sha256','dependency_status','public_files',*HOST_PROOF}
             or host['executable']!='C:/Python313/python.exe' or host['dependency_status'] not in ('PENDING','ACCEPTED')):
         raise ValueError('literal proposed host controller changed')
-    for key,length in (('executable_sha256',64),('accepted_probe_receipt',40),('accepted_probe_checks',40)):
-        if (host['dependency_status']=='PENDING' and host[key]!='UNKNOWN') or (
-                host['dependency_status']=='ACCEPTED' and re.fullmatch('[a-f0-9]{'+str(length)+'}',host[key]) is None):
-            raise ValueError('host controller dependency binding incomplete')
+    if host['dependency_status']=='PENDING':
+        if host['public_files'] or host['executable_sha256']!='UNKNOWN' or any(host[k]!='UNKNOWN' for k in HOST_PROOF):
+            raise ValueError('pending host controller dependency must remain unknown')
+    elif (host['public_files']!=HOST_FILES or host['executable_sha256']!=HOST_FILES[0]['sha256']
+            or any(host[k]!=v for k,v in HOST_PROOF.items())):
+        raise ValueError('exact accepted direct-base evidence or public byte bindings changed')
     return root,plan
 
 
@@ -167,8 +179,10 @@ def check_host_dependency(plan):
         raise RuntimeError('direct-base inert probe dependency is PENDING; no execution authority')
     if os.path.normcase(os.path.abspath(sys.executable))!=os.path.normcase(os.path.abspath(host['executable'])):
         raise ValueError('execute only with the exact separately qualified direct-base controller')
-    if sha(ordinary(host['executable']).read_bytes())!=host['executable_sha256']:
-        raise ValueError('qualified direct-base executable bytes changed')
+    for row in HOST_FILES:
+        raw=ordinary(row['path']).read_bytes()
+        if len(raw)!=row['bytes'] or sha(raw)!=row['sha256']:
+            raise ValueError('qualified direct-base public bytes changed: '+row['path'])
 
 
 def load_lifecycle(root):

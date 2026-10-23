@@ -1,6 +1,34 @@
 # N runtime sequence: bounded proposal, NO GO
 
-## Current checkpoint: conditional SHARED IMAGE02, no execution authority
+## Final SHARED IMAGE02 packet: accepted controller dependency, no GO
+
+Accepted source/base remains `8b823991cc8c54688d8b2b7b887fed13bf669bb0`/tree `61b2ce2d8667c97f1541286fb7db9c956b5da0d4`. Root accepted independent direct-base evidence review `6f316215b0a317474f34021a789b3d041d90003e` and checks `16720b003912dd878a2c2cf825014b60817a5d66`, scope **DIRECT_BASE_IDENTITY_IMPORT_ONLY**. Actual result `2c794f3dae6a329da3d1f4fe2f6f7ac37bd3eec9`, checks `f3db7afd0871343be05519d9c3e201fffea2d0e9`, index `509071495911c6f9838207ebe745e59a04e8762b` and handoff `76be3f438c7c8a600e0f438cda91c23d37e6b793` were read; all14 indexed public Git entries were byte/hash verified. Spec SHA256 `ff089bd97e101baf56ccd8cdf197c46297942d5e74a8a709a6f6b86db5aa066f`. The frozen evidence records Popen/self PID20024, PPID/controller24732, exit0, owned reaping/handle close/readers joined, import-only/stdlib-only and no forbidden module. Its0.127526s interval is an inert observation only. This author did not rerun that probe or query its old process.
+
+The final bindings require these three exact observed public files and their sizes/hashes before helper loading or result reservation. Review references are matched to the actual accepted proofs above; accepted-looking substitute hashes are rejected. No production lifecycle protocol or PID guard was changed.
+
+| Literal public path | Bytes | SHA256 |
+| --- | ---: | --- |
+| `C:/Python313/python.exe` |105816|`d932e5e2f324d57f392e8fd063dcf6d0185be8a664c57c6d24e7762ed02c28ca`|
+| `C:/Python313/python313.dll` |6123864|`41ec4fc4e5bc8b207258590238f7f050b13fdfee84c4a7b1ecff6e945d031a10`|
+| `C:/Python313/Lib/subprocess.py` |91718|`970207fdd712c92f7dc14d1623d2574f7e0910ceb0b5c37652a7a0850f35a396`|
+
+Fresh final packet root is own `artifacts/shared-image02-8b82399/final-packet`. Plan SHA256 `90314bbb2960915c357927679bba610bba4e290169f89e7d4e5eb03aa22d9d72`. It retains51 frozen source files: unchanged12/14/14 overlays, complete179/74/192 closures, accepted a63db64 helper in host and controls, unchanged probe/frontend bytes and verified source/web provenance. Proof identities are plan/binding metadata, so no extra native input copies or role/framework were added. All three prospective child image/CID IDs remain UNKNOWN. The shared02 names remain unused by this author and unqueried; eventual literal absence checks are part of the proposed operation. The conditional606952 packet and all51 files remain unchanged, as do all130 indexed IMAGE01 failure files and all retained resources.
+
+Final plan blob `937a5279a04bbc5dda993014971e9441ef3a1d67`; all51 frozen inputs/source checks/full test captures are in preparation receipt `941350868b05706dd09a872cc20b3a965191019c`, SHA256 `9a1b54f47f2e926ee7a6e7c45db2d14535718de14e2b90a71fb7ba8041dc160d`, own `artifacts/shared-image02-8b82399/final-source-checks/preparation.json`. Binding blob `d15240a54ff8c9330bfc29487e7448b7ba7a8d31`, SHA256 `edc335a40614d0a05031067589128816460fa1263052e5c7036213781be20061`. These are preparation identities, not execution authority or observed images.
+
+Current source checks: `python -I -B tests/run_shared_image02_source.py`,32 passed. This reuses the accepted30 source/double controls and adds exact three-public-file failure checks using frozen Git byte fixtures, plus refusal of substituted proof references. The pending branch still fails closed before helper/reservation/Docker. Real native timeout/Popen test stays excluded; only Git metadata children are allowed, Docker/lifecycle interactions use doubles, and no science/generator imports occur. Strict UTF-8/AST/compile, exact source/full closure/helper/frozen-byte checks passed. No application/protocol/support repair, scientific model, dependencies or production Dockerfile was edited. The previous independent preparation review `6a2d20bde44ed0c6576fed7e0d11bb5878099b6d`/checks `bcb3352dcb1850963b2ddd7aaa008b9c382f9b4e` retains its original source-only scope; it is not this final operation review.
+
+Exact proposed invocation for independent IMAGE02 operation review; **not executed and no root GO yet**:
+
+```powershell
+& 'C:/Python313/python.exe' -I -B 'C:/Users/erics/Documents/Projects/REMission-worktrees/n0-n1-app-sol-261023/artifacts/shared-image02-8b82399/final-packet/operator/nof1_image01.py' --execute --plan 'C:/Users/erics/Documents/Projects/REMission-worktrees/n0-n1-app-sol-261023/artifacts/shared-image02-8b82399/final-packet/plan.json' --authorized-plan-sha256 90314bbb2960915c357927679bba610bba4e290169f89e7d4e5eb03aa22d9d72
+```
+
+Unchanged operation limits and controls:900s work/300s each build/60s each qualifier/3s CLI cleanup,2CPU/2GiB/equal swap/64PIDs, zero mounts/ports, network none/root RO/drop ALL/no-new-privileges/restart no/tmpfs512MiB. All-role preflight, exclusive once custody, immutable inputs, literal CID/nonce/deadline/PID/live-watchdog ACK before start, independent terminal/reaping checks, partial-role evidence and STOP rules remain. Any unknown build/create/stop outcome halts without retry/removal/broad cleanup. Direct-base acceptance does **not** establish full watchdog ACK, image/source/scalar qualification, historical failure cause or old descendant termination. Those actual image checks remain unexecuted; old descendant status remains UNKNOWN. N API/artifacts/data/fits, S1 P2, Store/private/archive, browser/cloud and clinical gates remain separate.
+
+Next: independent exact FINAL IMAGE02 operation review, then a separate new root GO. This refresh ran source/Git/static checks only; no direct-base/native/Popen probe, Docker even metadata, Store/private, science or browser/cloud execution occurred. Stop at a clean frozen candidate for review.
+
+## Preserved conditional IMAGE02 checkpoint (4b161ac), superseded for review
 
 Accepted source/base is now `8b823991cc8c54688d8b2b7b887fed13bf669bb0`, tree `61b2ce2d8667c97f1541286fb7db9c956b5da0d4`, integrated cleanly while preserving checkpoint8208 and every consumed IMAGE01 input/result. PR52's exact accepted helper is Git blob `a63db64c57032fa68b7b854292a829c9165fd108`. It adds bounded prearm/process diagnostics and preserves strict CID/nonce/deadline/PID equality, live-watchdog ACK before start, terminal/reaping guards and UNKNOWN descendant status. The old failure remains FAILURE_ONLY: handoff `3b811583be2d61360904e33b970cb419ce5e4543`, raw index `e9218f4beb96daa27f50054bb8f8d572e70465e2`. No role was qualified; the old service was created/never started, with old host descendants UNKNOWN. All old aliases, image/tag/CID, authorization, results and source checkpoints remain preserved. No resource was inspected, reused, removed or newly stopped during this preparation.
 
