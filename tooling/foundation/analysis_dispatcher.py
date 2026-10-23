@@ -1,45 +1,44 @@
-"""One local host dispatcher. Docker control never enters the web container."""
+"""One reviewed ordinary cohort attempt through the existing background worker.
+
+Host uses stdlib plus pinned non-numerical Pydantic admission. Freeze and review
+one invocation. No discovery cleanup, global interrupt, retries or removal.
+"""
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
-import subprocess
-import sys
+import re
 import time
+from analysis_lifecycle import (StopUnconfirmed, check_deadline, command,
+    inspect, require_cid, save, stop_owned, supervise)
 
-COMMON=['--network','none','--cpus','2','--memory','2g','--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
-        '--tmpfs','/tmp:rw,nosuid,size=256m']
-
-# Docker selects the whitelist before subprocess capture or manifest persistence.
-# Optional map keys use index; no environment or unrelated labels are requested.
-CONTAINER_FORMAT=(' {"Id":{{json .Id}},"Image":{{json .Image}},"State":{{json .State}},'
-    '"Path":{{json .Path}},"Args":{{json .Args}},"Config":{"User":{{json (index .Config "User")}},'
-    '"Labels":{{with index .Config "Labels"}}{"remission.attempt":{{json (index . "remission.attempt")}},'
-    '"remission.analysis":{{json (index . "remission.analysis")}}}{{else}}{}{{end}}},'
-    '"HostConfig":{"Memory":{{json (index .HostConfig "Memory")}},"NanoCpus":{{json (index .HostConfig "NanoCpus")}},'
-    '"MemorySwap":{{json (index .HostConfig "MemorySwap")}},"PidsLimit":{{json (index .HostConfig "PidsLimit")}},'
-    '"NetworkMode":{{json (index .HostConfig "NetworkMode")}},"ReadonlyRootfs":{{json (index .HostConfig "ReadonlyRootfs")}},'
-    '"CapDrop":{{json (index .HostConfig "CapDrop")}},"SecurityOpt":{{json (index .HostConfig "SecurityOpt")}},'
-    '"Tmpfs":{{json (index .HostConfig "Tmpfs")}}},"Mounts":{{json .Mounts}}}')
+COMMON=['--network','none','--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64',
+    '--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
+    '--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m','--restart','no']
 
 
-def command(argv, *, check=True):
-    result=subprocess.run(argv,capture_output=True)
-    if check and result.returncode:
-        raise RuntimeError(result.stderr.decode(errors='replace')[:2000])
-    return result
+def canonical(value):
+    return json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=True,allow_nan=False).encode()
 
 
-def inspect_container(name, *, check=True):
-    return command(['docker','inspect',name,'--format',CONTAINER_FORMAT],check=check)
+def sha(value):return hashlib.sha256(canonical(value)).hexdigest()
+
+
+def ordinary_path(path):
+    path=Path(path).absolute()
+    for item in (path,*path.parents):
+        if item.is_symlink() or (item.exists() and getattr(item.lstat(),'st_file_attributes',0)&0x400):
+            raise ValueError('path alias/reparse point denied')
+    if any(c in str(path) for c in (',','\n','\r','\x00')):raise ValueError('unsafe path grammar')
+    return path
 
 
 def exclusive(path):
-    """Kernel lock is released on crash. Same deployment cannot have two hosts."""
     stream=path.open('a+b')
-    if stream.tell()==0:
-        stream.write(b'0');stream.flush()
+    if stream.tell()==0:stream.write(b'0');stream.flush()
     stream.seek(0)
     if os.name=='nt':
         import msvcrt
@@ -50,201 +49,184 @@ def exclusive(path):
     return stream
 
 
-def check_deadline(deadline):
-    if time.monotonic()>deadline:raise TimeoutError('fit-watchdog-deadline-exceeded')
-
-
-def worker_limits(borrowing, *, cohort=False):
-    result=list(COMMON)
-    if borrowing:
-        result[result.index('--tmpfs')+1]='/tmp:rw,exec,nosuid,nodev,size=512m'
-    if cohort:result.extend(['--memory-swap','2g','--pids-limit','64'])
-    return result
+def worker_limits(borrowing, *, cohort=False):return list(COMMON)
 
 
 def require_dispatchable(input_value):
-    # P1 has no executable protocol configurations. The host must veto this
-    # independently of parser/worker/ingestion labels and without importing PyMC.
-    if input_value.get('kind')=='poc_protocol_input':
-        raise ValueError('protocol configuration is not executable in P1')
+    if input_value.get('kind')=='poc_protocol_input':raise ValueError('protocol configuration is not executable in P1')
     if input_value.get('kind')=='poc_visit_cohort_input':
         from contracts.domain.cohort import CohortInput,require_executable
         require_executable(CohortInput.model_validate_json(json.dumps(input_value)))
 
 
 def cohort_reviewed_runtime(state, actual_image):
-    """Frozen host deployment pair; service independently owns its fixed pair."""
-    from contracts.domain.borrow_runtime import runtime_origin
     reviewed=state.get('cohort_reviewed_runtime')
     if (not isinstance(reviewed,dict) or set(reviewed)!={'learner_image','source_commit'}
-            or any(not isinstance(v,str) for v in reviewed.values())):
+            or re.fullmatch('sha256:[a-f0-9]{64}',str(reviewed.get('learner_image'))) is None
+            or re.fullmatch('[a-f0-9]{40}',str(reviewed.get('source_commit'))) is None):
         raise ValueError('Cohort deployment requires exactly one reviewed source/image pair.')
-    expected=runtime_origin(reviewed['learner_image'],reviewed['source_commit'])
-    if expected!=runtime_origin(actual_image,state['source_commit']):
+    if reviewed!=dict(learner_image=actual_image,source_commit=state['source_commit']):
         raise ValueError('Cohort actual runtime differs from reviewed deployment pair.')
-    return expected
+    return reviewed
+
+
+def absent(argv, *, deadline):
+    if command(argv,deadline=deadline).stdout.strip():raise RuntimeError('owned namespace collision; retain existing resource')
+
+
+def validate_deployment(state, deployment):
+    require_cid(state['service_cid'])
+    if state['service_container']!='remission-cohort-day14-http-261022' or state['prefix']!='remission-cohort-day14-job-261022':
+        raise ValueError('ordinary operation namespace differs from reviewed proposal')
+    cohort_reviewed_runtime(state,state['learner_image'])
+    expected=state['expected'];selection=expected['selection'];job=selection['job']
+    if re.fullmatch('analysis-[a-f0-9]{32}',job) is None:raise ValueError('ordinary persisted attempt ID required')
+    proof=json.loads(ordinary_path(deployment.parent/state['queued_export_path']).read_bytes())
+    if (sha(proof)!=expected['export_sha256'] or proof.get('attempt_id')!=job
+            or proof.get('owner_id')!=selection['owner'] or proof.get('submission')!=selection['submission']
+            or proof.get('receipt',{}).get('key')!=selection['key']
+            or proof.get('input',{}).get('kind')!='poc_visit_cohort_input'
+            or sha(proof['input'])!=proof.get('input_sha256')):
+        raise ValueError('frozen actual queued export mismatch')
+    return proof
+
+
+def run_once(state, deployment, deployment_digest):
+    proof=validate_deployment(state,deployment)
+    root=ordinary_path(deployment.parent/'analysis-jobs');root.mkdir(exist_ok=True)
+    lock=exclusive(root/'dispatcher.lock');identifier=proof['attempt_id'];directory=root/identifier
+    token=None;owned=[];manifest=dict(attempt_id=identifier,status='reserved',deployment_sha256=deployment_digest,
+        source_head=state['source_commit'],learner_image=state['learner_image'],failure=None)
+    # Reservation precedes all Docker commands and claim, including preflight.
+    try:directory.mkdir(exist_ok=False)
+    except BaseException:
+        lock.close()
+        raise
+    save(directory/'reservation.json',dict(deployment_sha256=deployment_digest,attempt_id=identifier,
+        queued_export_sha256=state['expected']['export_sha256'],reserved_unix=time.time()))
+    def persist():
+        temporary=directory/'dispatch.tmp';temporary.write_bytes(canonical(manifest)+b'\n');temporary.replace(directory/'dispatch.json')
+    deadline=time.monotonic()+7200;accept_before=datetime.fromtimestamp(time.time()+7200,timezone.utc).isoformat()
+    manifest.update(deadline_monotonic=deadline,accept_before=accept_before,watchdog_seconds=7200)
+    def call(argv, **kwargs):return command(argv,deadline=deadline,**kwargs)
+    def cli(*values):return json.loads(call(['docker','exec',state['service_cid'],'python','-m','services.foundation.analysis_cli',*values]).stdout)
+    def create(argv, role):
+        manifest['creating_role']=role;persist()
+        try:cid=require_cid(call(argv,cap=30).stdout.decode().strip())
+        except BaseException as error:
+            raise StopUnconfirmed('Docker create outcome unconfirmed for '+role+'; retain exact namespace: '+repr(error)) from None
+        owned.append(cid)
+        save(directory/(role+'-cid.json'),dict(cid=cid,argv=argv));return cid
+    try:
+        persist()
+        if (type(state.get('service_deadline_unix')) not in (int,float) or not math.isfinite(state['service_deadline_unix'])
+                or state['service_deadline_unix']-time.time()<7500):
+            raise RuntimeError('service lifetime cannot cover 7200 seconds plus 300 collection margin')
+        if inspect(state['service_cid'],deadline=deadline)['State']['Status']!='running':raise RuntimeError('reviewed service is not running')
+        service_identity=json.loads(call(['docker','inspect','--format',
+            '{"Name":{{json .Name}},"Image":{{json .Image}}}',state['service_cid']]).stdout)
+        if service_identity!=dict(Name='/'+state['service_container'],Image=state['service_image']):
+            raise ValueError('service CID/name/qualified image mismatch')
+        absent(['docker','ps','-aq','--filter','label=remission.analysis='+state['prefix']],deadline=deadline)
+        absent(['docker','ps','-aq','--filter','label=remission.attempt='+identifier],deadline=deadline)
+        learner=state['prefix']+'-'+identifier;input_volume=learner+'-input';output_volume=learner+'-output'
+        for name in (learner,learner+'-stage'):
+            absent(['docker','ps','-aq','--filter','name=^/'+name+'$'],deadline=deadline)
+        for name in (input_volume,output_volume):absent(['docker','volume','ls','-q','--filter','name=^'+name+'$'],deadline=deadline)
+        actual=call(['docker','image','inspect','--format','{{.Id}}',state['learner_image']]).stdout.decode().strip()
+        reviewed=cohort_reviewed_runtime(state,actual)
+        if cli('queued-request','--value',canonical(state['expected']['selection']).decode())!=proof:raise RuntimeError('queued selection changed before claim')
+        if state['service_deadline_unix']-time.time()<7500:raise RuntimeError('service remaining lifetime insufficient immediately before claim')
+        manifest['claim_outcome']='unknown';persist()
+        job=cli('claim','--value',canonical(state['expected']).decode())
+        if not isinstance(job,dict) or job.get('attempt_id')!=identifier or job.get('input')!=proof['input']:
+            raise RuntimeError('claim identity/input mismatch; no worker may start')
+        token=job['claim_token']
+        if not isinstance(token,str) or re.fullmatch('[a-f0-9]{48}',token) is None:raise ValueError('invalid claim token')
+        manifest['claim_outcome']='confirmed_expected_attempt'
+        require_dispatchable(job['input'])
+        if job['input']['sources'] is not None:raise ValueError('ordinary slice requires original V0 input')
+        (directory/'input.json').write_bytes(canonical(job['input'])+b'\n')
+        origin=dict(learner_image=actual,source_commit=state['source_commit'])
+        trusted=cli('bind-execution','--job',identifier,'--token',token,'--value',canonical(origin).decode())
+        if any(trusted.get(k)!=v for k,v in dict(input_sha256=proof['input_sha256'],**origin).items()):raise RuntimeError('service did not confirm execution binding')
+        manifest.update(status='preparing',trusted_launch=trusted,input_sha256=proof['input_sha256']);persist()
+        for volume in (input_volume,output_volume):call(['docker','volume','create','--label','remission.task='+state['prefix'],volume])
+        helper=create(['docker','create','--name',learner+'-stage','--label','remission.analysis='+state['prefix'],'--label','remission.attempt='+identifier,
+            *COMMON,'--cap-add','CHOWN','--user','0:0','--mount',f'type=volume,source={input_volume},target=/input',
+            '--mount',f'type=volume,source={output_volume},target=/output',actual,'python','-c',
+            "import os;os.chmod('/input',0o755);os.chmod('/input/input.json',0o444);os.chown('/input/input.json',10002,10002);os.chmod('/output',0o700);os.chown('/output',10002,10002)"],'stage')
+        call(['docker','cp',str(directory/'input.json'),helper+':/input/input.json'])
+        supervise(helper,directory/'stage-supervision',min(deadline,time.monotonic()+60))
+        env=[]
+        for key,value in dict(REMISSION_LEARNER_IMAGE=actual,REMISSION_SOURCE_COMMIT=state['source_commit'],
+                REMISSION_COHORT_REVIEWED_LEARNER_IMAGE=reviewed['learner_image'],REMISSION_COHORT_REVIEWED_SOURCE_COMMIT=reviewed['source_commit'],
+                OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',NUMEXPR_NUM_THREADS='1').items():env.extend(['-e',key+'='+value])
+        cid=create(['docker','create','--name',learner,'--label','remission.analysis='+state['prefix'],'--label','remission.attempt='+identifier,
+            *worker_limits(True,cohort=True),'--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
+            '--mount',f'type=volume,source={output_volume},target=/output',*env,actual,
+            'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'],'learner')
+        last=[None];next_poll=[0.]
+        def progress():
+            if time.monotonic()<next_poll[0]:return
+            next_poll[0]=time.monotonic()+2
+            copied=call(['docker','cp',cid+':/output/progress.json',str(directory/'progress.json')],check=False)
+            if copied.returncode==0:
+                value=json.loads((directory/'progress.json').read_bytes());encoded=canonical(value).decode()
+                if encoded!=last[0] and value['stage'] in ('preparing','fitting','diagnostics','rollouts'):
+                    cli('progress','--job',identifier,'--token',token,'--value',encoded);last[0]=encoded
+        manifest.update(status='running',container_cid=cid);persist()
+        terminal=supervise(cid,directory/'learner-supervision',deadline,progress)
+        logs=call(['docker','logs',cid],check=False)
+        (directory/'worker.stdout').write_bytes(logs.stdout);(directory/'worker.stderr').write_bytes(logs.stderr)
+        call(['docker','cp',cid+':/output/.',str(directory/'output')],cap=60)
+        (directory/'output'/'worker.stdout').write_bytes(logs.stdout);(directory/'output'/'worker.stderr').write_bytes(logs.stderr)
+        dest='/exports/analyses/'+identifier
+        call(['docker','exec',state['service_cid'],'mkdir','-p','/exports/analyses'])
+        call(['docker','exec',state['service_cid'],'mkdir',dest])
+        call(['docker','cp',str(directory/'output')+'/.',state['service_cid']+':'+dest],cap=60)
+        response=cli('ingest','--job',identifier,'--token',token,'--directory',dest,'--accept-before',accept_before)
+        check_deadline(deadline)
+        if response.get('id')!=identifier or response.get('status') not in ('completed','failed','abstained'):raise RuntimeError('unconfirmed ingest response')
+        manifest.update(status=response['status'],terminal=terminal,accepted_response=response)
+    except BaseException as error:
+        failures=[];unconfirmed=isinstance(error,StopUnconfirmed)
+        for cid in reversed(owned):
+            try:failures.append(dict(cid=cid,cleanup=stop_owned(cid)))
+            except BaseException as stopped_error:unconfirmed=True;failures.append(dict(cid=cid,error=repr(stopped_error)))
+        message=repr(error).replace(token,'[claim-token-redacted]') if token else repr(error)
+        manifest.update(status='STOP UNCONFIRMED' if unconfirmed else 'failed',failure=message,cleanup=failures)
+        if not unconfirmed and manifest.get('container_cid'):
+            # Evidence collection is cleanup only, with independent short caps;
+            # it cannot extend the scientific/acceptance deadline.
+            try:
+                logs=command(['docker','logs',manifest['container_cid']],check=False,cap=10)
+                (directory/'failure-worker.stdout').write_bytes(logs.stdout)
+                (directory/'failure-worker.stderr').write_bytes(logs.stderr)
+                copied=command(['docker','cp',manifest['container_cid']+':/output/.',str(directory/'failure-output')],check=False,cap=30)
+                manifest['failure_output_copy_returncode']=copied.returncode
+            except BaseException as capture_error:
+                manifest['failure_capture_error']=repr(capture_error).replace(token,'[claim-token-redacted]') if token else repr(capture_error)
+        if token and not unconfirmed:
+            try:command(['docker','exec',state['service_cid'],'python','-m','services.foundation.analysis_cli',
+                'fail','--job',identifier,'--token',token,'--value',message],cap=10)
+            except BaseException as failed:manifest['failure_publication_error']=repr(failed).replace(token,'[claim-token-redacted]')
+        if unconfirmed:raise StopUnconfirmed(message) from None
+        raise RuntimeError(message) from None
+    finally:
+        manifest.update(finished_unix=time.time(),claim_through_completion_seconds=7200-(deadline-time.monotonic()),retained_cids=owned)
+        persist();lock.close()
+    return manifest
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--deployment',type=Path,required=True);parser.add_argument('--once',action='store_true')
-    args=parser.parse_args()
-    state=json.loads(args.deployment.read_bytes())
-    root=args.deployment.resolve().parent/'analysis-jobs'
-    root.mkdir(parents=True,exist_ok=True)
-    lock=exclusive(root/'dispatcher.lock')
-    service=state['service_container'];image=state['learner_image'];prefix=state['prefix']
-    def cli(*values):
-        result=command(['docker','exec',service,'python','-m','services.foundation.analysis_cli',*values])
-        return json.loads(result.stdout)
-    # All preceding fit processes must stop BEFORE marking their attempts failed.
-    prior=command(['docker','ps','-aq','--filter','label=remission.analysis='+prefix]).stdout.decode().split()
-    for name in prior:
-        command(['docker','stop','--time','10',name],check=False)
-        inventory=json.loads(inspect_container(name).stdout)
-        identifier=inventory['Config']['Labels'].get('remission.attempt')
-        if identifier and identifier.startswith('analysis-') and Path(identifier).name==identifier:
-            saved=root/identifier
-            saved.mkdir(exist_ok=True)
-            stamp=str(time.time_ns())
-            logs=command(['docker','logs',name],check=False)
-            (saved/('restart-'+stamp+'.stdout')).write_bytes(logs.stdout)
-            (saved/('restart-'+stamp+'.stderr')).write_bytes(logs.stderr)
-            command(['docker','cp',name+':/output/.',str(saved/('restart-output-'+stamp))],check=False)
-        if inventory['State']['Running']:
-            command(['docker','kill',name],check=False)
-            stopped=inspect_container(name,check=False)
-            if stopped.returncode or json.loads(stopped.stdout)['State']['Running']:
-                raise RuntimeError('Prior worker termination unconfirmed; retain live handle '+name)
-    cli('interrupt')
-    print(json.dumps(dict(stage='dispatcher-ready',pid=os.getpid(),source_head=state['source_commit'],learner_image=image)),flush=True)
-    while True:
-        attempt_started=time.monotonic()  # Includes claim RPC, before service started_at.
-        job=cli('claim')
-        if job is None:
-            if args.once:
-                break
-            time.sleep(2)
-            continue
-        require_dispatchable(job['input'])
-        identifier=job['attempt_id'];token=job['claim_token'];directory=root/identifier
-        borrowing=job['input'].get('kind')=='poc_visit_borrow_input'
-        cohort=job['input'].get('kind')=='poc_visit_cohort_input'
-        native=borrowing or cohort
-        watchdog_seconds=7200 if native else 4*3600
-        deadline=attempt_started+watchdog_seconds if native else None
-        directory.mkdir(exist_ok=False)
-        (directory/'input.json').write_text(json.dumps(job['input'],sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
-        # Claim token stays with the host supervisor, never with the learner.
-        learner=prefix+'-'+identifier
-        input_volume=learner+'-input';output_volume=learner+'-output';helper=learner+'-stage'
-        manifest=dict(attempt_id=identifier,source_head=state['source_commit'],learner_image=image,input_volume=input_volume,
-                      output_volume=output_volume,container=learner,started_unix=time.time(),status='preparing')
-        def save():
-            (directory/'dispatch.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
-        save()
-        launched=False
-        try:
-            reviewed_environment=[]
-            if native:check_deadline(deadline)
-            execution_image=image
-            if native:
-                execution_image=command(['docker','image','inspect',image,'--format','{{.Id}}']).stdout.decode().strip()
-                manifest.update(requested_learner_image=image,learner_image=execution_image,
-                    input_sha256=hashlib.sha256(json.dumps(job['input'],sort_keys=True,separators=(',',':')).encode()).hexdigest(),
-                    execution_policy='poc-cohort-native-cvm-v1' if cohort else 'poc-borrow-native-cvm-v1',
-                    scratch='/tmp:rw,exec,nosuid,nodev,size=512m')
-                origin=dict(learner_image=execution_image,source_commit=state['source_commit'])
-                if cohort:
-                    reviewed=cohort_reviewed_runtime(state,execution_image)
-                    reviewed_environment=['-e','REMISSION_COHORT_REVIEWED_LEARNER_IMAGE='+reviewed['learner_image'],
-                        '-e','REMISSION_COHORT_REVIEWED_SOURCE_COMMIT='+reviewed['source_commit'],
-                        '-e','OPENBLAS_NUM_THREADS=1','-e','OMP_NUM_THREADS=1',
-                        '-e','MKL_NUM_THREADS=1','-e','NUMEXPR_NUM_THREADS=1']
-                trusted=cli('bind-execution','--job',identifier,'--token',token,'--value',json.dumps(origin,sort_keys=True))
-                if any(trusted.get(k)!=v for k,v in dict(input_sha256=manifest['input_sha256'],**origin).items()):
-                    raise RuntimeError('host execution binding was not confirmed by service')
-                manifest['trusted_launch']=trusted
-                save()
-            for volume in (input_volume,output_volume):
-                command(['docker','volume','create','--label','remission.task='+prefix,volume])
-            command(['docker','create','--name',helper,*COMMON,'--cap-add','CHOWN','--user','0:0',
-                '--mount',f'type=volume,source={input_volume},target=/input',
-                '--mount',f'type=volume,source={output_volume},target=/output',image,'python','-c',
-                "import os;os.chmod('/input',0o755);os.chmod('/input/input.json',0o444);os.chown('/input/input.json',10002,10002);os.chmod('/output',0o700);os.chown('/output',10002,10002)"])
-            command(['docker','cp',str(directory/'input.json'),helper+':/input/input.json'])
-            command(['docker','start','--attach',helper])
-            command(['docker','rm',helper])
-            if native:check_deadline(deadline)
-            command(['docker','run','--detach','--name',learner,'--label','remission.analysis='+prefix,'--label','remission.attempt='+identifier,*worker_limits(native,cohort=cohort),
-                '--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
-                '--mount',f'type=volume,source={output_volume},target=/output','-e','REMISSION_LEARNER_IMAGE='+execution_image,'-e','REMISSION_SOURCE_COMMIT='+state['source_commit'],
-                *reviewed_environment,
-                execution_image,'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'])
-            launched=True
-            manifest.update(status='running',inventory=json.loads(inspect_container(learner).stdout))
-            if native and manifest['inventory']['Image']!=execution_image:raise RuntimeError('native actual image differs from frozen launch identity')
-            save()
-            last=None
-            manifest['watchdog_seconds']=watchdog_seconds
-            if not native:deadline=time.monotonic()+watchdog_seconds
-            while True:
-                inventory=json.loads(inspect_container(learner).stdout)
-                # Check BEFORE trusting terminal state: completion between polls
-                # after the cap cannot escape the same frozen deadline.
-                check_deadline(deadline)
-                if not inventory['State']['Running']:
-                    break
-                copied=command(['docker','cp',learner+':/output/progress.json',str(directory/'progress.json')],check=False)
-                if copied.returncode==0:
-                    value=json.loads((directory/'progress.json').read_bytes())
-                    encoded=json.dumps(value,sort_keys=True,separators=(',',':'))
-                    if encoded!=last and value['stage'] in ('preparing','fitting','diagnostics','rollouts'):
-                        cli('progress','--job',identifier,'--token',token,'--value',encoded)
-                        last=encoded
-                time.sleep(2)
-            logs=command(['docker','logs',learner],check=False)
-            (directory/'worker.stdout').write_bytes(logs.stdout);(directory/'worker.stderr').write_bytes(logs.stderr)
-            command(['docker','cp',learner+':/output/.',str(directory/'output')])
-            (directory/'output'/'worker.stdout').write_bytes(logs.stdout)
-            (directory/'output'/'worker.stderr').write_bytes(logs.stderr)
-            # Stopped output is copied into the service's established artifact
-            # volume; learner never mounts that volume or the service database.
-            dest='/exports/analyses/'+identifier
-            command(['docker','exec',service,'mkdir','-p',dest])
-            command(['docker','cp',str(directory/'output')+'/.',service+':'+dest])
-            check_deadline(deadline)
-            response=cli('ingest','--job',identifier,'--token',token,'--directory',dest)
-            manifest.update(status=response['status'],exit=inventory['State']['ExitCode'],oom_killed=inventory['State']['OOMKilled'])
-        except Exception as error:
-            command(['docker','stop','--time','10',learner],check=False)
-            if launched:
-                stopped=inspect_container(learner,check=False)
-                confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)['State']['Running']
-                if not confirmed:
-                    command(['docker','kill',learner],check=False)
-                    stopped=inspect_container(learner,check=False)
-                    confirmed=stopped.returncode==0 and not json.loads(stopped.stdout)['State']['Running']
-                if not confirmed:
-                    manifest.update(status='worker-stop-unconfirmed',failure=str(error).replace(token,'[claim-token-redacted]'));save()
-                    raise RuntimeError('Owned worker termination unconfirmed; retain live handle '+learner) from None
-                manifest['worker_stop_verified']=True
-            logs=command(['docker','logs',learner],check=False)
-            (directory/'failure-worker.stdout').write_bytes(logs.stdout);(directory/'failure-worker.stderr').write_bytes(logs.stderr)
-            command(['docker','cp',learner+':/output/.',str(directory/'failure-output')],check=False)
-            message=str(error).replace(token,'[claim-token-redacted]')
-            manifest.update(status='failed',failure=message)
-            (directory/'dispatcher-failure.log').write_text(message,encoding='utf-8')
-            try:
-                cli('fail','--job',identifier,'--token',token,'--value',message)
-            except Exception as failed:
-                manifest['ingestion_failure']=str(failed).replace(token,'[claim-token-redacted]')
-        manifest['finished_unix']=time.time()
-        save()
-        print(json.dumps({k:v for k,v in manifest.items() if k!='inventory'}),flush=True)
-        if args.once:
-            break
-    lock.close()
+    parser=argparse.ArgumentParser();parser.add_argument('--deployment',type=Path,required=True)
+    parser.add_argument('--once',action='store_true');parser.add_argument('--authorized-deployment-sha256',required=True);args=parser.parse_args()
+    if not args.once:parser.error('reviewed ordinary dispatcher requires --once')
+    path=ordinary_path(args.deployment);raw=path.read_bytes();digest=hashlib.sha256(raw).hexdigest()
+    if digest!=args.authorized_deployment_sha256:raise ValueError('exact reviewed deployment bytes required')
+    result=run_once(json.loads(raw),path,digest)
+    print(json.dumps(dict(attempt_id=result['attempt_id'],status=result['status'])),flush=True)
 
 
-if __name__=='__main__':
-    main()
+if __name__=='__main__':main()
