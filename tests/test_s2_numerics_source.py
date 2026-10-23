@@ -200,6 +200,24 @@ class SourceAxes(unittest.TestCase):
 
 
 class Carrier(unittest.TestCase):
+    def test_captured_empty_mode_and_ro_require_same_strict_readonly_joint_guard(self):
+        # Exact public Mounts[0] projection from R2 raw prestart Git blob
+        # 0671e3af702c856807d4c5622e1a8f57153a3373. No live query/inspection.
+        mount=dict(Destination='/qualification',Mode='',Propagation='rprivate',RW=False,
+            Source=r'C:\Users\erics\Documents\Projects\REMission-worktrees\s2-numerics-sol-261023\artifacts\s2-numerics-8c32371-r2\final-packet\payload',Type='bind')
+        carrier=Path(mount['Source'])
+        for mode in ('','ro'):operator.checked_mount([dict(mount,Mode=mode)],carrier)
+        variants=[]
+        for value in (True,0,None,'false',[],{}):variants.append(dict(mount,RW=value))
+        for value in (None,'rw','RO',False,0,[]):variants.append(dict(mount,Mode=value))
+        for field in ('RW','Mode'):
+            changed=dict(mount);changed.pop(field);variants.append(changed)
+        for field,value in [('Source',mount['Source']+'-other'),('Destination','/app'),
+                ('Type','volume'),('Propagation','rshared')]:variants.append(dict(mount,**{field:value}))
+        for value in variants:
+            with self.subTest(value=value),self.assertRaises(ValueError):operator.checked_mount([value],carrier)
+        with self.assertRaises(ValueError):operator.checked_mount([mount,mount],carrier)
+
     def test_carrier_full_inventory_unknown_extra_never_read_and_known_hash_change_rejected(self):
         with tempfile.TemporaryDirectory(dir=ROOT/'artifacts') as directory:
             folder=Path(directory);payload=folder/'payload';app=folder/'app';payload.mkdir();app.mkdir()
@@ -269,7 +287,7 @@ class Carrier(unittest.TestCase):
         primitive=module('s2_napi_config_only','tooling/foundation/n_api02.py')
         dependency=json.loads((ROOT/'docs/implementation/poc-n-api02-bindings-20261023.json').read_bytes())
         class StopUnconfirmed(RuntimeError):pass
-        for defect in ('mount','resource'):
+        for defect in ('mount','resource','empty-mode-resource'):
             with tempfile.TemporaryDirectory(dir=ROOT/'artifacts') as directory:
                 folder=Path(directory);(folder/'payload').mkdir();(folder/'results').mkdir()
                 (folder/'payload/dependency.json').write_text(json.dumps(dependency),encoding='utf-8')
@@ -282,7 +300,9 @@ class Carrier(unittest.TestCase):
                     PortBindings={},PublishAllPorts=False,RestartPolicy=dict(Name='no',MaximumRetryCount=0),
                     AutoRemove=False,Tmpfs={'/tmp':'rw,exec,nosuid,nodev,size=512m'})
                 if defect=='mount':typed['Mounts'][0]['RW']=True
-                else:typed['Memory']=1
+                else:
+                    typed['Memory']=1
+                    if defect=='empty-mode-resource':typed['Mounts'][0]['Mode']=''
                 stopped=[];calls=[]
                 life=SimpleNamespace(require_cid=lambda raw:cid,StopUnconfirmed=StopUnconfirmed,
                     checked_state=lambda value,cid:value,stop_owned=lambda cid:stopped.append(cid),
@@ -290,7 +310,8 @@ class Carrier(unittest.TestCase):
                 def call(argv,label,deadline):
                     calls.append(label)
                     return {'image':json.dumps(dependency['qualified_image_config']),'absence':'','create':cid,'prestart':json.dumps(typed)}[label]
-                with self.assertRaises(ValueError):operator.controller(dict(manifest_sha256='b'*64),folder,primitive,life,call,1000.)
+                with self.assertRaisesRegex(ValueError,'mount' if defect=='mount' else 'typed-created'):
+                    operator.controller(dict(manifest_sha256='b'*64),folder,primitive,life,call,1000.)
                 self.assertEqual(calls,['image','absence','create','prestart']);self.assertEqual(stopped,[cid])
 
     def test_source_parent_and_host_have_no_science_or_dormant_imports(self):
