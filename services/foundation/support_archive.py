@@ -67,7 +67,9 @@ def _trajectory(index, trajectory, reader, *, cuts=None, verify_all=True, diagno
         observe(diagnostic,'cut_before',trajectory=trajectory_ordinal,cut=cut_ordinal)
         cutoff=index.origin+timedelta(days=day)
         projected=project_protocol(full,cutoff,family='support',origin=index.origin,verify_closure=verifier)
+        if trajectory_ordinal==1:observe(diagnostic,'cut_projection_return',trajectory=trajectory_ordinal,cut=cut_ordinal)
         original=reader(trajectory.projections[str(day)])
+        if trajectory_ordinal==1:observe(diagnostic,'cut_reader_return',trajectory=trajectory_ordinal,cut=cut_ordinal)
         if json.loads(original)!=projected.model_dump(mode='json'):
             raise ValueError('support_projection_replay_mismatch')
         projections[day]=projected

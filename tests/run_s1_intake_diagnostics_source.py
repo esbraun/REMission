@@ -15,11 +15,13 @@ class Guard(importlib.abc.MetaPathFinder):
 if __name__=='__main__':
     sys.meta_path.insert(0,Guard());sys.path.insert(0,str(ROOT/'tests'))
     # Exact public source inspection only; no old worker checkout access.
-    baseline=subprocess.check_output(['git','show','e196187aea79cbc4a49576c0107e94e4c6499089:services/foundation/support_archive.py'],cwd=ROOT,timeout=10)
+    baseline=subprocess.check_output(['git','show','8c32371d15d04a5d155f50ddec6c0b9169abfa08:services/foundation/support_archive.py'],cwd=ROOT,timeout=10)
+    schema=subprocess.check_output(['git','show','8c32371d15d04a5d155f50ddec6c0b9169abfa08:services/foundation/support_diagnostics.py'],cwd=ROOT,timeout=10)
     control=subprocess.check_output(['git','cat-file','blob','d117840386e45c54005e8f38da884dc3fc1dd7ed'],cwd=ROOT,timeout=10)
     with patch('subprocess.Popen',side_effect=AssertionError('real Popen forbidden')),patch('subprocess.run',side_effect=AssertionError('real command forbidden')):
         import test_s1_intake_diagnostics as tests
         tests.BASELINE=baseline
+        tests.SCHEMA_BASELINE=schema
         tests.CONTROL_BASELINE=control
         result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(tests))
     assert not BLOCKED.intersection(sys.modules)
