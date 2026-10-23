@@ -189,7 +189,9 @@ class SourceAxes(unittest.TestCase):
                          'tooling/foundation/s2_numerics_inputs/supplemental-blind.json')
         tree=ast.parse((ROOT/'tooling/foundation/s2_numerics_unit.py').read_text(encoding='utf-8'))
         guard=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and any(
-            isinstance(x,ast.Constant) and x.value=='frozen112/40 case counts required' for x in ast.walk(n)))
+            isinstance(x,ast.Raise) and isinstance(x.exc,ast.Call) and any(
+                isinstance(arg,ast.Constant) and arg.value=='frozen112/40 case counts required'
+                for arg in x.exc.args) for x in n.body))
         expression=compile(ast.Expression(guard.test),'case_counts_only','eval')
         fixed=dict(scalar=[None]*64,cdf=[None]*16);held=dict(scalar_cases=[None]*32,cdf_cases=[None]*16)
         for scalar_count,cdf_count,expected in ((16,8,False),(15,8,True),(17,8,True),(16,7,True),(16,9,True)):
