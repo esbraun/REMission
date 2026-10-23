@@ -1,5 +1,7 @@
 # Browser Validation
 
+**Immediate milestone (2026-10-22):** exercise [POC-CLOUD-01–05](../spec/poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22) on the actual Google Cloud HTTPS origin using [CS-T3–T7](../implementation/poc-cloud-simulation-ledger-20261022.md). The active browser matrix covers authentication/session lifecycle, owned panels, physician choices/rationale, simulation outcomes/history and reload/restart persistence. Analytics/model/protocol-result rows below remain later analytics acceptance when those capabilities are enabled; unavailable/no-result states must remain honest. Training/fitting is not a prerequisite for this browser milestone. Keep all applicable keyboard, layout, error and authorization checks.
+
 Read [execution entry point](../../implementation-prompt.md) and your assigned gate bundle first. This document governs future application implementation, not the documentation migration.
 
 ## Playwright MCP setup and ownership

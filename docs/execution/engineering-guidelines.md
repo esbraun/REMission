@@ -2,6 +2,8 @@
 
 Revision: 2026-10-19. These requirements govern future implementation across G0-G7. Installed skills and documentation review do not establish application correctness, clinical safety or efficacy.
 
+For the immediate [cloud physician simulation milestone](../spec/poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22), apply these guidelines to enabled simulation/auth/persistence behavior and [CS-T1–T8](../implementation/poc-cloud-simulation-ledger-20261022.md). Full analytics/model browser scenarios and method qualification remain later obligations; training/fitting is not required for this milestone.
+
 ## ENG-01 — Simple design and reuse
 
 - Keep domain rules and contracts in one authoritative home. The service owns eligibility, readiness and permissions; the frontend renders its decisions rather than reimplementing them. Reuse typed contracts across boundaries where practical.

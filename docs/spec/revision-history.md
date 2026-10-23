@@ -1,5 +1,9 @@
 # Revision history
 
+## October 22 2026 cloud physician simulation milestone
+
+The user's Google Cloud deployment/login request and clarification that training is not yet needed narrow immediate acceptance to physician interaction: POC-CLOUD-01–05, POC-1–3 and workflow/persistence/failure portions of POC-6. Updated the canonical PoC amendment, index, requirement/gate map and execution precedence, with a bounded service-only deployment/task/test ledger. POC-4/5, fitted protocols, APPT-01–05 and all seven POC-VAL configurations with accuracy/timeliness remain later analytics obligations. Prior evidence/statuses are preserved. This is a plan amendment, not a cloud deployment, credential test, fit or scientific/human/clinical validation result.
+
 ## October 21 2026 functioning PoC and bounded ablation
 
 Per user direction, the [PoC amendment](poc-amendment-20261021.md) replaces immediate exhaustive full-hybrid acceptance with a generated patient-panel and interactive physician simulation loop, actual analysis and a selected ablation study. Broad method/protocol engines, large confirmation suites and human/clinical work remain later scope. Existing scientific invariants and independent engineering review remain. This is a scope change only; no new runtime, fit or validation result is asserted.

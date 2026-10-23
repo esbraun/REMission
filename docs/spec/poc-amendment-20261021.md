@@ -1,6 +1,22 @@
 # Functioning synthetic PoC amendment
 
-Revision: 2026-10-21. User-directed immediate scope; implementation and results remain unaccepted until observed. This amendment supersedes conflicting full-hybrid G0-G7 sequencing, exhaustive scenario/count requirements, and human-review prerequisites for **PoC acceptance** in the older specifications, method plans, UX plans, requirement map and execution guidance. Those requirements remain the later research roadmap, not silently completed or deleted. Unchanged invariants apply to every capability actually enabled. The [bounded validation protocol](07-validation-protocol.md#poc-val--first-ablation-study) is the immediate study contract.
+## Immediate physician simulation milestone (2026-10-22)
+
+The user's latest scope is a physician interacting with the simulation deployed on Google Cloud, including validated username/password login. This section supersedes conflicting immediate scope below: **POC-CLOUD-01 through POC-CLOUD-05, POC-1 through POC-3 and the workflow/persistence/failure checks in POC-6 define this milestone. Training, fitting, posterior refresh, analytics jobs and the ablation study are not prerequisites.** The later analytics milestone retains POC-4/5, the fitted N-of-1/MRT/adaptive representatives in POC-6, APPT-01–05, and POC-VAL with all seven V0/V1, N0/N1, S0/S1/S2 configurations, counts, scientific accuracy and timeliness obligations. Their evidence and unfinished tasks are preserved, not passed or removed.
+
+Keep the existing React/FastAPI/SQLite app, private seeded generator service, explicit decisions and persisted simulation clock/outcomes/history. No learner, evaluator, fitting worker or accepted model artifact is required to start this milestone. If analytics controls remain exposed, show unavailable/no-result or accurately dated historical results; never fabricate estimates or block eligible physician decisions on absent training. Existing authorization, consent/hold, stale-decision, cutoff and immutable-history contracts still apply to enabled behavior.
+
+| Requirement | Required deployed acceptance |
+|---|---|
+| POC-CLOUD-01 Deployment | Deploy the independently reviewed exact Git revision and immutable service image to an identified Google Cloud project/resource. Open its real HTTPS origin in a browser with a trusted certificate. Record source/image, runtime/configuration identity (without secrets), target, health and command results. Local execution or a runbook alone does not pass. |
+| POC-CLOUD-02 Authentication | On that origin, correct synthetic username/password reaches the physician panel; incorrect password and unknown username are rejected without authentication. Anonymous protected reads/writes are denied. Logout revokes the old session, its protected request fails, and a fresh login works. Verify expiry and password-reset revocation using the existing session contract, with recorded isolated test settings where needed. Verify Secure/HttpOnly/SameSite cookies and origin/CSRF rejection through the deployed ingress. Never include credentials, cookies or tokens in committed evidence. |
+| POC-CLOUD-03 Physician interaction | With two distinct synthetic physician accounts, verify owned-panel isolation for list/detail and mutation routes. Generate/load a seeded synthetic panel under POC-1, select a patient, inspect observations/eligibility, explicitly choose an eligible plan with rationale and confirm under POC-2. Advance time under POC-3, inspect outcomes/trajectory/history and reject stale/ineligible decisions. Preserve ordinary choices when analysis is unavailable. Record seed, bounded count, decision sequence and observed result. |
+| POC-CLOUD-04 Durability | Reload the browser and compare saved panel, rationale/decision, clock, outcomes and history. Restart/recreate the service container on the same retained durable store, check health, sign in again and verify those records are unchanged and advancement continues. Also reboot the VM and repeat the read check to establish the mount/startup path. Do not reseed/overwrite the store during restart. SQLite in a disposable container layer or Cloud Run instance filesystem fails this requirement. |
+| POC-CLOUD-05 Reproduction | A clean checkout supplies pinned app-plus-private-generator build/start without analytics workers, deployment, account setup, HTTPS, restart, rollback and teardown instructions. Run the required deployed browser/API checks, keyboard and readable chart/table checks for the active loop, and record console/network failures. Independent exact-candidate review and affected repository checks remain required. Report cloud simulation acceptance separately from later analytics and human/clinical status. |
+
+The [cloud simulation task/test ledger](../implementation/poc-cloud-simulation-ledger-20261022.md) specifies the bounded implementation order, deployment choice, required inputs and evidence. Its initial state is planning only: no Google Cloud deployment or cloud browser/auth/persistence validation has occurred.
+
+Revision: 2026-10-21. User-directed immediate scope; implementation and results remain unaccepted until observed. This amendment supersedes conflicting full-hybrid G0-G7 sequencing, exhaustive scenario/count requirements, and human-review prerequisites for **PoC acceptance** in the older specifications, method plans, UX plans, requirement map and execution guidance. Those requirements remain the later research roadmap, not silently completed or deleted. Unchanged invariants apply to every capability actually enabled. The [bounded validation protocol](07-validation-protocol.md#poc-val--first-ablation-study) is the later analytics study contract.
 
 ## Keep, simplify, defer
 
@@ -14,6 +30,8 @@ Revision: 2026-10-21. User-directed immediate scope; implementation and results 
 Do not introduce another governance, lineage or compatibility subsystem. Reuse existing run IDs, versions, seeds and result storage with only fields needed to reproduce the active computation. Preserve failed evidence and prior accepted work; no wholesale rewrite of the requirement ledger is needed. Mark deferred work as deferred, not passed.
 
 ## Functional exit criteria
+
+The table below retains the combined simulation/analytics roadmap. The immediate milestone selects only the checks identified above; POC-4/5 and fitted protocol/study requirements are later analytics acceptance.
 
 A clean checkout must launch through the existing supported local stack and let a user complete the following in the browser, with persisted server state verified. A static replay or saved screens do not pass.
 
@@ -30,6 +48,8 @@ Use an uninterrupted reference setting first; existing interruption/hold guards 
 
 ## APPT-01–05 — Background refresh and appointment prediction
 
+These requirements govern the later analytics milestone. APPT-05's preservation of all scientific work does not make that work a prerequisite for the immediate cloud physician simulation milestone.
+
 Canonical requirements promoted on 2026-10-22 after root acceptance of independent plan report blob `e64614862337a8c219eaaafcc88e9cee3c505757`, reviewing proposal `fcb032ef97c8e432bd798383ce3ea8fa82ab292e` against `3ab331dd09cb0676ae327c8f0d03e107c826148f`. This is requirements acceptance only. A1–A4 implementation is not started; each exact source candidate requires independent review. [Implementation seams](../implementation/poc-analytics-contract-20261021.md#appointment-integration-seams) and the [existing ledger](../implementation/poc-analysis-task-ledger.json) track that work.
 
 **APPT-01 — Background refresh.** Population/cohort fitting and patient posterior conditioning/refitting run in the existing dispatcher/job path. Manual pre-appointment refresh is sufficient for this PoC; automatic scheduling is not required. Refresh saves the frozen cutoff/input and returns status while the physician continues eligible choices and simulated advancement. Research preparation may precompute the declared cutoff results. A new patient without a conditioned posterior has unavailable advice unless a separately qualified population-only/prior-only prediction is explicitly labeled. True incremental updates and frozen-population modular approximations remain deferred. No automatic treatment approval or fabricated favorable fallback.
@@ -45,6 +65,8 @@ Latest eligibility, holds, consent and atomic stale-approval checks remain autho
 **APPT-05 — Preserve science and demonstration.** POC-1–6, genuine default12 panels, all seven V0/V1, N0/N1 and S0/S1/S2 configurations, existing exploration/confirmation counts/cutoffs, physician choices, causal simulation response, enabled protocol execution, diagnostics and independent evaluator truth remain required. Saved artifacts do not replace required fits or studies. Keep leakage controls, carryover/rebound distinction, source-once borrowing, support freeze and missingness handling. Historical failed N evidence is retained; accepted inactive N source does not complete N fitting/activation, and joint throughput remains unmeasured. StochTree/A5 stays conditional and deferred: no installation, comparator or backend-policy exception is enabled by this promotion.
 
 ## Analytical slice and implementation queue
+
+This queue resumes for the later analytics milestone after the immediate cloud simulation work; it is not the deployment critical path.
 
 Implement a small actual longitudinal Bayesian outcome model and posterior g-computation for the existing [42-day visit-plan contrast](01-estimands-and-contracts.md#4-estimands-before-algorithms), with a declared common continuation policy (fixed support in visit-effect comparisons). Select two already eligible plans with a compatible synthetic external-study contrast; do not borrow behavioral-study effects into medication contrasts. The endpoint remains scheduled ISI, with daily reports as distinct measurements, not interchangeable endpoints. The implementation records its restricted DGP/model parameterization and assumptions before fitting; reduced supported scope is explicit, not a claim to implement the complete reference engine.
 
