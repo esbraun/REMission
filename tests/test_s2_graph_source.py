@@ -326,3 +326,101 @@ class QualificationSourceTests(unittest.TestCase):
         self.assertEqual(host.RESOURCES['pids'],256)
         self.assertEqual(host.RESOURCES['outer_seconds'],1200)
         self.assertEqual(host.PLAN_CRITIQUE,'990ae7aeae3633035db622138fc8ec5da3d0c7ef')
+
+
+class PriorInputDiagnosticTests(unittest.TestCase):
+    @staticmethod
+    def namespace():
+        tree=ast.parse((ROOT/'tooling/foundation/s2_model_qualification.py').read_text())
+        assignments={'PRIOR_INPUT_FAILURE','PRIOR_INPUT_RVS','PRIOR_INPUT_DTYPES','PRIOR_INPUT_MAX_ORDINAL'}
+        functions={'prior_input_metadata','prior_input_rejected'}
+        nodes=[n for n in tree.body if (isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id in assignments)
+               or (isinstance(n,ast.FunctionDef) and n.name in functions)]
+        result={};exec(compile(ast.Module(body=nodes,type_ignores=[]),'finite_prior_metadata_only','exec'),result)
+        return result,tree
+
+    def test_finite_metadata_schema_and_bounded_exact_scalar_types(self):
+        namespace,_=self.namespace();produce=namespace['prior_input_metadata']
+        valid=produce('s_alpha',2,'float32',True,['mu_alpha','s_alpha'])
+        self.assertEqual(valid,dict(status='available',rv='s_alpha',input_ordinal=2,dtype='float32',is_constant=True))
+        self.assertEqual(entry.checked_prior_input(valid),valid)
+        self.assertEqual(namespace['PRIOR_INPUT_RVS'],entry.PRIOR_INPUT_RVS)
+        self.assertEqual(namespace['PRIOR_INPUT_DTYPES'],entry.PRIOR_INPUT_DTYPES)
+        self.assertEqual(namespace['PRIOR_INPUT_MAX_ORDINAL'],entry.PRIOR_INPUT_MAX_ORDINAL)
+        for args in (('SECRET',2,'float32',True),('s_alpha',True,'float32',True),('s_alpha',-1,'float32',True),
+                     ('s_alpha',8,'float32',True),('s_alpha',2.,'float32',True),('s_alpha',2,'SECRET',True),
+                     ('s_alpha',2,'float32',1),('s_alpha',2,'float32',None)):
+            with self.subTest(args=args):
+                row=produce(*args,['s_alpha']);self.assertEqual(row,dict(status='unavailable',code='refused'))
+                self.assertNotIn('SECRET',json.dumps(row))
+
+    def test_single_failure_envelope_optional_roundtrip_and_unknown_fields_refused(self):
+        try:raise AssertionError('SECRET not emitted')
+        except AssertionError as error:base=entry.failure(error,'graph')
+        metadata=dict(status='available',rv='s_e',input_ordinal=0,dtype='float32',is_constant=False)
+        with tempfile.TemporaryDirectory() as temporary:
+            path=Path(temporary)/'stderr'
+            for item in (None,metadata,dict(status='unavailable',code='classification_failed')):
+                row=entry.attach_prior_input(copy.deepcopy(base),item);raw=json.dumps(row)
+                self.assertNotIn('SECRET',raw);path.write_text(raw)
+                self.assertEqual(entry.read_failure(path),dict(status='available',failure=row))
+                self.assertEqual(raw.count('s2-graph-child-failure-v1'),1)
+            for item in (dict(metadata,secret='SECRET'),dict(metadata,rv='SECRET'),dict(metadata,dtype='SECRET'),
+                         dict(metadata,input_ordinal=True),dict(metadata,is_constant='SECRET'),dict(metadata,input_ordinal=8)):
+                # Producer never emits the malformed value; strict decoder also
+                # rejects independently forged optional metadata.
+                produced=entry.attach_prior_input(copy.deepcopy(base),item)
+                self.assertEqual(produced['prior_input'],dict(status='unavailable',code='refused'))
+                self.assertNotIn('SECRET',json.dumps(produced))
+                path.write_text(json.dumps(dict(base,prior_input=item)))
+                self.assertEqual(entry.read_failure(path)['status'],'unavailable')
+            path.write_text(json.dumps(dict(base,prior_input=metadata,stage='compile')))
+            self.assertEqual(entry.read_failure(path)['status'],'unavailable')
+
+    def test_original_predicate_first_failure_and_assertion_survive_classifier_failure(self):
+        for broken in (False,True):
+            with self.subTest(classifier_broken=broken):
+                namespace,tree=self.namespace();seen=[];continued=[]
+                class Scalar:
+                    def __init__(self,name,dtype):self.name=name;self.kind=dtype
+                    @property
+                    def dtype(self):seen.append(self.name);return self.kind
+                first=SimpleNamespace(name='mu_alpha',owner=SimpleNamespace(inputs=[Scalar('f64','float64'),Scalar('first','float32'),Scalar('late','float16')]))
+                second=SimpleNamespace(name='mu_tau',owner=SimpleNamespace(inputs=[Scalar('next_rv','float32')]))
+                namespace.update(model=SimpleNamespace(free_RVs=[first,second]),expected_names=['mu_alpha','mu_tau'],Constant=Scalar,continued=continued)
+                if broken:namespace['prior_input_metadata']=lambda *_:(_ for _ in ()).throw(ValueError('SECRET'))
+                qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+                guard=next(n for n in ast.walk(qualify) if isinstance(n,ast.For) and any(isinstance(c,ast.Call) and isinstance(c.func,ast.Name) and c.func.id=='prior_input_rejected' for c in ast.walk(n)) and isinstance(n.iter,ast.Attribute) and n.iter.attr=='free_RVs')
+                marker=ast.parse('continued.append(True)').body[0]
+                with self.assertRaisesRegex(AssertionError,'prior parameter input not float64'):
+                    exec(compile(ast.Module(body=[guard,marker],type_ignores=[]),'actual_prior_guard_only','exec'),namespace)
+                self.assertNotIn('late',seen);self.assertNotIn('next_rv',seen);self.assertEqual(continued,[])
+                expected=(dict(status='unavailable',code='classification_failed') if broken else dict(status='available',rv='mu_alpha',input_ordinal=1,dtype='float32',is_constant=True))
+                self.assertEqual(namespace['PRIOR_INPUT_FAILURE'],expected)
+                # Sticky first failure: no overwrite if another failing input
+                # is passed to the helper by an inert test caller.
+                namespace['prior_input_rejected'](Scalar('later','float16'),'mu_tau',0,['mu_alpha','mu_tau'],Scalar)
+                self.assertEqual(namespace['PRIOR_INPUT_FAILURE'],expected)
+
+    def test_success_and_original_predicate_errors_remain_unmodified(self):
+        namespace,_=self.namespace();reject=namespace['prior_input_rejected']
+        for dtype in ('float64','int64','bool'):
+            self.assertFalse(reject(SimpleNamespace(dtype=dtype),'b',0,['b'],object))
+        self.assertIsNone(namespace['PRIOR_INPUT_FAILURE'])
+        with self.assertRaises(AttributeError):reject(SimpleNamespace(dtype=None),'b',0,['b'],object)
+        self.assertIsNone(namespace['PRIOR_INPUT_FAILURE'])
+
+    def test_inverse_ast_restores_entire_R1_qualification_math_and_control_flow(self):
+        _,tree=self.namespace();qualify=copy.deepcopy(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify'))
+        for node in qualify.body:
+            if isinstance(node,ast.Global):node.names.remove('PRIOR_INPUT_FAILURE')
+        qualify.body=[n for n in qualify.body if not (isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id=='PRIOR_INPUT_FAILURE')]
+        count=0
+        for node in ast.walk(qualify):
+            if isinstance(node,ast.GeneratorExp) and isinstance(node.elt,ast.Call) and isinstance(node.elt.func,ast.Name) and node.elt.func.id=='prior_input_rejected':
+                count+=1;node.elt=ast.parse("getattr(v,'dtype','').startswith('float') and v.dtype!='float64'",mode='eval').body
+                node.generators[0].target=ast.Name(id='v',ctx=ast.Store())
+                node.generators[0].iter=ast.parse('rv.owner.inputs',mode='eval').body
+        self.assertEqual(count,1)
+        digest=hashlib.sha256(ast.dump(qualify,include_attributes=False).encode()).hexdigest()
+        self.assertEqual(digest,'796179aaf6331ad50f881ba81e36626af34d7dfeffb4a3b12efb888652b5e4b9')

@@ -38,6 +38,30 @@ LOCATIONS={'/qualification/entry.py':'entry.py'}
 LOCATIONS.update({str(STAGED/name):name for name in MODULES.values()})
 REASONS=('launch_failed','unreaped','timeout','process_failed','nonzero','stdout_empty',
          'stdout_overflow','stderr_overflow','capture_metadata_failed','output_invalid')
+PRIOR_INPUT_RVS=('mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u','epsilon_0','epsilon_1')
+PRIOR_INPUT_DTYPES=('float16','float32','float64','float128')
+PRIOR_INPUT_MAX_ORDINAL=7
+
+
+def checked_prior_input(value):
+    if type(value) is not dict:raise ValueError('invalid finite prior-input metadata')
+    if value.get('status')=='unavailable':
+        if set(value)!={'status','code'} or value['code'] not in ('refused','classification_failed'):
+            raise ValueError('invalid fixed prior-input refusal')
+    elif (set(value)!={'status','rv','input_ordinal','dtype','is_constant'} or value['status']!='available'
+            or type(value['rv']) is not str or value['rv'] not in PRIOR_INPUT_RVS
+            or type(value['input_ordinal']) is not int or not 0<=value['input_ordinal']<=PRIOR_INPUT_MAX_ORDINAL
+            or type(value['dtype']) is not str or value['dtype'] not in PRIOR_INPUT_DTYPES
+            or type(value['is_constant']) is not bool):
+        raise ValueError('invalid finite prior-input metadata')
+    return value
+
+
+def attach_prior_input(row,value):
+    if value is not None:
+        try:row['prior_input']=checked_prior_input(value)
+        except BaseException:row['prior_input']=dict(status='unavailable',code='refused')
+    return row
 
 
 def strict_json(raw):
@@ -85,7 +109,8 @@ def read_failure(path):
     if not raw.strip():return unavailable('missing')
     try:
         value=strict_json(raw)
-        if (type(value) is not dict or set(value)!={'kind','stage','error_class','locations','omitted'}
+        if (type(value) is not dict or set(value) not in ({'kind','stage','error_class','locations','omitted'},
+                {'kind','stage','error_class','locations','omitted','prior_input'})
                 or value['kind']!='s2-graph-child-failure-v1' or value['stage'] not in STAGES
                 or value['error_class'] not in (*ERROR_CLASSES.values(),'other')
                 or type(value['omitted']) is not bool or type(value['locations']) is not list
@@ -94,6 +119,9 @@ def read_failure(path):
             if (type(location) is not dict or set(location)!={'file','line'}
                     or location['file'] not in LOCATIONS.values() or type(location['line']) is not int
                     or not 1<=location['line']<=100000):raise ValueError()
+        if 'prior_input' in value:
+            if value['stage']!='graph' or value['error_class']!='AssertionError':raise ValueError()
+            checked_prior_input(value['prior_input'])
         return dict(status='available',failure=value)
     except BaseException:return unavailable('invalid')
 
@@ -185,6 +213,9 @@ def child(budget,digest):
             stage=qualification.STAGE
         try:row=failure(error,stage)
         except BaseException:row=dict(kind='s2-graph-child-failure-v1',stage=stage,error_class='other',locations=[],omitted=True)
+        if qualification is not None and stage=='graph' and type(error) is AssertionError:
+            try:attach_prior_input(row,qualification.PRIOR_INPUT_FAILURE)
+            except BaseException:row['prior_input']=dict(status='unavailable',code='classification_failed')
         emit(row);return 1  # Never leak an automatic chained/raw traceback.
 
 

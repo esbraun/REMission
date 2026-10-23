@@ -12,6 +12,32 @@ DRAFT_SETTINGS=dict(density_atol=1e-8,normalizer_atol=1e-10,
     operation_review=None,resource_plan_sha256=None)
 CORRELATIONS=(-.949999,-.4,0.,.4,.949999)
 STAGE='admission'
+PRIOR_INPUT_FAILURE=None
+PRIOR_INPUT_RVS=('mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u','epsilon_0','epsilon_1')
+PRIOR_INPUT_DTYPES=('float16','float32','float64','float128')
+PRIOR_INPUT_MAX_ORDINAL=7  # Diagnostic ceiling only; actual input count unknown.
+
+
+def prior_input_metadata(rv,ordinal,dtype,is_constant,expected_names):
+    if (type(expected_names) not in (list,tuple) or not 1<=len(expected_names)<=12
+            or any(type(name) is not str or name not in PRIOR_INPUT_RVS for name in expected_names)
+            or type(rv) is not str or rv not in expected_names or rv not in PRIOR_INPUT_RVS
+            or type(ordinal) is not int or not 0<=ordinal<=PRIOR_INPUT_MAX_ORDINAL
+            or type(dtype) is not str or dtype not in PRIOR_INPUT_DTYPES or type(is_constant) is not bool):
+        return dict(status='unavailable',code='refused')
+    return dict(status='available',rv=rv,input_ordinal=ordinal,dtype=dtype,is_constant=is_constant)
+
+
+def prior_input_rejected(value,rv,ordinal,expected_names,constant_type):
+    global PRIOR_INPUT_FAILURE
+    # Same predicate and short-circuit order as R1; no value/array evaluation.
+    rejected=getattr(value,'dtype','').startswith('float') and value.dtype!='float64'
+    if rejected and PRIOR_INPUT_FAILURE is None:
+        try:
+            PRIOR_INPUT_FAILURE=prior_input_metadata(rv,ordinal,value.dtype,isinstance(value,constant_type),expected_names)
+        except BaseException:
+            PRIOR_INPUT_FAILURE=dict(status='unavailable',code='classification_failed')
+    return rejected
 
 
 def require_admitted(settings):
@@ -79,7 +105,8 @@ def point_for(members,rho,*,tail=False):
 
 def qualify(data14,data28,*,settings,compile_options):
     require_admitted(settings)  # MUST precede every scientific import/build.
-    global STAGE
+    global STAGE,PRIOR_INPUT_FAILURE
+    PRIOR_INPUT_FAILURE=None
     import numpy as np
     from dataclasses import replace
     from pytensor.graph.basic import Constant
@@ -122,7 +149,7 @@ def qualify(data14,data28,*,settings,compile_options):
             if not rvs<=registered:raise AssertionError('unregistered RV ancestor in S2 output')
             ownership.append(dict(output=output.name,registered_ancestors=sorted(v.name for v in rvs)))
         for rv in model.free_RVs:
-            if any(getattr(v,'dtype','').startswith('float') and v.dtype!='float64' for v in rv.owner.inputs):
+            if any(prior_input_rejected(v,rv.name,ordinal,expected_names,Constant) for ordinal,v in enumerate(rv.owner.inputs)):
                 raise AssertionError('prior parameter input not float64')
         for value in graph_inputs([model.logp(jacobian=False)]):
             if isinstance(value,Constant) and getattr(value,'dtype',None)=='float32':raise AssertionError('float32 graph constant')
