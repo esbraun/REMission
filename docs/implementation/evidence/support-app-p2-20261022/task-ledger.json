@@ -1,26 +1,120 @@
 {
-  "task": "S1-ADMIT-REPLAY",
-  "owner": "/root/support_historical_app_sol",
-  "model": "gpt-6.1-sol",
-  "reasoning_effort": "high",
-  "escalation": null,
-  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/support-historical-app-sol-261022",
+  "assigned_integration_base": "90b2d8abed7f169714092a21dcf0fb6ee0dcc7a1",
   "branch": "feat/poc-support-historical-app-20261022",
-  "starting_head": "75a9da66dd746849cdabf8047ae475f0409e130c",
-  "assigned_integration_base": "e707ece425046c32106e9cd4a026b3092126ef16",
   "candidate": "containing commit",
-  "status": "source_candidate_needs_independent_review_and_actual_qualification",
-  "plan_critique": "5aecd3a9bf2e1bdbfb873da58c75d9d3d645f7a1",
-  "review": {"reviewer": null, "head": null, "base": null, "disposition": "pending", "pr": null, "merge": null},
-  "test_mapping": [
-    {"id": "SA-T1", "status": "structural_fixture_pass", "evidence": "ordinary-execution-r4/stderr", "actual_source_inventory_qualification": "pending"},
-    {"id": "SA-T2", "status": "structural_fixture_pass", "evidence": "test_support_archive.SupportProofTests", "actual_full_proof_replay": "pending"},
-    {"id": "SA-T3", "status": "actual_saved_archive_not_run", "fixture_72_stored_replays": "pass", "proposal": "actual-roundtrip-proposal.json"},
-    {"id": "SA-T4", "status": "actual_cookie_middleware_and_isolated_Store_fixture_pass", "evidence": "ordinary-execution-r4/stderr", "legacy_v1_full_v2_regressions": "25pass", "native_science_accepted_volume": "not_accessed"},
-    {"id": "SA-T5", "status": "source_ui_build_pass_actual_MCP_pending", "evidence": "frontend-checks.json", "browser": "not_run"}
+  "escalation": null,
+  "final_runtime": {
+    "attach_exit": 0,
+    "cid": "f8ab8b44d06da2cbe5effc513931982b44e483718b2670b24e3413f41b1def75",
+    "cleanup": [],
+    "exit": 0,
+    "oom": false,
+    "pid": 0,
+    "retained": true,
+    "running": false,
+    "source_candidate": "99268ce305a2918e7ad3846833c992dc8fe0aca1",
+    "status": "exited",
+    "watchdog_exit": 0
+  },
+  "integration": {
+    "conflicts": [],
+    "frontend_unchanged": true,
+    "host_pure_rerun": {
+      "passed": 7,
+      "seconds": 10.512,
+      "tests": 7
+    },
+    "native_merge_tree": "7b50c9fd3c4c06d041307259fb5115ee4ef9741a",
+    "native_pr": "https://github.com/esbraun/REMission/pull/37",
+    "native_reviewed_source": "cdba52b7b652977b80725d0213a812f15f17bd61",
+    "native_tree_match": true,
+    "new_base": "90b2d8abed7f169714092a21dcf0fb6ee0dcc7a1",
+    "original_candidate": "99268ce305a2918e7ad3846833c992dc8fe0aca1",
+    "original_preserved_branch": "archive/support-p2-original-20261023",
+    "r5_spec_sha256": "5165ed91d4139c11bc6411bcd60c938dacdc7cc557a9e6b7e2e5b0e9ac5b8237",
+    "r5_status": "proposed_not_authorized_not_run",
+    "rebased_source_head_before_evidence": "7e06e2891cebeaced0d23e7d04a9205075f2d0ea",
+    "source_binding": "integration-rebase.json"
+  },
+  "later_gates_retained": [
+    "new_image_role_qualification",
+    "actual_accepted_public_admission_and_72_replays",
+    "MCP_owned_historical_persistence",
+    "S1-JOB-CONTRACT-ROLE",
+    "S1-JOB-VIEW",
+    "S1-LIVE-LOOP",
+    "S2",
+    "TA2",
+    "TA3",
+    "seven_configuration_ablation",
+    "fresh_confirmation",
+    "human_factors",
+    "clinical_review",
+    "clinical_validation"
   ],
-  "verification": {"host_pure_tests": 7, "linux_final_tests": 41, "linux_failures": 0, "linux_errors": 0, "linux_skips": 0, "frontend_tests": 6, "typecheck": "pass", "build": "pass", "diff_check": "pass", "r2_failure_retained": true},
-  "final_runtime": {"cid": "f8ab8b44d06da2cbe5effc513931982b44e483718b2670b24e3413f41b1def75", "status": "exited", "exit": 0, "pid": 0, "running": false, "oom": false, "attach_exit": 0, "watchdog_exit": 0, "cleanup": [], "retained": true},
+  "model": "gpt-6.1-sol",
   "no_actual_archive_or_browser_authorization": true,
-  "later_gates_retained": ["new_image_role_qualification", "actual_accepted_public_admission_and_72_replays", "MCP_owned_historical_persistence", "S1-JOB-CONTRACT-ROLE", "S1-JOB-VIEW", "S1-LIVE-LOOP", "S2", "TA2", "TA3", "seven_configuration_ablation", "fresh_confirmation", "human_factors", "clinical_review", "clinical_validation"]
+  "original_assigned_integration_base": "e707ece425046c32106e9cd4a026b3092126ef16",
+  "owner": "/root/support_historical_app_sol",
+  "plan_critique": "5aecd3a9bf2e1bdbfb873da58c75d9d3d645f7a1",
+  "reasoning_effort": "high",
+  "review": {
+    "base": null,
+    "disposition": "pending",
+    "head": null,
+    "merge": null,
+    "pr": null,
+    "reviewer": null
+  },
+  "starting_head": "75a9da66dd746849cdabf8047ae475f0409e130c",
+  "status": "source_candidate_needs_independent_review_and_actual_qualification",
+  "task": "S1-ADMIT-REPLAY",
+  "test_mapping": [
+    {
+      "actual_source_inventory_qualification": "pending",
+      "evidence": "ordinary-execution-r4/stderr",
+      "id": "SA-T1",
+      "status": "structural_fixture_pass"
+    },
+    {
+      "actual_full_proof_replay": "pending",
+      "evidence": "test_support_archive.SupportProofTests",
+      "id": "SA-T2",
+      "status": "structural_fixture_pass"
+    },
+    {
+      "fixture_72_stored_replays": "pass",
+      "id": "SA-T3",
+      "proposal": "actual-roundtrip-proposal.json",
+      "status": "actual_saved_archive_not_run"
+    },
+    {
+      "evidence": "ordinary-execution-r4/stderr",
+      "id": "SA-T4",
+      "legacy_v1_full_v2_regressions": "25pass",
+      "native_science_accepted_volume": "not_accessed",
+      "status": "actual_cookie_middleware_and_isolated_Store_fixture_pass"
+    },
+    {
+      "browser": "not_run",
+      "evidence": "frontend-checks.json",
+      "id": "SA-T5",
+      "status": "source_ui_build_pass_actual_MCP_pending"
+    }
+  ],
+  "verification": {
+    "build": "pass",
+    "diff_check": "pass",
+    "frontend_tests": 6,
+    "host_pure_tests": 7,
+    "linux_errors": 0,
+    "linux_failures": 0,
+    "linux_final_tests": 41,
+    "linux_integrated_source": "pending_separately_authorized_r5",
+    "linux_skips": 0,
+    "linux_source_candidate": "99268ce305a2918e7ad3846833c992dc8fe0aca1",
+    "r2_failure_retained": true,
+    "typecheck": "pass"
+  },
+  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/support-historical-app-sol-261022"
 }

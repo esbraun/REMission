@@ -17,7 +17,7 @@ import time
 
 HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[3]
-STAGING=REPO/'artifacts/support-p2-ordinary-tests-r4'
+STAGING=REPO/'artifacts/support-p2-ordinary-tests-r5'
 IMAGE='sha256:146a84b1ff4306235bec2d15212350a7d58c94a3ea812b4d02c4e8318a4a3de0'
 
 
@@ -163,7 +163,7 @@ def freeze():
         if p.is_file() and p.suffix in ('.py','.json','.sql')})
     selected += [REPO/p for p in ('tests/integration/replay/test_support_archive.py','tests/integration/replay/support_archive_fixtures.py',
         'tests/integration/replay/test_foundation.py','tests/integration/replay/test_observed_v2_archive.py','tests/integration/replay/live_helpers.py',
-        'tests/run_contracts/observed_v2_fixtures.py')]
+        'tests/run_contracts/observed_v2_fixtures.py','tooling/foundation/service.Dockerfile')]
     entries=[]
     for path in selected:
         relative=path.relative_to(REPO).as_posix();target=source/relative;target.parent.mkdir(parents=True,exist_ok=True)
@@ -172,7 +172,7 @@ def freeze():
     entries.append(dict(path='run_tests.py',bytes=len(runner),sha256=sha(runner)))
     manifest=encode(entries);(HERE/'ordinary-source-manifest.json').write_bytes(manifest)
     spec=dict(scope='ordinary isolated fixtures only; never accepted public archive/native volume/service/browser/science',
-        image=IMAGE,image_provenance='Root identifies this immutable existing service image as accepted native-cohort day14 service; used for dependencies only. Candidate source is separately mounted and hashed.',
+        integration_base='90b2d8abed7f169714092a21dcf0fb6ee0dcc7a1',source_before_evidence_commit='7e06e2891cebeaced0d23e7d04a9205075f2d0ea',prior_source_candidate='99268ce305a2918e7ad3846833c992dc8fe0aca1',image=IMAGE,image_provenance='Root identifies this immutable existing service image as accepted native-cohort day14 service; used for dependencies only. Candidate source is separately mounted and hashed.',
         source=str(source),source_manifest_sha256=sha(manifest),source_files=len(entries),source_bytes=sum(e['bytes'] for e in entries),
         argv=['python','-P','-B','/source/run_tests.py'],uid='10001:10001',cpus=2,memory='1g',memory_swap='1g',pids=128,
         network='none',read_only=True,cap_drop='ALL',no_new_privileges=True,tmpfs='/tmp:rw,nosuid,nodev,size=512m,mode=1777',
@@ -201,7 +201,7 @@ def run():
         '--user=10001:10001','--cpus=2','--memory=1g','--memory-swap=1g','--pids-limit=128',
         '--tmpfs=/tmp:rw,nosuid,nodev,size=512m,mode=1777','--mount',f'type=bind,src={source},dst=/source,readonly',
         '--workdir=/source','--entrypoint=python',IMAGE,'-P','-B','/source/run_tests.py']
-    bounded(dict(argv=argv),HERE/'ordinary-execution-r4')
+    bounded(dict(argv=argv),HERE/'ordinary-execution-r5')
 
 
 if __name__=='__main__':
