@@ -15,6 +15,11 @@ spec=importlib.util.spec_from_file_location('image03_probe',ROOT/'tooling/founda
 probe=importlib.util.module_from_spec(spec);spec.loader.exec_module(probe)
 
 class ProjectClosureControls(unittest.TestCase):
+    def test_dormant_producer_and_indirect_probe_imports_are_blocked_before_execution(self):
+        for name in ('probe_roles','run_support_once'):
+            with self.subTest(name=name),self.assertRaisesRegex(AssertionError,'dormant-tool'):
+                probe.Tripwire().find_spec(name)
+
     def setUp(self):
         folder=ROOT/'artifacts/shared-image03-probe-tests';folder.mkdir(parents=True,exist_ok=True)
         self.temporary=tempfile.TemporaryDirectory(dir=folder);self.addCleanup(self.temporary.cleanup)

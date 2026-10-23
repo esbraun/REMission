@@ -18,8 +18,8 @@ HERE=Path(__file__).resolve().parent
 
 SOURCE='31aa05cc8d9c66a3b64910eda65a1883b2d16c44'
 TREE='a5b4ed30e724cc09368f5df77c0d35eddaa4fba2'
-BINDINGS_SHA='f0e33b0bf3612e77da8f1b380fe44d4f150685ee7aeaddf1d9d887467af6915f'
-BINDINGS_BLOB='68a1a62021c2d2dfb93effdcdd0305b2ea7bfad4'
+BINDINGS_SHA='8435ae642843068e1e02d285c907b28cfa028fb89141ec35bea6c86950ad635d'
+BINDINGS_BLOB='7010d78a77b38952f46d39e0e0ce3b1c6985fbc9'
 PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
 INHERITED_PUBLIC_MANIFEST=dict(path='/app/role-copy-manifest.json',bytes=77023,
     sha256='fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836',
@@ -27,10 +27,10 @@ INHERITED_PUBLIC_MANIFEST=dict(path='/app/role-copy-manifest.json',bytes=77023,
     prepared_manifest='24042076bd9841950afd4791fa935a2056ba8594',
     roles_Dockerfile='31906e090db1a95d2c9842f24b016f4c3e1eafd1',
     context_manifest='e2733119b50fc6fa445e036f7bc164e8ec4cc7c0')
-PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4',
-    'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
+PARENTS={'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
     'controls':'sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85'}
-ROLES=('service','learner','controls')
+ROLES=('learner','controls')
+RETAINED_SERVICE_SHA='6d9a7656d98abb928e6f52d126cd60f5ea3419cb7fc1f7c1e49d4119a652e687'
 # Literal, non-scientific packaging action only. Its daemon RUN is bounded by
 # the existing build lease, not by the later qualifier's resource/ACK gates.
 UNLINK_CODE='''import json
@@ -95,13 +95,20 @@ def git(root,*args):
     return subprocess.check_output(['git',*args],cwd=root,timeout=15)
 
 
+def check_retained_service(value):
+    # Exact accepted evidence + original map/overlays/recipe/config; static reuse
+    # is distinct from this operation's newly observed remaining-role results.
+    if sha(json.dumps(value,sort_keys=True,separators=(',',':')).encode())!=RETAINED_SERVICE_SHA:
+        raise ValueError('exact accepted retained service proof/source/map/config required')
+
+
 def recipe(roles):
-    lines=['ARG SERVICE_PARENT','ARG LEARNER_PARENT','ARG CONTROLS_PARENT']
+    lines=['ARG LEARNER_PARENT','ARG CONTROLS_PARENT']
     for role in ROLES:
         lines.append('FROM ${'+role.upper()+'_PARENT} AS '+role)
         for row in roles[role]['overlay']:
             lines.append('COPY '+role+'/'+row['source']+' '+row['destination'])
-        if role in ('service','controls'):
+        if role=='controls':
             lines+=['USER 0:0','RUN '+json.dumps(['python','-I','-B','-c',UNLINK_CODE]),
                 'USER 10001:10001']
         lines+=['COPY qualify/probe.py /qualify/probe.py',
@@ -118,6 +125,8 @@ def freeze(directory,root):
     raw=git(root,'show',BINDINGS_BLOB)
     if sha(raw)!=BINDINGS_SHA:raise ValueError('reviewed source bindings changed')
     bindings=json.loads(raw)
+    check_retained_service(bindings['retained_service'])
+    if set(bindings['roles'])!=set(ROLES):raise ValueError('only learner and controls may execute')
     if bindings['inherited_public_manifest']!=INHERITED_PUBLIC_MANIFEST:raise ValueError('declared parent metadata provenance changed')
     inherited=git(root,'show',INHERITED_PUBLIC_MANIFEST['git_blob'])
     if len(inherited)!=INHERITED_PUBLIC_MANIFEST['bytes'] or sha(inherited)!=INHERITED_PUBLIC_MANIFEST['sha256']:
@@ -141,7 +150,9 @@ def freeze(directory,root):
         for row in item['overlay']:
             name=row['source']
             destination={'tooling/foundation/consumer_probe.py':'/app/boundary_probe.py',
-                'tooling/foundation/observed_v2_probe.py':'/app/observed_v2_probe.py'}.get(name,'/app/'+name)
+                'tooling/foundation/observed_v2_probe.py':'/app/observed_v2_probe.py',
+                'docs/implementation/evidence/support-producer-20261022/probe_roles.py':'/app/probe_roles.py',
+                'docs/implementation/evidence/support-producer-20261022/run_support_once.py':'/app/run_support_once.py'}.get(name,'/app/'+name)
             if (Path(name).is_absolute() or '..' in Path(name).parts or row['destination']!=destination):
                 raise ValueError('noncanonical COPY source/destination')
             data=(ordinary(root/name).read_bytes() if 'generated' in row else git(root,'show',SOURCE+':'+name))
@@ -151,7 +162,7 @@ def freeze(directory,root):
         payload=json.dumps(dict(role=role,uid=item['uid'],project_source=expected),sort_keys=True).encode()+b'\n'
         write('qualify/'+role+'.json',payload)
         write('context/qualify/'+role+'.json',payload)
-        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared04-31aa05c-'+role+'-parent:v1',
+        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared05-31aa05c-'+role+'-parent:v1',
             tag=item['tag'],name=item['qualifier'],uid=str(item['uid'])+':'+str(item['uid']),
             parent_layers=parent['images'][role]['layers'],expected_sha256=sha(payload))
     write('context/overlay.Dockerfile',recipe(bindings['roles']).encode())
@@ -159,10 +170,10 @@ def freeze(directory,root):
         write('operator/'+name,(HERE/name).read_bytes())
     write('qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
     write('context/qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
-    plan=dict(kind='poc-shared-image04-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
-        scope='three_COPY_children_plus_fixed_non_scientific_unlink_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
+    plan=dict(kind='poc-shared-image05-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
+        scope='remaining_learner_controls_COPY_plus_fixed_controls_unlink_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
         bindings_git_blob=BINDINGS_BLOB,host_controller=bindings['host_controller'],
-        inherited_public_manifest=INHERITED_PUBLIC_MANIFEST,
+        inherited_public_manifest=INHERITED_PUBLIC_MANIFEST,retained_service=bindings['retained_service'],
         root=str(directory),roles=roles,files=files,probe_sha256=files['qualify/probe.py']['sha256'],
         packaging_unlink_sha256=sha(UNLINK_CODE.encode()),
         preparation_head=git(root,'rev-parse','HEAD').decode().strip(),
@@ -176,11 +187,11 @@ def freeze(directory,root):
 def validate_plan(path,authorized):
     path=ordinary(path);raw=path.read_bytes()
     if sha(raw)!=authorized:raise ValueError('exact independently reviewed plan hash required')
-    plan=json.loads(raw);root=ordinary(plan['root'])
+    plan=json.loads(raw);check_retained_service(plan.get('retained_service'));root=ordinary(plan['root'])
     if (root!=path.parent or plan['source_commit']!=SOURCE or plan['source_tree']!=TREE
-            or plan['kind']!='poc-shared-image04-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
+            or plan['kind']!='poc-shared-image05-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
             or plan['inherited_public_manifest']!=INHERITED_PUBLIC_MANIFEST
-            or plan['scope']!='three_COPY_children_plus_fixed_non_scientific_unlink_and_scalar_qualification'
+            or plan['scope']!='remaining_learner_controls_COPY_plus_fixed_controls_unlink_and_scalar_qualification'
             or plan['bindings_sha256']!=BINDINGS_SHA or plan['bindings_git_blob']!=BINDINGS_BLOB
             or plan['packaging_unlink_sha256']!=sha(UNLINK_CODE.encode())
             or re.fullmatch('[a-f0-9]{40}',plan['preparation_head']) is None
@@ -203,9 +214,9 @@ def validate_plan(path,authorized):
     if Path(__file__).resolve()!=root/'operator/nof1_image01.py':
         raise ValueError('execute only the frozen operator copy')
     for role,item in plan['roles'].items():
-        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared04-31aa05c-'+role+'-parent:v1'
-                or item['tag']!='remission-shared04-31aa05c-'+role+':v1'
-                or item['name']!='remission-shared04-31aa05c-'+role+'-qual-v1'
+        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared05-31aa05c-'+role+'-parent:v1'
+                or item['tag']!='remission-shared05-31aa05c-'+role+':v1'
+                or item['name']!='remission-shared05-31aa05c-'+role+'-qual-v1'
                 or item['uid']!=('10002:10002' if role=='learner' else '10001:10001')):
             raise ValueError('literal role identity changed')
     host=plan['host_controller']
@@ -261,7 +272,7 @@ def workload(role,plan):
 
 def create_argv(role,plan,image):
     item=plan['roles'][role]
-    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image04-31aa05c',
+    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image05-31aa05c',
         *LIMITS,'--user',item['uid'],image,*workload(role,plan)]
 
 
@@ -271,7 +282,7 @@ def checked_container(value,cid,image,role,plan,life):
     mounts=value['Mounts']
     if (state['Status']!='created' or state['Pid']!=0 or value['Image']!=image
             or value['User']!=item['uid'] or value['Path']!='python' or value['Args']!=workload(role,plan)[1:]
-            or value['Labels']!={'remission.task':'shared-image04-31aa05c'}
+            or value['Labels']!={'remission.task':'shared-image05-31aa05c'}
             or value['Memory']!=2147483648 or value['MemorySwap']!=2147483648
             or value['NanoCpus']!=2000000000 or value['PidsLimit']!=64
             or value['ReadonlyRootfs'] is not True or value['Privileged'] is not False
@@ -364,7 +375,6 @@ def execute(path,authorized):
             iid=output/(role+'.iid')
             argv=['docker','build','--network','none','--pull=false','--file',str(root/'context/overlay.Dockerfile'),
                 '--target',role,'--tag',item['tag'],'--iidfile',str(iid),
-                '--build-arg','SERVICE_PARENT='+plan['roles']['service']['parent_tag'],
                 '--build-arg','LEARNER_PARENT='+plan['roles']['learner']['parent_tag'],
                 '--build-arg','CONTROLS_PARENT='+plan['roles']['controls']['parent_tag'],str(root/'context')]
             call(argv,role+'-build',cap=300);image=iid.read_text().strip()
@@ -395,10 +405,11 @@ def execute(path,authorized):
         raise
     finally:
         save(output/'observed-images.json',dict(status=status,failure=failure,source_commit=SOURCE,plan_sha256=authorized,
-            images=images,parents=parents,owned_cids=owned,unresolved=unresolved,cleanup=cleanup,finished_unix=time.time(),
+            images=images,retained_service=plan['retained_service'],parents=parents,owned_cids=owned,unresolved=unresolved,cleanup=cleanup,finished_unix=time.time(),
             scientific_imports=False,worker_executed=False,Store_opened=False,generation_or_fit=False,
             descendant_or_daemon_termination='UNKNOWN unless separately observed; no removal/retry'))
-    return dict(status=status,images={k:v['metadata']['Id'] for k,v in images.items()})
+    return dict(status=status,images={k:v['metadata']['Id'] for k,v in images.items()},
+        retained_service=plan['retained_service'])
 
 
 def main():

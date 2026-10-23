@@ -73,7 +73,7 @@ class PackagingControls(unittest.TestCase):
                 with self.assertRaisesRegex(PermissionError,'denied'):self.run_payload()
         self.assertTrue(self.target.exists())
 
-    def test_recipe_has_only_two_literal_runs_with_immediate_user_restore(self):
+    def test_recipe_has_only_controls_literal_run_with_immediate_user_restore(self):
         bindings=json.loads(op.git(ROOT,'show',op.BINDINGS_BLOB))
         recipe=op.recipe(bindings['roles']).splitlines();runs=[]
         for index,line in enumerate(recipe):
@@ -81,7 +81,7 @@ class PackagingControls(unittest.TestCase):
                 self.assertEqual(recipe[index-1],'USER 0:0')
                 self.assertEqual(recipe[index+1],'USER 10001:10001')
                 self.assertEqual(json.loads(line[4:]),['python','-I','-B','-c',op.UNLINK_CODE]);runs.append(index)
-        self.assertEqual(len(runs),2)
+        self.assertEqual(len(runs),1)
         learner=recipe[recipe.index('FROM ${LEARNER_PARENT} AS learner'):recipe.index('FROM ${CONTROLS_PARENT} AS controls')]
         self.assertFalse(any(line.startswith(('RUN ','USER ')) for line in learner))
 
@@ -95,3 +95,26 @@ class PackagingControls(unittest.TestCase):
                 raw=op.git(ROOT,'show',blob)
                 self.assertEqual((row['git_blob'],len(raw),hashlib.sha256(raw).hexdigest()),(blob,size,digest))
                 self.assertEqual(item['expected_project_source'][destination],digest)
+
+    def test_seven_new_public_learner_sources_and_controls_map_match_accepted_proposal(self):
+        current=json.loads(op.git(ROOT,'show',op.BINDINGS_BLOB))
+        previous=json.loads(op.git(ROOT,'show','68a1a62021c2d2dfb93effdcdd0305b2ea7bfad4'))
+        learner=current['roles']['learner'];old=previous['roles']['learner']
+        self.assertEqual(len(learner['expected_project_source']),84)
+        self.assertTrue(old['expected_project_source'].items()<=learner['expected_project_source'].items())
+        added=[row for row in learner['overlay'] if row['destination'] not in old['expected_project_source']]
+        self.assertEqual(len(added),7)
+        expected={'contracts/runs/__init__.py':'673e19c4b6ace9bcfcc1e7863956f808c2eab4b7',
+            'contracts/runs/common.py':'fac3c565773e5da75ee544207ac7f6f5c0214f7b',
+            'contracts/runs/coverage_v2.py':'f88b41afb5e569ac672ce95e5db60adba4b1b70e',
+            'contracts/runs/restricted-profile-v1.json':'169c93b7f8285badaa0135e3c81d9624b9423afc',
+            'contracts/runs/support_research.py':'95df83fd8db97f3819ff5798234ec0a2e4970636',
+            'docs/implementation/evidence/support-producer-20261022/probe_roles.py':'1d9355faf4489072f6a963e5575f875ba298e8f4',
+            'docs/implementation/evidence/support-producer-20261022/run_support_once.py':'b37112c886e0dde687693d5f3f35b2465f8dfdb1'}
+        self.assertEqual({row['source']:row['git_blob'] for row in added},expected)
+        for row in added:
+            raw=op.git(ROOT,'show',row['git_blob'])
+            self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(row['bytes'],row['sha256']))
+        for key in ('overlay','expected_project_source','parent','uid'):
+            self.assertEqual(current['roles']['controls'][key],previous['roles']['controls'][key])
+        self.assertEqual(current['retained_service']['original_role_inputs'],previous['roles']['service'])

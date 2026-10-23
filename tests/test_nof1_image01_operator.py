@@ -55,9 +55,9 @@ class Image01Controls(unittest.TestCase):
         _,plan=self.op.validate_plan(self.planpath,self.digest)
         self.assertEqual(plan['bindings_git_blob'],self.op.BINDINGS_BLOB)
         self.assertEqual(self.op.sha(self.op.git(ROOT,'show',self.op.BINDINGS_BLOB)),self.op.BINDINGS_SHA)
-        self.assertEqual(plan['future_images'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
-        self.assertEqual(plan['future_CIDs'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
-        for role,count in [('service',182),('learner',77),('controls',195)]:
+        self.assertEqual(plan['future_images'],{'learner':'UNKNOWN','controls':'UNKNOWN'})
+        self.assertEqual(plan['future_CIDs'],{'learner':'UNKNOWN','controls':'UNKNOWN'})
+        for role,count in [('learner',84),('controls',195)]:
             expected=json.loads((self.folder/'qualify'/f'{role}.json').read_bytes())
             self.assertEqual(len(expected['project_source']),count)
             self.assertEqual(expected['project_source']['/app/role-copy-manifest.json'],
@@ -70,8 +70,8 @@ class Image01Controls(unittest.TestCase):
         self.assertIn('COPY qualify/controls.json /qualify/expected.json',recipe)
         with self.assertRaises(FileExistsError):self.op.freeze(self.folder,ROOT)
 
-    def test_service_and_controls_bind_both_accepted_repair_files_and_controls_retains_fixtures(self):
-        for role in ('service','controls'):
+    def test_controls_binds_both_accepted_repair_files_and_controls_retains_fixtures(self):
+        for role in ('controls',):
             expected=json.loads((self.folder/'qualify'/f'{role}.json').read_bytes())['project_source']
             for name in ('services/foundation/protocol.py','contracts/runs/support_research.py'):
                 actual=self.op.sha(self.op.git(ROOT,'show',self.op.SOURCE+':'+name))
@@ -134,7 +134,7 @@ class Image01Controls(unittest.TestCase):
     def test_role_or_resource_ceiling_cannot_drift_even_with_new_hash(self):
         self.plan['phase_seconds']=901;self.authorize()
         with self.assertRaisesRegex(ValueError,'ceilings'):self.op.validate_plan(self.planpath,self.digest)
-        self.plan['phase_seconds']=900;self.plan['roles']['service']['uid']='0:0';self.authorize()
+        self.plan['phase_seconds']=900;self.plan['roles']['learner']['uid']='0:0';self.authorize()
         with self.assertRaisesRegex(ValueError,'role identity'):self.op.validate_plan(self.planpath,self.digest)
 
     def image(self,role,identity=None,child=False):
@@ -145,7 +145,7 @@ class Image01Controls(unittest.TestCase):
 
     def container(self,role,cid,image):
         return dict(Id=cid,Image=image,User=self.plan['roles'][role]['uid'],Path='python',
-            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image04-31aa05c'},
+            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image05-31aa05c'},
             State=dict(Status='created',Pid=0,ExitCode=0,Running=False,Paused=False,Restarting=False,
                 Dead=False,OOMKilled=False),RestartCount=0,Memory=2147483648,MemorySwap=2147483648,
             NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,CapAdd=None,
@@ -154,32 +154,32 @@ class Image01Controls(unittest.TestCase):
             PublishAllPorts=False,RestartPolicy={'Name':'no','MaximumRetryCount':0},Mounts=[])
 
     def test_copy_image_preserves_parent_layers_and_runtime_configuration(self):
-        parent=self.image('service');identity='sha256:'+'a'*64
-        child=self.image('service',identity,True)
-        self.op.image_checked(child,identity,'service',parent=parent)
+        parent=self.image('learner');identity='sha256:'+'a'*64
+        child=self.image('learner',identity,True)
+        self.op.image_checked(child,identity,'learner',parent=parent)
         for key,value in [('Layers',['sha256:'+'f'*64]),('Cmd',['changed']),('Entrypoint',['sh']),('User','0:0')]:
             changed=copy.deepcopy(child);changed[key]=value
             with self.subTest(key=key),self.assertRaises(ValueError):
-                self.op.image_checked(changed,identity,'service',parent=parent)
+                self.op.image_checked(changed,identity,'learner',parent=parent)
 
     def test_prestart_denies_mounts_foreign_cid_live_state_and_resource_drift(self):
-        cid='a'*64;image='sha256:'+'b'*64;base=self.container('service',cid,image)
-        self.op.checked_container(base,cid,image,'service',self.plan,self.life)
+        cid='a'*64;image='sha256:'+'b'*64;base=self.container('learner',cid,image)
+        self.op.checked_container(base,cid,image,'learner',self.plan,self.life)
         for key,value in [('Mounts',[{'Source':'private'}]),('Image','sha256:'+'c'*64),
                 ('Id','c'*64),('Memory',2147483649),('MemorySwap',-1),('NanoCpus',3000000000),
                 ('PidsLimit',65),('Privileged',True),('PortBindings',{'80/tcp':[]}),
                 ('User','0:0'),('Args',['changed']),('AutoRemove',True)]:
             changed=copy.deepcopy(base);changed[key]=value
             with self.subTest(key=key),self.assertRaises(ValueError):
-                self.op.checked_container(changed,cid,image,'service',self.plan,self.life)
+                self.op.checked_container(changed,cid,image,'learner',self.plan,self.life)
         changed=copy.deepcopy(base);changed['State'].update(Status='running',Running=True,Pid=22)
-        with self.assertRaises(ValueError):self.op.checked_container(changed,cid,image,'service',self.plan,self.life)
-        argv=self.op.create_argv('service',self.plan,image)
+        with self.assertRaises(ValueError):self.op.checked_container(changed,cid,image,'learner',self.plan,self.life)
+        argv=self.op.create_argv('learner',self.plan,image)
         self.assertNotIn('--mount',argv);self.assertNotIn('-v',argv)
 
     def fake_commands(self,fail=None):
-        calls=[];ids={'service':'sha256:'+'a'*64,'learner':'sha256:'+'b'*64,'controls':'sha256:'+'e'*64}
-        cids={'service':'c'*64,'learner':'d'*64,'controls':'f'*64}
+        calls=[];ids={'learner':'sha256:'+'a'*64,'controls':'sha256:'+'e'*64}
+        cids={'learner':'c'*64,'controls':'f'*64}
         def attempt(argv,output,label,timeout,cleanup):
             calls.append(label)
             self.assertTrue((output/'authorization-consumed.json').is_file())
@@ -214,7 +214,7 @@ class Image01Controls(unittest.TestCase):
     def run_double(self,attempt):
         return patch.object(self.op,'command_attempt',side_effect=attempt),self.mocked_dependencies()
 
-    def test_success_is_once_only_and_all_three_roles_are_absent_before_first_mutation(self):
+    def test_success_is_once_only_and_both_remaining_roles_are_absent_before_first_mutation(self):
         calls,attempt=self.fake_commands();a,b=self.run_double(attempt)
         with a,b,patch.object(self.life,'supervise',return_value={'typed':'terminal'}):
             result=self.op.execute(self.planpath,self.digest)
@@ -222,36 +222,74 @@ class Image01Controls(unittest.TestCase):
             first=len(calls)
             with self.assertRaises(FileExistsError):self.op.execute(self.planpath,self.digest)
             self.assertEqual(len(calls),first)
-        self.assertLess(calls.index('controls-container-absence'),calls.index('service-tag-parent'))
-        self.assertEqual(sum(x.endswith('-build') for x in calls),3)
+        self.assertLess(calls.index('controls-container-absence'),calls.index('learner-tag-parent'))
+        self.assertEqual(sum(x.endswith('-build') for x in calls),2)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertFalse(receipt['generation_or_fit']);self.assertFalse(receipt['Store_opened'])
+        self.assertEqual(set(receipt['images']),{'learner','controls'})
+        self.assertEqual(receipt['retained_service'],self.plan['retained_service'])
+        self.assertFalse(receipt['retained_service']['newly_observed'])
+
+    def test_no_service_command_is_issued_including_metadata_alias_or_preflight(self):
+        calls,attempt=self.fake_commands()
+        def remaining_only(argv,*args):
+            self.assertNotIn('service',str(argv).lower())
+            return attempt(argv,*args)
+        a,b=self.run_double(remaining_only)
+        with a,b,patch.object(self.life,'supervise',return_value={}):self.op.execute(self.planpath,self.digest)
+        self.assertTrue(calls);self.assertFalse(any('service' in label for label in calls))
+
+    def test_retained_proof_identity_map_and_config_drift_fail_before_any_helper_or_reservation(self):
+        original=copy.deepcopy(self.plan['retained_service'])
+        changes=[None,{**original,'acceptance_report':'a'*40},{**original,'acceptance_checks':'b'*40},
+            {**original,'source_commit':'c'*40},{**original,'image':'sha256:'+'d'*64},
+            {**original,'original_config':{**original['original_config'],'Cmd':['changed']}},
+            {**original,'original_role_inputs':{**original['original_role_inputs'],'expected_project_source':{}}}]
+        for value in changes:
+            self.plan['retained_service']=value;self.authorize()
+            with self.subTest(value=value),patch.object(self.op,'load_lifecycle',side_effect=AssertionError('helper denied')),\
+                    patch.object(self.op,'command_attempt',side_effect=AssertionError('Docker denied')):
+                with self.assertRaisesRegex(ValueError,'retained service'):self.op.execute(self.planpath,self.digest)
+            self.assertFalse((self.folder/'results').exists())
+
+    def test_new_script_aliases_cannot_be_generalized(self):
+        binding=json.loads(self.op.git(ROOT,'show',self.op.BINDINGS_BLOB));original_git=self.op.git
+        for source,destination in [('docs/implementation/evidence/support-producer-20261022/probe_roles.py','/app/other.py'),
+                ('other/probe_roles.py','/app/probe_roles.py')]:
+            changed=copy.deepcopy(binding)
+            row=next(row for row in changed['roles']['learner']['overlay'] if row['destination']=='/app/probe_roles.py')
+            row.update(source=source,destination=destination);raw=json.dumps(changed).encode()
+            def git(root,*args):
+                return raw if args==('show','alias-fixture') else original_git(root,*args)
+            with self.subTest(source=source),patch.object(self.op,'BINDINGS_BLOB','alias-fixture'),\
+                    patch.object(self.op,'BINDINGS_SHA',self.op.sha(raw)),patch.object(self.op,'git',side_effect=git):
+                with self.assertRaisesRegex(ValueError,'noncanonical'):self.op.freeze(self.folder/source.replace('/','_'),ROOT)
 
     def test_truncated_absence_is_failure_and_never_mutates(self):
         def fail(label,result):
-            if label=='service-parent-tag-absence':result['stderr_truncated']=True
+            if label=='learner-parent-tag-absence':result['stderr_truncated']=True
         calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
         with a,b,self.assertRaisesRegex(RuntimeError,'absence not proven'):
             self.op.execute(self.planpath,self.digest)
-        self.assertNotIn('service-tag-parent',calls)
+        self.assertNotIn('learner-tag-parent',calls)
 
     def test_uncertain_build_stops_without_retry_or_inventing_cid(self):
         def fail(label,result):
-            if label=='service-build':result.update(timed_out=True,exit=-9)
+            if label=='learner-build':result.update(timed_out=True,exit=-9)
         calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
         with a,b,self.assertRaises(self.life.StopUnconfirmed):self.op.execute(self.planpath,self.digest)
-        self.assertEqual(calls.count('service-build'),1);self.assertNotIn('learner-build',calls)
+        self.assertEqual(calls.count('learner-build'),1);self.assertNotIn('controls-build',calls)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['status'],'STOP UNCONFIRMED');self.assertEqual(receipt['owned_cids'],[])
         self.assertEqual(receipt['unresolved'][0]['daemon_build'],'UNKNOWN')
 
     def test_failed_packaging_build_is_unknown_and_never_reaches_qualifier(self):
         def fail(label,result):
-            if label=='service-build':result.update(exit=1,stderr='fixed unlink rejected')
+            if label=='learner-build':result.update(exit=1,stderr='fixed unlink rejected')
         calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
         with a,b,self.assertRaises(self.life.StopUnconfirmed):self.op.execute(self.planpath,self.digest)
-        self.assertEqual(calls.count('service-build'),1)
-        self.assertNotIn('service-create',calls);self.assertNotIn('learner-build',calls)
+        self.assertEqual(calls.count('learner-build'),1)
+        self.assertNotIn('learner-create',calls);self.assertNotIn('controls-build',calls)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['status'],'STOP UNCONFIRMED')
         self.assertEqual(receipt['unresolved'][0]['daemon_build'],'UNKNOWN')
@@ -265,39 +303,39 @@ class Image01Controls(unittest.TestCase):
             with self.assertRaises(KeyError):self.op.execute(self.planpath,self.digest)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['status'],'failed')
-        self.assertEqual(set(receipt['images']),{'service','learner'})
-        self.assertEqual(receipt['owned_cids'],['c'*64,'d'*64,'f'*64])
+        self.assertEqual(set(receipt['images']),{'learner'})
+        self.assertEqual(receipt['owned_cids'],['c'*64,'f'*64])
         self.assertEqual(calls.count('controls-build'),1)
 
     def test_corrupt_probe_stops_exact_owned_cid_and_retains_failure(self):
         def fail(label,result):
-            if label=='service-probe-output':result['stdout']='{}'
+            if label=='learner-probe-output':result['stdout']='{}'
         calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
         with a,b,patch.object(self.life,'supervise',return_value={}),patch.object(
                 self.life,'stop_owned',return_value=[{'stopped':True}]) as stop:
             with self.assertRaises(KeyError):self.op.execute(self.planpath,self.digest)
             stop.assert_called_once_with('c'*64)
-        self.assertNotIn('learner-build',calls)
+        self.assertNotIn('controls-build',calls)
         self.assertTrue((self.folder/'results/observed-images.json').is_file())
 
     def test_unknown_creation_never_advances_or_invents_an_owned_cid(self):
         def fail(label,result):
-            if label=='service-create':result['stdout']='not-a-cid'
+            if label=='learner-create':result['stdout']='not-a-cid'
         calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
         with a,b,self.assertRaises(self.life.StopUnconfirmed):self.op.execute(self.planpath,self.digest)
-        self.assertNotIn('service-prestart',calls);self.assertNotIn('learner-build',calls)
+        self.assertNotIn('learner-prestart',calls);self.assertNotIn('controls-build',calls)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['unresolved'][-1]['CID'],'UNKNOWN')
         self.assertEqual(receipt['owned_cids'],[])
 
     def test_late_successful_command_is_rejected_and_cleanup_failure_stays_unconfirmed(self):
         def fail(label,result):
-            if label=='service-probe-output':result['deadline_rejected']=True
+            if label=='learner-probe-output':result['deadline_rejected']=True
         calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
         with a,b,patch.object(self.life,'supervise',return_value={}),patch.object(
                 self.life,'stop_owned',side_effect=self.life.StopUnconfirmed('not observed')):
             with self.assertRaises(self.life.StopUnconfirmed):self.op.execute(self.planpath,self.digest)
-        self.assertNotIn('learner-build',calls)
+        self.assertNotIn('controls-build',calls)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['status'],'STOP UNCONFIRMED');self.assertEqual(receipt['images'],{})
         self.assertEqual(receipt['cleanup'][0]['cid'],'c'*64)

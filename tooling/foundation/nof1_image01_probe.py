@@ -13,7 +13,7 @@ import sqlite3
 import sys
 
 BLOCKED={'numpy','scipy','pandas','pymc','pytensor','arviz','arviz_base','arviz_stats',
-    'arviz_plots','xarray','netCDF4','statsmodels','methods'}
+    'arviz_plots','xarray','netCDF4','statsmodels','methods','probe_roles','run_support_once'}
 VERSIONS={'pydantic':'2.14.1','fastapi':'0.157.0','numpy':'2.5.4','scipy':'1.18.1',
     'pymc':'6.3.2','pytensor':'3.3.4','arviz':'1.3.0','arviz-base':'1.3.1',
     'arviz-stats':'1.3.3','xarray':'2026.9.0','netCDF4':'1.7.5'}
@@ -22,7 +22,7 @@ VERSIONS={'pydantic':'2.14.1','fastapi':'0.157.0','numpy':'2.5.4','scipy':'1.18.
 class Tripwire(importlib.abc.MetaPathFinder):
     def find_spec(self,fullname,path=None,target=None):
         if fullname.split('.')[0] in BLOCKED:
-            raise AssertionError('scientific import forbidden in scalar image qualification: '+fullname)
+            raise AssertionError('scientific or dormant-tool import forbidden in scalar image qualification: '+fullname)
 
 
 def closure_failure(root,expected,actual,extras):
@@ -100,6 +100,9 @@ def main():
     if args.role=='controls':modules+=('services.foundation.protocol','contracts.runs.support_research',
         'services.foundation.support_archive','services.learner.support_s1_worker')
     for module in modules:importlib.import_module(module)
+    if args.role=='learner' and any(getattr(module,'__file__',None) in
+            ('/app/probe_roles.py','/app/run_support_once.py') for module in sys.modules.values()):
+        raise AssertionError('dormant public producer tools must not be imported')
     if BLOCKED.intersection(sys.modules):raise AssertionError('scientific module loaded')
     print(json.dumps(dict(status='copied_source_metadata_scalar_imports_only',role=args.role,uid=uid,
         python=platform.python_version(),sqlite=sqlite3.sqlite_version,versions=versions,
