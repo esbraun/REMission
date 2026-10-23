@@ -26,6 +26,7 @@ from contracts.service.live_hold import InstalledBundle, InvalidationInput, Revi
 from .admission import AdmissionError
 from .live_hold import LiveError
 from .analysis import AnalysisError
+from .support_diagnostics import observe
 
 COOKIE = "remission_session"
 HASHER = PasswordHasher()
@@ -49,6 +50,7 @@ class Settings:
     runtime_ref: dict | None = None
     admission_timeout: float = 5
     generator_url: str | None = None
+    support_intake_diagnostic: Callable[..., None] | None = None
 
     @property
     def secure_cookie(self):
@@ -439,8 +441,11 @@ def create_app(settings: Settings) -> FastAPI:
             if restricted:
                 if data.mode!='archive_only':raise ValueError('restricted_support_archive_only')
                 from .support_archive import admit_support_archive
-                return admit_support_archive(store,raw,root,authority,owner_id=owner,received_at=settings.clock(),
-                    authorize=authorize,fault=settings.fault)
+                observe(settings.support_intake_diagnostic,'endpoint_before')
+                receipt=admit_support_archive(store,raw,root,authority,owner_id=owner,received_at=settings.clock(),
+                    authorize=authorize,fault=settings.fault,diagnostic=settings.support_intake_diagnostic)
+                observe(settings.support_intake_diagnostic,'endpoint_return')
+                return receipt
             if data.mode=='clinical_observation_import':
                 from .archive import verify_archive
                 package=verify_archive(raw,root,authority)
