@@ -119,9 +119,10 @@ def read_artifact(root, artifact):
     # Windows junctions/reparse points are links too. Check the configured
     # root and its ancestry before resolving; resolve() would hide the link.
     try:
-        if any(p.is_symlink() or getattr(p.lstat(), 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT
-               for p in (path, *path.parents)):
-            raise ValueError('symlink_support_artifact_denied')
+        for parent in (path, *path.parents):
+            metadata=parent.lstat()
+            if stat.S_ISLNK(metadata.st_mode) or getattr(metadata, 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT:
+                raise ValueError('symlink_support_artifact_denied')
         root=root.resolve(strict=True)
         if not path.resolve().is_relative_to(root):
             raise ValueError('support_artifact_escape')
