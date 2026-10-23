@@ -1,9 +1,8 @@
 {
-  "kind": "poc-shared-image03-copy-proposal-v1",
+  "kind": "poc-shared-image04-packaging-proposal-v1",
   "status": "SOURCE_REPAIR_PREPARATION_NO_GO",
-  "source_commit": "8b823991cc8c54688d8b2b7b887fed13bf669bb0",
-  "reviewed_candidate": "80880e350c4addbaf89916bc7cf5f96c96ba1b06",
-  "source_tree": "61b2ce2d8667c97f1541286fb7db9c956b5da0d4",
+  "source_commit": "31aa05cc8d9c66a3b64910eda65a1883b2d16c44",
+  "source_tree": "a5b4ed30e724cc09368f5df77c0d35eddaa4fba2",
   "accepted_parent_source": "772d385c43eaf84778fef671add36915232e6730",
   "accepted_parent_manifest": "35b77dfcb25b9473807bf50fea65fd43b2f6f9ec",
   "accepted_parent_review": "be302b1111961f6869d67f864377021f11d8c0df",
@@ -97,6 +96,20 @@
           "bytes": 687,
           "sha256": "1ba7eea60d66b4738f05faad6cf8d10151b9ec98e731a69a1aab833f45624e33",
           "generated": "previous passed pinned frontend build; source tree matches accepted N source"
+        },
+        {
+          "source": "tooling/foundation/consumer_probe.py",
+          "destination": "/app/boundary_probe.py",
+          "bytes": 1658,
+          "sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "git_blob": "ba4c5e278db8d160dec3e88372bfb7ef9bb151c1"
+        },
+        {
+          "source": "tooling/foundation/observed_v2_probe.py",
+          "destination": "/app/observed_v2_probe.py",
+          "bytes": 7364,
+          "sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "git_blob": "a5d40caa380f19b98a688c301440a53953ce1352"
         }
       ],
       "expected_project_source": {
@@ -279,12 +292,14 @@
         "/app/contracts/domain/nof1_app.py": "ba800831d85179b7572380a3c3e9d65fcac7bcb03e7026375d146c6bfe06c8ca",
         "/app/services/foundation/nof1_analysis.py": "13d33e5a1d9f7409772ca1c106a049eae3dc874b57601d599a4876d5c2f8657b",
         "/app/web/dist/assets/index-ddHm7Bwl.js": "ff70cb9e09886bb057e7afba4236179bdc83af270a04b0f9d8a528cb556d4ad8",
-        "/app/role-copy-manifest.json": "fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836"
+        "/app/role-copy-manifest.json": "fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836",
+        "/app/boundary_probe.py": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+        "/app/observed_v2_probe.py": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41"
       },
       "uid": 10001,
       "output_image": "UNKNOWN until accepted build result",
-      "tag": "remission-shared03-8b82399-service:v1",
-      "qualifier": "remission-shared03-8b82399-service-qual-v1"
+      "tag": "remission-shared04-31aa05c-service:v1",
+      "qualifier": "remission-shared04-31aa05c-service-qual-v1"
     },
     "learner": {
       "parent": "sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef",
@@ -386,6 +401,20 @@
           "bytes": 9742,
           "sha256": "d46a7b38ddcf0515dcc0a3837c704a49aaba6be83e10ebb71720736d6c8f0f52",
           "git_blob": "e4bdbc200b09b86b5b6e934ab4d830e8b19e4cf0"
+        },
+        {
+          "source": "tooling/foundation/consumer_probe.py",
+          "destination": "/app/boundary_probe.py",
+          "bytes": 1658,
+          "sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "git_blob": "ba4c5e278db8d160dec3e88372bfb7ef9bb151c1"
+        },
+        {
+          "source": "tooling/foundation/observed_v2_probe.py",
+          "destination": "/app/observed_v2_probe.py",
+          "bytes": 7364,
+          "sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "git_blob": "a5d40caa380f19b98a688c301440a53953ce1352"
         }
       ],
       "expected_project_source": {
@@ -463,12 +492,14 @@
         "/app/services/learner/analysis_worker.py": "6c4d7bddb4d18e5a0d6c02a67904af7ef565fac9522018f1088f6eea524d61ef",
         "/app/services/learner/nof1_artifacts.py": "36f6abc47be79be648bf0dac1d02c123209d45de33d48b9712e5cc209d72df1a",
         "/app/services/learner/nof1_worker.py": "d46a7b38ddcf0515dcc0a3837c704a49aaba6be83e10ebb71720736d6c8f0f52",
-        "/app/role-copy-manifest.json": "fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836"
+        "/app/role-copy-manifest.json": "fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836",
+        "/app/boundary_probe.py": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+        "/app/observed_v2_probe.py": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41"
       },
       "uid": 10002,
       "output_image": "UNKNOWN until accepted build result",
-      "tag": "remission-shared03-8b82399-learner:v1",
-      "qualifier": "remission-shared03-8b82399-learner-qual-v1"
+      "tag": "remission-shared04-31aa05c-learner:v1",
+      "qualifier": "remission-shared04-31aa05c-learner-qual-v1"
     },
     "controls": {
       "parent": "sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85",
@@ -570,6 +601,20 @@
           "bytes": 687,
           "sha256": "1ba7eea60d66b4738f05faad6cf8d10151b9ec98e731a69a1aab833f45624e33",
           "generated": "previous passed pinned frontend build; source tree matches accepted N source"
+        },
+        {
+          "source": "tooling/foundation/consumer_probe.py",
+          "destination": "/app/boundary_probe.py",
+          "bytes": 1658,
+          "sha256": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+          "git_blob": "ba4c5e278db8d160dec3e88372bfb7ef9bb151c1"
+        },
+        {
+          "source": "tooling/foundation/observed_v2_probe.py",
+          "destination": "/app/observed_v2_probe.py",
+          "bytes": 7364,
+          "sha256": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41",
+          "git_blob": "a5d40caa380f19b98a688c301440a53953ce1352"
         }
       ],
       "expected_project_source": {
@@ -765,12 +810,14 @@
         "/app/contracts/domain/nof1_app.py": "ba800831d85179b7572380a3c3e9d65fcac7bcb03e7026375d146c6bfe06c8ca",
         "/app/services/foundation/nof1_analysis.py": "13d33e5a1d9f7409772ca1c106a049eae3dc874b57601d599a4876d5c2f8657b",
         "/app/web/dist/assets/index-ddHm7Bwl.js": "ff70cb9e09886bb057e7afba4236179bdc83af270a04b0f9d8a528cb556d4ad8",
-        "/app/role-copy-manifest.json": "fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836"
+        "/app/role-copy-manifest.json": "fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836",
+        "/app/boundary_probe.py": "4fb5855d25caa03826e91c21492b389edde3c6a8d3acfa97ccf15b2561a72671",
+        "/app/observed_v2_probe.py": "dc773be79dd015a1c47426868e6e866755c7c60af88c1e5b39f04a8c24f75f41"
       },
       "uid": 10001,
       "output_image": "UNKNOWN until accepted build result",
-      "tag": "remission-shared03-8b82399-controls:v1",
-      "qualifier": "remission-shared03-8b82399-controls-qual-v1"
+      "tag": "remission-shared04-31aa05c-controls:v1",
+      "qualifier": "remission-shared04-31aa05c-controls-qual-v1"
     }
   },
   "limits": {
@@ -793,10 +840,10 @@
     "literal source context/expected closure rehash",
     "exclusive absence and literal-CID prearm"
   ],
-  "source_postmerge_receipt": "8344bddea66ca60d923dce225906cd7d93152c84",
+  "source_postmerge_receipt": "9944ddeddcc621b86d0304585fc5fe37d33a1637",
   "preserved_preparation_checkpoint": "8208b75606aa003cc090cd02306fe38d6c02f81a",
-  "previous_consumed_plan": "937a5279a04bbc5dda993014971e9441ef3a1d67",
-  "previous_failure_handoff": "9187205c1ca7326faed44d1a34ec8026dee45927",
+  "previous_consumed_plan": "16f38d52abf5d65b413399cc5731b15f103055dd",
+  "previous_failure_handoff": "cd1486f11754b416da71093b39db5fbb7d0d455e",
   "frontend_provenance": {
     "accepted_N_candidate": "1b3d89cb18371cfa37bb2252eff2eba39eb7d3cc",
     "accepted_N_web_tree": "dbf0f4998bac1be85b5bc3d12f605bba1a99b636",
@@ -852,5 +899,21 @@
     "generated_assets_included": true,
     "all_declared_files_equal_recorded_subset_plus_exact_manifest": true,
     "inherited_unknown_base_extras": "UNPROVEN"
+  },
+  "preparation_parent": "13c046f5da32e89d06ce9c0d68b83b3f4cc4906d",
+  "packaging_repair_critique": "4314da310846a1402047f3545b957d37dc921fed",
+  "scope": "three_COPY_children_plus_fixed_non_scientific_unlink_and_scalar_qualification",
+  "packaging_unlink": {
+    "path": "/app/web/dist/assets/index-_kvz3Qwx.js",
+    "roles": [
+      "service",
+      "controls"
+    ],
+    "content_read": false,
+    "unknown_digest": "UNKNOWN",
+    "build_run_qualifier_resource_equivalence": false,
+    "build_seconds": 300,
+    "whole_phase_seconds": 900,
+    "proposal": "d8e5422ea56bd06bcc97d0f731ac09e0fe8faeb2"
   }
 }

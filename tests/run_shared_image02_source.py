@@ -1,4 +1,4 @@
-"""IMAGE03 source checks only: no native/Popen probe, Docker or science."""
+"""IMAGE04 source checks only: no native/Popen probe, Docker or science."""
 import importlib.abc
 from pathlib import Path
 import subprocess
@@ -18,12 +18,12 @@ if __name__=='__main__':
     sys.meta_path.insert(0,Tripwire())
     for path in (ROOT,ROOT/'tests',ROOT/'tests/integration/replay',ROOT/'tooling/foundation'):
         sys.path.insert(0,str(path))
-    temporary=ROOT/'artifacts/shared-image03-source-temp';temporary.mkdir(parents=True,exist_ok=True)
+    temporary=ROOT/'artifacts/shared-image04-source-temp';temporary.mkdir(parents=True,exist_ok=True)
     tempfile.tempdir=str(temporary)
     original_popen=subprocess.Popen;original_run=subprocess.run
     def require_git(argv):
         if not isinstance(argv,list) or argv[0]!='git' or argv[1] not in ('show','rev-parse','ls-tree'):
-            raise AssertionError('non-Git child creation forbidden during IMAGE03 preparation')
+            raise AssertionError('non-Git child creation forbidden during IMAGE04 preparation')
     def git_metadata_only(argv,*args,**kwargs):
         require_git(argv)
         return original_popen(argv,*args,**kwargs)
@@ -37,9 +37,10 @@ if __name__=='__main__':
             suite.addTest(Image01Controls(name))
     suite.addTests(unittest.defaultTestLoader.loadTestsFromName('test_ordinary_dispatcher'))
     suite.addTests(unittest.defaultTestLoader.loadTestsFromName('test_shared_image03_probe'))
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromName('test_shared_image04_packaging'))
     with patch('subprocess.Popen',side_effect=git_metadata_only),\
             patch('subprocess.run',side_effect=git_run_only):
         result=unittest.TextTestRunner(verbosity=2).run(suite)
     assert not BLOCKED.intersection(sys.modules)
-    print('IMAGE03 source-only: native/Popen timeout probe excluded; Git metadata children only; Docker/lifecycle doubles; no science')
+    print('IMAGE04 source-only: native/Popen timeout probe excluded; Git metadata children only; Docker/lifecycle doubles; no science')
     sys.exit(not result.wasSuccessful())

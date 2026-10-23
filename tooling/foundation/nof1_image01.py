@@ -1,4 +1,4 @@
-"""Freeze or execute one separately reviewed N COPY/scalar image operation.
+"""Freeze or execute one separately reviewed N COPY/fixed-unlink/scalar image operation.
 
 Host stdlib only. No Docker action occurs during freeze or validation. Execute
 requires the exact reviewed plan hash and consumes an exclusive receipt first.
@@ -16,10 +16,10 @@ import time
 
 HERE=Path(__file__).resolve().parent
 
-SOURCE='8b823991cc8c54688d8b2b7b887fed13bf669bb0'
-TREE='61b2ce2d8667c97f1541286fb7db9c956b5da0d4'
-BINDINGS_SHA='1d794ded2099a4cde0c465b6816a1fff3b84911fa6c5d0d7dd044b08a7eada91'
-BINDINGS_BLOB='ca22d04dc29e209b8882d1474fb4b819785a1251'
+SOURCE='31aa05cc8d9c66a3b64910eda65a1883b2d16c44'
+TREE='a5b4ed30e724cc09368f5df77c0d35eddaa4fba2'
+BINDINGS_SHA='f0e33b0bf3612e77da8f1b380fe44d4f150685ee7aeaddf1d9d887467af6915f'
+BINDINGS_BLOB='68a1a62021c2d2dfb93effdcdd0305b2ea7bfad4'
 PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
 INHERITED_PUBLIC_MANIFEST=dict(path='/app/role-copy-manifest.json',bytes=77023,
     sha256='fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836',
@@ -31,6 +31,32 @@ PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb6267
     'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
     'controls':'sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85'}
 ROLES=('service','learner','controls')
+# Literal, non-scientific packaging action only. Its daemon RUN is bounded by
+# the existing build lease, not by the later qualifier's resource/ACK gates.
+UNLINK_CODE='''import json
+from pathlib import Path
+import stat
+target=Path('/app/web/dist/assets/index-_kvz3Qwx.js')
+result='already_absent'
+for ancestor in reversed(target.parents):
+    try:
+        entry=ancestor.lstat()
+    except FileNotFoundError:
+        break
+    if stat.S_ISLNK(entry.st_mode) or not stat.S_ISDIR(entry.st_mode):
+        raise ValueError('packaging ancestor must be an ordinary directory')
+else:
+    try:
+        entry=target.lstat()
+    except FileNotFoundError:
+        pass
+    else:
+        if not stat.S_ISREG(entry.st_mode):
+            raise ValueError('packaging target must be an ordinary regular file')
+        target.unlink()
+        result='removed'
+print(json.dumps({'packaging_unlink':result,'path':str(target)},sort_keys=True))
+'''
 HOST_PROOF=dict(accepted_probe_receipt='2c794f3dae6a329da3d1f4fe2f6f7ac37bd3eec9',
     accepted_probe_checks='f3db7afd0871343be05519d9c3e201fffea2d0e9',
     acceptance_review='6f316215b0a317474f34021a789b3d041d90003e',
@@ -75,6 +101,9 @@ def recipe(roles):
         lines.append('FROM ${'+role.upper()+'_PARENT} AS '+role)
         for row in roles[role]['overlay']:
             lines.append('COPY '+role+'/'+row['source']+' '+row['destination'])
+        if role in ('service','controls'):
+            lines+=['USER 0:0','RUN '+json.dumps(['python','-I','-B','-c',UNLINK_CODE]),
+                'USER 10001:10001']
         lines+=['COPY qualify/probe.py /qualify/probe.py',
             'COPY qualify/'+role+'.json /qualify/expected.json']
     return '\n'.join(lines)+'\n'
@@ -111,7 +140,9 @@ def freeze(directory,root):
         expected[INHERITED_PUBLIC_MANIFEST['path']]=INHERITED_PUBLIC_MANIFEST['sha256']
         for row in item['overlay']:
             name=row['source']
-            if (Path(name).is_absolute() or '..' in Path(name).parts or row['destination']!='/app/'+name):
+            destination={'tooling/foundation/consumer_probe.py':'/app/boundary_probe.py',
+                'tooling/foundation/observed_v2_probe.py':'/app/observed_v2_probe.py'}.get(name,'/app/'+name)
+            if (Path(name).is_absolute() or '..' in Path(name).parts or row['destination']!=destination):
                 raise ValueError('noncanonical COPY source/destination')
             data=(ordinary(root/name).read_bytes() if 'generated' in row else git(root,'show',SOURCE+':'+name))
             if len(data)!=row['bytes'] or sha(data)!=row['sha256']:raise ValueError('COPY input changed: '+name)
@@ -120,7 +151,7 @@ def freeze(directory,root):
         payload=json.dumps(dict(role=role,uid=item['uid'],project_source=expected),sort_keys=True).encode()+b'\n'
         write('qualify/'+role+'.json',payload)
         write('context/qualify/'+role+'.json',payload)
-        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared03-8b82399-'+role+'-parent:v1',
+        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared04-31aa05c-'+role+'-parent:v1',
             tag=item['tag'],name=item['qualifier'],uid=str(item['uid'])+':'+str(item['uid']),
             parent_layers=parent['images'][role]['layers'],expected_sha256=sha(payload))
     write('context/overlay.Dockerfile',recipe(bindings['roles']).encode())
@@ -128,11 +159,13 @@ def freeze(directory,root):
         write('operator/'+name,(HERE/name).read_bytes())
     write('qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
     write('context/qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
-    plan=dict(kind='poc-shared-image03-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
-        scope='three_COPY_only_children_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
+    plan=dict(kind='poc-shared-image04-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
+        scope='three_COPY_children_plus_fixed_non_scientific_unlink_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
         bindings_git_blob=BINDINGS_BLOB,host_controller=bindings['host_controller'],
         inherited_public_manifest=INHERITED_PUBLIC_MANIFEST,
         root=str(directory),roles=roles,files=files,probe_sha256=files['qualify/probe.py']['sha256'],
+        packaging_unlink_sha256=sha(UNLINK_CODE.encode()),
+        preparation_head=git(root,'rev-parse','HEAD').decode().strip(),
         phase_seconds=900,build_seconds=300,qualification_seconds=60,cli_cleanup_seconds=3,
         future_images={role:'UNKNOWN' for role in ROLES},future_CIDs={role:'UNKNOWN' for role in ROLES},
         output='results',scientific_imports=False,Store_open=False)
@@ -145,10 +178,12 @@ def validate_plan(path,authorized):
     if sha(raw)!=authorized:raise ValueError('exact independently reviewed plan hash required')
     plan=json.loads(raw);root=ordinary(plan['root'])
     if (root!=path.parent or plan['source_commit']!=SOURCE or plan['source_tree']!=TREE
-            or plan['kind']!='poc-shared-image03-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
+            or plan['kind']!='poc-shared-image04-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
             or plan['inherited_public_manifest']!=INHERITED_PUBLIC_MANIFEST
-            or plan['scope']!='three_COPY_only_children_and_scalar_qualification'
+            or plan['scope']!='three_COPY_children_plus_fixed_non_scientific_unlink_and_scalar_qualification'
             or plan['bindings_sha256']!=BINDINGS_SHA or plan['bindings_git_blob']!=BINDINGS_BLOB
+            or plan['packaging_unlink_sha256']!=sha(UNLINK_CODE.encode())
+            or re.fullmatch('[a-f0-9]{40}',plan['preparation_head']) is None
             or plan['phase_seconds']!=900
             or plan['build_seconds']!=300 or plan['qualification_seconds']!=60
             or plan['cli_cleanup_seconds']!=3 or plan['output']!='results'
@@ -168,9 +203,9 @@ def validate_plan(path,authorized):
     if Path(__file__).resolve()!=root/'operator/nof1_image01.py':
         raise ValueError('execute only the frozen operator copy')
     for role,item in plan['roles'].items():
-        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared03-8b82399-'+role+'-parent:v1'
-                or item['tag']!='remission-shared03-8b82399-'+role+':v1'
-                or item['name']!='remission-shared03-8b82399-'+role+'-qual-v1'
+        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared04-31aa05c-'+role+'-parent:v1'
+                or item['tag']!='remission-shared04-31aa05c-'+role+':v1'
+                or item['name']!='remission-shared04-31aa05c-'+role+'-qual-v1'
                 or item['uid']!=('10002:10002' if role=='learner' else '10001:10001')):
             raise ValueError('literal role identity changed')
     host=plan['host_controller']
@@ -215,7 +250,7 @@ def image_checked(value,identity,role,*,parent=None):
     if parent and (value['Layers'][:len(parent['Layers'])]!=parent['Layers']
             or len(value['Layers'])<=len(parent['Layers'])
             or any(value[k]!=parent[k] for k in ('User','WorkingDir','Entrypoint','Cmd'))):
-        raise ValueError('COPY child changed parent layers or runtime configuration')
+        raise ValueError('packaging child changed parent layers or runtime configuration')
     return value
 
 
@@ -226,7 +261,7 @@ def workload(role,plan):
 
 def create_argv(role,plan,image):
     item=plan['roles'][role]
-    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image03-8b82399',
+    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image04-31aa05c',
         *LIMITS,'--user',item['uid'],image,*workload(role,plan)]
 
 
@@ -236,7 +271,7 @@ def checked_container(value,cid,image,role,plan,life):
     mounts=value['Mounts']
     if (state['Status']!='created' or state['Pid']!=0 or value['Image']!=image
             or value['User']!=item['uid'] or value['Path']!='python' or value['Args']!=workload(role,plan)[1:]
-            or value['Labels']!={'remission.task':'shared-image03-8b82399'}
+            or value['Labels']!={'remission.task':'shared-image04-31aa05c'}
             or value['Memory']!=2147483648 or value['MemorySwap']!=2147483648
             or value['NanoCpus']!=2000000000 or value['PidsLimit']!=64
             or value['ReadonlyRootfs'] is not True or value['Privileged'] is not False
@@ -350,7 +385,7 @@ def execute(path,authorized):
                     or any(probe.get(k) is not False for k in ('scientific_imports','worker_executed','Store_opened','generated_or_fitted'))):
                 raise ValueError('qualifier output/identity/scope mismatch')
             images[role]=dict(metadata=child,cid=cid,terminal=terminal,probe=probe)
-        life.check_deadline(deadline);status='qualified_copy_metadata_scalar_imports_only'
+        life.check_deadline(deadline);status='qualified_packaging_metadata_scalar_imports_only'
     except BaseException as error:
         failure=repr(error)
         if isinstance(error,life.StopUnconfirmed):status='STOP UNCONFIRMED'

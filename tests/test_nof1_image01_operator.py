@@ -57,7 +57,7 @@ class Image01Controls(unittest.TestCase):
         self.assertEqual(self.op.sha(self.op.git(ROOT,'show',self.op.BINDINGS_BLOB)),self.op.BINDINGS_SHA)
         self.assertEqual(plan['future_images'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
         self.assertEqual(plan['future_CIDs'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
-        for role,count in [('service',180),('learner',75),('controls',193)]:
+        for role,count in [('service',182),('learner',77),('controls',195)]:
             expected=json.loads((self.folder/'qualify'/f'{role}.json').read_bytes())
             self.assertEqual(len(expected['project_source']),count)
             self.assertEqual(expected['project_source']['/app/role-copy-manifest.json'],
@@ -65,7 +65,7 @@ class Image01Controls(unittest.TestCase):
             self.assertEqual((self.folder/'qualify'/f'{role}.json').read_bytes(),
                 (self.folder/'context/qualify'/f'{role}.json').read_bytes())
         recipe=(self.folder/'context/overlay.Dockerfile').read_text()
-        self.assertEqual({line.split()[0] for line in recipe.splitlines()},{'ARG','FROM','COPY'})
+        self.assertEqual({line.split()[0] for line in recipe.splitlines()},{'ARG','FROM','COPY','USER','RUN'})
         self.assertIn('COPY qualify/learner.json /qualify/expected.json',recipe)
         self.assertIn('COPY qualify/controls.json /qualify/expected.json',recipe)
         with self.assertRaises(FileExistsError):self.op.freeze(self.folder,ROOT)
@@ -145,7 +145,7 @@ class Image01Controls(unittest.TestCase):
 
     def container(self,role,cid,image):
         return dict(Id=cid,Image=image,User=self.plan['roles'][role]['uid'],Path='python',
-            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image03-8b82399'},
+            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image04-31aa05c'},
             State=dict(Status='created',Pid=0,ExitCode=0,Running=False,Paused=False,Restarting=False,
                 Dead=False,OOMKilled=False),RestartCount=0,Memory=2147483648,MemorySwap=2147483648,
             NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,CapAdd=None,
@@ -218,7 +218,7 @@ class Image01Controls(unittest.TestCase):
         calls,attempt=self.fake_commands();a,b=self.run_double(attempt)
         with a,b,patch.object(self.life,'supervise',return_value={'typed':'terminal'}):
             result=self.op.execute(self.planpath,self.digest)
-            self.assertEqual(result['status'],'qualified_copy_metadata_scalar_imports_only')
+            self.assertEqual(result['status'],'qualified_packaging_metadata_scalar_imports_only')
             first=len(calls)
             with self.assertRaises(FileExistsError):self.op.execute(self.planpath,self.digest)
             self.assertEqual(len(calls),first)
@@ -243,6 +243,17 @@ class Image01Controls(unittest.TestCase):
         self.assertEqual(calls.count('service-build'),1);self.assertNotIn('learner-build',calls)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['status'],'STOP UNCONFIRMED');self.assertEqual(receipt['owned_cids'],[])
+        self.assertEqual(receipt['unresolved'][0]['daemon_build'],'UNKNOWN')
+
+    def test_failed_packaging_build_is_unknown_and_never_reaches_qualifier(self):
+        def fail(label,result):
+            if label=='service-build':result.update(exit=1,stderr='fixed unlink rejected')
+        calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
+        with a,b,self.assertRaises(self.life.StopUnconfirmed):self.op.execute(self.planpath,self.digest)
+        self.assertEqual(calls.count('service-build'),1)
+        self.assertNotIn('service-create',calls);self.assertNotIn('learner-build',calls)
+        receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
+        self.assertEqual(receipt['status'],'STOP UNCONFIRMED')
         self.assertEqual(receipt['unresolved'][0]['daemon_build'],'UNKNOWN')
 
     def test_controls_failure_preserves_actual_qualified_roles_without_claiming_all_pass(self):
