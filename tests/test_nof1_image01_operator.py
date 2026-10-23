@@ -51,9 +51,11 @@ class Image01Controls(unittest.TestCase):
 
     def test_freeze_binds_full_closure_git_bytes_generated_bytes_and_copied_probes(self):
         _,plan=self.op.validate_plan(self.planpath,self.digest)
-        self.assertEqual(plan['future_images'],{'service':'UNKNOWN','learner':'UNKNOWN'})
-        self.assertEqual(plan['future_CIDs'],{'service':'UNKNOWN','learner':'UNKNOWN'})
-        for role,count in [('service',179),('learner',74)]:
+        self.assertEqual(plan['bindings_git_blob'],self.op.BINDINGS_BLOB)
+        self.assertEqual(self.op.sha(self.op.git(ROOT,'show',self.op.BINDINGS_BLOB)),self.op.BINDINGS_SHA)
+        self.assertEqual(plan['future_images'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
+        self.assertEqual(plan['future_CIDs'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
+        for role,count in [('service',179),('learner',74),('controls',192)]:
             expected=json.loads((self.folder/'qualify'/f'{role}.json').read_bytes())
             self.assertEqual(len(expected['project_source']),count)
             self.assertEqual((self.folder/'qualify'/f'{role}.json').read_bytes(),
@@ -61,7 +63,18 @@ class Image01Controls(unittest.TestCase):
         recipe=(self.folder/'context/overlay.Dockerfile').read_text()
         self.assertEqual({line.split()[0] for line in recipe.splitlines()},{'ARG','FROM','COPY'})
         self.assertIn('COPY qualify/learner.json /qualify/expected.json',recipe)
+        self.assertIn('COPY qualify/controls.json /qualify/expected.json',recipe)
         with self.assertRaises(FileExistsError):self.op.freeze(self.folder,ROOT)
+
+    def test_service_and_controls_bind_both_accepted_repair_files_and_controls_retains_fixtures(self):
+        for role in ('service','controls'):
+            expected=json.loads((self.folder/'qualify'/f'{role}.json').read_bytes())['project_source']
+            for name in ('services/foundation/protocol.py','contracts/runs/support_research.py'):
+                actual=self.op.sha(self.op.git(ROOT,'show',self.op.SOURCE+':'+name))
+                self.assertEqual(expected['/app/'+name],actual)
+        expected=json.loads((self.folder/'qualify/controls.json').read_bytes())['project_source']
+        self.assertIn('/app/tests/integration/replay/test_support_s1_analysis.py',expected)
+        self.assertIn('/app/services/learner/support_s1_worker.py',expected)
 
     def test_unreviewed_plan_hash_or_extra_inventory_fails_before_helper_execution(self):
         with patch.object(self.op,'load_lifecycle',side_effect=AssertionError('must not load')):
@@ -92,7 +105,7 @@ class Image01Controls(unittest.TestCase):
 
     def container(self,role,cid,image):
         return dict(Id=cid,Image=image,User=self.plan['roles'][role]['uid'],Path='python',
-            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'n48-image01-810b643'},
+            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'n49-image01-4141a21'},
             State=dict(Status='created',Pid=0,ExitCode=0,Running=False,Paused=False,Restarting=False,
                 Dead=False,OOMKilled=False),RestartCount=0,Memory=2147483648,MemorySwap=2147483648,
             NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,CapAdd=None,
@@ -125,8 +138,8 @@ class Image01Controls(unittest.TestCase):
         self.assertNotIn('--mount',argv);self.assertNotIn('-v',argv)
 
     def fake_commands(self,fail=None):
-        calls=[];ids={'service':'sha256:'+'a'*64,'learner':'sha256:'+'b'*64}
-        cids={'service':'c'*64,'learner':'d'*64}
+        calls=[];ids={'service':'sha256:'+'a'*64,'learner':'sha256:'+'b'*64,'controls':'sha256:'+'e'*64}
+        cids={'service':'c'*64,'learner':'d'*64,'controls':'f'*64}
         def attempt(argv,output,label,timeout,cleanup):
             calls.append(label)
             self.assertTrue((output/'authorization-consumed.json').is_file())
@@ -156,7 +169,7 @@ class Image01Controls(unittest.TestCase):
         return patch.object(self.op,'command_attempt',side_effect=attempt),patch.object(
             self.op,'load_lifecycle',return_value=self.life)
 
-    def test_success_is_once_only_and_both_roles_are_absent_before_first_mutation(self):
+    def test_success_is_once_only_and_all_three_roles_are_absent_before_first_mutation(self):
         calls,attempt=self.fake_commands();a,b=self.run_double(attempt)
         with a,b,patch.object(self.life,'supervise',return_value={'typed':'terminal'}):
             result=self.op.execute(self.planpath,self.digest)
@@ -164,8 +177,8 @@ class Image01Controls(unittest.TestCase):
             first=len(calls)
             with self.assertRaises(FileExistsError):self.op.execute(self.planpath,self.digest)
             self.assertEqual(len(calls),first)
-        self.assertLess(calls.index('learner-container-absence'),calls.index('service-tag-parent'))
-        self.assertEqual(sum(x.endswith('-build') for x in calls),2)
+        self.assertLess(calls.index('controls-container-absence'),calls.index('service-tag-parent'))
+        self.assertEqual(sum(x.endswith('-build') for x in calls),3)
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertFalse(receipt['generation_or_fit']);self.assertFalse(receipt['Store_opened'])
 
@@ -186,6 +199,19 @@ class Image01Controls(unittest.TestCase):
         receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
         self.assertEqual(receipt['status'],'STOP UNCONFIRMED');self.assertEqual(receipt['owned_cids'],[])
         self.assertEqual(receipt['unresolved'][0]['daemon_build'],'UNKNOWN')
+
+    def test_controls_failure_preserves_actual_qualified_roles_without_claiming_all_pass(self):
+        def fail(label,result):
+            if label=='controls-probe-output':result['stdout']='{}'
+        calls,attempt=self.fake_commands(fail);a,b=self.run_double(attempt)
+        with a,b,patch.object(self.life,'supervise',return_value={}),patch.object(
+                self.life,'stop_owned',return_value=[{'stopped':True}]):
+            with self.assertRaises(KeyError):self.op.execute(self.planpath,self.digest)
+        receipt=json.loads((self.folder/'results/observed-images.json').read_bytes())
+        self.assertEqual(receipt['status'],'failed')
+        self.assertEqual(set(receipt['images']),{'service','learner'})
+        self.assertEqual(receipt['owned_cids'],['c'*64,'d'*64,'f'*64])
+        self.assertEqual(calls.count('controls-build'),1)
 
     def test_corrupt_probe_stops_exact_owned_cid_and_retains_failure(self):
         def fail(label,result):

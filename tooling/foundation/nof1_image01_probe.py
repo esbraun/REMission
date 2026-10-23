@@ -26,14 +26,14 @@ class Tripwire(importlib.abc.MetaPathFinder):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--role',choices=('service','learner'),required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--role',choices=('service','learner','controls'),required=True)
     parser.add_argument('--expected',type=Path,required=True);parser.add_argument('--expected-sha256',required=True)
     parser.add_argument('--probe-sha256',required=True);args=parser.parse_args()
     digest=lambda raw:hashlib.sha256(raw).hexdigest()
     if digest(Path(__file__).read_bytes())!=args.probe_sha256:raise ValueError('probe bytes changed')
     raw=args.expected.read_bytes()
     if digest(raw)!=args.expected_sha256:raise ValueError('expected closure bytes changed')
-    expected=json.loads(raw);uid=10001 if args.role=='service' else 10002
+    expected=json.loads(raw);uid=10002 if args.role=='learner' else 10001
     if ({p.name for p in Path('/qualify').iterdir()}!={'probe.py','expected.json'}
             or any(p.is_symlink() for p in Path('/qualify').iterdir())):
         raise ValueError('qualification image source custody mismatch')
@@ -46,8 +46,9 @@ def main():
         if path.is_symlink():raise ValueError('project source symlink denied')
         if path.is_file() and '__pycache__' not in path.parts:actual[str(path)]=digest(path.read_bytes())
     if actual!=expected['project_source']:raise ValueError('complete parent-plus-overlay source closure mismatch')
-    forbidden=['services/generator','services/evaluator','contracts/dgp','evaluation','tests']
-    forbidden+=['methods','services/learner'] if args.role=='service' else ['services/foundation']
+    forbidden=['services/generator','services/evaluator','contracts/dgp','evaluation']
+    if args.role=='service':forbidden+=['tests','methods','services/learner']
+    elif args.role=='learner':forbidden+=['tests','services/foundation']
     if any((root/name).exists() for name in forbidden):raise ValueError('cross-role or private project source present')
     if args.role=='learner':
         for path in [*root.joinpath('methods/nof1').glob('*.py'),root/'methods/measurement.py']:
@@ -62,8 +63,10 @@ def main():
         try:parser_fn(json.dumps(dict(kind=kind,schema_version='2.0.0')))
         except ValidationError:pass
         else:raise AssertionError('closed/incomplete N envelope was accepted')
-    modules=('services.foundation.nof1_analysis','services.foundation.app') if args.role=='service' else (
-        'services.learner.nof1_worker','services.learner.nof1_artifacts')
+    if args.role=='learner':modules=('services.learner.nof1_worker','services.learner.nof1_artifacts')
+    else:modules=('services.foundation.nof1_analysis','services.foundation.app')
+    if args.role=='controls':modules+=('services.foundation.protocol','contracts.runs.support_research',
+        'services.foundation.support_archive','services.learner.support_s1_worker')
     for module in modules:importlib.import_module(module)
     if BLOCKED.intersection(sys.modules):raise AssertionError('scientific module loaded')
     print(json.dumps(dict(status='copied_source_metadata_scalar_imports_only',role=args.role,uid=uid,

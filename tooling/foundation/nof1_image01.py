@@ -16,12 +16,15 @@ import time
 
 HERE=Path(__file__).resolve().parent
 
-SOURCE='810b643249bcb99214cd2f5b00ae9d5691d159db'
-TREE='2373f1018d0e9b638ef9bea49004d01cace00460'
-BINDINGS_SHA='f3a5b4c05e3ca6b33b7d81996ce134cd220ea33082824b626f41f70c82a49b2b'
+SOURCE='4141a21f0070db565dd47b41f6b3a5c6218f8294'
+TREE='6261fd57d2a98ceb69c13511831eb5111e448fcc'
+BINDINGS_SHA='409c4d228b32568e18781a7614a5ee2b78f7f38d53510cc5ac1b89365ced087f'
+BINDINGS_BLOB='f4e23cf8696071842bb4c2721ee3816496ec57ee'
 PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
 PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4',
-    'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef'}
+    'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
+    'controls':'sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85'}
+ROLES=('service','learner','controls')
 LIMITS=['--network','none','--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64',
     '--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
     '--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m','--restart','no']
@@ -51,8 +54,8 @@ def git(root,*args):
 
 
 def recipe(roles):
-    lines=['ARG SERVICE_PARENT','ARG LEARNER_PARENT']
-    for role in ('service','learner'):
+    lines=['ARG SERVICE_PARENT','ARG LEARNER_PARENT','ARG CONTROLS_PARENT']
+    for role in ROLES:
         lines.append('FROM ${'+role.upper()+'_PARENT} AS '+role)
         for row in roles[role]['overlay']:
             lines.append('COPY '+role+'/'+row['source']+' '+row['destination'])
@@ -65,8 +68,9 @@ def freeze(directory,root):
     directory=ordinary(directory);root=ordinary(root)
     if directory.exists():raise FileExistsError('exclusive N image preparation already exists')
     if not directory.is_relative_to(root/'artifacts'):raise ValueError('operation must stay in own artifacts')
-    bindings_path=root/'docs/implementation/poc-n-runtime-image01-bindings-20261023.json'
-    raw=bindings_path.read_bytes()
+    # Raw reviewed Git bytes avoid checkout line-ending conversion or a mutable
+    # working-copy binding. The candidate commit must retain this exact blob.
+    raw=git(root,'show',BINDINGS_BLOB)
     if sha(raw)!=BINDINGS_SHA:raise ValueError('reviewed source bindings changed')
     bindings=json.loads(raw)
     parent=json.loads(git(root,'show',PARENT_MANIFEST))
@@ -95,7 +99,7 @@ def freeze(directory,root):
         payload=json.dumps(dict(role=role,uid=item['uid'],project_source=expected),sort_keys=True).encode()+b'\n'
         write('qualify/'+role+'.json',payload)
         write('context/qualify/'+role+'.json',payload)
-        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-n48-810b643-'+role+'-parent:v1',
+        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-n49-4141a21-'+role+'-parent:v1',
             tag=item['tag'],name=item['qualifier'],uid=str(item['uid'])+':'+str(item['uid']),
             parent_layers=parent['images'][role]['layers'],expected_sha256=sha(payload))
     write('context/overlay.Dockerfile',recipe(bindings['roles']).encode())
@@ -104,10 +108,11 @@ def freeze(directory,root):
     write('qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
     write('context/qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
     plan=dict(kind='poc-n-image01-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
-        scope='two_COPY_only_children_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
+        scope='three_COPY_only_children_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
+        bindings_git_blob=BINDINGS_BLOB,
         root=str(directory),roles=roles,files=files,probe_sha256=files['qualify/probe.py']['sha256'],
         phase_seconds=900,build_seconds=300,qualification_seconds=60,cli_cleanup_seconds=3,
-        future_images={'service':'UNKNOWN','learner':'UNKNOWN'},future_CIDs={'service':'UNKNOWN','learner':'UNKNOWN'},
+        future_images={role:'UNKNOWN' for role in ROLES},future_CIDs={role:'UNKNOWN' for role in ROLES},
         output='results',scientific_imports=False,Store_open=False)
     save(directory/'plan.json',plan)
     return dict(plan=str(directory/'plan.json'),sha256=sha((directory/'plan.json').read_bytes()))
@@ -118,8 +123,10 @@ def validate_plan(path,authorized):
     if sha(raw)!=authorized:raise ValueError('exact independently reviewed plan hash required')
     plan=json.loads(raw);root=ordinary(plan['root'])
     if (root!=path.parent or plan['source_commit']!=SOURCE or plan['source_tree']!=TREE
-            or plan['kind']!='poc-n-image01-exact-operation-v1' or set(plan['roles'])!={'service','learner'}
-            or plan['bindings_sha256']!=BINDINGS_SHA or plan['phase_seconds']!=900
+            or plan['kind']!='poc-n-image01-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
+            or plan['scope']!='three_COPY_only_children_and_scalar_qualification'
+            or plan['bindings_sha256']!=BINDINGS_SHA or plan['bindings_git_blob']!=BINDINGS_BLOB
+            or plan['phase_seconds']!=900
             or plan['build_seconds']!=300 or plan['qualification_seconds']!=60
             or plan['cli_cleanup_seconds']!=3 or plan['output']!='results'
             or plan['scientific_imports'] is not False or plan['Store_open'] is not False):
@@ -138,10 +145,10 @@ def validate_plan(path,authorized):
     if Path(__file__).resolve()!=root/'operator/nof1_image01.py':
         raise ValueError('execute only the frozen operator copy')
     for role,item in plan['roles'].items():
-        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-n48-810b643-'+role+'-parent:v1'
-                or item['tag']!='remission-n48-810b643-'+role+':v1'
-                or item['name']!='remission-n48-810b643-'+role+'-qual-v1'
-                or item['uid']!=('10001:10001' if role=='service' else '10002:10002')):
+        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-n49-4141a21-'+role+'-parent:v1'
+                or item['tag']!='remission-n49-4141a21-'+role+':v1'
+                or item['name']!='remission-n49-4141a21-'+role+'-qual-v1'
+                or item['uid']!=('10002:10002' if role=='learner' else '10001:10001')):
             raise ValueError('literal role identity changed')
     return root,plan
 
@@ -157,7 +164,7 @@ def load_lifecycle(root):
 def image_checked(value,identity,role,*,parent=None):
     if (value['Id']!=identity or re.fullmatch('sha256:[a-f0-9]{64}',identity) is None
             or value['Os']!='linux' or value['Architecture']!='amd64'
-            or value['User']!=('10001:10001' if role=='service' else '10002:10002')
+            or value['User']!=('10002:10002' if role=='learner' else '10001:10001')
             or value['WorkingDir']!='/app' or value['Entrypoint'] is not None):
         raise ValueError('image ID/platform/UID/entrypoint mismatch')
     if parent and (value['Layers'][:len(parent['Layers'])]!=parent['Layers']
@@ -174,7 +181,7 @@ def workload(role,plan):
 
 def create_argv(role,plan,image):
     item=plan['roles'][role]
-    return ['docker','create','--name',item['name'],'--label','remission.task=n48-image01-810b643',
+    return ['docker','create','--name',item['name'],'--label','remission.task=n49-image01-4141a21',
         *LIMITS,'--user',item['uid'],image,*workload(role,plan)]
 
 
@@ -184,7 +191,7 @@ def checked_container(value,cid,image,role,plan,life):
     mounts=value['Mounts']
     if (state['Status']!='created' or state['Pid']!=0 or value['Image']!=image
             or value['User']!=item['uid'] or value['Path']!='python' or value['Args']!=workload(role,plan)[1:]
-            or value['Labels']!={'remission.task':'n48-image01-810b643'}
+            or value['Labels']!={'remission.task':'n49-image01-4141a21'}
             or value['Memory']!=2147483648 or value['MemorySwap']!=2147483648
             or value['NanoCpus']!=2000000000 or value['PidsLimit']!=64
             or value['ReadonlyRootfs'] is not True or value['Privileged'] is not False
@@ -259,25 +266,26 @@ def execute(path,authorized):
                 or value['stdout'].strip() or value['stderr'].strip() not in accepted):
             raise RuntimeError('exact selected tag absence not proven: '+label)
     try:
-        for role in ('service','learner'):
+        for role in ROLES:
             item=plan['roles'][role]
             parent=image_checked(json.loads(call(['docker','image','inspect','--format',IMAGE_FORMAT,item['parent']],role+'-parent')),item['parent'],role)
             if parent['Layers']!=item['parent_layers']:raise ValueError('accepted parent layer inventory changed')
             parents[role]=parent;absent(item['parent_tag'],role+'-parent-tag-absence');absent(item['tag'],role+'-child-tag-absence')
             if call(['docker','ps','-aq','--filter','name=^/'+item['name']+'$'],role+'-container-absence').strip():
                 raise RuntimeError('qualifier name already exists')
-        for role in ('service','learner'):
+        for role in ROLES:
             item=plan['roles'][role]
             call(['docker','image','tag',item['parent'],item['parent_tag']],role+'-tag-parent')
             if call(['docker','image','inspect','--format','{{.Id}}',item['parent_tag']],role+'-parent-alias-id').strip()!=item['parent']:
                 raise ValueError('parent alias drift')
-        for role in ('service','learner'):
+        for role in ROLES:
             item=plan['roles'][role]
             iid=output/(role+'.iid')
             argv=['docker','build','--network','none','--pull=false','--file',str(root/'context/overlay.Dockerfile'),
                 '--target',role,'--tag',item['tag'],'--iidfile',str(iid),
                 '--build-arg','SERVICE_PARENT='+plan['roles']['service']['parent_tag'],
-                '--build-arg','LEARNER_PARENT='+plan['roles']['learner']['parent_tag'],str(root/'context')]
+                '--build-arg','LEARNER_PARENT='+plan['roles']['learner']['parent_tag'],
+                '--build-arg','CONTROLS_PARENT='+plan['roles']['controls']['parent_tag'],str(root/'context')]
             call(argv,role+'-build',cap=300);image=iid.read_text().strip()
             child=image_checked(json.loads(call(['docker','image','inspect','--format',IMAGE_FORMAT,item['tag']],role+'-child')),image,role,parent=parents[role])
             try:cid=life.require_cid(call(create_argv(role,plan,image),role+'-create').strip())
