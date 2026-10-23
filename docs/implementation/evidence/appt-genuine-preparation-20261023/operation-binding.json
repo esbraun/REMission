@@ -1,0 +1,201 @@
+{
+  "backup_helper": "remission-poc13-ac8e16e0-appt-backup-410",
+  "base": "41056f0c06a2afa1141c33eeb3a934a1969d19bb",
+  "credential_input": "After fresh review/root GO only: same narrow RO owner/username lookup and AST literal DEMO_PASSWORDS from current CLI; selected owner alice only. Ordinary /api/session and /api/login. API keeps credentials/cookies/CSRF in memory only. For MCP UI, if necessary write one-task JSON to same ACL directory, open isolated file:// tab, read into browser memory without returning body, close tab before filling main UI, never snapshot credentials, no trace; clear visible password on failure. No credential/token/cookie values or digests in evidence/Git/tool code.",
+  "database_audit_argv": [
+    "docker",
+    "exec",
+    "remission-poc13-ac8e16e0-service",
+    "python",
+    "-c",
+    "\nimport hashlib,json,os,sqlite3\nfrom pathlib import Path\nfrom urllib.parse import quote\ndef canonical(x):return json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False)\ndef sha(x):return hashlib.sha256(canonical(x).encode()).hexdigest()\npath=Path(os.environ.get('REMISSION_DATABASE','/data/remission.sqlite')).resolve(strict=True)\ndb=sqlite3.connect('file:'+quote(str(path),safe='/')+'?mode=ro',uri=True,timeout=5)\ndb.row_factory=sqlite3.Row;db.execute('PRAGMA query_only=ON');db.execute('BEGIN')\ndef encode(x):\n if isinstance(x,bytes):return {'blob_bytes':len(x),'blob_sha256':hashlib.sha256(x).hexdigest()}\n return x\nallowed=['patients','events','decisions','bundles','tasks','receipts','ingestion_receipts','replay_runs','pending_work','drafts','state_changes','observed_archives','observed_archive_entries','observed_archive_artifacts','service_control','live_authority_history','live_activation_receipts','live_hold_operations','live_hold_episodes','live_hold_reviews','live_hold_tasks','live_hold_task_events','live_hold_keys','live_patient_journals','live_safety_facts','live_projection_receipts','live_export_receipts','live_hold_additional_tasks','live_hold_task_bindings','live_hold_additional_task_events','analysis_attempts']\ntables={r[0] for r in db.execute(\"SELECT name FROM sqlite_master WHERE type='table'\")}\nprotected={}\nfor table in allowed:\n if table not in tables:continue\n info=db.execute('PRAGMA table_info(\"'+table+'\")').fetchall()\n keys=[r['name'] for r in sorted(info,key=lambda r:r['pk']) if r['pk']]\n rows=[{k:encode(row[k]) for k in row.keys()} for row in db.execute('SELECT * FROM \"'+table+'\"')]\n hashes=sorted(sha(row) for row in rows)\n protected[table]={'rows':len(rows),'rows_sha256':sha(hashes),'row_hashes':hashes,'primary_key_columns':keys}\nqueue=[dict(r) for r in db.execute(\"SELECT job_id,patient_id,status,stage,created_at,input_sha256,history_sha256 FROM analysis_attempts WHERE status='queued' ORDER BY created_at,job_id\")]\nrunning=[dict(r) for r in db.execute(\"SELECT job_id,patient_id,status,stage,created_at,input_sha256 FROM analysis_attempts WHERE status='running' ORDER BY created_at,job_id\")]\nattempt='analysis-4ff86193058d4d13a1600f0423e91f12'\nrow=db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(attempt,)).fetchone()\nassert row is not None\nproduct=json.loads(row['request_json']);h=product['history'];patient=db.execute('SELECT * FROM patients WHERE id=?',(row['patient_id'],)).fetchone()\nfrom services.foundation.workflow import history\nfrom services.foundation.store import instant\nfrom contracts.domain.analysis import project_history\nprojected=project_history(history(db,row['patient_id']).project(instant(patient['cutoff']))).model_dump(mode='json')\nactual=sha(product)\nchecks={'queued':row['status']=='queued','stage_queued':row['stage']=='queued','kind_borrow':product['kind']=='poc_visit_borrow_input','canonical_input':actual==row['input_sha256']=='3761da9e876d3830106e5edc47a7b5b930764f934facc95c8b6328b84e65e5a2','history':sha(h)==row['history_sha256']=='ce5a5a2bbf99405d2457654791f3ac9a263f669770b075ac1dfa1cff0f4ac00c','current_db_projection':sha(projected)==row['history_sha256'],'cutoff':all(instant(value)==instant('2026-01-15T12:00:00Z') for value in [row['cutoff'],patient['cutoff'],h['cutoff']]),'configuration':product['request']['configuration']['sha256']=='114d69435430a98d60d1724a30ba89073efebd5ba0e1b7bdae55ddb3f3a90675','source_set':product['source_set_sha256']=='11420d1f40754021a13cd7fed1152bc824d6b669af233efe60a0dc4facec9ddb','nuts_seed':product['numerical_seeds']['nuts']==3859568062,'prior_seed':product['numerical_seeds']['prior_check']==2854342402,'effect_seed':product['numerical_seeds']['effect_rollout']==2134078996,'bridge_seed':product['numerical_seeds']['bridge_reference']==4047038903,'unclaimed':row['claim_token'] is None,'unstarted':row['started_at'] is None,'no_result':row['result_json'] is None,'oldest':bool(queue) and queue[0]['job_id']==attempt,'no_running':not running}\nreceipts=[]\ncontrol=db.execute('SELECT database_instance_id,authority_generation,database_device,database_inode,lock_device,lock_inode FROM service_control WHERE singleton=1').fetchone()\nstats={}\nfor label,p in [('database',path),('lock',Path(str(path)+'.admission.lock'))]:\n s=p.stat();stats[label]={'device':s.st_dev,'inode':s.st_ino,'bytes':s.st_size,'uid':s.st_uid,'gid':s.st_gid}\ncontrol=dict(control);checks['authority_file_identity']=(control['database_device'],control['database_inode'],control['lock_device'],control['lock_inode'])==(stats['database']['device'],stats['database']['inode'],stats['lock']['device'],stats['lock']['inode'])\nout={'database_mode':'uri mode=ro; query_only=ON; explicit read transaction; no immutable/WAL bypass','query_only':db.execute('PRAGMA query_only').fetchone()[0],'total_changes':db.total_changes,'schema_versions':[r[0] for r in db.execute('SELECT version FROM schema_migrations ORDER BY version')],'journal_mode':db.execute('PRAGMA journal_mode').fetchone()[0],'database_control':control,'file_identities':stats,'protected_tables':protected,'queue':queue,'running':running,'attempt_checks':checks,'attempt':{'id':attempt,'patient_id':row['patient_id'],'canonical_input_sha256':actual,'request_row_utf8_sha256':hashlib.sha256(row['request_json'].encode()).hexdigest(),'history_sha256':row['history_sha256'],'current_projection_sha256':sha(projected),'cutoff':row['cutoff'],'configuration':product['request']['configuration'],'numerical_seeds':product['numerical_seeds'],'source_set_sha256':product['source_set_sha256'],'immutable_identity_sha256':sha({k:row[k] for k in ['job_id','patient_id','owner_id','previous_attempt','request_json','input_sha256','history_sha256','cutoff','configuration_json','cohort_json','created_at']})},'receipt_identities':receipts,'panel':{'seed':json.loads(patient['state_json'])['simulation']['seed'],'index':json.loads(patient['state_json'])['simulation']['index'],'day':json.loads(patient['state_json'])['simulation']['day']}}\n\nEXPECTED_CONTROL={'authority_generation': 1, 'database_device': 2096, 'database_inode': 541605, 'database_instance_id': 'e4924957-b4df-4d83-b013-72e123e13a28', 'lock_device': 2096, 'lock_inode': 541606}\nEXPECTED_RESULT='850ffce701dd32587bf2b8cc2abd8121a574b4dddc16a8910b261fc4ceb6faa1'\nEXPECTED_TRUSTED='c0a6a9fe0792b946ed66d8115ca031365e136d23f8e0d0527676acb68b6c9204'\nEXPECTED_ATTEMPT='2fd91171e2d521c6396f44608bdd737e70257c1e07bfc8d7c1724602cb8fe7d5'\n\nresult=json.loads(row['result_json']) if row['result_json'] else None\ntrusted=json.loads(row['progress_json']).get('trusted_launch')\nout['terminal_attempt']={'id':row['job_id'],'patient_id':row['patient_id'],'status':row['status'],'stage':row['stage'],'started_at':row['started_at'],'finished_at':row['finished_at'],'failure_reason':row['failure_reason'],'result_status':result['status'] if result else None,'result_canonical_sha256':sha(result) if result else None,'trusted_launch_sha256':sha(trusted),'owner_matches_expected':row['owner_id']==patient['owner_id']=='alice'}\ncontrol_all=dict(db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone())\nout['control_clock_at']=control_all.pop('last_receipt_at')\nout['control_except_clock_sha256']=sha(control_all)\nout.pop('panel')\nout['attempt'].pop('numerical_seeds')\nout.pop('receipt_identities')\nassert out['database_control']==EXPECTED_CONTROL\nassert out['terminal_attempt']['owner_matches_expected']\nassert row['status']=='completed' and row['stage']=='complete' and result['status']=='completed'\nassert sha(result)==EXPECTED_RESULT\nassert sha(trusted)==EXPECTED_TRUSTED\nassert out['attempt']['immutable_identity_sha256']==EXPECTED_ATTEMPT\nassert actual==row['input_sha256']=='3761da9e876d3830106e5edc47a7b5b930764f934facc95c8b6328b84e65e5a2'\nassert sha(projected)==row['history_sha256']=='ce5a5a2bbf99405d2457654791f3ac9a263f669770b075ac1dfa1cff0f4ac00c'\nassert not out['queue'] and not out['running']\nassert out['query_only']==1 and out['total_changes']==0\n\ndb.rollback();db.close();print(canonical(out))\n"
+  ],
+  "failed_replacement": "remission-poc13-ac8e16e0-service-failed-appt-410",
+  "gates": [
+    "Recheck exact initial metadata and absent prospective names/path; only service active on original DB; no active worker/dispatcher launch.",
+    "Execute frozen RO audit once; compare every protected table to committed terminal snapshot, exact original control/inodes/request/result/trusted-launch/H* and owner. Any discrepancy stops before maintenance.",
+    "Privately prove selected source override is sole environment difference; no private environment streams or digests captured.",
+    "Prepare owner+SYSTEM private directory; verify effective ACL before secret/backup writes. It must be new and ignored.",
+    "After stopping service verify clean exit0/notOOM and no active DB consumer. Verify SQLite online backup integrity and every protected-table count/hash before rename/create. DB mount RW exists solely for WAL/shm bookkeeping; source query_only and total_changes0.",
+    "Before auth: same all protected table hashes, Store/control/database+lock device/inode/generation, same original result/trust and original generator selected state. Same limits/mounts/network/port/Cmd. Health must be ok within deadline.",
+    "One ordinary owner login per API/browser context only. Auth may change sessions/login_attempts and monotonic control.last_receipt_at; control_except_clock hash and every protected table except service_control must remain equal.",
+    "No automatic retry of backup/create/start/claim; a tool observation timeout is not terminal. Preserve same handle/failures. Stock predecessor rollback is only reviewed stop/retain replacement then original name/start against unchanged original files; never restore backup or replace DB/lock. Stop on rollback failure and retain exact state.",
+    "No calls to claim/bind-execution/dispatch/ingest/refresh/approve/advance, no scientific imports on host, no posterior/NPZ reads, no cloud resource operations."
+  ],
+  "limits": {
+    "backup_seconds": 60,
+    "bind": "127.0.0.1:8780",
+    "health_deadline_seconds": 25,
+    "inspect_or_audit_seconds": 20,
+    "new_analysis_post_count": 0,
+    "new_authority_or_data_volumes": 0,
+    "new_fit_count": 0,
+    "restart": "no",
+    "service_cpu": 2,
+    "service_memory_bytes": 2147483648,
+    "service_tmpfs_mib": 128,
+    "stop_command_seconds": 30
+  },
+  "maintenance_argv": [
+    [
+      "docker",
+      "stop",
+      "--time",
+      "10",
+      "remission-poc13-ac8e16e0-service"
+    ],
+    [
+      "docker",
+      "run",
+      "--name",
+      "remission-poc13-ac8e16e0-appt-backup-410",
+      "--network",
+      "none",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--user",
+      "10001:10001",
+      "--mount",
+      "type=volume,source=remission-poc13-ac8e16e0-database,target=/data",
+      "--mount",
+      "type=bind,source=C:\\Users\\erics\\Documents\\Projects\\REMission\\artifacts\\av\\artifacts\\appt-genuine\\private-maintenance-20261023,target=/backup",
+      "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+      "python",
+      "-c",
+      "import sqlite3,pathlib,hashlib,json\nsource=sqlite3.connect('file:/data/remission.sqlite?mode=ro',uri=True);source.execute('PRAGMA query_only=ON')\ndestination=pathlib.Path('/backup/remission-pre-appt.sqlite');assert not destination.exists()\ntarget=sqlite3.connect(destination);source.backup(target);target.close()\nassert source.total_changes==0 and source.execute('PRAGMA query_only').fetchone()[0]==1\nsource.close()\nbackup=sqlite3.connect('file:'+str(destination)+'?mode=ro',uri=True);backup.execute('PRAGMA query_only=ON')\nassert backup.execute('PRAGMA integrity_check').fetchone()[0]=='ok'\ntables={}\ndef canonical(v):return json.dumps(v,sort_keys=True,separators=(',',':'),allow_nan=False)\ndef sha(v):return hashlib.sha256(canonical(v).encode()).hexdigest()\nbackup.row_factory=sqlite3.Row\nfor row in backup.execute(\"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name\").fetchall():\n name=row[0];records=[]\n for record in backup.execute('SELECT * FROM \"'+name.replace('\"','\"\"')+'\"'):\n  records.append(sha({k:({'blob_bytes':len(record[k]),'blob_sha256':hashlib.sha256(record[k]).hexdigest()} if isinstance(record[k],bytes) else record[k]) for k in record.keys()}))\n tables[name]={'rows':len(records),'rows_sha256':sha(sorted(records))}\nbackup.close();print(canonical({'method':'SQLite Online Backup API from mode=ro/query_only source; committed WAL included','integrity_check':'ok','bytes':destination.stat().st_size,'sha256':hashlib.sha256(destination.read_bytes()).hexdigest(),'tables':tables}))"
+    ],
+    [
+      "docker",
+      "rename",
+      "remission-poc13-ac8e16e0-service",
+      "remission-poc13-ac8e16e0-service-pre-appt-410"
+    ],
+    [
+      "docker",
+      "create",
+      "--name",
+      "remission-poc13-ac8e16e0-service",
+      "--label",
+      "remission.task=remission-poc13-ac8e16e0",
+      "--network",
+      "remission-poc13-ac8e16e0-app",
+      "--publish",
+      "127.0.0.1:8780:8765",
+      "--cpus",
+      "2",
+      "--memory",
+      "2g",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--tmpfs",
+      "/tmp:rw,noexec,nosuid,size=128m",
+      "--user",
+      "10001:10001",
+      "--restart",
+      "no",
+      "--workdir",
+      "/app",
+      "--mount",
+      "type=volume,source=remission-poc13-ac8e16e0-database,target=/data",
+      "--mount",
+      "type=volume,source=remission-poc13-ac8e16e0-exports,target=/exports",
+      "--mount",
+      "type=volume,source=remission-poc13-ac8e16e0-fixtures,target=/fixtures,readonly",
+      "--env-file",
+      "C:\\Users\\erics\\Documents\\Projects\\REMission\\artifacts\\av\\artifacts\\appt-genuine\\private-maintenance-20261023\\replacement.env",
+      "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+      "python",
+      "-m",
+      "uvicorn",
+      "services.foundation.server:app",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8765",
+      "--no-access-log"
+    ],
+    [
+      "docker",
+      "start",
+      "remission-poc13-ac8e16e0-service"
+    ]
+  ],
+  "new_image": "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+  "old_image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+  "predecessor_source_bindings": {
+    "docs/implementation/evidence/pa3-native-terminal-20261022/terminal-database-readonly.json": {
+      "bytes": 35558,
+      "sha256": "51cf4843df46e02791ccb3346bdb954506e600ca4dff62b6e31d3bfd4b9b1f64"
+    },
+    "docs/implementation/evidence/pa3-service-maintenance-20261022/audit_pa3_native_readiness.py": {
+      "bytes": 11560,
+      "sha256": "8b8505a52a0fed40831ba84c2b7bcf3812e3ea8339a8f6c158dc4198f2386c5f"
+    },
+    "docs/implementation/evidence/pa3-service-maintenance-20261022/maintain_pa3_service_once.py": {
+      "bytes": 13624,
+      "sha256": "729b0a0b3de335edfec2d7557aa5e922deeb3c39cf2b6d5ea0149d9492d9bcd4"
+    },
+    "docs/implementation/evidence/pa3-service-maintenance-20261022/verify_pa3_continuity_once.py": {
+      "bytes": 6193,
+      "sha256": "e9d71c489be40e74ddfa6002e23465a7cd13ac834490f5d73a386bee5f9384a7"
+    },
+    "services/foundation/cli.py": {
+      "bytes": 6477,
+      "sha256": "df62837792b0c137d0d832cc540ba6e75111fa7cf5d21dfc82eb4ce48c0ded2c"
+    },
+    "services/foundation/store.py": {
+      "bytes": 6211,
+      "sha256": "9522d33353fdfde02baddbea9a8928e729d78b1ee42149133ab0cbe2fb68eb9b"
+    },
+    "tooling/foundation/capture.py": {
+      "bytes": 2884,
+      "sha256": "b4c685ac1b9965f31d154e749938517fbe08ce0611c374ffdc187976e0fe8429"
+    }
+  },
+  "private_environment_handling": "Reuse predecessor private subprocess inspect in memory only, no capture/stdout/values/digests; preserve every entry and override exactly REMISSION_SOURCE_COMMIT to base. Reject duplicate keys/newlines. Before stop, privately compare effective proposed environment including new image defaults; reject unexpected differences. Temporary envfile only in owner+SYSTEM ACL directory; remove envfile after create. Report count/preservation booleans only. No dispatcher field is added or changed.",
+  "private_root": "C:\\Users\\erics\\Documents\\Projects\\REMission\\artifacts\\av\\artifacts\\appt-genuine\\private-maintenance-20261023",
+  "retained_service": "remission-poc13-ac8e16e0-service-pre-appt-410",
+  "rollback_stock_argv_when_applicable": [
+    [
+      "docker",
+      "stop",
+      "--time",
+      "10",
+      "remission-poc13-ac8e16e0-service"
+    ],
+    [
+      "docker",
+      "rename",
+      "remission-poc13-ac8e16e0-service",
+      "remission-poc13-ac8e16e0-service-failed-appt-410"
+    ],
+    [
+      "docker",
+      "rename",
+      "remission-poc13-ac8e16e0-service-pre-appt-410",
+      "remission-poc13-ac8e16e0-service"
+    ],
+    [
+      "docker",
+      "start",
+      "remission-poc13-ac8e16e0-service"
+    ]
+  ],
+  "service": "remission-poc13-ac8e16e0-service",
+  "source_override": "41056f0c06a2afa1141c33eeb3a934a1969d19bb",
+  "status": "PREPARED_ONLY_REQUIRES_FRESH_ASTRA_REVIEW_AND_ROOT_GO",
+  "task_id": "APPT-GENUINE-POSITIVE",
+  "temporary_envfile": "C:\\Users\\erics\\Documents\\Projects\\REMission\\artifacts\\av\\artifacts\\appt-genuine\\private-maintenance-20261023\\replacement.env"
+}
