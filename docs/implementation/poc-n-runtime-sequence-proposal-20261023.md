@@ -1,5 +1,19 @@
 # N runtime sequence: bounded proposal, NO GO
 
+## Current N-API02 R2 optional metadata repair — SOURCE PREPARATION, NO GO
+
+Base9c78bb4f7b4b9c381a4af4737b49c7ab05c085b8. R1 actual is independently accepted FAILURE_ONLY_PRECREATE: report4c479f1582b3b90fe5c2efa967ba320fcfde932b/checks3ce4df9ea3644e50c85697183a35fea869ec6f2a. Its one selected image inspect failed at absent optional Config.Entrypoint; no CID, create/start/ACK or scientific payload. R1 head2f, all4 frozen inputs and complete9-file raw4c13e5c54d1ae757b762f49d3f9bb4b7dad0d599 remain retained unchanged. No retry authority carries forward.
+
+The sole behavior repair uses Go map-index for optional Entrypoint, yielding selected JSON null for absent/null. Required Config.User/WorkingDir/Cmd, image ID/OS/architecture/layers retain strict lookups and complete equality against the accepted immutable projection. Nonempty/empty-list/wrong-type Entrypoint, missing/malformed required metadata and inspect errors remain rejected before name absence/create. No full Config/environment is collected. The map-index behavior itself awaits actual isolated R2 observation; source controls use template inspection and selected-output doubles.
+
+Fresh literal name `remission-n-api02-9c78bb4-unit-r2`; fresh own packet `artifacts/n-api02-unit-9c78bb4-r2/final-packet`, results reserved only by a future once execution. Existing UNIT payload SHA8ef8b1294f15344028878264e90b66dde73df5381f9f0e097c0108b112fd7ed3, seed91740203/domain9202/nonfirst B, eight corruption controls and three known artifact outputs are byte-identical. Accepted learner1ee228092f77070242169bda307a2c351709a6892f73635d24cd2f1bc720f85f/source31/84map/proof371+abbb is reused without build/requalification. New binding4bdb33116916ad362ed44d112d4a68f7bc6b6dd9/SHAa6c91cac0697f0347d659795d9a7848ce6da14fccf65ed1304d38ed5c609f59e only updates this preparation base/controller description.
+
+Unchanged120s work/180s lifecycle,2CPU/2GiB=swap/64PID/tmp512MiB,nonroot10002/rootRO/netnone/zero mounts/ports/dropALL/NNP. Literal acquired CID/typed-created/config and prestart exact nonce/deadline/PopenPID/live watchdog ACK, terminal PID0/independent final/owned attach+watchdog reap, unknown-create/stop halt and no guessed/global cleanup remain mandatory. Ordinary CLI/stdout/stderr64KiB; known UNIT logs JSON8MiB including overhead, per artifact3MiB/total5MiB, fail-closed count/names/base64/hash/truncation unchanged.
+
+18 safe source controls pass (original15 plus three focused metadata controls); scientific imports, native children and actual payload execution blocked except whitelisted Git metadata. SOURCE and OPERATION exact review plus new root GO required; no scientific API/roundtrip/fit/genuine-data success claimed. S2 WIPc06 remains paused, not implementation freeze; heldouts sealed.
+
+## Preserved R1 preparation and consumed operation history
+
 ## Current N-API-02 UNIT source/packet preparation — NO GO
 
 Own NAPI branch integrated accepted PR53 main88474d5b530e1f50c9f98476ffa00d7ffb95e2c3 by normal merge76cb0b6e6446873ade9a5b803d43d5eb7b965ed6, preserving8e65/a16 drafts. Original image author worktree32f/source48/raw142/166/136 stays unchanged; Git-only PR53 receipt8693f1f6e0285bbc4b3263ee943140644540145f proves exactparents/tree/8paths. Independent IMAGE05 acceptance371bc8201a96fe5fd4dc27ab2f264a90ae286eb8/checksabbb58e764d63e6ff0c0d283a1bf3f72f0823595 was fully read. Exact immutable learner1ee228092f77070242169bda307a2c351709a6892f73635d24cd2f1bc720f85f/source31aa/84map/expectedSHA2afe547db25b1fe77d15f0667b808bd5da9db4e91e852453b0b2f987178332c2/probeSHAa63bbe6158c7509201345624247a3be4f38da905f3defd1fb1423002adfb0f94 and selectedimageconfig are bound, not requalified. SERVICEa504/CONTROLS615b remain retained, with no commands in this UNIT operation.
