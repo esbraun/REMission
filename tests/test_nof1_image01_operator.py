@@ -1,6 +1,7 @@
 """Host-only custody/lifecycle counterexamples; never invokes Docker or science."""
 import ast
 import copy
+from contextlib import contextmanager
 import importlib.util
 import json
 from pathlib import Path
@@ -75,6 +76,25 @@ class Image01Controls(unittest.TestCase):
         expected=json.loads((self.folder/'qualify/controls.json').read_bytes())['project_source']
         self.assertIn('/app/tests/integration/replay/test_support_s1_analysis.py',expected)
         self.assertIn('/app/services/learner/support_s1_worker.py',expected)
+        self.assertEqual(expected['/app/tooling/foundation/analysis_lifecycle.py'],
+            self.op.sha(self.op.git(ROOT,'show',self.op.SOURCE+':tooling/foundation/analysis_lifecycle.py')))
+
+    def test_pending_host_dependency_stops_before_helper_reservation_or_Docker(self):
+        self.assertEqual(self.plan['host_controller']['dependency_status'],'PENDING')
+        with patch.object(self.op,'load_lifecycle',side_effect=AssertionError('helper must not load')),\
+                patch.object(self.op,'command_attempt',side_effect=AssertionError('Docker must not run')):
+            with self.assertRaisesRegex(RuntimeError,'PENDING'):self.op.execute(self.planpath,self.digest)
+        self.assertFalse((self.folder/'results').exists())
+
+    def test_accepted_host_fixture_still_rejects_other_interpreter_or_changed_bytes(self):
+        host=self.plan['host_controller'];host.update(dependency_status='ACCEPTED',
+            executable_sha256=self.op.sha(b'base'),accepted_probe_receipt='a'*40,accepted_probe_checks='b'*40)
+        self.authorize();self.op.validate_plan(self.planpath,self.digest)
+        with patch.object(self.op.sys,'executable','C:/venv/python.exe'):
+            with self.assertRaisesRegex(ValueError,'direct-base'):self.op.check_host_dependency(self.plan)
+        fake=self.folder/'fake-base-bytes';fake.write_bytes(b'changed')
+        with patch.object(self.op.sys,'executable','C:/Python313/python.exe'),patch.object(self.op,'ordinary',return_value=fake):
+            with self.assertRaisesRegex(ValueError,'bytes changed'):self.op.check_host_dependency(self.plan)
 
     def test_unreviewed_plan_hash_or_extra_inventory_fails_before_helper_execution(self):
         with patch.object(self.op,'load_lifecycle',side_effect=AssertionError('must not load')):
@@ -105,7 +125,7 @@ class Image01Controls(unittest.TestCase):
 
     def container(self,role,cid,image):
         return dict(Id=cid,Image=image,User=self.plan['roles'][role]['uid'],Path='python',
-            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'n49-image01-4141a21'},
+            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image02-8b82399'},
             State=dict(Status='created',Pid=0,ExitCode=0,Running=False,Paused=False,Restarting=False,
                 Dead=False,OOMKilled=False),RestartCount=0,Memory=2147483648,MemorySwap=2147483648,
             NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,CapAdd=None,
@@ -165,9 +185,14 @@ class Image01Controls(unittest.TestCase):
             return result
         return calls,attempt
 
+    @contextmanager
+    def mocked_dependencies(self):
+        with patch.object(self.op,'load_lifecycle',return_value=self.life),\
+                patch.object(self.op,'check_host_dependency'):
+            yield
+
     def run_double(self,attempt):
-        return patch.object(self.op,'command_attempt',side_effect=attempt),patch.object(
-            self.op,'load_lifecycle',return_value=self.life)
+        return patch.object(self.op,'command_attempt',side_effect=attempt),self.mocked_dependencies()
 
     def test_success_is_once_only_and_all_three_roles_are_absent_before_first_mutation(self):
         calls,attempt=self.fake_commands();a,b=self.run_double(attempt)

@@ -16,10 +16,10 @@ import time
 
 HERE=Path(__file__).resolve().parent
 
-SOURCE='4141a21f0070db565dd47b41f6b3a5c6218f8294'
-TREE='6261fd57d2a98ceb69c13511831eb5111e448fcc'
-BINDINGS_SHA='409c4d228b32568e18781a7614a5ee2b78f7f38d53510cc5ac1b89365ced087f'
-BINDINGS_BLOB='f4e23cf8696071842bb4c2721ee3816496ec57ee'
+SOURCE='8b823991cc8c54688d8b2b7b887fed13bf669bb0'
+TREE='61b2ce2d8667c97f1541286fb7db9c956b5da0d4'
+BINDINGS_SHA='fedb7b6064cb96289eb02c9586401f52703c906a6576d9a8a703adbfb83847b7'
+BINDINGS_BLOB='d5e80ae1163d7395b2b938672a7a5734e8c0d3ad'
 PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
 PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4',
     'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
@@ -99,7 +99,7 @@ def freeze(directory,root):
         payload=json.dumps(dict(role=role,uid=item['uid'],project_source=expected),sort_keys=True).encode()+b'\n'
         write('qualify/'+role+'.json',payload)
         write('context/qualify/'+role+'.json',payload)
-        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-n49-4141a21-'+role+'-parent:v1',
+        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared02-8b82399-'+role+'-parent:v1',
             tag=item['tag'],name=item['qualifier'],uid=str(item['uid'])+':'+str(item['uid']),
             parent_layers=parent['images'][role]['layers'],expected_sha256=sha(payload))
     write('context/overlay.Dockerfile',recipe(bindings['roles']).encode())
@@ -107,9 +107,9 @@ def freeze(directory,root):
         write('operator/'+name,(HERE/name).read_bytes())
     write('qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
     write('context/qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
-    plan=dict(kind='poc-n-image01-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
+    plan=dict(kind='poc-shared-image02-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
         scope='three_COPY_only_children_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
-        bindings_git_blob=BINDINGS_BLOB,
+        bindings_git_blob=BINDINGS_BLOB,host_controller=bindings['host_controller'],
         root=str(directory),roles=roles,files=files,probe_sha256=files['qualify/probe.py']['sha256'],
         phase_seconds=900,build_seconds=300,qualification_seconds=60,cli_cleanup_seconds=3,
         future_images={role:'UNKNOWN' for role in ROLES},future_CIDs={role:'UNKNOWN' for role in ROLES},
@@ -123,7 +123,7 @@ def validate_plan(path,authorized):
     if sha(raw)!=authorized:raise ValueError('exact independently reviewed plan hash required')
     plan=json.loads(raw);root=ordinary(plan['root'])
     if (root!=path.parent or plan['source_commit']!=SOURCE or plan['source_tree']!=TREE
-            or plan['kind']!='poc-n-image01-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
+            or plan['kind']!='poc-shared-image02-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
             or plan['scope']!='three_COPY_only_children_and_scalar_qualification'
             or plan['bindings_sha256']!=BINDINGS_SHA or plan['bindings_git_blob']!=BINDINGS_BLOB
             or plan['phase_seconds']!=900
@@ -145,12 +145,30 @@ def validate_plan(path,authorized):
     if Path(__file__).resolve()!=root/'operator/nof1_image01.py':
         raise ValueError('execute only the frozen operator copy')
     for role,item in plan['roles'].items():
-        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-n49-4141a21-'+role+'-parent:v1'
-                or item['tag']!='remission-n49-4141a21-'+role+':v1'
-                or item['name']!='remission-n49-4141a21-'+role+'-qual-v1'
+        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared02-8b82399-'+role+'-parent:v1'
+                or item['tag']!='remission-shared02-8b82399-'+role+':v1'
+                or item['name']!='remission-shared02-8b82399-'+role+'-qual-v1'
                 or item['uid']!=('10002:10002' if role=='learner' else '10001:10001')):
             raise ValueError('literal role identity changed')
+    host=plan['host_controller']
+    if (set(host)!={'executable','executable_sha256','dependency_status','accepted_probe_receipt','accepted_probe_checks'}
+            or host['executable']!='C:/Python313/python.exe' or host['dependency_status'] not in ('PENDING','ACCEPTED')):
+        raise ValueError('literal proposed host controller changed')
+    for key,length in (('executable_sha256',64),('accepted_probe_receipt',40),('accepted_probe_checks',40)):
+        if (host['dependency_status']=='PENDING' and host[key]!='UNKNOWN') or (
+                host['dependency_status']=='ACCEPTED' and re.fullmatch('[a-f0-9]{'+str(length)+'}',host[key]) is None):
+            raise ValueError('host controller dependency binding incomplete')
     return root,plan
+
+
+def check_host_dependency(plan):
+    host=plan['host_controller']
+    if host['dependency_status']!='ACCEPTED':
+        raise RuntimeError('direct-base inert probe dependency is PENDING; no execution authority')
+    if os.path.normcase(os.path.abspath(sys.executable))!=os.path.normcase(os.path.abspath(host['executable'])):
+        raise ValueError('execute only with the exact separately qualified direct-base controller')
+    if sha(ordinary(host['executable']).read_bytes())!=host['executable_sha256']:
+        raise ValueError('qualified direct-base executable bytes changed')
 
 
 def load_lifecycle(root):
@@ -181,7 +199,7 @@ def workload(role,plan):
 
 def create_argv(role,plan,image):
     item=plan['roles'][role]
-    return ['docker','create','--name',item['name'],'--label','remission.task=n49-image01-4141a21',
+    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image02-8b82399',
         *LIMITS,'--user',item['uid'],image,*workload(role,plan)]
 
 
@@ -191,7 +209,7 @@ def checked_container(value,cid,image,role,plan,life):
     mounts=value['Mounts']
     if (state['Status']!='created' or state['Pid']!=0 or value['Image']!=image
             or value['User']!=item['uid'] or value['Path']!='python' or value['Args']!=workload(role,plan)[1:]
-            or value['Labels']!={'remission.task':'n49-image01-4141a21'}
+            or value['Labels']!={'remission.task':'shared-image02-8b82399'}
             or value['Memory']!=2147483648 or value['MemorySwap']!=2147483648
             or value['NanoCpus']!=2000000000 or value['PidsLimit']!=64
             or value['ReadonlyRootfs'] is not True or value['Privileged'] is not False
@@ -244,6 +262,7 @@ def command_attempt(argv,output,label,timeout,cleanup_grace):
 
 def execute(path,authorized):
     root,plan=validate_plan(path,authorized)
+    check_host_dependency(plan)
     life=load_lifecycle(root)
     # Exclusive reservation precedes every Docker call, including metadata.
     output=root/'results';output.mkdir(exist_ok=False)

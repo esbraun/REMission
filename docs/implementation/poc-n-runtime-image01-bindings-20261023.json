@@ -1,9 +1,9 @@
 {
-  "kind": "poc-n-image01-copy-proposal-v1",
-  "status": "PROPOSED_NO_GO",
-  "source_commit": "4141a21f0070db565dd47b41f6b3a5c6218f8294",
-  "reviewed_candidate": "dfe8e1d6416ad5d5c3ee31acc46a941aa324bd56",
-  "source_tree": "6261fd57d2a98ceb69c13511831eb5111e448fcc",
+  "kind": "poc-shared-image02-copy-proposal-v1",
+  "status": "PREPARED_CONDITIONAL_NO_GO",
+  "source_commit": "8b823991cc8c54688d8b2b7b887fed13bf669bb0",
+  "reviewed_candidate": "80880e350c4addbaf89916bc7cf5f96c96ba1b06",
+  "source_tree": "61b2ce2d8667c97f1541286fb7db9c956b5da0d4",
   "accepted_parent_source": "772d385c43eaf84778fef671add36915232e6730",
   "accepted_parent_manifest": "35b77dfcb25b9473807bf50fea65fd43b2f6f9ec",
   "accepted_parent_review": "be302b1111961f6869d67f864377021f11d8c0df",
@@ -282,8 +282,8 @@
       },
       "uid": 10001,
       "output_image": "UNKNOWN until accepted build result",
-      "tag": "remission-n49-4141a21-service:v1",
-      "qualifier": "remission-n49-4141a21-service-qual-v1"
+      "tag": "remission-shared02-8b82399-service:v1",
+      "qualifier": "remission-shared02-8b82399-service-qual-v1"
     },
     "learner": {
       "parent": "sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef",
@@ -465,8 +465,8 @@
       },
       "uid": 10002,
       "output_image": "UNKNOWN until accepted build result",
-      "tag": "remission-n49-4141a21-learner:v1",
-      "qualifier": "remission-n49-4141a21-learner-qual-v1"
+      "tag": "remission-shared02-8b82399-learner:v1",
+      "qualifier": "remission-shared02-8b82399-learner-qual-v1"
     },
     "controls": {
       "parent": "sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85",
@@ -540,6 +540,13 @@
           "bytes": 16930,
           "sha256": "3500a429f0e7e7d9f3cbaec70947f5b8e9cdfdef0ac57284671baa7a73b51023",
           "git_blob": "e9af72a8059d1f637251640443dd8caaf385fde9"
+        },
+        {
+          "source": "tooling/foundation/analysis_lifecycle.py",
+          "destination": "/app/tooling/foundation/analysis_lifecycle.py",
+          "bytes": 13774,
+          "sha256": "45cb568da0dd93642ab48fd5edb2aef76394393a1777c3c05c5645259f88ef2b",
+          "git_blob": "a63db64c57032fa68b7b854292a829c9165fd108"
         },
         {
           "source": "web/dist/assets/index-QgxjhSog.css",
@@ -749,7 +756,7 @@
         "/app/tests/run_support_s1_scalar.py": "45ec9904c9c4356eb6bb7034256ea33f98635217b4173cd4ac5c02c1b00318ed",
         "/app/tests/support_s1_fixtures.py": "1755176401aa119fe5ef7bc98e31fc1ce54ab1685458cb05df71e061ce55bd01",
         "/app/tooling/foundation/analysis_dispatcher.py": "3500a429f0e7e7d9f3cbaec70947f5b8e9cdfdef0ac57284671baa7a73b51023",
-        "/app/tooling/foundation/analysis_lifecycle.py": "0c032c9c926d07c83b0cc308d337f7b290c4a71878973ee75f65041877205305",
+        "/app/tooling/foundation/analysis_lifecycle.py": "45cb568da0dd93642ab48fd5edb2aef76394393a1777c3c05c5645259f88ef2b",
         "/app/web/dist/assets/index-C3Btazwe.js": "dd6ca3c4712c445d26a675676999463dab045f0dbcd540a0851d64587e37ce5e",
         "/app/web/dist/assets/index-QgxjhSog.css": "e3b4e9fbd23fc7878a008871051139cd1bb8b4efe3fc8e9902ca662251d83ff5",
         "/app/web/dist/index.html": "1ba7eea60d66b4738f05faad6cf8d10151b9ec98e731a69a1aab833f45624e33",
@@ -759,8 +766,8 @@
       },
       "uid": 10001,
       "output_image": "UNKNOWN until accepted build result",
-      "tag": "remission-n49-4141a21-controls:v1",
-      "qualifier": "remission-n49-4141a21-controls-qual-v1"
+      "tag": "remission-shared02-8b82399-controls:v1",
+      "qualifier": "remission-shared02-8b82399-controls-qual-v1"
     }
   },
   "limits": {
@@ -783,6 +790,23 @@
     "literal source context/expected closure rehash",
     "exclusive absence and literal-CID prearm"
   ],
-  "source_postmerge_receipt": "b6b0dcb7b7e732a1ce21a5ee2d222f15ca40c467",
-  "preserved_preparation_checkpoint": "1ea002f4310c72f6e8b97330b1f9d4b58576bf16"
+  "source_postmerge_receipt": "8344bddea66ca60d923dce225906cd7d93152c84",
+  "preserved_preparation_checkpoint": "8208b75606aa003cc090cd02306fe38d6c02f81a",
+  "previous_consumed_plan": "99894b38df19235a2f12e01db356ccf427cc9539",
+  "previous_failure_handoff": "3b811583be2d61360904e33b970cb419ce5e4543",
+  "frontend_provenance": {
+    "accepted_N_candidate": "1b3d89cb18371cfa37bb2252eff2eba39eb7d3cc",
+    "accepted_N_web_tree": "dbf0f4998bac1be85b5bc3d12f605bba1a99b636",
+    "new_source_web_tree": "dbf0f4998bac1be85b5bc3d12f605bba1a99b636",
+    "identical_tracked_web_tree": true,
+    "generated_bytes_reused_from_checked_retained_build": true,
+    "new_build": false
+  },
+  "host_controller": {
+    "executable": "C:/Python313/python.exe",
+    "dependency_status": "PENDING",
+    "executable_sha256": "UNKNOWN",
+    "accepted_probe_receipt": "UNKNOWN",
+    "accepted_probe_checks": "UNKNOWN"
+  }
 }
