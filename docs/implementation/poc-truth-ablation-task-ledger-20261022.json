@@ -1,7 +1,7 @@
 {
   "id": "POC-TRUTH-ABLATION-PLAN-20261022",
   "version": "1.0.0",
-  "status": "TA1-implementation-candidate-independent-review-pending",
+  "status": "TA2-refinement-preparation-candidate-independent-review-pending",
   "base": "9a3768222f7df3b4a4228f7100f63f9f8eee600e",
   "branch": "docs/poc-truth-ablation-plan-20261022",
   "plan": "poc-truth-ablation-plan-20261022.md",
@@ -54,7 +54,17 @@
   "tasks": [
     {
       "id": "TA1",
-      "status": "implemented-unqualified-candidate-review-pending",
+      "status": "independently-reviewed-experimental-engine-real-history-truth-unqualified",
+      "previous_status": "implemented-unqualified-candidate-review-pending",
+      "latest_independent_review": {
+        "candidate": "766ffbee338ea76693445e94b45621e6584d7b91",
+        "base": "50ea16c34f1d5a77b6dfba34230141a4827d28ff",
+        "executed_source": "32facee851a12958e1a5a8a50d01e1096d2f16ac",
+        "report_git_blob": "2fa15353de20b9415fddbde67522e937d40a992b",
+        "checks_git_blob": "22dc9a85731cf1155ad6b6be873984240b44b39f",
+        "fresh_unit_evidence_manifest_git_blob": "e0dad41b3ddb055beec90e8b358070f5d4e17767",
+        "scope": "ready_to_ship for unchanged experimental engine use in separately reviewed refinement only; real-history truth unqualified"
+      },
       "requirements": [
         "TRUTH-01",
         "TRUTH-02",
@@ -130,7 +140,34 @@
     },
     {
       "id": "TA2",
-      "status": "not-started",
+      "status": "refinement-source-preparation-candidate-independent-review-pending",
+      "previous_status": "refinement-preparation-proposed-independent-critique-pending",
+      "next_bounded_slice": {
+        "id": "TA2-A",
+        "handoff": "poc-truth-ta2-intake-handoff-20261023.md",
+        "scope": "TA1 independent review prerequisite; prepare bounded 32-filter three-level refinement and precision reductions; execution requires separate exact-plan review and root GO",
+        "base": "f645796f11ded90920aaacf7c1a071e1d58087fc",
+        "scientific_acceptance": false
+      },
+      "preparation_implementation": {
+        "handoff": "poc-truth-ta2-refinement-prep-20261023.md",
+        "owner_thread": "/root/truth_refinement_sol",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "high",
+        "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/truth-refinement-sol-261023",
+        "branch": "feat/poc-truth-refinement-prep-20261023",
+        "accepted_plan_head": "d85c782aacef648b53c62a08e1c4e4827980cf0a",
+        "integration_target_base": "f645796f11ded90920aaacf7c1a071e1d58087fc",
+        "frozen_source_head": "97d3ae8794b60f51232bf12b4e2c41af2292db75",
+        "proposed_invocation_sha256": "aa69f1b9a48c44915a271f77dc9bd433476c2b49a8d61704304ed34c852036b2",
+        "proposed_invocation_git_blob": "f84cdf13d178a02243bc02e78bd94997a89cde79",
+        "preparation_review_manifest_git_blob": "eae379063a3f7fde776aa4be4d10002beff99128",
+        "scalar_fixture_checks": "16 pass; scientific imports blocked; earlier discovery failure and incorrect seed fixture retained in handoff",
+        "proposed_evaluations": 128,
+        "independent_groups": 32,
+        "scientific_execution": "not executed; exact implementation/operation review and root GO required",
+        "admission": "closed; canonical validators unchanged"
+      },
       "requirements": [
         "TRUTH-02",
         "DGP-03"
