@@ -190,9 +190,9 @@ def main(draws,work_seconds):
         fixed=json.loads((ROOT/'fixed.json').read_text(encoding='utf-8'))
         held=json.loads((ROOT/'held-out.json').read_text(encoding='utf-8'))
         if (len(fixed['scalar'])!=64 or len(fixed['cdf'])!=16
-                or len(held['scalar'])!=32 or len(held['cdf'])!=16):raise ValueError('frozen96/32 case counts required')
-        phase=time.monotonic();scalar=scalar_cases(fixed['scalar']+held['scalar'])
-        for case in fixed['cdf']+held['cdf']:
+                or len(held['scalar_cases'])!=32 or len(held['cdf_cases'])!=16):raise ValueError('frozen96/32 case counts required')
+        phase=time.monotonic();scalar=scalar_cases(fixed['scalar']+held['scalar_cases'])
+        for case in fixed['cdf']+held['cdf_cases']:
             discrepancy=abs(float(ndtr(case['z']))-cdf(case['z']))
             if discrepancy>1e-10:raise ValueError('CDF independent erfc discrepancy')
             cdf_report.append(dict(id=case['id'],absolute_error=discrepancy))
