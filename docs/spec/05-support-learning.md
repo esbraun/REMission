@@ -14,6 +14,8 @@ Generic cluster correction differs from MRTAnalysis's hat-matrix correction; val
 
 ## SUPPORT-01 — Initial validated action set and executable policy
 
+For the restricted seven-configuration PoC, [S2-CANONICAL-01](../implementation/poc-analytics-contract-20261021.md#s2-canonical-01--batch-working-policy-and-saved-prediction) is the proposed canonical batch-model, chain-precision and saved-prediction refinement. Its independent acceptance does not enable S2 source/runtime or replace broader G4 qualification.
+
 Start with binary prompt/no-prompt, one decision per daily outcome window. Preserve extensibility without describing multi-action or overlapping-window inference as validated. Follow S20–S26 and S29–S32.
 
 Execute in order: clinical/consent/availability/burden constraints → eligible set → selection probabilities → bounds → normalization/feasibility check → persist final distribution → draw/persist assignment → delivery/outcome events. Never log pre-mask or pre-clipping propensities as executed probabilities.
