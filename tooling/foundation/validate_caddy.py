@@ -193,13 +193,17 @@ def audit(value, cid, image, name):
     expected = dict(Image=image, User='0:0',
         Healthcheck={'Test': ['NONE']}, Path='/bin/sh', Args=['-ec', WORK], Memory=134217728, MemorySwap=134217728,
         NanoCpus=500000000, PidsLimit=64, ReadonlyRootfs=True, Privileged=False,
-        CapAdd=['NET_BIND_SERVICE'], CapDrop=['ALL'], AutoRemove=False, PublishAllPorts=False,
+        CapDrop=['ALL'], AutoRemove=False, PublishAllPorts=False,
         SecurityOpt=['no-new-privileges'], Tmpfs=TMPFS, NetworkMode='none',
         RestartPolicy={'Name': 'no', 'MaximumRetryCount': 0})
     if value['State']['Status'] != 'created':
         raise ValueError('prestart audit requires created state')
     if not isinstance(value.get('Labels'), dict) or value['Labels'].get('remission.task') != name:
         raise ValueError('task label missing; other labels may come from the pinned official image')
+    # Docker inspect may return the canonical CAP_ spelling of this CLI alias.
+    if type(value.get('CapAdd')) is not list or value['CapAdd'] not in (
+            ['NET_BIND_SERVICE'], ['CAP_NET_BIND_SERVICE']):
+        raise ValueError('prestart mismatch: CapAdd')
     for key, item in expected.items():
         if value.get(key) != item or type(value.get(key)) is not type(item):
             raise ValueError('prestart mismatch: ' + key)

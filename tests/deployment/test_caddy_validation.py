@@ -72,6 +72,26 @@ class CaddyValidationTests(unittest.TestCase):
         self.assertLess(caddy.WORK.index('getcap /usr/bin/caddy'), caddy.WORK.index('caddy version'))
         self.assertIn("' /proc/$$/status\n", caddy.WORK)
 
+    def test_prestart_accepts_captured_canonical_capability_and_rejects_other_grants(self):
+        path = ROOT / 'docs/implementation/evidence/caddy-capname-repair-20261023/observed-prestart.json'
+        value = json.loads(path.read_bytes())
+        self.assertEqual(value['CapAdd'], ['CAP_NET_BIND_SERVICE'])
+        # Relocate only the two host input paths for this test checkout.
+        for mount in value['Mounts']:
+            mount['Source'] = str(caddy.INPUTS / Path(mount['Destination']).name)
+        cid, image, name = value['Id'], value['Image'], value['Labels']['remission.task']
+        caddy.audit(value, cid, image, name)
+        caddy.audit(dict(value, CapAdd=['NET_BIND_SERVICE']), cid, image, name)
+        for grant in (None, [], 'CAP_NET_BIND_SERVICE', ('CAP_NET_BIND_SERVICE',),
+                      ['CAP_NET_BIND_SERVICE', 'CAP_NET_BIND_SERVICE'],
+                      ['NET_BIND_SERVICE', 'CAP_NET_BIND_SERVICE'],
+                      ['CAP_NET_BIND_SERVICE', 'CAP_SYS_ADMIN'],
+                      ['CAP_NET_BIND_SERVICE', 'CAP_SETFCAP'], ['CAP_SYS_ADMIN'],
+                      ['CAP_SETFCAP'], ['CAP_DAC_OVERRIDE'], ['cap_net_bind_service'],
+                      ['CAP_CAP_NET_BIND_SERVICE'], [True]):
+            with self.subTest(grant=grant), self.assertRaisesRegex(ValueError, 'CapAdd'):
+                caddy.audit(dict(value, CapAdd=grant), cid, image, name)
+
     def test_authorization_binds_raw_plan_and_rejects_boolean_integer_confusion(self):
         with tempfile.TemporaryDirectory() as temporary:
             folder = Path(temporary); path = folder / 'plan.json'; auth = folder / 'authorization.json'

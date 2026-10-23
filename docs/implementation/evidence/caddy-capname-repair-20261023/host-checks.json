@@ -1,0 +1,61 @@
+{
+  "scope": "source-only-capability-name-repair-host-checks",
+  "command": [
+    "C:\\Python313\\python.exe",
+    "-P",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests/deployment",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "tests": 31,
+  "stdout": "",
+  "stderr": "test_acquisition_authorization_binds_launcher_evidence_plan_and_types (test_caddy_validation.CaddyValidationTests.test_acquisition_authorization_binds_launcher_evidence_plan_and_types) ... ok\r\ntest_authorization_binds_raw_plan_and_rejects_boolean_integer_confusion (test_caddy_validation.CaddyValidationTests.test_authorization_binds_raw_plan_and_rejects_boolean_integer_confusion) ... ok\r\ntest_external_bound_reserves_once_and_retains_failed_reap (test_caddy_validation.CaddyValidationTests.test_external_bound_reserves_once_and_retains_failed_reap) ... ok\r\ntest_external_success_requires_pull_client_receipt (test_caddy_validation.CaddyValidationTests.test_external_success_requires_pull_client_receipt) ... ok\r\ntest_one_pull_reservation_retains_literal_receipts_and_streams (test_caddy_validation.CaddyValidationTests.test_one_pull_reservation_retains_literal_receipts_and_streams) ... ok\r\ntest_prestart_accepts_captured_canonical_capability_and_rejects_other_grants (test_caddy_validation.CaddyValidationTests.test_prestart_accepts_captured_canonical_capability_and_rejects_other_grants) ... ok\r\ntest_prestart_rejects_resource_volume_command_and_state_drift (test_caddy_validation.CaddyValidationTests.test_prestart_rejects_resource_volume_command_and_state_drift) ... ok\r\ntest_pull_deadline_kills_reaps_but_never_claims_daemon_stopped (test_caddy_validation.CaddyValidationTests.test_pull_deadline_kills_reaps_but_never_claims_daemon_stopped) ... ok\r\ntest_reap_failure_retains_uncertain_receipt (test_caddy_validation.CaddyValidationTests.test_reap_failure_retains_uncertain_receipt) ... ok\r\ntest_selected_image_requires_digest_platform_without_optional_config (test_caddy_validation.CaddyValidationTests.test_selected_image_requires_digest_platform_without_optional_config) ... ok\r\ntest_workload_requires_exact_capabilities_identity_version_and_both_configs (test_caddy_validation.CaddyValidationTests.test_workload_requires_exact_capabilities_identity_version_and_both_configs) ... ok\r\ntest_authorization_binds_exact_bytes_and_prevents_children (test_cloud_fixture_operator.FixtureOperatorTests.test_authorization_binds_exact_bytes_and_prevents_children) ... ok\r\ntest_explicit_network_create_and_rebound_ipam_admission_precede_start (test_cloud_fixture_operator.FixtureOperatorTests.test_explicit_network_create_and_rebound_ipam_admission_precede_start) ... ok\r\ntest_failure_retains_evidence_and_cannot_claim_stop_from_client_exit (test_cloud_fixture_operator.FixtureOperatorTests.test_failure_retains_evidence_and_cannot_claim_stop_from_client_exit) ... ok\r\ntest_frozen_network_config_and_literal_argv_cannot_change_under_matching_authorization (test_cloud_fixture_operator.FixtureOperatorTests.test_frozen_network_config_and_literal_argv_cannot_change_under_matching_authorization) ... ok\r\ntest_intentional_stop_accepts_both_orders_but_rejects_early_exit_and_oom (test_cloud_fixture_operator.FixtureOperatorTests.test_intentional_stop_accepts_both_orders_but_rejects_early_exit_and_oom) ... ok\r\ntest_network_admission_requires_exact_subnet_gateway_and_owned_identity (test_cloud_fixture_operator.FixtureOperatorTests.test_network_admission_requires_exact_subnet_gateway_and_owned_identity) ... ok\r\ntest_no_start_when_watchdog_never_arms_or_receipt_is_foreign (test_cloud_fixture_operator.FixtureOperatorTests.test_no_start_when_watchdog_never_arms_or_receipt_is_foreign) ... ok\r\ntest_parent_optional_user_does_not_bypass_image_identity_platform_or_role_user (test_cloud_fixture_operator.FixtureOperatorTests.test_parent_optional_user_does_not_bypass_image_identity_platform_or_role_user) ... ok\r\ntest_prestart_rejects_swap_privilege_mount_network_and_command_drift (test_cloud_fixture_operator.FixtureOperatorTests.test_prestart_rejects_swap_privilege_mount_network_and_command_drift) ... ok\r\ntest_new_account_is_hashed_and_duplicate_does_not_reset (test_cloud_simulation.AccountInputTests.test_new_account_is_hashed_and_duplicate_does_not_reset) ... ok\r\ntest_password_pipe_rejects_fixture_or_short_passwords_and_never_echoes (test_cloud_simulation.AccountInputTests.test_password_pipe_rejects_fixture_or_short_passwords_and_never_echoes) ... ok\r\ntest_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default (test_cloud_simulation.DeploymentTests.test_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default) ... ok\r\ntest_minimal_build_preserves_full_scientific_default (test_cloud_simulation.DeploymentTests.test_minimal_build_preserves_full_scientific_default) ... ok\r\ntest_only_proxy_has_required_bind_capability_and_explicit_root_store_identity (test_cloud_simulation.DeploymentTests.test_only_proxy_has_required_bind_capability_and_explicit_root_store_identity) ... ok\r\ntest_private_single_writer_https_and_durable_layout (test_cloud_simulation.DeploymentTests.test_private_single_writer_https_and_durable_layout) ... ok\r\ntest_rejects_mutable_images_injected_origins_and_unknown_secret_keys (test_cloud_simulation.DeploymentTests.test_rejects_mutable_images_injected_origins_and_unknown_secret_keys) ... ok\r\ntest_render_binds_admin_and_all_config_bytes_without_executing_children (test_cloud_simulation.DeploymentTests.test_render_binds_admin_and_all_config_bytes_without_executing_children) ... ok\r\ntest_accepts_identified_mount_and_unchanged_bootstrap (test_cloud_simulation.DiskGuardTests.test_accepts_identified_mount_and_unchanged_bootstrap) ... ok\r\ntest_missing_database_or_mutated_bundle_fails_without_creating_state (test_cloud_simulation.DiskGuardTests.test_missing_database_or_mutated_bundle_fails_without_creating_state) ... ok\r\ntest_missing_disk_wrong_mount_and_wrong_device_fail_before_any_reseed (test_cloud_simulation.DiskGuardTests.test_missing_disk_wrong_mount_and_wrong_device_fail_before_any_reseed) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 31 tests in 1.522s\r\n\r\nOK\r\n",
+  "ledger_command": [
+    "C:\\Python313\\python.exe",
+    "-P",
+    "-B",
+    "docs/implementation/check-ledger-20261020.py"
+  ],
+  "ledger_returncode": 0,
+  "ledger_stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; G0 accepted in contract/library scope; G1 running and later gates unaccepted.\r\n",
+  "ledger_stderr": "",
+  "elapsed_seconds": 7.057705900049768,
+  "ast_files": [
+    "tooling/foundation/validate_caddy.py",
+    "tests/deployment/test_caddy_validation.py"
+  ],
+  "historical_raw_files_verified": 40,
+  "latest_raw_entries_verified": 14,
+  "captured_prestart_copy_exact": true,
+  "unchanged_physical_bindings": [
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\docs\\implementation\\evidence\\caddy-validation-prep-20261023\\dns.Caddyfile",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\docs\\implementation\\evidence\\caddy-validation-prep-20261023\\host-checks.json",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\docs\\implementation\\evidence\\caddy-validation-prep-20261023\\inputs.json",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\docs\\implementation\\evidence\\caddy-validation-prep-20261023\\ipv4.Caddyfile",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\tooling\\foundation\\analysis_lifecycle.py",
+    "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\cloud-caddy-validate-sol-261023\\tooling\\foundation\\cloud\\prepare.py"
+  ],
+  "protected_source_paths_unchanged": [
+    "tooling/foundation/cloud/prepare.py",
+    "tooling/foundation/analysis_lifecycle.py",
+    "tooling/foundation/run_cloud_fixture.py",
+    "tests/deployment/linux_simulation_fixture.py",
+    "tests/deployment/test_cloud_simulation.py",
+    "tests/deployment/test_cloud_fixture_operator.py"
+  ],
+  "app_web_contract_methods_unchanged": true,
+  "markdown_local_links": 30,
+  "balanced_fences": true,
+  "diff_check": true,
+  "docker_executed": false,
+  "network_executed": false,
+  "cloud_executed": false,
+  "app_or_scientific_imports": false
+}

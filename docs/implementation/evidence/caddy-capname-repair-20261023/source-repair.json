@@ -1,0 +1,109 @@
+{
+  "status": "source-only-capability-name-correction; new-workload-unexecuted; integration-HOLD",
+  "recorded_utc": "2026-10-23T03:46:01.2977555Z",
+  "owner": "/root/cloud_corrected_proxy_execute_sol",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "root_verified_thread": "01a166d6-d80d-76d1-a4fb-9159c35fa274",
+  "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/cloud-caddy-validate-sol-261023",
+  "branch": "feat/poc-caddy-config-validation-20261023",
+  "source_parent": "8f9e5296a3c1371a9924240009ad4920751e23ca",
+  "review_base": "de4a0c5d8a8146a02101617c0fcf8f655aba6474",
+  "candidate_identity": "Commit containing this source correction; exact candidate and new raw plan supplied in ignored handoff report.",
+  "previous_review": {
+    "report": "0a50ea855363a5db1d7e32eb2f2ec800aef7f679",
+    "manifest": "0687135ea105f3d311904d19eb8bbef46fc24399",
+    "acquisition_reuse_accepted": true,
+    "integration_disposition": "HOLD until runtime proof and refreshed exact head/base review"
+  },
+  "failed_attempt": {
+    "head": "8f9e5296a3c1371a9924240009ad4920751e23ca",
+    "plan_sha256": "8540550d484d1fa770ffce8d16fa136f12ad476b9b44cc2cc942e1ff882b3a6d",
+    "launcher_count": 1,
+    "failure": "ValueError('prestart mismatch: CapAdd')",
+    "requested_capability": "NET_BIND_SERVICE",
+    "actual_selected_cap_add": [
+      "CAP_NET_BIND_SERVICE"
+    ],
+    "previous_expected_cap_add": [
+      "NET_BIND_SERVICE"
+    ],
+    "cid": "a3df0b3669e5a621cd8772387e12925b9d2fd05b9be05d97374722b51835899a",
+    "terminal": "created",
+    "pid": 0,
+    "running": false,
+    "oom": false,
+    "restart_count": 0,
+    "worker_pid": 23772,
+    "worker_exit": 1,
+    "worker_reaped": true,
+    "worker_parent_failure": null,
+    "watchdog_or_attach_started": false,
+    "workload_started": false,
+    "resource_retained": true,
+    "new_runtime_files": 8,
+    "preserved_plan_authorization_checks_report_manifest": 5,
+    "failure_report": "d2d2524a7d5e82a2f081280cb2e6f535b3851869",
+    "failure_manifest": "7c872ecf2c4ec993c953e3cc69ebcc9fde486d97",
+    "failure_manifest_sha256": "d9dcf1bfe0c28556c44991fdc64669d6a8747cc218fcdb6abe914f330280d382",
+    "selected_prestart_copy": "observed-prestart.json"
+  },
+  "correction": {
+    "authority": "Root explicitly conditionally authorized only a minimal source-only audit correction if the captured entire mismatch was canonical CAP_NET_BIND_SERVICE versus NET_BIND_SERVICE alias.",
+    "allowed_cap_add_lists": [
+      [
+        "NET_BIND_SERVICE"
+      ],
+      [
+        "CAP_NET_BIND_SERVICE"
+      ]
+    ],
+    "requires_exactly_one_grant": true,
+    "rejects": [
+      "missing",
+      "empty",
+      "duplicate same spelling",
+      "duplicate alias pair",
+      "extra SYS_ADMIN or SETFCAP",
+      "other grants including DAC_OVERRIDE",
+      "wrong type",
+      "case variation",
+      "repeated CAP_ prefix"
+    ],
+    "production_profile_user_nnp_resources_unchanged": true,
+    "create_argv_workload_unchanged": true,
+    "lifecycle_unchanged": true,
+    "app_generator_fixture_unchanged": true,
+    "focused_test": "test_prestart_accepts_captured_canonical_capability_and_rejects_other_grants",
+    "test_uses_actual_captured_record": "Only its two host mount source paths are relocated for the current test checkout."
+  },
+  "historical": {
+    "failure_manifest": "09f7b35e0ba3250c4876794363f66ae9e601a2b5",
+    "files": 40,
+    "retained_cid": "92d2ea660a8a8392f0c65985768763831f1f93f35048bccd6d833cf581383272",
+    "acquisition_manifest": "dc6adb44488b10a6ae53d0eef2881029add8b477",
+    "local_app_generator_evidence": "d75d5a51d0ece0cf8a724f18d2e36d9179099005/b55ba59d82697780d6587d4167190d25370acb68; original local scope only"
+  },
+  "fresh_plan": {
+    "directory": "artifacts/caddy-capname-repair-20261023",
+    "name": "remission-caddy-61f7a8e3d042",
+    "physical_source_bindings": 7,
+    "independent_source_and_plan_review_required": true,
+    "explicit_acquisition_reuse_acceptance_required": true,
+    "separate_new_root_authorization_required": true,
+    "authorization_issued": false,
+    "runtime_performed": false
+  },
+  "checks": "host-checks.json",
+  "source_repair_runtime_actions": 0,
+  "retries": 0,
+  "cleanup_actions": 0,
+  "extra_docker_commands": 0,
+  "limits": [
+    "Getcap/UID/GID/capability masks/NNP/version/both configs remain unmeasured.",
+    "No production listener/TLS/no-SNI/browser/VM/disk/GCP/deployed auth proof.",
+    "All old plans/authorizations/reservations/artifacts/resources retained; no reuse of consumed authorization.",
+    "No pull/build/network/cloud/science/app/generator change.",
+    "CS3/CS4/deployed CS-T3-T8 and later analytics/human/clinical gates remain pending."
+  ]
+}
