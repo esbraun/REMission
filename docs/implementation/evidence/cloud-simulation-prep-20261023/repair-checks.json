@@ -1,0 +1,85 @@
+{
+  "utc": "2026-10-23T02:17:37.780385+00:00",
+  "scope": "host stdlib only; no Docker/cloud/HTTP/private/science execution; existing isolated temporary SQLite seam tests only",
+  "repair_owner": "/root/cloud_fixture_repair_sol",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "effort_escalation_reason": null,
+  "base_commit": "de4a0c5d8a8146a02101617c0fcf8f655aba6474",
+  "repaired_review_head": "1e6a8e477928ef2d5cb4e5a36356d21c16ac86d9",
+  "checks": [
+    {
+      "argv": [
+        "C:\\Python313\\python.exe",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/deployment",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_authorization_binds_exact_bytes_and_prevents_children (test_cloud_fixture_operator.FixtureOperatorTests.test_authorization_binds_exact_bytes_and_prevents_children) ... ok\r\ntest_failure_retains_evidence_and_cannot_claim_stop_from_client_exit (test_cloud_fixture_operator.FixtureOperatorTests.test_failure_retains_evidence_and_cannot_claim_stop_from_client_exit) ... ok\r\ntest_intentional_stop_accepts_both_orders_but_rejects_early_exit_and_oom (test_cloud_fixture_operator.FixtureOperatorTests.test_intentional_stop_accepts_both_orders_but_rejects_early_exit_and_oom) ... ok\r\ntest_no_start_when_watchdog_never_arms_or_receipt_is_foreign (test_cloud_fixture_operator.FixtureOperatorTests.test_no_start_when_watchdog_never_arms_or_receipt_is_foreign) ... ok\r\ntest_prestart_rejects_swap_privilege_mount_network_and_command_drift (test_cloud_fixture_operator.FixtureOperatorTests.test_prestart_rejects_swap_privilege_mount_network_and_command_drift) ... ok\r\ntest_new_account_is_hashed_and_duplicate_does_not_reset (test_cloud_simulation.AccountInputTests.test_new_account_is_hashed_and_duplicate_does_not_reset) ... ok\r\ntest_password_pipe_rejects_fixture_or_short_passwords_and_never_echoes (test_cloud_simulation.AccountInputTests.test_password_pipe_rejects_fixture_or_short_passwords_and_never_echoes) ... ok\r\ntest_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default (test_cloud_simulation.DeploymentTests.test_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default) ... ok\r\ntest_minimal_build_preserves_full_scientific_default (test_cloud_simulation.DeploymentTests.test_minimal_build_preserves_full_scientific_default) ... ok\r\ntest_private_single_writer_https_and_durable_layout (test_cloud_simulation.DeploymentTests.test_private_single_writer_https_and_durable_layout) ... ok\r\ntest_rejects_mutable_images_injected_origins_and_unknown_secret_keys (test_cloud_simulation.DeploymentTests.test_rejects_mutable_images_injected_origins_and_unknown_secret_keys) ... ok\r\ntest_render_binds_admin_and_all_config_bytes_without_executing_children (test_cloud_simulation.DeploymentTests.test_render_binds_admin_and_all_config_bytes_without_executing_children) ... ok\r\ntest_accepts_identified_mount_and_unchanged_bootstrap (test_cloud_simulation.DiskGuardTests.test_accepts_identified_mount_and_unchanged_bootstrap) ... ok\r\ntest_missing_database_or_mutated_bundle_fails_without_creating_state (test_cloud_simulation.DiskGuardTests.test_missing_database_or_mutated_bundle_fails_without_creating_state) ... ok\r\ntest_missing_disk_wrong_mount_and_wrong_device_fail_before_any_reseed (test_cloud_simulation.DiskGuardTests.test_missing_disk_wrong_mount_and_wrong_device_fail_before_any_reseed) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 15 tests in 0.218s\r\n\r\nOK\r\n"
+    },
+    {
+      "argv": [
+        "C:\\Python313\\python.exe",
+        "-B",
+        "docs/implementation/check-ledger-20261020.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; G0 accepted in contract/library scope; G1 running and later gates unaccepted.\r\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "warning: in the working copy of 'docs/implementation/poc-cloud-simulation-fixture-proposal-20261023.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/implementation/poc-cloud-simulation-runbook-20261023.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'tests/deployment/linux_simulation_fixture.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'tests/deployment/test_cloud_simulation.py', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "argv": [
+        "C:\\Python313\\python.exe",
+        "-P",
+        "-B",
+        "tooling/foundation/run_cloud_fixture.py",
+        "--help"
+      ],
+      "exit": 0,
+      "stdout": "usage: run_cloud_fixture.py [-h] (--freeze CLOSURES_JSON |\r\n                            --execute PLAN_JSON | --launch PLAN_JSON)\r\n                            [--output OUTPUT] [--prefix PREFIX]\r\n                            [--authorization AUTHORIZATION]\r\n\r\nOne explicitly authorized CS-T1 attempt; host stdlib only, retain all\r\nresources. --freeze prepares a reviewable plan without Docker. --execute\r\nrequires root's authorization of its exact SHA256. Reuses accepted literal-CID\r\nlifecycle code.\r\n\r\noptions:\r\n  -h, --help            show this help message and exit\r\n  --freeze CLOSURES_JSON\r\n  --execute PLAN_JSON\r\n  --launch PLAN_JSON\r\n  --output OUTPUT\r\n  --prefix PREFIX\r\n  --authorization AUTHORIZATION\r\n",
+      "stderr": ""
+    }
+  ],
+  "ast_paths": [
+    "tooling/foundation/run_cloud_fixture.py",
+    "tests/deployment/test_cloud_fixture_operator.py",
+    "tests/deployment/test_cloud_simulation.py",
+    "tests/deployment/linux_simulation_fixture.py",
+    "tooling/foundation/cloud/prepare.py",
+    "tooling/foundation/analysis_lifecycle.py"
+  ],
+  "embedded_qualifier_ast": "passed",
+  "windows_create_argv_characters": {
+    "fixture": 8479,
+    "generator": 4833
+  },
+  "source_files": {
+    "tooling/foundation/run_cloud_fixture.py": "ac72cb2ca0b938d8bc62a8430b74bec850411a4afe8388d84f1854e9e22994c5",
+    "tests/deployment/test_cloud_fixture_operator.py": "4fde5119647f69955fa48a8d106b2e1223deb656c875750252f3a1adc99b8624",
+    "tests/deployment/test_cloud_simulation.py": "8b9ec6fa6d569a5e4eafca91f0b22d1cf5ac1aa1283f289469587688e1245279",
+    "tests/deployment/linux_simulation_fixture.py": "44de5281e3912c1c29ed42f3e11ef2c1186c1137957a8648fdd25fa588a5de7b",
+    "tooling/foundation/cloud/prepare.py": "d1cd32702b71c95d447a3f9dc115d2e2d421ed3d87b4d3c61af2506cc211a21a",
+    "tooling/foundation/analysis_lifecycle.py": "0c032c9c926d07c83b0cc308d337f7b290c4a71878973ee75f65041877205305"
+  },
+  "fixture": "UNEXECUTED; refreshed independent Astra and root authorization required",
+  "tls": "source-rendered only; actual Caddy validation/certificates/browser trust UNEXECUTED",
+  "local_document_links": "passed"
+}

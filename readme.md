@@ -12,6 +12,8 @@ The N-of-1 protocol interface supports an explicitly consented fictional protoco
 
 ## Local use
 
+The immediate milestone is the physician simulation on Google Cloud with tested username/password login. The [cloud simulation runbook](docs/implementation/poc-cloud-simulation-runbook-20261023.md) prepares one VM with the existing app, required private generator, trusted HTTPS and retained SQLite storage. `build_live.py --simulation-only` builds only app and generator; training/fitting and learner/evaluator workers are later analytics work. Cloud execution and deployed authentication/persistence verification remain pending in the [cloud ledger](docs/implementation/poc-cloud-simulation-ledger-20261022.md).
+
 The supported application stack uses Docker with Linux containers and host Python. The runtime also checks a pinned service image; native Windows SQLite is not supported for that stack. Follow the [foundation runtime guide](services/foundation/README.md) for the complete build, qualification, and launch procedure. Its main build entry point is:
 
 ```powershell

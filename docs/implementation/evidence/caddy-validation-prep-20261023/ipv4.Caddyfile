@@ -1,0 +1,12 @@
+{
+    default_sni 8.8.8.8
+}
+https://8.8.8.8 {
+    tls {
+        issuer acme https://acme-v02.api.letsencrypt.org/directory {
+            profile shortlived
+            disable_tlsalpn_challenge
+        }
+    }
+    reverse_proxy app:8765
+}

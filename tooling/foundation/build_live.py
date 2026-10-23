@@ -7,8 +7,16 @@ ROOT=Path(__file__).resolve().parents[2]
 RUNTIME='sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa'
 
 
+def build_targets(simulation_only=False):
+    """Simulation needs the private generator, but no statistical worker."""
+    if simulation_only:
+        return [('service','service','service'),('generator',None,'generator')]
+    return [('service','service','service'),('tests','integration-tests','service'),('learner',None,'learner'),('evaluator',None,'evaluator'),('generator',None,'generator')]
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--evidence',type=Path,required=True)
+    parser.add_argument('--simulation-only',action='store_true',help='Build only the app and required private generator; no analytics roles')
     parser.add_argument('--allow-pinned-npm-network',action='store_true');args=parser.parse_args()
     args.evidence.mkdir(parents=True,exist_ok=True);prefix='remission-lh-'+uuid.uuid4().hex[:12]
     def command(argv):
@@ -26,7 +34,7 @@ def main():
             if path.is_file() and not any(p in ('node_modules','dist','__pycache__') for p in path.parts):
                 source[path.relative_to(ROOT).as_posix()]=dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest())
     images={}
-    for role,target,dockerfile in [('service','service','service'),('tests','integration-tests','service'),('learner',None,'learner'),('evaluator',None,'evaluator'),('generator',None,'generator')]:
+    for role,target,dockerfile in build_targets(args.simulation_only):
         runtime();tag=prefix+'-'+role+':candidate'
         argv=['docker','build','--network','none','--file','tooling/foundation/'+dockerfile+'.Dockerfile','--tag',tag]
         if target:argv+=['--target',target]
@@ -40,7 +48,7 @@ def main():
         images[role]=command(['docker','image','inspect',tag,'--format','{{.Id}}']).stdout.decode().strip()
     if lock.read_bytes()!=lock_before:raise RuntimeError('lock changed during pinned build')
     runtime()
-    value=dict(source_head=head,source=source,images=images,prefix=prefix,runtime=RUNTIME,npm_lock_sha256=hashlib.sha256(lock_before).hexdigest(),network_exception='only pinned npm acquisition after captured offline DNS failure when explicitly enabled')
+    value=dict(source_head=head,source=source,images=images,prefix=prefix,runtime=RUNTIME,simulation_only=args.simulation_only,npm_lock_sha256=hashlib.sha256(lock_before).hexdigest(),network_exception='only pinned npm acquisition after captured offline DNS failure when explicitly enabled')
     path=args.evidence/'source-images.json';path.write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(dict(source_head=head,images=images,prefix=prefix,manifest=str(path))))
 

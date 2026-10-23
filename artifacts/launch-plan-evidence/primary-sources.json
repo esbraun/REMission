@@ -1,0 +1,17 @@
+{
+  "checked_utc_date": "2026-10-23",
+  "sources": [
+    {"url":"https://docs.cloud.google.com/compute/docs/instances/limit-vm-runtime","observed":"Standard VM create supports termination-time with explicit STOP; max-run-duration restarts its clock on rerun; fixed time does not. Reboot/reset preserve timestamp. Automatic stopping may begin up to 30 seconds late. Page updated 2026-10-20."},
+    {"url":"https://docs.docker.com/engine/install/debian/","observed":"Bookworm12 amd64 supported; official signed apt repository and Docker Engine/CLI/containerd/buildx/Compose plugin packages."},
+    {"url":"https://packages.debian.org/bookworm/python3","observed":"Bookworm python3 package depends on Python3.11."},
+    {"url":"https://docs.cloud.google.com/artifact-registry/docs/docker/authentication#standalone-helper","observed":"Official example pins standalone helper2.1.29; configure-docker hostname; sudo Docker requires root helper configuration; no token output needed."},
+    {"url":"https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/tag/v2.1.29","observed":"Release page exists; helper download/checksum/runtime remain unexecuted."},
+    {"url":"https://docs.cloud.google.com/firewall/docs/firewalls#priority","observed":"VPC ingress applies to tagged instance. Proposed priority900 allows precede priority1000 deny and observed65534 defaults; higher-level effective policy is not audited."},
+    {"url":"https://cloud.google.com/vpc/network-pricing","observed":"Direct fetch timed out. Official indexed excerpt explicitly classifies static IPv4 attached to running OR stopped VM as in-use; deleted/detached is unused until release."},
+    {"url":"https://cloud.google.com/vpc/pricing?authuser=19","observed":"Official indexed excerpt shows static assigned-but-unused IPv4 at USD0.01/hour. In-use USD0.005/hour reused from frozen cost note."},
+    {"url":"https://docs.cloud.google.com/compute/docs/instances/suspend-stop-reset-instances-overview","observed":"Direct fetch timed out. Official indexed content states CPU charging ceases in STOPPING; attached disks and external IP charges continue until deletion."}
+  ],
+  "frozen_cost_blob":"0a2529fe6e02b25969ea87ba0cbb178fe680e0d2",
+  "frozen_tls_blob":"9554aa68b735e9499f4cc9c3d12e8add49dc3a0d",
+  "interpretation":"48h fixed STOP is a compute bound, not a project billing cap. Proposed lifecycle requires deadline cleanup and seven-day retained-disk disposition; no scheduler is added. Image sizes do not measure host memory or disk fit."
+}

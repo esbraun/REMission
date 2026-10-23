@@ -1,0 +1,118 @@
+{
+  "source_root": "C:\\Users\\erics\\Documents\\Projects\\REMission",
+  "source_git_head": "50403963d11cc51e6109a635f9a2b6b1031b8cf4",
+  "source_branch": "docs/exclude-luna-from-worker-cap",
+  "captured_at_utc": "2026-10-23T03:59:06.2952104Z",
+  "evidence_observed": {
+    "quota_report": "Selected regional and global CPU quota headroom sufficient for proposed single e2-small deployment; no increase indicated",
+    "iam_role": "roles/artifactregistry.reader",
+    "binding_status": "APPLIED_AND_VERIFIED",
+    "repository": "us-central1-docker.pkg.dev/remission-poc-esbraun/remission",
+    "global_cpu_all_regions": {
+      "limit": 32,
+      "usage": 0
+    },
+    "runtime_service_account": "remission-poc-runtime@remission-poc-esbraun.iam.gserviceaccount.com",
+    "evidence_paths": [
+      "infra/cloud-resources.json",
+      "artifacts/runtime-registry-access-20261023/result.json",
+      "artifacts/runtime-registry-access-20261023/grant.json",
+      "artifacts/runtime-registry-access-20261023/verify.json",
+      "artifacts/runtime-registry-access-20261023/regional-quota.json",
+      "artifacts/runtime-registry-access-20261023/global-quota.json",
+      "artifacts/runtime-registry-access-20261023/instances.json",
+      "artifacts/runtime-registry-access-20261023/images.json"
+    ],
+    "binding_observed_at_utc": "2026-10-23T03:48:52Z",
+    "repository_image_inventory": "empty at observation",
+    "instance_inventory": "empty at observation",
+    "quota_evidence_captured_at_utc": "2026-10-23T03:48:52Z",
+    "runtime_pull_status": "NOT_TESTED_NO_VM_OR_PUBLISHED_IMAGE",
+    "regional_us_central1": {
+      "disks_total_gb": {
+        "limit": 4096,
+        "usage": 0
+      },
+      "in_use_addresses": {
+        "limit": 8,
+        "usage": 0
+      },
+      "instances": {
+        "limit": 24,
+        "usage": 0
+      },
+      "e2_cpus": {
+        "limit": 24,
+        "usage": 0
+      }
+    },
+    "project": "remission-poc-esbraun",
+    "limitations": [
+      "No VM exists; runtime service-account attachment, OAuth access scope, Docker authentication, and image pull are untested.",
+      "Quota headroom does not guarantee zone capacity."
+    ],
+    "region": "us-central1",
+    "binding_scope": "repository only"
+  },
+  "user_report": {
+    "reported_by_parent": "User reports they granted Artifact Registry Reader on the remission repository, verified regional/global quota headroom with no increase needed, updated local project config and saved evidence; actual pull remains untested since no VM/published image."
+  },
+  "hashes": [
+    {
+      "path": "infra/cloud-resources.json",
+      "sha256": "706c74309fff12eb2b907b39ea031600a8ec89911ec915b34eaecd70c749d44d",
+      "git_blob_sha1": "f6e7f78673e7aedf1a92141a193775d9871a9125",
+      "size_bytes": 5209,
+      "last_write_utc": "2026-10-23T03:49:40.9203428Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/result.json",
+      "sha256": "48db75271ded20c61d9e339dee4bc4179fcdda88599e98da790f29687972c1ee",
+      "git_blob_sha1": "46e9220c845a775dc9cef1b34709c7e17d751ebf",
+      "size_bytes": 1426,
+      "last_write_utc": "2026-10-23T03:49:41.6649202Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/grant.json",
+      "sha256": "7b31e28febba3710bf604a489420bb0ede7519a10f11d18816f169f06d8a1c6a",
+      "git_blob_sha1": "c7bddc19c7bee07078c4556dfdef68f30906c512",
+      "size_bytes": 1103,
+      "last_write_utc": "2026-10-23T03:48:45.6422616Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/verify.json",
+      "sha256": "24c8bd6806f3befa05d252f4c9aef38d5a1ffdd528acd2a9b96133c937927c3d",
+      "git_blob_sha1": "a0d4c8d771e519ec281bb250688438e9262ac88e",
+      "size_bytes": 1199,
+      "last_write_utc": "2026-10-23T03:48:55.7180579Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/regional-quota.json",
+      "sha256": "774d6fb6574b31a0bc5ad49691707f2321c1597e3b37fe7ea02d95f2addc7264",
+      "git_blob_sha1": "391f51f7708c5f85aadb73d22a2042a683ee5277",
+      "size_bytes": 1893,
+      "last_write_utc": "2026-10-23T03:48:56.0748882Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/global-quota.json",
+      "sha256": "d226fbd0a0a1741b3498911c70176c76389db22170ec1b6d37986211e2b60dd6",
+      "git_blob_sha1": "57e169df7f6ca8152564ef46522f2ea5e9dd7101",
+      "size_bytes": 1082,
+      "last_write_utc": "2026-10-23T03:48:56.2828071Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/instances.json",
+      "sha256": "2e4c262857d34267242c9d29a8b5a7f44e74445324e856d4f9aa6ee95a6f26a3",
+      "git_blob_sha1": "1ab81c4fdea1b6aeebc8234b57c1b6ddf9c24025",
+      "size_bytes": 884,
+      "last_write_utc": "2026-10-23T03:48:56.5087437Z"
+    },
+    {
+      "path": "artifacts/runtime-registry-access-20261023/images.json",
+      "sha256": "e477de084ae44844d93a3d68e6fef4ff4aa5c7c6c6c49a9b17a76de0cce6cb41",
+      "git_blob_sha1": "2bbd445a3aa31b3f393ce62f999e7afd6544c8ac",
+      "size_bytes": 1014,
+      "last_write_utc": "2026-10-23T03:48:56.1965633Z"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "status": "host_structural_checks_passed_only",
+  "utc": "2026-10-23T01:44:32.959875+00:00",
+  "source_base": "de4a0c5d8a8146a02101617c0fcf8f655aba6474",
+  "source_files": {
+    "tooling/foundation/cloud/admin.py": {
+      "bytes": 6735,
+      "sha256": "8594ba7e9e937ef38c499f013a6e721d03bd4b5795fbb9e548491577359f54a6"
+    },
+    "tooling/foundation/cloud/disk_guard.py": {
+      "bytes": 2906,
+      "sha256": "8051901051f4be7d297e30468690a9d2a057538489966f5f6c609df1471e1389"
+    },
+    "tooling/foundation/cloud/prepare.py": {
+      "bytes": 7550,
+      "sha256": "943d45e7bd21597cacbc14342647790aac57968b98ddff0393eceb491c0720f7"
+    },
+    "tooling/foundation/cloud/remission-simulation.service": {
+      "bytes": 821,
+      "sha256": "60461778d50dd083dde442963883325b18bb5b4b6a380e9a5e27c83522221f47"
+    },
+    "tooling/foundation/cloud/startup.sh": {
+      "bytes": 929,
+      "sha256": "92e65316e922404d7e1710b019b60829b466812f07576eb0519900b379d8180e"
+    },
+    "tests/deployment/linux_simulation_fixture.py": {
+      "bytes": 8661,
+      "sha256": "cd40328668e664c764d8a8a7b4a73fc08e8ff98248c3e9112f76ef91da07f786"
+    },
+    "tests/deployment/test_cloud_simulation.py": {
+      "bytes": 9371,
+      "sha256": "d1448b8c8a7ea8a51c487945fef353ad95b2a4ab0e1c0429aef9348427ba0b55"
+    },
+    "tooling/foundation/build_live.py": {
+      "bytes": 3850,
+      "sha256": "967a5fd86be69ffa09f5fdbaed6bc20a6b1ab6dc60934c3f355a16eb78a3b0cb"
+    },
+    "readme.md": {
+      "bytes": 7549,
+      "sha256": "ba901376aad522501070d715a2bdb35c4880eaa42e5711c8ab58d3553da164eb"
+    },
+    "docs/implementation/poc-cloud-simulation-ledger-20261022.md": {
+      "bytes": 14513,
+      "sha256": "b411ad43c0031ae0927e2ed35bb4b57ab0866ec050b07bac6655d94692773c0d"
+    },
+    "docs/implementation/poc-cloud-simulation-runbook-20261023.md": {
+      "bytes": 20183,
+      "sha256": "eceff8d25f32ed7e1527432f4b48fe6c7a2b831bb8307012a8272f3192ee37d1"
+    },
+    "docs/implementation/poc-cloud-simulation-fixture-proposal-20261023.md": {
+      "bytes": 6580,
+      "sha256": "f5a47296066487ab314d925dece0e6a4fa8b5827b58e04edb1acf1055f8e25aa"
+    }
+  },
+  "commands": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/deployment",
+        "-v"
+      ],
+      "exit": 0,
+      "streams": {
+        "stdout": {
+          "path": "01.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "01.stderr.txt",
+          "bytes": 1668,
+          "sha256": "9fd3793b40011bb6676ddc3ce7394a6697dbe4ee05a9729477ad75bb6cc94ff5"
+        }
+      }
+    },
+    {
+      "command": [
+        "python",
+        "docs/implementation/check-ledger-20261020.py"
+      ],
+      "exit": 0,
+      "streams": {
+        "stdout": {
+          "path": "02.stdout.txt",
+          "bytes": 420,
+          "sha256": "5b335e7e551c6b421e59f48650ccde945333a1ac5a56c38807982ec318bcc638"
+        },
+        "stderr": {
+          "path": "02.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "command": [
+        "C:/Program Files/Git/usr/bin/bash.exe",
+        "-n",
+        "tooling/foundation/cloud/startup.sh"
+      ],
+      "exit": 0,
+      "streams": {
+        "stdout": {
+          "path": "03.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "03.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "streams": {
+        "stdout": {
+          "path": "04.stdout.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "04.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "python_syntax_files": [
+    "tooling/foundation/cloud/admin.py",
+    "tooling/foundation/cloud/disk_guard.py",
+    "tooling/foundation/cloud/prepare.py",
+    "tests/deployment/linux_simulation_fixture.py",
+    "tests/deployment/test_cloud_simulation.py"
+  ],
+  "local_markdown_file_links_checked": 22,
+  "collection_note": "First link collection found that checks.json had not yet been created; result collection order corrected. The four captured child checks already passed and were not repeated. Source docs updated for sanitized existing GCP metadata afterward; affected links/syntax rechecked.",
+  "scope": "No Docker build/pull/container/service/HTTP, cloud resource, existing DB/private bundle/archive/account or numerical/scientific operation performed. Linux fixture source is syntax checked only; CS-T1 runtime and CS-T3-T7 cloud remain pending.",
+  "accepted_baseline_verification": {
+    "reviewed_tree": "5d7ef6e1a513919bc6fe56b37ab1165d4ecbce81",
+    "merged_tree": "5d7ef6e1a513919bc6fe56b37ab1165d4ecbce81",
+    "source_diff_4a_to_de4": [
+      "services",
+      "tooling",
+      "contracts",
+      "web",
+      "methods"
+    ],
+    "source_diff_result": "empty",
+    "staged_diff_check": "passed"
+  }
+}
