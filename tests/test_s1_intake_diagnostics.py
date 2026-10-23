@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 loader=importlib.util.spec_from_file_location('scalar_support_diagnostics',ROOT/'services/foundation/support_diagnostics.py')
 diag=importlib.util.module_from_spec(loader);loader.loader.exec_module(diag)
 BASELINE=None  # The source-only runner supplies exact accepted Git bytes.
+SCHEMA_BASELINE=None
 CONTROL_BASELINE=None
 canonical=lambda value:json.dumps(value,sort_keys=True).encode()
 digest=lambda raw:hashlib.sha256(raw).hexdigest()
@@ -71,7 +72,7 @@ def transaction_fixture(raw,*,prior=False,fail=None,callback=None,fault=None):
     except BaseException as error:return None,log,(type(error).__name__,str(error))
 
 
-def verification_fixture(raw,*,callback=None,failure=None):
+def verification_fixture(raw,*,callback=None,failure=None,trajectory_ordinal=1):
     log=[]
     def artifact(path):return NS(path=path,id=path,role='observed')
     h,l,c,o,s=(artifact(value) for value in ('PRIVATE_HISTORY_PATH','PRIVATE_LEDGER_PATH','PRIVATE_COMPLETION_PATH','PRIVATE_OUTPUT_PATH','PRIVATE_SUPPLEMENT_PATH'))
@@ -93,14 +94,19 @@ def verification_fixture(raw,*,callback=None,failure=None):
     class Directory:
         def __init__(self,_root):pass
         def rglob(self,_pattern):return [InventoryPath(path) for path in payloads]
-    def read(_root,item):log.append(('read',item.path));return payloads[item.path]
+    def read(_root,item):
+        log.append(('read',item.path))
+        if failure=='projection_reader' and item.path==projections['14'].path:raise RuntimeError('scalar reader failure')
+        return payloads[item.path]
     def verifier(*args,**kwargs):
         reader=kwargs['artifact_reader']
         def verify(closure,cutoff):log.append(('closure',cutoff));reader(o)
         return verify
     def project(full,cutoff,**kwargs):
+        log.append(('project',cutoff,kwargs['family'],kwargs['origin']))
+        if failure=='project':raise RuntimeError('scalar projection failure')
         kwargs['verify_closure'](closure,cutoff)
-        return NS(model_dump=lambda **_:dict(day=(cutoff-WALL).days))
+        return NS(model_dump=lambda **_:dict(day=999 if failure=='comparison' else (cutoff-WALL).days))
     env=dict(observe=diag.observe,json=json,timedelta=timedelta,Path=Directory,stat=NS(FILE_ATTRIBUTE_REPARSE_POINT=1024),
         _index=lambda *args:index,ObservedHistoryV21=NS(model_validate_json=lambda raw:full),
         StageLedgerV2=NS(model_validate_json=lambda raw:NS(**json.loads(raw))),
@@ -108,6 +114,12 @@ def verification_fixture(raw,*,callback=None,failure=None):
         StageVerifier=verifier,canonical_bytes=canonical,project_protocol=project,Artifact=lambda **kwargs:NS(**kwargs),
         sha256=digest,read_artifact=read,VerifiedSupportArchive=lambda *args:NS(artifacts=args[3],histories=args[4]))
     functions(raw,{'verify_support_archive','_trajectory'},env)
+    if trajectory_ordinal!=1:
+        original=env['_trajectory']
+        def selected(*args,**kwargs):
+            kwargs['trajectory_ordinal']=trajectory_ordinal
+            return original(*args,**kwargs)
+        env['_trajectory']=selected
     try:
         kwargs={} if callback is None else dict(diagnostic=callback)
         package=env['verify_support_archive'](b'raw','NOT_A_REAL_PATH',authority,**kwargs)
@@ -193,6 +205,66 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertLessEqual(sum(len(row.encode())+1 for row in rows),diag.MAX_BYTES)
         self.assertEqual(observer.emitted,0);self.assertGreater(observer.suppressed,0)
 
+    def test_first_trajectory_request_only_markers_all_three_cuts_and_plain_callback(self):
+        new={'cut_projection_return','cut_reader_return'}
+        expected=[(cut,stage) for cut in (1,2,3) for stage in ('cut_projection_return','cut_reader_return')]
+        for ordinal in (0,1,2,24):
+            for request in (1,2,3,4):
+                rows=[];sink=diag.IntakeDiagnostics(rows.append,clock=lambda:0.)
+                for _ in range(request):sink.begin_request()
+                self.assertEqual(verification_fixture(self.current,callback=sink,trajectory_ordinal=ordinal),verification_fixture(BASELINE,trajectory_ordinal=ordinal))
+                events=[json.loads(row) for row in rows]
+                observed=[(row['cut'],row['stage']) for row in events if row['stage'] in new]
+                self.assertEqual(observed,expected if ordinal==request==1 else [])
+                if ordinal==request==1:
+                    sequence=[row['stage'] for row in events if row['stage'] in new|{'cut_before','cut_after'}]
+                    self.assertEqual(sequence,['cut_before','cut_projection_return','cut_reader_return','cut_after']*3)
+        # An ordinary callable has no request attribute. Request filtering is
+        # the existing sink's job; the call site guards only the trajectory.
+        events=[];plain=lambda stage,**kw:events.append(stage)
+        self.assertEqual(verification_fixture(self.current,callback=plain),verification_fixture(BASELINE))
+        self.assertEqual(sum(stage in new for stage in events),6)
+
+    def test_cut_return_exceptions_and_failed_sink_or_clock_preserve_results(self):
+        for failure in ('project','projection_reader','comparison'):
+            events=[]
+            observed=verification_fixture(self.current,failure=failure,callback=lambda stage,**kw:events.append(stage))
+            self.assertEqual(observed,verification_fixture(BASELINE,failure=failure))
+            self.assertNotIn('cut_after',events)
+            self.assertEqual('cut_projection_return' in events,failure!='project')
+            self.assertEqual('cut_reader_return' in events,failure=='comparison')
+        def broken(*args,**kwargs):raise KeyboardInterrupt('PRIVATE_SINK')
+        self.assertEqual(verification_fixture(self.current,callback=broken),verification_fixture(BASELINE))
+        for write_then_fail in (False,True):
+            rows=[]
+            def output(row):
+                rows.append(row)
+                if write_then_fail:raise RuntimeError('PRIVATE_WRITE_FAILURE')
+            sink=diag.IntakeDiagnostics(output,clock=lambda:0.);sink.begin_request()
+            if not write_then_fail:sink.clock=lambda:(_ for _ in ()).throw(RuntimeError('PRIVATE_CLOCK'))
+            self.assertEqual(verification_fixture(self.current,callback=sink),verification_fixture(BASELINE))
+            self.assertGreater(sink.suppressed,0);self.assertNotIn('PRIVATE_',''.join(rows))
+
+    def test_only_two_guarded_statements_and_two_detailed_stage_names_are_added(self):
+        tree=ast.parse(self.current);new={'cut_projection_return','cut_reader_return'}
+        class Strip(ast.NodeTransformer):
+            def visit_If(self,node):
+                if len(node.body)==1 and isinstance(node.body[0],ast.Expr) and isinstance(node.body[0].value,ast.Call):
+                    call=node.body[0].value
+                    if isinstance(call.func,ast.Name) and call.func.id=='observe' and len(call.args)>1 and isinstance(call.args[1],ast.Constant) and call.args[1].value in new:
+                        self.guards.append(ast.dump(node.test));return None
+                return self.generic_visit(node)
+        strip=Strip();strip.guards=[];normalized=strip.visit(tree)
+        self.assertEqual(strip.guards,["Compare(left=Name(id='trajectory_ordinal', ctx=Load()), ops=[Eq()], comparators=[Constant(value=1)])"]*2)
+        self.assertEqual(ast.dump(normalized),ast.dump(ast.parse(BASELINE)))
+        old={};exec(compile(ast.parse(SCHEMA_BASELINE),'old-public-schema','exec'),old)
+        self.assertEqual(diag.STAGES-old['STAGES'],new);self.assertEqual(old['STAGES']-diag.STAGES,set())
+        self.assertEqual(diag.COARSE,old['COARSE']);self.assertTrue(new.isdisjoint(diag.COARSE))
+        final=b'{"status":"genuine_p2_intake_idempotence_72_replays_pass"}\n'
+        rows=[dict(kind=diag.KIND,stage=stage,request=1,seconds=1.,trajectory=1,cut=1) for stage in sorted(new)]
+        raw=b''.join((diag.validate_row(row)+'\n').encode() for row in rows)
+        self.assertEqual(diag.parse_p2_stdout(raw+final)[2],rows)
+
     def test_complete_fixed_run_worst_scalar_diagnostic_budget_and_later_coarsening(self):
         rows=[];sink=diag.IntakeDiagnostics(rows.append,clock=lambda:1199.999999);sink.started=0.
         def event(stage,**kw):sink(stage,**kw)
@@ -201,7 +273,11 @@ class DiagnosticsTests(unittest.TestCase):
             for trajectory in range(1,25):
                 for stage in ('trajectory_before','history_after','ledgers_after','completions_after'):event(stage,trajectory=trajectory)
                 for cut in range(1,4):
-                    event('cut_before',trajectory=trajectory,cut=cut);event('cut_after',trajectory=trajectory,cut=cut)
+                    event('cut_before',trajectory=trajectory,cut=cut)
+                    if trajectory==1:
+                        event('cut_projection_return',trajectory=trajectory,cut=cut)
+                        event('cut_reader_return',trajectory=trajectory,cut=cut)
+                    event('cut_after',trajectory=trajectory,cut=cut)
                 event('closures_before',trajectory=trajectory);event('closures_after',trajectory=trajectory)
                 event('trajectory_after',trajectory=trajectory,reads=10000000,bytes=2147483648,hits=10000000)
             for stage in ('supplement_before','supplement_after','manifest_before','manifest_after'):event(stage)
@@ -223,6 +299,10 @@ class DiagnosticsTests(unittest.TestCase):
         sink.summary()
         self.assertEqual(sink.suppressed,0);self.assertLessEqual(sink.bytes,diag.MAX_BYTES)
         self.assertTrue(sink.omitted>0);self.assertLessEqual(len(rows),diag.MAX_EVENTS)
+        self.assertEqual(len(rows),409);self.assertLessEqual(sink.bytes,46743)
+        extra=[json.loads(row) for row in rows if json.loads(row)['stage'] in ('cut_projection_return','cut_reader_return')]
+        self.assertEqual(len(extra),6);self.assertTrue(all(row['request']==row['trajectory']==1 for row in extra))
+        self.assertTrue(all(len(row.encode())+1<=384 for row in rows))
         self.assertFalse(any(json.loads(row)['request']!=1 and json.loads(row)['stage']=='cut_before' for row in rows))
         self.worst_run_rows=len(rows);self.worst_run_bytes=sink.bytes
         self.assertLessEqual(diag.MAX_BYTES+150*diag.MAX_PROGRESS_BYTES+diag.MAX_RESULT_BYTES,diag.MAX_STDOUT_BYTES)
