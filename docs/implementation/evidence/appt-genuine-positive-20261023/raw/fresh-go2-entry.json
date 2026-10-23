@@ -1,0 +1,98 @@
+{
+  "GO2_authorization_sha256": "ca30d0218e6e4ea5f1c997bdc7ffd88f794276564be80d76830940ada777a6d7",
+  "active_analysis_workers": 0,
+  "all_31_protected_control_and_identity_equal_phase1": true,
+  "all_source_bindings_equal": true,
+  "attempt_inventory": [
+    {
+      "created_at": "2026-10-22T09:19:16.534263+00:00",
+      "finished_at": "2026-10-22T15:13:52.919758+00:00",
+      "history_sha256": "ce5a5a2bbf99405d2457654791f3ac9a263f669770b075ac1dfa1cff0f4ac00c",
+      "input_sha256": "3761da9e876d3830106e5edc47a7b5b930764f934facc95c8b6328b84e65e5a2",
+      "job_id": "analysis-4ff86193058d4d13a1600f0423e91f12",
+      "owner_id": "alice",
+      "patient_id": "POC-cc502a55230e4ab6a6b86f406d6c2208",
+      "previous_attempt": null,
+      "stage": "complete",
+      "started_at": "2026-10-22T13:18:48.541048+00:00",
+      "status": "completed"
+    }
+  ],
+  "before_auth_table_counts": {
+    "accounts": 2,
+    "login_attempts": 4,
+    "sessions": 8
+  },
+  "environment_values_or_digests_captured": false,
+  "full_attempt_inventory_count": 1,
+  "health": {
+    "authority_generation": 1,
+    "capability": "LIVE-HOLD-01/1.0.0",
+    "database_instance_id": "e4924957-b4df-4d83-b013-72e123e13a28",
+    "runtime": "foundation-live-hold-v1",
+    "status": "ok",
+    "synthetic": true
+  },
+  "observed_at_utc": "2026-10-23T06:48:39.140209+00:00",
+  "retained_startup_timing_gap": "26.382130s first health;<=25s not proven",
+  "selected": {
+    "Id": "6c19849608483c32a3cef1e488cda70177963c209ee26a4925038533c7e49475",
+    "Image": "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+    "Mounts": [
+      {
+        "Destination": "/data",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-poc13-ac8e16e0-database",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/exports",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-poc13-ac8e16e0-exports",
+        "Propagation": "",
+        "RW": true,
+        "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-exports/_data",
+        "Type": "volume"
+      },
+      {
+        "Destination": "/fixtures",
+        "Driver": "local",
+        "Mode": "z",
+        "Name": "remission-poc13-ac8e16e0-fixtures",
+        "Propagation": "",
+        "RW": false,
+        "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-fixtures/_data",
+        "Type": "volume"
+      }
+    ],
+    "Ports": {
+      "8765/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "8780"
+        }
+      ]
+    },
+    "ReadonlyRootfs": true,
+    "RestartCount": 0,
+    "State": {
+      "Dead": false,
+      "Error": "",
+      "ExitCode": 0,
+      "FinishedAt": "0001-01-01T00:00:00Z",
+      "OOMKilled": false,
+      "Paused": false,
+      "Pid": 63762,
+      "Restarting": false,
+      "Running": true,
+      "StartedAt": "2026-10-23T06:23:39.678933146Z",
+      "Status": "running"
+    }
+  },
+  "source_commit": "41056f0c06a2afa1141c33eeb3a934a1969d19bb"
+}

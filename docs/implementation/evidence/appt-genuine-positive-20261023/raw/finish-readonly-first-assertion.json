@@ -1,0 +1,17 @@
+{
+  "operation": "read-only final audit, no auth/service/action repetition",
+  "failure": "verification driver assumed one session per login; actual ordinary session bootstrap and successful login each insert one row",
+  "failed_assertion": "sessions == before + 2",
+  "before_counts": {
+    "accounts": 2,
+    "sessions": 8,
+    "login_attempts": 4
+  },
+  "actual_after_counts": {
+    "accounts": 2,
+    "sessions": 12,
+    "login_attempts": 6
+  },
+  "source_reference": "services/foundation/app.py:490-529",
+  "corrected_assertion": "sessions == before + 4, login_attempts == before + 2; all protected/control/identity constraints unchanged"
+}
