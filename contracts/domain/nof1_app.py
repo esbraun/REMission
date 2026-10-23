@@ -214,6 +214,20 @@ def consumed_ids(product):
     return sorted(ids)
 
 
+def ownership_manifest(product):
+    patients=[]
+    for h in product.histories:
+        records=h.records
+        patients.append(dict(patient_id=h.patient_id,record_ids=sorted(r.record_id for r in records),
+            likelihood=dict(quality=sorted(r.record_id for r in records if r.kind=='daily_report' and r.missingness=='observed'),
+                isi=sorted(r.record_id for r in records if r.kind=='isi'),
+                adherence_C=sorted(r.record_id for r in records if r.kind=='delivery' and r.option=='behavioral_continue'),
+                adherence_M=sorted(r.record_id for r in records if r.kind=='delivery' and r.option in ('MED_A','MED_B')),
+                observation_indicators=sorted(r.record_id for r in records if r.kind=='daily_report' and r.missingness!='pending'))))
+    return dict(schema='poc-nof1-ownership-v1',history_sha256=product.history_sha256,
+        ordered_cohort=[m.patient_id for m in product.cohort],target_id=product.target_id,patients=patients)
+
+
 def make_input(histories, *, purpose, attempt_id, owner_id, cohort_id, generation_id,
                run, target_id, patient_versions, fit_seed):
     """Freeze already owned/projected observations; never select a target here."""
@@ -280,7 +294,7 @@ class NResult(StrictModel):
     protocol: VersionRef
     status: Literal['completed','abstained','failed']
     readiness: Literal['eligible','unavailable','inconclusive']
-    reason: str | None
+    reason: Annotated[str, Field(min_length=1)] | None
     generated_at: AwareDatetime
     consumed_record_ids: list[Identifier]
     effect: NEffect | None
@@ -393,3 +407,8 @@ def validate_result(result,product,trusted):
         raise ValueError('N trusted host source/image binding mismatch')
     ready=readiness(product.histories,product.target_id)
     if result.readiness!=ready['status']:raise ValueError('N result readiness mismatch')
+    timings=result.diagnostics.get('timings',{})
+    if not _finite(timings.get('worker_seconds')) or timings['worker_seconds']<0:
+        raise ValueError('finite measured N worker timing required')
+    if result.status=='completed' and ready['status']!='eligible':
+        raise ValueError('N target not ready for accepted effect')

@@ -88,6 +88,9 @@ def prepare_cohort(db, owner, patient_versions, cutoff, *, cohort_id, source_bun
 
 
 def view(row, cutoff, *, current=None):
+    if json.loads(row['request_json']).get('kind')=='poc_nof1_input':
+        from .nof1_analysis import view as nof1_view
+        return nof1_view(row)
     if json.loads(row['request_json']).get('kind')=='poc_support_s1_input':
         from .support_analysis import view as support_view
         return support_view(row)
@@ -149,12 +152,15 @@ def submit(db, patient, owner, expected_version, previous, now, *, mode='v0',sou
     return view(db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(job,)).fetchone(),patient['cutoff'])
 
 
-def queued_request(db, *, owner, job, key, submission, configured=None):
+def queued_request(db, *, owner, job, key, submission, configured=None, now=None):
     """Read one receipted ordinary cohort request; no claim/session secrets leave.
 
     The caller uses the existing admitted Store read transaction. A missing
     receipt is UNKNOWN submission outcome, never permission to submit again.
     """
+    if submission.get('purpose') in ('N0','N1'):
+        from .nof1_analysis import queued_request as nof1_queued
+        return nof1_queued(db,owner=owner,job=job,key=key,submission=submission,now=now)
     if 'archive_id' in submission:
         from .support_analysis import queued_request as support_queued
         return support_queued(db,owner=owner,job=job,key=key,submission=submission,configured=configured)
@@ -199,13 +205,13 @@ def queued_request(db, *, owner, job, key, submission, configured=None):
 
 def export_queued_request(store, *, configured=None, **selection):
     with store.transaction() as db:
-        return queued_request(db,configured=configured,**selection)
+        return queued_request(db,configured=configured,now=store.clock(),**selection)
 
 
 def claim(store, *, expected=None, configured=None):
     with store.transaction(write=True) as db:
         if expected is not None:
-            proof=queued_request(db,configured=configured,**expected['selection'])
+            proof=queued_request(db,configured=configured,now=store.clock(),**expected['selection'])
             if sha(proof)!=expected['export_sha256']:
                 raise AnalysisError('Reviewed queued export changed before claim.')
         if db.execute("SELECT 1 FROM analysis_attempts WHERE status='running'").fetchone():
@@ -214,6 +220,9 @@ def claim(store, *, expected=None, configured=None):
         if row is None:
             return None
         product=json.loads(row['request_json'])
+        if product.get('kind')=='poc_nof1_input':
+            from .nof1_analysis import revalidate
+            revalidate(db,row,now=store.clock())
         if product.get('kind')=='poc_support_s1_input':
             from .support_analysis import revalidate
             revalidate(db,row,configured)
@@ -260,7 +269,12 @@ def bind_execution(store,job,token,origin, *, configured=None):
     except ValueError as error:raise AnalysisError('Invalid trusted host origin') from error
     with store.transaction(write=True) as db:
         row=running(db,job,token);product=parse_input(row['request_json'])
-        if product.kind=='poc_support_s1_input':
+        if product.kind=='poc_nof1_input':
+            from .nof1_analysis import revalidate
+            from contracts.domain.nof1_app import execution_binding as nof1_binding
+            revalidate(db,row,now=store.clock())
+            binding=nof1_binding(product,origin)
+        elif product.kind=='poc_support_s1_input':
             from .support_analysis import revalidate
             from contracts.domain.support_s1 import execution_binding as support_binding
             revalidate(db,row,configured)
@@ -312,6 +326,7 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
     result=parse_result(result_path.read_bytes())
     cohort_result=result.kind=='poc_visit_cohort_result'
     support_result=result.kind=='poc_support_s1_result'
+    nof1_result=result.kind=='poc_nof1_result'
     if result.kind=='poc_protocol_result':
         from contracts.domain.protocol_request import require_executable
         require_executable(result)
@@ -330,7 +345,7 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
                 h.update(chunk)
         if h.hexdigest()!=ref['sha256']:
             raise AnalysisError('Artifact hash mismatch')
-    if result.status=='completed' and not cohort_result and not support_result:
+    if result.status=='completed' and not cohort_result and not support_result and not nof1_result:
         d=result.diagnostics
         if not d.get('fits') or not d['fits'][-1]['diagnostics'].get('accepted') or not d.get('effect_mcmc',{}).get('accepted') or d.get('integration',{}).get('status')!='accepted' or 'expected-effect.npz' not in names:
             raise AnalysisError('Completed result lacks accepted computational diagnostics')
@@ -338,7 +353,18 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
             raise AnalysisError('Completed borrowing result lacks accepted bridge precision')
     with store.transaction(write=True,before_commit=within_host_deadline) as db:
         row=running(db,job,token)
-        if support_result:
+        if nof1_result:
+            from .nof1_analysis import revalidate
+            from contracts.domain.nof1_app import validate_result,ownership_manifest,ARTIFACT_NAMES
+            product=revalidate(db,row,now=store.clock())
+            validate_result(result,product,json.loads(row['progress_json']).get('trusted_launch'))
+            required=ARTIFACT_NAMES if result.status=='completed' else {'diagnostics.json','ownership.json'}
+            if names!=required:raise AnalysisError('N artifact set incomplete or cross-purpose.')
+            if json.loads((directory/'diagnostics.json').read_bytes())!=result.diagnostics:
+                raise AnalysisError('N artifact/summary diagnostics mismatch.')
+            if json.loads((directory/'ownership.json').read_bytes())!=ownership_manifest(product):
+                raise AnalysisError('N likelihood ownership artifact mismatch.')
+        elif support_result:
             from .support_analysis import revalidate
             from contracts.domain.support_s1 import validate_result
             product=revalidate(db,row,configured)
@@ -365,6 +391,11 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
         completed_at=store.clock()
         if accept_before is not None and completed_at>=instant(accept_before):
             raise AnalysisError('Host absolute completion deadline exceeded after validation.')
+        if nof1_result:
+            if row['started_at'] is None or not instant(row['started_at'])<=result.generated_at<=completed_at:
+                raise AnalysisError('N generation time outside authoritative execution times.')
+            if not 0<=(completed_at-instant(row['started_at'])).total_seconds()<7200:
+                raise AnalysisError('N completion exceeds persisted claim deadline.')
         if support_result and result.status=='completed':
             if row['started_at'] is None or not instant(row['started_at'])<=result.generated_at<=completed_at:
                 raise AnalysisError('S1 generation time must lie within authoritative execution times.')
