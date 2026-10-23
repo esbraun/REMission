@@ -26,6 +26,8 @@ The R reference initially covers the matching complete-observation/MAR-neutral f
 
 ## BANDIT-LIB — Hierarchical policy without a bespoke sampler
 
+The restricted PoC equations, indicator MCSE/constant-chain rule and exact-context learner-to-scalar-service boundary live in [S2-CANONICAL-01](../../implementation/poc-analytics-contract-20261021.md#s2-canonical-01--batch-working-policy-and-saved-prediction). This candidate amendment requires independent review; keep its numerical error/cost and actual-fit gates separate from source preparation.
+
 1. Fit the shared PyMC working model with population and patient-level partially pooled action-centered effects. Keep outcome/observation ownership explicit so bandit and population fits do not recycle a posterior as independent evidence.
 2. Refresh in versioned batch jobs, reusing validated posterior draws between updates. Record the cutoff and fit age. Do not run a full chain during approval or assign from a failed/unready fit; use the existing declared fixed-support fallback or pause state.
 3. For binary actions, estimate posterior probability of each action being best from joint posterior draws. Declare tie handling, draw count and the probability approximation's MCSE, accounting for draw dependence. Increase draws when uncertainty can change the final bounded probability beyond the protocol tolerance; record unresolved approximation as unready.
