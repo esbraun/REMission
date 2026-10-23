@@ -25,6 +25,42 @@ class Tripwire(importlib.abc.MetaPathFinder):
             raise AssertionError('scientific import forbidden in scalar image qualification: '+fullname)
 
 
+def closure_failure(root,expected,actual,extras):
+    """Bounded metadata only; unknown file content is never read or hashed."""
+    def relative(name):
+        text=Path(name).relative_to(root).as_posix()
+        return dict(path=text[:256],path_truncated=len(text)>256)
+    categories=dict(missing=[relative(name) for name in sorted(expected.keys()-actual.keys())],
+        extra=[dict(**relative(name),type='regular',bytes=size) for name,size in sorted(extras.items())],
+        hash_mismatch=[dict(**relative(name),expected_sha256=expected[name],actual_sha256=actual[name])
+            for name in sorted(expected.keys()&actual.keys()) if expected[name]!=actual[name]])
+    counts={key:len(rows) for key,rows in categories.items()};shown={key:[] for key in categories};remaining=64
+    for key,rows in categories.items():
+        shown[key]=rows[:remaining];remaining-=len(shown[key])
+    while True:
+        omitted={key:counts[key]-len(shown[key]) for key in categories}
+        value=dict(status='source_closure_mismatch',counts=counts,**shown,omitted=omitted,
+            truncated=any(omitted.values()) or any(row['path_truncated'] for rows in shown.values() for row in rows))
+        encoded=json.dumps(value,sort_keys=True,separators=(',',':'))
+        if len(encoded.encode())+1<=16384:return encoded
+        for key in reversed(shown):
+            if shown[key]:shown[key].pop();break
+
+
+def check_project_source(root,expected):
+    actual={};extras={}
+    for path in root.rglob('*'):
+        if path.is_symlink():raise ValueError('project source symlink denied')
+        if path.is_file() and '__pycache__' not in path.parts:
+            name=str(path)
+            if name in expected:actual[name]=hashlib.sha256(path.read_bytes()).hexdigest()
+            else:extras[name]=path.stat().st_size
+    if extras or actual!=expected:
+        print(closure_failure(root,expected,actual,extras),file=sys.stderr,flush=True)
+        raise ValueError('complete parent-plus-overlay source closure mismatch')
+    return actual
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--role',choices=('service','learner','controls'),required=True)
     parser.add_argument('--expected',type=Path,required=True);parser.add_argument('--expected-sha256',required=True)
@@ -41,11 +77,7 @@ def main():
             or platform.machine()!='x86_64' or os.getuid()!=uid or os.getgid()!=uid
             or platform.python_version()!='3.13.7' or sqlite3.sqlite_version!='3.54.1'):
         raise ValueError('role/platform/UID/runtime mismatch')
-    root=Path('/app');actual={}
-    for path in root.rglob('*'):
-        if path.is_symlink():raise ValueError('project source symlink denied')
-        if path.is_file() and '__pycache__' not in path.parts:actual[str(path)]=digest(path.read_bytes())
-    if actual!=expected['project_source']:raise ValueError('complete parent-plus-overlay source closure mismatch')
+    root=Path('/app');actual=check_project_source(root,expected['project_source'])
     forbidden=['services/generator','services/evaluator','contracts/dgp','evaluation']
     if args.role=='service':forbidden+=['tests','methods','services/learner']
     elif args.role=='learner':forbidden+=['tests','services/foundation']

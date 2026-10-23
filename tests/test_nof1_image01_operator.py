@@ -57,9 +57,11 @@ class Image01Controls(unittest.TestCase):
         self.assertEqual(self.op.sha(self.op.git(ROOT,'show',self.op.BINDINGS_BLOB)),self.op.BINDINGS_SHA)
         self.assertEqual(plan['future_images'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
         self.assertEqual(plan['future_CIDs'],{'service':'UNKNOWN','learner':'UNKNOWN','controls':'UNKNOWN'})
-        for role,count in [('service',179),('learner',74),('controls',192)]:
+        for role,count in [('service',180),('learner',75),('controls',193)]:
             expected=json.loads((self.folder/'qualify'/f'{role}.json').read_bytes())
             self.assertEqual(len(expected['project_source']),count)
+            self.assertEqual(expected['project_source']['/app/role-copy-manifest.json'],
+                self.op.INHERITED_PUBLIC_MANIFEST['sha256'])
             self.assertEqual((self.folder/'qualify'/f'{role}.json').read_bytes(),
                 (self.folder/'context/qualify'/f'{role}.json').read_bytes())
         recipe=(self.folder/'context/overlay.Dockerfile').read_text()
@@ -143,7 +145,7 @@ class Image01Controls(unittest.TestCase):
 
     def container(self,role,cid,image):
         return dict(Id=cid,Image=image,User=self.plan['roles'][role]['uid'],Path='python',
-            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image02-8b82399'},
+            Args=self.op.workload(role,self.plan)[1:],Labels={'remission.task':'shared-image03-8b82399'},
             State=dict(Status='created',Pid=0,ExitCode=0,Running=False,Paused=False,Restarting=False,
                 Dead=False,OOMKilled=False),RestartCount=0,Memory=2147483648,MemorySwap=2147483648,
             NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,CapAdd=None,

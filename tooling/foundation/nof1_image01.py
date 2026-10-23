@@ -18,9 +18,15 @@ HERE=Path(__file__).resolve().parent
 
 SOURCE='8b823991cc8c54688d8b2b7b887fed13bf669bb0'
 TREE='61b2ce2d8667c97f1541286fb7db9c956b5da0d4'
-BINDINGS_SHA='edc335a40614d0a05031067589128816460fa1263052e5c7036213781be20061'
-BINDINGS_BLOB='d15240a54ff8c9330bfc29487e7448b7ba7a8d31'
+BINDINGS_SHA='1d794ded2099a4cde0c465b6816a1fff3b84911fa6c5d0d7dd044b08a7eada91'
+BINDINGS_BLOB='ca22d04dc29e209b8882d1474fb4b819785a1251'
 PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
+INHERITED_PUBLIC_MANIFEST=dict(path='/app/role-copy-manifest.json',bytes=77023,
+    sha256='fc607c0fb4b61283e48e6279bf75f1c81e1a8d0ec24a8894d3e092b4c1822836',
+    git_blob='8879d91eb59c3bc30761d831ac040a534dae1d00',
+    prepared_manifest='24042076bd9841950afd4791fa935a2056ba8594',
+    roles_Dockerfile='31906e090db1a95d2c9842f24b016f4c3e1eafd1',
+    context_manifest='e2733119b50fc6fa445e036f7bc164e8ec4cc7c0')
 PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4',
     'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef',
     'controls':'sha256:02247f1940d6fe4e52d9331e15f6ddd947e2d160858f464152f0de51b528dc85'}
@@ -83,6 +89,10 @@ def freeze(directory,root):
     raw=git(root,'show',BINDINGS_BLOB)
     if sha(raw)!=BINDINGS_SHA:raise ValueError('reviewed source bindings changed')
     bindings=json.loads(raw)
+    if bindings['inherited_public_manifest']!=INHERITED_PUBLIC_MANIFEST:raise ValueError('declared parent metadata provenance changed')
+    inherited=git(root,'show',INHERITED_PUBLIC_MANIFEST['git_blob'])
+    if len(inherited)!=INHERITED_PUBLIC_MANIFEST['bytes'] or sha(inherited)!=INHERITED_PUBLIC_MANIFEST['sha256']:
+        raise ValueError('original public parent manifest bytes changed')
     parent=json.loads(git(root,'show',PARENT_MANIFEST))
     if git(root,'rev-parse',SOURCE+'^{tree}').decode().strip()!=TREE:raise ValueError('accepted source tree changed')
     for role,item in bindings['roles'].items():
@@ -98,6 +108,7 @@ def freeze(directory,root):
     roles={}
     for role,item in bindings['roles'].items():
         expected=dict(parent['images'][role]['probe']['copied_source'])
+        expected[INHERITED_PUBLIC_MANIFEST['path']]=INHERITED_PUBLIC_MANIFEST['sha256']
         for row in item['overlay']:
             name=row['source']
             if (Path(name).is_absolute() or '..' in Path(name).parts or row['destination']!='/app/'+name):
@@ -109,7 +120,7 @@ def freeze(directory,root):
         payload=json.dumps(dict(role=role,uid=item['uid'],project_source=expected),sort_keys=True).encode()+b'\n'
         write('qualify/'+role+'.json',payload)
         write('context/qualify/'+role+'.json',payload)
-        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared02-8b82399-'+role+'-parent:v1',
+        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-shared03-8b82399-'+role+'-parent:v1',
             tag=item['tag'],name=item['qualifier'],uid=str(item['uid'])+':'+str(item['uid']),
             parent_layers=parent['images'][role]['layers'],expected_sha256=sha(payload))
     write('context/overlay.Dockerfile',recipe(bindings['roles']).encode())
@@ -117,9 +128,10 @@ def freeze(directory,root):
         write('operator/'+name,(HERE/name).read_bytes())
     write('qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
     write('context/qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
-    plan=dict(kind='poc-shared-image02-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
+    plan=dict(kind='poc-shared-image03-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
         scope='three_COPY_only_children_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
         bindings_git_blob=BINDINGS_BLOB,host_controller=bindings['host_controller'],
+        inherited_public_manifest=INHERITED_PUBLIC_MANIFEST,
         root=str(directory),roles=roles,files=files,probe_sha256=files['qualify/probe.py']['sha256'],
         phase_seconds=900,build_seconds=300,qualification_seconds=60,cli_cleanup_seconds=3,
         future_images={role:'UNKNOWN' for role in ROLES},future_CIDs={role:'UNKNOWN' for role in ROLES},
@@ -133,7 +145,8 @@ def validate_plan(path,authorized):
     if sha(raw)!=authorized:raise ValueError('exact independently reviewed plan hash required')
     plan=json.loads(raw);root=ordinary(plan['root'])
     if (root!=path.parent or plan['source_commit']!=SOURCE or plan['source_tree']!=TREE
-            or plan['kind']!='poc-shared-image02-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
+            or plan['kind']!='poc-shared-image03-exact-operation-v1' or set(plan['roles'])!=set(ROLES)
+            or plan['inherited_public_manifest']!=INHERITED_PUBLIC_MANIFEST
             or plan['scope']!='three_COPY_only_children_and_scalar_qualification'
             or plan['bindings_sha256']!=BINDINGS_SHA or plan['bindings_git_blob']!=BINDINGS_BLOB
             or plan['phase_seconds']!=900
@@ -155,9 +168,9 @@ def validate_plan(path,authorized):
     if Path(__file__).resolve()!=root/'operator/nof1_image01.py':
         raise ValueError('execute only the frozen operator copy')
     for role,item in plan['roles'].items():
-        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared02-8b82399-'+role+'-parent:v1'
-                or item['tag']!='remission-shared02-8b82399-'+role+':v1'
-                or item['name']!='remission-shared02-8b82399-'+role+'-qual-v1'
+        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-shared03-8b82399-'+role+'-parent:v1'
+                or item['tag']!='remission-shared03-8b82399-'+role+':v1'
+                or item['name']!='remission-shared03-8b82399-'+role+'-qual-v1'
                 or item['uid']!=('10002:10002' if role=='learner' else '10001:10001')):
             raise ValueError('literal role identity changed')
     host=plan['host_controller']
@@ -213,7 +226,7 @@ def workload(role,plan):
 
 def create_argv(role,plan,image):
     item=plan['roles'][role]
-    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image02-8b82399',
+    return ['docker','create','--name',item['name'],'--label','remission.task=shared-image03-8b82399',
         *LIMITS,'--user',item['uid'],image,*workload(role,plan)]
 
 
@@ -223,7 +236,7 @@ def checked_container(value,cid,image,role,plan,life):
     mounts=value['Mounts']
     if (state['Status']!='created' or state['Pid']!=0 or value['Image']!=image
             or value['User']!=item['uid'] or value['Path']!='python' or value['Args']!=workload(role,plan)[1:]
-            or value['Labels']!={'remission.task':'shared-image02-8b82399'}
+            or value['Labels']!={'remission.task':'shared-image03-8b82399'}
             or value['Memory']!=2147483648 or value['MemorySwap']!=2147483648
             or value['NanoCpus']!=2000000000 or value['PidsLimit']!=64
             or value['ReadonlyRootfs'] is not True or value['Privileged'] is not False
