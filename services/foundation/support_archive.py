@@ -17,6 +17,7 @@ from contracts.runs.support_research import (SupportArchiveAuthority, SupportCom
 from .protocol import project_protocol
 from .store import canonical, digest, timestamp
 from .workflow import state_for
+from .support_diagnostics import observe
 
 
 MODE='restricted_support_historical'
@@ -42,12 +43,16 @@ def _index(raw, authority):
     return index
 
 
-def _trajectory(index, trajectory, reader, *, cuts=None, verify_all=True):
+def _trajectory(index, trajectory, reader, *, cuts=None, verify_all=True, diagnostic=None, trajectory_ordinal=0):
+    observe(diagnostic,'trajectory_before',trajectory=trajectory_ordinal)
     full=ObservedHistoryV21.model_validate_json(reader(trajectory.history))
     if full.patient_id!=trajectory.member_id:
         raise ValueError('support_history_member_mismatch')
+    observe(diagnostic,'history_after',trajectory=trajectory_ordinal)
     ledgers=[StageLedgerV2.model_validate_json(canonical_bytes(r)) for r in json.loads(reader(trajectory.stage_ledgers))]
+    observe(diagnostic,'ledgers_after',trajectory=trajectory_ordinal)
     completions=[SupportCompletion.model_validate_json(canonical_bytes(r)) for r in json.loads(reader(trajectory.completions))]
+    observe(diagnostic,'completions_after',trajectory=trajectory_ordinal)
     verifier=StageVerifier(full,ledgers,completions,None,run_id=index.run_id,partition_id=trajectory.partition_id,
         source_commit=index.source_commit,runtime=index.runtime,frozen_plan_sha256=index.frozen_plan_sha256,
         artifact_reader=reader)
@@ -58,16 +63,20 @@ def _trajectory(index, trajectory, reader, *, cuts=None, verify_all=True):
     for completion in completions:
         for artifact in completion.output_artifacts:reader(artifact)
     projections={}
-    for day in (index.cuts if cuts is None else cuts):
+    for cut_ordinal,day in enumerate((index.cuts if cuts is None else cuts),1):
+        observe(diagnostic,'cut_before',trajectory=trajectory_ordinal,cut=cut_ordinal)
         cutoff=index.origin+timedelta(days=day)
         projected=project_protocol(full,cutoff,family='support',origin=index.origin,verify_closure=verifier)
         original=reader(trajectory.projections[str(day)])
         if json.loads(original)!=projected.model_dump(mode='json'):
             raise ValueError('support_projection_replay_mismatch')
         projections[day]=projected
+        observe(diagnostic,'cut_after',trajectory=trajectory_ordinal,cut=cut_ordinal)
     # Every closure, including any not consumed by a reduction, must be proven.
     if verify_all:
+        observe(diagnostic,'closures_before',trajectory=trajectory_ordinal)
         for closure in closures:verifier(closure,index.origin+timedelta(days=index.horizon))
+        observe(diagnostic,'closures_after',trajectory=trajectory_ordinal)
     decisions=[r for r in full.records if r.kind=='support_decision']
     if (not decisions or any(r.mode!=('fixed' if trajectory.mode=='S0' else 'mrt') for r in decisions)
             or (trajectory.mode=='S0' and any(r.availability=='randomized' for r in decisions))):
@@ -84,44 +93,60 @@ class VerifiedSupportArchive:
     histories: dict
 
 
-def verify_support_archive(raw, root, authority):
+def verify_support_archive(raw, root, authority, *, diagnostic=None):
+    observe(diagnostic,'verify_before')
     index=_index(raw,authority)
+    observe(diagnostic,'index_after')
     artifacts={};descriptors={};identifiers={};histories={};path_partitions={};partition=None
+    reads=read_bytes=hits=visits=0
     def reader(artifact):
+        nonlocal reads,read_bytes,hits
         old=descriptors.get(artifact.path)
         if old is not None:
             if old!=artifact or path_partitions[artifact.path]!=partition:raise ValueError('conflicting_support_artifact_path')
+            if diagnostic is not None:hits+=1
             return artifacts[artifact.path]
         key=(partition,artifact.id)
         if key in identifiers:raise ValueError('duplicate_support_artifact_id_in_partition')
         if artifact.role not in ('observed','configuration'):
             raise ValueError('support_public_proof_role_required')
         payload=read_artifact(root,artifact)
+        if diagnostic is not None:reads+=1;read_bytes+=len(payload)
         descriptors[artifact.path]=artifact;identifiers[key]=artifact.path;artifacts[artifact.path]=payload;path_partitions[artifact.path]=partition
         return payload
     direct=[a for t in index.trajectories for a in (t.history,t.stage_ledgers,t.completions,*t.projections.values())]
     if len({a.path for a in direct})!=len(direct) or len({a.id for a in direct})!=len(direct):
         raise ValueError('duplicate_support_artifact_path_or_id')
-    for trajectory in index.trajectories:
+    for trajectory_ordinal,trajectory in enumerate(index.trajectories,1):
         partition=trajectory.partition_id
-        histories[trajectory.partition_id]=_trajectory(index,trajectory,reader)[0]
+        histories[trajectory.partition_id]=_trajectory(index,trajectory,reader,diagnostic=diagnostic,trajectory_ordinal=trajectory_ordinal)[0]
+        observe(diagnostic,'trajectory_after',trajectory=trajectory_ordinal,reads=reads,bytes=read_bytes,hits=hits)
+    observe(diagnostic,'supplement_before')
     for supplemental in authority.supplemental_public_artifacts:
         if supplemental.artifact.path in artifacts:raise ValueError('duplicate_supplemental_public_path')
         partition=supplemental.partition_id
         reader(supplemental.artifact)
+    observe(diagnostic,'supplement_after')
     # The original index stays byte-identical. The trusted supplemental list
     # binds independently persisted predecision/timing proof omitted by it.
     manifest=Artifact(id='support-original-index',path='manifest.json',sha256=sha256(raw),bytes=len(raw),
         role='observed_manifest',media_type='application/json')
     if 'manifest.json' in artifacts:raise ValueError('reserved_original_support_manifest_path')
+    observe(diagnostic,'manifest_before')
     read_artifact(root,manifest)
+    if diagnostic is not None:reads+=1;read_bytes+=len(raw)
+    observe(diagnostic,'manifest_after')
     observed=set();directory=Path(root)
+    observe(diagnostic,'inventory_before',reads=reads,bytes=read_bytes,hits=hits)
     for path in directory.rglob('*'):
+        if diagnostic is not None:visits+=1
         if path.is_symlink() or getattr(path.lstat(),'st_file_attributes',0)&stat.FILE_ATTRIBUTE_REPARSE_POINT:
             raise ValueError('linked_support_public_inventory')
         if path.is_file():observed.add(path.relative_to(directory).as_posix())
     if observed!=set(artifacts)|{'manifest.json'}:
         raise ValueError('exact_qualified_support_public_inventory_required')
+    observe(diagnostic,'inventory_after',visits=visits,files=len(observed))
+    observe(diagnostic,'verify_after',reads=reads,bytes=read_bytes,hits=hits)
     return VerifiedSupportArchive(raw,authority,index,artifacts,histories)
 
 
@@ -177,14 +202,19 @@ def _check_entries(db,archive_id,trajectory,full):
             raise ValueError('stored_support_entries_changed')
 
 
-def admit_support_archive(store, raw, root, authority, *, owner_id, received_at, authorize=None, fault=None):
-    package=verify_support_archive(raw,root,authority)
+def admit_support_archive(store, raw, root, authority, *, owner_id, received_at, authorize=None, fault=None, diagnostic=None):
+    observe(diagnostic,'admit_before')
+    package=verify_support_archive(raw,root,authority,diagnostic=diagnostic)
     index=package.index;identifier=index.run_id+':'+index.cohort_id
     # Receipt time is real wall time; never substitute the simulated cutoff.
+    observe(diagnostic,'publication_before')
     completions=[SupportCompletion.model_validate_json(canonical_bytes(r)) for t in index.trajectories
         for r in json.loads(package.artifacts[t.completions.path])]
     if any(r.published_at>received_at for r in completions):raise ValueError('support_receipt_precedes_publication')
+    observe(diagnostic,'publication_after')
+    observe(diagnostic,'transaction_acquire')
     with store.transaction(write=True,authorize=authorize) as db:
+        observe(diagnostic,'transaction_enter')
         if db.execute('SELECT 1 FROM accounts WHERE id=?',(owner_id,)).fetchone() is None:
             raise ValueError('support_existing_owner_required')
         for patient in index.members:
@@ -198,6 +228,7 @@ def admit_support_archive(store, raw, root, authority, *, owner_id, received_at,
                 db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)',(marker_key(patient),patient,owner_id,
                     timestamp(received_at),canonical(_identity(package,owner_id,patient))))
         _owners(db,package,owner_id)
+        observe(diagnostic,'owners_after')
         prior=db.execute('SELECT * FROM observed_archives WHERE id=?',(identifier,)).fetchone()
         if prior:
             if (prior['owner_id']!=owner_id or prior['export_sha256']!=sha256(raw) or bytes(prior['manifest'])!=raw
@@ -206,12 +237,14 @@ def admit_support_archive(store, raw, root, authority, *, owner_id, received_at,
             stored={r['path']:(bytes(r['payload']),r['sha256']) for r in db.execute('SELECT * FROM observed_archive_artifacts WHERE archive_id=?',(identifier,))}
             if stored!={p:(raw,sha256(raw)) for p,raw in package.artifacts.items()}:raise ValueError('stored_support_artifact_conflict')
             for trajectory in index.trajectories:_check_entries(db,identifier,trajectory,package.histories[trajectory.partition_id])
+            observe(diagnostic,'idempotent_pending')
             return _check_receipt(db,prior,index,authority,raw)
         count=sum(len(h.records) for h in package.histories.values())
         receipt=_receipt_bindings(index,authority,raw)
         receipt.update(received_at=timestamp(received_at),artifacts=len(package.artifacts),records=count,cursor=count)
         db.execute('INSERT INTO observed_archives VALUES(?,?,?,?,?,?,?,?,?)',(identifier,owner_id,sha256(raw),raw,MODE,
             timestamp(received_at),count,count,canonical(receipt)))
+        observe(diagnostic,'receipt_after')
         ordinal=0
         for trajectory in index.trajectories:
             for record in package.histories[trajectory.partition_id].records:
@@ -219,9 +252,13 @@ def admit_support_archive(store, raw, root, authority, *, owner_id, received_at,
                 db.execute('INSERT INTO observed_archive_entries VALUES(?,?,?,?,?,?,?,?,?,?,?)',(identifier,trajectory.partition_id,
                     ordinal,record.patient_id,record.record_id,record.schema_version,record.kind,payload,sha256(payload),payload,sha256(payload)))
                 ordinal+=1
+        observe(diagnostic,'entries_after')
         for path,payload in package.artifacts.items():
             db.execute('INSERT INTO observed_archive_artifacts VALUES(?,?,?,?)',(identifier,path,payload,sha256(payload)))
+        observe(diagnostic,'artifacts_after')
+        observe(diagnostic,'precommit')
         if fault:fault('before_support_archive_commit')
+    observe(diagnostic,'commit_returned')
     return receipt
 
 
