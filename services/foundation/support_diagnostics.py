@@ -13,7 +13,7 @@ MAX_RESULT_BYTES=32768
 STAGES=frozenset(('post_before','post_return','status_checked','json_decoded','response_checked','counts_before','counts_after',
     'count_before','count_after','endpoint_before','endpoint_return','admit_before','verify_before','index_after',
     'trajectory_before','history_after','ledgers_after','completions_after','cut_before','cut_after',
-    'closures_before','closures_after','trajectory_after','supplement_before','supplement_after',
+    'cut_projection_return','cut_reader_return','closures_before','closures_after','trajectory_after','supplement_before','supplement_after',
     'manifest_before','manifest_after','inventory_before','inventory_after','verify_after',
     'publication_before','publication_after','transaction_acquire','transaction_enter','owners_after',
     'idempotent_pending','receipt_after','entries_after','artifacts_after','precommit','commit_returned','summary'))
