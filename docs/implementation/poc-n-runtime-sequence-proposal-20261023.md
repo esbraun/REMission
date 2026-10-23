@@ -12,6 +12,16 @@ Unchanged120s work/180s lifecycle,2CPU/2GiB=swap/64PID/tmp512MiB,nonroot10002/ro
 
 18 safe source controls pass (original15 plus three focused metadata controls); scientific imports, native children and actual payload execution blocked except whitelisted Git metadata. SOURCE and OPERATION exact review plus new root GO required; no scientific API/roundtrip/fit/genuine-data success claimed. S2 WIPc06 remains paused, not implementation freeze; heldouts sealed.
 
+### Frozen R2 exact review candidate
+
+Implementation/preparation_head ae0bdd1956c842170d5f7e59a5fadf42c58bf43d; the final source commit only adds these packet identities. Packet has exactly4 inputs, planSHA `b56e8f8d1c2473cf4a61ea028210139d0483a8aa1409d916859a025ff4362091`, bindingSHA `a6c91cac0697f0347d659795d9a7848ce6da14fccf65ed1304d38ed5c609f59e`. CID remains UNKNOWN; literal name has not been queried; results and authorization-consumed record absent. Complete current-source/input/test receipt is frozen after this docs-only commit at `artifacts/n-api02-unit-9c78bb4-r2/input-receipt.json`, with exact final head and byte hashes. This avoids confusing an implementation-era receipt with later reviewed docs. Historical R1 receipt8df remains an implementation-era manifest: all17 original blobs preserved,16 final2f files match; its sole sequence-doc difference is the reviewed final2f append. No historical record was rewritten.
+
+Once command proposed for independent review, NOT authorized:
+
+```powershell
+& 'C:/Python313/python.exe' -I -B 'C:/Users/erics/Documents/Projects/REMission-worktrees/n-api-preparation-sol-261023/artifacts/n-api02-unit-9c78bb4-r2/final-packet/operator/n_api02.py' --execute --plan 'C:/Users/erics/Documents/Projects/REMission-worktrees/n-api-preparation-sol-261023/artifacts/n-api02-unit-9c78bb4-r2/final-packet/plan.json' --authorized-plan-sha256 b56e8f8d1c2473cf4a61ea028210139d0483a8aa1409d916859a025ff4362091
+```
+
 ## Preserved R1 preparation and consumed operation history
 
 ## Current N-API-02 UNIT source/packet preparation — NO GO
