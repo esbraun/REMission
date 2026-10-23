@@ -51,6 +51,10 @@ def ordinary(path):
     return path
 def module(path,name):
     spec=importlib.util.spec_from_file_location(name,path);loaded=importlib.util.module_from_spec(spec);spec.loader.exec_module(loaded);return loaded
+def bounded_stdout(path,cap):
+    with Path(path).open('rb') as stream:raw=stream.read(cap+1)
+    require(len(raw)<=cap)
+    return raw
 
 
 def audit_network(value,*,empty):
@@ -233,7 +237,7 @@ def worker(packet,spec,start,lease_unix,outer):
         life.supervise(owned['app'],output/'app',work,on_poll=generator.check);terminal.add(owned['app'])
         generator.finish();terminal.add(owned['generator'])
         driver=module(packet/'carrier/n_data03_driver.py','data03_public')
-        raw=(output/'app/attach.stdout').read_bytes();require(len(raw)<=driver.STDOUT_CAP)
+        raw=bounded_stdout(output/'app/attach.stdout',driver.STDOUT_CAP)
         rows=driver.parse_rows(raw);require(rows[-1]['kind']=='n_data03_custody' and rows[-1]['reason']=='completed'
             and rows[-1]['reaped'] is True and rows[-1]['identity_matched'] is True and rows[-1]['returncode']==0)
         results=[r for r in rows if r['kind']=='n_data03_result'];require(len(results)==1)

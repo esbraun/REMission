@@ -38,6 +38,9 @@ work are required; ordinary follow-up tasks remain present and separate. Duplica
 same-cutoff export equality is checked. At72 the persisted immutable36 receipt and
 its reduced histories are compared against a historical36 re-export, while current72
 versions/authority are checked independently. Readiness may validly be inconclusive.
+All pending statuses/orphan entries are covered: only the exact ordinary-unavailable
+reason from `services/foundation/replay.py` is permitted; every other pending row
+and any analysis attempt rejects the receipt. No ordinary follow-up task is erased.
 
 Only seven fixed private export filenames are allowed: provisioning credentials,
 declaration, exact generation response, target/order selection, command journal and
@@ -61,6 +64,8 @@ Windows/Linux monotonic epochs are never compared. Host monotonic enforcement
 remains authoritative across UTC skew/launch delay; no reliability or feasibility
 claim follows. Each request timer spans response/status and required local receipt
 persistence. Unknown mutations stop without replay/replacement/reconciliation.
+Initialization, read-only readiness export and general persistence are governed by
+the common work/outer lease and byte bounds, without an extra180-second stage cap.
 
 `tooling/foundation/n_data03.py` reuses strict literal-CID lifecycle blob
 `a63db64c57032fa68b7b854292a829c9165fd108` and regular-file CLI helper

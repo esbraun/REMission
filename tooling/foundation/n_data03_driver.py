@@ -34,6 +34,9 @@ EXPORT_CAP=128*1024*1024
 STDOUT_CAP=256*1024
 DRIVER_CAP=STDOUT_CAP-4096  # Reserved parent identity/custody/error rows included.
 STDERR_CAP=64*1024
+# Exact ordinary (non-analysis) placeholder from foundation/replay.py. Ordinary
+# follow-up tasks live in tasks and are independently required, never zeroed.
+ORDINARY_UNAVAILABLE_REASON='New observed data; statistical worker unavailable'
 PHASES=frozenset(('initialized','cohort_frozen','member_authorized','member_day36',
     'member_day72','receipt36','receipt72'))
 ERRORS=frozenset(('driver_failed','unknown_mutation','request_deadline','lease_deadline',
@@ -206,6 +209,12 @@ def admit_rows(rows,selection,snapshots,owner,day,law,protocol):
     return next(iter(cutoffs))
 
 
+def no_analysis_jobs(attempts,pending):
+    require(type(attempts) is int and attempts==0 and len(pending)<=1024)
+    require(all(len(row)==2 and type(row[0]) is str and type(row[1]) is str
+        and row[0]=='unavailable' and row[1]==ORDINARY_UNAVAILABLE_REASON for row in pending))
+
+
 def receipt(store,owner,selection,snapshots,day):
     from contracts.domain.analysis import canonical,reference,sha
     from contracts.domain.nof1_app import readiness
@@ -218,8 +227,8 @@ def receipt(store,owner,selection,snapshots,day):
         rows=list(db.execute('SELECT id,owner_id,version,state_version,consent_version,eligibility_version,state_json,cutoff,current_decision FROM patients WHERE owner_id=? ORDER BY id',(owner,)))
         cutoff=admit_rows(rows,selection,snapshots,owner,day,LAW_REF,NOF1_REF)
         for row in rows:require(not guard(db,row['id'],json.loads(row['state_json']),cutoff,datetime.now(timezone.utc)))
-        require(db.execute('SELECT COUNT(*) FROM analysis_attempts').fetchone()[0]==0)
-        require(db.execute("SELECT COUNT(*) FROM pending_work WHERE status IN ('queued','running')").fetchone()[0]==0)
+        no_analysis_jobs(db.execute('SELECT COUNT(*) FROM analysis_attempts').fetchone()[0],
+            list(db.execute('SELECT status,reason FROM pending_work LIMIT 1025')))
         require(db.execute('SELECT COUNT(*) FROM tasks WHERE owner_id=?',(owner,)).fetchone()[0]==12)
         histories=export_histories(db,owner,selection['cohort'],cutoff)
         require([h.patient_id for h in histories]==selection['cohort'] and all(h.cutoff==cutoff for h in histories))
@@ -357,8 +366,7 @@ class Physician:
 
     def barrier(self,selection,owner,day):
         snapshots={p:self.workspace(p)['snapshot'] for p in selection['cohort']}
-        with self.limit.hold():private,historical=receipt(self.store,owner,selection,snapshots,day)
-        return private,historical
+        return receipt(self.store,owner,selection,snapshots,day)
 
 
 class NoFits(importlib.abc.MetaPathFinder):
@@ -392,14 +400,13 @@ def run_driver(lease_unix,public,limit):
     passwords={role:{'username':'ndata03-'+role+'-'+secrets.token_hex(8),'password':secrets.token_urlsafe(32)} for role in ('owner','foreign')}
     exports.once('credentials.json',passwords)
     deployment=json.loads(Path('/carrier/deployment.json').read_bytes());bootstrap=root/'bootstrap';bootstrap.mkdir(mode=0o700)
-    with limit.hold():
-        admin.initialize(root/'remission.sqlite',bootstrap,deployment)
-        installed=InstalledBundle.model_validate_json((bootstrap/'bundle.json').read_bytes())
-        require(installed.control.enabled is False and not installed.authority.enabled and not installed.authority.grants)
-        store=Store(root/'remission.sqlite',installed)
-        for role,value in passwords.items():admin.create_account(store,value['username'],'Synthetic DATA03 '+role,value['password'],HASHER)
-        settings=Settings(store.path,installed,origin=ORIGIN,generator_url='http://generator:8780',source_commit=deployment['source_commit'])
-        app=create_app(settings)
+    admin.initialize(root/'remission.sqlite',bootstrap,deployment)
+    installed=InstalledBundle.model_validate_json((bootstrap/'bundle.json').read_bytes())
+    require(installed.control.enabled is False and not installed.authority.enabled and not installed.authority.grants)
+    store=Store(root/'remission.sqlite',installed)
+    for role,value in passwords.items():admin.create_account(store,value['username'],'Synthetic DATA03 '+role,value['password'],HASHER)
+    settings=Settings(store.path,installed,origin=ORIGIN,generator_url='http://generator:8780',source_commit=deployment['source_commit'])
+    app=create_app(settings)
     clients=[TestClient(app,base_url=ORIGIN) for _ in range(3)]
     physician=Physician(store,*clients,passwords,exports,limit,public)
     try:
@@ -425,15 +432,14 @@ def run_driver(lease_unix,public,limit):
         for day in (36,72):
             for ordinal,patient in enumerate(selection['generation_order'],1):physician.advance(patient,ordinal,day)
             private,historical=physician.barrier(selection,owner,day)
-            with limit.hold():
-                if day==36:receipt36=private
-                else:
-                    # Compare the original persisted receipt, retaining its old
-                    # versions. Current72 admission above is a separate check.
-                    saved=(exports.root/'observed-day36.json').read_bytes()
-                    require(len(saved)<=FILE_CAP and json.loads(saved)==receipt36)
-                    require(canonical(historical)==canonical(receipt36['histories']))
-                exports.once('observed-day'+str(day)+'.json',private)
+            if day==36:receipt36=private
+            else:
+                # Compare the original persisted receipt, retaining its old
+                # versions. Current72 admission above is a separate check.
+                saved=(exports.root/'observed-day36.json').read_bytes()
+                require(len(saved)<=FILE_CAP and json.loads(saved)==receipt36)
+                require(canonical(historical)==canonical(receipt36['histories']))
+            exports.once('observed-day'+str(day)+'.json',private)
             receipts.append(private['public']);public.phase('receipt'+str(day),0,day)
         require(physician.advances==180)
         public.send(dict(kind='n_data03_result',status='complete_'+receipts[-1]['readiness']['status'],synthetic=True,

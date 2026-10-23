@@ -69,6 +69,24 @@ class Data03Source(unittest.TestCase):
         self.assertEqual(events[-1],('whole_process_exit',124))
         self.assertEqual(json.loads(writes[0]),{'kind':'n_data03_error','code':'request_deadline'})
 
+    def test_180_timer_is_only_http_scope_not_init_export_or_general_persistence(self):
+        tree=ast.parse(Path(d.__file__).read_text())
+        run=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='run_driver')
+        barrier=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='barrier')
+        def holds(node):return [n for n in ast.walk(node) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='hold']
+        self.assertEqual(holds(run),[]);self.assertEqual(holds(barrier),[])
+        call=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='call')
+        self.assertEqual(len(holds(call)),1)
+        self.assertIn('consume(response)',ast.unparse(call))
+
+    def test_zero_analysis_checks_orphans_nonqueued_and_unknown_pending_reasons(self):
+        d.no_analysis_jobs(0,[])
+        d.no_analysis_jobs(0,[('unavailable',d.ORDINARY_UNAVAILABLE_REASON)])
+        for attempts,rows in ((1,[]),(0,[('completed','N analysis queued')]),
+                (0,[('unavailable','N analysis queued')]),(0,[('failed','Joint cohort analysis queued')]),
+                (0,[('unavailable','unknown')]),(0,[('queued',d.ORDINARY_UNAVAILABLE_REASON)])):
+            with self.assertRaises(d.Data03Error):d.no_analysis_jobs(attempts,rows)
+
     def test_unknown_mutation_is_never_resent(self):
         class Limit:
             def hold(self):
@@ -175,6 +193,17 @@ class Data03Source(unittest.TestCase):
 
 
 class Data03OperatorSource(unittest.TestCase):
+    def test_bounded_capture_accepts_boundary_rejects_one_sentinel(self):
+        with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+            path=Path(folder)/'public.stdout';path.write_bytes(b'x'*8)
+            self.assertEqual(op.bounded_stdout(path,8),b'x'*8)
+            path.write_bytes(b'x'*9)
+            with self.assertRaises(ValueError):op.bounded_stdout(path,8)
+        source=ast.parse(Path(op.__file__).read_text())
+        capture=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='bounded_stdout')
+        reads=[n for n in ast.walk(capture) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='read']
+        self.assertEqual(len(reads),1);self.assertEqual(ast.unparse(reads[0].args[0]),'cap + 1')
+
     def test_single_selected_network_exact_and_empty_no_fallback(self):
         value=dict(Id=op.NETWORK,Name=op.NETWORK_NAME,Driver='bridge',Internal=True,
             Labels={'remission.task':'remission-cloud-fixture-6e48c02af5b9'},
