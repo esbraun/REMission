@@ -114,15 +114,59 @@ def version_ref(value):
 
 
 def read_artifact(root, artifact):
-    root=Path(root).resolve();path=root/artifact.path
-    if any(p.is_symlink() for p in (path, *path.parents) if p.is_relative_to(root)):
-        raise ValueError('symlink_support_artifact_denied')
-    if not path.resolve().is_relative_to(root):
-        raise ValueError('support_artifact_escape')
-    raw=path.read_bytes()
+    import stat
+    root=Path(root).absolute();path=root/artifact.path
+    # Windows junctions/reparse points are links too. Check the configured
+    # root and its ancestry before resolving; resolve() would hide the link.
+    try:
+        if any(p.is_symlink() or getattr(p.lstat(), 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT
+               for p in (path, *path.parents)):
+            raise ValueError('symlink_support_artifact_denied')
+        root=root.resolve(strict=True)
+        if not path.resolve().is_relative_to(root):
+            raise ValueError('support_artifact_escape')
+        if not path.is_file() or path.stat().st_nlink!=1:raise ValueError('ordinary_unlinked_support_artifact_required')
+        raw=path.read_bytes()
+    except OSError as error:raise ValueError('support_artifact_unreadable') from error
     if len(raw) != artifact.bytes or sha256(raw) != artifact.sha256:
         raise ValueError('support_artifact_hash_or_size_mismatch')
     return raw
+
+
+class SupplementalSupportArtifact(StrictModel):
+    partition_id: Token | None
+    artifact: Artifact
+
+
+class SupportArchiveAuthority(StrictModel):
+    """Independent host configuration, never an uploaded admission claim.
+
+    The full descriptor pins source/runtime, pairs and every original artifact.
+    Qualification references identify the independently reviewed invocation.
+    Structural fixtures carry their own explicit scope and grant no authority.
+    """
+    kind: Literal['restricted_support_archive']
+    manifest_sha256: Sha256
+    descriptor: SupportResearchIndex
+    producer_qualification: VersionRef
+    outcome_qualification: VersionRef
+    qualification_scope: Literal['accepted_saved_producer', 'structural_fixture']
+    supplemental_public_artifacts: list[SupplementalSupportArtifact]
+
+    @model_validator(mode='after')
+    def supplemental_identity(self):
+        unique([r.artifact.path for r in self.supplemental_public_artifacts],'supplemental public path')
+        unique([(r.partition_id,r.artifact.id) for r in self.supplemental_public_artifacts],'supplemental public scoped ID')
+        partitions={r.partition_id for r in self.descriptor.trajectories}
+        if any(r.partition_id is not None and r.partition_id not in partitions for r in self.supplemental_public_artifacts):
+            raise ValueError('supplemental_support_partition_not_qualified')
+        if any(r.partition_id is not None and not r.artifact.path.startswith(r.partition_id+'/') for r in self.supplemental_public_artifacts):
+            raise ValueError('supplemental_support_path_partition_mismatch')
+        return self
+
+    @property
+    def admission_sha256(self):
+        return sha256(canonical(self.model_dump(mode='json')))
 
 
 class StageVerifier:
@@ -132,13 +176,14 @@ class StageVerifier:
     the resulting index. This verifier proves closure within that invocation.
     """
     def __init__(self, history, ledgers, completions, root, *, run_id, partition_id,
-                 source_commit, runtime, frozen_plan_sha256):
+                 source_commit, runtime, frozen_plan_sha256, artifact_reader=None):
         self.history=history
         self.ledgers={r.id:r for r in ledgers}
         self.completions={r.id:r for r in completions}
         if len(self.ledgers)!=len(ledgers) or len(self.completions)!=len(completions):
             raise ValueError('duplicate_stage_proof_identity')
         self.root=root
+        self.artifact_reader=artifact_reader or (lambda artifact: read_artifact(root,artifact))
         self.identity=(run_id,partition_id,history.patient_id,source_commit,runtime,frozen_plan_sha256)
 
     def __call__(self, closure, cutoff):
@@ -177,7 +222,7 @@ class StageVerifier:
         import json
         output=[]
         for artifact in receipt.output_artifacts:
-            rows=json.loads(read_artifact(self.root,artifact))
+            rows=json.loads(self.artifact_reader(artifact))
             if not isinstance(rows,list) or any(r.get('kind')!='delivery' for r in rows):
                 raise ValueError('receipt_output_not_independent_stage_events')
             output.extend(rows)

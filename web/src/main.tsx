@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ContextGate } from './context.mjs';
-import type { Bundle, Draft, Panel, Session, Workspace } from './types';
+import type { Bundle, Draft, HistoricalSupportWorkspace, Panel, Session, Workspace } from './types';
 import './style.css';
 import { LiveHoldPanel } from './LiveHoldPanel';
 import { PanelGenerator, SimulationPanel } from './SimulationPanel';
 import { AnalysisPanel } from './AnalysisPanel';
 import { ResearchPanel } from './ResearchPanel';
 import { Nof1Panel, Nof1Timeline } from './Nof1Panel';
+import { HistoricalSupportPanel } from './HistoricalSupportPanel';
 
 type Route = { patient: string; view: string; bundle: string };
 class RequestFailure extends Error { constructor(public status: number, message: string) { super(message); } }
@@ -66,6 +67,7 @@ function App() {
   const [panel, setPanel] = useState<Panel | null>(null);
   const [panelGroup, setPanelGroup] = useState('latest');
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [supportWorkspace, setSupportWorkspace] = useState<HistoricalSupportWorkspace | null>(null);
   const [bundle, setBundle] = useState<Bundle | null>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -83,7 +85,7 @@ function App() {
   const route = routeOf(path);
 
   function clearIdentity() {
-    gate.current.invalidate(); setLoading(false); setPendingAdvance(false); setPanel(null); setPanelGroup('latest'); setWorkspace(null); setBundle(null); setDraft(null); setSavedDraft(null); setDirty(false); setReviewing(false); setPendingApproval(null); setLater(null); setPendingNavigation(null);
+    gate.current.invalidate(); setLoading(false); setPendingAdvance(false); setPanel(null); setPanelGroup('latest'); setWorkspace(null); setSupportWorkspace(null); setBundle(null); setDraft(null); setSavedDraft(null); setDirty(false); setReviewing(false); setPendingApproval(null); setLater(null); setPendingNavigation(null);
   }
   async function request<T>(url: string, options: RequestInit = {}, auth = session): Promise<T> {
     const responseContext = gate.current.capture();
@@ -115,12 +117,15 @@ function App() {
     if (!session?.principal) return;
     const context = `${session.auth_generation}:${path}`;
     const ticket = gate.current.activate(context);
-    setWorkspace(null); setBundle(null); setPendingAdvance(false); setSavedDraft(null); setDraft(null); setDirty(false); setReviewing(false); setLoading(true); setLater(null);
+    setWorkspace(null); setSupportWorkspace(null); setBundle(null); setPendingAdvance(false); setSavedDraft(null); setDraft(null); setDirty(false); setReviewing(false); setLoading(true); setLater(null);
     async function load() {
       try {
         const ownPanel = await request<Panel>('/api/patients');
         if (!gate.current.accepts(ticket)) return; setPanel(ownPanel);
-        if (route.patient && route.view === 'history' && route.bundle) {
+        if (route.patient && ownPanel.patients.find(p => p.id === route.patient)?.historical_support) {
+          const value = await request<HistoricalSupportWorkspace>(`/api/patients/${encodeURIComponent(route.patient)}`);
+          if (gate.current.accepts(ticket) && value.auth_generation === session?.auth_generation) setSupportWorkspace(value);
+        } else if (route.patient && route.view === 'history' && route.bundle) {
           const value = await request<Bundle>(`/api/patients/${encodeURIComponent(route.patient)}/history/${encodeURIComponent(route.bundle)}`);
           if (gate.current.accepts(ticket) && value.auth_generation === session?.auth_generation) setBundle(value);
         } else if (route.patient) {
@@ -137,7 +142,7 @@ function App() {
 
   function navigate(next: string, discard = false) {
     if (dirty && !discard) { setPendingNavigation(next); return; }
-    gate.current.activate(`${session?.auth_generation}:${next}`); setWorkspace(null); setBundle(null); setDraft(null); setDirty(false); setError(''); setNotice(''); setReviewing(false); setPendingApproval(null);
+    gate.current.activate(`${session?.auth_generation}:${next}`); setWorkspace(null); setSupportWorkspace(null); setBundle(null); setDraft(null); setDirty(false); setError(''); setNotice(''); setReviewing(false); setPendingApproval(null);
     history.pushState({}, '', next); setPath(next);
   }
   async function signIn(event: React.FormEvent<HTMLFormElement>) {
@@ -216,7 +221,7 @@ function App() {
   const visibleBundle = bundle?.patient_id === route.patient && bundle.snapshot_id === route.bundle && route.view === 'history' && bundle.auth_generation === session?.auth_generation ? bundle : null;
   const groups = new Map(panel?.patients.flatMap(patient => patient.state.simulation ? [[patient.state.simulation.panel_id, patient.state.simulation.seed] as const] : []));
   const selectedGroup = panelGroup === 'latest' ? panel?.generated?.panel_id ?? 'fixtures' : panelGroup;
-  const panelPatients = panel?.patients.filter(patient => selectedGroup === 'all' || (selectedGroup === 'fixtures' ? !patient.state.simulation : patient.state.simulation?.panel_id === selectedGroup)) ?? [];
+  const panelPatients = panel?.patients.filter(patient => selectedGroup === 'all' || (selectedGroup === 'historical' ? Boolean(patient.historical_support) : selectedGroup === 'fixtures' ? !patient.state.simulation && !patient.historical_support : patient.state.simulation?.panel_id === selectedGroup)) ?? [];
 
   return <><a className="skip" href="#main">Skip to main content</a><header><div className="brand">REMission <span>Synthetic care workspace</span></div>{session?.principal ? <div className="account"><span>{session.principal.name}</span><button className="header-button" onClick={() => void signOut()}>Sign out</button></div> : null}</header><div className="demo-label">Synthetic demonstration · fictional medicines MED_A / MED_B · no acute clinical monitoring</div>
     <main id="main" tabIndex={-1}>{error ? <div className="error" role="alert"><strong>Action needs attention</strong><p>{error}</p><button className="secondary" onClick={() => { setError(''); refresh(); }}>Refresh current information</button></div> : null}{notice ? <p className="notice" role="status">{notice}</p> : null}
@@ -227,10 +232,11 @@ function App() {
     {pendingNavigation ? <section className="warning" aria-label="Unsaved draft"><h2>Unsaved draft</h2><p>Save, discard or cancel before leaving this patient and decision.</p><div className="actions"><button onClick={() => void saveDraft(true)}>Save draft and leave</button><button className="secondary" onClick={() => { const next = pendingNavigation; setPendingNavigation(null); navigate(next, true); }}>Discard and leave</button><button className="link" onClick={() => setPendingNavigation(null)}>Cancel</button></div></section> : null}
     {loading ? <p role="status">Loading authorized workspace…</p> : null}
     {!route.patient && panel ? <><p className="eyebrow">Your clinical workspace</p><h1>My panel</h1><p>Choose a synthetic patient. State and permissions come from the service; opening a workspace never assigns a treatment.</p>
-      <label htmlFor="panel-group">Loaded patient group</label><select id="panel-group" name="panel_group" value={panelGroup} onChange={event => setPanelGroup(event.target.value)}><option value="latest">{panel.generated ? `Latest generated panel · seed ${panel.generated.seed}` : 'Foundation fixtures'}</option>{[...groups].filter(([id]) => id !== panel.generated?.panel_id).map(([id, seed]) => <option key={id} value={id}>Saved panel · seed {seed} · {id.slice(-8)}</option>)}{panel.generated ? <option value="fixtures">Foundation fixtures</option> : null}<option value="all">All owned patients</option></select>
+      <label htmlFor="panel-group">Loaded patient group</label><select id="panel-group" name="panel_group" value={panelGroup} onChange={event => setPanelGroup(event.target.value)}><option value="latest">{panel.generated ? `Latest generated panel · seed ${panel.generated.seed}` : 'Foundation fixtures'}</option>{[...groups].filter(([id]) => id !== panel.generated?.panel_id).map(([id, seed]) => <option key={id} value={id}>Saved panel · seed {seed} · {id.slice(-8)}</option>)}{panel.generated ? <option value="fixtures">Foundation fixtures</option> : null}{panel.patients.some(p => p.historical_support) ? <option value="historical">Historical support research · read only</option> : null}<option value="all">All owned patients</option></select>
       <p role="status">Showing {panelPatients.length} of {panel.denominator} owned patients.</p>
-      <div className="patient-grid">{panelPatients.map(patient => <article key={patient.id}><p className="eyebrow">{patient.id}</p><h2><NavLink href={`/patients/${patient.id}/overview`} navigate={navigate}>{patient.name}</NavLink></h2><p>{patient.state.stage} · {readable(patient.state.workflow.clinical)}</p><p className="muted">Learning: {readable(patient.state.workflow.learning)}{patient.state.simulation ? ` · day ${patient.state.simulation.day}` : ''}</p><span className={patient.state.workflow.clinical === 'clinical_hold' ? 'badge hold' : 'badge'}>{patient.state.workflow.data_readiness}</span></article>)}</div></> : null}
+      <div className="patient-grid">{panelPatients.map(patient => <article key={patient.id}><p className="eyebrow">{patient.id}</p><h2><NavLink href={`/patients/${patient.id}/overview`} navigate={navigate}>{patient.name}</NavLink></h2>{patient.historical_support ? <p>Historical support research · S0/S1 · read only · no live authority</p> : <><p>{patient.state.stage} · {readable(patient.state.workflow.clinical)}</p><p className="muted">Learning: {readable(patient.state.workflow.learning)}{patient.state.simulation ? ` · day ${patient.state.simulation.day}` : ''}</p><span className={patient.state.workflow.clinical === 'clinical_hold' ? 'badge hold' : 'badge'}>{patient.state.workflow.data_readiness}</span></>}</article>)}</div></> : null}
     {visibleBundle ? <HistoricalView bundle={visibleBundle} later={later} requestLater={() => void requestLater()} returnCurrent={() => navigate(`/patients/${route.patient}/overview`)}/> : null}
+    {supportWorkspace?.patient_id === route.patient && supportWorkspace.auth_generation === session.auth_generation ? <HistoricalSupportPanel key={`support:${route.patient}:${session.auth_generation}`} workspace={supportWorkspace} request={request}/> : null}
     {visibleWorkspace ? <><StateBanner workspace={visibleWorkspace} mode="current"/><nav className="tabs" aria-label="Patient views">{['overview', 'current', 'monitoring', 'analysis', 'research', 'history'].map(view => <NavLink key={view} href={`/patients/${route.patient}/${view}`} navigate={navigate} current={route.view === view}>{view === 'current' ? 'Current decision' : view[0].toUpperCase() + view.slice(1)}</NavLink>)}</nav>
     {route.view === 'current' ? <LiveHoldPanel key={'live-hold:' + `${visibleWorkspace.patient_id}:${session?.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} request={request} refresh={refresh} changed={setDirty}/> : null}
     {route.view === 'current' && visibleWorkspace.nof1 ? <Nof1Panel key={'nof1:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} commit={commitNof1} dirty={dirty}/> : null}

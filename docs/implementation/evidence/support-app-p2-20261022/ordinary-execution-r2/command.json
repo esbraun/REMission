@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--network=none",
+    "--read-only",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--user=10001:10001",
+    "--cpus=2",
+    "--memory=1g",
+    "--memory-swap=1g",
+    "--pids-limit=128",
+    "--tmpfs=/tmp:rw,nosuid,nodev,size=512m,mode=1777",
+    "--mount",
+    "type=bind,src=C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\support-historical-app-sol-261022\\artifacts\\support-p2-ordinary-tests-r2\\source,dst=/source,readonly",
+    "--workdir=/source",
+    "--entrypoint=python",
+    "sha256:146a84b1ff4306235bec2d15212350a7d58c94a3ea812b4d02c4e8318a4a3de0",
+    "-P",
+    "-B",
+    "/source/run_tests.py"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "inspect",
+    "--format",
+    "{\"Id\":{{json .Id}},\"State\":{{json .State}}}",
+    "f8ab8b44d06da2cbe5effc513931982b44e483718b2670b24e3413f41b1def75"
+  ],
+  "ended_at": "2026-10-23T00:30:43.135636+00:00",
+  "exit": 0,
+  "started_at": "2026-10-23T00:30:42.989353+00:00",
+  "stderr": "",
+  "stdout": "{\"Id\":\"f8ab8b44d06da2cbe5effc513931982b44e483718b2670b24e3413f41b1def75\",\"State\":{\"Dead\":false,\"Error\":\"\",\"ExitCode\":0,\"FinishedAt\":\"2026-10-23T00:30:42.410999108Z\",\"OOMKilled\":false,\"Paused\":false,\"Pid\":0,\"Restarting\":false,\"Running\":false,\"StartedAt\":\"2026-10-23T00:29:04.640806016Z\",\"Status\":\"exited\"}}\n",
+  "timeout_seconds": 3
+}
