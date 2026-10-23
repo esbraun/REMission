@@ -116,8 +116,10 @@ def submit(db,current,key,payload,*,now):
     payload=NSubmission.model_validate_json(canonical(payload)).model_dump(mode='json')
     if not key or len(key)>128:raise ValueError('bounded_stable_N_receipt_key_required')
     scope='nof1-analysis:'+payload['target_id']
-    prior=db.execute('SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?',
-        (current['account_id'],current['token_hash'],key)).fetchone()
+    matches=db.execute('SELECT * FROM receipts WHERE owner_id=? AND key=?',
+        (current['account_id'],key)).fetchall()
+    if len(matches)>1:raise ValueError('ambiguous_N_receipt_reconcile_original_attempt')
+    prior=matches[0] if matches else None
     if prior:
         if prior['scope']!=scope or prior['payload_sha256']!=sha(payload):raise ValueError('N_receipt_content_conflict')
         row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=?',

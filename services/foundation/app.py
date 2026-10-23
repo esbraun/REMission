@@ -686,6 +686,15 @@ def create_app(settings: Settings) -> FastAPI:
         status=('dated' if any(a['serving']['status']=='dated' for a in attempts) else 'current') if available else 'unavailable'
         return public_summary(dict(value,appointment=dict(status=status,attempts=attempts)))
 
+    @app.get('/api/patients/{patient_id}/nof1-analysis-options')
+    def nof1_analysis_options(patient_id: str,request: Request):
+        from contracts.domain.nof1_app import CONFIG_REFS
+        with store.transaction() as db:
+            current=session(db,request);patient=own(db,patient_id,current['account_id'])
+            simulation=json.loads(patient['state_json']).get('simulation',{})
+            if simulation.get('family')!='nof1_med':raise APIError(409,'nof1_patient_required','Select an explicit N patient')
+            return dict(configurations=CONFIG_REFS)
+
     @app.post('/api/nof1-analyses')
     async def submit_nof1_analysis(request: Request):
         from contracts.domain.nof1_app import NSubmission

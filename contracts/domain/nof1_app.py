@@ -346,6 +346,10 @@ def validate_fit(d, *, effect=False):
 def validate_summary(result):
     d=result.diagnostics;fits=d.get('fits',[]);integration=d.get('integration',{})
     if not 1<=len(fits)<=2:raise ValueError('one fit and at most one extension required')
+    if (fits[0].get('extended') is not False
+            or (len(fits)==2 and (fits[1].get('extended') is not True
+                or fits[0].get('diagnostics',{}).get('accepted') is not False))):
+        raise ValueError('N extension is permitted once only after failed initial diagnostics')
     validate_fit(fits[-1].get('diagnostics',{}))
     validate_fit(d.get('effect_mcmc',{}),effect=True)
     if (integration.get('status')!='accepted' or integration.get('axes')!=['chain','draw','target']
@@ -372,6 +376,7 @@ def validate_summary(result):
         raise ValueError('N integration precision or effect interval mismatch')
     axes=d.get('axes',{})
     if (axes.get('chains')!=4 or axes.get('draws') not in (1000,2000)
+            or axes.get('draws')!=(1000 if len(fits)==1 else 2000)
             or axes.get('target_ids')!=[result.target_id]
             or axes.get('patients')!=[m.patient_id for m in result.cohort]):
         raise ValueError('explicit N chain/draw/patient/target axes required')

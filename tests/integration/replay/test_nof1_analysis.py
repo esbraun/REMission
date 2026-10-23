@@ -176,6 +176,11 @@ class Nof1AnalysisService(unittest.TestCase):
             self.assertEqual(found['status'],'found');self.assertEqual(found['attempt']['id'],queued['id'])
             unknown=reauth.get('/api/nof1-analyses/receipt',params=dict(target_id='N-PATIENT-B',key='unknown-key')).json()
             self.assertEqual(unknown,dict(status='unknown',attempt=None))
+            repeated=reauth.post('/api/nof1-analyses',json=self.payload(),headers={
+                'Origin':URL,'X-CSRF-Token':reauth.get('/api/session').json()['csrf'],
+                'Idempotency-Key':'N-structural-command'})
+            self.assertEqual(repeated.status_code,202,repeated.text)
+            self.assertEqual(repeated.json()['id'],queued['id'])
         with self.store.transaction() as db:self.assertEqual(db.execute('SELECT count(*) FROM analysis_attempts').fetchone()[0],1)
 
     def test_overlap_covers_nonanchor_member_and_claim_export_binding(self):
@@ -255,10 +260,15 @@ class Nof1AnalysisService(unittest.TestCase):
             elif mutation=='interval':value['effect']['upper']=.9
             elif mutation=='ownership':value['consumed_record_ids']=value['consumed_record_ids'][1:]
             else:value['diagnostics']['execution']['source_commit']='c'*40
+            directory=self.root/'rehashed';directory.mkdir(exist_ok=True)
+            for ref in value['artifacts']:
+                raw=(canonical(value['diagnostics']).encode() if ref['path']=='diagnostics.json' else
+                    canonical(ownership_manifest(p)).encode() if ref['path']=='ownership.json' else
+                    b'STRUCTURAL NEGATIVE CONTROL - NO SCIENTIFIC ARTIFACT')
+                (directory/ref['path']).write_bytes(raw);ref['sha256']=hashlib.sha256(raw).hexdigest()
+            (directory/'result.json').write_text(canonical(value),encoding='utf-8')
             with self.subTest(mutation=mutation),self.assertRaises(ValueError):
-                checked=NResult.model_validate_json(canonical(value))
-                from contracts.domain.nof1_app import validate_result
-                validate_result(checked,p,execution_binding(p,HOST))
+                ingest(self.store,job,token,directory)
         # Direct corruption simulates a damaged DB summary, not accepted output.
         value=completed_counterexample(p);value['effect']['lower']=7.
         with self.store.transaction(write=True) as db:
@@ -266,6 +276,36 @@ class Nof1AnalysisService(unittest.TestCase):
             db.execute("UPDATE pending_work SET status='completed' WHERE id=?",(job,))
         read=self.client.get('/api/jobs/'+job).json()
         self.assertIsNone(read['result']);self.assertFalse(read['serving']['summary_available'])
+
+    def test_receipt_fault_rolls_back_and_retry_keeps_real_target(self):
+        with self.store.transaction(write=True) as db:
+            db.execute("CREATE TRIGGER N_receipt_fault BEFORE INSERT ON receipts BEGIN SELECT RAISE(ABORT,'structural receipt fault'); END")
+        with self.assertRaises(sqlite3.IntegrityError):self.queue()
+        with self.store.transaction(write=True) as db:
+            for table in ('analysis_attempts','pending_work','receipts'):
+                self.assertEqual(db.execute('SELECT count(*) FROM '+table).fetchone()[0],0)
+            db.execute('DROP TRIGGER N_receipt_fault')
+        original=self.queue();claimed=claim(self.store)
+        fail(self.store,original['id'],claimed['claim_token'],'structural retained failure')
+        payload=self.payload();payload['previous_attempt']=original['id']
+        retry=self.queue(payload,'deliberate-retry')
+        self.assertNotEqual(retry['id'],original['id']);self.assertEqual(retry['previous_attempt'],original['id'])
+        self.assertEqual(retry['target_id'],'N-PATIENT-B')
+
+    def test_persisted_claim_ceiling_and_advanced_history_never_current(self):
+        job=self.queue()['id'];claimed=claim(self.store);token=claimed['claim_token']
+        bind_execution(self.store,job,token,HOST)
+        p=NInput.model_validate_json(canonical(claimed['input']));directory,value=self.output(p)
+        self.store.clock=lambda:WALL+timedelta(seconds=7200)
+        with self.assertRaisesRegex(AnalysisError,'persisted claim deadline'):ingest(self.store,job,token,directory)
+        self.store.clock=lambda:WALL
+        ingest(self.store,job,token,directory)
+        with self.store.transaction(write=True) as db:
+            db.execute('UPDATE patients SET cutoff=?,version=version+1 WHERE id=?',
+                ((self.cutoff+timedelta(days=1)).isoformat(),'N-PATIENT-A'))
+        read=self.client.get('/api/jobs/'+job).json()
+        self.assertTrue(read['stale']);self.assertEqual(read['result']['status'],'abstained')
+        self.assertFalse(read['serving']['summary_available'])
 
     def test_no_science_imported_by_authenticated_host_lifecycle(self):
         self.queue()
