@@ -360,6 +360,8 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
             validate_result(result,product,json.loads(row['progress_json']).get('trusted_launch'))
             required=ARTIFACT_NAMES if result.status=='completed' else {'diagnostics.json','ownership.json'}
             if names!=required:raise AnalysisError('N artifact set incomplete or cross-purpose.')
+            if any((directory/name).stat().st_size>10*1024*1024 for name in ('diagnostics.json','ownership.json')):
+                raise AnalysisError('N bounded scalar artifact limit exceeded.')
             if json.loads((directory/'diagnostics.json').read_bytes())!=result.diagnostics:
                 raise AnalysisError('N artifact/summary diagnostics mismatch.')
             if json.loads((directory/'ownership.json').read_bytes())!=ownership_manifest(product):

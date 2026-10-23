@@ -19,6 +19,7 @@ COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/d
 COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
 COPY contracts/domain/cohort.py contracts/domain/cohort_runtime.py /app/contracts/domain/
 COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py contracts/domain/support_s1.py /app/contracts/domain/
+COPY contracts/domain/nof1_app.py contracts/domain/nof1_config.py /app/contracts/domain/
 COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 COPY --from=client /client/dist/ /app/web/dist/

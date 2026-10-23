@@ -292,6 +292,17 @@ class Nof1AnalysisService(unittest.TestCase):
         self.assertNotEqual(retry['id'],original['id']);self.assertEqual(retry['previous_attempt'],original['id'])
         self.assertEqual(retry['target_id'],'N-PATIENT-B')
 
+    def test_paired_purposes_cannot_change_declared_membership_or_Hstar(self):
+        original=self.queue();claimed=claim(self.store)
+        fail(self.store,original['id'],claimed['claim_token'],'structural retained failure')
+        payload=self.payload();payload.update(purpose='N0',configuration=CONFIG_REFS['N0'])
+        narrower=copy.deepcopy(payload);narrower['patient_versions']={'N-PATIENT-B':1}
+        response=self.client.post('/api/nof1-analyses',json=narrower,headers=self.headers('changed-pair'))
+        self.assertEqual(response.status_code,409,response.text)
+        self.assertIn('identical_ordered_cohort',response.text)
+        paired=self.queue(payload,'matched-pair')
+        self.assertEqual(paired['history_sha256'],original['history_sha256'])
+
     def test_persisted_claim_ceiling_and_advanced_history_never_current(self):
         job=self.queue()['id'];claimed=claim(self.store);token=claimed['claim_token']
         bind_execution(self.store,job,token,HOST)
@@ -306,6 +317,22 @@ class Nof1AnalysisService(unittest.TestCase):
         read=self.client.get('/api/jobs/'+job).json()
         self.assertTrue(read['stale']);self.assertEqual(read['result']['status'],'abstained')
         self.assertFalse(read['serving']['summary_available'])
+
+    def test_early_and_arm_imbalanced_targets_retain_typed_abstention(self):
+        for review,arms,status in ((27,('MED_A','MED_B','MED_A'),'unavailable'),
+                (36,('MED_A',)*4,'inconclusive')):
+            self.histories=[scalar_fixture(patient,review=review,arms=arms) for patient in ('N-PATIENT-A','N-PATIENT-B')]
+            self.cutoff=self.histories[0].cutoff
+            with self.store.transaction(write=True) as db:
+                db.execute('UPDATE patients SET cutoff=?',(self.cutoff.isoformat(),))
+            queued=self.queue(key='prefit-'+status);self.assertEqual(queued['readiness'],status)
+            claimed=claim(self.store);token=claimed['claim_token'];job=queued['id'];bind_execution(self.store,job,token,HOST)
+            p=NInput.model_validate_json(canonical(claimed['input']));value=abstention(p)
+            value.update(readiness=status,reason='structural prefit '+status)
+            directory,_=self.output(p,value);ingest(self.store,job,token,directory)
+            read=self.client.get('/api/jobs/'+job).json()
+            self.assertEqual(read['status'],'abstained');self.assertEqual(read['readiness'],status)
+            self.assertIsNone(read['result']['effect'])
 
     def test_no_science_imported_by_authenticated_host_lifecycle(self):
         self.queue()

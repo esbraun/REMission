@@ -129,6 +129,17 @@ def submit(db,current,key,payload,*,now):
     product=prepare(db,current['account_id'],payload,attempt_id='analysis-'+uuid.uuid4().hex,
         fit_seed=secrets.randbelow(2147483647),now=now)
     patients=[m.patient_id for m in product.cohort]
+    # A named paired comparison cannot silently switch members or corrected H*.
+    paired=db.execute("SELECT * FROM analysis_attempts WHERE owner_id=? AND patient_id=? AND json_extract(request_json,'$.kind')='poc_nof1_input' AND json_extract(request_json,'$.cohort_id')=? AND cutoff=?",
+        (current['account_id'],product.target_id,product.cohort_id,timestamp(product.cutoff))).fetchall()
+    for row in paired:
+        other=frozen(row)
+        if other.purpose!=product.purpose and (other.history_sha256!=product.history_sha256
+                or other.generation_id!=product.generation_id
+                or [m.patient_id for m in other.cohort]!=patients):
+            raise ValueError('paired_N_purposes_require_identical_ordered_cohort_and_Hstar')
+        if other.request.context.seed.replicate==product.request.context.seed.replicate:
+            raise ValueError('distinct_recorded_N_fit_seed_required')
     if active_overlap(db,patients):raise ValueError('one_or_more_N_members_already_pending')
     if payload['previous_attempt']:
         old=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=?',
