@@ -31,7 +31,7 @@ from services.foundation.store import digest,timestamp
 from services.foundation import support_analysis as support
 from services.foundation.analysis import claim,bind_execution,ingest,export_queued_request,AnalysisError
 from services.foundation.appointment import checked_result
-from support_s1_fixtures import product,abstention,HOST,WALL
+from support_s1_fixtures import product,abstention,HOST,WALL,completed_gate_fixture
 
 URL='http://127.0.0.1:8765'
 
@@ -183,6 +183,39 @@ class SupportS1Service(unittest.TestCase):
         with self.store.transaction() as db:
             for table in ('receipts','pending_work','analysis_attempts'):
                 self.assertEqual(db.execute('SELECT count(*) FROM '+table).fetchone()[0],0)
+
+    def test_rehashed_completed_interval_and_sensitivity_corruption_never_ingest_or_serve(self):
+        # Completed scalar counterexamples only, never actual fitted output.
+        job=self.queue()['id'];claimed=claim(self.store);token=claimed['claim_token']
+        bind_execution(self.store,job,token,HOST)
+        p=S1Input.model_validate_json(canonical(claimed['input']))
+        directory=self.root/'corrupt-output';directory.mkdir()
+        for change in ('interval','sensitivity'):
+            value=completed_gate_fixture(p)
+            if change=='interval':
+                value['output']['interval']=[.25,.25]
+                value['diagnostics']['wcls']['interval']=[.25,.25]
+            else:
+                value['diagnostics']['wcls'].update(sensitivity_status='available',sensitivity_reason=None,
+                    sensitivity=[dict(delta0=a,delta1=b,shift=0.,estimate=.25)
+                        for a in (-.5,0.,.5) for b in (-.5,0.,.5)],sensitivity_range=[999.,999.])
+            artifact=canonical(value['diagnostics']).encode()
+            (directory/'wcls.json').write_bytes(artifact)
+            value['artifacts']=[dict(path='wcls.json',sha256=hashlib.sha256(artifact).hexdigest())]
+            (directory/'result.json').write_text(canonical(value),encoding='utf-8')
+            with self.subTest(change=change),self.assertRaises(ValueError):
+                ingest(self.store,job,token,directory)
+            with self.store.transaction() as db:
+                row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(job,)).fetchone()
+                self.assertEqual(row['status'],'running');self.assertIsNone(row['result_json'])
+        # A corrupt persisted summary also fails the generic authenticated read.
+        with self.store.transaction(write=True) as db:
+            db.execute("UPDATE analysis_attempts SET status='completed',stage='complete',result_json=? WHERE job_id=?",
+                (canonical(value),job))
+            db.execute("UPDATE pending_work SET status='completed' WHERE id=?",(job,))
+        read=self.client.get('/api/jobs/'+job)
+        self.assertEqual(read.status_code,200,read.text)
+        self.assertIsNone(read.json()['result']);self.assertFalse(read.json()['serving']['summary_available'])
 
     def test_untrusted_real_preparation_seam_rejects_foreign_missing_and_structural_authority(self):
         # Exercise the unmocked negative path; no accepted authority is invented.

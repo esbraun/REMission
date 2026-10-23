@@ -9,7 +9,7 @@ import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'tooling/foundation'))
-from support_s1_fixtures import product,abstention,HOST
+from support_s1_fixtures import product,abstention,HOST,completed_gate_fixture
 from contracts.domain.analysis import canonical,sha
 from contracts.domain.borrowing import parse_input,parse_result
 from contracts.domain.support_s1 import (S1Input,S1Result,S1Submission,CONFIG_REF,OFFLINE_SETTINGS,OFFLINE_REF,
@@ -89,19 +89,8 @@ class S1Contracts(unittest.TestCase):
     def test_low_cluster_rank_and_withheld_sensitivity_are_scalar_acceptance_gates(self):
         # Hand-authored scalar gate envelope, never an actual estimate or result.
         from types import SimpleNamespace
-        covariance=[[float(i==j) for i in range(6)] for j in range(6)]
-        diagnostic=dict(weighted_rank=6,wcls=dict(status='estimated',
-            identity=dict(configuration=OFFLINE_REF,settings_sha256=sha(OFFLINE_SETTINGS),
-                package_versions=dict(statsmodels='0.15.0'),expected_public_law=LAW_REF,
-                expected_protocol=SUPPORT_REF,estimand=S1_ESTIMAND,prior=WCLS_PRIOR_REF,
-                seed_used=False,history_sha256='0'*64),
-            counts=dict(participants=12,observed=20,missing=2,eligible_completed=22),df=11,
-            coefficients=[0.,0.,0.,0.,0.,.25],covariance=covariance,
-            singular_values=[10.,9.,8.,7.,6.,5.],condition_number=2.,
-            estimate=.25,standard_error=1.,interval=[-2.,2.5],
-            sensitivity_status='unavailable',sensitivity_reason='missing-only context malformed',sensitivity=[]))
-        output=SimpleNamespace(df=11,coefficient=.25,standard_error=1.,interval=(-2.,2.5))
-        validate_summary(SimpleNamespace(diagnostics=diagnostic,feature_history_sha256='0'*64,output=output))
+        fixture=self.summary_fixture();diagnostic=fixture.diagnostics;output=fixture.output
+        validate_summary(fixture)
         for change in ('clusters','rank','sensitivity','covariance'):
             altered=copy.deepcopy(diagnostic)
             if change=='clusters':altered['wcls']['counts']['participants']=7
@@ -110,6 +99,47 @@ class S1Contracts(unittest.TestCase):
             else:altered['wcls']['covariance'][-1][-1]=2.
             with self.subTest(change=change),self.assertRaises(ValueError):
                 validate_summary(SimpleNamespace(diagnostics=altered,feature_history_sha256='0'*64,output=output))
+
+    def summary_fixture(self):
+        from types import SimpleNamespace
+        value=completed_gate_fixture(product())
+        return SimpleNamespace(diagnostics=value['diagnostics'],feature_history_sha256=value['feature_history_sha256'],
+            output=SimpleNamespace(**dict(value['output'],interval=tuple(value['output']['interval']))))
+
+    def test_completed_interval_must_match_declared_t_inference(self):
+        value=completed_gate_fixture(product())
+        self.assertEqual(S1Result.model_validate_json(canonical(value)).status,'completed')
+        for change in ('zero-width','wrong-critical','asymmetric','wrong-df'):
+            altered=copy.deepcopy(value)
+            interval={'zero-width':[.25,.25],'wrong-critical':[-1.71,2.21],
+                'asymmetric':[-1.950985160082949,2.3]}.get(change)
+            if interval is not None:
+                altered['output']['interval']=interval;altered['diagnostics']['wcls']['interval']=interval
+            else:
+                altered['output']['df']=10;altered['diagnostics']['wcls']['df']=10
+                altered['diagnostics']['wcls']['counts']['participants']=11
+            with self.subTest(change=change),self.assertRaises(ValueError):
+                S1Result.model_validate_json(canonical(altered))
+
+    def test_sensitivity_range_must_equal_the_nine_finite_point_cells(self):
+        fixture=self.summary_fixture();w=fixture.diagnostics['wcls']
+        cells=[dict(delta0=a,delta1=b,shift=.1*(b-a),estimate=.25+.1*(b-a))
+            for a in (-.5,0.,.5) for b in (-.5,0.,.5)]
+        w.update(sensitivity_status='available',sensitivity_reason=None,sensitivity=cells,
+            sensitivity_range=[.15,.35])
+        validate_summary(fixture)
+        for interval in ([-999.,999.],[.25,.25],[.15,float('nan')],None):
+            w['sensitivity_range']=interval
+            with self.subTest(interval=interval),self.assertRaisesRegex(ValueError,'sensitivity range'):
+                validate_summary(fixture)
+        value=completed_gate_fixture(product());value['diagnostics']=copy.deepcopy(fixture.diagnostics)
+        value['diagnostics']['wcls']['sensitivity_range']=[999.,999.]
+        with self.assertRaisesRegex(ValueError,'sensitivity range'):
+            S1Result.model_validate_json(canonical(value))
+        w.update(sensitivity_status='unavailable',sensitivity_reason='missing-only context malformed',
+            sensitivity=[],sensitivity_range=[.15,.35])
+        with self.assertRaisesRegex(ValueError,'sensitivity range'):
+            validate_summary(fixture)
 
     def test_existing_visit_completion_still_requires_mcmc_and_rollout_diagnostics(self):
         from services.foundation.analysis import ingest,AnalysisError

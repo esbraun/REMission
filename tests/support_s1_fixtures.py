@@ -3,7 +3,7 @@ from datetime import datetime,timedelta,timezone
 from contracts.domain.analysis import canonical,sha
 from contracts.domain.protocol_analysis import ProtocolHistory
 from contracts.domain.support_s1 import (S1Input,S1Result,CONFIG_REF,MODEL_REF,
-    S1_ESTIMAND,WCLS_PRIOR_REF,LAW_REF,SUPPORT_REF,consumed_ids,execution_binding)
+    S1_ESTIMAND,WCLS_PRIOR_REF,LAW_REF,SUPPORT_REF,OFFLINE_REF,OFFLINE_SETTINGS,consumed_ids,execution_binding)
 
 ORIGIN=datetime(2026,1,1,12,tzinfo=timezone.utc)
 WALL=datetime(2026,10,23,12,tzinfo=timezone.utc)
@@ -48,3 +48,27 @@ def abstention(p,*,status='abstained'):
         diagnostics=dict(execution=execution_binding(p,HOST),timings=dict(import_seconds=0.,feature_seconds=0.,
             estimator_seconds=0.,worker_seconds=0.)),artifacts=[],output=None,
         limitations=['Structural result adapter fixture only; no estimator executed.'])))
+
+
+def completed_gate_fixture(p):
+    """Hand-authored completed *summary-gate* shape, never a fit/data result.
+
+    The toy histories contain no randomized decisions. This envelope only tests
+    scalar result admission and corruption rejection, not input-fit agreement.
+    """
+    value=abstention(p).model_dump(mode='json')
+    value.update(status='completed',reason=None,feature_history_sha256='0'*64,
+        output=dict(kind='wcls_excursion_inference',unit='quality_points',coefficient=.25,
+            standard_error=1.,df=11,interval=[-1.950985160082949,2.450985160082949]))
+    value['diagnostics'].update(weighted_rank=6,wcls=dict(status='estimated',
+        identity=dict(configuration=OFFLINE_REF,settings_sha256=sha(OFFLINE_SETTINGS),
+            package_versions=dict(statsmodels='0.15.0'),expected_public_law=LAW_REF,
+            expected_protocol=SUPPORT_REF,estimand=S1_ESTIMAND,prior=WCLS_PRIOR_REF,
+            seed_used=False,history_sha256='0'*64),
+        counts=dict(participants=12,observed=20,missing=2,eligible_completed=22),df=11,
+        coefficients=[0.,0.,0.,0.,0.,.25],covariance=[[float(i==j) for i in range(6)] for j in range(6)],
+        singular_values=[10.,9.,8.,7.,6.,5.],condition_number=2.,estimate=.25,standard_error=1.,
+        interval=[-1.950985160082949,2.450985160082949],sensitivity_status='unavailable',
+        sensitivity_reason='missing-only context malformed',sensitivity=[],sensitivity_range=None))
+    value['limitations']=['Hand-authored completed summary-gate shape only; no estimator or data agreement.']
+    return value

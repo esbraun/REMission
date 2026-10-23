@@ -32,6 +32,18 @@ MODEL_REF = reference('poc-support-s1-app-wcls-v1', dict(settings=OFFLINE_REF,
     design='six columns; no dropped columns', covariance='participant cluster corrected use_t G-1',
     sensitivity='nine R1 clipped point cells; no sensitivity interval'))
 
+# Two-sided 95% Student-t critical values, only for the admitted G=8..12.
+# This scalar admission table avoids importing a numerical runtime into CORE.
+# Provenance and tolerance: poc-s1-app-source-repair-20261023.md.
+T975 = {7:2.3646242515927844,8:2.306004135204166,9:2.2621571628540993,
+        10:2.2281388519649385,11:2.200985160082949}
+
+
+def same_float(left,right):
+    """Bound serialization/library roundoff; never accept a changed interval."""
+    return (type(left) in (int,float) and math.isfinite(left)
+        and math.isclose(left,right,rel_tol=1e-9,abs_tol=1e-10))
+
 
 class S1Submission(StrictModel):
     archive_id: Identifier
@@ -124,7 +136,7 @@ class S1Estimate(StrictModel):
 
     @model_validator(mode='after')
     def interval_order(self):
-        if not self.interval[0]<=self.coefficient<=self.interval[1]:
+        if not self.interval[0]<self.coefficient<self.interval[1]:
             raise ValueError('invalid WCLS interval')
         return self
 
@@ -221,6 +233,11 @@ def validate_summary(result):
             or w.get('interval')!=list(output.interval)
             or not math.isclose(cov[-1][-1],output.standard_error**2,rel_tol=1e-12,abs_tol=1e-14)):
         raise ValueError('WCLS summary/coefficient/covariance mismatch')
+    width=T975[output.df]*output.standard_error
+    expected=(output.coefficient-width,output.coefficient+width)
+    if (not output.interval[0]<output.coefficient<output.interval[1]
+            or any(not same_float(actual,wanted) for actual,wanted in zip(output.interval,expected))):
+        raise ValueError('WCLS t-based interval inconsistent with coefficient, SE and df')
     cells=w.get('sensitivity',[])
     if w.get('sensitivity_status')=='available':
         if (len(cells)!=9 or {(c['delta0'],c['delta1']) for c in cells}!=
@@ -229,8 +246,16 @@ def validate_summary(result):
         if any(not all(type(c.get(k)) in (int,float) and math.isfinite(c[k]) for k in ('estimate','shift'))
                 or not math.isclose(c['estimate'],output.coefficient+c['shift'],rel_tol=1e-12,abs_tol=1e-14)
                 for c in cells):raise ValueError('finite coherent R1 point cells required')
+        interval=w.get('sensitivity_range')
+        expected=(min(c['estimate'] for c in cells),max(c['estimate'] for c in cells))
+        if (not isinstance(interval,(list,tuple)) or len(interval)!=2
+                or any(type(actual) not in (int,float) or not math.isfinite(actual) or actual!=wanted
+                    for actual,wanted in zip(interval,expected))):
+            raise ValueError('WCLS sensitivity range must match the nine finite point cells')
     elif w.get('sensitivity_status')!='unavailable' or not w.get('sensitivity_reason') or cells:
         raise ValueError('missing sensitivity must be withheld explicitly')
+    elif w.get('sensitivity_range') is not None:
+        raise ValueError('withheld WCLS sensitivity range must be null')
 
 
 def execution_binding(product,origin):
