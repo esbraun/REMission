@@ -280,7 +280,8 @@ class Carrier(unittest.TestCase):
         process=Fake()
         with tempfile.TemporaryDirectory(dir=ROOT/'artifacts') as folder:
             with patch.object(entry.subprocess,'Popen',return_value=process) as create:
-                with self.assertRaisesRegex(RuntimeError,'failed/late/overflow'):entry.run_child(1000,10.,'a'*64,Path(folder))
+                with self.assertRaises(entry.ChildRunFailed) as failure:entry.run_child(1000,10.,'a'*64,Path(folder))
+                self.assertEqual(failure.exception.reason,'timeout')
             create.assert_called_once();self.assertTrue(process.killed)
 
     def test_bad_mount_or_resource_cleans_only_owned_cid_before_start(self):
