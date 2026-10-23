@@ -5,6 +5,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import math
 from pathlib import Path
 import subprocess
 import tempfile
@@ -93,11 +94,12 @@ class Contracts(unittest.TestCase):
 class SourceAxes(unittest.TestCase):
     def test_joint_shapes_dtype_member_order_and_explicit_target_without_numeric_runtime(self):
         class Array:
-            def __init__(self,shape,dtype='float64',bad=False):self.shape=shape;self.dtype=dtype;self.bad=bad
-            def __abs__(self):return self
+            def __init__(self,shape,dtype='float64',bad=False,value=0.):self.shape=shape;self.dtype=dtype;self.bad=bad;self.value=value
+            def __abs__(self):return Array(self.shape,self.dtype,self.bad,abs(self.value))
+            def __gt__(self,other):return self.bad or self.value>other
             def __ge__(self,other):return self.bad
             def __lt__(self,other):return self.bad
-        fake=SimpleNamespace(ndarray=Array,dtype=lambda x:x,isfinite=lambda x:True,abs=abs,
+        fake=SimpleNamespace(ndarray=Array,dtype=lambda x:x,isfinite=lambda x:math.isfinite(x.value),abs=abs,
                              all=lambda x:x,any=lambda x:x)
         tree=ast.parse((ROOT/'methods/support/s2_prediction.py').read_text(encoding='utf-8'))
         function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='checked_arrays')
@@ -106,6 +108,10 @@ class SourceAxes(unittest.TestCase):
         ids=[f'UNIT-{i:02}' for i in range(12)];context=S2Request.model_validate(wire())
         arrays={key:Array((4,1000,12) if key in ('alpha','tau','e_T') else (4,1000,4) if key=='b' else (4,1000)) for key in namespace['FIELDS']}
         self.assertEqual(namespace['checked_arrays'](arrays,ids,context),7)
+        for rho in (-.95,.95,-.95+1e-12,.95-1e-12):
+            self.assertEqual(namespace['checked_arrays'](dict(arrays,rho=Array((4,1000),value=rho)),ids,context),7)
+        for rho in (-.95-1e-12,.95+1e-12,float('nan'),float('inf'),-float('inf')):
+            with self.assertRaises(ValueError):namespace['checked_arrays'](dict(arrays,rho=Array((4,1000),value=rho)),ids,context)
         for key,changed in [('alpha',Array((1000,4,12))),('tau',Array((4,1000,11))),
                 ('b',Array((4,1000,3))),('s_e',Array((4,1000),'float32')),('rho',Array((4,1000),bad=True))]:
             with self.subTest(key=key),self.assertRaises(ValueError):namespace['checked_arrays'](dict(arrays,**{key:changed}),ids,context)
@@ -123,11 +129,72 @@ class SourceAxes(unittest.TestCase):
         raw=(ROOT/'methods/nof1/observation.py').read_bytes().replace(b'\r\n',b'\n')
         self.assertEqual(hashlib.sha256(raw).hexdigest(),expected)
 
-    def test_only_fixed64_and16_and_no_heldout_inputs_present(self):
+    def test_fixed_and_exposed_regression_counts_with_supplemental_still_sealed(self):
         value=json.loads((ROOT/'tooling/foundation/s2_numerics_inputs/fixed.json').read_bytes())
         self.assertEqual((len(value['scalar']),len(value['cdf'])),(64,16))
         self.assertEqual(len({v['id'] for v in value['scalar']}),64)
-        self.assertFalse((ROOT/'tooling/foundation/s2_numerics_inputs/held-out.json').exists())
+        raw=(ROOT/'tooling/foundation/s2_numerics_inputs/held-out.json').read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'e943cc2985f23f2a7732745bfdb93ccc0fa6c910af2a54d281b9c050f3578747')
+        exposed=json.loads(raw)
+        self.assertEqual((len(exposed['scalar_cases']),len(exposed['cdf_cases'])),(32,16))
+        self.assertFalse((ROOT/'tooling/foundation/s2_numerics_inputs/supplemental-blind.json').exists())
+
+    def test_action_guard_endpoints_horizons_and_derived_finite_guard_without_arithmetic(self):
+        tree=ast.parse((ROOT/'methods/support/s2_prediction.py').read_text(encoding='utf-8'))
+        function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='action_moments')
+        guards=[n for n in function.body if isinstance(n,ast.If)]
+        # Execute ONLY the original support predicate. The arithmetic body is
+        # replaced with a sentinel, never run or imported on this host.
+        reduced=copy.deepcopy(function);reduced.body=[copy.deepcopy(guards[0]),
+            ast.Raise(exc=ast.Call(func=ast.Name(id='RuntimeError',ctx=ast.Load()),args=[ast.Constant(value='ARITHMETIC_NOT_EXECUTED')],keywords=[]),cause=None)]
+        reduced=ast.fix_missing_locations(reduced)
+        namespace=dict(np=SimpleNamespace(any=bool,abs=abs))
+        exec(compile(ast.Module(body=[reduced],type_ignores=[]),'support_predicate_only','exec'),namespace)
+        for h in (1,14):
+            for rho in (-.95,.95,-.95+1e-12,.95-1e-12):
+                with self.assertRaisesRegex(RuntimeError,'ARITHMETIC_NOT_EXECUTED'):
+                    namespace['action_moments'](None,None,None,rho,None,0.,0.,None,h)
+        for h,rho in ((0,0.),(15,0.),(1.,0.),(True,0.),(1,-.95-1e-12),(14,.95+1e-12)):
+            with self.assertRaises(ValueError):namespace['action_moments'](None,None,None,rho,None,0.,0.,None,h)
+        finite=compile(ast.Expression(guards[1].test),'derived_finite_guard_only','eval')
+        for base,sd,positive,expected in ((1.,1.,True,False),(float('nan'),1.,True,True),
+                (float('inf'),1.,True,True),(1.,float('nan'),True,True),(1.,0.,True,True)):
+            fake=SimpleNamespace(all=bool,any=bool,isfinite=math.isfinite)
+            self.assertEqual(eval(finite,dict(np=fake,base=base,sd=sd,positive=positive)),expected)
+
+    def test_qualification_admission_and_rejection_fixture_match_inclusive_domain(self):
+        tree=ast.parse((ROOT/'tooling/foundation/s2_numerics_unit.py').read_text(encoding='utf-8'))
+        function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='scalar_cases')
+        assignment=next(n for n in ast.walk(function) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='scalar_support' for t in n.targets))
+        predicate=compile(ast.Expression(assignment.value),'scalar_support_predicate_only','eval')
+        for h in (1,14):
+            for rho in (-.95,.95,-.95+1e-12,.95-1e-12,-.95-1e-12,.95+1e-12,float('nan'),float('inf')):
+                case=dict(b=[0.]*4,x=[0.]*4,rho=rho,h=h,s_e=0.,s_Q=1.,r0=.1,r1=.2)
+                expected=math.isfinite(rho) and -.95<=rho<=.95
+                self.assertEqual(eval(predicate,dict(case=case,values=[rho],math=math)),expected)
+        controls=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='boundary_controls')
+        self.assertTrue(any(isinstance(n,ast.Constant) and n.value==.9500001 for n in ast.walk(controls)))
+
+    def test_inclusive_numerical_metadata_updates_derived_content_refs_not_latent_prior(self):
+        from contracts.domain.analysis import reference
+        from contracts.domain.support_s2 import CONFIG,NUMERICS,PRIOR
+        self.assertEqual(NUMERICS['rho'],[-.95,.95]);self.assertEqual(NUMERICS['h'],[1,14])
+        self.assertEqual(PRIOR['rho'],'Uniform(-.95,.95)')
+        self.assertEqual(DEFINITIONS['numerics'],reference(NUMERICS['id'],NUMERICS))
+        self.assertEqual(CONFIG_REF,reference(CONFIG['id'],CONFIG))
+
+    def test_supplemental_loader_is_fixed_16_8_beside_unchanged_regression_counts(self):
+        self.assertIn('supplemental-blind.json',entry.PAYLOAD_FILES)
+        self.assertEqual(operator.CARRIER['supplemental-blind.json'],
+                         'tooling/foundation/s2_numerics_inputs/supplemental-blind.json')
+        tree=ast.parse((ROOT/'tooling/foundation/s2_numerics_unit.py').read_text(encoding='utf-8'))
+        guard=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and any(
+            isinstance(x,ast.Constant) and x.value=='frozen112/40 case counts required' for x in ast.walk(n)))
+        expression=compile(ast.Expression(guard.test),'case_counts_only','eval')
+        fixed=dict(scalar=[None]*64,cdf=[None]*16);held=dict(scalar_cases=[None]*32,cdf_cases=[None]*16)
+        for scalar_count,cdf_count,expected in ((16,8,False),(15,8,True),(17,8,True),(16,7,True),(16,9,True)):
+            supplemental=dict(scalar_cases=[None]*scalar_count,cdf_cases=[None]*cdf_count)
+            self.assertEqual(eval(expression,dict(fixed=fixed,held=held,supplemental=supplemental)),expected)
 
 
 class Carrier(unittest.TestCase):
@@ -170,6 +237,13 @@ class Carrier(unittest.TestCase):
     def test_missing_sealed_inputs_hardfails_before_any_git_native_or_packet(self):
         with tempfile.TemporaryDirectory(dir=ROOT/'artifacts') as folder:
             source=Path(folder);packet=source/'artifacts/packet'
+            with patch.object(operator.subprocess,'check_output',side_effect=AssertionError('native forbidden')):
+                with self.assertRaisesRegex(ValueError,'sealed'):operator.freeze(packet,source)
+            self.assertFalse(packet.exists())
+            # Exposed input alone is insufficient: the fresh blind confirmation
+            # file must be independently released before any packet can exist.
+            exposed=source/'tooling/foundation/s2_numerics_inputs/held-out.json'
+            exposed.parent.mkdir(parents=True);exposed.write_bytes(b'UNIT missing-blind fixture')
             with patch.object(operator.subprocess,'check_output',side_effect=AssertionError('native forbidden')):
                 with self.assertRaisesRegex(ValueError,'sealed'):operator.freeze(packet,source)
             self.assertFalse(packet.exists())

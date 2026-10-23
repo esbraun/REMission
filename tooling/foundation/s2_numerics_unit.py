@@ -38,7 +38,7 @@ def scalar_cases(value):
         scalar_support=(len(case['b'])==4 and len(case['x'])==4
             and all(type(v) in (int,float) and math.isfinite(v) for v in values)
             and type(case['h']) is int and 1<=case['h']<=14
-            and -.95<case['rho']<.95 and case['s_e']>=0 and case['s_Q']>=0
+            and -.95<=case['rho']<=.95 and case['s_e']>=0 and case['s_Q']>=0
             and 0<=case['r0']<=1 and 0<=case['r1']<=1)
         if not scalar_support:
             if case['expected_domain']!='reject':raise ValueError('scalar support mismatch')
@@ -127,7 +127,7 @@ def boundary_controls():
         elif name=='feature-axis':changed['b']=changed['b'][:,:,:3]
         elif name=='float32':changed['tau']=changed['tau'].astype('float32')
         elif name=='nonfinite':changed['e_T']=changed['e_T'].copy();changed['e_T'][0,0,7]=np.nan
-        elif name=='rho-support':changed['rho']=np.full((4,1000),.95)
+        elif name=='rho-support':changed['rho']=np.full((4,1000),.9500001)
         else:order.reverse()
         try:checked_arrays(changed,order,context)
         except ValueError:rejected.append(name)
@@ -189,13 +189,21 @@ def main(draws,work_seconds):
     if draws==1000:
         fixed=json.loads((ROOT/'fixed.json').read_text(encoding='utf-8'))
         held=json.loads((ROOT/'held-out.json').read_text(encoding='utf-8'))
+        supplemental=json.loads((ROOT/'supplemental-blind.json').read_text(encoding='utf-8'))
         if (len(fixed['scalar'])!=64 or len(fixed['cdf'])!=16
-                or len(held['scalar_cases'])!=32 or len(held['cdf_cases'])!=16):raise ValueError('frozen96/32 case counts required')
-        phase=time.monotonic();scalar=scalar_cases(fixed['scalar']+held['scalar_cases'])
-        for case in fixed['cdf']+held['cdf_cases']:
-            discrepancy=abs(float(ndtr(case['z']))-cdf(case['z']))
-            if discrepancy>1e-10:raise ValueError('CDF independent erfc discrepancy')
-            cdf_report.append(dict(id=case['id'],absolute_error=discrepancy))
+                or len(held['scalar_cases'])!=32 or len(held['cdf_cases'])!=16
+                or len(supplemental['scalar_cases'])!=16 or len(supplemental['cdf_cases'])!=8):
+            raise ValueError('frozen112/40 case counts required')
+        phase=time.monotonic()
+        for group,cases,cdf_cases in (
+                ('fixed_regression',fixed['scalar'],fixed['cdf']),
+                ('exposed_heldout_regression',held['scalar_cases'],held['cdf_cases']),
+                ('supplemental_blind_confirmation',supplemental['scalar_cases'],supplemental['cdf_cases'])):
+            scalar.extend(dict(group=group,**row) for row in scalar_cases(cases))
+            for case in cdf_cases:
+                discrepancy=abs(float(ndtr(case['z']))-cdf(case['z']))
+                if discrepancy>1e-10:raise ValueError('CDF independent erfc discrepancy')
+                cdf_report.append(dict(group=group,id=case['id'],absolute_error=discrepancy))
         scalar_seconds=time.monotonic()-phase;diagnostic=diagnostic_controls()
         diagnostic['boundary_rejections']=boundary_controls()
     deadline()

@@ -13,7 +13,7 @@ import time
 
 ROOT=Path('/qualification')
 PAYLOAD_FILES={'entry.py','support_s2.py','s2_prediction.py','s2_numerics_oracle.py',
-               's2_numerics_unit.py','fixed.json','held-out.json','dependency.json'}
+               's2_numerics_unit.py','fixed.json','held-out.json','supplemental-blind.json','dependency.json'}
 CHILD_OUTPUT=12*1024*1024
 PARENT_OUTPUT=24*1024*1024
 

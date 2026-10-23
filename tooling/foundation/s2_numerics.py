@@ -27,7 +27,8 @@ CARRIER={'entry.py':'tooling/foundation/s2_numerics_entry.py',
     's2_numerics_oracle.py':'tooling/foundation/s2_numerics_oracle.py',
     's2_numerics_unit.py':'tooling/foundation/s2_numerics_unit.py',
     'fixed.json':'tooling/foundation/s2_numerics_inputs/fixed.json',
-    'held-out.json':'tooling/foundation/s2_numerics_inputs/held-out.json'}
+    'held-out.json':'tooling/foundation/s2_numerics_inputs/held-out.json',
+    'supplemental-blind.json':'tooling/foundation/s2_numerics_inputs/supplemental-blind.json'}
 
 
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -113,9 +114,15 @@ def decode_output(raw):
             if (cost['draws']!=draws or cost['chains']!=4 or cost['targets']!=12 or cost['run']!=label
                     or [row['target'] for row in cost['contexts']]!=[f'UNIT-S2-{i:02}' for i in range(12)]):
                 raise ValueError('complete original S2 cost scope required')
-        if (len(result['scalar'])!=(96 if draws==1000 else 0)
-                or len(result['cdf'])!=(32 if draws==1000 else 0)):
+        if (len(result['scalar'])!=(112 if draws==1000 else 0)
+                or len(result['cdf'])!=(40 if draws==1000 else 0)):
             raise ValueError('S2 complete frozen case counts required')
+        groups={'fixed_regression':(64,16),'exposed_heldout_regression':(32,16),
+                'supplemental_blind_confirmation':(16,8)}
+        for group,(scalar_count,cdf_count) in groups.items():
+            if (sum(row['group']==group for row in result['scalar'])!=(scalar_count if draws==1000 else 0)
+                    or sum(row['group']==group for row in result['cdf'])!=(cdf_count if draws==1000 else 0)):
+                raise ValueError('S2 regression/blind confirmation provenance counts changed')
         item=result['artifact'];name=f'structural-{draws}.npz'
         if (set(item)!={'name','bytes','sha256','base64'} or item['name']!=name
                 or type(item['bytes']) is not int or not 0<item['bytes']<=8*1024*1024
@@ -163,7 +170,8 @@ def controller(plan,folder,primitive,life,call,deadline):
 def freeze(folder,source):
     source=ordinary(source);folder=ordinary(folder)
     # Sealed input absence hard-blocks all final packet creation. No substitute.
-    if not (source/CARRIER['held-out.json']).is_file():raise ValueError('sealed held-out inputs not released; no executable final packet')
+    if any(not (source/CARRIER[name]).is_file() for name in ('held-out.json','supplemental-blind.json')):
+        raise ValueError('sealed inputs not released; no executable final packet')
     if folder.exists() or not folder.is_relative_to(source/'artifacts'):raise ValueError('fresh own S2 packet required')
     dependency=subprocess.check_output(['git','show',DEPENDENCY_BLOB],cwd=source,timeout=15)
     if sha(dependency)!=DEPENDENCY_SHA:raise ValueError('accepted dependency identity changed')

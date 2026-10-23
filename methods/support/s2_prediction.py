@@ -29,14 +29,14 @@ def checked_arrays(arrays,patient_ids,request):
     if arrays['b'].shape!=shape[:2]+(4,):raise ValueError('joint four-feature axes mismatch')
     for key in ('rho','s_e','s_Q'):
         if arrays[key].shape!=shape[:2]:raise ValueError('joint scalar draw axes mismatch')
-    if (np.any(np.abs(arrays['rho'])>=.95) or np.any(arrays['s_e']<0)
+    if (np.any(np.abs(arrays['rho'])>.95) or np.any(arrays['s_e']<0)
             or np.any(arrays['s_Q']<0)):raise ValueError('S2 parameter support mismatch')
     return patient_ids.index(request.target_id)
 
 
 def action_moments(alpha,tau,b,rho,e_T,s_e,s_Q,x,h):
     """Joint conditional mean/SD; no recentering or postfit state update."""
-    if (type(h) is not int or not 1<=h<=14 or np.any(np.abs(rho)>=.95)
+    if (type(h) is not int or not 1<=h<=14 or np.any(np.abs(rho)>.95)
             or np.any(s_e<0) or np.any(s_Q<0)):
         raise ValueError('S2 horizon/parameter support mismatch')
     base=alpha+np.sum(b*np.asarray(x,dtype=np.float64),axis=-1)+(rho**h)*e_T
