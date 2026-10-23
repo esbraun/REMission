@@ -15,10 +15,10 @@ import importlib.util
 import subprocess
 import time
 
-BINDINGS_BLOB='b71e1868dadf68c1687fd80f1fcfa2572011de75'
-BINDINGS_SHA='a5b9a05b816c9cb959125e1bb5392f97874108df4c5efc47fa32566ff14c9e06'
-SOURCE_BASE='88474d5b530e1f50c9f98476ffa00d7ffb95e2c3'
-NAME='remission-n-api02-88474d5-unit-r1'
+BINDINGS_BLOB='4bdb33116916ad362ed44d112d4a68f7bc6b6dd9'
+BINDINGS_SHA='a6c91cac0697f0347d659795d9a7848ce6da14fccf65ed1304d38ed5c609f59e'
+SOURCE_BASE='9c78bb4f7b4b9c381a4af4737b49c7ab05c085b8'
+NAME='remission-n-api02-9c78bb4-unit-r2'
 MAX_STDOUT=8388608
 ARTIFACTS={'posterior.nc','expected-contrast.npz','predictive.npz'}
 
@@ -56,7 +56,9 @@ def _controller_body(plan,payload,output,life,call,deadline=None):
     if hashlib.sha256(payload.encode()).hexdigest()!=plan['payload_sha256']:raise ValueError('payload changed')
     image=plan['learner_image'];argv=proposed_argv(image,payload)
     try:
-        image_format='{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"Layers":{{json .RootFS.Layers}},"User":{{json .Config.User}},"WorkingDir":{{json .Config.WorkingDir}},"Entrypoint":{{json .Config.Entrypoint}},"Cmd":{{json .Config.Cmd}}}'
+        # Entrypoint is optional in this immutable image's Config. Map-index
+        # projects an absent key as null; required fields retain strict lookups.
+        image_format='{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"Layers":{{json .RootFS.Layers}},"User":{{json .Config.User}},"WorkingDir":{{json .Config.WorkingDir}},"Entrypoint":{{json (index .Config "Entrypoint")}},"Cmd":{{json .Config.Cmd}}}'
         metadata=json.loads(call(['docker','image','inspect','--format',image_format,image],'image',deadline))
         if metadata!=plan['qualified_image_config'] or metadata['Id']!=image:
             raise ValueError('UNIT accepted image/config mismatch')
