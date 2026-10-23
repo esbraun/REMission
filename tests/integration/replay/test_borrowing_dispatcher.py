@@ -34,12 +34,14 @@ class DispatcherAdmissionControls(unittest.TestCase):
         self.assertIn('--read-only',limits)
 
     def test_only_selected_container_state_is_captured(self):
-        from test_ordinary_dispatcher import inventory,CID
         import json
-        result=subprocess.CompletedProcess([],0,json.dumps(inventory()).encode(),b'')
-        with patch.object(lifecycle,'command',return_value=result) as invoke:lifecycle.inspect(CID)
+        cid='a'*64
+        observed=dict(Id=cid,RestartCount=0,State=dict(Status='exited',Running=False,Paused=False,
+            Restarting=False,Dead=False,Pid=0,ExitCode=0,OOMKilled=False))
+        result=subprocess.CompletedProcess([],0,json.dumps(observed).encode(),b'')
+        with patch.object(lifecycle,'command',return_value=result) as invoke:lifecycle.inspect(cid)
         argv=invoke.call_args.args[0]
-        self.assertEqual(argv,['docker','inspect','--format',lifecycle.STATE_FORMAT,CID])
+        self.assertEqual(argv,['docker','inspect','--format',lifecycle.STATE_FORMAT,cid])
         self.assertNotIn('Config',argv[3]);self.assertNotIn('Env',argv[3])
 
     def test_old_unbound_invocation_cannot_claim_or_create(self):

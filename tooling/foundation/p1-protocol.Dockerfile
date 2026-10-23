@@ -24,5 +24,5 @@ COPY tests/run_contracts/observed_v2_fixtures.py /app/tests/run_contracts/
 COPY services/generator/ /app/services/generator/
 COPY services/learner/analysis_worker.py services/learner/export_observed.py services/learner/worker.py /app/services/learner/
 COPY methods/visit/ /app/methods/visit/
-COPY tooling/foundation/analysis_dispatcher.py /app/analysis_dispatcher.py
+COPY tooling/foundation/analysis_dispatcher.py tooling/foundation/analysis_lifecycle.py /app/
 COPY tooling/foundation/run_p1_controls.py /app/run_p1_controls.py

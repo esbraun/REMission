@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
+import threading
 import traceback
 import unittest
 from unittest.mock import Mock, patch
@@ -23,6 +24,69 @@ def inventory(status='exited', **changes):
 
 
 class LifecycleControls(unittest.TestCase):
+    def test_receipt_publication_is_exclusive_and_failed_write_is_invisible(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'receipt.json'
+            life.save(path,dict(original=True))
+            with self.assertRaises(FileExistsError):life.save(path,dict(replacement=True))
+            self.assertEqual(json.loads(path.read_bytes()),dict(original=True))
+            failed=Path(temp)/'failed.json'
+            with patch.object(life.json,'dump',side_effect=OSError('injected write failure')):
+                with self.assertRaises(OSError):life.save(failed,{})
+            self.assertFalse(failed.exists())
+            self.assertEqual(list(Path(temp).iterdir()),[path])
+
+    def test_actual_supervise_waits_for_delayed_complete_ready_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            folder=Path(temp)/'supervision';opened=threading.Event();release=threading.Event()
+            processes=[];threads=[];errors=[];started=[];binding={};pending=[]
+            real_dump=json.dump
+            def paused_dump(value,stream,**kwargs):
+                if 'watchdog-ready.json' in Path(stream.name).name:
+                    opened.set()
+                    if not release.wait(5):raise TimeoutError('test writer was not released')
+                return real_dump(value,stream,**kwargs)
+            def publish():
+                try:life.save(folder/'watchdog-ready.json',binding)
+                except BaseException as error:errors.append(error)
+            class Process:
+                def __init__(self,argv,**kwargs):
+                    self.pid=101+len(processes);self.returncode=None;self.watch=not processes;processes.append(self)
+                    if self.watch:
+                        binding.update(cid=CID,nonce=argv[-1],deadline=200.,pid=self.pid)
+                        thread=threading.Thread(target=publish);threads.append(thread);thread.start()
+                        if not opened.wait(5):raise TimeoutError('test writer never opened')
+                    else:
+                        started.append(True)
+                        life.save(folder/'watchdog-terminal.json',dict(cid=CID,nonce=binding['nonce'],
+                            deadline=200.,failure=None,terminal=inventory()))
+                def poll(self):
+                    if started:self.returncode=0
+                    return self.returncode
+                def wait(self,timeout):
+                    release.set()
+                    for thread in threads:thread.join(timeout)
+                    self.returncode=0;return 0
+                def kill(self):self.returncode=-9
+            def advance(_):
+                if not started:
+                    pending.append(not (folder/'watchdog-ready.json').exists())
+                    release.set()
+                    for thread in threads:thread.join(5)
+            def observe(*args,**kwargs):return inventory() if started else inventory('created')
+            try:
+                with patch.object(life.json,'dump',side_effect=paused_dump),patch.object(life,'inspect',side_effect=observe), \
+                        patch.object(life,'stop_owned',return_value=[dict(stopped=True)]), \
+                        patch.object(life.subprocess,'Popen',side_effect=Process),patch.object(life.time,'sleep',side_effect=advance), \
+                        patch.object(life.time,'monotonic',return_value=100.):
+                    self.assertEqual(life.supervise(CID,folder,200.),inventory())
+            finally:
+                release.set()
+                for thread in threads:thread.join(5)
+            self.assertEqual(pending,[True]);self.assertEqual(errors,[])
+            self.assertTrue(started);self.assertTrue(all(p.returncode==0 for p in processes))
+            self.assertEqual(json.loads((folder/'watchdog-ready.json').read_bytes()),binding)
+
     def test_strict_independent_state_rejects_ambiguity(self):
         for value in (dict(inventory(),Id='b'*64),dict(inventory(),RestartCount=True),dict(inventory(),RestartCount=1),
                 inventory(Pid=True),inventory(Pid=8),inventory(Running=0),inventory(Paused=True),

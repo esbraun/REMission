@@ -11,6 +11,7 @@ import re
 import secrets
 import subprocess
 import sys
+import tempfile
 import time
 
 STATE_FORMAT='{"Id":{{json .Id}},"State":{{json .State}},"RestartCount":{{json .RestartCount}}}'
@@ -21,10 +22,21 @@ class StopUnconfirmed(RuntimeError):
 
 
 def save(path, value):
-    # Exclusive receipts prevent stale evidence from satisfying a later handshake.
-    with Path(path).open('x', encoding='utf-8') as stream:
-        json.dump(value, stream, sort_keys=True, indent=2, allow_nan=False)
-        stream.write('\n')
+    # Publish complete bytes with exclusive creation: readers never see a partial
+    # receipt, and an existing (including stale) receipt is never overwritten.
+    path=Path(path)
+    temporary=None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w',encoding='utf-8',dir=path.parent,
+                prefix='.'+path.name+'-',delete=False) as stream:
+            temporary=Path(stream.name)
+            json.dump(value, stream, sort_keys=True, indent=2, allow_nan=False)
+            stream.write('\n')
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.link(temporary,path)
+    finally:
+        if temporary is not None:temporary.unlink()
 
 
 def check_deadline(deadline):

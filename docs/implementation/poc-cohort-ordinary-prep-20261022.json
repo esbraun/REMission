@@ -6,7 +6,11 @@
   "integration_target_base": "e707ece425046c32106e9cd4a026b3092126ef16",
   "branch": "feat/poc-cohort-ordinary-launch-20261022",
   "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/cohort-ordinary-launch-sol-261022",
-  "owner": "/root/cohort_ordinary_launch_sol",
+  "owner": "/root/cohort_ordinary_repair_sol",
+  "repair_of_head": "e5f663106c288203b7d43d8d359614df65001d69",
+  "repair_review_report_raw_blob": "8b497ac510e8760efc56112e0925a2fbd126e01b",
+  "repair_review_manifest_raw_blob": "2dd5c6f59c784ae8ea8b2c3ccae05cdfadf4b41a",
+  "repair_evidence": "docs/implementation/evidence/OR-PREP-20261022/repair-source-bindings.json",
   "model": "gpt-6.1-sol",
   "effort": "high",
   "reviewed_head": null,
@@ -53,8 +57,9 @@
       {"type":"bind","source_binding":"authorized_absolute_physical_bundle_path","target":"/controls/bundle.json","read_only":true},
       {"type":"volume","source":"remission-cohort-day14-http-261022-exports","target":"/exports","read_only":false}
     ],
-    "exports_owner_command": ["python","-c","import os;assert os.listdir('/exports')==[],'new exports volume is not empty';os.chown('/exports',10001,10001);os.chmod('/exports',0o700)"],
+    "exports_owner_command": ["python","-c","import os,stat;before=os.lstat('/exports');assert stat.S_ISDIR(before.st_mode) and before.st_uid==0 and before.st_gid==0,'new exports root must be a root-owned directory';assert os.listdir('/exports')==[],'new exports volume is not empty';os.chmod('/exports',0o700);os.chown('/exports',10001,10001);after=os.lstat('/exports');assert (after.st_uid,after.st_gid,stat.S_IMODE(after.st_mode))==(10001,10001,0o700),'exports final owner/mode mismatch'"],
     "exports_owner_caps": ["--user","0:0","--network","none","--cpus","2","--memory","2g","--memory-swap","2g","--pids-limit","64","--read-only","--cap-drop","ALL","--cap-add","CHOWN","--security-opt","no-new-privileges","--tmpfs","/tmp:rw,exec,nosuid,nodev,size=512m","--restart","no"],
+    "exports_owner_qualification": "Template correction only: validate new empty root-owned directory, chmod while still owner, then CHOWN and assert 10001:10001/mode0700. Actual Linux helper execution remains pending; never mount or touch accepted data volume.",
     "cid": null,
     "deadline_unix": null,
     "exact_bound_create_argv_and_persistent_service_supervisor": null
