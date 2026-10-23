@@ -1,6 +1,6 @@
 # Verification And Handoff
 
-**Immediate PoC precedence (2026-10-21):** the [PoC amendment](../spec/poc-amendment-20261021.md) controls active scope, sequencing and acceptance over conflicting full-program requirements below. Execute POC-1 through POC-6 and POC-VAL; retain relevant invariants and independent review. Exhaustive G0-G7 counts, deferred engines and human/clinical gates are later work, not prerequisites for synthetic PoC operation. Existing historical evidence retains its original scope.
+**Immediate PoC precedence (2026-10-22):** the [PoC amendment](../spec/poc-amendment-20261021.md) controls active scope, sequencing and acceptance over conflicting full-program requirements below. The immediate Google Cloud physician simulation milestone requires POC-CLOUD-01 through POC-CLOUD-05, POC-1 through POC-3 and the workflow/persistence/failure portions of POC-6. Training/fitting, POC-4/5, fitted protocol representatives, APPT-01–05 and POC-VAL remain later analytics acceptance; retain relevant invariants and independent review. Exhaustive G0-G7 counts, deferred engines and human/clinical gates are later work, not prerequisites for synthetic PoC operation. Existing historical evidence retains its original scope.
 
 Read [execution entry point](../../implementation-prompt.md) and your assigned gate bundle first. This document governs future application implementation, not the documentation migration.
 
@@ -15,6 +15,8 @@ Use [VAL-01–03](../spec/07-validation-protocol.md) and [RELEASE-01](../spec/08
 Review [source records](../evidence/README.md) before claims are released. Metadata-only or legacy-unverified records cannot silently support a new quantitative claim. Separate synthetic-engineering acceptance from human-factors, clinical review and clinical validation.
 
 ## Verification, prompt evaluation, and handoff
+
+For the immediate cloud physician simulation milestone, use [CS-T1–T8](../implementation/poc-cloud-simulation-ledger-20261022.md#requirement-to-test-and-evidence-map). Handoff must identify the actual GCP project/resource, exact source revision/image and tested HTTPS origin; include deployed login rejection/success, session lifecycle/ownership, physician simulation and reload/container-restart/VM-reboot persistence evidence. Keep secrets out of evidence. Local tests and historical local browser runs cannot satisfy the cloud gate. Report later analytics/training and scientific validation separately as deferred or in their existing unfinished states.
 
 Each task proposes checks that test its actual risk and acceptance contract. Apply [TEST-QUALITY](engineering-guidelines.md#test-quality--tests-that-detect-meaningful-failures), map all required UX/browser scenarios to checks, and verify actual auth middleware and persistence at integration boundaries. Small suites must preserve required behavior coverage; passing trivial tests or coverage thresholds is not acceptance. Do not require expensive MCMC for every CSS change, and do not treat UI screenshots as evidence of statistical calibration. Separate smoke plumbing, genuine saved-model demonstration, and repeated evaluation runs; the smoke preset is not evidence about borrowing performance.
 

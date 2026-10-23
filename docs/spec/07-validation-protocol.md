@@ -1,6 +1,6 @@
 # Validation protocol
 
-**Immediate scope (2026-10-21):** [PoC amendment](poc-amendment-20261021.md) and POC-VAL below supersede the older exhaustive repetition counts, required comparison list and full-program acceptance thresholds for the first PoC study. The older protocol remains later research work. Scientific integrity, valid targets, fit diagnostics and failure disclosure remain mandatory.
+**Milestone scope (2026-10-22):** the [PoC amendment](poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22) makes Google Cloud physician simulation and deployed login/persistence validation immediate. Training/fitting and POC-VAL below belong to the later analytics milestone, not cloud simulation acceptance. POC-VAL retains all seven configurations, repetition counts and accuracy/timeliness obligations; it supersedes older exhaustive thresholds for that first study. Scientific integrity, valid targets, fit diagnostics and failure disclosure remain mandatory for analytics. Existing evidence is not upgraded by this scope change.
 
 ## POC-VAL — First ablation study
 

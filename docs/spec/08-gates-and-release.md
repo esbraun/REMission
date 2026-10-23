@@ -1,6 +1,6 @@
 # Gates and release
 
-**Immediate PoC precedence (2026-10-21):** the [PoC amendment](poc-amendment-20261021.md) controls active scope, sequencing and acceptance over conflicting full-program requirements below. Execute POC-1 through POC-6 and POC-VAL; retain relevant invariants and independent review. Exhaustive G0-G7 counts, deferred engines and human/clinical gates are later work, not prerequisites for synthetic PoC operation. Existing historical evidence retains its original scope.
+**Immediate PoC precedence (2026-10-22):** the [PoC amendment](poc-amendment-20261021.md) controls active scope, sequencing and acceptance over conflicting full-program requirements below. The immediate Google Cloud physician simulation milestone requires POC-CLOUD-01 through POC-CLOUD-05, POC-1 through POC-3 and the workflow/persistence/failure portions of POC-6. Training/fitting, POC-4/5, fitted protocol representatives, APPT-01–05 and POC-VAL remain later analytics acceptance; retain relevant invariants and independent review. Exhaustive G0-G7 counts, deferred engines and human/clinical gates are later work, not prerequisites for synthetic PoC operation. Existing historical evidence retains its original scope.
 
 Specification revision: 2026-10-20. Status: requirements only; no implementation or validation result is asserted.
 
@@ -9,6 +9,8 @@ Specification revision: 2026-10-20. Status: requirements only; no implementation
 **Inputs:** versioned upstream contracts and applicable scenario IDs. **Outputs:** the contracts, artifacts and checks specified below. **Acceptance:** relevant G0–G7 evidence in [gates](08-gates-and-release.md); statistical checks use the [validation protocol](07-validation-protocol.md).
 
 ## Gate context and acceptance
+
+The immediate gate is [POC-CLOUD-01–05](poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22), tracked by [CS0–CS4 and CS-T1–T8](../implementation/poc-cloud-simulation-ledger-20261022.md). Read the amendment, existing service/UI auth and history contracts, runtime/browser/handoff guidance and this bounded ledger. Require a reviewed app-plus-private-generator build without analytics workers, actual GCP HTTPS deployment, deployed username/password and session/isolation checks, physician simulation loop and persistence across reload/service restart/VM reboot. Gate status: **not executed**. The full G0–G7 dependency graph below remains later program scope; fitted G2–G4 engines and POC-VAL are not prerequisites for this immediate gate. Planning critique and exact-candidate implementation reviews still apply.
 
 All gates are **not executed** at this documentation revision. The index, shared scope and [engineering guidelines](../execution/engineering-guidelines.md) are common context; read only the listed bundle and relevant linked evidence/scenario entries. Input contract changes invalidate dependent evidence, not immutable historical records.
 

@@ -1,6 +1,6 @@
 # REMission development plan
 
-**Immediate scope (2026-10-21):** build and test the [functioning synthetic PoC](docs/spec/poc-amendment-20261021.md), including generated patient panels, interactive decisions and outcomes, real fitting and bounded ablation. That amendment controls immediate acceptance wherever older full-program requirements below conflict; full G0-G7 and human/clinical work remain later scope.
+**Immediate scope (2026-10-22):** deploy the [physician simulation PoC](docs/spec/poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22) on Google Cloud and validate HTTPS username/password login, owned synthetic panels, explicit decisions/rationale, simulated advancement/outcomes/history and persistence across reload and restart. Training/fitting is not needed for this milestone. The [cloud task/test ledger](docs/implementation/poc-cloud-simulation-ledger-20261022.md) owns its implementation sequence and unexecuted acceptance checks. Real analytics, all seven study configurations, scientific accuracy/timeliness and full G0-G7/human/clinical work remain later milestones under their existing contracts.
 
 Revision: 2026-10-20. Build a synthetic research demonstration for adult outpatient leukemia chemotherapy insomnia care. No clinical efficacy, clinical validation, or executed model-validation result is claimed.
 

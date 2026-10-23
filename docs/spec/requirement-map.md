@@ -1,5 +1,7 @@
 # Requirement preservation and gate map
 
+**Immediate milestone (2026-10-22):** [cloud physician simulation](poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22) precedes later analytics. POC-CLOUD-01–05 and POC-1–3 plus workflow/persistence/failure portions of POC-6 map to CS0–CS4 and CS-T1–T8 in the [cloud task/test ledger](../implementation/poc-cloud-simulation-ledger-20261022.md). These checks require real Google Cloud HTTPS deployment, credential/session validation, account isolation, physician interaction and durable state. They are planned, not executed. Training/fitting is not an immediate dependency; existing seven-condition science, accuracy/timeliness and analytics ledger obligations remain later work.
+
 **Proposed implementation amendment (2026-10-22; independent critique pending):** [Restricted longitudinal truth and seven-condition study plan](../implementation/poc-truth-ablation-plan-20261022.md) and its [task/test ledger](../implementation/poc-truth-ablation-task-ledger-20261022.json) map TRUTH-01/02, TIME-01, DGP-03, POC-4/5/6, POC-VAL, BAYES-02, MRT-01, MISS-01 and APPT-01–05 to TA1–TA6/TA-T1–10. This is planning traceability, not implemented or executed acceptance; canonical PoC scope and repetition counts are unchanged.
 
 Legacy section IDs retain all original requirements in the mapped canonical sections. Atomic paragraph/list/table units are mapped in the gate traceability files below; each mandatory unit receives an implementation task/test ID before its gate. Migration does not count as executed acceptance. Source IDs refer to the domain evidence registers.
@@ -12,6 +14,7 @@ Legacy section IDs retain all original requirements in the mapped canonical sect
 
 | IDs | Canonical owner | Gate / acceptance evidence | Source justification |
 |---|---|---|---|
+| POC-CLOUD-01–05 | [PoC amendment](poc-amendment-20261021.md#immediate-physician-simulation-milestone-2026-10-22) | Immediate cloud simulation: [CS0–CS4 / CS-T1–T8](../implementation/poc-cloud-simulation-ledger-20261022.md); all cloud checks pending | Latest user scope; official Google Cloud sources in ledger |
 | ENG-01, UI-SKILLS, TEST-QUALITY | [Engineering guidelines](../execution/engineering-guidelines.md) | G0-G7: choices tied to requirements; G5: complete UX/browser scenario mapping, real middleware/persistence tests; G7: pinned dependencies and skill provenance | User engineering requirements; ux-agent-react, ux-agent-composition, ux-agent-web |
 | SYN-BOUNDARY, CLIN-UPDATE | [Scope](00-scope-and-invariants.md) | G0/G7: separate claim statuses and evidence scope | esmo, cochrane-cbti, zhang-leukemia, dimsdale-inpatient |
 | CONTRACT-01, TIME-01, EST-INT | [Contracts](01-estimands-and-contracts.md) | G0/G5: schema versions, temporal DAG, no scalarized interruption winner | iche9, gformula; vector is engineering choice |
