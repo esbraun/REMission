@@ -121,7 +121,7 @@ class LifecycleControls(unittest.TestCase):
             path.unlink()
             with self.assertRaises(FileNotFoundError):life.receipt(path,CID,'original',200.)
 
-    def supervise_double(self, order, fault=None):
+    def supervise_double(self, order, fault=None, unconfirmed=False):
         with tempfile.TemporaryDirectory() as temp:
             folder=Path(temp)/'supervision';processes=[];started=[False];binding={}
             class Process:
@@ -130,7 +130,14 @@ class LifecycleControls(unittest.TestCase):
                     if self.watch:
                         binding.update(cid=CID,nonce=argv[-1],deadline=200.,pid=self.pid)
                         ready=dict(binding,pid=self.pid+1) if fault=='arm-pid' else binding
-                        if fault!='arm-timeout':life.save(folder/'watchdog-ready.json',ready)
+                        if fault=='arm-nan':ready=dict(binding,deadline=float('nan'))
+                        elif fault=='arm-nested':ready=dict(binding,cid={'never-publish':[1]},nonce=['never-publish'],deadline={'never-publish':1},pid={'never-publish':1})
+                        elif fault=='arm-huge':ready=dict(binding,cid='never-publish'+'x'*10000,nonce='never-publish'+'x'*10000,deadline=1e300,pid=10**50)
+                        if fault in ('arm-nan','arm-nested','arm-huge'):
+                            # Simulate malformed input at the receipt boundary;
+                            # the actual publisher itself rejects NaN.
+                            (folder/'watchdog-ready.json').write_text(json.dumps(ready))
+                        elif fault!='arm-timeout':life.save(folder/'watchdog-ready.json',ready)
                     else:
                         started[0]=True
                         if fault!='missing':life.save(folder/'watchdog-terminal.json',dict(cid=CID,nonce='foreign' if fault=='foreign' else binding['nonce'],
@@ -139,21 +146,27 @@ class LifecycleControls(unittest.TestCase):
                     if fault=='arm-exit' and self.watch:self.returncode=1
                     elif started[0] and ((order=='watch' and self.watch) or (order=='attach' and not self.watch)):self.returncode=0
                     return self.returncode
-                def wait(self,timeout):self.reaped=True;self.returncode=1 if fault=='arm-pid' else 0;return self.returncode
+                def wait(self,timeout):self.reaped=True;self.returncode=1 if fault in ('arm-pid','arm-nan','arm-nested','arm-huge') else 0;return self.returncode
                 def kill(self):self.returncode=-9
-            def observe(*args,**kwargs):return inventory(ExitCode=1 if fault=='nonzero' else 0) if started[0] else inventory('created')
+            observations=[]
+            def observe(*args,**kwargs):
+                observations.append(True)
+                if unconfirmed and len(observations)>1:raise ValueError('unavailable final state')
+                return inventory(ExitCode=1 if fault=='nonzero' else 0) if started[0] else inventory('created')
             ticks=iter([100.]*8+[206.]*50) if fault=='arm-timeout' else None
-            with patch.object(life,'inspect',side_effect=observe),patch.object(life,'stop_owned',return_value=[dict(stopped=True)]) as stop, \
+            with patch.object(life,'inspect',side_effect=observe),patch.object(life,'stop_owned',return_value=[dict(stopped=True)],
+                    side_effect=life.StopUnconfirmed('unavailable cleanup') if unconfirmed else None) as stop, \
                     patch.object(life.subprocess,'Popen',side_effect=Process),patch.object(life.time,'sleep'), \
                     patch.object(life.time,'monotonic',side_effect=(lambda:next(ticks)) if ticks else lambda:100.):
                 if fault:
-                    with self.assertRaises(RuntimeError):life.supervise(CID,folder,200.)
+                    with self.assertRaises(life.StopUnconfirmed if unconfirmed else RuntimeError):life.supervise(CID,folder,200.)
                     self.assertTrue(stop.called)
+                    self.assertTrue(all(call.args==(CID,) for call in stop.call_args_list))
                     if fault=='arm-pid':stop.assert_called_once_with(CID)
                 else:self.assertEqual(life.supervise(CID,folder,200.),inventory())
             result=json.loads((folder/'supervision.json').read_bytes())
             self.assertTrue(all(p.returncode is not None for p in processes))
-            if fault in ('arm-timeout','arm-exit','arm-pid'):self.assertFalse(started[0])
+            if fault and fault.startswith('arm-'):self.assertFalse(started[0])
             self.assertEqual(result['failure'] is None,not bool(fault))
             if not fault:
                 self.assertTrue(result['prearm']['identity_matched'])
@@ -187,6 +200,25 @@ class LifecycleControls(unittest.TestCase):
         self.assertEqual(result['processes']['attach'],dict(created=False,pid=None,reaped=False,returncode=None))
         self.assertEqual(result['host_descendant_termination'],'UNKNOWN')
         self.assertEqual(result['terminal'],inventory('created'))
+
+    def test_malformed_prearm_identity_is_redacted_and_preserves_unconfirmed_stop(self):
+        for fault in ('arm-nan','arm-nested','arm-huge'):
+            for unconfirmed in (False,True):
+                with self.subTest(fault=fault,unconfirmed=unconfirmed):
+                    result,processes=self.supervise_double('watch',fault,unconfirmed)
+                    self.assertEqual(len(processes),1);self.assertTrue(processes[0].reaped)
+                    self.assertIn('invalid watchdog arm receipt',result['failure'])
+                    arm=result['prearm']
+                    self.assertFalse(arm['identity_matched']);self.assertFalse(arm['live_ack_before_start'])
+                    self.assertEqual(arm['received_invalid_fields'],['deadline'] if fault=='arm-nan' else ['cid','nonce','deadline','pid'])
+                    for field in arm['received_invalid_fields']:
+                        self.assertEqual(set(arm['received'][field]),{'invalid_type'})
+                    self.assertEqual(arm['received']['deadline'],dict(invalid_type='float' if fault!='arm-nested' else 'dict'))
+                    self.assertEqual(result['processes']['watchdog'],dict(created=True,pid=101,reaped=True,returncode=1))
+                    self.assertEqual(result['processes']['attach'],dict(created=False,pid=None,reaped=False,returncode=None))
+                    self.assertEqual(result['terminal'],None if unconfirmed else inventory('created'))
+                    self.assertNotIn('never-publish',json.dumps(result,allow_nan=False))
+                    self.assertLess(len(json.dumps(arm,allow_nan=False)),2500)
 
     def test_watchdog_launch_error_and_unobservable_final_state_retains_primary(self):
         with tempfile.TemporaryDirectory() as temp,patch.object(life,'inspect',side_effect=[inventory('created'),ValueError('daemon unavailable')]), \

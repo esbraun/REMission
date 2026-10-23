@@ -1,0 +1,71 @@
+{
+  "accepted_main_integration": "556e97ad386691487471ef3ac1f05160a0c824cc",
+  "actual_model": "gpt-6.1-sol",
+  "all_other_lifecycle_function_and_class_ASTs_unchanged_against_review_base": true,
+  "changes_requested_report": "cec0725dd94f1ae4b16b7e4acf8c8492ee6d16d4",
+  "diagnostic_projection": "Only64/48lowercasehex CID/nonce,positive integerDWORD PID,finite positive numericdeadline<=1e12; invalid raw values redacted to bounded builtin type tags",
+  "each_malformed_control_asserts": [
+    "confirmed and unconfirmed cleanup states",
+    "no attach/start",
+    "same literalCID cleanup only",
+    "exact ownedPopen reaped",
+    "supervision.json persists and serializes allow_nan=False",
+    "invalid fields/type tags; no raw sentinel",
+    "bounded diagnostic length",
+    "specific StopUnconfirmed when state/cleanup unconfirmed"
+  ],
+  "effort": "xhigh",
+  "escalation_reason": "Cross-process Windows launcher identity/cleanup uncertainty affects safe runtime prearm",
+  "historical_host_descendant_termination": "UNKNOWN",
+  "historical_root_cause": "NOT_ESTABLISHED",
+  "model_basis": "Root verified retained actual settings",
+  "new_malformed_controls": [
+    "NaN deadline",
+    "nested values under all4identity keys",
+    "huge CID/nonce/deadline/PID"
+  ],
+  "old_process_Docker_Store_private_archive_science_browser_cloud_actions": "NONE",
+  "original_base": "3089956477ada4fc14da34bd2ca4fd365dbba596",
+  "original_raw_receipt_equality_and_refusal_preserved": true,
+  "postmerge_receipt": "f7cacb09b77424b49594ef37d62f0d50a0091770",
+  "preserved_rejected_ancestor": "d087be8ef8d7aa70e3744edf2ef6af783f0d1efd",
+  "probe_planning": "PAUSED_NO_EXECUTABLE_OR_NATIVE_PROCESS_ACTION",
+  "review_base": "2296d48c346611fb8a1853992244e932d4d98e45",
+  "review_checks": "07ffc73c178d01d963de6c7721c7bcd0f6ba7575",
+  "source_bindings": [
+    {
+      "candidate_git_blob": "a63db64c57032fa68b7b854292a829c9165fd108",
+      "path": "tooling/foundation/analysis_lifecycle.py",
+      "raw_bytes": 13774,
+      "raw_sha256": "45cb568da0dd93642ab48fd5edb2aef76394393a1777c3c05c5645259f88ef2b"
+    },
+    {
+      "candidate_git_blob": "fb45b5cbd2a2434f1ddd8751fdc67ee6aac7d81c",
+      "path": "tests/integration/replay/test_ordinary_dispatcher.py",
+      "raw_bytes": 21825,
+      "raw_sha256": "390b82a5abd14e4d5ecff71442b105cd5d46e2ef8d8c0b81a8a45b5838f15b9d"
+    },
+    {
+      "candidate_git_blob": "e51fb98847e6b9d25b81df6630288b556e329516",
+      "path": "tests/run_watchdog_arm_source.py",
+      "raw_bytes": 1539,
+      "raw_sha256": "a9a4c079b5d8c574888d6f7a57ed0029b4121335fa5bafb8ad30b0de0c2ec99e"
+    }
+  ],
+  "source_tests": {
+    "argv": [
+      "C:/Users/erics/Documents/Projects/REMission/artifacts/s1-app/artifacts/source-check-env/Scripts/python.exe",
+      "-I",
+      "-B",
+      "tests/run_watchdog_arm_source.py"
+    ],
+    "errors": 0,
+    "exit_code": 0,
+    "failures": 0,
+    "seconds": 1.983,
+    "tests": 13,
+    "tripwire": "PASS_NO_SCIENCE_GENERATOR_OR_REAL_CHILD_COMMAND_CALLS_EXCEPT_EXPLICIT_DOUBLES"
+  },
+  "status": "CORRECTED_SOURCE_ONLY_FOR_REFRESHED_INDEPENDENT_REVIEW",
+  "supervise_signature_unchanged": true
+}

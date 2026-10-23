@@ -161,9 +161,18 @@ def supervise(cid, folder, deadline, on_poll=None):
     child=None;attached=None;primary=None;cleanup=[];terminal=None;codes={};nonce=secrets.token_hex(24)
     expected=dict(cid=cid,nonce=nonce,deadline=deadline,pid=None)
     prearm=dict(interpreter=sys.executable,flags=['-P','-B'],argv=None,popen_pid=None,
-        expected=expected,received=None,mismatch_fields=None,identity_matched=False,live_ack_before_start=False,
+        expected=expected,received=None,received_invalid_fields=None,mismatch_fields=None,identity_matched=False,live_ack_before_start=False,
         before_ready_poll=dict(observed=False,returncode=None),after_ready_poll=dict(observed=False,returncode=None))
     processes={}
+    def public_identity_value(key,value):
+        # Diagnostics must remain bounded/serializable even for a rejected
+        # receipt. Keep equality below on the original, unmodified receipt.
+        if key in ('cid','nonce'):
+            length=64 if key=='cid' else 48
+            valid=type(value) is str and len(value)==length and re.fullmatch('[a-f0-9]+',value) is not None
+        elif key=='pid':valid=type(value) is int and 0<value<=0xffffffff
+        else:valid=type(value) in (int,float) and 0<value<=1e12 and math.isfinite(value)
+        return value if valid else dict(invalid_type=type(value).__name__)
     try:
         check_deadline(deadline)
         if inspect(cid,deadline=deadline)['State']['Status']!='created':raise ValueError('workload already started')
@@ -183,11 +192,10 @@ def supervise(cid, folder, deadline, on_poll=None):
                 ready=folder/'watchdog-ready.json'
                 if ready.exists():
                     value=json.loads(ready.read_bytes())
-                    # Only the four public identity fields enter diagnostics;
-                    # unexpected receipt values are never copied wholesale.
                     prearm['received_type']=type(value).__name__
                     if isinstance(value,dict):
-                        prearm['received']={key:value.get(key) for key in expected}
+                        prearm['received']={key:public_identity_value(key,value.get(key)) for key in expected}
+                        prearm['received_invalid_fields']=[key for key,item in prearm['received'].items() if isinstance(item,dict)]
                         prearm['mismatch_fields']=[key for key in expected if key not in value or value[key]!=expected[key]]
                         if set(value)!=set(expected):prearm['mismatch_fields'].append('keys')
                     else:prearm['mismatch_fields']=['receipt_type']
