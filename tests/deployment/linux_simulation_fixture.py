@@ -11,6 +11,7 @@ import socket
 import tempfile
 import time
 import unittest
+from urllib.parse import urlsplit
 
 from fastapi.testclient import TestClient
 from contracts.service.live_hold import InstalledBundle
@@ -19,7 +20,9 @@ from services.foundation.cli import reset_password
 from services.foundation.store import Store
 import admin
 
-ORIGIN = 'https://simulation.example.org'
+# TestClient-only documentation address: no external connection or certificate
+# claim. Exercises IP-origin cookies/CSRF before the actual allocated-IP ingress.
+ORIGIN = 'https://192.0.2.10'
 
 
 class IsolatedSimulationQualification(unittest.TestCase):
@@ -126,7 +129,7 @@ class IsolatedSimulationQualification(unittest.TestCase):
                 self.assertEqual(persisted(), saved)
                 old_cookie = first.cookies.get('remission_session')
                 self.assertEqual(first.post('/api/logout', headers=headers(first)).status_code, 200)
-                first.cookies.set('remission_session', old_cookie, domain='simulation.example.org', path='/')
+                first.cookies.set('remission_session', old_cookie, domain=urlsplit(ORIGIN).hostname, path='/')
                 self.assertEqual(first.get('/api/patients').status_code, 401)
                 first.cookies.clear()
                 login(first, 'physician-one', passwords['physician-one'])

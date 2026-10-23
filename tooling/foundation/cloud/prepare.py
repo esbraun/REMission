@@ -1,6 +1,7 @@
 """Render a nonsecret single-VM deployment; never contact Docker or Google Cloud."""
 import argparse
 import hashlib
+import ipaddress
 import json
 from pathlib import Path
 import re
@@ -10,6 +11,18 @@ ROOT = '/opt/remission-simulation'
 MOUNT = '/srv/remission'
 KEYS = {'service_image', 'generator_image', 'proxy_image', 'source_commit',
         'hostname', 'disk_device', 'disk_uuid'}
+CADDY_IP_IMAGE = 'docker.io/library/caddy@sha256:04913b1da43339a40ad1ea87827d70a576ac5aa6cf674c6e24fdca675887533a'
+
+
+def public_ipv4(host):
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    if (address.version != 4 or str(address) != host or not address.is_global
+            or address.is_multicast or address.is_reserved):
+        raise ValueError('hostname IP requires canonical global unicast IPv4')
+    return True
 
 
 def validate(config):
@@ -21,12 +34,15 @@ def validate(config):
     if not re.fullmatch(r'[a-f0-9]{40}', config['source_commit']):
         raise ValueError('source_commit requires full Git SHA')
     host = config['hostname']
-    if (len(host) > 253 or '.' not in host or not re.fullmatch(
+    ipv4 = public_ipv4(host)
+    if not ipv4 and (len(host) > 253 or '.' not in host or not re.fullmatch(
             r'[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?', host)
             or any(not label or len(label) > 63 or label.startswith('-') or label.endswith('-')
                    for label in host.split('.')) or re.fullmatch(r'[0-9.]+', host)
             or host.endswith(('.localhost', '.invalid', '.test', '.example'))):
-        raise ValueError('hostname requires the selected public DNS name for trusted HTTPS')
+        raise ValueError('hostname requires a public DNS name or canonical global IPv4 for trusted HTTPS')
+    if ipv4 and config['proxy_image'] != CADDY_IP_IMAGE:
+        raise ValueError('IPv4 HTTPS requires the selected Caddy 2.11.7 linux amd64 image')
     if not re.fullmatch(r'/dev/disk/by-id/google-[a-z][a-z0-9-]{0,62}', config['disk_device']):
         raise ValueError('disk_device requires exact GCE attached device identity')
     if not re.fullmatch(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}', config['disk_uuid']):
@@ -38,6 +54,19 @@ def bind(source, target, readonly=False):
     # Do not let Compose create an empty directory when a required source is missing.
     return {'type': 'bind', 'source': source, 'target': target, 'read_only': readonly,
             'bind': {'create_host_path': False}}
+
+
+def caddyfile(config):
+    host = config['hostname']
+    if public_ipv4(host):
+        return ('{\n    default_sni ' + host + '\n}\nhttps://' + host + ' {\n'
+                '    tls {\n'
+                '        issuer acme https://acme-v02.api.letsencrypt.org/directory {\n'
+                '            profile shortlived\n'
+                '            disable_tlsalpn_challenge\n'
+                '        }\n    }\n'
+                '    reverse_proxy app:8765\n}\n')
+    return host + ' {\n    reverse_proxy app:8765\n}\n'
 
 
 def compose(config):
@@ -81,7 +110,7 @@ def render(config, destination):
     text = json.dumps(config, sort_keys=True, indent=2) + '\n'
     (destination / 'deployment.json').write_text(text, encoding='utf-8', newline='\n')
     (destination / 'compose.json').write_text(json.dumps(compose(config), indent=2) + '\n', encoding='utf-8', newline='\n')
-    (destination / 'Caddyfile').write_text(config['hostname'] + ' {\n    reverse_proxy app:8765\n}\n', encoding='utf-8', newline='\n')
+    (destination / 'Caddyfile').write_text(caddyfile(config), encoding='utf-8', newline='\n')
     variables = '\n'.join(k + '=' + shlex.quote(config[v]) for k, v in
                           [('DISK_DEVICE', 'disk_device'), ('DISK_UUID', 'disk_uuid')]) + '\n'
     (destination / 'disk.env').write_text(variables, encoding='utf-8', newline='\n')
@@ -108,6 +137,8 @@ def verify_rendered(directory):
     config = validate(json.loads((directory / 'deployment.json').read_bytes()))
     if json.loads((directory / 'compose.json').read_bytes()) != compose(config):
         raise ValueError('deployment_compose_mismatch')
+    if (directory / 'Caddyfile').read_text(encoding='utf-8') != caddyfile(config):
+        raise ValueError('deployment_caddyfile_mismatch')
 
 
 def main():

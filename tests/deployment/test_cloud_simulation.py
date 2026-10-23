@@ -29,6 +29,28 @@ def configuration():
 
 
 class DeploymentTests(unittest.TestCase):
+    def test_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default(self):
+        config = dict(configuration(), hostname='8.8.8.8', proxy_image=prepare.CADDY_IP_IMAGE)
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / 'ip'
+            prepare.render(config, target)
+            prepare.verify_rendered(target)
+            text = (target / 'Caddyfile').read_text()
+            self.assertIn('default_sni 8.8.8.8\n', text)
+            self.assertIn('https://8.8.8.8 {\n', text)
+            self.assertIn('issuer acme https://acme-v02.api.letsencrypt.org/directory {\n', text)
+            self.assertIn('profile shortlived\n', text)
+            self.assertIn('disable_tlsalpn_challenge\n', text)
+            self.assertEqual(prepare.compose(config)['services']['app']['environment']['REMISSION_ORIGIN'], 'https://8.8.8.8')
+            self.assertNotIn('tls internal', text)
+        self.assertEqual(prepare.caddyfile(configuration()), 'simulation.example.org {\n    reverse_proxy app:8765\n}\n')
+        for host in ('127.0.0.1', '10.0.0.1', '100.64.0.1', '169.254.1.2', '192.0.2.1',
+                     '224.0.0.1', '240.0.0.1', '0.0.0.0', '8.8.8.08', '2001:4860:4860::8888', '[2001:4860:4860::8888]'):
+            with self.subTest(host=host), self.assertRaises(ValueError):
+                prepare.validate(dict(config, hostname=host))
+        with self.assertRaisesRegex(ValueError, 'Caddy 2.11.7'):
+            prepare.validate(dict(config, proxy_image=configuration()['proxy_image']))
+
     def test_minimal_build_preserves_full_scientific_default(self):
         sys.path.insert(0, str(ROOT / 'tooling/foundation'))
         spec = importlib.util.spec_from_file_location('build_live', ROOT / 'tooling/foundation/build_live.py')
