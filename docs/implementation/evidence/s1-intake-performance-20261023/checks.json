@@ -1,0 +1,92 @@
+{
+  "actual_model": "gpt-6.1-sol",
+  "base": "810b643249bcb99214cd2f5b00ae9d5691d159db",
+  "baseline_environment_limitation": {
+    "exception_class": "ZoneInfoNotFoundError",
+    "reason": "'No time zone found with key UTC'",
+    "source_changed": false,
+    "status": "BASELINE_ENVIRONMENT_FAILURE"
+  },
+  "branch": "fix/poc-s1-intake-performance-20261023",
+  "effort": "xhigh",
+  "equivalence": {
+    "all_equal": true,
+    "cases": 24,
+    "scope": "Accepted base vs candidate exact canonical projection bytes/digests and ValueError class/message on hand-authored scalar S0/S1 context and path fixtures"
+  },
+  "initial_draft_failure": {
+    "causes": [
+      "New context fixture initially omitted nightly reporting rows required by ProtocolHistory; fixed fixture, no production relaxation",
+      "Unrelated existing host-configuration full-v2 fixture failed: ZoneInfoNotFoundError, No time zone found with key UTC; unchanged baseline reproduction file retained",
+      "Ambiguous test_observed_v2 import resolved run-contract module instead of domain module; unrelated domain suite removed from targeted runner, not claimed passed"
+    ],
+    "errors": 9,
+    "exit_code": 1,
+    "kind": "transcribed_tool_failure_observation",
+    "raw_log_capture": "Initial command did not redirect. These are faithful terminal facts from original tool chunks, not an original raw log file. Captured untouched-baseline timezone reproduction is separate.",
+    "result": "FAILED",
+    "seconds": 11.269,
+    "session_id": 81854,
+    "tests": 15,
+    "tool_chunks": [
+      "c81312",
+      "fe315d"
+    ]
+  },
+  "model_basis": "Root verified actual Sol/xhigh; retained assignment setting",
+  "shared_N_runner": {
+    "exit_code": 0,
+    "seconds": 19.359,
+    "session_id": 6708,
+    "tests": 65,
+    "tripwire": "PASS_NO_SCIENTIFIC_MODULES"
+  },
+  "source_bindings": [
+    {
+      "bytes": 14021,
+      "candidate_git_blob": "95df83fd8db97f3819ff5798234ec0a2e4970636",
+      "path": "contracts/runs/support_research.py",
+      "raw_sha256": "920afa256161d5325a2f81aa4e0dc0edad06671b25998d1bc87956ec0a4e0474"
+    },
+    {
+      "bytes": 16773,
+      "candidate_git_blob": "f84738668b091bd88862e03ed24aafbdef73b91c",
+      "path": "services/foundation/protocol.py",
+      "raw_sha256": "914e79dc44d1ed9681c73697d9227772dca7c029aac3a6bd767835ea7f90ee0c"
+    },
+    {
+      "bytes": 7905,
+      "candidate_git_blob": "a8033ad05e8ae55a17a8184240838500280f33eb",
+      "path": "tests/integration/replay/test_s1_intake_performance.py",
+      "raw_sha256": "058914d30862658b89c88c5fac80fa270fa8a2f32163a7aa8bd6d6e664321c46"
+    },
+    {
+      "bytes": 2151,
+      "candidate_git_blob": "9f90d09450dcb2243b3d160ade255a233b94e2ab",
+      "path": "tests/run_s1_intake_source.py",
+      "raw_sha256": "182c4bbbc17777a90a035ba513254f7fda8594be387a25844e058bfb14baa548"
+    }
+  ],
+  "status": "SOURCE_CHECKS_PASS_NOT_RUNTIME_ACCEPTANCE",
+  "targeted_tests": {
+    "exit_code": 0,
+    "kind": "transcribed_tool_terminal_observation",
+    "raw_log_capture": "Not redirected; original tool outputs remain in task history. This JSON is an observation, not a reconstructed original byte stream.",
+    "result": "OK",
+    "seconds": 16.592,
+    "session_id": 63791,
+    "tests": 13,
+    "tool_chunks": [
+      "63c52f",
+      "5b07fe"
+    ],
+    "tripwire": "PASS_NO_SCIENTIFIC_OR_GENERATOR_MODULES"
+  },
+  "unchanged_bindings": {
+    "contracts/domain/evidence_v2.py": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+    "services/foundation/support_archive.py": "ecb29e75a17a670cef2e1f266f8d404b70357c1e",
+    "tests/integration/replay/test_support_archive.py": "f5ca872f735d0e9a140a92c60182a4ccb44f3c13",
+    "tests/run_nof1_source.py": "0d01c1c06c8149311950af6444673449ff848937"
+  },
+  "verification_limit": "No actual archive workload, Docker, Store activation/private-object read, image build, fit or full P2 run. No elapsed improvement or whole-intake causal attribution is claimed."
+}

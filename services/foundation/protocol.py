@@ -124,19 +124,20 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
         selected.remove('isi')
     records={r.record_id:r for r in projected.records if r.kind in selected}
     cache={};visiting=set()
+    def reduced_ref(record):
+        if record.record_id not in records:raise ValueError('unsupported_protocol_conditioning_reference')
+        return dict(record_id=record.record_id,projection_sha256=sha(reduce(record)))
     def exact(ref,kinds=None,at=None):
         record=resolve(full,ref,kinds,cutoff=cutoff)
         if at is not None:resolve(full,ref,kinds,cutoff=at)
-        if record.record_id not in records:raise ValueError('unsupported_protocol_conditioning_reference')
-        reduced=reduce(record)
-        return dict(record_id=record.record_id,projection_sha256=sha(reduced))
+        return reduced_ref(record)
     def closure(ref,at=None):
         if verify_closure is None:raise ValueError('verified_stage_ledger_required_for_burden')
         return verify_closure(ref,at or cutoff)
     def context_ref(ref,at=None):
         record=resolve(full,ref,cutoff=cutoff)
         if at is not None:resolve(full,ref,cutoff=at)
-        return exact(ref,at=at) if record.kind in selected else None
+        return reduced_ref(record) if record.kind in selected else None
     def reduce(record):
         if record.record_id in cache:return cache[record.record_id]
         if record.record_id in visiting:raise ValueError('cyclic_protocol_dependency')
