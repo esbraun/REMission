@@ -96,3 +96,43 @@ literal CID/strict live watchdog ACK/terminal and reap checks. Legacy
 auth, volume or resource is opened or reused. Same-handle polling and retention
 remain required; no retry, cap increase, cleanup discovery, service, job, fit
 or browser permission follows from this preparation.
+
+The source checkpoint is `0cce8aee2c89a153ddb9da12a9f033cfd11cad1c`.
+`tooling/foundation/s1_diagnostic_image.py` is the later controls-only operation
+derivative. Its frozen public packet lives under
+`artifacts/s1-intake-diagnostic-r1/image-qualification` in this checkout. It
+reuses exact IMAGE05 helper `f7bacdfb3516a02a4cbb82925b64b4219894ef74`,
+lifecycle `a63db64c57032fa68b7b854292a829c9165fd108` and inherited probe
+`8d5e06dae9978a9657029b65c5df04b73c424ae1`. The parent is controls615b,
+not the older022 image. One expected-map COPY under `/qualify` accompanies
+the three production COPYs; the probe is already inherited byte-identically.
+The child must retain the full accepted parent layer prefix and runtime
+configuration. Service and learner roles have no commands in the derivative.
+
+The separate qualification operation preserves IMAGE05 limits: 900-second
+phase, 300-second build client, 60-second qualifier, three-second exact CLI
+cleanup. Qualifier limits are 2CPU/2GiB/equal swap/PID64/RO/dropALL/NNP,
+UID10001, network-none, no mounts/ports and existing512MiB exec tmpfs. These
+limits apply to the qualifier, not Docker daemon COPY work. No RUN executes
+during build; a client timeout/reap does not prove daemon completion. Build
+failure/deadline is STOP UNCONFIRMED and retains all outputs with no retry.
+The exclusive results reservation precedes the first Docker call, including
+metadata. Name/tag collisions halt; literal full CID and typed configuration
+must precede unchanged strict live-ACK supervision. No partial/reported PID
+or CID is trusted for cleanup.
+
+Six additional host-only controls use a fake command/lifecycle boundary under
+real-Popen/run and import tripwires. They cover map/COPY purity, successful
+literal-CID supervision, once reservation, build timeout UNKNOWN/no start,
+unconfirmed CID/no attach and resource drift refusal. The first fixture capture
+retains two failures caused by its missing temporary expected-map fixture;
+the fixed six-control capture passes. No Docker command was executed.
+
+```powershell
+& 'C:/Users/erics/Documents/Projects/REMission/artifacts/s1-app/artifacts/source-check-env/Scripts/python.exe' -I -B tests/run_s1_diagnostic_image_preparation.py
+```
+
+This qualification packet needs independent exact SOURCE+OP review and new
+root GO. An accepted actual child image would permit preparation of the later
+P2 executable specification, followed by its own review and GO. None is granted
+by the source controls or the proposed qualification command.
