@@ -52,6 +52,9 @@ def main():
         axes=np.array(['chain','draw','target','arm','night']),unit=np.array('reported_quality_points'),kind=np.array('predictive_trajectory'))
     def save(name,value):np.savez_compressed(out/name,**value)
     save('expected-contrast.npz',expected);save('predictive.npz',predictive)
+    with np.load(out/'predictive.npz',allow_pickle=False) as saved:
+        if not np.array_equal(saved['available'],available) or not np.array_equal(saved['quality'],quality):
+            raise ValueError('UNIT predictive values or separate availability mask changed in serialization')
     semantics=validate(out,product,summary)
     controls=[]
     for name,field,value in [('target','target',np.array([patients[0]])),('dtype','effect',effect.astype(np.float32)),

@@ -1,9 +1,11 @@
 """Host source-only checks: scientific payload is parsed, never imported/run."""
 import ast
+import hashlib
 import importlib.util
 from pathlib import Path
 import subprocess
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -11,6 +13,27 @@ spec=importlib.util.spec_from_file_location('draft',ROOT/'tooling/foundation/n_a
 draft=importlib.util.module_from_spec(spec);spec.loader.exec_module(draft)
 
 class DraftControls(unittest.TestCase):
+    def test_unknown_created_cid_stops_without_start_or_cleanup_guess(self):
+        payload='UNIT_NOT_EXECUTED';image='sha256:'+'a'*64;config=dict(Id=image,User='10002:10002',WorkingDir='/app',Entrypoint=None,Cmd=['original'])
+        plan=dict(learner_image=image,payload_sha256=hashlib.sha256(payload.encode()).hexdigest(),qualified_image_config=config)
+        class StopUnconfirmed(RuntimeError):pass
+        calls=[]
+        def call(argv,label,deadline):
+            calls.append(label)
+            if label=='image':return __import__('json').dumps(config)
+            if label=='absence':return ''
+            if label=='create':return 'UNKNOWN'
+            raise AssertionError('no later command permitted')
+        def require(value):raise ValueError('not literalCID')
+        life=SimpleNamespace(require_cid=require,StopUnconfirmed=StopUnconfirmed,stop_owned=lambda cid:(_ for _ in ()).throw(AssertionError('no guessed cleanup')))
+        with self.assertRaises(StopUnconfirmed):draft._controller_body(plan,payload,ROOT,life,call)
+        self.assertEqual(calls,['image','absence','create'])
+
+    def test_payload_change_fails_before_any_image_or_native_command(self):
+        with self.assertRaisesRegex(ValueError,'payload changed'):
+            draft._controller_body(dict(payload_sha256='0'*64),'UNIT_NOT_EXECUTED',ROOT,None,
+                lambda *a:(_ for _ in ()).throw(AssertionError('command forbidden')))
+
     def test_pending_dependency_cannot_reach_child_creation(self):
         value=draft.inspect_draft(ROOT/'docs/implementation/poc-n-api02.draft.json')
         with patch.object(subprocess,'Popen',side_effect=AssertionError('native child denied')):
