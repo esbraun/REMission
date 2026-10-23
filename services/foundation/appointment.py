@@ -49,6 +49,8 @@ def checked_result(row):
     """
     try:
         frozen = json.loads(row['request_json'])
+        if frozen.get('kind')=='poc_support_s1_input':
+            return None, 'cohort_support_is_not_an_individual_visit_effect'
         product = parse_input(row['request_json'])
         if (sha(frozen) != row['input_sha256'] or product.attempt_id != row['job_id']
                 or product.request.configuration.model_dump() != json.loads(row['configuration_json'])):

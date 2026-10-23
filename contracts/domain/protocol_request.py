@@ -1,4 +1,4 @@
-"""Closed protocol purpose contracts. P1 admits no executable configuration."""
+"""Closed schema2 purpose fixtures. The separate schema3 S1 app is explicit."""
 from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, Field, TypeAdapter, model_validator
@@ -205,6 +205,9 @@ class ProtocolResult(StrictModel):
 
 def require_executable(value):
     """Shared admission veto, also applied independently by host dispatch."""
+    if getattr(value,'kind',None) in ('poc_support_s1_input','poc_support_s1_result'):
+        from .support_s1 import require_executable as require_s1
+        return require_s1(value)
     configuration = value.request.configuration if isinstance(value, ProtocolInput) else value.configuration
     if configuration.sha256 not in EXECUTABLE_CONFIGURATIONS:
         raise ValueError('protocol configuration is not executable in P1')

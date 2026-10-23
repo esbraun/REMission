@@ -16,10 +16,10 @@ def main():
     settings=environment_settings()
     store=Store(settings.database,settings.installed)
     if args.command=='claim':
-        response=claim(store,expected=json.loads(args.value) if args.value else None)
+        response=claim(store,expected=json.loads(args.value) if args.value else None,configured=settings.observed_archives)
     elif args.command=='queued-request':
         if not args.value:parser.error('exact owner/job/receipt/submission selection required')
-        response=export_queued_request(store,**json.loads(args.value))
+        response=export_queued_request(store,configured=settings.observed_archives,**json.loads(args.value))
     elif args.command=='interrupt':
         response=dict(interrupted=interrupt(store))
     else:
@@ -28,14 +28,14 @@ def main():
         if args.command=='progress':
             response=progress(store,args.job,args.token,json.loads(args.value))
         elif args.command=='bind-execution':
-            response=bind_execution(store,args.job,args.token,json.loads(args.value))
+            response=bind_execution(store,args.job,args.token,json.loads(args.value),configured=settings.observed_archives)
         elif args.command=='fail':
             response=fail(store,args.job,args.token,args.value or 'dispatcher-failure')
         else:
             root=(settings.live_export_root/'analyses'/args.job).resolve()
             if args.directory is None or args.directory.resolve()!=root:
                 parser.error('ingest directory must be the deployment artifact root for this attempt')
-            response=ingest(store,args.job,args.token,root,accept_before=args.accept_before)
+            response=ingest(store,args.job,args.token,root,accept_before=args.accept_before,configured=settings.observed_archives)
     print(canonical(response))
 
 

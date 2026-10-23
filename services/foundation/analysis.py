@@ -88,6 +88,9 @@ def prepare_cohort(db, owner, patient_versions, cutoff, *, cohort_id, source_bun
 
 
 def view(row, cutoff, *, current=None):
+    if json.loads(row['request_json']).get('kind')=='poc_support_s1_input':
+        from .support_analysis import view as support_view
+        return support_view(row)
     if json.loads(row['request_json']).get('kind')=='poc_visit_cohort_input':
         from .cohort_analysis import view as cohort_view
         return cohort_view(row,cutoff)
@@ -146,12 +149,15 @@ def submit(db, patient, owner, expected_version, previous, now, *, mode='v0',sou
     return view(db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(job,)).fetchone(),patient['cutoff'])
 
 
-def queued_request(db, *, owner, job, key, submission):
+def queued_request(db, *, owner, job, key, submission, configured=None):
     """Read one receipted ordinary cohort request; no claim/session secrets leave.
 
     The caller uses the existing admitted Store read transaction. A missing
     receipt is UNKNOWN submission outcome, never permission to submit again.
     """
+    if 'archive_id' in submission:
+        from .support_analysis import queued_request as support_queued
+        return support_queued(db,owner=owner,job=job,key=key,submission=submission,configured=configured)
     from contracts.domain.cohort import CohortInput, CohortSubmission, require_executable
     submission=CohortSubmission.model_validate_json(canonical(submission)).model_dump(mode='json')
     if not key or len(key)>128:raise AnalysisError('Bounded original receipt key required.')
@@ -191,15 +197,15 @@ def queued_request(db, *, owner, job, key, submission):
         active_attempts=[dict(attempt_id=job,status='queued')])
 
 
-def export_queued_request(store, **selection):
+def export_queued_request(store, *, configured=None, **selection):
     with store.transaction() as db:
-        return queued_request(db,**selection)
+        return queued_request(db,configured=configured,**selection)
 
 
-def claim(store, *, expected=None):
+def claim(store, *, expected=None, configured=None):
     with store.transaction(write=True) as db:
         if expected is not None:
-            proof=queued_request(db,**expected['selection'])
+            proof=queued_request(db,configured=configured,**expected['selection'])
             if sha(proof)!=expected['export_sha256']:
                 raise AnalysisError('Reviewed queued export changed before claim.')
         if db.execute("SELECT 1 FROM analysis_attempts WHERE status='running'").fetchone():
@@ -208,6 +214,9 @@ def claim(store, *, expected=None):
         if row is None:
             return None
         product=json.loads(row['request_json'])
+        if product.get('kind')=='poc_support_s1_input':
+            from .support_analysis import revalidate
+            revalidate(db,row,configured)
         if product.get('kind')=='poc_visit_cohort_input':
             from contracts.domain.cohort import CohortInput,require_executable
             require_executable(CohortInput.model_validate_json(row['request_json']))
@@ -242,7 +251,7 @@ def progress(store, job, token, value):
         db.execute('UPDATE pending_work SET reason=? WHERE id=?',('Visit analysis '+value['stage'],job))
 
 
-def bind_execution(store,job,token,origin):
+def bind_execution(store,job,token,origin, *, configured=None):
     """Host CLI only, before launch. The isolated learner never receives token."""
     from contracts.domain.borrowing import parse_input,BorrowAnalysisInput
     from contracts.domain.borrow_runtime import runtime_origin,execution_binding
@@ -251,7 +260,12 @@ def bind_execution(store,job,token,origin):
     except ValueError as error:raise AnalysisError('Invalid trusted host origin') from error
     with store.transaction(write=True) as db:
         row=running(db,job,token);product=parse_input(row['request_json'])
-        if product.kind=='poc_visit_cohort_input':
+        if product.kind=='poc_support_s1_input':
+            from .support_analysis import revalidate
+            from contracts.domain.support_s1 import execution_binding as support_binding
+            revalidate(db,row,configured)
+            binding=support_binding(product,origin)
+        elif product.kind=='poc_visit_cohort_input':
             from contracts.domain.cohort import require_executable
             from contracts.domain.cohort_runtime import execution_binding as cohort_binding
             require_executable(product)
@@ -284,7 +298,7 @@ def interrupt(store):
     return len(rows)
 
 
-def ingest(store,job,token,directory, *, accept_before=None):
+def ingest(store,job,token,directory, *, accept_before=None, configured=None):
     def within_host_deadline(db):
         if accept_before is not None and store.clock()>=instant(accept_before):
             raise AnalysisError('Host absolute completion deadline exceeded before commit.')
@@ -297,6 +311,7 @@ def ingest(store,job,token,directory, *, accept_before=None):
         raise AnalysisError('Invalid result file')
     result=parse_result(result_path.read_bytes())
     cohort_result=result.kind=='poc_visit_cohort_result'
+    support_result=result.kind=='poc_support_s1_result'
     if result.kind=='poc_protocol_result':
         from contracts.domain.protocol_request import require_executable
         require_executable(result)
@@ -315,7 +330,7 @@ def ingest(store,job,token,directory, *, accept_before=None):
                 h.update(chunk)
         if h.hexdigest()!=ref['sha256']:
             raise AnalysisError('Artifact hash mismatch')
-    if result.status=='completed' and not cohort_result:
+    if result.status=='completed' and not cohort_result and not support_result:
         d=result.diagnostics
         if not d.get('fits') or not d['fits'][-1]['diagnostics'].get('accepted') or not d.get('effect_mcmc',{}).get('accepted') or d.get('integration',{}).get('status')!='accepted' or 'expected-effect.npz' not in names:
             raise AnalysisError('Completed result lacks accepted computational diagnostics')
@@ -323,7 +338,15 @@ def ingest(store,job,token,directory, *, accept_before=None):
             raise AnalysisError('Completed borrowing result lacks accepted bridge precision')
     with store.transaction(write=True,before_commit=within_host_deadline) as db:
         row=running(db,job,token)
-        if cohort_result:
+        if support_result:
+            from .support_analysis import revalidate
+            from contracts.domain.support_s1 import validate_result
+            product=revalidate(db,row,configured)
+            validate_result(result,product,json.loads(row['progress_json']).get('trusted_launch'))
+            if names!={'wcls.json'}:raise AnalysisError('S1 requires exactly its full WCLS JSON artifact')
+            artifact=json.loads((directory/'wcls.json').read_bytes())
+            if artifact!=result.diagnostics:raise AnalysisError('S1 artifact/summary diagnostics mismatch')
+        elif cohort_result:
             from contracts.domain.cohort import CohortInput,require_executable
             require_executable(CohortInput.model_validate_json(row['request_json']))
             from .cohort_analysis import validate_result
@@ -342,6 +365,11 @@ def ingest(store,job,token,directory, *, accept_before=None):
         completed_at=store.clock()
         if accept_before is not None and completed_at>=instant(accept_before):
             raise AnalysisError('Host absolute completion deadline exceeded after validation.')
+        if support_result and result.status=='completed':
+            if row['started_at'] is None or not instant(row['started_at'])<=result.generated_at<=completed_at:
+                raise AnalysisError('S1 generation time must lie within authoritative execution times.')
+            if not 0<=(completed_at-instant(row['started_at'])).total_seconds()<180:
+                raise AnalysisError('S1 completion exceeds persisted lifecycle bound.')
         if cohort_result and result.status=='completed':
             if row['started_at'] is None:
                 raise AnalysisError('Cohort completion lacks authoritative start time.')

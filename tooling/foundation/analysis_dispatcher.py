@@ -52,7 +52,14 @@ def exclusive(path):
 def worker_limits(borrowing, *, cohort=False):return list(COMMON)
 
 
+def worker_module(input_value):
+    return 'services.learner.support_s1_worker' if input_value.get('kind')=='poc_support_s1_input' else 'services.learner.analysis_worker'
+
+
 def require_dispatchable(input_value):
+    if input_value.get('kind')=='poc_support_s1_input':
+        from contracts.domain.support_s1 import S1Input
+        S1Input.model_validate_json(json.dumps(input_value))
     if input_value.get('kind')=='poc_protocol_input':raise ValueError('protocol configuration is not executable in P1')
     if input_value.get('kind')=='poc_visit_cohort_input':
         from contracts.domain.cohort import CohortInput,require_executable
@@ -76,7 +83,9 @@ def absent(argv, *, deadline):
 
 def validate_deployment(state, deployment):
     require_cid(state['service_cid'])
-    if state['service_container']!='remission-cohort-day14-http-261022' or state['prefix']!='remission-cohort-day14-job-261022':
+    s1=state.get('operation')=='support-s1-day84-v1'
+    namespace=('remission-support-s1-http-261023','remission-support-s1-job-261023') if s1 else ('remission-cohort-day14-http-261022','remission-cohort-day14-job-261022')
+    if (state['service_container'],state['prefix'])!=namespace:
         raise ValueError('ordinary operation namespace differs from reviewed proposal')
     cohort_reviewed_runtime(state,state['learner_image'])
     expected=state['expected'];selection=expected['selection'];job=selection['job']
@@ -85,9 +94,11 @@ def validate_deployment(state, deployment):
     if (sha(proof)!=expected['export_sha256'] or proof.get('attempt_id')!=job
             or proof.get('owner_id')!=selection['owner'] or proof.get('submission')!=selection['submission']
             or proof.get('receipt',{}).get('key')!=selection['key']
-            or proof.get('input',{}).get('kind')!='poc_visit_cohort_input'
+            or proof.get('input',{}).get('kind')!=('poc_support_s1_input' if s1 else 'poc_visit_cohort_input')
             or sha(proof['input'])!=proof.get('input_sha256')):
         raise ValueError('frozen actual queued export mismatch')
+    require_dispatchable(proof['input'])
+    if s1 and proof['input']['cutoff_day']!=84:raise ValueError('reviewed S1 operation requires day84')
     return proof
 
 
@@ -106,8 +117,9 @@ def run_once(state, deployment, deployment_digest):
         queued_export_sha256=state['expected']['export_sha256'],reserved_unix=time.time()))
     def persist():
         temporary=directory/'dispatch.tmp';temporary.write_bytes(canonical(manifest)+b'\n');temporary.replace(directory/'dispatch.json')
-    deadline=time.monotonic()+7200;accept_before=datetime.fromtimestamp(time.time()+7200,timezone.utc).isoformat()
-    manifest.update(deadline_monotonic=deadline,accept_before=accept_before,watchdog_seconds=7200)
+    lifecycle_seconds=180 if proof['input']['kind']=='poc_support_s1_input' else 7200
+    deadline=time.monotonic()+lifecycle_seconds;accept_before=datetime.fromtimestamp(time.time()+lifecycle_seconds,timezone.utc).isoformat()
+    manifest.update(deadline_monotonic=deadline,accept_before=accept_before,watchdog_seconds=lifecycle_seconds)
     def call(argv, **kwargs):return command(argv,deadline=deadline,**kwargs)
     def cli(*values):return json.loads(call(['docker','exec',state['service_cid'],'python','-m','services.foundation.analysis_cli',*values]).stdout)
     def create(argv, role):
@@ -120,7 +132,7 @@ def run_once(state, deployment, deployment_digest):
     try:
         persist()
         if (type(state.get('service_deadline_unix')) not in (int,float) or not math.isfinite(state['service_deadline_unix'])
-                or state['service_deadline_unix']-time.time()<7500):
+                or state['service_deadline_unix']-time.time()<lifecycle_seconds+300):
             raise RuntimeError('service lifetime cannot cover 7200 seconds plus 300 collection margin')
         if inspect(state['service_cid'],deadline=deadline)['State']['Status']!='running':raise RuntimeError('reviewed service is not running')
         service_identity=json.loads(call(['docker','inspect','--format',
@@ -136,7 +148,7 @@ def run_once(state, deployment, deployment_digest):
         actual=call(['docker','image','inspect','--format','{{.Id}}',state['learner_image']]).stdout.decode().strip()
         reviewed=cohort_reviewed_runtime(state,actual)
         if cli('queued-request','--value',canonical(state['expected']['selection']).decode())!=proof:raise RuntimeError('queued selection changed before claim')
-        if state['service_deadline_unix']-time.time()<7500:raise RuntimeError('service remaining lifetime insufficient immediately before claim')
+        if state['service_deadline_unix']-time.time()<lifecycle_seconds+300:raise RuntimeError('service remaining lifetime insufficient immediately before claim')
         manifest['claim_outcome']='unknown';persist()
         job=cli('claim','--value',canonical(state['expected']).decode())
         if not isinstance(job,dict) or job.get('attempt_id')!=identifier or job.get('input')!=proof['input']:
@@ -145,7 +157,7 @@ def run_once(state, deployment, deployment_digest):
         if not isinstance(token,str) or re.fullmatch('[a-f0-9]{48}',token) is None:raise ValueError('invalid claim token')
         manifest['claim_outcome']='confirmed_expected_attempt'
         require_dispatchable(job['input'])
-        if job['input']['sources'] is not None:raise ValueError('ordinary slice requires original V0 input')
+        if job['input'].get('sources') is not None:raise ValueError('ordinary slice requires original V0 input')
         (directory/'input.json').write_bytes(canonical(job['input'])+b'\n')
         origin=dict(learner_image=actual,source_commit=state['source_commit'])
         trusted=cli('bind-execution','--job',identifier,'--token',token,'--value',canonical(origin).decode())
@@ -165,7 +177,7 @@ def run_once(state, deployment, deployment_digest):
         cid=create(['docker','create','--name',learner,'--label','remission.analysis='+state['prefix'],'--label','remission.attempt='+identifier,
             *worker_limits(True,cohort=True),'--user','10002:10002','--mount',f'type=volume,source={input_volume},target=/input,readonly',
             '--mount',f'type=volume,source={output_volume},target=/output',*env,actual,
-            'python','-m','services.learner.analysis_worker','--input','/input/input.json','--output','/output'],'learner')
+            'python','-m',worker_module(job['input']),'--input','/input/input.json','--output','/output'],'learner')
         last=[None];next_poll=[0.]
         def progress():
             if time.monotonic()<next_poll[0]:return
@@ -176,7 +188,7 @@ def run_once(state, deployment, deployment_digest):
                 if encoded!=last[0] and value['stage'] in ('preparing','fitting','diagnostics','rollouts'):
                     cli('progress','--job',identifier,'--token',token,'--value',encoded);last[0]=encoded
         manifest.update(status='running',container_cid=cid);persist()
-        terminal=supervise(cid,directory/'learner-supervision',deadline,progress)
+        terminal=supervise(cid,directory/'learner-supervision',min(deadline,time.monotonic()+60) if lifecycle_seconds==180 else deadline,progress)
         logs=call(['docker','logs',cid],check=False)
         (directory/'worker.stdout').write_bytes(logs.stdout);(directory/'worker.stderr').write_bytes(logs.stderr)
         call(['docker','cp',cid+':/output/.',str(directory/'output')],cap=60)
@@ -214,7 +226,7 @@ def run_once(state, deployment, deployment_digest):
         if unconfirmed:raise StopUnconfirmed(message) from None
         raise RuntimeError(message) from None
     finally:
-        manifest.update(finished_unix=time.time(),claim_through_completion_seconds=7200-(deadline-time.monotonic()),retained_cids=owned)
+        manifest.update(finished_unix=time.time(),claim_through_completion_seconds=lifecycle_seconds-(deadline-time.monotonic()),retained_cids=owned)
         persist();lock.close()
     return manifest
 

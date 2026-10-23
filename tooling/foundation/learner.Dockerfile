@@ -21,3 +21,7 @@ COPY tooling/foundation/consumer_probe.py /app/boundary_probe.py
 COPY tooling/foundation/observed_v2_probe.py /app/observed_v2_probe.py
 USER 10002:10002
 CMD ["python","-m","services.learner.worker"]
+
+COPY contracts/domain/support_s1.py /app/contracts/domain/
+COPY methods/support/ /app/methods/support/
+COPY services/learner/support_s1_worker.py /app/services/learner/
