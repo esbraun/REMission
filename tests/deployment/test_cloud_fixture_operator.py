@@ -23,11 +23,105 @@ def state(status='created', code=0):
 
 def plan():
     closures = json.loads((ROOT / 'docs/implementation/evidence/cloud-simulation-prep-20261023/image-closures.json').read_bytes())
-    return dict(prefix='remission-cloud-fixture-123456789abc', source_commit='c' * 40,
-                cloud_source='C:\\reviewed\\cloud', fixture_source='C:\\reviewed\\fixture.py', closures=closures)
+    value = dict(prefix='remission-cloud-fixture-123456789abc', source_commit='c' * 40,
+                 cloud_source='C:\\reviewed\\cloud', fixture_source='C:\\reviewed\\fixture.py', closures=closures,
+                 private_network=dict(subnet='10.253.240.0/28', gateway='10.253.240.1'))
+    value['network_create_argv'] = operator.network_create_argv(value)
+    return value
 
 
 class FixtureOperatorTests(unittest.TestCase):
+    def test_network_admission_requires_exact_subnet_gateway_and_owned_identity(self):
+        p = plan()
+        value = dict(Id=NETWORK, Name=p['prefix'] + '-private', Driver='bridge', Internal=True,
+                     Labels={'remission.task': p['prefix']},
+                     IPAM=[dict(Subnet='10.253.240.0/28', Gateway='10.253.240.1')])
+        operator.audit_network(value, NETWORK, p)
+        for key, bad in [('Id', 'd' * 64), ('Name', 'foreign'), ('Driver', 'overlay'),
+                         ('Internal', False), ('Internal', 1), ('Labels', {}), ('IPAM', []),
+                         ('IPAM', [dict(Gateway='10.253.240.1')]),
+                         ('IPAM', [dict(Subnet='10.253.240.0/28')]),
+                         ('IPAM', [dict(Subnet='10.253.241.0/28', Gateway='10.253.240.1')]),
+                         ('IPAM', [dict(Subnet='10.253.240.0/28', Gateway='10.253.240.2')]),
+                         ('IPAM', value['IPAM'] * 2)]:
+            with self.subTest(key=key, bad=bad), self.assertRaisesRegex(ValueError, 'network identity/IPAM'):
+                operator.audit_network(dict(value, **{key: bad}), NETWORK, p)
+        missing = dict(value); del missing['IPAM']
+        with self.assertRaisesRegex(ValueError, 'network identity/IPAM'):
+            operator.audit_network(missing, NETWORK, p)
+
+    def test_explicit_network_create_and_rebound_ipam_admission_precede_start(self):
+        for bad_ipam in (None, [], [dict(Subnet='10.253.241.0/28', Gateway='10.253.240.1')],
+                         [dict(Subnet='10.253.240.0/28', Gateway='10.253.240.2')]):
+            with self.subTest(bad_ipam=bad_ipam), tempfile.TemporaryDirectory() as directory:
+                folder = Path(directory); p = plan(); p['physical_sources'] = {'frozen': 'bytes'}
+                plan_path = folder / 'plan.json'; plan_path.write_text('{}')
+                auth = folder / 'auth.json'; auth.write_text('{}')
+                p['create_argv'] = {role: ['docker', 'create', role] for role in ('generator', 'fixture')}
+                network = dict(Id=NETWORK, Name=p['prefix'] + '-private', Driver='bridge', Internal=True,
+                    Labels={'remission.task': p['prefix']},
+                    IPAM=[dict(Subnet='10.253.240.0/28', Gateway='10.253.240.1')])
+                rebound = dict(network) if bad_ipam is None else dict(network, IPAM=bad_ipam)
+                fixture_cid = 'd' * 64
+                attachment = lambda cid: dict(Id=cid, Networks={p['prefix'] + '-private': {'NetworkID': NETWORK}})
+                responses = [dict(Id=operator.PARENT, Os='linux', Architecture='amd64'),
+                    dict(Id=operator.IMAGES['fixture'], Os='linux', Architecture='amd64', User='10001:10001'),
+                    dict(Id=operator.IMAGES['generator'], Os='linux', Architecture='amd64', User='20000:20000'),
+                    NETWORK, network, CID, {}, fixture_cid, {}, rebound,
+                    attachment(CID), attachment(fixture_cid)]
+                calls = []
+                def command(argv, **kwargs):
+                    calls.append(argv); item = responses.pop(0)
+                    return SimpleNamespace(stdout=(item if isinstance(item, str) else json.dumps(item)).encode(), stderr=b'', returncode=0)
+                with patch.object(operator, 'authorize', return_value=p), patch.object(operator, 'physical_sources', return_value=p['physical_sources']), patch.object(operator.life, 'command', side_effect=command), patch.object(operator, 'audit_container'), patch.object(operator, 'Generator') as service, patch.object(operator.life, 'supervise'), patch.object(operator.life, 'inspect', side_effect=lambda cid: dict(state('exited'), Id=cid)), patch('builtins.print'):
+                    service.return_value.reap.return_value = {}
+                    if bad_ipam is None:
+                        operator.execute(plan_path, auth)
+                        service.return_value.start.assert_called_once()
+                        service.return_value.finish.assert_called_once()
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, 'network identity/IPAM'):
+                            operator.execute(plan_path, auth)
+                        service.assert_not_called()
+                self.assertEqual(calls[3], ['docker', 'network', 'create', '--internal', '--subnet',
+                    '10.253.240.0/28', '--gateway', '10.253.240.1', '--label',
+                    'remission.task=' + p['prefix'], p['prefix'] + '-private'])
+                self.assertEqual(calls[9], ['docker', 'network', 'inspect', '--format', operator.NETWORK_FORMAT, p['prefix'] + '-private'])
+                result = json.loads((folder / 'attempt/result.json').read_bytes())
+                self.assertEqual(result['status'], 'passed' if bad_ipam is None else 'failed')
+                self.assertTrue(result['resources_retained'])
+
+    def test_frozen_network_config_and_literal_argv_cannot_change_under_matching_authorization(self):
+        closures = ROOT / 'docs/implementation/evidence/cloud-simulation-prep-20261023/image-closures.json'
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory) / 'frozen'
+            def command(argv, **kwargs):
+                self.assertEqual(argv[:3], ['git', '-C', str(operator.ROOT)])
+                return SimpleNamespace(stdout=b'c' * 40 if argv[-1] == 'HEAD' else b'')
+            with patch.object(operator.life, 'command', side_effect=command), patch('builtins.print'):
+                operator.freeze(closures, folder, 'remission-cloud-fixture-123456789abc')
+                plan_path = folder / 'plan.json'; auth = folder / 'auth.json'
+                original = json.loads(plan_path.read_bytes())
+                self.assertEqual(original['private_network'], dict(subnet='10.253.240.0/28', gateway='10.253.240.1'))
+                self.assertEqual(original['network_create_argv'], operator.network_create_argv(original))
+                variants = [original, dict(original, private_network={}),
+                    dict(original, private_network=dict(subnet='10.253.241.0/28', gateway='10.253.240.1')),
+                    dict(original, private_network=dict(subnet='10.253.240.0/28', gateway='10.253.240.2')),
+                    dict(original, network_create_argv=['docker', 'network', 'create'])]
+                for index, value in enumerate(variants):
+                    with self.subTest(index=index):
+                        # Deliberately tamper only with this test's temporary
+                        # plan and update its auth hash; runtime save is immutable.
+                        plan_path.write_text(json.dumps(value))
+                        auth.write_text(json.dumps(dict(authorized=True, scope='one-local-CS-T1-fixture',
+                            plan_sha256=operator.digest(plan_path.read_bytes()), attempts=1,
+                            retain_resources=True, cloud=False, training=False)))
+                        if index == 0:
+                            operator.authorize(plan_path, auth)
+                        else:
+                            with self.assertRaisesRegex(ValueError, 'execution bounds/identity|frozen argv'):
+                                operator.authorize(plan_path, auth)
+
     def test_parent_optional_user_does_not_bypass_image_identity_platform_or_role_user(self):
         # Parent Config.User is optional; selecting it directly made Docker fail
         # before admission. Role users remain mandatory and exact.
@@ -157,7 +251,8 @@ class FixtureOperatorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory); p = plan(); p['physical_sources'] = {'frozen': 'bytes'}
             plan_path = folder / 'plan.json'; plan_path.write_text('{}'); auth = folder / 'auth.json'; auth.write_text('{}')
-            network = dict(Id=NETWORK, Name=p['prefix'] + '-private', Internal=True, Labels={'remission.task': p['prefix']})
+            network = dict(Id=NETWORK, Name=p['prefix'] + '-private', Driver='bridge', Internal=True,
+                Labels={'remission.task': p['prefix']}, IPAM=[dict(Subnet='10.253.240.0/28', Gateway='10.253.240.1')])
             responses = [dict(Id=operator.PARENT, Os='linux', Architecture='amd64'),
                 dict(Id=operator.IMAGES['fixture'], Os='linux', Architecture='amd64', User='10001:10001'),
                 dict(Id=operator.IMAGES['generator'], Os='linux', Architecture='amd64', User='20000:20000'),

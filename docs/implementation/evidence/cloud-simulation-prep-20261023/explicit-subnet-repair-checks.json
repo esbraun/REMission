@@ -1,0 +1,79 @@
+{
+  "utc": "2026-10-23T02:51:58.721329+00:00",
+  "owner": "/root/cloud_fixture_parent_execute_sol",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "model_verification": "Root verified runtime thread 01a166a2-cbd5-7062-8720-40e0bd82a928",
+  "scope": "Narrow host stdlib/source-only explicit task subnet repair; no Docker/resource mutations or scientific imports",
+  "repair_from": "d424bd8ab73b2004954f8107c949bfa83d0053e7",
+  "base": "de4a0c5d8a8146a02101617c0fcf8f655aba6474",
+  "checks": [
+    {
+      "argv": [
+        "C:\\Python313\\python.exe",
+        "-P",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/deployment",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_authorization_binds_exact_bytes_and_prevents_children (test_cloud_fixture_operator.FixtureOperatorTests.test_authorization_binds_exact_bytes_and_prevents_children) ... ok\r\ntest_explicit_network_create_and_rebound_ipam_admission_precede_start (test_cloud_fixture_operator.FixtureOperatorTests.test_explicit_network_create_and_rebound_ipam_admission_precede_start) ... ok\r\ntest_failure_retains_evidence_and_cannot_claim_stop_from_client_exit (test_cloud_fixture_operator.FixtureOperatorTests.test_failure_retains_evidence_and_cannot_claim_stop_from_client_exit) ... ok\r\ntest_frozen_network_config_and_literal_argv_cannot_change_under_matching_authorization (test_cloud_fixture_operator.FixtureOperatorTests.test_frozen_network_config_and_literal_argv_cannot_change_under_matching_authorization) ... ok\r\ntest_intentional_stop_accepts_both_orders_but_rejects_early_exit_and_oom (test_cloud_fixture_operator.FixtureOperatorTests.test_intentional_stop_accepts_both_orders_but_rejects_early_exit_and_oom) ... ok\r\ntest_network_admission_requires_exact_subnet_gateway_and_owned_identity (test_cloud_fixture_operator.FixtureOperatorTests.test_network_admission_requires_exact_subnet_gateway_and_owned_identity) ... ok\r\ntest_no_start_when_watchdog_never_arms_or_receipt_is_foreign (test_cloud_fixture_operator.FixtureOperatorTests.test_no_start_when_watchdog_never_arms_or_receipt_is_foreign) ... ok\r\ntest_parent_optional_user_does_not_bypass_image_identity_platform_or_role_user (test_cloud_fixture_operator.FixtureOperatorTests.test_parent_optional_user_does_not_bypass_image_identity_platform_or_role_user) ... ok\r\ntest_prestart_rejects_swap_privilege_mount_network_and_command_drift (test_cloud_fixture_operator.FixtureOperatorTests.test_prestart_rejects_swap_privilege_mount_network_and_command_drift) ... ok\r\ntest_new_account_is_hashed_and_duplicate_does_not_reset (test_cloud_simulation.AccountInputTests.test_new_account_is_hashed_and_duplicate_does_not_reset) ... ok\r\ntest_password_pipe_rejects_fixture_or_short_passwords_and_never_echoes (test_cloud_simulation.AccountInputTests.test_password_pipe_rejects_fixture_or_short_passwords_and_never_echoes) ... ok\r\ntest_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default (test_cloud_simulation.DeploymentTests.test_ipv4_https_uses_public_issuer_short_lifetime_and_no_sni_default) ... ok\r\ntest_minimal_build_preserves_full_scientific_default (test_cloud_simulation.DeploymentTests.test_minimal_build_preserves_full_scientific_default) ... ok\r\ntest_private_single_writer_https_and_durable_layout (test_cloud_simulation.DeploymentTests.test_private_single_writer_https_and_durable_layout) ... ok\r\ntest_rejects_mutable_images_injected_origins_and_unknown_secret_keys (test_cloud_simulation.DeploymentTests.test_rejects_mutable_images_injected_origins_and_unknown_secret_keys) ... ok\r\ntest_render_binds_admin_and_all_config_bytes_without_executing_children (test_cloud_simulation.DeploymentTests.test_render_binds_admin_and_all_config_bytes_without_executing_children) ... ok\r\ntest_accepts_identified_mount_and_unchanged_bootstrap (test_cloud_simulation.DiskGuardTests.test_accepts_identified_mount_and_unchanged_bootstrap) ... ok\r\ntest_missing_database_or_mutated_bundle_fails_without_creating_state (test_cloud_simulation.DiskGuardTests.test_missing_database_or_mutated_bundle_fails_without_creating_state) ... ok\r\ntest_missing_disk_wrong_mount_and_wrong_device_fail_before_any_reseed (test_cloud_simulation.DiskGuardTests.test_missing_disk_wrong_mount_and_wrong_device_fail_before_any_reseed) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 19 tests in 0.739s\r\n\r\nOK\r\n"
+    },
+    {
+      "argv": [
+        "C:\\Python313\\python.exe",
+        "-P",
+        "-B",
+        "docs/implementation/check-ledger-20261020.py"
+      ],
+      "exit": 0,
+      "stdout": "PASS: JSON; 635 unique rows/stable test IDs; exact original category sets; canonical 483 LEG/51 named/32 scenarios/14 UX sets; all paths/references; bidirectional mappings; acyclic feasible pilot ordering; final checks/release dependencies preserved; LIB-03/VAL-01 ownership; Git-identical raw review blobs; exact target base/tree ancestry; G0 accepted in contract/library scope; G1 running and later gates unaccepted.\r\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "de4a0c5d8a8146a02101617c0fcf8f655aba6474"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "warning: in the working copy of 'docs/implementation/poc-cloud-simulation-ledger-20261022.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/implementation/poc-cloud-simulation-fixture-proposal-20261023.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/implementation/poc-cloud-simulation-runbook-20261023.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'tests/deployment/test_cloud_fixture_operator.py', LF will be replaced by CRLF the next time Git touches it\n"
+    }
+  ],
+  "ast": "passed",
+  "source_files": {
+    "tooling/foundation/run_cloud_fixture.py": "39da28e6a71fd54573b2cdce0df5191a33fc6a52c9ee54a681f9996f84a90957",
+    "tests/deployment/test_cloud_fixture_operator.py": "fcb91f6361608c1a76a85b7362fc64defa1073a927c7bd233decc2563f81ff20"
+  },
+  "failed_attempt_manifest_blobs": [
+    "8ffa55aa991dc56ed890a634cc9873a5d6cd0047",
+    "3411122f78f8f738a54ce86035fe9ba2faa28510"
+  ],
+  "failed_artifacts_unchanged": true,
+  "network_diagnosis_manifest_blob": "8f707c52f94bc68d0297fd480e97c20d757eabce",
+  "observed_nonoverlap": {
+    "subnet": "10.253.240.0/28",
+    "gateway": "10.253.240.1",
+    "docker_ipv4_ranges": 35,
+    "host_ipv4_route_cidrs": 12,
+    "default_route_excluded": true,
+    "hidden_vm_and_remote_vpc_vpn_routing": "uninspected; unknown"
+  },
+  "initial_new_host_test_run": {
+    "exit": 1,
+    "tests": 19,
+    "errors": 6,
+    "reason": "New doubles returned a nonserializable MagicMock from Generator.reap and attempted immutable life.save replacement of temporary test plan; corrected doubles/temporary tamper writes only. Subsequent complete 19-test run passed. Initial raw output remains in executor conversation; no raw file was captured."
+  },
+  "no_runtime_retry": true,
+  "no_cleanup": true
+}

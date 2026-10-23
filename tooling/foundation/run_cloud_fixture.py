@@ -28,13 +28,14 @@ IMAGES = {
 PARENT = 'sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa'
 BUDGETS = dict(fixture_seconds=180, generator_seconds=240, parent_seconds=300,
                external_seconds=400, cleanup_seconds=60)
+PRIVATE_NETWORK = dict(subnet='10.253.240.0/28', gateway='10.253.240.1')
 IMAGE_FORMAT = '{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"User":{{json .Config.User}}}'
 # A base image may omit Config.User entirely (the default root user). Parent
 # admission requires identity/platform only; role images still require exact UID.
 PARENT_IMAGE_FORMAT = '{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}}}'
 # Selection happens in Docker, before stdout; never emit complete Config/Env.
 CONTAINER_FORMAT = '{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Labels":{{json .Config.Labels}},"Path":{{json .Path}},"Args":{{json .Args}},"RestartCount":{{json .RestartCount}},"State":{{json .State}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"AutoRemove":{{json .HostConfig.AutoRemove}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"Mounts":{{json .Mounts}},"Networks":{{json .NetworkSettings.Networks}}}'
-NETWORK_FORMAT = '{"Id":{{json .Id}},"Name":{{json .Name}},"Internal":{{json .Internal}},"Labels":{{json .Labels}}}'
+NETWORK_FORMAT = '{"Id":{{json .Id}},"Name":{{json .Name}},"Driver":{{json .Driver}},"Internal":{{json .Internal}},"Labels":{{json .Labels}},"IPAM":[{{range $i,$c := .IPAM.Config}}{{if $i}},{{end}}{"Subnet":{{json (index $c "Subnet")}},"Gateway":{{json (index $c "Gateway")}}}{{end}}]}'
 ATTACHMENT_FORMAT = '{"Id":{{json .Id}},"Networks":{{json .NetworkSettings.Networks}}}'
 
 # Runs inside each existing image before any work. No repo/source overlay can
@@ -116,6 +117,12 @@ def create_argv(plan, role):
     return argv + [IMAGES[role]] + workload(role, plan['closures'][role])
 
 
+def network_create_argv(plan):
+    return ['docker', 'network', 'create', '--internal',
+            '--subnet', plan['private_network']['subnet'], '--gateway', plan['private_network']['gateway'],
+            '--label', 'remission.task=' + plan['prefix'], plan['prefix'] + '-private']
+
+
 def validate_closures(closures):
     if set(closures) != set(IMAGES):
         raise ValueError('exact fixture and generator closures required')
@@ -142,8 +149,9 @@ def freeze(closures_path, output, prefix):
                 cloud_source=str((ROOT / 'tooling/foundation/cloud').resolve()),
                 fixture_source=str((ROOT / 'tests/deployment/linux_simulation_fixture.py').resolve()),
                 physical_sources=physical_sources(), closures=closures, parent_image=PARENT,
-                budgets=BUDGETS, attempts=1)
+                budgets=BUDGETS, private_network=PRIVATE_NETWORK, attempts=1)
     plan['create_argv'] = {role: create_argv(plan, role) for role in IMAGES}
+    plan['network_create_argv'] = network_create_argv(plan)
     output.mkdir(parents=True, exist_ok=False)
     life.save(output / 'plan.json', plan)
     print(json.dumps(dict(plan=str(output / 'plan.json'), sha256=digest((output / 'plan.json').read_bytes()))))
@@ -162,10 +170,12 @@ def authorize(plan_path, auth_path):
     if life.command(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']).stdout.decode().strip() != plan['source_commit']:
         raise ValueError('candidate commit changed')
     validate_closures(plan['closures'])
-    if (plan['budgets'] != BUDGETS or plan['attempts'] != 1 or plan['parent_image'] != PARENT
+    if (plan['budgets'] != BUDGETS or plan.get('private_network') != PRIVATE_NETWORK
+            or plan['attempts'] != 1 or plan['parent_image'] != PARENT
             or re.fullmatch('remission-cloud-fixture-[a-f0-9]{12}', plan['prefix']) is None):
         raise ValueError('execution bounds/identity changed')
-    if plan['create_argv'] != {role: create_argv(plan, role) for role in IMAGES}:
+    if (plan['create_argv'] != {role: create_argv(plan, role) for role in IMAGES}
+            or plan.get('network_create_argv') != network_create_argv(plan)):
         raise ValueError('frozen argv changed')
     return plan
 
@@ -176,6 +186,15 @@ def mount_source(path):
         if value.startswith(prefix) and re.match('[a-zA-Z]/', value[len(prefix):]):
             value = value[len(prefix)] + ':' + value[len(prefix) + 1:]
     return value.lower() if re.match('[a-zA-Z]:/', value) else value
+
+
+def audit_network(value, network_id, plan):
+    expected = dict(Id=network_id, Name=plan['prefix'] + '-private', Driver='bridge',
+                    Internal=True, Labels={'remission.task': plan['prefix']},
+                    IPAM=[dict(Subnet=plan['private_network']['subnet'],
+                               Gateway=plan['private_network']['gateway'])])
+    if value != expected or type(value.get('Internal')) is not bool:
+        raise ValueError('network identity/IPAM mismatch')
 
 
 def audit_container(value, cid, plan, role, network_id):
@@ -310,17 +329,16 @@ def execute(plan_path, auth_path):
             value = json.loads(command(['docker', 'image', 'inspect', '--format', IMAGE_FORMAT, image]))
             if value != dict(Id=image, Os='linux', Architecture='amd64', User='10001:10001' if role == 'fixture' else '20000:20000'):
                 raise ValueError('image identity/platform/user mismatch')
-        network_id = life.require_cid(command(['docker', 'network', 'create', '--internal', '--label',
-            'remission.task=' + plan['prefix'], plan['prefix'] + '-private']))
+        network_id = life.require_cid(command(plan['network_create_argv']))
         network = json.loads(command(['docker', 'network', 'inspect', '--format', NETWORK_FORMAT, network_id]))
-        if network != dict(Id=network_id, Name=plan['prefix'] + '-private', Internal=True, Labels={'remission.task': plan['prefix']}):
-            raise ValueError('network identity mismatch')
+        audit_network(network, network_id, plan)
         for role in ('generator', 'fixture'):
             cid = life.require_cid(command(plan['create_argv'][role])); owned[role] = cid
             life.save(folder / (role + '-cid.json'), dict(cid=cid))
             value = json.loads(command(['docker', 'inspect', '--format', CONTAINER_FORMAT, cid], cap=3))
             audit_container(value, cid, plan, role, network_id)
         rebound = json.loads(command(['docker', 'network', 'inspect', '--format', NETWORK_FORMAT, plan['prefix'] + '-private']))
+        audit_network(rebound, network_id, plan)
         if rebound != network:
             raise ValueError('configured network name no longer identifies owned network')
         service = Generator(owned['generator'], folder / 'generator', start + 240)
