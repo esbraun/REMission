@@ -108,7 +108,7 @@
   "actual_fit_image_source_head": "bc9723722e22ab08d4eb20c605ea49d666b1d107",
   "next_pa3_plan": {
     "id": "PA3-PLAN",
-    "status": "proposed-independent-critique-pending",
+    "status": "plan_ready_to_implement_independently_accepted",
     "owner": "/root/poc_borrowing_plan_astra",
     "assigned_model": "gpt-6-astra",
     "assigned_reasoning_effort": "medium",
@@ -116,7 +116,7 @@
     "branch": "launch/poc-borrowing-plan-20261021",
     "starting_candidate": "8091da528b22fa786aa9398d127b50aef1fef221",
     "accepted_integration_base": "045b373a18ad067a3ecd1281d445076aae423a80",
-    "dependency_status": "PA1/thin-PA2 accepted PR22 during planning; starting8091da5 and accepted045b373 trees match bb1768358e2335129dae59de1d2c74607b4849ee; PA3 implementation still requires independent plan critique",
+    "dependency_status": "Historical planning dependency: PA1/thin-PA2 accepted PR22. PA3 plan critique already accepted by d3da15eede33ca4f5d8bac6188e0e0c406eb31c2; current implementation evidence is canonical in poc-borrowing-task-ledger.json",
     "dependency_review": "3dd6b27b8d59e1b13b9d98e4c9f0a0c4694eaab1",
     "dependency_pr": "https://github.com/esbraun/REMission/pull/22",
     "dependency_merge": "045b373a18ad067a3ecd1281d445076aae423a80",
@@ -144,14 +144,14 @@
     "truth": "PA3 bridge reference uses public fitted-model draws only; PA6 independent H*-conditional evaluator truth remains unimplemented",
     "seeds": "poc-pa3-seeds-v1 recipe in plan; actual derived values/artifact hashes pending implementation",
     "resource_strategy": "serial 2 CPU/2 GiB; bounded bridge qualification and actual same-model Q/2Q/reference/conflict/null sensitivity; no planning benchmarks executed",
-    "review_disposition": "pending separate Astra critique",
-    "reviewed_head": null,
-    "reviewed_base": null,
+    "review_disposition": "PLAN READY TO IMPLEMENT; d3da15eede33ca4f5d8bac6188e0e0c406eb31c2; planning-only acceptance",
+    "reviewed_head": "4d51062bce7fd0504877dffeac06b0b8619b1580",
+    "reviewed_base": "045b373a18ad067a3ecd1281d445076aae423a80",
     "implementation_accepted": false,
     "later_pending": ["PA1 cohort completion and PA2 consumption", "PA4", "PA5", "PA6", "PA7", "human factors", "clinical review", "clinical validation"]
   },
   "appointment_inference_20261022": {
-    "status": "bounded_source_implemented_pending_independent_review_and_positive_fit_smoke",
+    "status": "bounded_source_accepted_genuine_positive_observed_pending_final_evidence_review",
     "plan_review_blob": "e64614862337a8c219eaaafcc88e9cee3c505757",
     "proposal_head": "fcb032ef97c8e432bd798383ce3ea8fa82ab292e",
     "proposal_base": "3ab331dd09cb0676ae327c8f0d03e107c826148f",
@@ -165,13 +165,20 @@
     "worktree": "C:/Users/erics/Documents/Projects/REMission-worktrees/appt-serving-sol-261022",
     "branch": "launch/poc-appointment-serving-20261022",
     "accepted_base": "4a84755509ffdc399787b4ebb84eb938aab15594",
-    "source_candidate": "c7d6a8277215b05029142b80e65ea2fc0719740a",
+    "source_candidate": "c92435827b24f96fd8e27b8ce34cbd6b421ca4dc",
     "handoff": "docs/implementation/poc-appointment-serving-handoff-20261022.md",
     "evidence_manifest": "docs/implementation/evidence/appt-serving-20261022/manifest.json",
     "model": "gpt-6.1-sol",
     "reasoning_effort": "high",
-    "independent_reviewer": "separate gpt-6-astra/medium exact implementation head/base; not assigned",
-    "implementation_accepted": false,
+    "independent_reviewer": "Bounded serving source ready_to_ship: 43505fa5098d7cdebd60b5a423d7cd2b3d6d6409, exact c924358/base4a847; genuine-positive evidence awaits separate final exact-head review",
+    "implementation_accepted": true,
+    "genuine_positive_qualification": {
+      "task": "APPT-GENUINE-POSITIVE",
+      "status": "actual_API_and_UI_pass_with_recorded_limits_pending_independent_final_review",
+      "report": "docs/implementation/poc-genuine-appointment-positive-20261023.md",
+      "manifest": "docs/implementation/evidence/appt-genuine-positive-20261023/manifest.json",
+      "limits": "No new fit; one retained genuine V1 result. Startup <=25s not proven (26.382130s first observation). Narrow390px document scrollWidth407px. No APPT-04, cohort/study, human-factors or clinical acceptance."
+    },
     "tasks": [
       {
         "id": "A1",
@@ -179,7 +186,7 @@
           "APPT-01",
           "APPT-02"
         ],
-        "status": "implemented_envelope_tests_pending_independent_review_positive_fit_smoke",
+        "status": "source_accepted_genuine_stored_result_API_observed_pending_final_evidence_review",
         "seam": "existing analysis.submit/view/ingest, Store attempts and typed result metadata",
         "depends_on": [
           "accepted APPT plan and existing artifact/result contracts"
@@ -196,7 +203,7 @@
           "APPT-02",
           "APPT-03"
         ],
-        "status": "bounded_stored_pair_summary_only_pending_review_no_posterior_hydration",
+        "status": "source_accepted_bounded_stored_pair_summary_only_no_posterior_hydration",
         "seam": "existing posterior/result artifacts and rollout functions; background eligible-pair precomputation",
         "depends_on": [
           "A1",
@@ -216,7 +223,7 @@
           "APPT-03",
           "APPT-05"
         ],
-        "status": "implemented_browser_smoke_pending_independent_review_and_positive_fit_render",
+        "status": "source_accepted_genuine_positive_reload_history_keyboard_narrow_observed_pending_final_evidence_review",
         "seam": "existing patient analysis/research views and decision/advance controls",
         "depends_on": [
           "A1",
@@ -277,8 +284,8 @@
       ]
     },
     "open_evidence": [
-      "independent exact-head source/base review and final disposition",
-      "positive real-fit saved-summary API/browser smoke; current/dated positive summaries tested with explicitly labeled envelope fixtures only",
+      "bounded source review already accepted at 43505fa5098d7cdebd60b5a423d7cd2b3d6d6409; separate final exact-head review of actual genuine-positive evidence remains pending",
+      "genuine retained V1 current saved-summary API/browser smoke observed without fitting; historical earlier cutoff excludes later fit; retained startup observation miss and narrow page overflow remain explicit review inputs",
       "posterior hydration/roundtrip remains unimplemented and unnecessary for the bounded stored pair; any new scenario requires separate qualification",
       "artifact generation timestamps were not stored by the existing worker; actual status/result publication timestamp is shown, generation time explicitly not recorded",
       "representative foreground/freshness latency distributions and paired accuracy/timeliness study; small opportunistic smoke samples are not A4 acceptance or SLA/p95 evidence",

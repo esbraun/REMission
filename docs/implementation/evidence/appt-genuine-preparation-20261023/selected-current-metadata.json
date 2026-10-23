@@ -1,0 +1,612 @@
+{
+  "base": "41056f0c06a2afa1141c33eeb3a934a1969d19bb",
+  "branch": "verify/poc-genuine-appointment-20261023",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "elapsed_seconds": 0.0351587999612093,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "41056f0c06a2afa1141c33eeb3a934a1969d19bb\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "remission-poc13-ac8e16e0-service",
+        "--format",
+        "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json .Config.Entrypoint}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json .HostConfig.Tmpfs}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+      ],
+      "elapsed_seconds": 0.15802259999327362,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Id\":\"ba67b6aac302ed7558e75e9fa12445d1f42898e692320fc96ac348931b3e0e44\",\"Name\":\"/remission-poc13-ac8e16e0-service\",\"Image\":\"sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7\",\"State\":{\"Dead\":false,\"Error\":\"\",\"ExitCode\":0,\"FinishedAt\":\"0001-01-01T00:00:00Z\",\"OOMKilled\":false,\"Paused\":false,\"Pid\":82396,\"Restarting\":false,\"Running\":true,\"StartedAt\":\"2026-10-22T13:03:59.386128741Z\",\"Status\":\"running\"},\"User\":\"10001:10001\",\"WorkingDir\":\"/app\",\"Cmd\":[\"python\",\"-m\",\"uvicorn\",\"services.foundation.server:app\",\"--host\",\"0.0.0.0\",\"--port\",\"8765\",\"--no-access-log\"],\"Entrypoint\":null,\"Mounts\":[{\"Destination\":\"/data\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-database\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data\",\"Type\":\"volume\"},{\"Destination\":\"/exports\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-exports\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-exports/_data\",\"Type\":\"volume\"},{\"Destination\":\"/fixtures\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-fixtures\",\"Propagation\":\"\",\"RW\":false,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-fixtures/_data\",\"Type\":\"volume\"}],\"Networks\":{\"remission-poc13-ac8e16e0-app\":{\"Aliases\":null,\"DNSNames\":[\"remission-poc13-ac8e16e0-service\",\"ba67b6aac302\"],\"DriverOpts\":null,\"EndpointID\":\"9202c2b951749d11156e65e35cbfb795b7aa635242deb0b22836266abda1f64a\",\"Gateway\":\"192.168.176.1\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"GwPriority\":0,\"IPAMConfig\":null,\"IPAddress\":\"192.168.176.3\",\"IPPrefixLen\":20,\"IPv6Gateway\":\"\",\"Links\":null,\"MacAddress\":\"b2:dc:34:a1:0d:5a\",\"NetworkID\":\"b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a\"}},\"Ports\":{\"8765/tcp\":[{\"HostIp\":\"127.0.0.1\",\"HostPort\":\"8780\"}]},\"Memory\":2147483648,\"NanoCpus\":2000000000,\"ReadonlyRootfs\":true,\"CapDrop\":[\"ALL\"],\"SecurityOpt\":[\"no-new-privileges\"],\"Tmpfs\":{\"/tmp\":\"rw,noexec,nosuid,size=128m\"},\"RestartPolicy\":{\"MaximumRetryCount\":0,\"Name\":\"no\"}}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "remission-poc13-ac8e16e0-service-pre-pa3-4a",
+        "--format",
+        "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json .Config.Entrypoint}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json .HostConfig.Tmpfs}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+      ],
+      "elapsed_seconds": 0.16477810009382665,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Id\":\"cdb12d7e4d6a69f0144ccc9d54d79666faeda066fa2d09008027ecb207b2932a\",\"Name\":\"/remission-poc13-ac8e16e0-service-pre-pa3-4a\",\"Image\":\"sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e\",\"State\":{\"Dead\":false,\"Error\":\"\",\"ExitCode\":0,\"FinishedAt\":\"2026-10-22T13:03:55.915969689Z\",\"OOMKilled\":false,\"Paused\":false,\"Pid\":0,\"Restarting\":false,\"Running\":false,\"StartedAt\":\"2026-10-22T13:03:02.096645244Z\",\"Status\":\"exited\"},\"User\":\"10001:10001\",\"WorkingDir\":\"/app\",\"Cmd\":[\"python\",\"-m\",\"uvicorn\",\"services.foundation.server:app\",\"--host\",\"0.0.0.0\",\"--port\",\"8765\",\"--no-access-log\"],\"Entrypoint\":null,\"Mounts\":[{\"Destination\":\"/data\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-database\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data\",\"Type\":\"volume\"},{\"Destination\":\"/exports\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-exports\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-exports/_data\",\"Type\":\"volume\"},{\"Destination\":\"/fixtures\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-fixtures\",\"Propagation\":\"\",\"RW\":false,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-fixtures/_data\",\"Type\":\"volume\"}],\"Networks\":{\"remission-poc13-ac8e16e0-app\":{\"Aliases\":null,\"DNSNames\":[\"remission-poc13-ac8e16e0-service\",\"cdb12d7e4d6a\"],\"DriverOpts\":null,\"EndpointID\":\"\",\"Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"GwPriority\":0,\"IPAMConfig\":null,\"IPAddress\":\"\",\"IPPrefixLen\":0,\"IPv6Gateway\":\"\",\"Links\":null,\"MacAddress\":\"\",\"NetworkID\":\"b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a\"}},\"Ports\":{},\"Memory\":2147483648,\"NanoCpus\":2000000000,\"ReadonlyRootfs\":true,\"CapDrop\":[\"ALL\"],\"SecurityOpt\":[\"no-new-privileges\"],\"Tmpfs\":{\"/tmp\":\"rw,noexec,nosuid,size=128m\"},\"RestartPolicy\":{\"MaximumRetryCount\":0,\"Name\":\"no\"}}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "remission-poc13-ac8e16e0-generator",
+        "--format",
+        "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json .Config.Entrypoint}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json .HostConfig.Tmpfs}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+      ],
+      "elapsed_seconds": 0.15027319989167154,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Id\":\"e49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236\",\"Name\":\"/remission-poc13-ac8e16e0-generator\",\"Image\":\"sha256:5d546abd1448e46d5d45ac4a3d98c31899631f968f93d21b163797ff0674ded9\",\"State\":{\"Dead\":false,\"Error\":\"\",\"ExitCode\":0,\"FinishedAt\":\"0001-01-01T00:00:00Z\",\"OOMKilled\":false,\"Paused\":false,\"Pid\":59631,\"Restarting\":false,\"Running\":true,\"StartedAt\":\"2026-10-22T09:09:49.440288475Z\",\"Status\":\"running\"},\"User\":\"20000:20000\",\"WorkingDir\":\"/app\",\"Cmd\":[\"python\",\"-m\",\"services.generator.server\"],\"Entrypoint\":null,\"Mounts\":[],\"Networks\":{\"remission-poc13-ac8e16e0-app\":{\"Aliases\":[\"generator\"],\"DNSNames\":[\"remission-poc13-ac8e16e0-generator\",\"generator\",\"e49137ed1ba2\"],\"DriverOpts\":null,\"EndpointID\":\"4917549584db0cba07737047de44c9e3c84e88bcf1207d45f8116ca14f143a81\",\"Gateway\":\"192.168.176.1\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"GwPriority\":0,\"IPAMConfig\":null,\"IPAddress\":\"192.168.176.2\",\"IPPrefixLen\":20,\"IPv6Gateway\":\"\",\"Links\":null,\"MacAddress\":\"42:4a:1a:03:19:55\",\"NetworkID\":\"b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a\"}},\"Ports\":{},\"Memory\":2147483648,\"NanoCpus\":2000000000,\"ReadonlyRootfs\":true,\"CapDrop\":[\"ALL\"],\"SecurityOpt\":[\"no-new-privileges\"],\"Tmpfs\":{\"/tmp\":\"rw,noexec,nosuid,size=128m\"},\"RestartPolicy\":{\"MaximumRetryCount\":0,\"Name\":\"no\"}}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "inspect",
+        "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12",
+        "--format",
+        "{\"Id\":{{json .Id}},\"Name\":{{json .Name}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"User\":{{json .Config.User}},\"WorkingDir\":{{json .Config.WorkingDir}},\"Cmd\":{{json .Config.Cmd}},\"Entrypoint\":{{json .Config.Entrypoint}},\"Mounts\":{{json .Mounts}},\"Networks\":{{json .NetworkSettings.Networks}},\"Ports\":{{json .NetworkSettings.Ports}},\"Memory\":{{json .HostConfig.Memory}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"ReadonlyRootfs\":{{json .HostConfig.ReadonlyRootfs}},\"CapDrop\":{{json .HostConfig.CapDrop}},\"SecurityOpt\":{{json .HostConfig.SecurityOpt}},\"Tmpfs\":{{json .HostConfig.Tmpfs}},\"RestartPolicy\":{{json .HostConfig.RestartPolicy}}}"
+      ],
+      "elapsed_seconds": 0.1559572999831289,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Id\":\"93cf67b550a31198b070dafebf2140d64651cfc4b8ac76f777f26ae519f0059b\",\"Name\":\"/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12\",\"Image\":\"sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1\",\"State\":{\"Dead\":false,\"Error\":\"\",\"ExitCode\":0,\"FinishedAt\":\"2026-10-22T15:13:49.376786918Z\",\"OOMKilled\":false,\"Paused\":false,\"Pid\":0,\"Restarting\":false,\"Running\":false,\"StartedAt\":\"2026-10-22T13:18:51.183558354Z\",\"Status\":\"exited\"},\"User\":\"10002:10002\",\"WorkingDir\":\"/app\",\"Cmd\":[\"python\",\"-m\",\"services.learner.analysis_worker\",\"--input\",\"/input/input.json\",\"--output\",\"/output\"],\"Entrypoint\":null,\"Mounts\":[{\"Destination\":\"/input\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input\",\"Propagation\":\"\",\"RW\":false,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input/_data\",\"Type\":\"volume\"},{\"Destination\":\"/output\",\"Driver\":\"local\",\"Mode\":\"z\",\"Name\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output\",\"Propagation\":\"\",\"RW\":true,\"Source\":\"/var/lib/docker/volumes/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output/_data\",\"Type\":\"volume\"}],\"Networks\":{\"none\":{\"Aliases\":null,\"DNSNames\":null,\"DriverOpts\":null,\"EndpointID\":\"\",\"Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"GwPriority\":0,\"IPAMConfig\":null,\"IPAddress\":\"\",\"IPPrefixLen\":0,\"IPv6Gateway\":\"\",\"Links\":null,\"MacAddress\":\"\",\"NetworkID\":\"f99015e033a2dba67b73dd8b29ea88a3cef32f10233f2dc5904a2a1d5266dbce\"}},\"Ports\":{},\"Memory\":2147483648,\"NanoCpus\":2000000000,\"ReadonlyRootfs\":true,\"CapDrop\":[\"ALL\"],\"SecurityOpt\":[\"no-new-privileges\"],\"Tmpfs\":{\"/tmp\":\"rw,exec,nosuid,nodev,size=512m\"},\"RestartPolicy\":{\"MaximumRetryCount\":0,\"Name\":\"no\"}}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "remission-poc13-ac8e16e0-database",
+        "--format",
+        "{\"Name\":{{json .Name}},\"Driver\":{{json .Driver}},\"Scope\":{{json .Scope}},\"CreatedAt\":{{json .CreatedAt}}}"
+      ],
+      "elapsed_seconds": 0.15562640002463013,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Name\":\"remission-poc13-ac8e16e0-database\",\"Driver\":\"local\",\"Scope\":\"local\",\"CreatedAt\":\"2026-10-22T09:09:37Z\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "remission-poc13-ac8e16e0-exports",
+        "--format",
+        "{\"Name\":{{json .Name}},\"Driver\":{{json .Driver}},\"Scope\":{{json .Scope}},\"CreatedAt\":{{json .CreatedAt}}}"
+      ],
+      "elapsed_seconds": 0.1571287999395281,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Name\":\"remission-poc13-ac8e16e0-exports\",\"Driver\":\"local\",\"Scope\":\"local\",\"CreatedAt\":\"2026-10-22T09:09:39Z\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "remission-poc13-ac8e16e0-fixtures",
+        "--format",
+        "{\"Name\":{{json .Name}},\"Driver\":{{json .Driver}},\"Scope\":{{json .Scope}},\"CreatedAt\":{{json .CreatedAt}}}"
+      ],
+      "elapsed_seconds": 0.15253890003077686,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Name\":\"remission-poc13-ac8e16e0-fixtures\",\"Driver\":\"local\",\"Scope\":\"local\",\"CreatedAt\":\"2026-10-22T09:09:38Z\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input",
+        "--format",
+        "{\"Name\":{{json .Name}},\"Driver\":{{json .Driver}},\"Scope\":{{json .Scope}},\"CreatedAt\":{{json .CreatedAt}}}"
+      ],
+      "elapsed_seconds": 0.15243609994649887,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Name\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input\",\"Driver\":\"local\",\"Scope\":\"local\",\"CreatedAt\":\"2026-10-22T13:18:49Z\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "volume",
+        "inspect",
+        "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output",
+        "--format",
+        "{\"Name\":{{json .Name}},\"Driver\":{{json .Driver}},\"Scope\":{{json .Scope}},\"CreatedAt\":{{json .CreatedAt}}}"
+      ],
+      "elapsed_seconds": 0.1592279999749735,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"Name\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output\",\"Driver\":\"local\",\"Scope\":\"local\",\"CreatedAt\":\"2026-10-22T13:18:49Z\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "volume=remission-poc13-ac8e16e0-database",
+        "--format",
+        "{\"ID\":{{json .ID}},\"Names\":{{json .Names}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Status\":{{json .Status}},\"Ports\":{{json .Ports}}}"
+      ],
+      "elapsed_seconds": 0.15836920007131994,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"ID\":\"ba67b6aac302\",\"Names\":\"remission-poc13-ac8e16e0-service\",\"Image\":\"bad33f377d97\",\"State\":\"running\",\"Status\":\"Up 17 hours\",\"Ports\":\"127.0.0.1:8780->8765/tcp\"}\n{\"ID\":\"45d79d133ddf\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-r1-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"0e4e11e1880e\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (1) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"cdb12d7e4d6a\",\"Names\":\"remission-poc13-ac8e16e0-service-pre-pa3-4a\",\"Image\":\"35910f5f5d1a\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "label=remission.analysis=remission-poc13-ac8e16e0",
+        "--format",
+        "{\"ID\":{{json .ID}},\"Names\":{{json .Names}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Status\":{{json .Status}},\"Ports\":{{json .Ports}}}"
+      ],
+      "elapsed_seconds": 0.16056620003655553,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"ID\":\"93cf67b550a3\",\"Names\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12\",\"Image\":\"9d2e601f926a\",\"State\":\"exited\",\"Status\":\"Exited (0) 14 hours ago\",\"Ports\":\"\"}\n"
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-a",
+        "--filter",
+        "name=^/remission-poc13-ac8e16e0-",
+        "--format",
+        "{\"ID\":{{json .ID}},\"Names\":{{json .Names}},\"Image\":{{json .Image}},\"State\":{{json .State}},\"Status\":{{json .Status}},\"Ports\":{{json .Ports}}}"
+      ],
+      "elapsed_seconds": 0.15731269994284958,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"ID\":\"93cf67b550a3\",\"Names\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12\",\"Image\":\"9d2e601f926a\",\"State\":\"exited\",\"Status\":\"Exited (0) 14 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"ba67b6aac302\",\"Names\":\"remission-poc13-ac8e16e0-service\",\"Image\":\"bad33f377d97\",\"State\":\"running\",\"Status\":\"Up 17 hours\",\"Ports\":\"127.0.0.1:8780->8765/tcp\"}\n{\"ID\":\"45d79d133ddf\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-r1-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"0e4e11e1880e\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (1) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"cdb12d7e4d6a\",\"Names\":\"remission-poc13-ac8e16e0-service-pre-pa3-4a\",\"Image\":\"35910f5f5d1a\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"e49137ed1ba2\",\"Names\":\"remission-poc13-ac8e16e0-generator\",\"Image\":\"5d546abd1448\",\"State\":\"running\",\"Status\":\"Up 20 hours\",\"Ports\":\"\"}\n{\"ID\":\"c2ca9617abce\",\"Names\":\"remission-poc13-ac8e16e0-old\",\"Image\":\"82f5b9c4ea1f\",\"State\":\"exited\",\"Status\":\"Exited (128) 20 hours ago\",\"Ports\":\"\"}\n"
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "elapsed_seconds": 0.03804760007187724,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "verify/poc-genuine-appointment-20261023\n"
+    }
+  ],
+  "containers": {
+    "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12": {
+      "CapDrop": [
+        "ALL"
+      ],
+      "Cmd": [
+        "python",
+        "-m",
+        "services.learner.analysis_worker",
+        "--input",
+        "/input/input.json",
+        "--output",
+        "/output"
+      ],
+      "Entrypoint": null,
+      "Id": "93cf67b550a31198b070dafebf2140d64651cfc4b8ac76f777f26ae519f0059b",
+      "Image": "sha256:9d2e601f926ae644a041903b076fdb33ff3885be1a0f390137bc61ff461584e1",
+      "Memory": 2147483648,
+      "Mounts": [
+        {
+          "Destination": "/input",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input",
+          "Propagation": "",
+          "RW": false,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/output",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output/_data",
+          "Type": "volume"
+        }
+      ],
+      "Name": "/remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12",
+      "NanoCpus": 2000000000,
+      "Networks": {
+        "none": {
+          "Aliases": null,
+          "DNSNames": null,
+          "DriverOpts": null,
+          "EndpointID": "",
+          "Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "GwPriority": 0,
+          "IPAMConfig": null,
+          "IPAddress": "",
+          "IPPrefixLen": 0,
+          "IPv6Gateway": "",
+          "Links": null,
+          "MacAddress": "",
+          "NetworkID": "f99015e033a2dba67b73dd8b29ea88a3cef32f10233f2dc5904a2a1d5266dbce"
+        }
+      },
+      "Ports": {},
+      "ReadonlyRootfs": true,
+      "RestartPolicy": {
+        "MaximumRetryCount": 0,
+        "Name": "no"
+      },
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T15:13:49.376786918Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T13:18:51.183558354Z",
+        "Status": "exited"
+      },
+      "Tmpfs": {
+        "/tmp": "rw,exec,nosuid,nodev,size=512m"
+      },
+      "User": "10002:10002",
+      "WorkingDir": "/app"
+    },
+    "remission-poc13-ac8e16e0-generator": {
+      "CapDrop": [
+        "ALL"
+      ],
+      "Cmd": [
+        "python",
+        "-m",
+        "services.generator.server"
+      ],
+      "Entrypoint": null,
+      "Id": "e49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236",
+      "Image": "sha256:5d546abd1448e46d5d45ac4a3d98c31899631f968f93d21b163797ff0674ded9",
+      "Memory": 2147483648,
+      "Mounts": [],
+      "Name": "/remission-poc13-ac8e16e0-generator",
+      "NanoCpus": 2000000000,
+      "Networks": {
+        "remission-poc13-ac8e16e0-app": {
+          "Aliases": [
+            "generator"
+          ],
+          "DNSNames": [
+            "remission-poc13-ac8e16e0-generator",
+            "generator",
+            "e49137ed1ba2"
+          ],
+          "DriverOpts": null,
+          "EndpointID": "4917549584db0cba07737047de44c9e3c84e88bcf1207d45f8116ca14f143a81",
+          "Gateway": "192.168.176.1",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "GwPriority": 0,
+          "IPAMConfig": null,
+          "IPAddress": "192.168.176.2",
+          "IPPrefixLen": 20,
+          "IPv6Gateway": "",
+          "Links": null,
+          "MacAddress": "42:4a:1a:03:19:55",
+          "NetworkID": "b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a"
+        }
+      },
+      "Ports": {},
+      "ReadonlyRootfs": true,
+      "RestartPolicy": {
+        "MaximumRetryCount": 0,
+        "Name": "no"
+      },
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 59631,
+        "Restarting": false,
+        "Running": true,
+        "StartedAt": "2026-10-22T09:09:49.440288475Z",
+        "Status": "running"
+      },
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,size=128m"
+      },
+      "User": "20000:20000",
+      "WorkingDir": "/app"
+    },
+    "remission-poc13-ac8e16e0-service": {
+      "CapDrop": [
+        "ALL"
+      ],
+      "Cmd": [
+        "python",
+        "-m",
+        "uvicorn",
+        "services.foundation.server:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8765",
+        "--no-access-log"
+      ],
+      "Entrypoint": null,
+      "Id": "ba67b6aac302ed7558e75e9fa12445d1f42898e692320fc96ac348931b3e0e44",
+      "Image": "sha256:bad33f377d97f52572e182d0973b1f1f56dbc3f1c413de48f20b0458e0906fb7",
+      "Memory": 2147483648,
+      "Mounts": [
+        {
+          "Destination": "/data",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-database",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/exports",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-exports",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-exports/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/fixtures",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-fixtures",
+          "Propagation": "",
+          "RW": false,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-fixtures/_data",
+          "Type": "volume"
+        }
+      ],
+      "Name": "/remission-poc13-ac8e16e0-service",
+      "NanoCpus": 2000000000,
+      "Networks": {
+        "remission-poc13-ac8e16e0-app": {
+          "Aliases": null,
+          "DNSNames": [
+            "remission-poc13-ac8e16e0-service",
+            "ba67b6aac302"
+          ],
+          "DriverOpts": null,
+          "EndpointID": "9202c2b951749d11156e65e35cbfb795b7aa635242deb0b22836266abda1f64a",
+          "Gateway": "192.168.176.1",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "GwPriority": 0,
+          "IPAMConfig": null,
+          "IPAddress": "192.168.176.3",
+          "IPPrefixLen": 20,
+          "IPv6Gateway": "",
+          "Links": null,
+          "MacAddress": "b2:dc:34:a1:0d:5a",
+          "NetworkID": "b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a"
+        }
+      },
+      "Ports": {
+        "8765/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8780"
+          }
+        ]
+      },
+      "ReadonlyRootfs": true,
+      "RestartPolicy": {
+        "MaximumRetryCount": 0,
+        "Name": "no"
+      },
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 82396,
+        "Restarting": false,
+        "Running": true,
+        "StartedAt": "2026-10-22T13:03:59.386128741Z",
+        "Status": "running"
+      },
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,size=128m"
+      },
+      "User": "10001:10001",
+      "WorkingDir": "/app"
+    },
+    "remission-poc13-ac8e16e0-service-pre-pa3-4a": {
+      "CapDrop": [
+        "ALL"
+      ],
+      "Cmd": [
+        "python",
+        "-m",
+        "uvicorn",
+        "services.foundation.server:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8765",
+        "--no-access-log"
+      ],
+      "Entrypoint": null,
+      "Id": "cdb12d7e4d6a69f0144ccc9d54d79666faeda066fa2d09008027ecb207b2932a",
+      "Image": "sha256:35910f5f5d1aa579367a60bf0a6264843b6fca68a8699369c6b7e4a1b863e93e",
+      "Memory": 2147483648,
+      "Mounts": [
+        {
+          "Destination": "/data",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-database",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-database/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/exports",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-exports",
+          "Propagation": "",
+          "RW": true,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-exports/_data",
+          "Type": "volume"
+        },
+        {
+          "Destination": "/fixtures",
+          "Driver": "local",
+          "Mode": "z",
+          "Name": "remission-poc13-ac8e16e0-fixtures",
+          "Propagation": "",
+          "RW": false,
+          "Source": "/var/lib/docker/volumes/remission-poc13-ac8e16e0-fixtures/_data",
+          "Type": "volume"
+        }
+      ],
+      "Name": "/remission-poc13-ac8e16e0-service-pre-pa3-4a",
+      "NanoCpus": 2000000000,
+      "Networks": {
+        "remission-poc13-ac8e16e0-app": {
+          "Aliases": null,
+          "DNSNames": [
+            "remission-poc13-ac8e16e0-service",
+            "cdb12d7e4d6a"
+          ],
+          "DriverOpts": null,
+          "EndpointID": "",
+          "Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "GwPriority": 0,
+          "IPAMConfig": null,
+          "IPAddress": "",
+          "IPPrefixLen": 0,
+          "IPv6Gateway": "",
+          "Links": null,
+          "MacAddress": "",
+          "NetworkID": "b9c4e37033dea962274b6e5eb69ecfdb16912fcd2f42fffe72c4c0d488bc5b8a"
+        }
+      },
+      "Ports": {},
+      "ReadonlyRootfs": true,
+      "RestartPolicy": {
+        "MaximumRetryCount": 0,
+        "Name": "no"
+      },
+      "SecurityOpt": [
+        "no-new-privileges"
+      ],
+      "State": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-22T13:03:55.915969689Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-22T13:03:02.096645244Z",
+        "Status": "exited"
+      },
+      "Tmpfs": {
+        "/tmp": "rw,noexec,nosuid,size=128m"
+      },
+      "User": "10001:10001",
+      "WorkingDir": "/app"
+    }
+  },
+  "host": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "inventory": {
+    "original_database_consumers": "{\"ID\":\"ba67b6aac302\",\"Names\":\"remission-poc13-ac8e16e0-service\",\"Image\":\"bad33f377d97\",\"State\":\"running\",\"Status\":\"Up 17 hours\",\"Ports\":\"127.0.0.1:8780->8765/tcp\"}\n{\"ID\":\"45d79d133ddf\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-r1-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"0e4e11e1880e\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (1) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"cdb12d7e4d6a\",\"Names\":\"remission-poc13-ac8e16e0-service-pre-pa3-4a\",\"Image\":\"35910f5f5d1a\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n",
+    "original_stack": "{\"ID\":\"93cf67b550a3\",\"Names\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12\",\"Image\":\"9d2e601f926a\",\"State\":\"exited\",\"Status\":\"Exited (0) 14 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"ba67b6aac302\",\"Names\":\"remission-poc13-ac8e16e0-service\",\"Image\":\"bad33f377d97\",\"State\":\"running\",\"Status\":\"Up 17 hours\",\"Ports\":\"127.0.0.1:8780->8765/tcp\"}\n{\"ID\":\"45d79d133ddf\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-r1-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"0e4e11e1880e\",\"Names\":\"remission-poc13-ac8e16e0-pa3-backup-9e97\",\"Image\":\"bad33f377d97\",\"State\":\"exited\",\"Status\":\"Exited (1) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"cdb12d7e4d6a\",\"Names\":\"remission-poc13-ac8e16e0-service-pre-pa3-4a\",\"Image\":\"35910f5f5d1a\",\"State\":\"exited\",\"Status\":\"Exited (0) 17 hours ago\",\"Ports\":\"\"}\n{\"ID\":\"e49137ed1ba2\",\"Names\":\"remission-poc13-ac8e16e0-generator\",\"Image\":\"5d546abd1448\",\"State\":\"running\",\"Status\":\"Up 20 hours\",\"Ports\":\"\"}\n{\"ID\":\"c2ca9617abce\",\"Names\":\"remission-poc13-ac8e16e0-old\",\"Image\":\"82f5b9c4ea1f\",\"State\":\"exited\",\"Status\":\"Exited (128) 20 hours ago\",\"Ports\":\"\"}\n",
+    "owned_analysis_workers": "{\"ID\":\"93cf67b550a3\",\"Names\":\"remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12\",\"Image\":\"9d2e601f926a\",\"State\":\"exited\",\"Status\":\"Exited (0) 14 hours ago\",\"Ports\":\"\"}\n"
+  },
+  "observed_at_utc": "2026-10-23T05:38:41.285393+00:00",
+  "scope": "Selected Docker metadata and host stdlib only; no Config.Env, container exec, payload, volume mount or lifecycle operation.",
+  "task_id": "APPT-GENUINE-POSITIVE",
+  "volumes": {
+    "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input": {
+      "CreatedAt": "2026-10-22T13:18:49Z",
+      "Driver": "local",
+      "Name": "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-input",
+      "Scope": "local"
+    },
+    "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output": {
+      "CreatedAt": "2026-10-22T13:18:49Z",
+      "Driver": "local",
+      "Name": "remission-poc13-ac8e16e0-analysis-4ff86193058d4d13a1600f0423e91f12-output",
+      "Scope": "local"
+    },
+    "remission-poc13-ac8e16e0-database": {
+      "CreatedAt": "2026-10-22T09:09:37Z",
+      "Driver": "local",
+      "Name": "remission-poc13-ac8e16e0-database",
+      "Scope": "local"
+    },
+    "remission-poc13-ac8e16e0-exports": {
+      "CreatedAt": "2026-10-22T09:09:39Z",
+      "Driver": "local",
+      "Name": "remission-poc13-ac8e16e0-exports",
+      "Scope": "local"
+    },
+    "remission-poc13-ac8e16e0-fixtures": {
+      "CreatedAt": "2026-10-22T09:09:38Z",
+      "Driver": "local",
+      "Name": "remission-poc13-ac8e16e0-fixtures",
+      "Scope": "local"
+    }
+  },
+  "worktree": "C:\\Users\\erics\\Documents\\Projects\\REMission\\artifacts\\av"
+}

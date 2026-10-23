@@ -1,0 +1,72 @@
+{
+  "actual_owner_login": "PASS",
+  "analysis_POST_count": 0,
+  "checks": {
+    "Hstar": true,
+    "completed": true,
+    "current": true,
+    "cutoff": true,
+    "day14_day56_recall43_56": true,
+    "exact_effect": true,
+    "generation_unrecorded": true,
+    "predictive": true,
+    "publication": true
+  },
+  "credential_cookie_CSRF_values_or_digests_publicly_persisted": false,
+  "effect": {
+    "kind": "conditional_expected_assignment_contrast",
+    "lower": -4.4482125911296055,
+    "mean": -1.3714275588888156,
+    "sd": 1.734069589960427,
+    "unit": "ISI_points",
+    "upper": 2.612575974856203
+  },
+  "environment": {
+    "API_contexts": 1,
+    "active_analysis_jobs": 0,
+    "image": "sha256:a950cdb0dd9b3bbdeb176c6da71903180406a9bf2160ea3d23faf4be3c0f5e72",
+    "origin": "http://127.0.0.1:8780",
+    "purpose": "local smoke only; no p95/SLA/APPT04/accuracy claim",
+    "service_cpu_limit": 2,
+    "service_memory_bytes": 2147483648,
+    "stored_attempts": 1
+  },
+  "observed_at_utc": "2026-10-23T06:54:15.291882+00:00",
+  "passed": true,
+  "retained_startup_gap": "26.382130s first health;<=25s NOTPROVEN",
+  "sample_count": 5,
+  "sequential_read_and_JSON_parse_ms": [
+    22.614200017414987,
+    30.594100011512637,
+    30.89749999344349,
+    30.40590009186417,
+    26.54699992854148
+  ],
+  "serving": {
+    "artifact_generated_at": null,
+    "current_history_sha256": "ce5a5a2bbf99405d2457654791f3ac9a263f669770b075ac1dfa1cff0f4ac00c",
+    "current_patient_version": 3,
+    "data_through": "2026-01-15T12:00:00+00:00",
+    "generation_time_status": "not_recorded",
+    "policy": "retain_plans_42_days_fixed_no_prompt",
+    "predictive_endpoint": {
+      "continue_interval": [
+        11.0,
+        25.0
+      ],
+      "escalate_interval": [
+        9.0,
+        24.0
+      ]
+    },
+    "published_at": "2026-10-22T15:13:52.919758+00:00",
+    "reason": null,
+    "status": "current",
+    "summary_available": true,
+    "summary_source": "validated_stored_result_json",
+    "supported_pair": [
+      "behavioral_continue",
+      "behavioral_escalate"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "control_only_command": "selected ACL; output literal PASS only; no credential input touched",
+  "first_driver_auth_requests": 0,
+  "returncode": 1,
+  "stderr": "Get-Acl : The 'Get-Acl' command was found in the module 'Microsoft.PowerShell.Security', but the module could not be \r\nloaded. For more information, run 'Import-Module Microsoft.PowerShell.Security'.\r\nAt line:1 char:124\r\n+ ... er.Value;$apptAllowed=@($apptSid,'S-1-5-18');$apptAcl=Get-Acl -Litera ...\r\n+                                                           ~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (Get-Acl:String) [], CommandNotFoundException\r\n    + FullyQualifiedErrorId : CouldNotAutoloadMatchingModule\r\n \r\nYou cannot call a method on a null-valued expression.\r\nAt line:1 char:297\r\n+ ... ere-Object {$_.IdentityReference.Translate([System.Security.Principal ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException\r\n    + FullyQualifiedErrorId : InvokeMethodOnNull\r\n \r\nprivate ACL invalid\r\nAt line:1 char:508\r\n+ ... $apptAcl.AreAccessRulesProtected){throw 'private ACL invalid'};Write- ...\r\n+                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (private ACL invalid:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : private ACL invalid\r\n \r\n",
+  "stdout_hex": ""
+}
