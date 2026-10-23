@@ -124,9 +124,13 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
         selected.remove('isi')
     records={r.record_id:r for r in projected.records if r.kind in selected}
     cache={};visiting=set()
+    reduced_digests={}
     def reduced_ref(record):
         if record.record_id not in records:raise ValueError('unsupported_protocol_conditioning_reference')
-        return dict(record_id=record.record_id,projection_sha256=sha(reduce(record)))
+        reduced=reduce(record)
+        if record.record_id not in reduced_digests:
+            reduced_digests[record.record_id]=sha(reduced)
+        return dict(record_id=record.record_id,projection_sha256=reduced_digests[record.record_id])
     def exact(ref,kinds=None,at=None):
         record=resolve(full,ref,kinds,cutoff=cutoff)
         if at is not None:resolve(full,ref,kinds,cutoff=at)
