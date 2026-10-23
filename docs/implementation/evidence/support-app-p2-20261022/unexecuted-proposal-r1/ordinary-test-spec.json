@@ -1,0 +1,40 @@
+{
+  "accepted_mounts": [],
+  "argv": [
+    "python",
+    "-P",
+    "-B",
+    "/source/run_tests.py"
+  ],
+  "cap_drop": "ALL",
+  "cpus": 2,
+  "database": "private temporary /tmp only",
+  "external_watchdog_seconds": 180,
+  "forbidden_imports": [
+    "numpy",
+    "scipy",
+    "pymc",
+    "pytensor",
+    "statsmodels",
+    "methods",
+    "services.generator"
+  ],
+  "image": "sha256:146a84b1ff4306235bec2d15212350a7d58c94a3ea812b4d02c4e8318a4a3de0",
+  "image_provenance": "Root identifies this immutable existing service image as accepted native-cohort day14 service; used for dependencies only. Candidate source is separately mounted and hashed.",
+  "internal_seconds": 150,
+  "memory": "1g",
+  "memory_swap": "1g",
+  "network": "none",
+  "no_new_privileges": true,
+  "operator_sha256": "5f54cb5c4931ad39716205056513db9cc96ab4dc4305475b77519422f98fa06b",
+  "pids": 128,
+  "read_only": true,
+  "scope": "ordinary isolated fixtures only; never accepted public archive/native volume/service/browser/science",
+  "source": "C:\\Users\\erics\\Documents\\Projects\\REMission-worktrees\\support-historical-app-sol-261022\\artifacts\\support-p2-ordinary-tests\\source",
+  "source_bytes": 3958454,
+  "source_files": 205,
+  "source_manifest_sha256": "983f1ecdebbfca99111e43cd69a55e9a8860f7e03d01f4ca0231deaf54a3a05a",
+  "tmpfs": "/tmp:rw,nosuid,nodev,size=512m,mode=1777",
+  "uid": "10001:10001",
+  "watchdog_sha256": "f948bd9614e71021b256dc92115ff133bcac26373e338148d981aa3d7eb99aac"
+}

@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 from contracts.runs.observed_v2 import ExportAuthorityV2
+from contracts.runs.support_research import SupportArchiveAuthority
 from contracts.service.live_hold import InstalledBundle
 from .app import Settings
 
@@ -13,8 +14,9 @@ def read_archives(configuration):
         for entry in json.loads(Path(configuration).read_bytes()):
             if set(entry)!={'export_id','manifest','artifact_root','authority'} or entry['export_id'] in archives:
                 raise ValueError('invalid_archive_host_configuration')
-            archives[entry['export_id']]=(Path(entry['manifest']).read_bytes(),Path(entry['artifact_root']),
-                ExportAuthorityV2.model_validate_json(Path(entry['authority']).read_bytes()))
+            raw_authority=Path(entry['authority']).read_bytes()
+            model=SupportArchiveAuthority if json.loads(raw_authority).get('kind')=='restricted_support_archive' else ExportAuthorityV2
+            archives[entry['export_id']]=(Path(entry['manifest']).read_bytes(),Path(entry['artifact_root']),model.model_validate_json(raw_authority))
     return archives
 
 

@@ -222,6 +222,12 @@ def create_app(settings: Settings) -> FastAPI:
         if mutation:
             if request.headers.get("origin") != settings.origin or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), row["csrf"]):
                 raise APIError(403, "csrf_rejected", "Refresh this session before submitting")
+        parts=request.url.path.split('/')
+        if len(parts)>3 and parts[1:3]==['api','patients'] and (mutation or 'live-safety-exports' in parts):
+            from .support_archive import historical_marker
+            owned=db.execute('SELECT 1 FROM patients WHERE id=? AND owner_id=?',(parts[3],row['account_id'])).fetchone()
+            if owned and historical_marker(db,parts[3]):
+                raise APIError(409,'historical_support_read_only','Historical synthetic support records grant no current action authority')
         return row
 
     def own(db, patient_id, account_id):
@@ -255,6 +261,11 @@ def create_app(settings: Settings) -> FastAPI:
         def authorize(db):
             principal=session(db,request,mutation=True)
             live.patient_row(db,patient_id,principal['account_id'])
+            if family=='invalidate':
+                from .support_archive import MODE
+                source=db.execute('SELECT mode FROM observed_archives WHERE id=? AND owner_id=?',(data.archive_id,principal['account_id'])).fetchone()
+                if source and source['mode']==MODE:
+                    raise APIError(409,'historical_support_read_only','Historical support archives cannot supply live authority')
             if prepared and principal['account_id']!=prepared['owner']:
                 raise APIError(401,'authentication_required','Sign in again')
             # All current grants for a previously admitted episode must still exist.
@@ -410,17 +421,26 @@ def create_app(settings: Settings) -> FastAPI:
             if configured is None:
                 raise APIError(404, 'not_found', 'Resource not found')
             raw, root, authority = configured
-            for partition in authority.partitions:
-                own(db, partition.schedule.patient_id, current['account_id'])
+            from contracts.runs.support_research import SupportArchiveAuthority
+            restricted=type(authority) is SupportArchiveAuthority
+            if not restricted:
+                for partition in authority.partitions:
+                    own(db, partition.schedule.patient_id, current['account_id'])
             owner = current['account_id']
         from .archive import archive_export
         def authorize(db):
             latest = session(db, request, mutation=True)
             if latest['account_id'] != owner:
                 raise APIError(401, 'authentication_required', 'Sign in again')
-            for partition in authority.partitions:
-                own(db, partition.schedule.patient_id, latest['account_id'])
+            if not restricted:
+                for partition in authority.partitions:
+                    own(db, partition.schedule.patient_id, latest['account_id'])
         try:
+            if restricted:
+                if data.mode!='archive_only':raise ValueError('restricted_support_archive_only')
+                from .support_archive import admit_support_archive
+                return admit_support_archive(store,raw,root,authority,owner_id=owner,received_at=settings.clock(),
+                    authorize=authorize,fault=settings.fault)
             if data.mode=='clinical_observation_import':
                 from .archive import verify_archive
                 package=verify_archive(raw,root,authority)
@@ -446,12 +466,28 @@ def create_app(settings: Settings) -> FastAPI:
             archive = db.execute('SELECT * FROM observed_archives WHERE id=? AND owner_id=?', (archive_id, current['account_id'])).fetchone()
             if archive is None:
                 raise APIError(404, 'not_found', 'Resource not found')
+            from .support_archive import MODE,read_support_history
+            if archive['mode']==MODE:
+                try:
+                    mode=request.query_params.get('mode')
+                    day=int(request.query_params.get('cutoff_day','0'))
+                    authority=support_authority(archive)
+                    return read_support_history(db,current['account_id'],patient_id,archive_id,mode,day,authority)
+                except ValueError as error:raise APIError(409,'support_history_rejected',str(error))
             rows = db.execute('SELECT payload,raw_source FROM observed_archive_entries WHERE archive_id=? AND patient_id=? ORDER BY ordinal', (archive_id, patient_id)).fetchall()
             if not rows:
                 raise APIError(404, 'not_found', 'Resource not found')
             receipt = json.loads(archive['receipt'])
             receipt['hold_intervals'] = {patient_id: receipt.get('hold_intervals', {})[patient_id]} if patient_id in receipt.get('hold_intervals', {}) else {}
             return dict(mode='historical', read_only=True, receipt=receipt, entries=[dict(record=json.loads(r['payload']), raw_source=bytes(r['raw_source']).decode('utf-8')) for r in rows])
+
+    def support_authority(archive):
+        from contracts.runs.support_research import SupportArchiveAuthority
+        receipt=json.loads(archive['receipt'])
+        for raw,_root,authority in (settings.observed_archives or {}).values():
+            if (type(authority) is SupportArchiveAuthority and authority.admission_sha256==receipt.get('admission_sha256')
+                    and digest(raw)==archive['export_sha256']):return authority
+        raise ValueError('configured_support_qualification_required')
 
     @app.get("/api/session")
     def bootstrap(request: Request):
@@ -508,7 +544,8 @@ def create_app(settings: Settings) -> FastAPI:
             rows=db.execute("SELECT id,name,state_json,cutoff,version FROM patients WHERE owner_id=? ORDER BY id",(current["account_id"],)).fetchall()
             selected = db.execute("SELECT response FROM receipts WHERE owner_id=? AND scope='generated-panel' ORDER BY rowid DESC LIMIT 1", (current['account_id'],)).fetchone()
             generated = json.loads(selected[0]) if selected else None
-            return {"patients":[dict(id=r["id"],name=r["name"],state=json.loads(r["state_json"]),cutoff=r["cutoff"],version=r["version"]) for r in rows],"denominator":len(rows), 'generated': generated}
+            from .support_archive import historical_marker
+            return {"patients":[dict(id=r["id"],name=r["name"],state=json.loads(r["state_json"]),cutoff=r["cutoff"],version=r["version"],historical_support=historical_marker(db,r['id'])) for r in rows],"denominator":len(rows), 'generated': generated}
 
     def mutation_receipt(db, current, request, scope, payload):
         key = request.headers.get('idempotency-key', '')
@@ -563,6 +600,16 @@ def create_app(settings: Settings) -> FastAPI:
     def workspace(patient_id: str,request: Request):
         with store.transaction() as db:
             current=session(db,request);patient=own(db,patient_id,current["account_id"])
+            from .support_archive import historical_marker,read_support_history
+            marker=historical_marker(db,patient_id)
+            if marker:
+                archive=db.execute('SELECT * FROM observed_archives WHERE id=? AND owner_id=?',(marker['archive_id'],current['account_id'])).fetchone()
+                try:
+                    if archive is None:raise ValueError('owned_support_archive_required')
+                    value=read_support_history(db,current['account_id'],patient_id,marker['archive_id'],'S1',14,support_authority(archive))
+                    return dict(kind='restricted_support_historical',patient_id=patient_id,name=patient['name'],
+                        auth_generation=current['token_hash'],archive_id=marker['archive_id'],history=value)
+                except ValueError as error:raise APIError(409,'support_history_rejected',str(error))
             result=json.loads(read_decision(db,patient)["display"])
             from .live_journal import summary
             result['live_safety_summary']=summary(db,patient_id)

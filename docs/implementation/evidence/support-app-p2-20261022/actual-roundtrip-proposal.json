@@ -1,0 +1,50 @@
+{
+  "version": "support-p2-actual-roundtrip-proposal-v1",
+  "status": "PROPOSED_NOT_EXECUTABLE_NOT_AUTHORIZED",
+  "scope": "One bounded admission/replay of saved accepted public support output, followed by separately bounded authenticated MCP historical UI verification; no generation, learner, fit or live authority",
+  "source_candidate": "the containing reviewed source commit; changed head/base requires refreshed independent review",
+  "accepted_bindings": {
+    "science_commit": "3607b0afb9990260f1694e5e1e1259451c480e2c",
+    "original_manifest_sha256": "a7628300469875bb9ded11b5d595c3f4ed2fe34ad2003b989cc9031c19a67b72",
+    "original_manifest_bytes": 43963,
+    "offline_outcome_review_blob": "a06d2cdcf7fa288d8964ba446f1abaa31e4de79c",
+    "offline_author_handoff_blob": "30e9a54060eae76b0c365c0e3470c755244f5ee6",
+    "offline_146_file_manifest_blob": "22fc1b41ec439e5514502bed36504dbf1bc9b2c1",
+    "offline_146_file_manifest_sha256": "fe961ad18fa44edb25d5ca2f7bc60bf9b5da3af73d0c3aec8044f71bba2e39d5",
+    "producer_public_inventory_audit_blob": "d45e5f35aa8995bf8404f9627f5a2845e1d947e4",
+    "original_public_files_expected_from_accepted_evidence": 4178,
+    "original_public_bytes_expected_from_accepted_evidence": 103220646,
+    "members": 12,
+    "partitions": 24,
+    "cutoff_days": [14, 42, 84],
+    "projections": 72,
+    "learner_boundary_unchanged": "original manifest plus72 reduced projections only; this proposal never starts a learner"
+  },
+  "proposed_archive_roundtrip": {
+    "image": "exact reviewed P2 service/dependency image to be frozen; existing ordinary dependency image is not a new role qualification",
+    "entrypoint": "python -P -B /source/task-specific-actual-roundtrip.py; entrypoint/source/input/authority hashes must be frozen before review and execution",
+    "database": "fresh deployment-private disposable SQLite Store only; no native/accepted DB or control volume",
+    "mounts": ["exact selected candidate source read-only", "exact original public output read-only", "new private receipt/evidence/DB destination read-write"],
+    "network": "none",
+    "uid": "10001:10001",
+    "cpus": 2,
+    "memory_gib": 2,
+    "swap_total_gib": 2,
+    "pids": 128,
+    "tmpfs_mib": 512,
+    "root_read_only": true,
+    "drop_capabilities": "ALL",
+    "no_new_privileges": true,
+    "proposed_internal_seconds": 840,
+    "proposed_literal_cid_watchdog_seconds": 900,
+    "proposed_parent_seconds": 925,
+    "lifecycle": "One reserved invocation; literal CID readiness before start; independent typed final State; retain failures and stopped container; reap attach/watchdog handles in either completion order; no deletion/retry; STOP UNCONFIRMED ceases work",
+    "checks": ["All original index and supplemental public descriptors match independent accepted inventory/source/runtime/qualification", "Actual cookie+CSRF import and exact same-receipt reimport", "Exactly12 historical rows/markers,24 partitioned histories,4177 artifacts plus original manifest; all public bytes preserved", "All72 original projection hashes/bytes/semantic identities equal replay at strict14/42/84 cutoffs", "All12 owner checks; historical mutation/live-authority denial; no live journal/decision/simulation/consent fabrication", "Before/after original public inventory hashes unchanged; no original producer/reservation/failure/output mutation"]
+  },
+  "separate_mcp_gate": {
+    "status": "NOT_RUN",
+    "requires": ["Exact reviewed service image containing frontend and new COPY closure", "Retained private roundtrip DB and control bundle; no accepted/native DB", "One owned MCP browser session and loopback-only bound synthetic service with frozen wall cap", "Actual sign-in/My Panel historical selection/S0+S1/cuts14+42+84/reload/query persistence", "Stale response cancellation and cross-owner denial; verify persisted Store state and screen/console", "Current ordinary physician choice and simulated advancement regression on separate current synthetic patients"]
+  },
+  "must_freeze_before_execution": ["Independent exact-head/base P2 source acceptance", "Trusted actual SupportArchiveAuthority with full original descriptor and2017 supplemental predecision/timing descriptors from accepted public metadata; actual scoped IDs/paths/sizes/hashes remain unresolved here", "Original public source path and fresh private destination, ordinary-path/link checks and sole executor reservation", "Exact new service image/source/COPY qualification and standalone entrypoint/argv/operator/watchdog hashes", "Concrete MCP service/session/port/runtime package and bounded lifecycle", "Root execution authorization for each concrete package"],
+  "not_claimed": ["Actual saved archive replay", "Browser acceptance", "S1 service fitting/P3", "Live S1 controller/current consent", "S2", "Matched excursion truth or policy-value truth", "Seven-configuration ablation and fresh confirmation", "Accuracy/calibration/clinical/human gates"]
+}

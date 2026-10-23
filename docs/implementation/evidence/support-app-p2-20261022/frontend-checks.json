@@ -1,0 +1,12 @@
+{
+  "scope": "Observed local source build/context regression checks; no browser or role-image qualification",
+  "node": "22.20.0",
+  "npm": "11.19.0",
+  "installation": "npm ci --ignore-scripts using unchanged package-lock.json;23 packages; audit reported0 vulnerabilities",
+  "checks": [
+    {"command": "npm run typecheck", "exit_code": 0},
+    {"command": "npm run build", "exit_code": 0, "vite": "8.3.5", "modules": 23, "javascript": "dist/assets/index-2_85jaZI.js", "javascript_kib_reported_by_vite": 308.72},
+    {"command": "npm test", "exit_code": 0, "tests": 6, "failed": 0, "skipped": 0}
+  ],
+  "limitation": "This summary transcribes observed tool results; it is not an MCP interaction log or new component-browser test. Frontend sources did not change afterward."
+}
