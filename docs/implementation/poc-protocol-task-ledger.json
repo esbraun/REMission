@@ -83,7 +83,7 @@
   "runtime_merge_input": "3c6fb8be7aea4f3eb7634d030607fb829bd76a7a",
   "schema": "poc-protocol-task-ledger-v1",
   "s1_app_integration_20261023": {
-    "status": "source_preparation_candidate_pending_independent_Astra; no runtime authorized",
+    "status": "source_repair_candidate_pending_independent_refreshed_Astra; no runtime authorized",
     "base": "f124726432799103cde410ba98b7ab6992759591",
     "handoff": "poc-s1-app-integration-handoff-20261023.md",
     "accepted_offline_review": "a06d2cdcf7fa288d8964ba446f1abaa31e4de79c",
@@ -150,7 +150,17 @@
         "tests": "future full-public P2 import/reimport72replays + one new P3 day84 app attempt",
         "status": "authority/role/operator review dependency; not executed"
       }
-    ]
+    ],
+    "source_repair": {
+      "base": "9f557b0abb91134e9c476d83d9b806d92b646630",
+      "source": "969b9d0b5bc49bedaf87330fb24e77f38022930c",
+      "branch": "fix/poc-s1-source-review-20261023",
+      "review_report": "b7ef8ede5c10ddc27bcf2295eb25a9013aaf2931",
+      "handoff": "poc-s1-app-source-repair-20261023.md",
+      "changes": "t-based completed intervals; finite exact cell-derived R1 range; visible primary MCAR restriction; UTF8 text",
+      "checks": "16/16PASS3.385s, no skips/scientific imports; rehashed completed ingest+serving rejection; TypeScript/Vite/UTF8 scan PASS",
+      "remaining": "independent re-review; unchanged genuine P2/P3/role/browser requirements; include navigation/reload/reauth unknown-submission reconciliation"
+    }
   },
   "source_refresh_notes_blob": "72b94e02827cf0910e1268139725e19145c2673e",
   "source_review_changes_requested_blob": "63503f05097f163b42824f5f696bf86a259d3431",

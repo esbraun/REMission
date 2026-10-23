@@ -12,7 +12,7 @@ This is source preparation, not P2 genuine admission, worker execution, browser 
 
 The existing parser, dispatcher, CLI, ingestion and generic job/list/read paths have narrow S1 branches. The dispatcher selects `services.learner.support_s1_worker` directly, without importing the Bayesian visit worker. The file adapter calls the existing `build_features` and `fit`; no fit was executed. The visit completion diagnostic gate remains in place and has a focused regression. Appointment readers explicitly exclude cohort S1 from individual visit effects. Day14/42 archived projections are compared with their frozen archive selection, independent of the anchor's day84 cutoff.
 
-The existing historical panel adds an explicit command, saved attempts/status, clustered 95% interval/df, counts, generation/data-through time, cohort scope and R1 limitation. Reads abort on selection changes; selection checks withhold late responses. S0 stays descriptive. An ambiguous submission retains its original receipt key; definitive rejection permits a fresh explicit command. Reload reads saved state. No recommendation or live action authority was added.
+The existing historical panel adds an explicit command, saved attempts/status, clustered 95% interval/df, counts, generation/data-through time, cohort scope and R1 limitation. Reads abort on selection changes; selection checks withhold late responses. S0 stays descriptive. An ambiguous submission retains its original receipt key within the mounted panel; navigation/reload/reauthentication remount reconciliation remains a later browser case. Definitive rejection permits a fresh explicit command. Reload reads saved state. No recommendation or live action authority was added.
 
 ## Actual source checks
 
@@ -46,3 +46,5 @@ The raw check log, install report, requirements subset and local environment sta
 6. On the same app/Store, verify authenticated reload and service restart persistence, S0/cutoff switches and delayed responses, missing/failed/abstained states, narrow layout and keyboard controls. Navigation must perform reads only. Freeze browser exposure/port/access/lease/teardown before this step. Report import/startup/feature/estimator/claim-to-ingest/end-to-end separately. No p95, coverage, clinical or full study/ablation acceptance follows.
 
 Human/clinical review remains later. N0/N1 fitted representatives, S2/live support, appointment inference/freshness, independent support truth and full seven-configuration POC-VAL remain open.
+
+Focused source repairs and refreshed checks are recorded in [the repair report](poc-s1-app-source-repair-20261023.md); the original review candidate remains preserved.
