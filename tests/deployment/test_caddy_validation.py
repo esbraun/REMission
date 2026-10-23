@@ -24,13 +24,13 @@ class CaddyValidationTests(unittest.TestCase):
 
     def test_prestart_rejects_resource_volume_command_and_state_drift(self):
         cid = 'a' * 64; image = 'sha256:' + 'b' * 64; name = 'remission-caddy-123456789abc'
-        value = dict(Id=cid, Image=image, User='65532:65532',
+        value = dict(Id=cid, Image=image, User='0:0',
             Labels={'remission.task': name, 'org.opencontainers.image.title': 'Caddy'},
             Healthcheck={'Test': ['NONE']}, Path='/bin/sh', Args=['-ec', caddy.WORK], RestartCount=0,
             State=dict(Status='created', Running=False, Paused=False, Restarting=False, Dead=False,
                        OOMKilled=False, Pid=0, ExitCode=0),
             Memory=134217728, MemorySwap=134217728, NanoCpus=500000000, PidsLimit=64,
-            ReadonlyRootfs=True, Privileged=False, CapAdd=None, CapDrop=['ALL'], AutoRemove=False,
+            ReadonlyRootfs=True, Privileged=False, CapAdd=['NET_BIND_SERVICE'], CapDrop=['ALL'], AutoRemove=False,
             PublishAllPorts=False, SecurityOpt=['no-new-privileges'], Tmpfs=caddy.TMPFS,
             NetworkMode='none', PortBindings={}, RestartPolicy={'Name': 'no', 'MaximumRetryCount': 0},
             Mounts=[dict(Source=str(caddy.INPUTS / (case + '.Caddyfile')),
@@ -39,11 +39,38 @@ class CaddyValidationTests(unittest.TestCase):
         caddy.audit(value, cid, image, name)
         mutations = [('MemorySwap', 268435456), ('NetworkMode', 'bridge'), ('PidsLimit', True),
                      ('Args', ['-ec', 'caddy run']), ('RestartCount', 1), ('Labels', {}),
+                     ('User', '65532:65532'), ('User', ''), ('CapAdd', None), ('CapAdd', []),
+                     ('CapAdd', ['NET_BIND_SERVICE', 'SYS_ADMIN']), ('CapAdd', ['SETFCAP']),
+                     ('CapAdd', ['NET_BIND_SERVICE', 'NET_BIND_SERVICE']), ('CapDrop', []),
+                     ('SecurityOpt', []), ('Privileged', True),
                      ('Mounts', value['Mounts'] + [dict(Source='/var/lib/docker/volumes/x',
                           Destination='/data', Type='volume', RW=True)])]
         for key, bad in mutations:
             with self.subTest(key=key), self.assertRaises(ValueError):
                 caddy.audit(dict(copy.deepcopy(value), **{key: bad}), cid, image, name)
+
+    def test_workload_requires_exact_capabilities_identity_version_and_both_configs(self):
+        expected = ['/usr/bin/caddy cap_net_bind_service=ep', 'Uid: 0 0 0 0', 'Gid: 0 0 0 0',
+                    'CapPrm: 0000000000000400', 'CapEff: 0000000000000400',
+                    'CapBnd: 0000000000000400', 'NoNewPrivs: 1', 'v2.11.7 fixture',
+                    'REMISSION_IPV4_VALIDATED', 'REMISSION_DNS_VALIDATED']
+        caddy.check_output(expected)
+        for index, bad in [(0, '/usr/bin/caddy cap_net_bind_service,cap_setfcap=ep'),
+                           (0, '/usr/bin/caddy cap_net_bind_service=p'), (1, 'Uid: 65532 65532 65532 65532'),
+                           (2, 'Gid: 0 0 0 1'), (3, 'CapPrm: 0000000000000000'),
+                           (4, 'CapEff: 0000000000000401'), (5, 'CapBnd: 0000000000000000'),
+                           (6, 'NoNewPrivs: 0'), (7, 'v2.11.6'), (8, ''), (9, '')]:
+            with self.subTest(index=index, bad=bad), self.assertRaises(ValueError):
+                value = expected.copy(); value[index] = bad; caddy.check_output(value)
+        for value in (expected[:-1], expected + ['unexpected'], expected[7:]):
+            with self.assertRaises(ValueError): caddy.check_output(value)
+        argv = caddy.create('remission-caddy-123456789abc')
+        self.assertEqual(argv[argv.index('--cap-add') + 1], 'NET_BIND_SERVICE')
+        self.assertEqual(argv.count('--cap-add'), 1)
+        self.assertEqual(argv[argv.index('--user') + 1], '0:0')
+        self.assertEqual(argv[-1], caddy.WORK)
+        self.assertLess(caddy.WORK.index('getcap /usr/bin/caddy'), caddy.WORK.index('caddy version'))
+        self.assertIn("' /proc/$$/status\n", caddy.WORK)
 
     def test_authorization_binds_raw_plan_and_rejects_boolean_integer_confusion(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -57,6 +84,15 @@ class CaddyValidationTests(unittest.TestCase):
             for key, bad in [('authorized', 1), ('attempts', True), ('plan_sha256', '0' * 64), ('image_pull', True)]:
                 auth.write_text(json.dumps(dict(value, **{key: bad})))
                 with self.subTest(key=key), self.assertRaises(ValueError): caddy.authorized(path, auth)
+            original = json.loads(path.read_bytes())
+            for field in ('create_argv', 'capability_stdout'):
+                changed = copy.deepcopy(original)
+                if field == 'create_argv':
+                    changed[field][changed[field].index('--cap-add') + 1] = 'SYS_ADMIN'
+                else: changed[field][0] = '/usr/bin/caddy cap_net_bind_service=p'
+                path.write_text(json.dumps(changed))
+                auth.write_text(json.dumps(dict(value, plan_sha256=caddy.sha(path.read_bytes()))))
+                with self.subTest(field=field), self.assertRaises(ValueError): caddy.authorized(path, auth)
 
     def test_acquisition_authorization_binds_launcher_evidence_plan_and_types(self):
         with tempfile.TemporaryDirectory() as temporary:

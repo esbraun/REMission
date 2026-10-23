@@ -26,7 +26,28 @@ FIELDS.update({key: '.HostConfig.' + key for key in (
 FIELDS['Mounts'] = '.Mounts'
 CONTAINER_FORMAT = '{' + ','.join('"' + key + '":{{json ' + path + '}}' for key, path in FIELDS.items()) + '}'
 TMPFS = {path: 'rw,noexec,nosuid,size=16m' for path in ('/tmp', '/data', '/config')}
-WORK = ('caddy version\n'
+CAPABILITY_LINES = ['/usr/bin/caddy cap_net_bind_service=ep', 'Uid: 0 0 0 0', 'Gid: 0 0 0 0',
+                    'CapPrm: 0000000000000400', 'CapEff: 0000000000000400',
+                    'CapBnd: 0000000000000400', 'NoNewPrivs: 1']
+WORK = ('file_caps="$(getcap /usr/bin/caddy)"\n'
+        '[ "$file_caps" = "/usr/bin/caddy cap_net_bind_service=ep" ]\n'
+        'printf \'%s\\n\' "$file_caps"\n'
+        'awk \'\n'
+        '$1 == "Uid:" || $1 == "Gid:" {\n'
+        '  if (NF != 5 || $2 != "0" || $3 != "0" || $4 != "0" || $5 != "0") exit 1\n'
+        '  print $1, $2, $3, $4, $5; count++; next\n'
+        '}\n'
+        '$1 == "CapPrm:" || $1 == "CapEff:" || $1 == "CapBnd:" {\n'
+        '  if (NF != 2 || $2 != "0000000000000400") exit 1\n'
+        '  print $1, $2; count++; next\n'
+        '}\n'
+        '$1 == "NoNewPrivs:" {\n'
+        '  if (NF != 2 || $2 != "1") exit 1\n'
+        '  print $1, $2; count++\n'
+        '}\n'
+        'END { if (count != 6) exit 1 }\n'
+        '\' /proc/$$/status\n'
+        'caddy version\n'
         'caddy validate --config /inputs/ipv4.Caddyfile --adapter caddyfile 1>&2\n'
         'echo REMISSION_IPV4_VALIDATED\n'
         'caddy validate --config /inputs/dns.Caddyfile --adapter caddyfile 1>&2\n'
@@ -59,9 +80,10 @@ def check_inputs():
 def create(name):
     argv = ['docker', 'create', '--pull', 'never', '--platform', 'linux/amd64',
             '--name', name, '--label', 'remission.task=' + name, '--network', 'none',
-            '--user', '65532:65532', '--cpus', '0.5', '--memory', '128m',
+            '--user', '0:0', '--cpus', '0.5', '--memory', '128m',
             '--memory-swap', '128m', '--pids-limit', '64', '--read-only',
-            '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--restart', 'no', '--no-healthcheck']
+            '--cap-drop', 'ALL', '--cap-add', 'NET_BIND_SERVICE',
+            '--security-opt', 'no-new-privileges', '--restart', 'no', '--no-healthcheck']
     for path, options in TMPFS.items():
         argv += ['--tmpfs', path + ':' + options]
     for case in ('ipv4', 'dns'):
@@ -77,6 +99,7 @@ def plan(name, folder):
     commit = life.command(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']).stdout.decode().strip()
     return dict(source_commit=commit, root=str(ROOT), name=name, evidence=str(folder.resolve()),
                 physical_sources=sources(), image=IMAGE, create_argv=create(name),
+                capability_stdout=CAPABILITY_LINES,
                 image_format=IMAGE_FORMAT, container_format=CONTAINER_FORMAT,
                 workload_seconds=45, external_seconds=100, attempts=1,
                 acquisition_proposal=dict(argv=['docker', 'pull', '--platform', 'linux/amd64', IMAGE],
@@ -167,10 +190,10 @@ def mount_source(path):
 
 def audit(value, cid, image, name):
     life.checked_state(value, cid)
-    expected = dict(Image=image, User='65532:65532',
+    expected = dict(Image=image, User='0:0',
         Healthcheck={'Test': ['NONE']}, Path='/bin/sh', Args=['-ec', WORK], Memory=134217728, MemorySwap=134217728,
         NanoCpus=500000000, PidsLimit=64, ReadonlyRootfs=True, Privileged=False,
-        CapAdd=None, CapDrop=['ALL'], AutoRemove=False, PublishAllPorts=False,
+        CapAdd=['NET_BIND_SERVICE'], CapDrop=['ALL'], AutoRemove=False, PublishAllPorts=False,
         SecurityOpt=['no-new-privileges'], Tmpfs=TMPFS, NetworkMode='none',
         RestartPolicy={'Name': 'no', 'MaximumRetryCount': 0})
     if value['State']['Status'] != 'created':
@@ -193,6 +216,13 @@ def audit(value, cid, image, name):
         raise ValueError('unexpected tmpfs')
 
 
+def check_output(lines):
+    if (len(lines) != 10 or lines[:7] != CAPABILITY_LINES
+            or not re.fullmatch(r'v2\.11\.7(?: .*)?', lines[7])
+            or lines[8:] != ['REMISSION_IPV4_VALIDATED', 'REMISSION_DNS_VALIDATED']):
+        raise ValueError('binary/process capabilities, released version or both configuration validations unconfirmed')
+
+
 def worker(path, authorization):
     frozen = authorized(path, authorization)
     folder = path.parent / 'attempt'; folder.mkdir(exist_ok=False)
@@ -210,9 +240,7 @@ def worker(path, authorization):
         life.save(folder / 'prestart.json', observed); audit(observed, cid, image, frozen['name'])
         terminal = life.supervise(cid, folder / 'lifecycle', deadline)
         lines = (folder / 'lifecycle/attach.stdout').read_text(encoding='utf-8').splitlines()
-        if (len(lines) != 3 or not re.fullmatch(r'v2\.11\.7(?: .*)?', lines[0])
-                or lines[1:] != ['REMISSION_IPV4_VALIDATED', 'REMISSION_DNS_VALIDATED']):
-            raise ValueError('released version or both configuration validations unconfirmed')
+        check_output(lines)
         authorized(path, authorization)
     except BaseException as error:
         failure = repr(error)

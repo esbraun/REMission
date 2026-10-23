@@ -83,6 +83,21 @@ class DeploymentTests(unittest.TestCase):
         self.assertIn('ExecStartPre=/usr/bin/python3 /opt/remission-simulation/disk_guard.py', unit)
         self.assertIn('--scale app=1', unit)
 
+    def test_only_proxy_has_required_bind_capability_and_explicit_root_store_identity(self):
+        services = prepare.compose(configuration())['services']
+        proxy = services['proxy']
+        self.assertEqual(proxy['user'], '0:0')
+        self.assertEqual(proxy['cap_add'], ['NET_BIND_SERVICE'])
+        self.assertEqual(proxy['cap_drop'], ['ALL'])
+        self.assertEqual(proxy['security_opt'], ['no-new-privileges:true'])
+        self.assertTrue(proxy['read_only'])
+        self.assertNotIn('privileged', proxy)
+        self.assertEqual({v['target'] for v in proxy['volumes']}, {'/etc/caddy/Caddyfile', '/data', '/config'})
+        for name, identity in [('app', '10001:10001'), ('generator', '20000:20000')]:
+            self.assertEqual(services[name]['user'], identity)
+            self.assertNotIn('cap_add', services[name])
+            self.assertEqual(services[name]['cap_drop'], ['ALL'])
+
     def test_rejects_mutable_images_injected_origins_and_unknown_secret_keys(self):
         for key, value in [('service_image', 'app:latest'), ('generator_image', 'sha256:' + 'a' * 64),
                            ('hostname', 'localhost'), ('hostname', 'x.example.org; echo bad'),

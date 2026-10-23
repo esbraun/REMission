@@ -94,7 +94,10 @@ def compose(config):
                'interval': '10s', 'timeout': '5s', 'retries': 6, 'start_period': '20s'}}
     generator = {**hardened, 'image': config['generator_image'], 'user': '20000:20000',
                  'networks': ['private'], 'mem_limit': '2g', 'cpus': 2}
-    proxy = {**hardened, 'image': config['proxy_image'], 'networks': ['private', 'edge'],
+    # The official binary carries this file capability; keep its bounding bit only.
+    # Explicit root matches the existing root-owned 0700 durable proxy stores.
+    proxy = {**hardened, 'image': config['proxy_image'], 'user': '0:0',
+             'cap_add': ['NET_BIND_SERVICE'], 'networks': ['private', 'edge'],
              'ports': ['80:80', '443:443'], 'mem_limit': '256m', 'cpus': 1,
              'volumes': [bind(ROOT + '/Caddyfile', '/etc/caddy/Caddyfile', True),
                          bind(MOUNT + '/proxy-data', '/data'), bind(MOUNT + '/proxy-config', '/config')],
