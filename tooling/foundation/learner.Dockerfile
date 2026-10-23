@@ -13,6 +13,9 @@ COPY contracts/domain/analysis.py contracts/domain/borrowing.py /app/contracts/d
 COPY contracts/domain/borrow_runtime.py /app/contracts/domain/
 COPY contracts/domain/cohort.py contracts/domain/cohort_runtime.py /app/contracts/domain/
 COPY contracts/domain/protocol.py contracts/domain/protocol_analysis.py contracts/domain/protocol_request.py /app/contracts/domain/
+COPY contracts/domain/nof1_app.py contracts/domain/nof1_config.py /app/contracts/domain/
+COPY methods/nof1/ /app/methods/nof1/
+COPY services/learner/nof1_worker.py services/learner/nof1_artifacts.py /app/services/learner/
 COPY methods/visit/ /app/methods/visit/
 COPY methods/measurement.py /app/methods/measurement.py
 COPY services/learner/analysis_worker.py /app/services/learner/

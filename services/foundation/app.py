@@ -655,6 +655,9 @@ def create_app(settings: Settings) -> FastAPI:
         from .analysis import view
         from .appointment import current_information
         frozen=json.loads(row['request_json'])
+        if frozen.get('kind')=='poc_nof1_input':
+            from .nof1_analysis import owned_view
+            return owned_view(db,row,now=settings.clock())
         if frozen.get('kind')=='poc_support_s1_input':
             from .support_analysis import owned_view
             return owned_view(db,row,settings.observed_archives)
@@ -682,6 +685,43 @@ def create_app(settings: Settings) -> FastAPI:
         available=all(a['serving']['summary_available'] for a in attempts)
         status=('dated' if any(a['serving']['status']=='dated' for a in attempts) else 'current') if available else 'unavailable'
         return public_summary(dict(value,appointment=dict(status=status,attempts=attempts)))
+
+    @app.get('/api/patients/{patient_id}/nof1-analysis-options')
+    def nof1_analysis_options(patient_id: str,request: Request):
+        from contracts.domain.nof1_app import CONFIG_REFS
+        with store.transaction() as db:
+            current=session(db,request);patient=own(db,patient_id,current['account_id'])
+            simulation=json.loads(patient['state_json']).get('simulation',{})
+            if simulation.get('family')!='nof1_med':raise APIError(409,'nof1_patient_required','Select an explicit N patient')
+            return dict(configurations=CONFIG_REFS)
+
+    @app.post('/api/nof1-analyses')
+    async def submit_nof1_analysis(request: Request):
+        from contracts.domain.nof1_app import NSubmission
+        from .nof1_analysis import submit
+        data=await body(request,NSubmission)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True)
+            try:response=submit(db,current,request.headers.get('idempotency-key'),
+                data.model_dump(mode='json'),now=settings.clock())
+            except ValueError as error:raise APIError(409,'nof1_analysis_rejected',str(error)) from error
+            return JSONResponse(response,status_code=202)
+
+    @app.get('/api/nof1-analyses/receipt')
+    def nof1_analysis_receipt(request: Request,target_id: str,key: str):
+        # Read across sessions for the same owner after reload or reauth. An
+        # unknown receipt never gives permission to silently resubmit a fit.
+        from .nof1_analysis import owned_view
+        with store.transaction() as db:
+            current=session(db,request);own(db,target_id,current['account_id'])
+            if not key or len(key)>128:raise APIError(422,'invalid_receipt','Bounded original receipt key required')
+            matches=db.execute('SELECT response FROM receipts WHERE owner_id=? AND scope=? AND key=?',
+                (current['account_id'],'nof1-analysis:'+target_id,key)).fetchall()
+            if len(matches)!=1:return dict(status='unknown',attempt=None)
+            row=db.execute('SELECT * FROM analysis_attempts WHERE job_id=? AND owner_id=?',
+                (json.loads(matches[0]['response'])['id'],current['account_id'])).fetchone()
+            if row is None:return dict(status='unknown',attempt=None)
+            return dict(status='found',attempt=owned_view(db,row,now=settings.clock()))
 
     @app.post('/api/support-s1-analyses')
     async def submit_support_s1(request: Request):

@@ -213,6 +213,9 @@ class BorrowAnalysisResult(StrictModel):
 def parse_input(raw):
     from .analysis import AnalysisInput
     value=json.loads(raw)
+    if value.get('kind')=='poc_nof1_input':
+        from .nof1_app import NInput
+        return NInput.model_validate_json(raw)
     if value.get('kind')=='poc_support_s1_input':
         from .support_s1 import S1Input
         return S1Input.model_validate_json(raw)
@@ -228,6 +231,9 @@ def parse_input(raw):
 def parse_result(raw):
     from .analysis import AnalysisResult
     value=json.loads(raw)
+    if value.get('kind')=='poc_nof1_result':
+        from .nof1_app import NResult
+        return NResult.model_validate_json(raw)
     if value.get('kind')=='poc_support_s1_result':
         from .support_s1 import S1Result
         return S1Result.model_validate_json(raw)
