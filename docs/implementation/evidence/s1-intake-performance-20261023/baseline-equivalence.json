@@ -1,0 +1,236 @@
+{
+  "all_equal": true,
+  "base": "810b643249bcb99214cd2f5b00ae9d5691d159db",
+  "baseline_protocol_source_blob": "99023a11fb71933903e0925f44afb1944c96bda7",
+  "baseline_timezone": {
+    "exception_class": "ZoneInfoNotFoundError",
+    "reason": "'No time zone found with key UTC'",
+    "source_changed": false,
+    "status": "BASELINE_ENVIRONMENT_FAILURE"
+  },
+  "candidate_sources": {
+    "contracts/runs/support_research.py": "95df83fd8db97f3819ff5798234ec0a2e4970636",
+    "services/foundation/protocol.py": "f84738668b091bd88862e03ed24aafbdef73b91c"
+  },
+  "checks": [
+    {
+      "equal": true,
+      "name": "S0:positive:14",
+      "outcome": {
+        "bytes": 20148,
+        "sha256": "ac0d0f3f507ac25d7ddca81dfc4dd2e0f3471bb5634062c79552ea1a93eab28c",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S0:positive:42",
+      "outcome": {
+        "bytes": 38600,
+        "sha256": "900f35d3a4060b39d20b3984d74d898432c693960f8ce80f00e6f7380586c3c0",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S0:positive:84",
+      "outcome": {
+        "bytes": 66278,
+        "sha256": "f8a02efb88441bc3b6c734ce6f5048fdc1c490afffef19bf27a9008757cc4813",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S0:bad-exact:consent",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "exact_dependency_hash_patient_type_mismatch",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S0:bad-exact:context-isi",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "exact_dependency_hash_patient_type_mismatch",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S0:corrected",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "stale_or_not_visible_dependency",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S0:retracted",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "stale_or_not_visible_dependency",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:positive:14",
+      "outcome": {
+        "bytes": 20217,
+        "sha256": "1b198c27428ba65bc06771c5fbba1f1d66da3dae8cc8c971af5bb6af9cd3902c",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:positive:42",
+      "outcome": {
+        "bytes": 38669,
+        "sha256": "0efbf498c80ae438c6c2ac8ca300461a0b23f0d2c5364f085c8bc2bd447787a0",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:positive:84",
+      "outcome": {
+        "bytes": 66347,
+        "sha256": "3d29411082ea7218d01a56023e2867881a69ff2c77de5187f2b5b427d993da8e",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:bad-exact:consent",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "exact_dependency_hash_patient_type_mismatch",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:bad-exact:context-isi",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "exact_dependency_hash_patient_type_mismatch",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:corrected",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "stale_or_not_visible_dependency",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "S1:retracted",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "stale_or_not_visible_dependency",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:ordinary",
+      "outcome": {
+        "bytes": 2,
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "status": "returned"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:bad-size",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "support_artifact_hash_or_size_mismatch",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:bad-hash",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "support_artifact_hash_or_size_mismatch",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:missing",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "support_artifact_unreadable",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:symlink:proof.json",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "symlink_support_artifact_denied",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:reparse:proof.json",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "symlink_support_artifact_denied",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:symlink:.",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "symlink_support_artifact_denied",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:reparse:.",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "symlink_support_artifact_denied",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:symlink:ancestor",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "symlink_support_artifact_denied",
+        "status": "rejected"
+      }
+    },
+    {
+      "equal": true,
+      "name": "path:reparse:ancestor",
+      "outcome": {
+        "class": "ValueError",
+        "reason": "symlink_support_artifact_denied",
+        "status": "rejected"
+      }
+    }
+  ],
+  "equivalence_cases": 24,
+  "source_only": true,
+  "tripwire": "PASS_NO_SCIENCE_OR_GENERATOR"
+}
