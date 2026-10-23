@@ -68,7 +68,7 @@ Canonical specification: [04-individual-experiments.md](docs/spec/04-individual-
 
 ## 9. MRTs, contextual bandit, and optional offline RL
 
-Canonical specification: [05-support-learning.md](docs/spec/05-support-learning.md).
+Canonical specification: [05-support-learning.md](docs/spec/05-support-learning.md). Restricted PoC S2 model/precision/saved-prediction definitions are proposed in [S2-CANONICAL-01](docs/implementation/poc-analytics-contract-20261021.md#s2-canonical-01--batch-working-policy-and-saved-prediction); [implementation handoff](docs/implementation/poc-s2-app-handoff-20261023.md). Canonical review, executable source and actual qualification remain separate.
 
 ## 10. Research-backed UI design requirements
 
