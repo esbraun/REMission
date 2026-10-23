@@ -224,10 +224,14 @@ def worker(packet,spec,start,lease_unix,outer):
         for role in ('ownership','generator','app'):
             require(not command(['docker','ps','--all','--quiet','--filter','name=^'+spec['namespace']+'-'+role+'$'],role+'-absent',deadline=setup).strip())
         require(not command(['docker','volume','ls','--quiet','--filter','name=^'+spec['volume']+'$'],'volume-absent',deadline=setup).strip())
-        require(command(['docker','volume','create','--label','remission.task='+spec['namespace'],spec['volume']],'volume-create',10,deadline=setup).strip()==spec['volume'])
+        if command(['docker','volume','create','--label','remission.task='+spec['namespace'],spec['volume']],'volume-create',10,deadline=setup).strip()!=spec['volume']:
+            raise life.StopUnconfirmed('selected volume create identity UNKNOWN')
         for role in ('ownership','generator','app'):
             argv=create_argv(spec,role,lease_unix)
-            record=command(argv,role+'-create',10,deadline=setup);cid=life.require_cid(record.strip());owned[role]=cid
+            record=command(argv,role+'-create',10,deadline=setup)
+            try:cid=life.require_cid(record.strip())
+            except BaseException:raise life.StopUnconfirmed('literal selected create CID UNKNOWN') from None
+            owned[role]=cid
             save(output/(role+'-cid.json'),dict(cid=cid))
             created=json.loads(command(['docker','inspect','--format',CONTAINER_FORMAT,cid],role+'-typed-created',3,deadline=setup))
             audit_created(created,cid,spec,role,argv,life)

@@ -278,6 +278,37 @@ class Data03OperatorSource(unittest.TestCase):
         text=ast.unparse(worker)
         self.assertIn("['create']",text);self.assertIn("['volume', 'create']",text)
         self.assertIn("raise life.StopUnconfirmed('selected create outcome UNKNOWN')",text)
+        self.assertIn("raise life.StopUnconfirmed('literal selected create CID UNKNOWN')",text)
+
+    def test_malformed_created_cid_halts_without_discovery_or_foreign_cleanup(self):
+        class StopUnknown(RuntimeError):pass
+        def require_cid(value):
+            if len(value)!=64 or any(c not in '0123456789abcdef' for c in value):raise ValueError('bad fixture CID')
+            return value
+        life=SimpleNamespace(StopUnconfirmed=StopUnknown,require_cid=require_cid)
+        calls=[];namespace='remission-n-data03-261023-r1'
+        def command_attempt(argv,*_args):
+            calls.append(argv)
+            if argv[1:3]==['image','inspect']:
+                image=argv[-1];value=dict(Id=image,Os='linux',Architecture='amd64',User='20000:20000' if image==op.GEN else '10001:10001')
+                stdout=json.dumps(value)
+            elif argv[1:3]==['network','inspect']:
+                stdout=json.dumps(dict(Id=op.NETWORK,Name=op.NETWORK_NAME,Driver='bridge',Internal=True,
+                    Labels={'remission.task':'remission-cloud-fixture-6e48c02af5b9'},IPAM=[dict(Subnet='10.253.240.0/28',Gateway='10.253.240.1')],Containers={}))
+            elif argv[1:3]==['volume','create']:stdout=namespace+'-positive'
+            elif argv[1]=='create':stdout='ambiguous fixture output'
+            else:stdout=''
+            return dict(timed_out=False,deadline_rejected=False,cli_terminal='OWNED_POPEN_CHILD_EXIT_OBSERVED',
+                exit=0,error=None,stdout_snapshot_truncated=False,stderr_snapshot_truncated=False,stdout=stdout)
+        with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+            packet=Path(folder);(packet/'attempt').mkdir()
+            spec=dict(namespace=namespace,volume=namespace+'-positive',carrier='C:/fixed/public/carrier',images={'app':op.APP,'generator':op.GEN,'ownership':op.OWNER})
+            with mock.patch.object(op,'module',side_effect=[life,SimpleNamespace(command_attempt=command_attempt)]):
+                code=op.worker(packet,spec,time.monotonic(),time.time()+7140,time.monotonic()+7200)
+            result=json.loads((packet/'attempt/operation-terminal.json').read_bytes())
+            self.assertEqual(code,2);self.assertEqual(result['status'],'STOP UNCONFIRMED')
+            self.assertEqual(result['owned_cids'],{});self.assertEqual(calls[-1][1],'create')
+            self.assertFalse(any('stop' in argv or 'kill' in argv for argv in calls))
 
     def test_source_has_no_network_create_removal_or_global_discovery(self):
         tree=ast.parse(Path(op.__file__).read_text())
