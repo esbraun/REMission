@@ -1,0 +1,328 @@
+"""Freeze or execute one separately reviewed N COPY/scalar image operation.
+
+Host stdlib only. No Docker action occurs during freeze or validation. Execute
+requires the exact reviewed plan hash and consumes an exclusive receipt first.
+"""
+import argparse
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+
+HERE=Path(__file__).resolve().parent
+
+SOURCE='810b643249bcb99214cd2f5b00ae9d5691d159db'
+TREE='2373f1018d0e9b638ef9bea49004d01cace00460'
+BINDINGS_SHA='f3a5b4c05e3ca6b33b7d81996ce134cd220ea33082824b626f41f70c82a49b2b'
+PARENT_MANIFEST='35b77dfcb25b9473807bf50fea65fd43b2f6f9ec'
+PARENTS={'service':'sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4',
+    'learner':'sha256:76d8eec82e4b31646440d178952cf6f9d2072a0ce812ffaf7aafe81b2fdf6fef'}
+LIMITS=['--network','none','--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64',
+    '--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
+    '--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m','--restart','no']
+IMAGE_FORMAT='{"Id":{{json .Id}},"Os":{{json .Os}},"Architecture":{{json .Architecture}},"Layers":{{json .RootFS.Layers}},"User":{{json (index .Config "User")}},"WorkingDir":{{json (index .Config "WorkingDir")}},"Entrypoint":{{json (index .Config "Entrypoint")}},"Cmd":{{json (index .Config "Cmd")}}}'
+CONTAINER_FORMAT='{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Path":{{json .Path}},"Args":{{json .Args}},"Labels":{{json .Config.Labels}},"State":{{json .State}},"RestartCount":{{json .RestartCount}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"AutoRemove":{{json .HostConfig.AutoRemove}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"Mounts":{{json .Mounts}}}'
+
+
+def sha(raw):return hashlib.sha256(raw).hexdigest()
+
+
+def ordinary(path):
+    path=Path(path).absolute()
+    for item in (path,*path.parents):
+        if item.is_symlink() or (item.exists() and getattr(item.lstat(),'st_file_attributes',0)&0x400):
+            raise ValueError('aliased/reparse operation path denied')
+    if any(c in str(path) for c in (',','\n','\r','\x00')):raise ValueError('unsafe operation path')
+    return path
+
+
+def save(path,value):
+    with path.open('x',encoding='utf-8',newline='\n') as stream:
+        json.dump(value,stream,indent=2,sort_keys=True,allow_nan=False);stream.write('\n')
+
+
+def git(root,*args):
+    return subprocess.check_output(['git',*args],cwd=root,timeout=15)
+
+
+def recipe(roles):
+    lines=['ARG SERVICE_PARENT','ARG LEARNER_PARENT']
+    for role in ('service','learner'):
+        lines.append('FROM ${'+role.upper()+'_PARENT} AS '+role)
+        for row in roles[role]['overlay']:
+            lines.append('COPY '+role+'/'+row['source']+' '+row['destination'])
+        lines+=['COPY qualify/probe.py /qualify/probe.py',
+            'COPY qualify/'+role+'.json /qualify/expected.json']
+    return '\n'.join(lines)+'\n'
+
+
+def freeze(directory,root):
+    directory=ordinary(directory);root=ordinary(root)
+    if directory.exists():raise FileExistsError('exclusive N image preparation already exists')
+    if not directory.is_relative_to(root/'artifacts'):raise ValueError('operation must stay in own artifacts')
+    bindings_path=root/'docs/implementation/poc-n-runtime-image01-bindings-20261023.json'
+    raw=bindings_path.read_bytes()
+    if sha(raw)!=BINDINGS_SHA:raise ValueError('reviewed source bindings changed')
+    bindings=json.loads(raw)
+    parent=json.loads(git(root,'show',PARENT_MANIFEST))
+    if git(root,'rev-parse',SOURCE+'^{tree}').decode().strip()!=TREE:raise ValueError('accepted source tree changed')
+    for role,item in bindings['roles'].items():
+        if item['parent']!=PARENTS[role] or item['parent']!=parent['images'][role]['image']:
+            raise ValueError('accepted parent identity changed')
+    directory.mkdir(parents=True,exist_ok=False)
+    context=directory/'context';context.mkdir();qualify=directory/'qualify';qualify.mkdir()
+    operator=directory/'operator';operator.mkdir();files={}
+    def write(relative,data):
+        path=directory/relative;path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('xb') as stream:stream.write(data)
+        files[relative]=dict(bytes=len(data),sha256=sha(data))
+    roles={}
+    for role,item in bindings['roles'].items():
+        expected=dict(parent['images'][role]['probe']['copied_source'])
+        for row in item['overlay']:
+            name=row['source']
+            if (Path(name).is_absolute() or '..' in Path(name).parts or row['destination']!='/app/'+name):
+                raise ValueError('noncanonical COPY source/destination')
+            data=(ordinary(root/name).read_bytes() if 'generated' in row else git(root,'show',SOURCE+':'+name))
+            if len(data)!=row['bytes'] or sha(data)!=row['sha256']:raise ValueError('COPY input changed: '+name)
+            write('context/'+role+'/'+name,data);expected[row['destination']]=row['sha256']
+        if expected!=item['expected_project_source']:raise ValueError('complete parent-plus-overlay closure changed')
+        payload=json.dumps(dict(role=role,uid=item['uid'],project_source=expected),sort_keys=True).encode()+b'\n'
+        write('qualify/'+role+'.json',payload)
+        write('context/qualify/'+role+'.json',payload)
+        roles[role]=dict(parent=PARENTS[role],parent_tag='remission-n48-810b643-'+role+'-parent:v1',
+            tag=item['tag'],name=item['qualifier'],uid=str(item['uid'])+':'+str(item['uid']),
+            parent_layers=parent['images'][role]['layers'],expected_sha256=sha(payload))
+    write('context/overlay.Dockerfile',recipe(bindings['roles']).encode())
+    for name in ('nof1_image01.py','analysis_lifecycle.py'):
+        write('operator/'+name,(HERE/name).read_bytes())
+    write('qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
+    write('context/qualify/probe.py',(HERE/'nof1_image01_probe.py').read_bytes())
+    plan=dict(kind='poc-n-image01-exact-operation-v1',source_commit=SOURCE,source_tree=TREE,
+        scope='two_COPY_only_children_and_scalar_qualification',bindings_sha256=BINDINGS_SHA,
+        root=str(directory),roles=roles,files=files,probe_sha256=files['qualify/probe.py']['sha256'],
+        phase_seconds=900,build_seconds=300,qualification_seconds=60,cli_cleanup_seconds=3,
+        future_images={'service':'UNKNOWN','learner':'UNKNOWN'},future_CIDs={'service':'UNKNOWN','learner':'UNKNOWN'},
+        output='results',scientific_imports=False,Store_open=False)
+    save(directory/'plan.json',plan)
+    return dict(plan=str(directory/'plan.json'),sha256=sha((directory/'plan.json').read_bytes()))
+
+
+def validate_plan(path,authorized):
+    path=ordinary(path);raw=path.read_bytes()
+    if sha(raw)!=authorized:raise ValueError('exact independently reviewed plan hash required')
+    plan=json.loads(raw);root=ordinary(plan['root'])
+    if (root!=path.parent or plan['source_commit']!=SOURCE or plan['source_tree']!=TREE
+            or plan['kind']!='poc-n-image01-exact-operation-v1' or set(plan['roles'])!={'service','learner'}
+            or plan['bindings_sha256']!=BINDINGS_SHA or plan['phase_seconds']!=900
+            or plan['build_seconds']!=300 or plan['qualification_seconds']!=60
+            or plan['cli_cleanup_seconds']!=3 or plan['output']!='results'
+            or plan['scientific_imports'] is not False or plan['Store_open'] is not False):
+        raise ValueError('operation identity/scope/ceilings changed')
+    expected=set(plan['files'])
+    actual={p.relative_to(root).as_posix() for folder in ('context','qualify','operator')
+        for p in (root/folder).rglob('*') if p.is_file()}
+    for folder in ('context','qualify','operator'):
+        for item in (root/folder).rglob('*'):ordinary(item)
+    if actual!=expected:raise ValueError('frozen context/probe/operator inventory changed')
+    for name,entry in plan['files'].items():
+        target=ordinary(root/name)
+        if not target.is_relative_to(root) or target.is_dir():raise ValueError('escaped frozen input')
+        raw=target.read_bytes()
+        if len(raw)!=entry['bytes'] or sha(raw)!=entry['sha256']:raise ValueError('frozen input bytes changed: '+name)
+    if Path(__file__).resolve()!=root/'operator/nof1_image01.py':
+        raise ValueError('execute only the frozen operator copy')
+    for role,item in plan['roles'].items():
+        if (item['parent']!=PARENTS[role] or item['parent_tag']!='remission-n48-810b643-'+role+'-parent:v1'
+                or item['tag']!='remission-n48-810b643-'+role+':v1'
+                or item['name']!='remission-n48-810b643-'+role+'-qual-v1'
+                or item['uid']!=('10001:10001' if role=='service' else '10002:10002')):
+            raise ValueError('literal role identity changed')
+    return root,plan
+
+
+def load_lifecycle(root):
+    # Validate every helper byte before executing it. Load the literal frozen
+    # helper path rather than an unrelated cached/import-search-path module.
+    spec=importlib.util.spec_from_file_location('n48_frozen_lifecycle',root/'operator/analysis_lifecycle.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    return module
+
+
+def image_checked(value,identity,role,*,parent=None):
+    if (value['Id']!=identity or re.fullmatch('sha256:[a-f0-9]{64}',identity) is None
+            or value['Os']!='linux' or value['Architecture']!='amd64'
+            or value['User']!=('10001:10001' if role=='service' else '10002:10002')
+            or value['WorkingDir']!='/app' or value['Entrypoint'] is not None):
+        raise ValueError('image ID/platform/UID/entrypoint mismatch')
+    if parent and (value['Layers'][:len(parent['Layers'])]!=parent['Layers']
+            or len(value['Layers'])<=len(parent['Layers'])
+            or any(value[k]!=parent[k] for k in ('User','WorkingDir','Entrypoint','Cmd'))):
+        raise ValueError('COPY child changed parent layers or runtime configuration')
+    return value
+
+
+def workload(role,plan):
+    return ['python','-I','-B','/qualify/probe.py','--role',role,'--expected','/qualify/expected.json',
+        '--expected-sha256',plan['roles'][role]['expected_sha256'],'--probe-sha256',plan['probe_sha256']]
+
+
+def create_argv(role,plan,image):
+    item=plan['roles'][role]
+    return ['docker','create','--name',item['name'],'--label','remission.task=n48-image01-810b643',
+        *LIMITS,'--user',item['uid'],image,*workload(role,plan)]
+
+
+def checked_container(value,cid,image,role,plan,life):
+    item=plan['roles'][role];state=life.checked_state(
+        dict(Id=value['Id'],State=value['State'],RestartCount=value['RestartCount']),cid)['State']
+    mounts=value['Mounts']
+    if (state['Status']!='created' or state['Pid']!=0 or value['Image']!=image
+            or value['User']!=item['uid'] or value['Path']!='python' or value['Args']!=workload(role,plan)[1:]
+            or value['Labels']!={'remission.task':'n48-image01-810b643'}
+            or value['Memory']!=2147483648 or value['MemorySwap']!=2147483648
+            or value['NanoCpus']!=2000000000 or value['PidsLimit']!=64
+            or value['ReadonlyRootfs'] is not True or value['Privileged'] is not False
+            or value['CapAdd'] not in (None,[]) or value['CapDrop']!=['ALL'] or value['AutoRemove'] is not False
+            or value['SecurityOpt']!=['no-new-privileges'] or value['NetworkMode']!='none'
+            or value['Tmpfs']!={'/tmp':'rw,exec,nosuid,nodev,size=512m'}
+            or value['PortBindings'] not in (None,{}) or value['PublishAllPorts'] is not False
+            or value['RestartPolicy']!={'Name':'no','MaximumRetryCount':0}
+            or mounts not in (None,[])):
+        raise ValueError('literal prestart qualifier resource/custody/configuration mismatch')
+
+
+def command_attempt(argv,output,label,timeout,cleanup_grace):
+    """Regular-file child capture adapted from accepted S1 operator e85ff432.
+
+    Reaping this exact Popen child never attests plugin/daemon termination.
+    """
+    started=time.monotonic();end=started+timeout;process=None
+    record=dict(argv=argv,exit=None,timed_out=False,deadline_rejected=False,cli_pid=None,
+        cli_terminal='NOT_OBSERVED',cli_descendants_terminal='UNKNOWN',stdout_file=label+'.stdout',
+        stderr_file=label+'.stderr',cleanup=[],stdout='',stderr='')
+    try:
+        with (output/record['stdout_file']).open('xb') as out,(output/record['stderr_file']).open('xb') as err:
+            process=subprocess.Popen(argv,stdin=subprocess.DEVNULL,stdout=out,stderr=err,
+                creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
+            record['cli_pid']=process.pid
+            remaining=end-time.monotonic()
+            if remaining<=0:raise subprocess.TimeoutExpired(argv,timeout)
+            record['exit']=process.wait(timeout=remaining)
+    except subprocess.TimeoutExpired:record['timed_out']=True
+    except BaseException as error:record['error']=repr(error)
+    finally:
+        if process is not None:
+            record['exit']=process.poll()
+            if record['exit'] is None:
+                try:
+                    process.kill();record['cleanup'].append('kill_exact_Popen_child')
+                    record['exit']=process.wait(timeout=cleanup_grace)
+                except BaseException as error:record['cleanup'].append(repr(error))
+            if record['exit'] is not None:record['cli_terminal']='OWNED_POPEN_CHILD_EXIT_OBSERVED'
+        for key in ('stdout','stderr'):
+            path=output/record[key+'_file']
+            if path.exists():
+                with path.open('rb') as stream:raw=stream.read(65537)
+                record[key]=raw[:65536].decode('utf-8',errors='replace');record[key+'_truncated']=len(raw)>65536
+        record['deadline_rejected']=time.monotonic()>=end;record['elapsed_seconds']=time.monotonic()-started
+        save(output/(label+'.json'),record)
+    return record
+
+
+def execute(path,authorized):
+    root,plan=validate_plan(path,authorized)
+    life=load_lifecycle(root)
+    # Exclusive reservation precedes every Docker call, including metadata.
+    output=root/'results';output.mkdir(exist_ok=False)
+    save(output/'authorization-consumed.json',dict(plan_sha256=authorized,started_unix=time.time(),scope=plan['scope']))
+    deadline=time.monotonic()+900;owned=[];images={};parents={};unresolved=[];cleanup=[]
+    status='failed';failure=None
+    def call(argv,label,*,cap=15,check=True):
+        life.check_deadline(deadline)
+        value=command_attempt(argv,output,label,min(cap,deadline-time.monotonic()),3)
+        failed=(value['exit']!=0 or value.get('error') or value.get('stdout_truncated') or value.get('stderr_truncated'))
+        if value['timed_out'] or value['deadline_rejected'] or time.monotonic()>=deadline or (argv[1:2]==['build'] and failed):
+            unresolved.append(dict(operation=label,argv=argv,cli_pid=value['cli_pid'],cli_descendants='UNKNOWN',daemon_build='UNKNOWN' if argv[1:2]==['build'] else 'not_applicable'))
+            raise life.StopUnconfirmed('command/build outcome unconfirmed: '+label)
+        if check and failed:raise RuntimeError('captured command failed: '+label)
+        return value['stdout'] if check else value
+    def absent(tag,label):
+        value=call(['docker','image','inspect','--format','{{.Id}}',tag],label,check=False)
+        accepted=('Error response from daemon: No such image: '+tag,'Error: No such image: '+tag)
+        if (value['exit']!=1 or value.get('error') or value.get('stdout_truncated') or value.get('stderr_truncated')
+                or value['stdout'].strip() or value['stderr'].strip() not in accepted):
+            raise RuntimeError('exact selected tag absence not proven: '+label)
+    try:
+        for role in ('service','learner'):
+            item=plan['roles'][role]
+            parent=image_checked(json.loads(call(['docker','image','inspect','--format',IMAGE_FORMAT,item['parent']],role+'-parent')),item['parent'],role)
+            if parent['Layers']!=item['parent_layers']:raise ValueError('accepted parent layer inventory changed')
+            parents[role]=parent;absent(item['parent_tag'],role+'-parent-tag-absence');absent(item['tag'],role+'-child-tag-absence')
+            if call(['docker','ps','-aq','--filter','name=^/'+item['name']+'$'],role+'-container-absence').strip():
+                raise RuntimeError('qualifier name already exists')
+        for role in ('service','learner'):
+            item=plan['roles'][role]
+            call(['docker','image','tag',item['parent'],item['parent_tag']],role+'-tag-parent')
+            if call(['docker','image','inspect','--format','{{.Id}}',item['parent_tag']],role+'-parent-alias-id').strip()!=item['parent']:
+                raise ValueError('parent alias drift')
+        for role in ('service','learner'):
+            item=plan['roles'][role]
+            iid=output/(role+'.iid')
+            argv=['docker','build','--network','none','--pull=false','--file',str(root/'context/overlay.Dockerfile'),
+                '--target',role,'--tag',item['tag'],'--iidfile',str(iid),
+                '--build-arg','SERVICE_PARENT='+plan['roles']['service']['parent_tag'],
+                '--build-arg','LEARNER_PARENT='+plan['roles']['learner']['parent_tag'],str(root/'context')]
+            call(argv,role+'-build',cap=300);image=iid.read_text().strip()
+            child=image_checked(json.loads(call(['docker','image','inspect','--format',IMAGE_FORMAT,item['tag']],role+'-child')),image,role,parent=parents[role])
+            try:cid=life.require_cid(call(create_argv(role,plan,image),role+'-create').strip())
+            except BaseException as error:
+                unresolved.append(dict(operation=role+'-create',name=item['name'],CID='UNKNOWN',error=repr(error)))
+                raise life.StopUnconfirmed('qualifier creation/CID unconfirmed: '+item['name']) from error
+            owned.append(cid)
+            value=json.loads(call(['docker','inspect','--format',CONTAINER_FORMAT,cid],role+'-prestart'))
+            checked_container(value,cid,image,role,plan,life)
+            terminal=life.supervise(cid,output/(role+'-supervision'),min(deadline,time.monotonic()+60))
+            probe=json.loads(call(['docker','logs',cid],role+'-probe-output'))
+            expected=json.loads((root/'qualify'/ (role+'.json')).read_bytes())
+            if (probe['status']!='copied_source_metadata_scalar_imports_only' or probe['role']!=role
+                    or probe['project_source']!=expected['project_source'] or probe['probe_sha256']!=plan['probe_sha256']
+                    or probe['expected_sha256']!=item['expected_sha256']
+                    or any(probe.get(k) is not False for k in ('scientific_imports','worker_executed','Store_opened','generated_or_fitted'))):
+                raise ValueError('qualifier output/identity/scope mismatch')
+            images[role]=dict(metadata=child,cid=cid,terminal=terminal,probe=probe)
+        life.check_deadline(deadline);status='qualified_copy_metadata_scalar_imports_only'
+    except BaseException as error:
+        failure=repr(error)
+        if isinstance(error,life.StopUnconfirmed):status='STOP UNCONFIRMED'
+        for cid in reversed(owned):
+            try:cleanup.append(dict(cid=cid,events=life.stop_owned(cid)))
+            except BaseException as stopped:cleanup.append(dict(cid=cid,error=repr(stopped)));status='STOP UNCONFIRMED'
+        raise
+    finally:
+        save(output/'observed-images.json',dict(status=status,failure=failure,source_commit=SOURCE,plan_sha256=authorized,
+            images=images,parents=parents,owned_cids=owned,unresolved=unresolved,cleanup=cleanup,finished_unix=time.time(),
+            scientific_imports=False,worker_executed=False,Store_opened=False,generation_or_fit=False,
+            descendant_or_daemon_termination='UNKNOWN unless separately observed; no removal/retry'))
+    return dict(status=status,images={k:v['metadata']['Id'] for k,v in images.items()})
+
+
+def main():
+    parser=argparse.ArgumentParser();mode=parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--freeze',action='store_true');mode.add_argument('--execute',action='store_true')
+    parser.add_argument('--directory',type=Path);parser.add_argument('--root',type=Path)
+    parser.add_argument('--plan',type=Path);parser.add_argument('--authorized-plan-sha256');args=parser.parse_args()
+    if args.freeze:
+        if not args.directory or not args.root:parser.error('freeze requires exact own directory and source root')
+        print(json.dumps(freeze(args.directory,args.root)))
+    else:
+        if not args.plan or not args.authorized_plan_sha256:parser.error('execute requires exact reviewed plan and hash')
+        print(json.dumps(execute(args.plan,args.authorized_plan_sha256)))
+
+
+if __name__=='__main__':main()
