@@ -102,6 +102,8 @@ class S2Request(StrictModel):
         ids=[m.patient_id for m in self.members]
         if ids!=sorted(set(ids)) or self.target_id not in ids:
             raise ValueError('ordered unique complete cohort and explicit target required')
+        if any(sum(m.observed)+sum(m.missing)>self.cutoff for m in self.members):
+            raise ValueError('frozen opportunity counts exceed fitted cutoff')
         if (not self.cutoff<=self.decision_day<self.cutoff+14
                 or self.reward_day!=self.decision_day+1 or self.h!=self.reward_day-self.cutoff
                 or self.expires_before_decision!=self.cutoff+14):

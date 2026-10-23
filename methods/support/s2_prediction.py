@@ -36,6 +36,9 @@ def checked_arrays(arrays,patient_ids,request):
 
 def action_moments(alpha,tau,b,rho,e_T,s_e,s_Q,x,h):
     """Joint conditional mean/SD; no recentering or postfit state update."""
+    if (type(h) is not int or not 1<=h<=14 or np.any(np.abs(rho)>=.95)
+            or np.any(s_e<0) or np.any(s_Q<0)):
+        raise ValueError('S2 horizon/parameter support mismatch')
     base=alpha+np.sum(b*np.asarray(x,dtype=np.float64),axis=-1)+(rho**h)*e_T
     variance=s_Q*s_Q+s_e*s_e*sum(rho**(2*j) for j in range(h))
     sd=np.sqrt(variance)
