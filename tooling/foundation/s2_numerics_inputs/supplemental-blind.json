@@ -1,0 +1,30 @@
+{
+  "scalar_cases": [
+    {"id":"S2-SUP16-01-positive-rho-bound-h1","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":0.95,"h":1,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-02-negative-rho-bound-h1","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":-0.95,"h":1,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-03-positive-rho-bound-h14","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":0.95,"h":14,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-04-negative-rho-bound-h14","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":-0.95,"h":14,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-05-positive-rho-next-inward-h14","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":0.9499999999999999,"h":14,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-06-negative-rho-next-inward-h14","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":-0.9499999999999999,"h":14,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-07-positive-rho-next-outward-h1","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":0.9500000000000001,"h":1,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"reject"},
+    {"id":"S2-SUP16-08-negative-rho-next-outward-h1","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":-0.9500000000000001,"h":1,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"reject"},
+    {"id":"S2-SUP16-09-positive-rho-bound-h0","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":0.95,"h":0,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"reject"},
+    {"id":"S2-SUP16-10-negative-rho-bound-h15","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":-0.95,"h":15,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"reject"},
+    {"id":"S2-SUP16-11-positive-rho-bound-h2","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":0.95,"h":2,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-12-negative-rho-bound-h13","alpha":5.0,"tau":0.2,"b":[0.0,0.0,0.0,0.0],"x":[7.0,0.0,1.0,0.5],"rho":-0.95,"h":13,"e_T":0.05,"s_e":0.5,"s_Q":0.5,"r0":0.1,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-13-independent-positive-interior","alpha":2.0,"tau":0.4,"b":[0.01,-0.02,0.03,0.1],"x":[7.0,0.0,1.0,0.5],"rho":0.4,"h":1,"e_T":0.1,"s_e":0.4,"s_Q":0.3,"r0":0.0,"r1":0.5,"expected_domain":"admit"},
+    {"id":"S2-SUP16-14-independent-negative-interior","alpha":8.0,"tau":-0.4,"b":[-0.01,0.02,-0.03,-0.1],"x":[7.0,1.0,2.0,0.75],"rho":-0.4,"h":14,"e_T":-0.1,"s_e":0.8,"s_Q":0.6,"r0":0.8,"r1":0.2,"expected_domain":"admit"},
+    {"id":"S2-SUP16-15-independent-centered-rho-zero","alpha":4.0,"tau":0.0,"b":[0.02,0.0,0.0,0.0],"x":[7.0,0.0,0.0,0.25],"rho":0.0,"h":7,"e_T":0.25,"s_e":0.2,"s_Q":1.0,"r0":0.25,"r1":0.75,"expected_domain":"admit"},
+    {"id":"S2-SUP16-16-independent-negative-rho-interior","alpha":6.0,"tau":0.1,"b":[0.0,0.01,0.02,0.0],"x":[6.0,0.0,3.0,0.9],"rho":-0.7,"h":2,"e_T":-0.2,"s_e":0.3,"s_Q":0.7,"r0":0.4,"r1":0.6,"expected_domain":"admit"}
+  ],
+  "cdf_cases": [
+    {"id":"S2-SUPCDF-01-left-far","z":-12.0},
+    {"id":"S2-SUPCDF-02-left-tail","z":-7.0},
+    {"id":"S2-SUPCDF-03-left-intermediate","z":-2.5},
+    {"id":"S2-SUPCDF-04-left-near-center","z":-0.125},
+    {"id":"S2-SUPCDF-05-right-near-center","z":0.125},
+    {"id":"S2-SUPCDF-06-right-intermediate","z":2.5},
+    {"id":"S2-SUPCDF-07-right-tail","z":7.0},
+    {"id":"S2-SUPCDF-08-right-far","z":12.0}
+  ]
+}
