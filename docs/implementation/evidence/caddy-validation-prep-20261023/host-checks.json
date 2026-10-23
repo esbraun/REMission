@@ -1,0 +1,33 @@
+{
+  "base_commit": "965cbd37efef2a911d40989bcfbbc0a93f8e7eb7",
+  "checks": [
+    {
+      "command": "python -P -B -m unittest discover -s tests/deployment -p test_caddy_validation.py -v",
+      "exit_code": 0,
+      "tests": 3
+    },
+    {
+      "command": "python -P -B -m unittest discover -s tests/deployment -p test_cloud_simulation.py -v",
+      "exit_code": 0,
+      "tests": 10
+    },
+    {
+      "command": "AST parse both new Python files; changed Markdown local-target/fence checks; git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "limitations": [
+    "No Docker command, network access, image pull, Caddy or cloud execution",
+    "Parser/authorization tests do not prove actual image or runtime behavior",
+    "Independent exact-candidate review and separately scoped root authorizations remain pending"
+  ],
+  "observed_utc": "2026-10-23T02:43:29.031574+00:00",
+  "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+  "sources_sha256": {
+    "tests/deployment/test_caddy_validation.py": "dad2a70332840476487bf14d92473c6da70e20d030e140804b40c1958655ca07",
+    "tooling/foundation/analysis_lifecycle.py": "0c032c9c926d07c83b0cc308d337f7b290c4a71878973ee75f65041877205305",
+    "tooling/foundation/cloud/prepare.py": "d1cd32702b71c95d447a3f9dc115d2e2d421ed3d87b4d3c61af2506cc211a21a",
+    "tooling/foundation/validate_caddy.py": "a74f9eabb0f6e7fc1f4ddadb9294a518869bffc7fd3a5a05b85aa60e8a6e583d"
+  },
+  "status": "source-preparation-only"
+}
