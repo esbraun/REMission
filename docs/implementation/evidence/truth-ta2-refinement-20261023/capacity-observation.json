@@ -1,0 +1,148 @@
+{
+  "candidate": "9b77f782d79f34b462aa13932590021a61b2c8ab",
+  "kind": "selected_read_only_capacity_observations",
+  "limitations": "Point-in-time resource observations only; CPU quotas are limits rather than reserved idle capacity; future contention and larger-level numerical runtime/memory remain unmeasured.",
+  "observations": {
+    "docker_vm": {
+      "argv": [
+        "docker",
+        "info",
+        "--format",
+        "{\"NCPU\":{{json .NCPU}},\"MemTotal\":{{json .MemTotal}}}"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"NCPU\":16,\"MemTotal\":25199005696}"
+    },
+    "host_physical_memory": {
+      "argv": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize,FreePhysicalMemory | ConvertTo-Json -Compress"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"TotalVisibleMemorySize\":33231568,\"FreePhysicalMemory\":4895416}"
+    },
+    "pinned_image": {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "--format",
+        "{\"Id\":{{json .Id}},\"Os\":{{json .Os}},\"Architecture\":{{json .Architecture}}}",
+        "sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"Id\":\"sha256:ce346feace2ae607ebd574e1bb681d594c9b676c06b56f8ba8d50b858a577faa\",\"Os\":\"linux\",\"Architecture\":\"amd64\"}"
+    },
+    "running_cpu_memory_limits": {
+      "argv": [
+        "docker",
+        "inspect",
+        "--format",
+        "{\"Id\":{{json .Id}},\"NanoCpus\":{{json .HostConfig.NanoCpus}},\"CpuQuota\":{{json .HostConfig.CpuQuota}},\"CpuPeriod\":{{json .HostConfig.CpuPeriod}},\"CpusetCpus\":{{json .HostConfig.CpusetCpus}},\"Memory\":{{json .HostConfig.Memory}},\"MemorySwap\":{{json .HostConfig.MemorySwap}}}",
+        "6c19849608483c32a3cef1e488cda70177963c209ee26a4925038533c7e49475",
+        "195c56637d4bb6e73486e96ded2ed4e79c1a74d3e17bb55242ffb22fb4fda5d3",
+        "fbd4fb97e202fc7c6298ad523e5497f92f2bdb4e8eaaf35dbc9ff416ba1055a1",
+        "1920168dc746a2a1b09b9bf0110e32863531710d6da494fca78291c08b76d883",
+        "863be1690471b7aa5e80068bbfcce626b74a26357244ce520dd8c76d8f7f68d3",
+        "f8cb47b55166b5cb905ef570050aa617d23c777817ff2f40fea08faf8c80f6f9",
+        "32e6482aba22af06b424646e07b257e1def051f65b117951f1216aab97f7249e",
+        "7fcf4cf3539504f74d57462a2e42d8ba9d5fbcefc84302ddd6fc62ae5c60ea48",
+        "801ec6a027a5d5ee92bb8fe2fe0ac5ca3350b1270cd27ce38984728a74816c09",
+        "e49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236",
+        "c92a18bd69779f458975856c7d559a756018f0140c1c5567616e0b24c7696db3",
+        "35abbc7863b959d5c368e933ced802799436d66e2d762bde8dc608333731ba5e",
+        "2b2335bf8a5efc224733905695e4838459a0544c102703493e5418b6970703b1",
+        "2f03dfd0741b0213a211615761db81238da2359d57b65aae11408fc135c09c8d",
+        "220fe5f624283c61145d43ab5d5e9872964fc941da8d6c2f29929a580cef8e6f",
+        "c89473a78fe2f74d685ce6ad2730bbf89a1f734a29900e4393c4d5908d15e1b7",
+        "d8691a3d48b03f65dec48739dd953ecbe4d60a6ab79c4b8db30487d30c5fd69c",
+        "cdd644dbf80fa68cbab168e0a2f24399a99efa120467b73bf22b5e1c7da3fb73",
+        "fa58c027ce6a64031ad5e32a69c23d95446c38838805bad98177c05661a78dea",
+        "17d6f560bbd5b09fffefa05be95cd8c9cdc585b489f29fc187efc0071e742304",
+        "966bf9b1aec71ca1b5954dbeaf02c725ebc1f7237090cdcfcc6a061b1553b363",
+        "f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772",
+        "c72779c52599687f6e186e8f9d6b964066bd524bd847fc346da782a3b6bf5b40",
+        "7dc7774ccde5a5d1eea3e3b22ee133d5ba5dffe477c887ae04cccf802c631abf",
+        "cef912be257eb43b6585f1e6f411fd855b3091a4a55a3986d1a5d64354aada6d",
+        "45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c",
+        "50f69dea7fab6894acb9a3d09b3ba1d5ba3d6997229af02175dc7612213aa0cc",
+        "4b997e48012756c42f9f3fd371e9996d90485d6612d1d370b7fd816847850de1",
+        "21278c73ce958f895a0bd501f758e6237e446352bba62752b6fb826c7ada8597",
+        "ab2b9847ada2a14397d833b10ab764332ad7d7188874fad40a7b7c9216a3102e",
+        "9139c394a417503cc7e9a723612acf830aa4de37b4aa4164e263b26f86e8abb5",
+        "39ff00a8a2a99e3c5d4498254a465926c6fccfbd8766cef7d371cc2d184e800d",
+        "5750cbcfb371521e15d9df8960cc7ce9cf555652ad9944cd8fa27506e823dc9f",
+        "0b748eeeec96904a14b9c79b5e36825765bb0cd3bea0cb58188f2f3be5736ead",
+        "fb4139dd7340e6fc23a1a7806a13edf9d16c9659ade39ac4a484f1c778af7aa1"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"Id\":\"6c19849608483c32a3cef1e488cda70177963c209ee26a4925038533c7e49475\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"195c56637d4bb6e73486e96ded2ed4e79c1a74d3e17bb55242ffb22fb4fda5d3\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"fbd4fb97e202fc7c6298ad523e5497f92f2bdb4e8eaaf35dbc9ff416ba1055a1\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"1920168dc746a2a1b09b9bf0110e32863531710d6da494fca78291c08b76d883\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"863be1690471b7aa5e80068bbfcce626b74a26357244ce520dd8c76d8f7f68d3\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"f8cb47b55166b5cb905ef570050aa617d23c777817ff2f40fea08faf8c80f6f9\",\"NanoCpus\":500000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":1073741824,\"MemorySwap\":2147483648}\n{\"Id\":\"32e6482aba22af06b424646e07b257e1def051f65b117951f1216aab97f7249e\",\"NanoCpus\":500000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":1073741824,\"MemorySwap\":2147483648}\n{\"Id\":\"7fcf4cf3539504f74d57462a2e42d8ba9d5fbcefc84302ddd6fc62ae5c60ea48\",\"NanoCpus\":500000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":1073741824,\"MemorySwap\":2147483648}\n{\"Id\":\"801ec6a027a5d5ee92bb8fe2fe0ac5ca3350b1270cd27ce38984728a74816c09\",\"NanoCpus\":500000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":1073741824,\"MemorySwap\":2147483648}\n{\"Id\":\"e49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"c92a18bd69779f458975856c7d559a756018f0140c1c5567616e0b24c7696db3\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"35abbc7863b959d5c368e933ced802799436d66e2d762bde8dc608333731ba5e\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"2b2335bf8a5efc224733905695e4838459a0544c102703493e5418b6970703b1\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"2f03dfd0741b0213a211615761db81238da2359d57b65aae11408fc135c09c8d\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"220fe5f624283c61145d43ab5d5e9872964fc941da8d6c2f29929a580cef8e6f\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"c89473a78fe2f74d685ce6ad2730bbf89a1f734a29900e4393c4d5908d15e1b7\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"d8691a3d48b03f65dec48739dd953ecbe4d60a6ab79c4b8db30487d30c5fd69c\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"cdd644dbf80fa68cbab168e0a2f24399a99efa120467b73bf22b5e1c7da3fb73\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"fa58c027ce6a64031ad5e32a69c23d95446c38838805bad98177c05661a78dea\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"17d6f560bbd5b09fffefa05be95cd8c9cdc585b489f29fc187efc0071e742304\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"966bf9b1aec71ca1b5954dbeaf02c725ebc1f7237090cdcfcc6a061b1553b363\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"c72779c52599687f6e186e8f9d6b964066bd524bd847fc346da782a3b6bf5b40\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"7dc7774ccde5a5d1eea3e3b22ee133d5ba5dffe477c887ae04cccf802c631abf\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"cef912be257eb43b6585f1e6f411fd855b3091a4a55a3986d1a5d64354aada6d\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"50f69dea7fab6894acb9a3d09b3ba1d5ba3d6997229af02175dc7612213aa0cc\",\"NanoCpus\":2000000000,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":2147483648,\"MemorySwap\":4294967296}\n{\"Id\":\"4b997e48012756c42f9f3fd371e9996d90485d6612d1d370b7fd816847850de1\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"21278c73ce958f895a0bd501f758e6237e446352bba62752b6fb826c7ada8597\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"ab2b9847ada2a14397d833b10ab764332ad7d7188874fad40a7b7c9216a3102e\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"9139c394a417503cc7e9a723612acf830aa4de37b4aa4164e263b26f86e8abb5\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"39ff00a8a2a99e3c5d4498254a465926c6fccfbd8766cef7d371cc2d184e800d\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"5750cbcfb371521e15d9df8960cc7ce9cf555652ad9944cd8fa27506e823dc9f\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"0b748eeeec96904a14b9c79b5e36825765bb0cd3bea0cb58188f2f3be5736ead\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}\n{\"Id\":\"fb4139dd7340e6fc23a1a7806a13edf9d16c9659ade39ac4a484f1c778af7aa1\",\"NanoCpus\":0,\"CpuQuota\":0,\"CpuPeriod\":0,\"CpusetCpus\":\"\",\"Memory\":0,\"MemorySwap\":0}"
+    },
+    "running_ids": {
+      "argv": [
+        "docker",
+        "ps",
+        "--quiet",
+        "--no-trunc"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "6c19849608483c32a3cef1e488cda70177963c209ee26a4925038533c7e49475\n195c56637d4bb6e73486e96ded2ed4e79c1a74d3e17bb55242ffb22fb4fda5d3\nfbd4fb97e202fc7c6298ad523e5497f92f2bdb4e8eaaf35dbc9ff416ba1055a1\n1920168dc746a2a1b09b9bf0110e32863531710d6da494fca78291c08b76d883\n863be1690471b7aa5e80068bbfcce626b74a26357244ce520dd8c76d8f7f68d3\nf8cb47b55166b5cb905ef570050aa617d23c777817ff2f40fea08faf8c80f6f9\n32e6482aba22af06b424646e07b257e1def051f65b117951f1216aab97f7249e\n7fcf4cf3539504f74d57462a2e42d8ba9d5fbcefc84302ddd6fc62ae5c60ea48\n801ec6a027a5d5ee92bb8fe2fe0ac5ca3350b1270cd27ce38984728a74816c09\ne49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236\nc92a18bd69779f458975856c7d559a756018f0140c1c5567616e0b24c7696db3\n35abbc7863b959d5c368e933ced802799436d66e2d762bde8dc608333731ba5e\n2b2335bf8a5efc224733905695e4838459a0544c102703493e5418b6970703b1\n2f03dfd0741b0213a211615761db81238da2359d57b65aae11408fc135c09c8d\n220fe5f624283c61145d43ab5d5e9872964fc941da8d6c2f29929a580cef8e6f\nc89473a78fe2f74d685ce6ad2730bbf89a1f734a29900e4393c4d5908d15e1b7\nd8691a3d48b03f65dec48739dd953ecbe4d60a6ab79c4b8db30487d30c5fd69c\ncdd644dbf80fa68cbab168e0a2f24399a99efa120467b73bf22b5e1c7da3fb73\nfa58c027ce6a64031ad5e32a69c23d95446c38838805bad98177c05661a78dea\n17d6f560bbd5b09fffefa05be95cd8c9cdc585b489f29fc187efc0071e742304\n966bf9b1aec71ca1b5954dbeaf02c725ebc1f7237090cdcfcc6a061b1553b363\nf7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772\nc72779c52599687f6e186e8f9d6b964066bd524bd847fc346da782a3b6bf5b40\n7dc7774ccde5a5d1eea3e3b22ee133d5ba5dffe477c887ae04cccf802c631abf\ncef912be257eb43b6585f1e6f411fd855b3091a4a55a3986d1a5d64354aada6d\n45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c\n50f69dea7fab6894acb9a3d09b3ba1d5ba3d6997229af02175dc7612213aa0cc\n4b997e48012756c42f9f3fd371e9996d90485d6612d1d370b7fd816847850de1\n21278c73ce958f895a0bd501f758e6237e446352bba62752b6fb826c7ada8597\nab2b9847ada2a14397d833b10ab764332ad7d7188874fad40a7b7c9216a3102e\n9139c394a417503cc7e9a723612acf830aa4de37b4aa4164e263b26f86e8abb5\n39ff00a8a2a99e3c5d4498254a465926c6fccfbd8766cef7d371cc2d184e800d\n5750cbcfb371521e15d9df8960cc7ce9cf555652ad9944cd8fa27506e823dc9f\n0b748eeeec96904a14b9c79b5e36825765bb0cd3bea0cb58188f2f3be5736ead\nfb4139dd7340e6fc23a1a7806a13edf9d16c9659ade39ac4a484f1c778af7aa1"
+    },
+    "running_stats": {
+      "argv": [
+        "docker",
+        "stats",
+        "--no-stream",
+        "--format",
+        "{\"ID\":{{json .ID}},\"CPUPerc\":{{json .CPUPerc}},\"MemUsage\":{{json .MemUsage}},\"MemPerc\":{{json .MemPerc}},\"PIDs\":{{json .PIDs}}}",
+        "6c19849608483c32a3cef1e488cda70177963c209ee26a4925038533c7e49475",
+        "195c56637d4bb6e73486e96ded2ed4e79c1a74d3e17bb55242ffb22fb4fda5d3",
+        "fbd4fb97e202fc7c6298ad523e5497f92f2bdb4e8eaaf35dbc9ff416ba1055a1",
+        "1920168dc746a2a1b09b9bf0110e32863531710d6da494fca78291c08b76d883",
+        "863be1690471b7aa5e80068bbfcce626b74a26357244ce520dd8c76d8f7f68d3",
+        "f8cb47b55166b5cb905ef570050aa617d23c777817ff2f40fea08faf8c80f6f9",
+        "32e6482aba22af06b424646e07b257e1def051f65b117951f1216aab97f7249e",
+        "7fcf4cf3539504f74d57462a2e42d8ba9d5fbcefc84302ddd6fc62ae5c60ea48",
+        "801ec6a027a5d5ee92bb8fe2fe0ac5ca3350b1270cd27ce38984728a74816c09",
+        "e49137ed1ba2ea05e6dc6852855dca8a40d47a9ecb91e80f1320f93b4c534236",
+        "c92a18bd69779f458975856c7d559a756018f0140c1c5567616e0b24c7696db3",
+        "35abbc7863b959d5c368e933ced802799436d66e2d762bde8dc608333731ba5e",
+        "2b2335bf8a5efc224733905695e4838459a0544c102703493e5418b6970703b1",
+        "2f03dfd0741b0213a211615761db81238da2359d57b65aae11408fc135c09c8d",
+        "220fe5f624283c61145d43ab5d5e9872964fc941da8d6c2f29929a580cef8e6f",
+        "c89473a78fe2f74d685ce6ad2730bbf89a1f734a29900e4393c4d5908d15e1b7",
+        "d8691a3d48b03f65dec48739dd953ecbe4d60a6ab79c4b8db30487d30c5fd69c",
+        "cdd644dbf80fa68cbab168e0a2f24399a99efa120467b73bf22b5e1c7da3fb73",
+        "fa58c027ce6a64031ad5e32a69c23d95446c38838805bad98177c05661a78dea",
+        "17d6f560bbd5b09fffefa05be95cd8c9cdc585b489f29fc187efc0071e742304",
+        "966bf9b1aec71ca1b5954dbeaf02c725ebc1f7237090cdcfcc6a061b1553b363",
+        "f7da2f440abe10f77da96258f6e76d22ea0bdb7d6369de45a326c9859684b772",
+        "c72779c52599687f6e186e8f9d6b964066bd524bd847fc346da782a3b6bf5b40",
+        "7dc7774ccde5a5d1eea3e3b22ee133d5ba5dffe477c887ae04cccf802c631abf",
+        "cef912be257eb43b6585f1e6f411fd855b3091a4a55a3986d1a5d64354aada6d",
+        "45d32f0372a7526d6a6da39d4284c312d960fc804595678552acfa767d4e677c",
+        "50f69dea7fab6894acb9a3d09b3ba1d5ba3d6997229af02175dc7612213aa0cc",
+        "4b997e48012756c42f9f3fd371e9996d90485d6612d1d370b7fd816847850de1",
+        "21278c73ce958f895a0bd501f758e6237e446352bba62752b6fb826c7ada8597",
+        "ab2b9847ada2a14397d833b10ab764332ad7d7188874fad40a7b7c9216a3102e",
+        "9139c394a417503cc7e9a723612acf830aa4de37b4aa4164e263b26f86e8abb5",
+        "39ff00a8a2a99e3c5d4498254a465926c6fccfbd8766cef7d371cc2d184e800d",
+        "5750cbcfb371521e15d9df8960cc7ce9cf555652ad9944cd8fa27506e823dc9f",
+        "0b748eeeec96904a14b9c79b5e36825765bb0cd3bea0cb58188f2f3be5736ead",
+        "fb4139dd7340e6fc23a1a7806a13edf9d16c9659ade39ac4a484f1c778af7aa1"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"ID\":\"6c1984960848\",\"CPUPerc\":\"0.28%\",\"MemUsage\":\"67.12MiB / 2GiB\",\"MemPerc\":\"3.28%\",\"PIDs\":\"2\"}\n{\"ID\":\"195c56637d4b\",\"CPUPerc\":\"0.33%\",\"MemUsage\":\"70.56MiB / 2GiB\",\"MemPerc\":\"3.45%\",\"PIDs\":\"3\"}\n{\"ID\":\"fbd4fb97e202\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"12.63MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"1920168dc746\",\"CPUPerc\":\"0.32%\",\"MemUsage\":\"70.38MiB / 2GiB\",\"MemPerc\":\"3.44%\",\"PIDs\":\"2\"}\n{\"ID\":\"863be1690471\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"12.63MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"f8cb47b55166\",\"CPUPerc\":\"0.30%\",\"MemUsage\":\"84.76MiB / 1GiB\",\"MemPerc\":\"8.28%\",\"PIDs\":\"3\"}\n{\"ID\":\"32e6482aba22\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"13.02MiB / 1GiB\",\"MemPerc\":\"1.27%\",\"PIDs\":\"1\"}\n{\"ID\":\"7fcf4cf35395\",\"CPUPerc\":\"0.31%\",\"MemUsage\":\"85.2MiB / 1GiB\",\"MemPerc\":\"8.32%\",\"PIDs\":\"3\"}\n{\"ID\":\"801ec6a027a5\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"13.1MiB / 1GiB\",\"MemPerc\":\"1.28%\",\"PIDs\":\"1\"}\n{\"ID\":\"e49137ed1ba2\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"12.64MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"c92a18bd6977\",\"CPUPerc\":\"0.31%\",\"MemUsage\":\"60.27MiB / 2GiB\",\"MemPerc\":\"2.94%\",\"PIDs\":\"3\"}\n{\"ID\":\"35abbc7863b9\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"12.64MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"2b2335bf8a5e\",\"CPUPerc\":\"0.26%\",\"MemUsage\":\"60.35MiB / 2GiB\",\"MemPerc\":\"2.95%\",\"PIDs\":\"3\"}\n{\"ID\":\"2f03dfd0741b\",\"CPUPerc\":\"0.32%\",\"MemUsage\":\"55.51MiB / 2GiB\",\"MemPerc\":\"2.71%\",\"PIDs\":\"2\"}\n{\"ID\":\"220fe5f62428\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"12.64MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"c89473a78fe2\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"12.63MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"d8691a3d48b0\",\"CPUPerc\":\"0.32%\",\"MemUsage\":\"58.38MiB / 2GiB\",\"MemPerc\":\"2.85%\",\"PIDs\":\"3\"}\n{\"ID\":\"cdd644dbf80f\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"12.64MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"fa58c027ce6a\",\"CPUPerc\":\"0.32%\",\"MemUsage\":\"58.63MiB / 2GiB\",\"MemPerc\":\"2.86%\",\"PIDs\":\"3\"}\n{\"ID\":\"17d6f560bbd5\",\"CPUPerc\":\"0.03%\",\"MemUsage\":\"12.63MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"966bf9b1aec7\",\"CPUPerc\":\"0.30%\",\"MemUsage\":\"58.87MiB / 2GiB\",\"MemPerc\":\"2.87%\",\"PIDs\":\"3\"}\n{\"ID\":\"f7da2f440abe\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"12.74MiB / 2GiB\",\"MemPerc\":\"0.62%\",\"PIDs\":\"1\"}\n{\"ID\":\"c72779c52599\",\"CPUPerc\":\"0.27%\",\"MemUsage\":\"60.9MiB / 2GiB\",\"MemPerc\":\"2.97%\",\"PIDs\":\"2\"}\n{\"ID\":\"7dc7774ccde5\",\"CPUPerc\":\"0.28%\",\"MemUsage\":\"60.43MiB / 2GiB\",\"MemPerc\":\"2.95%\",\"PIDs\":\"3\"}\n{\"ID\":\"cef912be257e\",\"CPUPerc\":\"0.30%\",\"MemUsage\":\"60.59MiB / 2GiB\",\"MemPerc\":\"2.96%\",\"PIDs\":\"3\"}\n{\"ID\":\"45d32f0372a7\",\"CPUPerc\":\"0.29%\",\"MemUsage\":\"52.7MiB / 2GiB\",\"MemPerc\":\"2.57%\",\"PIDs\":\"3\"}\n{\"ID\":\"50f69dea7fab\",\"CPUPerc\":\"0.30%\",\"MemUsage\":\"52.73MiB / 2GiB\",\"MemPerc\":\"2.57%\",\"PIDs\":\"2\"}\n{\"ID\":\"4b997e480127\",\"CPUPerc\":\"0.27%\",\"MemUsage\":\"40.71MiB / 23.47GiB\",\"MemPerc\":\"0.17%\",\"PIDs\":\"2\"}\n{\"ID\":\"21278c73ce95\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"14.43MiB / 23.47GiB\",\"MemPerc\":\"0.06%\",\"PIDs\":\"1\"}\n{\"ID\":\"ab2b9847ada2\",\"CPUPerc\":\"0.29%\",\"MemUsage\":\"40.73MiB / 23.47GiB\",\"MemPerc\":\"0.17%\",\"PIDs\":\"3\"}\n{\"ID\":\"9139c394a417\",\"CPUPerc\":\"0.25%\",\"MemUsage\":\"39.71MiB / 23.47GiB\",\"MemPerc\":\"0.17%\",\"PIDs\":\"3\"}\n{\"ID\":\"39ff00a8a2a9\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"14.43MiB / 23.47GiB\",\"MemPerc\":\"0.06%\",\"PIDs\":\"1\"}\n{\"ID\":\"5750cbcfb371\",\"CPUPerc\":\"0.25%\",\"MemUsage\":\"40.16MiB / 23.47GiB\",\"MemPerc\":\"0.17%\",\"PIDs\":\"3\"}\n{\"ID\":\"0b748eeeec96\",\"CPUPerc\":\"0.02%\",\"MemUsage\":\"14.43MiB / 23.47GiB\",\"MemPerc\":\"0.06%\",\"PIDs\":\"1\"}\n{\"ID\":\"fb4139dd7340\",\"CPUPerc\":\"0.01%\",\"MemUsage\":\"14.52MiB / 23.47GiB\",\"MemPerc\":\"0.06%\",\"PIDs\":\"1\"}"
+    }
+  },
+  "observed_at": "2026-10-23T08:07:53.890245+00:00",
+  "scientific_execution": false
+}

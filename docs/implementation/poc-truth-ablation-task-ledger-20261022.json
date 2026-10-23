@@ -1,7 +1,7 @@
 {
   "id": "POC-TRUTH-ABLATION-PLAN-20261022",
   "version": "1.0.0",
-  "status": "TA2-refinement-preparation-candidate-independent-review-pending",
+  "status": "TA2-refinement-diagnostic-evidence-candidate-independent-review-pending",
   "base": "9a3768222f7df3b4a4228f7100f63f9f8eee600e",
   "branch": "docs/poc-truth-ablation-plan-20261022",
   "plan": "poc-truth-ablation-plan-20261022.md",
@@ -140,7 +140,7 @@
     },
     {
       "id": "TA2",
-      "status": "refinement-source-preparation-candidate-independent-review-pending",
+      "status": "refinement-diagnostic-evidence-candidate-independent-review-pending",
       "previous_status": "refinement-preparation-proposed-independent-critique-pending",
       "next_bounded_slice": {
         "id": "TA2-A",
@@ -167,6 +167,32 @@
         "independent_groups": 32,
         "scientific_execution": "not executed; exact implementation/operation review and root GO required",
         "admission": "closed; canonical validators unchanged"
+      },
+      "actual_refinement_diagnostics": {
+        "handoff": "poc-truth-ta2-refinement-20261023.md",
+        "evidence": "evidence/truth-ta2-refinement-20261023/curated-manifest.json",
+        "base": "6413979188099a6b283d7e5e4d5dc15e6e03b15e",
+        "branch": "docs/poc-truth-ta2-refinement-20261023",
+        "accepted_source_candidate": "9b77f782d79f34b462aa13932590021a61b2c8ab",
+        "executed_frozen_source_head": "97d3ae8794b60f51232bf12b4e2c41af2292db75",
+        "invocation_sha256": "aa69f1b9a48c44915a271f77dc9bd433476c2b49a8d61704304ed34c852036b2",
+        "operation_review_git_blob": "c709b92be543f88f7c36cc307f9509a252c9d9df",
+        "postmerge_verification_git_blob": "d5da369558a0024d2d3d219d9694879af21b5dcd",
+        "actual_full_manifest_git_blob": "90e2a7a81b9bafdd603c1a2cfd14d735d2e90c57",
+        "original_raw_manifest_git_blob": "65c9762208153b00843b39660c3d747170eac097",
+        "inventory_git_blob": "c7be70869e627e87fe31a9fe5aca3b989be9e881",
+        "reduction_git_blob": "6dcbe0f25dd2ae39c2168ccc02bb0595f3a48794",
+        "completed_evaluations": 128,
+        "independent_replicate_groups": 32,
+        "failed_inconclusive_pending_running": 0,
+        "final_level_future_trajectories": 640000,
+        "all_variant_future_trajectories": 2560000,
+        "driver_seconds": 136.1762987880502,
+        "process_lifetime_peak_rss_kib": 141608,
+        "container_cgroup_peak_bytes": 107696128,
+        "typed_terminal": "exited0/PID0/OOMfalse/RestartCount0; attach0/watchdog0/operator0 reaped",
+        "qualification": "unresolved; no matched SE/quadrature/full-conditioning/finite-grid/admission/isolation qualification or accuracy/scaling/APPT-04 claim",
+        "independent_actual_evidence_review": "pending"
       },
       "requirements": [
         "TRUTH-02",
