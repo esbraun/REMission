@@ -1,5 +1,7 @@
 # Synthetic data generating processes
 
+**PoC breadth amendment candidate (2026-10-24):** [POC-BREADTH-01–03](poc-ablation-breadth-reuse-20261024.md) requires synthetic device sleep, EMR clinical, demographic and treatment families, with joint/temporal mechanisms and end-to-end consumer coverage. TA-B1 full design and TA-B2 different critique precede broader DGP/scenario/feature-contract implementation/freeze. Version changed laws/H* and independently qualify full conditioning; old restricted-law evidence does not prove broader coverage. No parameter table or numerical result is supplied here.
+
 Specification revision: 2026-10-19. Status: requirements only; no implementation or validation result is asserted.
 
 **Read first:** [00-scope-and-invariants.md](00-scope-and-invariants.md), [01-estimands-and-contracts.md](01-estimands-and-contracts.md). Read linked scenario and evidence entries only when needed.
