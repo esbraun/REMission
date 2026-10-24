@@ -107,7 +107,11 @@ def audit_created(value,cid,spec,role,argv,life):
         AutoRemove=False,SecurityOpt=['no-new-privileges'],Tmpfs={'/tmp':'rw,noexec,nosuid,nodev,size=128m'},
         NetworkMode='none' if ownership else NETWORK_NAME,PublishAllPorts=False,
         RestartPolicy={'Name':'no','MaximumRetryCount':0})
-    for key,wanted in expected.items():require(value.get(key)==wanted and type(value.get(key)) is type(wanted))
+    for key,wanted in expected.items():
+        if ownership and key=='CapAdd':
+            require(type(value.get(key)) is list and len(value[key])==1
+                and type(value[key][0]) is str and value[key][0] in ('CHOWN','CAP_CHOWN'))
+        else:require(value.get(key)==wanted and type(value.get(key)) is type(wanted))
     require(value['State']['Status']=='created' and value['Path']=='python' and value['Args']==argv[argv.index('--entrypoint')+3:]
         and value['PortBindings'] in (None,{}))
     actual=set()
@@ -196,7 +200,7 @@ def validate_packet(spec_path,authorized,authority):
     require(normalized_mount(spec['carrier'])==normalized_mount(str(packet/'carrier')))
     require({p.name for p in (packet/'carrier').iterdir()}=={'admin.py','n_data03_driver.py','deployment.json'}
         and all(p.is_file() and not p.is_symlink() for p in (packet/'carrier').iterdir()))
-    require(spec['namespace']=='remission-n-data03-261023-r1' and spec['volume']==spec['namespace']+'-positive')
+    require(spec['namespace']=='remission-n-data03-261023-r2' and spec['volume']==spec['namespace']+'-positive')
     return packet,spec
 
 

@@ -1,6 +1,7 @@
 """Meaningful fixed-driver invariants, with process/app/Store imports blocked."""
 import ast
 import copy
+import hashlib
 from datetime import datetime,timedelta,timezone
 import json
 from pathlib import Path
@@ -13,6 +14,73 @@ import unittest
 
 import n_data03_driver as d
 import n_data03 as op
+import analysis_lifecycle as frozen_life
+
+# Exact public R1 typed/config and requested-argv records, not private data.
+CAPTURED_CREATED_RAW=r'''{"Id":"ecc1193c6f952e955c8cc5edc76edc022b59223db4cedaa6646b7f5aacfef18e","Image":"sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4","User":"0:0","Path":"python","Args":["-B","-c","import os,json,stat\nfrom pathlib import Path\np=Path('/data');assert os.geteuid()==os.getegid()==0\nassert p.is_dir() and not p.is_symlink() and not any(p.iterdir())\nos.chown(p,0,0);assert p.stat().st_uid==p.stat().st_gid==0\nos.chmod(p,0o700);assert not any(p.iterdir())\nos.chown(p,10001,10001);s=p.stat()\nassert (s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode))==(10001,10001,0o700)\nprint(json.dumps(dict(status='fresh_empty_private_volume_owned',uid=10001,gid=10001,mode=448)))\n"],"Labels":{"remission.task":"remission-n-data03-261023-r1"},"State":{"Dead":false,"Error":"","ExitCode":0,"FinishedAt":"0001-01-01T00:00:00Z","OOMKilled":false,"Paused":false,"Pid":0,"Restarting":false,"Running":false,"StartedAt":"0001-01-01T00:00:00Z","Status":"created"},"RestartCount":0,"Memory":1073741824,"MemorySwap":1073741824,"NanoCpus":2000000000,"PidsLimit":64,"ReadonlyRootfs":true,"Privileged":false,"CapAdd":["CAP_CHOWN"],"CapDrop":["ALL"],"AutoRemove":false,"SecurityOpt":["no-new-privileges"],"Tmpfs":{"/tmp":"rw,noexec,nosuid,nodev,size=128m"},"NetworkMode":"none","PortBindings":{},"PublishAllPorts":false,"RestartPolicy":{"MaximumRetryCount":0,"Name":"no"},"Mounts":[{"Destination":"/data","Driver":"local","Mode":"z","Name":"remission-n-data03-261023-r1-positive","Propagation":"","RW":true,"Source":"/var/lib/docker/volumes/remission-n-data03-261023-r1-positive/_data","Type":"volume"}],"Networks":{"none":{"Aliases":null,"DNSNames":null,"DriverOpts":null,"EndpointID":"","Gateway":"","GlobalIPv6Address":"","GlobalIPv6PrefixLen":0,"GwPriority":0,"IPAMConfig":null,"IPAddress":"","IPPrefixLen":0,"IPv6Gateway":"","Links":null,"MacAddress":"","NetworkID":""}}}
+'''.encode('utf-8')
+CAPTURED_CREATE_RAW=r'''{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "remission-n-data03-261023-r1-ownership",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "1g",
+    "--memory-swap",
+    "1g",
+    "--pids-limit",
+    "64",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,nodev,size=128m",
+    "--restart",
+    "no",
+    "--label",
+    "remission.task=remission-n-data03-261023-r1",
+    "--user",
+    "0:0",
+    "--cap-add",
+    "CHOWN",
+    "--mount",
+    "type=volume,source=remission-n-data03-261023-r1-positive,target=/data",
+    "--workdir",
+    "/app",
+    "--entrypoint",
+    "python",
+    "sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4",
+    "-B",
+    "-c",
+    "import os,json,stat\nfrom pathlib import Path\np=Path('/data');assert os.geteuid()==os.getegid()==0\nassert p.is_dir() and not p.is_symlink() and not any(p.iterdir())\nos.chown(p,0,0);assert p.stat().st_uid==p.stat().st_gid==0\nos.chmod(p,0o700);assert not any(p.iterdir())\nos.chown(p,10001,10001);s=p.stat()\nassert (s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode))==(10001,10001,0o700)\nprint(json.dumps(dict(status='fresh_empty_private_volume_owned',uid=10001,gid=10001,mode=448)))\n"
+  ],
+  "started_monotonic": 838136.1720379,
+  "work_deadline_monotonic": 838146.1720379,
+  "work_seconds": 10,
+  "cleanup_grace_seconds": 2,
+  "exit": 0,
+  "timed_out": false,
+  "deadline_rejected": false,
+  "cli_pid": 15712,
+  "cli_terminal": "OWNED_POPEN_CHILD_EXIT_OBSERVED",
+  "cli_descendants_terminal": "UNKNOWN",
+  "stdout_file": "010-ownership-create.stdout",
+  "stderr_file": "010-ownership-create.stderr",
+  "cleanup_events": [],
+  "stdout": "ecc1193c6f952e955c8cc5edc76edc022b59223db4cedaa6646b7f5aacfef18e\n",
+  "stdout_snapshot_truncated": false,
+  "stderr": "",
+  "stderr_snapshot_truncated": false,
+  "elapsed_seconds": 0.27443970006424934
+}
+'''.replace('\n','\r\n').encode('utf-8')
 
 def generation():
     return dict(status='generated',seed=d.SEED,count=12,panel_id='panel-'+'a'*32,
@@ -325,6 +393,122 @@ class Data03OperatorSource(unittest.TestCase):
             self.assertNotEqual(literals[:3],['docker','network','create'])
             self.assertFalse(set(literals)&{'prune','disconnect','restart','rm','rmi'})
         self.assertEqual(op.BOUNDS,dict(outer=7200,work=7140,setup=180,ownership=30,readiness=30,request=180,metadata=5,create=10,cli_reap=2))
+
+
+class Data03CapabilitySource(unittest.TestCase):
+    @staticmethod
+    def inverse(tree):
+        tree=copy.deepcopy(tree)
+        audit=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='audit_created')
+        loop=next(n for n in audit.body if isinstance(n,ast.For) and isinstance(n.iter,ast.Call) and isinstance(n.iter.func,ast.Attribute) and n.iter.func.attr=='items')
+        assert len(loop.body)==1 and isinstance(loop.body[0],ast.If)
+        loop.body=loop.body[0].orelse
+        count=0
+        for node in ast.walk(tree):
+            if isinstance(node,ast.Constant) and node.value=='remission-n-data03-261023-r2':node.value='remission-n-data03-261023-r1';count+=1
+        assert count==1
+        return tree
+
+    @staticmethod
+    def fixture(role='ownership'):
+        value=json.loads(CAPTURED_CREATED_RAW);cid=value['Id']
+        spec=dict(namespace='remission-n-data03-261023-r1',volume='remission-n-data03-261023-r1-positive',carrier='C:/fixed/public/carrier',
+                  images={'app':op.APP,'generator':op.GEN,'ownership':op.OWNER})
+        argv=op.create_argv(spec,role,1234.)
+        if role!='ownership':
+            value.update(Image=op.APP if role=='app' else op.GEN,User='10001:10001' if role=='app' else '20000:20000',
+                Memory=2147483648,MemorySwap=2147483648,CapAdd=None,NetworkMode=op.NETWORK_NAME,
+                Args=argv[argv.index('--entrypoint')+3:])
+            value['Mounts']=[] if role=='generator' else [value['Mounts'][0],dict(Type='bind',Source=spec['carrier'],Destination='/carrier',RW=False)]
+            value['Networks']={op.NETWORK_NAME:dict(NetworkID=op.NETWORK,Aliases=['generator'] if role=='generator' else [])}
+        return value,cid,spec,argv
+
+    def test_real_captured_fixture_old_rejection_both_exact_spellings_and_requested_argv(self):
+        self.assertEqual(hashlib.sha256(CAPTURED_CREATED_RAW).hexdigest(),'10632f912753f83b452c11c2cc436e14736a5e266b3a4449915307b5a6b6bbac')
+        self.assertEqual(hashlib.sha256(CAPTURED_CREATE_RAW).hexdigest(),'e89e328eb46eebdb81add64cf2dbfc873ff00a58649ed0b7a2b80d139f7bf92b')
+        value,cid,spec,argv=self.fixture()
+        self.assertEqual(argv,json.loads(CAPTURED_CREATE_RAW)['argv'])
+        tree=self.inverse(ast.parse(Path(op.__file__).read_text()))
+        audit=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='audit_created')
+        namespace=dict(op.__dict__);exec(compile(ast.Module(body=[audit],type_ignores=[]),'original_R1_audit_only','exec'),namespace)
+        with self.assertRaises(ValueError):namespace['audit_created'](value,cid,spec,'ownership',argv,frozen_life)
+        for caps in (['CHOWN'],['CAP_CHOWN']):
+            with self.subTest(caps=caps):op.audit_created(dict(value,CapAdd=caps),cid,spec,'ownership',argv,frozen_life)
+
+    def test_singleton_exact_types_only_and_live_roles_still_none(self):
+        value,cid,spec,argv=self.fixture()
+        class StringSubclass(str):pass
+        class ListSubclass(list):pass
+        invalid=(None,[],['CHOWN','CHOWN'],['CHOWN','CAP_CHOWN'],['CAP_CHOWN','DAC_OVERRIDE'],['FOWNER'],
+            ['cap_chown'],['CAP_CAP_CHOWN'],'CHOWN',('CHOWN',),[1],[True],[None],[StringSubclass('CHOWN')],ListSubclass(['CHOWN']))
+        for caps in invalid:
+            with self.subTest(caps=caps),self.assertRaises(ValueError):op.audit_created(dict(value,CapAdd=caps),cid,spec,'ownership',argv,frozen_life)
+        missing=dict(value);missing.pop('CapAdd')
+        with self.assertRaises(ValueError):op.audit_created(missing,cid,spec,'ownership',argv,frozen_life)
+        for role in ('app','generator'):
+            value,cid,spec,argv=self.fixture(role);op.audit_created(value,cid,spec,role,argv,frozen_life)
+            for caps in ([],['CHOWN'],['CAP_CHOWN'],['DAC_OVERRIDE']):
+                with self.subTest(role=role,caps=caps),self.assertRaises(ValueError):op.audit_created(dict(value,CapAdd=caps),cid,spec,role,argv,frozen_life)
+            if role=='app':
+                changed=copy.deepcopy(value);changed['Mounts'][1]['Source']='C:/other/public/carrier'
+                with self.assertRaises(ValueError):op.audit_created(changed,cid,spec,role,argv,frozen_life)
+
+    def test_each_remaining_protected_mutation_stops_before_supervision_and_only_owned_cid_cleanup(self):
+        original,cid,spec,argv=self.fixture()
+        mutations={
+            'Id':lambda v:v.update(Id='f'*64),'Image':lambda v:v.update(Image=op.APP),'User':lambda v:v.update(User='10001:10001'),
+            'Labels':lambda v:v.update(Labels={}), 'Memory':lambda v:v.update(Memory=2147483648),
+            'MemorySwap':lambda v:v.update(MemorySwap=0),'NanoCpus':lambda v:v.update(NanoCpus=1000000000),
+            'PidsLimit':lambda v:v.update(PidsLimit=64.),'ReadonlyRootfs':lambda v:v.update(ReadonlyRootfs=False),
+            'Privileged':lambda v:v.update(Privileged=True),'CapDrop':lambda v:v.update(CapDrop=[]),
+            'CapAdd':lambda v:v.update(CapAdd=None),'AutoRemove':lambda v:v.update(AutoRemove=True),
+            'SecurityOpt':lambda v:v.update(SecurityOpt=[]),'Tmpfs':lambda v:v.update(Tmpfs={}),
+            'NetworkMode':lambda v:v.update(NetworkMode=op.NETWORK_NAME),'PublishAllPorts':lambda v:v.update(PublishAllPorts=True),
+            'RestartPolicy':lambda v:v.update(RestartPolicy={'Name':'always','MaximumRetryCount':0}),
+            'Path':lambda v:v.update(Path='other'),'Args':lambda v:v.update(Args=[]),
+            'PortBindings':lambda v:v.update(PortBindings={'1/tcp':[]}),
+            'State.status':lambda v:v['State'].update(Status='exited'),'State.pid':lambda v:v['State'].update(Pid=1),
+            'Mount.name':lambda v:v['Mounts'][0].update(Name='foreign'),
+            'Mount.destination':lambda v:v['Mounts'][0].update(Destination='/other'),
+            'Mount.RW':lambda v:v['Mounts'][0].update(RW=False),'Mount.type':lambda v:v['Mounts'][0].update(Type='bind')}
+        for name,mutate in mutations.items():
+            with self.subTest(field=name),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                value=copy.deepcopy(original);mutate(value)
+                with self.assertRaises(ValueError):op.audit_created(value,cid,spec,'ownership',argv,frozen_life)
+                calls=[];stops=[];supervise=mock.Mock(side_effect=AssertionError('no start allowed'))
+                final=dict(Id=cid,RestartCount=0,State=copy.deepcopy(original['State']))
+                life=SimpleNamespace(StopUnconfirmed=frozen_life.StopUnconfirmed,checked_state=frozen_life.checked_state,
+                    require_cid=frozen_life.require_cid,supervise=supervise,stop_owned=lambda owned:stops.append(owned) or [],
+                    inspect=lambda owned:final,stopped=frozen_life.stopped)
+                def command_attempt(command,*_args):
+                    calls.append(command)
+                    if command[1:3]==['image','inspect']:
+                        image=command[-1];stdout=json.dumps(dict(Id=image,Os='linux',Architecture='amd64',User='20000:20000' if image==op.GEN else '10001:10001'))
+                    elif command[1:3]==['network','inspect']:
+                        stdout=json.dumps(dict(Id=op.NETWORK,Name=op.NETWORK_NAME,Driver='bridge',Internal=True,
+                            Labels={'remission.task':'remission-cloud-fixture-6e48c02af5b9'},IPAM=[dict(Subnet='10.253.240.0/28',Gateway='10.253.240.1')],Containers={}))
+                    elif command[1:3]==['volume','create']:stdout=spec['volume']
+                    elif command[1]=='create':stdout=cid
+                    elif command[1]=='inspect':stdout=json.dumps(value)
+                    else:stdout=''
+                    return dict(exit=0,timed_out=False,deadline_rejected=False,cli_terminal='OWNED_POPEN_CHILD_EXIT_OBSERVED',error=None,
+                                stdout_snapshot_truncated=False,stderr_snapshot_truncated=False,stdout=stdout)
+                packet=Path(folder);(packet/'attempt').mkdir()
+                with mock.patch.object(op,'module',side_effect=[life,SimpleNamespace(command_attempt=command_attempt)]),mock.patch.object(op,'Generator') as generator:
+                    code=op.worker(packet,spec,time.monotonic(),time.time()+7140,time.monotonic()+7200)
+                self.assertEqual(code,1);supervise.assert_not_called();generator.assert_not_called()
+                self.assertEqual(stops,[cid]);self.assertEqual(sum(command[1]=='create' for command in calls),1)
+                result=json.loads((packet/'attempt/operation-terminal.json').read_bytes())
+                self.assertEqual(result['owned_cids'],{'ownership':cid});self.assertEqual(result['unresolved'],[])
+
+    def test_inverse_entire_operator_is_only_enum_and_new_namespace(self):
+        tree=ast.parse(Path(op.__file__).read_text());inverse=self.inverse(tree)
+        self.assertEqual(hashlib.sha256(ast.dump(inverse,include_attributes=False).encode()).hexdigest(),'c354ffada53e03660ec6a7e52b2e55c3d8808a96284da4b397bdaba47278a8ce')
+        expected=dict(create_argv='18cfee67c62604d20df2409974c6d6a8dd1b48f542100ba04f0d69ed26a5acf7',
+            worker='229540e0a773093f3384786c538027249f53184ce830980a86c229d9e2b6ec56',launch='358aca3d7def0674232d69d50f7bdb7d9168111a747d882dfacce887f6c6ac97')
+        for name,digest in expected.items():
+            node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==name)
+            self.assertEqual(hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest(),digest)
 
 
 if __name__=='__main__':unittest.main()

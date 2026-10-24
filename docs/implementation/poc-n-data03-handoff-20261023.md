@@ -110,3 +110,27 @@ Fresh independent SOURCE+OP review and a NEW root GO are mandatory before any
 driver, network, Store, simulation or other native operation. All old S1 source,
 raw/private Stores/images/resources remain untouched. Full paired N0/N1 fitting,
 native diagnostics/artifacts, app/browser work and scientific/human gates remain.
+
+## R2 capability representation preparation
+
+R1 stopped before start: public typed creation recorded `CapAdd=["CAP_CHOWN"]`
+against requested `--cap-add CHOWN`. The accepted repair admits only exact
+singleton lists `["CHOWN"]` or `["CAP_CHOWN"]` for ownership. App/generator
+still require `None`; the requested privileges and all other checks are unchanged.
+Plan `836b53a0fba9f5d0ffdb9952ac71ff965a795ebd` and independent critique
+`da678cea42dac6a9dff9b2c099b1ade6453ed85b` authorize preparation only.
+
+The full captured fixture is checked against the old rejection and both repaired
+spellings. Guarded controls cover malformed/extra capabilities, app/generator
+rejection, protected-field mutations before supervision, and exact acquired-CID
+cleanup. Whole-module AST inversion isolates only this enumeration and the fresh
+namespace. All29 guarded tests pass; the initial fixture CRLF reconstruction
+failure is retained, corrected without changing captured data.
+
+Fresh namespace `remission-n-data03-261023-r2`, volume suffix `-positive`, and
+packet under `artifacts/n-data03-5ed-r2` have separate custody. R1 source, raw41,
+created CID and volume remain retained; no current-state query or reuse occurs.
+Driver, panel declaration/seed/target, images, network guard, quotas, clocks and
+lifecycle remain unchanged. Final packet hashes and exact prospective command
+are recorded in its public evidence handoff. Fresh independent SOURCE+OP review
+and a new root GO are required; this checkpoint performs no runtime operation.
