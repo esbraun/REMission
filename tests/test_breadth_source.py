@@ -2,7 +2,15 @@
 from copy import deepcopy
 from datetime import datetime,timedelta,timezone
 from pathlib import Path
+import ast
+from fractions import Fraction
+import io
+import json
+import os
+import socket
+import subprocess
 import unittest
+from unittest.mock import patch
 
 from contracts.domain import breadth as b
 from contracts.domain.boundaries import LearnerHistory
@@ -235,6 +243,186 @@ class PrivateWireTests(unittest.TestCase):
             if change=='value':changed['record']['age_years']=60.
             if change=='extra':changed['private_seed']=1
             with self.subTest(change=change),self.assertRaises(ValueError):g.history_from_entries('fixture-member',ORIGIN,[changed])
+
+
+class ProducerSourceTests(unittest.TestCase):
+    """Single-patient short CONSTANT-draw fixtures; no cohort generation."""
+    def request(self):
+        value=PrivateWireTests().request();value.update(through_day=1,namespace='DO-NOT-EXPORT-KEY')
+        return value
+
+    def short(self,request=None,draw=None):
+        # Replace all exogenous draws with inert named constants. This tests
+        # source plumbing, not a realization/qualification of the random law.
+        with patch.object(g,'uniform',side_effect=draw or (lambda *args:.5)),patch.object(g,'normal',return_value=0.):
+            return g.generate(self.request() if request is None else request)
+
+    def test_short_fixed_source_has_four_families_no_latent_seed_and_original_delivery(self):
+        result=self.short();h=g.history_from_entries(result['patient_id'],ORIGIN,result['records'])
+        self.assertEqual(set(result),{'law_version','patient_id','records'})
+        self.assertEqual({r.source.id for r in h.records},set(b.SOURCE_IDS.values()))
+        self.assertEqual(sum(r.kind=='device_sleep' for r in h.records),15) # -13..1
+        self.assertFalse(any(r.event_at.date()<(ORIGIN-timedelta(days=13)).date() for r in h.records if r.kind=='device_sleep'))
+        assignment=next(r for r in h.records if r.kind=='assignment')
+        delivery=next(r for r in h.records if r.kind=='delivery')
+        self.assertEqual((assignment.record_id,delivery.assignment_id),('fixture-behavioral-0','fixture-behavioral-0'))
+        self.assertTrue(delivery.taken);self.assertEqual(delivery.event_at,ORIGIN+timedelta(hours=20))
+        isi=next(r for r in h.records if r.kind=='isi')
+        self.assertEqual(isi.recall_start,ORIGIN-timedelta(days=14)+timedelta(hours=7))
+        self.assertEqual(isi.recall_end,ORIGIN+timedelta(hours=7))
+        for forbidden in ('DO-NOT-EXPORT-KEY','"seed"','"x_previous"','"response"','"device_bias"','"coefficients"','"scenario"'):
+            self.assertNotIn(forbidden,b.canonical(result).decode())
+        self.assertEqual(self.short(),result) # constant fixture determinism only
+
+    def test_terminal_observation_calls_no_next_transition_and_cannot_backdate_delayed_values(self):
+        calls=[];original=g.step
+        def step(*args,**kwargs):calls.append(args[2]);return original(*args,**kwargs)
+        def draw(*args):return .05 if args[-1]=='clinical-delay' else .95 if args[-1]=='device-sync' else .5
+        with patch.object(g,'step',side_effect=step):result=self.short(draw=draw)
+        self.assertEqual(calls,list(range(-14,1))) # terminal1 is X-only, no Z2
+        h=g.history_from_entries(result['patient_id'],ORIGIN,result['records'])
+        terminal=next(r for r in h.records if r.kind=='clinical' and r.event_at==ORIGIN+timedelta(days=1,hours=8))
+        self.assertEqual(terminal.available_at,ORIGIN+timedelta(days=2,hours=8))
+        projected=h.project(ORIGIN+timedelta(hours=12))
+        self.assertNotIn('fixture-member-clinical-0',projected.active_record_ids)
+        self.assertNotIn('fixture-member-device_sleep-0',projected.active_record_ids)
+        self.assertNotIn(terminal.record_id,projected.active_record_ids)
+        source=ast.parse(Path(g.__file__).read_text(encoding='utf-8'))
+        function=next(n for n in source.body if isinstance(n,ast.FunctionDef) and n.name=='generate')
+        terminal_branch=next(n for n in ast.walk(function) if isinstance(n,ast.If) and ast.unparse(n.test)=='day < request.through_day' and n.orelse)
+        self.assertFalse(any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='step' for statement in terminal_branch.orelse for n in ast.walk(statement)))
+
+    def test_short_prefix_and_later_action_leave_original_available_observations_identical(self):
+        full=self.short();request=self.request();request.update(through_day=0,actions=[])
+        prefix=self.short(request)
+        def projection(result):
+            return g.history_from_entries(result['patient_id'],ORIGIN,result['records']).project(ORIGIN+timedelta(hours=12)).model_dump(mode='json')
+        self.assertEqual(projection(prefix),projection(full))
+        by_id={e['record']['record_id']:e for e in full['records']}
+        for original in prefix['records']:self.assertEqual(original,by_id[original['record']['record_id']])
+
+    def test_initial_nonwear_rejection_independence_and_absent_status_cutoff(self):
+        calls=[]
+        def rejected(name):calls.append(name);return .01
+        worn,status=g.device_state(-13,False,rejected)
+        self.assertEqual((worn,status),(True,'quality_rejected'));self.assertEqual(calls,['device-rejection'])
+        worn,status=g.device_state(-12,worn,lambda name:.01)
+        self.assertEqual((worn,status),(False,'nonwear'))
+        worn,status=g.device_state(-11,worn,lambda name:.7)
+        self.assertEqual((worn,status),(True,'observed'))
+        def draw(*args):return .01 if args[-1]=='device-rejection' else .5
+        result=self.short(draw=draw);h=g.history_from_entries(result['patient_id'],ORIGIN,result['records'])
+        device=next(r for r in h.records if r.kind=='device_sleep' and r.event_at==ORIGIN+timedelta(hours=7))
+        self.assertEqual((device.status,device.sleep_minutes),('quality_rejected',None))
+        self.assertEqual(device.available_at,ORIGIN+timedelta(hours=7,minutes=30))
+        self.assertNotIn(device.record_id,h.project(device.available_at).active_record_ids)
+        self.assertIn(device.record_id,h.project(device.available_at+timedelta(microseconds=1)).active_record_ids)
+
+    def test_real_grid_ties_distinct_from_literal_and_isi_half_up(self):
+        # Independent exact rational expected REAL quantizer, no float bridge.
+        def real_grid(value,grid):return grid*round(value/grid)
+        for value,grid,expected in [(Fraction(5,100),Fraction(1,10),Fraction(0)),(Fraction(15,100),Fraction(1,10),Fraction(2,10)),
+                (Fraction(12345,10000),Fraction(1,1000),Fraction(1234,1000)),(Fraction(12355,10000),Fraction(1,1000),Fraction(1236,1000))]:
+            self.assertEqual(real_grid(value,grid),expected)
+        self.assertEqual(round(.05,1),.1);self.assertEqual(round(.15,1),.1)
+        self.assertNotEqual(Fraction(str(round(.05,1))),real_grid(Fraction(5,100),Fraction(1,10)))
+        self.assertEqual(g.isi_total([2.5]*14,0.),3);self.assertEqual(g.isi_total([-.5]*14,0.),0)
+        with self.assertRaises(ValueError):g.isi_total([1.]*13,0.)
+        self.assertEqual((b.LAW_DEFINITION['literal_equivalence'],b.LAW_DEFINITION['finite_grid_discrepancy_bound']),(False,None))
+
+    def test_scenario_coefficients_and_midnight_identity_are_explicit_private_inputs(self):
+        self.assertEqual(g.treatment_coefficients('target','external_conflict'),(2.,4.))
+        self.assertEqual(g.treatment_coefficients('external','external_conflict'),(2.,1.))
+        self.assertEqual(g.treatment_coefficients('target','sharp_null'),(0.,0.))
+        value=self.request();value['origin']=(ORIGIN+timedelta(hours=12)).isoformat()
+        with self.assertRaises(ValueError):g.BreadthRequest.model_validate_json(b.canonical(value))
+        value=self.request();value['patient_id']='a'*81
+        with self.assertRaises(ValueError):g.BreadthRequest.model_validate_json(b.canonical(value))
+
+    def test_explicit_lazy_dispatch_preserves_historical_branch_and_unknown_refusal(self):
+        path=Path(g.__file__).with_name('server.py');module=ast.parse(path.read_text(encoding='utf-8'))
+        function=next(n for n in module.body if isinstance(n,ast.FunctionDef) and n.name=='generate')
+        old=ast.parse("def generate(request):\n return generate_v2(request) if request.get('law_version') == 'poc-longitudinal-v2' else generate_v1(request)").body[0]
+        self.assertEqual(ast.dump(function,include_attributes=False),ast.dump(old,include_attributes=False))
+        self.assertFalse(any(isinstance(n,ast.ImportFrom) and n.module=='breadth' for n in module.body))
+        # Historical dispatch body is completely unchanged; new profile lives
+        # exclusively behind the distinct /generate/breadth method.
+        calls=[]
+        def named(name):
+            def run(value):calls.append(name);return name
+            return run
+        env=dict(generate_v1=named('v1'),generate_v2=named('v2'))
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[deepcopy(function)],type_ignores=[])),'<inert-dispatch>','exec'),env)
+        for version,expected in [('poc-longitudinal-v2','v2'),(b.LAW_VERSION,'v1'),('unknown','v1')]:
+            self.assertEqual(env['generate']({'law_version':version}),expected)
+        self.assertEqual(calls,['v2','v1','v1'])
+
+    def test_short_support_effect_is_next_report_only_and_original_full_probability_retained(self):
+        value=self.request();value.update(family='S',support_mode='S1')
+        value['actions'].append(PrivateWireTests().action(0,'support','support_prompt',.5,[True,True]))
+        prompted=self.short(value);value['actions'][-1]=PrivateWireTests().action(0,'support','no_prompt',.5,[True,True])
+        no_prompt=self.short(value)
+        def selected(result,kind,day):
+            return next(e['record'] for e in result['records'] if e['record']['kind']==kind and e['record']['event_at'].startswith((ORIGIN+timedelta(days=day)).date().isoformat()))
+        self.assertEqual(selected(prompted,'daily_report',0)['value'],selected(no_prompt,'daily_report',0)['value'])
+        self.assertAlmostEqual(selected(prompted,'daily_report',1)['value']-selected(no_prompt,'daily_report',1)['value'],.4)
+        self.assertEqual(selected(prompted,'clinical',1)['value'],selected(no_prompt,'clinical',1)['value'])
+        self.assertEqual(selected(prompted,'device_sleep',1)['sleep_minutes'],selected(no_prompt,'device_sleep',1)['sleep_minutes'])
+        assigned=next(e['record'] for e in prompted['records'] if e['record']['kind']=='assignment' and e['record']['component']=='support')
+        self.assertEqual((assigned['chosen_probability'],assigned['support_probabilities'],assigned['support_available']),(.5,(.5,.5),(True,True)))
+
+    def test_new_transport_full126_logged_request_sizing_and_old_handler_inverse(self):
+        value=PrivateWireTests().request();value.update(family='S',support_mode='S2',through_day=126,actions=[])
+        for day in range(126):
+            for component,option,probability,mask in [('behavioral','behavioral_continue',1.,None),('support','no_prompt',.5,[True,True])]:
+                action=PrivateWireTests().action(day,component,option,probability,mask)
+                action['assignment_id']=('b' if component=='behavioral' else 's')+'a'*123+str(day)
+                action['policy']=dict(id='p'*128,version='v'*256,sha256='a'*64)
+                value['actions'].append(action)
+        g.BreadthRequest.model_validate_json(b.canonical(value))
+        self.assertGreater(len(b.canonical(value)),32768);self.assertLessEqual(len(b.canonical(value)),262144)
+        module=ast.parse(Path(g.__file__).with_name('server.py').read_text(encoding='utf-8'))
+        handler=next(n for n in module.body if isinstance(n,ast.ClassDef) and n.name=='Handler')
+        body=next(n for n in handler.body if isinstance(n,ast.FunctionDef) and n.name=='do_POST')
+        # Legacy endpoint's body is retained after the explicit new-path branch.
+        legacy=deepcopy(body);legacy.body=legacy.body[1:]
+        self.assertEqual(ast.unparse(legacy.body[0]),"length = int(self.headers.get('Content-Length', '0'))")
+        self.assertIn("not 0 < length <= 32768",ast.unparse(legacy))
+        self.assertEqual(ast.unparse(body.body[0].test),"self.path == '/generate/breadth'")
+
+    def test_actual_new_transport_method_bytebound_short_duplicate_nonfinite_and_exact_profile(self):
+        module=ast.parse(Path(g.__file__).with_name('server.py').read_text(encoding='utf-8'))
+        handler=next(n for n in module.body if isinstance(n,ast.ClassDef) and n.name=='Handler')
+        method=deepcopy(next(n for n in handler.body if isinstance(n,ast.FunctionDef) and n.name=='breadth_POST'))
+        # Inert producer substitution only; actual decoder/read/length/status body.
+        for node in ast.walk(method):
+            if isinstance(node,ast.Try):node.body=[n for n in node.body if not isinstance(n,ast.ImportFrom)]
+        called=[]
+        def producer(value):called.append(value);return {'source_only':True}
+        env=dict(json=json,generate_breadth=producer)
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[method],type_ignores=[])),'<inert-http-method>','exec'),env)
+        class Peer:
+            def __init__(self,raw,length):self.headers={'Content-Length':length};self.rfile=io.BytesIO(raw);self.wfile=io.BytesIO();self.status=None
+            def send_error(self,status,*args):self.status=status
+            def send_response(self,status):self.status=status
+            def send_header(self,*args):pass
+            def end_headers(self):pass
+        valid=b.canonical({'law_version':b.LAW_VERSION});padded=valid+b' '*(262144-len(valid))
+        for raw,length,status in [(valid,str(len(valid)),200),(padded,'262144',200),(padded+b' ','262145',400),
+                (valid,'-1',400),(valid,'+3',400),(valid,'',400),(valid,'0000001',400),(valid,'１２',400),
+                (valid,str(len(valid)+1),422),(b'{"law_version":"poc-breadth-longitudinal-v3","x":NaN}','56',422),
+                (b'{"law_version":"poc-breadth-longitudinal-v3","x":1,"x":2}',None,422),
+                (b'{"law_version":"poc-longitudinal-v2"}',None,422),(b'[]','2',422)]:
+            peer=Peer(raw,str(len(raw)) if length is None else length)
+            with self.subTest(length=length,status=status):env['breadth_POST'](peer);self.assertEqual(peer.status,status)
+        self.assertEqual(len(called),2)
+
+    def test_source_guards_are_active_before_any_runtime_access(self):
+        self.assertEqual(os.environ,{}) # literal fixture, never real env copied
+        for module in ('numpy','pymc','sqlite3','ctypes','services.foundation.store','apps.foundation.app'):
+            with self.subTest(module=module),self.assertRaises(AssertionError):__import__(module)
+        for call in (lambda:subprocess.Popen(['not-executed']),lambda:socket.socket(),lambda:Path('artifacts/private-never-open/auth.json').read_bytes()):
+            with self.assertRaises(AssertionError):call()
 
 
 if __name__=='__main__':unittest.main()

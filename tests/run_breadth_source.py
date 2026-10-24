@@ -60,6 +60,8 @@ if __name__=='__main__':
         record=dict(scope='B3.1 SOURCE: scalar short fixtures/Pydantic/lineage only',tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),
             status='PASS' if result.wasSuccessful() else 'FAIL',full_generation=False,scientific_qualification=False,model_consumption=False,
             app_Store_SQLite=False,private=False,host_environment_copy=False,native_or_network=False)
+        definitions=sys.modules['contracts.domain.breadth']
+        record['definitions']={name:getattr(definitions,name) for name in ('LAW_REF','HISTORY_REF','FEATURE_REF')}
         OUTPUT.joinpath('checks.json').write_text(json.dumps(record,sort_keys=True,indent=2)+'\n',encoding='utf-8')
     assert not blocked.intersection(sys.modules)-preloaded
     print('SOURCE ONLY: no full cohort generation, numerical imports, model consumption, runtime or scientific qualification')

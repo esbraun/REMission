@@ -59,6 +59,7 @@ class BreadthRequest(StrictModel):
     @model_validator(mode='after')
     def fixed_family_schedule(self):
         if self.origin!=ORIGIN:raise ValueError('fixed breadth UTC-midnight origin required; old noon profile is distinct')
+        if len(self.patient_id)>80:raise ValueError('patient identity leaves room for fixed observed record suffixes')
         if self.population=='target' and self.index>=12 or self.population=='external' and self.family!='V':
             raise ValueError('complete12 target or120-member external V study ordinal required')
         if self.family!='V' and self.scenario!='reference':raise ValueError('only five prespecified family/scenario cells')
@@ -186,3 +187,101 @@ def measurements(person,*,x,z,steroid,previous_support,prompt_count,clinical_noi
     d=None if device_status!='observed' else round_value(clip(480-8*z+person['device_bias']+25*device_noise,0,480),1)
     q=None if report_missing else round_value(clip(10-z/3+previous_support*(.60*person['response']-.10*prompt_count-.20*steroid)+.45*report_noise,0,10),3)
     return dict(clinical=p,device=d,estimated_wake=None if d is None else 480-d,quality=q)
+
+
+def device_state(day,worn,draw):
+    """One retained episode: rejection never changes the wear state."""
+    if day==-13:worn=True
+    elif day>-13:worn=not (draw('device-nonwear') < (.08 if worn else .60))
+    else:raise ValueError('no retained device episode before ending-13')
+    status='nonwear' if not worn else 'quality_rejected' if draw('device-rejection')<.02 else 'observed'
+    return worn,status
+
+
+def treatment_coefficients(population,scenario):
+    # Evaluator/private producer scenario, never an exported learner parameter.
+    if scenario=='sharp_null':return (0.,0.)
+    return (2.,1.) if population=='external' and scenario=='external_conflict' else (2.,4.)
+
+
+def generate(value):
+    """Private single-patient observed source product, not an admission claim.
+
+    The caller supplies original retained assignments/probabilities. This does
+    not run a policy, choose a favorable history or reconstruct probabilities.
+    All latent states and generation keys remain local to this function.
+    """
+    if type(value) is not dict:raise ValueError('closed private breadth request required')
+    request=BreadthRequest.model_validate_json(canonical(value))
+    def u(day,name):return uniform(request.seed,request.namespace,request.index,day,name)
+    def n(day,name):return normal(request.seed,request.namespace,request.index,day,name)
+    person=baseline(lambda name:u(-15,name),lambda name:n(-15,name))
+    state=dict(x_previous=0.,z=person['b']+.55*math.sin(2*math.pi*(-14)/21),e=0.,c=0.,escalate=0.,
+        ma=0.,mb=0.,rebound=0.,previous_assigned_drug=None)
+    rows=[];patient=request.patient_id
+    def at(day,hour=0,minute=0):return request.origin+timedelta(days=day,hours=hour,minutes=minute)
+    def add(kind,day,hour,values,*,recorded=None,available=None,identifier=None):
+        event=at(day,hour)
+        recorded=event if recorded is None else recorded;available=recorded if available is None else available
+        rows.append(observed_entry(patient,kind,identifier or f'{patient}-{kind}-{day}',event,recorded,available,**values))
+    add('demographic',-15,0,dict(age_years=person['age'],age_unit='years',synthetic_sex_code=person['sex_code'],
+        sex_concept='fictional-two-code-scenario-variable-not-general-sex-gender-ontology'))
+    schedule_id=f'{patient}-steroid_schedule--15'
+    add('steroid_schedule',-15,0,dict(period_days=21,active_residues=[0,1,2],unit='binary_contextual_exposure_not_dose'),identifier=schedule_id)
+    current={'behavioral':None,'medication':None};worn=True;burdens=[];prompts=[]
+    coefficients=treatment_coefficients(request.population,request.scenario)
+    for day in range(-14,request.through_day+1):
+        today=[a for a in request.actions if a.day==day]
+        for action in today:
+            if action.component!='support':current[action.component]=action
+        assigned_drug=current['medication'].option if current['medication'] is not None else None
+        taken={option:False for option in ('behavioral_continue','behavioral_escalate','MED_A','MED_B')}
+        if day<request.through_day:
+            for component,action in current.items():
+                if action is not None and action.option is not None:
+                    taken[action.option]=u(day,'adherence-'+component)<.90-.15*int(day%21 in (0,1,2))
+            next_state=step(state,person,day,eta=n(day,'clinical-state'),xi=n(day+1,'sleep-innovation'),
+                taken=taken,assigned_drug=assigned_drug,coefficients=coefficients)
+            x=next_state['x_previous']
+        else:
+            # Terminal observation closure only. No treatment/error step or Z127.
+            x=clinical_state(state['x_previous'],state['z'],person,day,n(day,'clinical-state'))
+        if day>=-13:
+            burdens.append(state['z']);worn,status=device_state(day,worn,lambda name:u(day,name))
+            previous_support=int(day-1 in prompts);prior_count=sum(day-7<=old<day-1 for old in prompts)
+            clinical_missing=u(day,'clinical-missing')<.05
+            values=measurements(person,x=x,z=state['z'],steroid=int((day-1)%21 in (0,1,2)),
+                previous_support=previous_support,prompt_count=prior_count,clinical_noise=n(day,'clinical-measurement'),
+                device_noise=n(day,'device-measurement'),report_noise=n(day,'quality-measurement'),
+                clinical_missing=clinical_missing,device_status=status,report_missing=u(day,'quality-missing')<.10)
+            clinical_available=at(day+int(not clinical_missing and u(day,'clinical-delay')<.10),8)
+            add('clinical',day,8,dict(value=values['clinical'],unit='synthetic_clinical_score_0_10',
+                missingness='missing' if clinical_missing else 'observed'),available=clinical_available)
+            add('steroid_exposure',day,8,dict(active=day%21 in (0,1,2),schedule_id=schedule_id,unit='binary_contextual_exposure_not_dose'))
+            # The observed-value sync draw is not a latent outcome selection.
+            sync=at(day+int(status=='observed' and u(day,'device-sync')>=.80),7,30)
+            add('device_sleep',day,7,dict(episode_start=at(day-1,23).isoformat(),episode_end=at(day,7).isoformat(),time_in_bed=480.,
+                sleep_minutes=values['device'],estimated_wake_minutes=values['estimated_wake'],status=status,unit='minutes'),recorded=sync)
+            add('daily_report',day,7,dict(value=values['quality'],unit='quality_points_0_10',
+                missingness='missing' if values['quality'] is None else 'observed'),recorded=at(day,8,1))
+            if day>=0 and day%14==0:
+                add('isi',day,11,dict(total=isi_total(burdens[-14:],n(day,'isi-measurement')),unit='ISI_points',
+                    instrument='synthetic-rounded-clipped-ISI-total-v3',recall_days=14,
+                    recall_start=at(day-14,7).isoformat(),recall_end=at(day,7).isoformat()),recorded=at(day,11,59))
+        if day<request.through_day:
+            for action in today:
+                add('assignment',day,12,dict(component=action.component,option=action.option,policy=action.policy.model_dump(mode='json'),
+                    chosen_probability=action.chosen_probability,support_available=action.support_available,
+                    support_probabilities=action.support_probabilities,unit='assigned_action'),identifier=action.assignment_id)
+                if action.component=='support':
+                    if action.option=='support_prompt':prompts.append(day)
+                    add('delivery',day,20,dict(component='support',assignment_id=action.assignment_id,option=action.option,
+                        taken=True,unit='actual_delivery_taking'),identifier=f'{patient}-delivery-{day}-support')
+            for component,action in current.items():
+                if action is not None and action.option is not None:
+                    add('delivery',day,20,dict(component=component,assignment_id=action.assignment_id,option=action.option,
+                        taken=taken[action.option],unit='actual_delivery_taking'),identifier=f'{patient}-delivery-{day}-{component}')
+            state=next_state
+    # Validate source hashes and temporal lineage before the private boundary.
+    history_from_entries(patient,request.origin,rows)
+    return dict(law_version=LAW_VERSION,patient_id=patient,records=rows)
