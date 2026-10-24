@@ -660,6 +660,9 @@ def create_app(settings: Settings) -> FastAPI:
         from .analysis import view
         from .appointment import current_information
         frozen=json.loads(row['request_json'])
+        if frozen.get('kind')=='poc_support_s2_app_fit_input':
+            from .support_s2_analysis import view as support_s2_view
+            return support_s2_view(row)
         if frozen.get('kind')=='poc_nof1_input':
             from .nof1_analysis import owned_view
             return owned_view(db,row,now=settings.clock())
@@ -727,6 +730,48 @@ def create_app(settings: Settings) -> FastAPI:
                 (json.loads(matches[0]['response'])['id'],current['account_id'])).fetchone()
             if row is None:return dict(status='unknown',attempt=None)
             return dict(status='found',attempt=owned_view(db,row,now=settings.clock()))
+
+    @app.post('/api/support-s2-selections')
+    async def select_support_s2(request: Request):
+        from contracts.domain.support_s2_app import S2Selection
+        from .support_s2_analysis import select
+        data=await body(request,S2Selection)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True)
+            try:response=select(db,current,request.headers.get('idempotency-key'),data.model_dump(mode='json'),now=settings.clock())
+            except ValueError as error:raise APIError(409,'support_s2_selection_rejected',str(error)) from error
+            return response
+
+    @app.post('/api/support-s2-analyses/preview')
+    async def preview_support_s2(request: Request):
+        from contracts.domain.support_s2_app import S2ExportSelection
+        from .support_s2_analysis import export
+        data=await body(request,S2ExportSelection)
+        with store.transaction() as db:
+            current=session(db,request,mutation=True)
+            try:product=export(db,current['account_id'],data.selection_key,data.members,data.cutoff,source_commit=settings.source_commit)
+            except ValueError as error:raise APIError(409,'support_s2_export_rejected',str(error)) from error
+            return dict(export=product.reference.model_dump(),members=[m.model_dump() for m in product.provenance.members],
+                cutoff=product.provenance.cutoff.isoformat(),configuration=product.configuration.model_dump(),executable=False)
+
+    @app.post('/api/support-s2-analyses')
+    async def submit_support_s2(request: Request):
+        from contracts.domain.support_s2_app import S2Submission
+        from .support_s2_analysis import submit
+        data=await body(request,S2Submission)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True)
+            try:response=submit(db,current,request.headers.get('idempotency-key'),data.model_dump(mode='json'),now=settings.clock(),source_commit=settings.source_commit)
+            except ValueError as error:raise APIError(409,'support_s2_analysis_rejected',str(error)) from error
+            return JSONResponse(response,status_code=202)
+
+    @app.get('/api/support-s2-analyses/receipt')
+    def support_s2_receipt(request: Request,key: str):
+        from .support_s2_analysis import reconcile
+        with store.transaction() as db:
+            current=session(db,request)
+            try:return reconcile(db,current['account_id'],key)
+            except ValueError as error:raise APIError(409,'support_s2_receipt_rejected',str(error)) from error
 
     @app.post('/api/support-s1-analyses')
     async def submit_support_s1(request: Request):
