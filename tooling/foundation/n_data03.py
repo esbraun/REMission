@@ -182,9 +182,9 @@ class Generator:
         for process in (self.attach,self.watch):process.wait(timeout=2)
         terminal=self.life.inspect(self.cid,deadline=self.deadline)
         self.life.receipt(self.folder/'watchdog-terminal.json',self.cid,self.nonce,self.deadline,terminal)
-        require(terminal['State']['Status']=='exited' and terminal['State']['ExitCode'] in (0,143)
+        require(terminal['State']['Status']=='exited' and terminal['State']['ExitCode'] in (0,143,137)
             and not terminal['State']['OOMKilled'] and not terminal['State']['Dead']
-            and self.watch.returncode==0 and self.attach.returncode in (0,terminal['State']['ExitCode']))
+            and self.watch.returncode==0 and (self.attach.returncode==137 if terminal['State']['ExitCode']==137 else self.attach.returncode in (0,terminal['State']['ExitCode'])))
         save(self.folder/'intentional-terminal.json',dict(terminal=terminal,cleanup=cleanup))
     def reap(self):
         records={}

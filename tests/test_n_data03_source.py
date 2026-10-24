@@ -18,7 +18,18 @@ import n_data03_driver as d
 import n_data03 as op
 import analysis_lifecycle as frozen_life
 
+def intentional_stop_inverse_source(source):
+    replacements=[("terminal['State']['ExitCode'] in (0,143,137)","terminal['State']['ExitCode'] in (0,143)"),
+        ("(self.attach.returncode==137 if terminal['State']['ExitCode']==137 else self.attach.returncode in (0,terminal['State']['ExitCode']))",
+         "self.attach.returncode in (0,terminal['State']['ExitCode'])")]
+    for before,after in replacements:
+        assert source.count(before)==1,before
+        source=source.replace(before,after)
+    return source
+
+
 def startup_inverse_source(source):
+    source=intentional_stop_inverse_source(source)
     source=source.replace("'remission-n-data03-261024-r4'","'remission-n-data03-261024-r3'")
     if 'def publish_startup(' not in source:return source
     source=source[:source.index('def publish_startup(')]+source[source.index('def ordinary('):]
@@ -846,7 +857,7 @@ class Data03CutoffSource(unittest.TestCase):
     def test_entire_driver_inverse_only_declared_scalar_timestamp_delta(self):
         source=Path(d.__file__).read_text();inverse=cutoff_inverse(source).encode()
         self.assertEqual(hashlib.sha1(b'blob '+str(len(inverse)).encode()+b'\0'+inverse).hexdigest(),'e1b7c486172c121160dff82b3ea7a96d5da38157')
-        operator=Path(op.__file__).read_text()
+        operator=intentional_stop_inverse_source(Path(op.__file__).read_text())
         self.assertEqual(operator.count("'remission-n-data03-261024-r4'"),1)
         prior=operator.replace("'remission-n-data03-261024-r4'","'remission-n-data03-261024-r3'").encode()
         self.assertEqual(hashlib.sha1(b'blob '+str(len(prior)).encode()+b'\0'+prior).hexdigest(),'a7e51ea8633f24a1c4683e38146a7e314277c19c')
@@ -919,6 +930,154 @@ class Data03CutoffSource(unittest.TestCase):
             with self.assertRaises(AssertionError):importlib.import_module(name)
         with self.assertRaises(AssertionError):subprocess.Popen(['forbidden'])
         with self.assertRaises(AssertionError):socket.create_connection(('forbidden',1))
+
+
+class InertFinishProcess:
+    """Already-prearmed owned Popen double; no real process is ever constructed."""
+    def __init__(self,name,pid,code,events,early=None,wait_error=None,unreaped=False):
+        self.name=name;self.pid=pid;self.code=code;self.events=events;self.returncode=early
+        self.wait_error=wait_error;self.unreaped=unreaped
+    def poll(self):self.events.append(self.name+'.poll');return self.returncode
+    def wait(self,*,timeout):
+        self.events.append((self.name+'.wait',timeout))
+        if self.wait_error:raise self.wait_error
+        if not self.unreaped:self.returncode=self.code
+        return self.returncode
+
+
+class Data03IntentionalStopSource(unittest.TestCase):
+    def fixture(self,folder,exitcode=137,attach_code=None,watch_code=0):
+        """Labelled INERT receipt from finite public-compatible scalar fields, not an original receipt."""
+        events=[];cid='1'*64;nonce='2'*48;deadline=200.0
+        terminal=dict(Id=cid,RestartCount=0,State=dict(Status='exited',Running=False,Paused=False,Restarting=False,Dead=False,OOMKilled=False,Pid=0,ExitCode=exitcode))
+        before=copy.deepcopy(terminal);before['State'].update(Status='running',Running=True,Pid=321,ExitCode=0)
+        receipt=dict(cid=cid,nonce=nonce,deadline=deadline,terminal=copy.deepcopy(terminal),failure=None,cleanup=[])
+        path=Path(folder)/'watchdog-terminal.json';path.write_text(json.dumps(receipt))
+        life=SimpleNamespace();actor=op.Generator(cid,Path(folder),deadline,life);actor.nonce=nonce
+        actor.attach=InertFinishProcess('attach',401,exitcode if attach_code is None else attach_code,events)
+        actor.watch=InertFinishProcess('watch',402,watch_code,events)
+        inspections=[before,terminal];cleanup=[dict(operation='stop',returncode=0)]
+        def check_deadline(value):events.append(('deadline',value));frozen_life.check_deadline(value)
+        def inspect(selected,*,deadline):
+            check_deadline(deadline);self.assertEqual(selected,cid);value=inspections.pop(0)
+            events.append('inspect.before' if len(inspections)==1 else 'inspect.terminal')
+            value=frozen_life.checked_state(copy.deepcopy(value),selected);check_deadline(deadline);return value
+        def stop(selected):events.append('stop_owned');self.assertEqual(selected,cid);return copy.deepcopy(cleanup)
+        def validate(path,selected,key,limit,observed):
+            events.append('receipt');return frozen_life.receipt(path,selected,key,limit,observed)
+        life.check_deadline=check_deadline;life.inspect=inspect;life.stop_owned=stop;life.receipt=validate
+        return SimpleNamespace(actor=actor,events=events,terminal=terminal,before=before,receipt=receipt,path=path,life=life,cleanup=cleanup,
+            fixture_label='INERT_ALREADY_PREARMED_SCALAR_FIXTURE_NOT_RAW_LIFECYCLE_RECEIPT')
+
+    def run_finish(self,fixture):
+        original_save=op.save
+        def save(path,value):fixture.events.append('save.'+path.name);return original_save(path,value)
+        with mock.patch.object(frozen_life.time,'monotonic',return_value=100.0),mock.patch.object(op,'save',side_effect=save):fixture.actor.finish()
+
+    def test_actual_finish_positive_0_143_and_exact_137_preserves_old_attach_relationship(self):
+        for code,attach in ((0,0),(143,0),(143,143),(137,137)):
+            with self.subTest(code=code,attach=attach),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder,code,attach);self.run_finish(f)
+                saved=json.loads((Path(folder)/'intentional-terminal.json').read_bytes())
+                self.assertEqual(saved['terminal'],f.terminal);self.assertTrue(f.actor.intentional)
+                order=['watch.poll','attach.poll','inspect.before','save.intentional-stop.json','stop_owned',('attach.wait',2),('watch.wait',2),'inspect.terminal','receipt','save.intentional-terminal.json']
+                actual=[e for e in f.events if not (type(e) is tuple and e[0]=='deadline')]
+                self.assertEqual(actual,order)
+                self.assertTrue(all(e[1]==200.0 for e in f.events if type(e) is tuple and e[0]=='deadline'))
+                self.assertEqual((f.actor.attach.returncode,f.actor.watch.returncode),(attach,0))
+
+    def test_early_137_and_not_running_reject_before_intentional_stop(self):
+        for case in ('early_attach','early_watch','not_running','expired_deadline'):
+            with self.subTest(case=case),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder)
+                if case=='early_attach':f.actor.attach.returncode=137
+                elif case=='early_watch':f.actor.watch.returncode=137
+                elif case=='not_running':f.before['State'].update(Status='exited',Running=False,Pid=0)
+                else:f.actor.deadline=99.0
+                with self.assertRaises((ValueError,TimeoutError)):self.run_finish(f)
+                self.assertFalse(f.actor.intentional);self.assertNotIn('stop_owned',f.events)
+                self.assertFalse((Path(folder)/'intentional-stop.json').exists());self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+
+    def test_137_attach_disagreement_and_watchdog_error_cannot_write_success(self):
+        for attach,watch in ((0,0),(143,0),(1,0),(137,1),(137,137)):
+            with self.subTest(attach=attach,watch=watch),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder,137,attach,watch)
+                with self.assertRaises(ValueError):self.run_finish(f)
+                self.assertTrue(f.actor.intentional);self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+        for code in (1,125,126):
+            with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder,code)
+                with self.assertRaises(ValueError):self.run_finish(f)
+                self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+        for code,attach in ((0,137),(143,137),(0,143),(143,1)):
+            with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder,code,attach)
+                with self.assertRaises(ValueError):self.run_finish(f)
+                self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+
+    def test_real_receipt_validator_rejects_missing_foreign_nonce_deadline_failure_and_unequal(self):
+        for case in ('missing','cid','nonce','deadline','receipt_failure','unequal','wrong_PID_type'):
+            with self.subTest(case=case),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder)
+                if case=='missing':f.path.unlink()
+                else:
+                    if case=='cid':f.receipt['cid']='3'*64
+                    elif case=='nonce':f.receipt['nonce']='3'*48
+                    elif case=='deadline':f.receipt['deadline']=199.0
+                    elif case=='receipt_failure':f.receipt['failure']='INERT_FAILURE_SENTINEL'
+                    elif case=='unequal':f.receipt['terminal']['State']['ExitCode']=0
+                    else:f.receipt['terminal']['State']['Pid']='0'
+                    f.path.write_text(json.dumps(f.receipt))
+                with self.assertRaises((ValueError,FileNotFoundError)):self.run_finish(f)
+                self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+
+    def test_typed_OOM_dead_restart_PID_and_foreign_terminal_reject(self):
+        for case in ('OOM','dead','restart','PID','foreign'):
+            with self.subTest(case=case),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder)
+                if case=='OOM':f.terminal['State']['OOMKilled']=True
+                elif case=='dead':f.terminal['State'].update(Status='dead',Dead=True)
+                elif case=='restart':f.terminal['RestartCount']=1
+                elif case=='PID':f.terminal['State']['Pid']=42
+                else:f.terminal['Id']='3'*64
+                f.receipt['terminal']=copy.deepcopy(f.terminal);f.path.write_text(json.dumps(f.receipt))
+                with self.assertRaises(ValueError):self.run_finish(f)
+                self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+
+    def test_stop_unconfirmed_wait_timeout_unreaped_or_expired_terminal_inspect_cannot_write_success(self):
+        for case in ('stop_unconfirmed','stop_error','attach_timeout','watch_timeout','attach_unreaped','watch_unreaped','late_terminal'):
+            with self.subTest(case=case),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                f=self.fixture(folder)
+                if case=='stop_unconfirmed':f.life.stop_owned=mock.Mock(side_effect=frozen_life.StopUnconfirmed('INERT_UNCONFIRMED'))
+                elif case=='stop_error':f.life.stop_owned=mock.Mock(side_effect=RuntimeError('INERT_STOP_FAILURE'))
+                elif case.endswith('_timeout'):getattr(f.actor,'attach' if case.startswith('attach') else 'watch').wait_error=subprocess.TimeoutExpired('INERT',2)
+                elif case.endswith('_unreaped'):getattr(f.actor,'attach' if case.startswith('attach') else 'watch').unreaped=True
+                else:
+                    inspect=f.life.inspect
+                    def late(selected,*,deadline):
+                        if f.actor.attach.returncode is not None:
+                            with mock.patch.object(frozen_life.time,'monotonic',return_value=201.0):return inspect(selected,deadline=deadline)
+                        return inspect(selected,deadline=deadline)
+                    f.life.inspect=late
+                with self.assertRaises((ValueError,TimeoutError,RuntimeError,frozen_life.StopUnconfirmed,subprocess.TimeoutExpired)):self.run_finish(f)
+                self.assertFalse((Path(folder)/'intentional-terminal.json').exists())
+
+    def test_confirmed_stop_after_unsuccessful_first_attempt_retains_shared_helper_contract(self):
+        with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+            f=self.fixture(folder);f.cleanup[:]=[dict(operation='stop',returncode=1,error='INERT_FIRST_ATTEMPT'),dict(operation='kill',returncode=0),dict(observed=f.terminal)]
+            self.run_finish(f);saved=json.loads((Path(folder)/'intentional-terminal.json').read_bytes())
+            self.assertEqual(saved['cleanup'],f.cleanup)
+
+    def test_whole_module_inverse_bytes_only_two_predicates_and_unchanged_other_methods(self):
+        source=Path(op.__file__).read_text();inverse=intentional_stop_inverse_source(source).encode()
+        self.assertEqual(hashlib.sha1(b'blob '+str(len(inverse)).encode()+b'\0'+inverse).hexdigest(),'76c3142262ec9ebb2b2496db265932c83671df10')
+        new=ast.parse(source);old=ast.parse(inverse)
+        for n,o in zip(new.body,old.body):
+            if isinstance(n,ast.ClassDef) and n.name=='Generator':
+                for method,prior in zip(n.body,o.body):
+                    if isinstance(method,ast.FunctionDef) and method.name=='finish':continue
+                    self.assertEqual(ast.dump(method,include_attributes=False),ast.dump(prior,include_attributes=False))
+            else:self.assertEqual(ast.dump(n,include_attributes=False),ast.dump(o,include_attributes=False))
 
 
 if __name__=='__main__':unittest.main()
