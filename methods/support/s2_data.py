@@ -114,10 +114,15 @@ def activation(history,binding,active):
 
 
 def features(history,decision,active):
-    at=decision.cutoff;context=[r.record_id for r in decision.context]
-    require(len(context)==len(set(context)) and decision.context_projection_sha256==sha([r.model_dump(mode='json') for r in decision.context]),
+    return predecision_features(history,cutoff=decision.cutoff,context=decision.context,
+        context_projection_sha256=decision.context_projection_sha256,active=active)
+
+
+def predecision_features(history,*,cutoff,context,context_projection_sha256,active):
+    at=cutoff;refs=context;context=[r.record_id for r in refs]
+    require(len(context)==len(set(context)) and context_projection_sha256==sha([r.model_dump(mode='json') for r in refs]),
             'duplicate or changed original predecision context')
-    for ref in decision.context:
+    for ref in refs:
         r=active[ref.record_id];require(r.available_at<at,'postdecision feature reference')
     if any(r.kind=='daily_report' and r.event_at<at<=r.available_at and r.supersedes for r in active.values()):
         raise UnsupportedInput('pending corrected original-context reconstruction coverage')
