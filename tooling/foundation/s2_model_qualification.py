@@ -231,7 +231,7 @@ def qualify(data14,data28,*,settings,compile_options):
             if abs(actual_like-expected['likelihood'])>settings['density_atol']:raise AssertionError('S2 observed-only likelihood mismatch')
             factor_errors={};factor_values={}
             for name,fn in factor_functions.items():
-                value=float(fn({name:point[name]}));factor_errors[name]=value-expected['factors'][name]
+                value=float(fn(point));factor_errors[name]=value-expected['factors'][name]
                 factor_values[name]=value
                 if not math.isfinite(value) or abs(factor_errors[name])>settings['normalizer_atol']:raise AssertionError('S2 independent prior factor/normalizer mismatch')
             summed=math.fsum(factor_values.values())+actual_like;repeated=float(logp(point))

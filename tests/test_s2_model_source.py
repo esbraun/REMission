@@ -1,6 +1,7 @@
 """Actual observed scalar adapter, strict provenance and AST only; no science."""
 import ast
 import copy
+import hashlib
 import os
 from dataclasses import replace
 from datetime import timedelta
@@ -16,6 +17,76 @@ from methods.support.s2_data import prepare,InvalidInput,UnsupportedInput,Unavai
 from s2_model_fixtures import cohort,provenance,history
 
 ROOT=Path(__file__).resolve().parents[1]
+
+
+class FactorCallTests(unittest.TestCase):
+    @staticmethod
+    def source_expression():
+        tree=ast.parse((ROOT/'tooling/foundation/s2_model_qualification.py').read_text(encoding='utf-8'))
+        qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+        loop=next(n for n in ast.walk(qualify) if isinstance(n,ast.For) and isinstance(n.iter,ast.Call)
+            and isinstance(n.iter.func,ast.Attribute) and isinstance(n.iter.func.value,ast.Name)
+            and n.iter.func.value.id=='factor_functions')
+        expression=loop.body[0].value
+        assert ast.unparse(expression)=='float(fn(point))'
+        return tree,qualify,expression
+
+    def test_actual_expression_complete_scalar_vector_mapping_identity_one_call_one_conversion(self):
+        _,qualify,expression=self.source_expression()
+        names=next(n for n in ast.walk(qualify) if isinstance(n,ast.Assign)
+            and isinstance(n.targets[0],ast.Name) and n.targets[0].id=='expected_names')
+        namespace=dict(count=2)
+        exec(compile(ast.Module(body=[names],type_ignores=[]),'actual_coordinate_names_only','exec'),namespace)
+        point={name:object() for name in namespace['expected_names']};before=dict(point)
+        vectors={'b','z','u','epsilon_0','epsilon_1'}
+        self.assertTrue(vectors<set(point));self.assertIn('rho',point)
+        events=[]
+        class Result:
+            def __float__(self):events.append('convert');return 1.25
+        def strict(mapping):
+            events.append('call')
+            if set(mapping)!=set(point):raise TypeError('inert complete-point contract')
+            self.assertIs(mapping,point)
+            for name in point:self.assertIs(mapping[name],before[name])
+            return Result()
+        code=compile(ast.Expression(body=expression),'actual_factor_expression','eval')
+        self.assertEqual(eval(code,dict(fn=strict,point=point)),1.25)
+        self.assertEqual(events,['call','convert']);self.assertEqual(list(point),list(before))
+        for name in point:self.assertIs(point[name],before[name])
+        old=copy.deepcopy(expression);old.args[0].args[0]=ast.parse('{name:point[name]}',mode='eval').body
+        events.clear()
+        with self.assertRaises(TypeError):eval(compile(ast.fix_missing_locations(ast.Expression(body=old)),'old_single_key_expression','eval'),dict(fn=strict,point=point,name='s_alpha'))
+        self.assertEqual(events,['call'])
+
+    def test_actual_expression_propagates_callable_and_conversion_errors_without_retry(self):
+        _,_,expression=self.source_expression();code=compile(ast.Expression(body=expression),'actual_factor_expression','eval')
+        point={'scalar':object(),'vector':object()}
+        for stage in ('call','conversion'):
+            with self.subTest(stage=stage):
+                events=[];failure=TypeError('inert sentinel exception')
+                class Result:
+                    def __float__(self):events.append('conversion');raise failure
+                def fn(mapping):
+                    self.assertIs(mapping,point);events.append('call')
+                    if stage=='call':raise failure
+                    return Result()
+                with self.assertRaises(TypeError) as raised:eval(code,dict(fn=fn,point=point))
+                self.assertIs(raised.exception,failure)
+                self.assertEqual(events,['call'] if stage=='call' else ['call','conversion'])
+
+    def test_entire_qualify_and_module_inverse_restore_only_single_R4_factor_invocation(self):
+        tree,qualify,_=self.source_expression();calls=[n for n in ast.walk(qualify) if isinstance(n,ast.Call)
+            and isinstance(n.func,ast.Name) and n.func.id=='fn']
+        self.assertEqual(len(calls),1)
+        self.assertEqual(ast.unparse(calls[0]),'fn(point)')
+        calls[0].args[0]=ast.parse('{name:point[name]}',mode='eval').body
+        digest=lambda n:hashlib.sha256(ast.dump(n,include_attributes=False).encode()).hexdigest()
+        self.assertEqual(digest(qualify),'5c8454b60f9ebc2a350f4dd7cab41cfbe79a10e8f0b82575ca46f27aa09ec696')
+        self.assertEqual(digest(tree),'31db64166492a26c35e6fd96aa31d4f2b85144db6cea17cd44fea077d1e0083a')
+        source=(ROOT/'tooling/foundation/s2_model_qualification.py').read_text(encoding='utf-8')
+        self.assertEqual(source.count('value=float(fn(point));factor_errors'),1)
+        inverse=source.replace('value=float(fn(point));factor_errors','value=float(fn({name:point[name]}));factor_errors')
+        self.assertEqual(hashlib.sha256(inverse.encode()).hexdigest(),'983752d3c59f1807049796a9b0b24d77b4c1fcc711fe359ebeb6cc27d78c938c')
 
 
 class AdapterTests(unittest.TestCase):
