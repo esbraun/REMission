@@ -1,9 +1,11 @@
 """Meaningful fixed-driver invariants, with process/app/Store imports blocked."""
 import ast
 import copy
+import contextlib
 import hashlib
 from datetime import datetime,timedelta,timezone
 import json
+import io
 from pathlib import Path
 import subprocess
 import tempfile
@@ -15,6 +17,26 @@ import unittest
 import n_data03_driver as d
 import n_data03 as op
 import analysis_lifecycle as frozen_life
+
+def startup_inverse_source(source):
+    if 'def publish_startup(' not in source:return source
+    source=source[:source.index('def publish_startup(')]+source[source.index('def ordinary('):]
+    replacements=[
+      ("'remission-n-data03-261024-r3'","'remission-n-data03-261023-r2'"),
+      ("                if ready.exists():\n                    require(json.loads(ready.read_bytes())==expected)\n                    require(time.monotonic()<min(until,start+7140));break",
+       "                if ready.exists():require(json.loads(ready.read_bytes())==expected);break"),
+      ("            require(child.poll() is None)\n            publish_startup(output,'worker-ack.json',expected,min(until,start+7140))\n            require(time.monotonic()<min(until,start+7140) and child.poll() is None)",
+       "            require(child.poll() is None);save(output/'worker-ack.json',expected)"),
+      ("    until=min(args.outer,args.start+7140,time.monotonic()+5)\n    publish_startup(packet/'attempt','worker-ready.json',identity,until)",
+       "    save(packet/'attempt/worker-ready.json',identity);until=min(args.outer,time.monotonic()+5)"),
+      ("        if ack.exists():\n            require(json.loads(ack.read_bytes())==identity)\n            require(time.monotonic()<until);break",
+       "        if ack.exists():require(json.loads(ack.read_bytes())==identity);break"),
+      ("    require(time.monotonic()<until)\n    return worker(packet,spec,args.start,args.lease_unix,args.outer)",
+       "    return worker(packet,spec,args.start,args.lease_unix,args.outer)")]
+    for before,after in replacements:
+        assert source.count(before)==1,before
+        source=source.replace(before,after)
+    return source
 
 # Exact public R1 typed/config and requested-argv records, not private data.
 CAPTURED_CREATED_RAW=r'''{"Id":"ecc1193c6f952e955c8cc5edc76edc022b59223db4cedaa6646b7f5aacfef18e","Image":"sha256:a8e8aa54c20ac6011d0fb108d6c626ff693a518e50acb87fb62679e61e0279a4","User":"0:0","Path":"python","Args":["-B","-c","import os,json,stat\nfrom pathlib import Path\np=Path('/data');assert os.geteuid()==os.getegid()==0\nassert p.is_dir() and not p.is_symlink() and not any(p.iterdir())\nos.chown(p,0,0);assert p.stat().st_uid==p.stat().st_gid==0\nos.chmod(p,0o700);assert not any(p.iterdir())\nos.chown(p,10001,10001);s=p.stat()\nassert (s.st_uid,s.st_gid,stat.S_IMODE(s.st_mode))==(10001,10001,0o700)\nprint(json.dumps(dict(status='fresh_empty_private_volume_owned',uid=10001,gid=10001,mode=448)))\n"],"Labels":{"remission.task":"remission-n-data03-261023-r1"},"State":{"Dead":false,"Error":"","ExitCode":0,"FinishedAt":"0001-01-01T00:00:00Z","OOMKilled":false,"Paused":false,"Pid":0,"Restarting":false,"Running":false,"StartedAt":"0001-01-01T00:00:00Z","Status":"created"},"RestartCount":0,"Memory":1073741824,"MemorySwap":1073741824,"NanoCpus":2000000000,"PidsLimit":64,"ReadonlyRootfs":true,"Privileged":false,"CapAdd":["CAP_CHOWN"],"CapDrop":["ALL"],"AutoRemove":false,"SecurityOpt":["no-new-privileges"],"Tmpfs":{"/tmp":"rw,noexec,nosuid,nodev,size=128m"},"NetworkMode":"none","PortBindings":{},"PublishAllPorts":false,"RestartPolicy":{"MaximumRetryCount":0,"Name":"no"},"Mounts":[{"Destination":"/data","Driver":"local","Mode":"z","Name":"remission-n-data03-261023-r1-positive","Propagation":"","RW":true,"Source":"/var/lib/docker/volumes/remission-n-data03-261023-r1-positive/_data","Type":"volume"}],"Networks":{"none":{"Aliases":null,"DNSNames":null,"DriverOpts":null,"EndpointID":"","Gateway":"","GlobalIPv6Address":"","GlobalIPv6PrefixLen":0,"GwPriority":0,"IPAMConfig":null,"IPAddress":"","IPPrefixLen":0,"IPv6Gateway":"","Links":null,"MacAddress":"","NetworkID":""}}}
@@ -428,7 +450,7 @@ class Data03CapabilitySource(unittest.TestCase):
         self.assertEqual(hashlib.sha256(CAPTURED_CREATE_RAW).hexdigest(),'e89e328eb46eebdb81add64cf2dbfc873ff00a58649ed0b7a2b80d139f7bf92b')
         value,cid,spec,argv=self.fixture()
         self.assertEqual(argv,json.loads(CAPTURED_CREATE_RAW)['argv'])
-        tree=self.inverse(ast.parse(Path(op.__file__).read_text()))
+        tree=self.inverse(ast.parse(startup_inverse_source(Path(op.__file__).read_text())))
         audit=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='audit_created')
         namespace=dict(op.__dict__);exec(compile(ast.Module(body=[audit],type_ignores=[]),'original_R1_audit_only','exec'),namespace)
         with self.assertRaises(ValueError):namespace['audit_created'](value,cid,spec,'ownership',argv,frozen_life)
@@ -502,7 +524,7 @@ class Data03CapabilitySource(unittest.TestCase):
                 self.assertEqual(result['owned_cids'],{'ownership':cid});self.assertEqual(result['unresolved'],[])
 
     def test_inverse_entire_operator_is_only_enum_and_new_namespace(self):
-        tree=ast.parse(Path(op.__file__).read_text());inverse=self.inverse(tree)
+        tree=ast.parse(startup_inverse_source(Path(op.__file__).read_text()));inverse=self.inverse(tree)
         self.assertEqual(hashlib.sha256(ast.dump(inverse,include_attributes=False).encode()).hexdigest(),'c354ffada53e03660ec6a7e52b2e55c3d8808a96284da4b397bdaba47278a8ce')
         expected=dict(create_argv='18cfee67c62604d20df2409974c6d6a8dd1b48f542100ba04f0d69ed26a5acf7',
             worker='229540e0a773093f3384786c538027249f53184ce830980a86c229d9e2b6ec56',launch='358aca3d7def0674232d69d50f7bdb7d9168111a747d882dfacce887f6c6ac97')
@@ -510,5 +532,161 @@ class Data03CapabilitySource(unittest.TestCase):
             node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==name)
             self.assertEqual(hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest(),digest)
 
+
+class Data03StartupSource(unittest.TestCase):
+    def rename_double(self,source,destination):
+        # Inert namespace model, NOT an os.rename/native/concurrency probe.
+        if destination.exists():raise FileExistsError('inert destination collision')
+        destination.write_bytes(source.read_bytes());source.unlink()
+
+    def test_both_receipts_hidden_during_partial_write_and_close_before_one_rename(self):
+        for name in ('worker-ready.json','worker-ack.json'):
+            with self.subTest(name=name),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                root=Path(folder);final=root/name;observed=[];original_dump=op.json.dump
+                def dump(value,stream,**kwargs):
+                    observed.append((final.exists(),stream.closed));stream.write('{');stream.flush()
+                    observed.append((final.exists(),stream.closed));stream.seek(0);stream.truncate()
+                    return original_dump(value,stream,**kwargs)
+                def rename(source,destination):
+                    observed.append(('rename',json.loads(source.read_bytes())))
+                    self.rename_double(source,destination)
+                with mock.patch.object(op.json,'dump',side_effect=dump),mock.patch.object(op.os,'rename',side_effect=rename) as call:
+                    op.publish_startup(root,name,{'public':1},time.monotonic()+5)
+                self.assertEqual(observed,[(False,False),(False,False),('rename',{'public':1})])
+                self.assertEqual(json.loads(final.read_bytes()),{'public':1});self.assertEqual(call.call_count,1)
+
+    def test_preexisting_pending_final_and_racing_destination_never_overwritten(self):
+        for name in ('worker-ready.json','worker-ack.json'):
+            for case in ('pending','final','racing'):
+                with self.subTest(name=name,case=case),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                    root=Path(folder);final=root/name;pending=root/name.replace('.json','.pending.json')
+                    if case!='racing':(pending if case=='pending' else final).write_bytes(b'prior public fixture')
+                    def rename(source,destination):
+                        destination.write_bytes(b'racing public fixture');self.rename_double(source,destination)
+                    with mock.patch.object(op.os,'rename',side_effect=rename) as call:
+                        with self.assertRaises((ValueError,FileExistsError)):op.publish_startup(root,name,{'public':1},time.monotonic()+5)
+                    self.assertEqual(call.call_count,1 if case=='racing' else 0)
+                    if case=='pending':self.assertEqual(pending.read_bytes(),b'prior public fixture')
+                    else:self.assertEqual(final.read_bytes(),b'racing public fixture' if case=='racing' else b'prior public fixture')
+
+    def test_write_serialization_close_rename_faults_preserve_scratch_and_no_final(self):
+        for name in ('worker-ready.json','worker-ack.json'):
+            for failure in ('write','serialization','close','rename'):
+                with self.subTest(name=name,failure=failure),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                    root=Path(folder);final=root/name;save=op.save
+                    def failed_save(path,value):
+                        if failure=='serialization':return save(path,{'public':float('nan')})
+                        if failure=='write':
+                            with path.open('x') as stream:stream.write('{');raise OSError('inert write failure')
+                        save(path,value)
+                        if failure=='close':raise OSError('inert close failure')
+                    with mock.patch.object(op,'save',side_effect=failed_save),mock.patch.object(op.os,'rename',side_effect=OSError('inert rename failure')) as call:
+                        with self.assertRaises((ValueError,OSError)):op.publish_startup(root,name,{'public':1},time.monotonic()+5)
+                    self.assertFalse(final.exists());self.assertTrue((root/name.replace('.json','.pending.json')).exists())
+                    self.assertEqual(call.call_count,1 if failure=='rename' else 0)
+
+    def test_publication_cost_uses_existing_clock_and_late_complete_file_rejects(self):
+        for name in ('worker-ready.json','worker-ack.json'):
+            for late in ('write','rename'):
+                with self.subTest(name=name,late=late),tempfile.TemporaryDirectory(dir='artifacts') as folder:
+                    clock=[1.0];root=Path(folder);save=op.save
+                    def saving(path,value):
+                        save(path,value)
+                        if late=='write':clock[0]=6.0
+                    def rename(source,destination):self.rename_double(source,destination);clock[0]=6.0
+                    with mock.patch.object(op,'save',side_effect=saving),mock.patch.object(op.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(op.os,'rename',side_effect=rename) as call:
+                        with self.assertRaises(ValueError):op.publish_startup(root,name,{'public':1},6.0)
+                    self.assertEqual(call.call_count,0 if late=='write' else 1)
+                    self.assertEqual((root/name).exists(),late=='rename') # retained late bytes are not authority
+
+    def startup(self,case,worker=False):
+        clock=[100.5 if worker and case=='separate_windows' else 7240.0 if worker and case=='common_expired' else 100.0]
+        nonce='a'*48;identity=dict(pid=41,ppid=42,nonce=nonce,start=100.0,outer=7300.0,lease_unix=8000.0)
+        with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+            packet=Path(folder);events=[];code=[None];polls=[0]
+            def rename(source,destination):
+                self.rename_double(source,destination)
+                if case=='late_publication':clock[0]=105.0
+            class Child:
+                pid=41
+                def __init__(self,*args,**kwargs):
+                    events.append('owned_Popen_double');ready=packet/'attempt/worker-ready.json'
+                    value=dict(identity,ppid=43) if case=='mismatch' else identity
+                    if case=='nan_identity':value=dict(identity,start=float('nan'))
+                    if case=='nested_identity':value=dict(identity,ppid={'invalid':'PRIVATE_SENTINEL'})
+                    ready.write_bytes(b'{' if case=='malformed' else json.dumps(value).encode())
+                    if case=='common_expired':clock[0]=7240.0
+                def poll(self):
+                    polls[0]+=1
+                    if case=='child_exit' or (case=='child_exit_between' and polls[0]>=2):code[0]=1;return 1
+                    return code[0]
+                def kill(self):events.append('kill_exact_child');code[0]=1
+                def wait(self,timeout):
+                    events.append('wait_exact_child')
+                    if case=='reap_unconfirmed':raise subprocess.TimeoutExpired('inert',timeout)
+                    if code[0] is None:code[0]=0
+                    return code[0]
+            if worker:
+                (packet/'attempt').mkdir();ack=packet/'attempt/worker-ack.json'
+                value=dict(identity,ppid=43) if case=='mismatch' else dict(identity,start=float('nan')) if case=='nan_identity' else dict(identity,ppid={'invalid':'PRIVATE_SENTINEL'}) if case=='nested_identity' else identity
+                ack.write_bytes(b'{' if case=='malformed' else json.dumps(value).encode())
+            args=SimpleNamespace(worker=True,spec=Path('fixed-spec'),authorized_spec_sha256='fixed',authorization=Path('inert-authority'),
+                start=100.0,outer=7300.0,lease_unix=8000.0,nonce=nonce)
+            spec=dict(host_runtime=[],worktree='fixed-worktree',candidate_commit='fixed-candidate')
+            real_loads=op.json.loads
+            def loads(raw,*args,**kwargs):
+                value=real_loads(raw,*args,**kwargs)
+                if case=='late_read':clock[0]=105.0
+                if case=='separate_windows':clock[0]=105.25
+                return value
+            def metadata(argv,**kwargs):return b'fixed-candidate\n' if argv[1:]==['rev-parse','HEAD'] else b''
+            with mock.patch.object(op,'validate_packet',return_value=(packet,spec)),\
+                mock.patch.object(op,'os',SimpleNamespace(name='nt',getpid=lambda:41 if worker else 42,getppid=lambda:42,rename=rename)),\
+                mock.patch.object(op,'time',SimpleNamespace(monotonic=lambda:clock[0],time=lambda:860.,sleep=lambda _:None)),\
+                mock.patch.object(op,'sys',SimpleNamespace(executable='C:/Python313/python.exe')),\
+                mock.patch.object(op,'secrets',SimpleNamespace(token_hex=lambda _:nonce)),\
+                mock.patch.object(op.subprocess,'Popen',Child),mock.patch.object(op.subprocess,'check_output',side_effect=metadata),\
+                mock.patch.object(op.argparse.ArgumentParser,'parse_args',return_value=args),\
+                mock.patch.object(op.json,'loads',side_effect=loads),mock.patch.object(op,'worker',side_effect=lambda *a:events.append('body') or 0),\
+                contextlib.redirect_stdout(io.StringIO()):
+                if case in ('matching','separate_windows'):op.main() if worker else op.launch(Path('fixed-spec'),'fixed',Path('inert-authority'))
+                else:
+                    with self.assertRaises((ValueError,json.JSONDecodeError)):op.main() if worker else op.launch(Path('fixed-spec'),'fixed',Path('inert-authority'))
+            if worker:self.assertEqual('body' in events,case in ('matching','separate_windows'))
+            else:
+                terminal=json.loads((packet/'attempt/launcher-terminal.json').read_bytes())
+                self.assertEqual(terminal['reaped'],case!='reap_unconfirmed')
+                if case=='reap_unconfirmed':self.assertEqual(terminal['status'],'STOP UNCONFIRMED')
+                if case in ('malformed','mismatch','nan_identity','nested_identity','late_read','child_exit','child_exit_between','common_expired'):self.assertFalse((packet/'attempt/worker-ack.json').exists())
+            return dict(body_entered='body' in events,reader_clock=clock[0])
+
+    def test_parent_matching_malformed_mismatch_child_exit_late_deadline_and_reap(self):
+        for case in ('matching','malformed','mismatch','nan_identity','nested_identity','child_exit','child_exit_between','late_read','late_publication','common_expired','reap_unconfirmed'):
+            with self.subTest(case=case):self.startup(case)
+
+    def test_worker_matching_invalid_ACK_late_read_publication_no_body(self):
+        for case in ('matching','malformed','mismatch','nan_identity','nested_identity','late_read','late_publication','common_expired'):
+            with self.subTest(case=case):self.startup(case,worker=True)
+
+    def test_separate_local_window_counterexample_is_retained_not_claimed_fixed(self):
+        observed=self.startup('separate_windows',worker=True)
+        self.assertEqual(observed,dict(body_entered=True,reader_clock=105.25))
+        # Worker began at100.5 -> local105.5. Parent's assumed local105.0 is
+        # absent from unchanged identity. This limitation is NOT repaired.
+        self.assertTrue(105.0<observed['reader_clock']<105.5)
+
+    def test_full_operator_inverse_confines_only_new_helper_seams_and_namespace(self):
+        source=Path(op.__file__).read_text();before=startup_inverse_source(source)
+        # R2 inverse/digests above independently constrain the entire restored operator.
+        tree=ast.parse(source);base=ast.parse(before)
+        functions=lambda t:{n.name:ast.dump(n,include_attributes=False) for n in t.body if isinstance(n,ast.FunctionDef)}
+        current=functions(tree);prior=functions(base)
+        self.assertEqual(set(current)-set(prior),{'publish_startup'})
+        for name in prior:
+            if name not in ('launch','main','validate_packet'):self.assertEqual(current[name],prior[name])
+        helper=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='publish_startup')
+        calls=[n for n in ast.walk(helper) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)]
+        self.assertEqual(sum(n.func.attr=='rename' for n in calls),1)
+        self.assertFalse(any(n.func.attr in ('replace','unlink','remove','copy','copyfile') for n in calls))
 
 if __name__=='__main__':unittest.main()

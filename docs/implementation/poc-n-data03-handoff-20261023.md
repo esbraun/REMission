@@ -134,3 +134,54 @@ Driver, panel declaration/seed/target, images, network guard, quotas, clocks and
 lifecycle remain unchanged. Final packet hashes and exact prospective command
 are recorded in its public evidence handoff. Fresh independent SOURCE+OP review
 and a new root GO are required; this checkpoint performs no runtime operation.
+
+## R3 startup publication preparation
+
+Actual gpt-6.1-sol/xhigh, root verified, owns `n-data03-r3-sol-261024` from
+integration candidate15c2e547a0b22094c9600bf3ac46aa52257476f2 (historical accepted
+base5ed). The escalation reason is preventing ready/ACK publication races without
+weakening live owned-PID identity, hard deadlines or reaping authority. Only root
+assigns/spawns; no descendants. R2 actual cause remains UNKNOWN; complete final
+ready bytes do not reveal what its parent previously read.
+
+Only the two host startup publications use the small fixed `publish_startup`:
+exclusive existing `save` writes/closes `worker-ready.pending.json` or
+`worker-ack.pending.json`, then one Windows-only `os.rename` exposes the final
+sibling. Existing scratch/final, a racing final or any write/serialization/close/
+rename fault refuses with files retained; no overwrite/unlink/copy fallback/retry.
+Generic save, all other publications/shared lifecycle/worker body/driver/app/
+models/seed/panel settings are unchanged. Namespace is freshly fixed to
+`remission-n-data03-261024-r3`; no old namespace/resource is adopted.
+
+Pinned CPython3.13.7 `Modules/posixmodule.c` routes rename with is_replace0 to
+MoveFileExW flags0, excluding replace-existing and cross-volume-copy behavior.
+The same-directory, fully closed sibling supplies complete visibility; Windows
+destination collision refuses. This is a Windows-specific source-backed choice,
+not a POSIX no-overwrite or power-loss durability claim. Primary source links and
+small exact excerpts are frozen in the public primitive proof. No native rename
+or process experiment is executed by these controls; the rename is an inert double.
+
+Within the two seams, worker's original local5s window begins before scratch work;
+publication and decoding consume the window. Both publishers and readers recheck
+their existing local/outer/work deadline before acceptance. Identity equality,
+finite original arguments, live owned-Popen polls, original kill/wait/reap and
+STOP classification remain. No new lease, identity field or worker-body change.
+A completed late file may remain but cannot pass the publishing process's guard.
+
+The parent and worker still have separately sampled local windows. They are NOT
+claimed identical, and rename is not preemptible. A retained inert counterexample
+shows a worker with local105.5 accepting complete ACK at105.25 even though the
+parent's assumed local105.0 has passed; parent independently rejects/kills/reaps.
+Thus cross-local-cutoff body exclusion is NOT established by this visibility
+repair. Root routed this explicit existing limitation for different Astra
+disposition before SOURCE/OP acceptance. No shared-cutoff architecture is added.
+
+Guarded controls retain original29 plus focused ready/ACK partial visibility,
+fault/collision/race/deadline/malformed/mismatch/exit/reap/inverse cases. The first
+run's inconsistent exited-child double (poll1/wait0) was corrected to retain its
+exit code; failed log preserved. Fixed12/seed91731023/ordinal7/all12day36then72/
+180advance864night expectations, query-only readiness/no analysis,7200outer7140work,
+HTTP180, resource/private-output/networkEMPTY/custody bounds remain unchanged.
+This is no workflow feasibility/cause/success claim. Fresh exact packet/source
+review and NEW root GO remain required. No native/Docker/network/Store/science,
+old-private/raw stream or S1 execution is authorized or performed.

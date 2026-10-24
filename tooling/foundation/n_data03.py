@@ -43,6 +43,18 @@ def require(value):
 def save(path,value):
     with Path(path).open('x',encoding='utf-8',newline='\n') as stream:
         json.dump(value,stream,sort_keys=True,indent=2,allow_nan=False);stream.write('\n')
+def publish_startup(output,name,value,deadline):
+    # Windows CPython3.13 os.rename uses MoveFileExW flags0: no replace/copy.
+    # Only these two receipts use this fixed sibling publication; no recovery.
+    pending_names={'worker-ready.json':'worker-ready.pending.json','worker-ack.json':'worker-ack.pending.json'}
+    require(os.name=='nt' and name in pending_names and math.isfinite(deadline) and time.monotonic()<deadline)
+    final=output/name;pending=output/pending_names[name]
+    require(not final.exists() and not pending.exists())
+    save(pending,value)  # Exclusive creation, serialization and close finish first.
+    require(time.monotonic()<deadline)
+    os.rename(pending,final)  # One no-overwrite rename; a racing destination refuses.
+    require(time.monotonic()<deadline)  # A completed late file grants no authority.
+
 def ordinary(path):
     path=Path(path)
     require('..' not in path.parts)
@@ -200,7 +212,7 @@ def validate_packet(spec_path,authorized,authority):
     require(normalized_mount(spec['carrier'])==normalized_mount(str(packet/'carrier')))
     require({p.name for p in (packet/'carrier').iterdir()}=={'admin.py','n_data03_driver.py','deployment.json'}
         and all(p.is_file() and not p.is_symlink() for p in (packet/'carrier').iterdir()))
-    require(spec['namespace']=='remission-n-data03-261023-r2' and spec['volume']==spec['namespace']+'-positive')
+    require(spec['namespace']=='remission-n-data03-261024-r3' and spec['volume']==spec['namespace']+'-positive')
     return packet,spec
 
 
@@ -295,9 +307,13 @@ def launch(spec_path,authorized,authority):
             while True:
                 require(time.monotonic()<until and child.poll() is None)
                 ready=output/'worker-ready.json'
-                if ready.exists():require(json.loads(ready.read_bytes())==expected);break
+                if ready.exists():
+                    require(json.loads(ready.read_bytes())==expected)
+                    require(time.monotonic()<min(until,start+7140));break
                 time.sleep(.05)
-            require(child.poll() is None);save(output/'worker-ack.json',expected)
+            require(child.poll() is None)
+            publish_startup(output,'worker-ack.json',expected,min(until,start+7140))
+            require(time.monotonic()<min(until,start+7140) and child.poll() is None)
             code=child.wait(timeout=max(.001,outer-2-time.monotonic()));reaped=True
         except BaseException:
             if child is not None:
@@ -321,12 +337,16 @@ def main():
     require(all(type(v) is float and math.isfinite(v) for v in (args.start,args.lease_unix,args.outer))
         and args.outer==args.start+7200 and len(args.nonce)==48)
     identity=dict(pid=os.getpid(),ppid=os.getppid(),nonce=args.nonce,start=args.start,outer=args.outer,lease_unix=args.lease_unix)
-    save(packet/'attempt/worker-ready.json',identity);until=min(args.outer,time.monotonic()+5)
+    until=min(args.outer,args.start+7140,time.monotonic()+5)
+    publish_startup(packet/'attempt','worker-ready.json',identity,until)
     while True:
         require(time.monotonic()<until)
         ack=packet/'attempt/worker-ack.json'
-        if ack.exists():require(json.loads(ack.read_bytes())==identity);break
+        if ack.exists():
+            require(json.loads(ack.read_bytes())==identity)
+            require(time.monotonic()<until);break
         time.sleep(.05)
+    require(time.monotonic()<until)
     return worker(packet,spec,args.start,args.lease_unix,args.outer)
 
 
