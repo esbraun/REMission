@@ -4,6 +4,8 @@
 
 ## POC-VAL — First ablation study
 
+**2026-10-24 requirements candidate, pending different critique/adoption:** the [breadth and reusable harness amendment](poc-ablation-breadth-reuse-20261024.md) adds POC-BREADTH-01–03 / POC-HARNESS-01–02. Require robust four-family synthetic mechanisms and actual appropriate covariate use, plus repeated analytics-version runs through a modular offline harness. TA-B1 full design and TA-B2 independent critique precede broader DGP/feature-contract freeze or pilot/study execution. Seven configurations, counts, pairing, failures, truth and timing obligations below remain; a source-only harness or generic schema does not satisfy them.
+
 Use the existing stack and report an accuracy/timeliness tradeoff, not an assumed winner. Each switch changes actual computation; a display-only toggle fails acceptance. Retain a small selected matrix rather than crossing all switches. Reference, external-conflict and sharp-null settings are bounded restrictions of the existing DGP; record their actual parameters and independently check truth in simple cases. No numerical result is asserted here.
 
 | Family and selected configurations | Matched target and data | Question |

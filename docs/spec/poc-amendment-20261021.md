@@ -1,5 +1,7 @@
 # Functioning synthetic PoC amendment
 
+**Later analytics user requirements (2026-10-24 candidate):** [POC-BREADTH-01–03 / POC-HARNESS-01–02](poc-ablation-breadth-reuse-20261024.md) requires four-family synthetic breadth and a reusable modular testing harness for successive analytics versions. Full Astra study/harness design and different critique precede broader DGP/feature-contract freeze and pilot/study. This candidate awaits independent critique/adoption; it does not change immediate cloud acceptance or grant runtime authority.
+
 ## Immediate physician simulation milestone (2026-10-22)
 
 The user's latest scope is a physician interacting with the simulation deployed on Google Cloud, including validated username/password login. This section supersedes conflicting immediate scope below: **POC-CLOUD-01 through POC-CLOUD-05, POC-1 through POC-3 and the workflow/persistence/failure checks in POC-6 define this milestone. Training, fitting, posterior refresh, analytics jobs and the ablation study are not prerequisites.** The later analytics milestone retains POC-4/5, the fitted N-of-1/MRT/adaptive representatives in POC-6, APPT-01–05, and POC-VAL with all seven V0/V1, N0/N1, S0/S1/S2 configurations, counts, scientific accuracy and timeliness obligations. Their evidence and unfinished tasks are preserved, not passed or removed.
