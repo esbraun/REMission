@@ -21,7 +21,8 @@ VOLUME='remission-s1-completion-261024-r1-positive'
 IMAGE='sha256:4c293e2de7f89fc484e575f23e7af7505b28a72d4a6b35f944aa3da56c6040fd'
 BOUNDS=dict(outer=900,work=840,controller_wait=870,setup=60,request=180,metadata=5,create=10,cli_reap=2)
 FILES={'helpers/analysis_lifecycle.py','helpers/qualify_build_once.py','payload/s1_genuine_submit.py',
-    'payload/submit-spec.json','payload/archive-config.json'}
+    'payload/submit-spec.json','payload/archive-config.json','payload/support-manifest.json','payload/support-authority.json'}
+MANIFEST_SHA='a7628300469875bb9ded11b5d595c3f4ed2fe34ad2003b989cc9031c19a67b72'
 HOST_FILES=(('C:/Python313/python.exe',105816,'d932e5e2f324d57f392e8fd063dcf6d0185be8a664c57c6d24e7762ed02c28ca'),
     ('C:/Python313/python313.dll',6123864,'41ec4fc4e5bc8b207258590238f7f050b13fdfee84c4a7b1ecff6e945d031a10'),
     ('C:/Python313/Lib/subprocess.py',91718,'970207fdd712c92f7dc14d1623d2574f7e0910ceb0b5c37652a7a0850f35a396'))
@@ -82,18 +83,19 @@ def admit(spec):
         and spec.get('volume')==VOLUME and spec.get('image')==IMAGE and spec.get('bounds')==BOUNDS
         and spec.get('no_claim_or_fit') is True)
     for key in ('store_instance','authority_generation','owner_id','archive_id','archive_export_id',
-                'admission_sha256','source_commit','source_review','operation_review','root_go','private_auth_path',
-                'public_archive_path','public_authority_path','archive_configuration_sha256'):
+                'admission_sha256','source_commit','private_auth_path',
+                'archive_configuration_sha256'):
         require(spec.get(key) is not None and spec[key]!='UNKNOWN')
     require(type(spec['authority_generation']) is int and spec['authority_generation']>=1)
     require(type(spec['bounds']) is dict and all(type(spec['bounds'].get(k)) is int for k in BOUNDS))
-    for key in ('source_commit','source_review','operation_review'):
-        require(type(spec[key]) is str and re.fullmatch('[a-f0-9]{40}',spec[key]) is not None)
-    for key in ('admission_sha256','root_go','archive_configuration_sha256','submit_spec_sha256'):
+    require(type(spec['source_commit']) is str and re.fullmatch('[a-f0-9]{40}',spec['source_commit']) is not None
+        and spec.get('authority_mode')=='EXTERNAL_ROOT_EXACT_ONCE_AFTER_SOURCE_OP')
+    require(not any(k in spec for k in ('source_review','operation_review','root_go','public_archive_path','public_authority_path')))
+    for key in ('admission_sha256','archive_configuration_sha256','submit_spec_sha256'):
         require(type(spec.get(key)) is str and re.fullmatch('[a-f0-9]{64}',spec[key]) is not None)
     for key in ('store_instance','owner_id','archive_id','archive_export_id'):
         require(type(spec[key]) is str and 1<=len(spec[key])<=128 and re.fullmatch('[A-Za-z0-9_.:-]+',spec[key]))
-    for key in ('private_auth_path','public_archive_path','public_authority_path'):
+    for key in ('private_auth_path',):
         path=spec[key]
         require(type(path) is str and len(path)<=1024 and re.match('[A-Za-z]:/',path)
             and not any(c in path for c in ',\\\r\n\x00') and all(p not in ('','.','..') for p in path[3:].split('/')))
@@ -127,10 +129,11 @@ def public_rows(raw,*,binding=False):
             require(all(v is None or (type(v) in (int,float) and math.isfinite(v) and v>=0)
                 for v in (value['seconds'],value['response_seconds'],value['decode_seconds'])))
         else:
-            require(set(value)=={'kind','status','members','cutoff_day','response_confirmed','original_receipt_resolved','claim','fit'}
+            require(set(value)=={'kind','status','members','cutoff_day','job_id','response_confirmed','original_receipt_resolved','claim','fit'}
                 and value['kind']=='s1_p3_submit_result' and value['status']=='queued_export_saved'
                 and type(value['members']) is int and value['members']==12
                 and type(value['cutoff_day']) is int and value['cutoff_day']==84
+                and type(value['job_id']) is str and re.fullmatch('analysis-[a-f0-9]{32}',value['job_id']) is not None
                 and type(value['response_confirmed']) is bool and value['original_receipt_resolved'] is True
                 and value['claim'] is False and value['fit'] is False)
         rows.append(value)
@@ -146,11 +149,8 @@ def load(path,name):
 
 def argv(spec,packet):
     binding=spec['kind']==BIND_KIND;name=BIND_NAME if binding else NAME
-    mounts=[('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True)] if binding else [
-        ('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True),
-        ('bind',spec['public_archive_path'],'/public',True),
-        ('bind',spec['public_authority_path'],'/config/authority.json',True),
-        ('bind',spec['private_auth_path'],'/private/auth.json',True)]
+    mounts=[('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True)]
+    if not binding:mounts.append(('bind',spec['private_auth_path'],'/private/auth.json',True))
     args=['docker','create','--name',name,'--label','remission.task='+name,'--network','none','--log-driver','none',
         '--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64','--read-only',
         '--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=128m',
@@ -201,7 +201,7 @@ def checked_packet(path,token):
     require(type(spec.get('public_inputs')) is list and len(spec['public_inputs'])==len(files)
         and {r['path'] for r in spec['public_inputs']}==files)
     for item in spec['public_inputs']:
-        cap=699480 if binding and item['path']=='payload/support-authority.json' else 128*1024
+        cap=699480 if item['path']=='payload/support-authority.json' else 128*1024
         require(set(item)=={'path','bytes','sha256'} and type(item['bytes']) is int and 0<item['bytes']<=cap)
         source=packet/item['path'];require(source.resolve().is_relative_to(packet.resolve()) and not source.is_symlink())
         value=source.read_bytes();require(len(value)==item['bytes'] and sha(value)==item['sha256'])
@@ -217,15 +217,20 @@ def checked_packet(path,token):
             and not any(k in payload for k in ('private_auth_path','public_archive_path','public_authority_path','key',
                 'source_review','operation_review','root_go')))
         return spec,packet
+    checked_submit_carrier(packet/'payload')
+    require(sha((packet/'payload/support-manifest.json').read_bytes())==MANIFEST_SHA)
+    authority=(packet/'payload/support-authority.json').read_bytes()
+    require(len(authority)==699480 and sha(authority)==AUTHORITY_SHA)
     require(sha((packet/'payload/archive-config.json').read_bytes())==spec['archive_configuration_sha256'])
     require(sha((packet/'payload/submit-spec.json').read_bytes())==spec['submit_spec_sha256'])
     payload=strict_json((packet/'payload/submit-spec.json').read_bytes())
     keys=('kind','executable','namespace','volume','store_instance','authority_generation','owner_id',
-        'archive_id','archive_export_id','admission_sha256','source_commit','source_review','operation_review','root_go','no_claim_or_fit')
+        'archive_id','archive_export_id','admission_sha256','source_commit','authority_mode','no_claim_or_fit')
     require(type(payload) is dict and all(payload.get(k)==spec[k] and type(payload.get(k)) is type(spec[k]) for k in keys)
         and payload.get('key')=='s1-genuine-day84-261024-r1' and type(payload.get('cutoff_day')) is int
         and payload['cutoff_day']==84 and type(payload.get('members')) is int and payload['members']==12
-        and payload.get('request_seconds')==180 and payload.get('private_export_cap')==16*1024*1024)
+        and payload.get('request_seconds')==180 and payload.get('private_export_cap')==16*1024*1024
+        and not any(k in payload for k in ('source_review','operation_review','root_go')))
     return spec,packet
 
 
@@ -237,6 +242,14 @@ def checked_binding_carrier(payload):
         require(path.is_file() and not path.is_symlink() and not (getattr(path.lstat(),'st_file_attributes',0)&0x400))
         names.add(path.name);require(len(names)<=3)
     require(names=={'s1_genuine_submit.py','binding-spec.json','support-authority.json'})
+
+
+def checked_submit_carrier(payload):
+    names=set()
+    for path in payload.iterdir():
+        require(path.is_file() and not path.is_symlink() and not (getattr(path.lstat(),'st_file_attributes',0)&0x400))
+        names.add(path.name);require(len(names)<=5)
+    require(names=={'s1_genuine_submit.py','submit-spec.json','archive-config.json','support-manifest.json','support-authority.json'})
 
 
 def check_host():

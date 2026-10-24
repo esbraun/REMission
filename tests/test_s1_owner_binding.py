@@ -215,7 +215,10 @@ class ModeTests(unittest.TestCase):
         prior=ast.parse(BASELINE);current=ast.parse(raw)
         def function(tree,name):return ast.unparse(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==name))
         self.assertEqual(function(prior,'run').replace('not settings.installed.enabled','not settings.installed.control.enabled'),function(current,'run'))
-        for name in ('admit','private_once','emit','submit_export','invoke'):
+        # PhaseA authority alignment and bounded public job_id are separately
+        # approved additions. All untouched auth/request/persistence seams stay
+        # exact; the PhaseA suite verifies their declared inverses explicitly.
+        for name in ('private_once','emit','invoke'):
             self.assertEqual(function(prior,name),function(current,name))
     def test_binding_timeout_unreaped_and_cross_mode_success_refused(self):
         # Reuse the already fault-tested owned-controller doubles in the actual

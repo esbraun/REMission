@@ -56,14 +56,14 @@ def admit(spec):
         and type(spec.get('members')) is int and spec['members']==12
         and spec.get('no_claim_or_fit') is True)
     for key in ('store_instance','authority_generation','owner_id','archive_id','archive_export_id',
-                'admission_sha256','source_commit','source_review','operation_review','root_go'):
+                'admission_sha256','source_commit'):
         require(spec.get(key) is not None and spec[key]!='UNKNOWN')
     require(spec.get('request_seconds')==180 and spec.get('private_export_cap')==16*1024*1024)
     require(type(spec['authority_generation']) is int and spec['authority_generation']>=1)
-    for key in ('source_commit','source_review','operation_review'):
-        require(type(spec[key]) is str and re.fullmatch('[a-f0-9]{40}',spec[key]) is not None)
-    for key in ('admission_sha256','root_go'):
-        require(type(spec[key]) is str and re.fullmatch('[a-f0-9]{64}',spec[key]) is not None)
+    require(type(spec['source_commit']) is str and re.fullmatch('[a-f0-9]{40}',spec['source_commit']) is not None
+        and spec.get('authority_mode')=='EXTERNAL_ROOT_EXACT_ONCE_AFTER_SOURCE_OP')
+    require(type(spec['admission_sha256']) is str and re.fullmatch('[a-f0-9]{64}',spec['admission_sha256']) is not None)
+    require(not any(k in spec for k in ('source_review','operation_review','root_go')))
     return spec
 
 
@@ -213,13 +213,13 @@ def submit_export(request,resolve,save,submission,key):
     proof=resolve(key,submission,job)
     require(type(proof) is dict and proof.get('schema')=='support-s1-queued-request-v1'
         and proof.get('submission')==submission and proof.get('receipt',{}).get('key')==key
-        and type(proof.get('attempt_id')) is str and bool(proof['attempt_id'])
+        and type(proof.get('attempt_id')) is str and re.fullmatch('analysis-[a-f0-9]{32}',proof['attempt_id']) is not None
         and type(proof.get('owner_id')) is str and bool(proof['owner_id'])
         and proof.get('active_attempts')==[dict(attempt_id=proof['attempt_id'],status='queued')]
         and (job is None or proof.get('attempt_id')==job))
     save('queued-export.json',proof)
     save('selection.json',dict(owner=proof['owner_id'],job=proof['attempt_id'],key=key,submission=submission))
-    return dict(status='queued_export_saved',members=12,cutoff_day=84,
+    return dict(status='queued_export_saved',members=12,cutoff_day=84,job_id=proof['attempt_id'],
         response_confirmed=response_confirmed,original_receipt_resolved=True,claim=False,fit=False)
 
 
