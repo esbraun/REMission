@@ -32,6 +32,8 @@ Current external PR63 lifecycle and qualified CLI runner are copied exactly.
 The binding container has only two mounts: existing volumeRW at`/data`, and
 public packet payloadRO at`/operation`. It has no auth or archive mount, no port
 or network, and no app/TestClient import or endpoint call in its binding branch.
+Its fixed public carrier admits only the three declared payload files, rejecting
+extra modules or directories that could shadow installed imports.
 
 ## Exact read-only contract
 
@@ -111,7 +113,7 @@ fresh reservation consumes the attempt even on failure. No GO exists here.
 
 ## Tests and one additional authorized correction
 
-Forty unique guarded controls pass: the prior27 plus13 focused binding tests.
+Forty-one unique guarded controls pass: the prior27 plus14 focused binding tests.
 They execute actual AST-extracted`validate_bundle`and`validate_control` on inert
 metadata, with real app/Store/SQLite/science/network/native imports/actions
 tripwired. They cover read-only order, schema/bindings/generation/DB+lock/WAL,
@@ -127,7 +129,7 @@ scalar counterexample prove that representation bug; this is not an observed
 Phase A runtime failure. The entire existing submit`run()`inverse differs only
 at this expression, and its admission/CSRF/stable POST/export guards remain.
 Initial inert fixture-shim failures and the superseded45-count run (five imported
-controls repeated) are retained; final40 is the unique campaign.
+controls repeated) are retained; final41 is the unique campaign.
 
 Accepted plan `6c6137af060fd135dc24c8ee654ba8a780f84cd4`, different critique
 `591ad04dc23e4ca73d64d2192466110a695304ec`, and read-only source map
