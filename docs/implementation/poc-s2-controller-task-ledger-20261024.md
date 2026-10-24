@@ -33,3 +33,15 @@ new LIVE/auth/browser roundtrip, seven-configuration study/cloud/release. Protec
 fitted delayed/multiple/reactivation/corrected-context applicability remains queued
 for versioned work or separately reviewed requirement resolution. Retained numerics
 17/18 with one FAIL remains unchanged; no sealed operations or rerun. Frozen STOP.
+
+Repair1: independent SOURCE review b5ec20e691b712a25dded65f360ac8a9ce44abfe
+requested dispatch-time consent and post-journal finalization corrections at
+837abdbb40c69c1fa4b2be8b2e189e06b5e5bb36. Real command coverage then exposed
+later consent revision chronology; proposal9913b82e271e97427c164e152a758250d007e56f
+was independently accepted PLAN ONLY in b8e1317505c2c29c6fc7f287dbd6aac89dac6c8a
+before implementation. Repaired source5a17897d6a9e1fe7db1ae6e47187d3e8dd3b19c3,
+tree705f8d4256e26975202d5bd324a51ea3c7eb337c; final57 guarded PASS with zero
+expected failures. Known failed reviewer/producer evidence retained; schema,
+config, web, Store, scientific/N/protected sources unchanged. Four inverses and
+all17 source blobs re-frozen. No runtime/actual/merge/PR. See Repair1 handoff and
+index; same independent Astra repaired SOURCE review required. Frozen STOP.

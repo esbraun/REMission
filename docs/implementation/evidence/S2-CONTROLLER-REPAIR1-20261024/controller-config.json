@@ -1,0 +1,45 @@
+{
+  "configuration": {
+    "actions": [
+      "support_prompt",
+      "no_prompt"
+    ],
+    "bounds": [
+      0.1,
+      0.9
+    ],
+    "fallback": 0.5,
+    "max_prompts_rolling_seven": 3,
+    "no_consecutive": true,
+    "order": [
+      "current_authority",
+      "mask",
+      "saved_scalar_or_fallback",
+      "bounds_normalize_feasibility",
+      "persist_final_distribution",
+      "keyed_assignment",
+      "delivery_outcome_clock"
+    ],
+    "qualification": {
+      "candidate": "external nonHTTP invocation only; never LIVE history/export/fit/serving",
+      "clocks": "synthetic stage clocks distinct from actual receipt/publication",
+      "contexts": [
+        "installed_ACTUAL",
+        "untrusted_once_SOURCE_OP"
+      ]
+    },
+    "reentry": "new explicit envelope after N stop/completion; never automatic",
+    "rng": {
+      "algorithm": "sha256 first53 bits midpoint; independent from generator outcomes",
+      "namespace": "assignment",
+      "process": "s2-support-assignment-v1"
+    },
+    "saved": "exact current scalar only; no fit/predict launch/wait on appointment paths",
+    "schema": "s2-controller-source-1.0.0"
+  },
+  "reference": {
+    "id": "poc-support-s2-controller-source-v1",
+    "sha256": "7495b57edf162bd5dbbc1eae9dc86652faeb5718c2388827085b2046414a980f",
+    "version": "1.0.0"
+  }
+}
