@@ -14,6 +14,12 @@ import importlib.abc
 import io
 import json
 import os
+# Hold only the mapping reference, never its values. Denial is active before
+# remaining imports and applies even if code retained the original mapping.
+ORIGINAL_ENVIRON=os.environ
+def refuse_environment(*args,**kwargs):raise AssertionError('original host environment access forbidden in SOURCE')
+for _method in ('__getitem__','__iter__','__len__','copy','get','__contains__','__setitem__','__delitem__'):
+    setattr(type(ORIGINAL_ENVIRON),_method,refuse_environment)
 from pathlib import Path
 import socket
 import subprocess
@@ -59,7 +65,7 @@ if __name__=='__main__':
         result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_breadth_source'))
         record=dict(scope='B3.1 SOURCE: scalar short fixtures/Pydantic/lineage only',tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),
             status='PASS' if result.wasSuccessful() else 'FAIL',full_generation=False,scientific_qualification=False,model_consumption=False,
-            app_Store_SQLite=False,private=False,host_environment_copy=False,native_or_network=False)
+            app_Store_SQLite=False,private=False,host_environment_copy=False,original_environment_read_iteration_traps=True,native_or_network=False)
         definitions=sys.modules['contracts.domain.breadth']
         record['definitions']={name:getattr(definitions,name) for name in ('LAW_REF','HISTORY_REF','FEATURE_REF')}
         OUTPUT.joinpath('checks.json').write_text(json.dumps(record,sort_keys=True,indent=2)+'\n',encoding='utf-8')

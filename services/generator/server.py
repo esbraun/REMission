@@ -51,7 +51,7 @@ class Handler(BaseHTTPRequestHandler):
             if type(value) is not dict or value.get('law_version')!='poc-breadth-longitudinal-v3':raise ValueError('exact breadth profile required')
             from .breadth import generate as generate_breadth
             result=generate_breadth(value)
-        except (ValueError,TypeError,KeyError):
+        except (ValueError,TypeError,KeyError,RecursionError):
             self.send_error(422,'invalid breadth generator request')
             return
         payload=json.dumps(result,separators=(',',':'),allow_nan=False).encode()

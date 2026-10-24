@@ -412,13 +412,19 @@ class ProducerSourceTests(unittest.TestCase):
                 (valid,'-1',400),(valid,'+3',400),(valid,'',400),(valid,'0000001',400),(valid,'１２',400),
                 (valid,str(len(valid)+1),422),(b'{"law_version":"poc-breadth-longitudinal-v3","x":NaN}','56',422),
                 (b'{"law_version":"poc-breadth-longitudinal-v3","x":1,"x":2}',None,422),
-                (b'{"law_version":"poc-longitudinal-v2"}',None,422),(b'[]','2',422)]:
+                (b'{"law_version":"poc-longitudinal-v2"}',None,422),(b'[]','2',422),
+                (b'{"law_version":"poc-breadth-longitudinal-v3","x":'+b'['*10000+b'0'+b']'*10000+b'}',None,422)]:
             peer=Peer(raw,str(len(raw)) if length is None else length)
             with self.subTest(length=length,status=status):env['breadth_POST'](peer);self.assertEqual(peer.status,status)
         self.assertEqual(len(called),2)
 
     def test_source_guards_are_active_before_any_runtime_access(self):
         self.assertEqual(os.environ,{}) # literal fixture, never real env copied
+        import sys
+        original=sys.modules['__main__'].ORIGINAL_ENVIRON
+        for call in (lambda:original['SOURCE_ONLY_NEVER_FETCHED'],lambda:original.get('SOURCE_ONLY_NEVER_FETCHED'),
+                lambda:iter(original),lambda:len(original),lambda:original.copy(),lambda:'SOURCE_ONLY_NEVER_FETCHED' in original):
+            with self.assertRaises(AssertionError):call()
         for module in ('numpy','pymc','sqlite3','ctypes','services.foundation.store','apps.foundation.app'):
             with self.subTest(module=module),self.assertRaises(AssertionError):__import__(module)
         for call in (lambda:subprocess.Popen(['not-executed']),lambda:socket.socket(),lambda:Path('artifacts/private-never-open/auth.json').read_bytes()):
