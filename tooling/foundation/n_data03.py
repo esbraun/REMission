@@ -44,7 +44,9 @@ def save(path,value):
     with Path(path).open('x',encoding='utf-8',newline='\n') as stream:
         json.dump(value,stream,sort_keys=True,indent=2,allow_nan=False);stream.write('\n')
 def ordinary(path):
-    path=Path(path).absolute()
+    path=Path(path)
+    require('..' not in path.parts)
+    path=path.absolute()
     require(not any(c in str(path) for c in (',','\r','\n','\x00')))
     for item in (path,*path.parents):
         require(not item.is_symlink() and not (item.exists() and getattr(item.lstat(),'st_file_attributes',0)&0x400))

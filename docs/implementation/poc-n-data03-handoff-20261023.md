@@ -100,6 +100,9 @@ test files and inert process/CLI doubles. Actual route/authentication/generator,
 query-only SQLite and lifetime/custody acceptance remain future runtime evidence;
 source/AST/double controls are not workflow success. Earlier test-harness and
 fixture failures are retained in the ignored evidence directory.
+Host public-input capture reads at most256KiB plus one sentinel before parsing;
+overflow rejects. Public path validation rejects lexical parent traversal before
+any input read, as well as aliases/reparse paths and mount-separator characters.
 
 The final exact candidate/base, public input index, plan/spec hashes, once command,
 safe-check logs and limitations are frozen under `artifacts/n-data03-5ed-r1`.

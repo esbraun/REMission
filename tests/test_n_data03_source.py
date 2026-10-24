@@ -20,6 +20,13 @@ def generation():
 
 
 class Data03Source(unittest.TestCase):
+    def test_public_input_paths_reject_lexical_escape_before_read(self):
+        with tempfile.TemporaryDirectory(dir='artifacts') as folder:
+            root=Path(folder)
+            self.assertEqual(op.ordinary(root/'public.json'),(root/'public.json').absolute())
+            for path in (root/'..'/'outside.json',root/'sub'/'..'/'public.json',root/'bad,name'):
+                with self.assertRaises(ValueError):op.ordinary(path)
+
     def test_generation_ordinal_precedes_sorted_list_and_is_fixed(self):
         value=generation();selection=d.validate_generation(value)
         self.assertEqual(selection['target_id'],value['patient_ids'][6])
