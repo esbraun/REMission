@@ -88,6 +88,9 @@ def prepare_cohort(db, owner, patient_versions, cutoff, *, cohort_id, source_bun
 
 
 def view(row, cutoff, *, current=None):
+    if json.loads(row['request_json']).get('kind')=='poc_support_s2_app_fit_input':
+        from .support_s2_analysis import view as support_s2_view
+        return support_s2_view(row)
     if json.loads(row['request_json']).get('kind')=='poc_nof1_input':
         from .nof1_analysis import view as nof1_view
         return nof1_view(row)
@@ -152,12 +155,15 @@ def submit(db, patient, owner, expected_version, previous, now, *, mode='v0',sou
     return view(db.execute('SELECT * FROM analysis_attempts WHERE job_id=?',(job,)).fetchone(),patient['cutoff'])
 
 
-def queued_request(db, *, owner, job, key, submission, configured=None, now=None):
+def queued_request(db, *, owner, job, key, submission, configured=None, now=None, source_commit=None):
     """Read one receipted ordinary cohort request; no claim/session secrets leave.
 
     The caller uses the existing admitted Store read transaction. A missing
     receipt is UNKNOWN submission outcome, never permission to submit again.
     """
+    if submission.get('kind')=='support_s2_fit_submission':
+        from .support_s2_analysis import queued_request as support_s2_queued
+        return support_s2_queued(db,owner=owner,job=job,key=key,submission=submission,source_commit=source_commit)
     if submission.get('purpose') in ('N0','N1'):
         from .nof1_analysis import queued_request as nof1_queued
         return nof1_queued(db,owner=owner,job=job,key=key,submission=submission,now=now)
@@ -220,6 +226,9 @@ def claim(store, *, expected=None, configured=None):
         if row is None:
             return None
         product=json.loads(row['request_json'])
+        if str(product.get('kind','')).startswith('poc_support_s2_'):
+            from contracts.domain.support_s2_app import require_executable
+            require_executable()
         if product.get('kind')=='poc_nof1_input':
             from .nof1_analysis import revalidate
             revalidate(db,row,now=store.clock())
