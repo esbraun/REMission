@@ -59,10 +59,22 @@ def run(source,out,*,seconds=7200):
         protocol=ctx.protocol.model_dump(),status='failed',readiness=ready['status'],reason='worker-incomplete',
         generated_at=datetime.now(timezone.utc).isoformat(),consumed_record_ids=consumed_ids(product),
         effect=None,diagnostics=dict(execution=execution_binding(product,origin),fits=[]),artifacts=[],limitations=LIMITATIONS)
+    progress_state=dict(sequence=0,extension=False,rollouts_started_elapsed_seconds=None,integration_finished_elapsed_seconds=None)
     def check_deadline():
         if time.monotonic()>=deadline:raise TimeoutError('whole-N-worker-deadline')
+        if (progress_state['rollouts_started_elapsed_seconds'] is not None
+                and progress_state['integration_finished_elapsed_seconds'] is None
+                and time.monotonic()-started>=progress_state['rollouts_started_elapsed_seconds']+1800):
+            raise TimeoutError('whole-N-integration-deadline')
     def stage(value):
-        check_deadline();publish(out/'progress.json',dict(attempt_id=product.attempt_id,input_sha256=base['input_sha256'],**value))
+        check_deadline();elapsed=time.monotonic()-started
+        if value['stage']=='rollouts' and progress_state['rollouts_started_elapsed_seconds'] is None:
+            progress_state['rollouts_started_elapsed_seconds']=elapsed
+        if value.get('integration_finished') is True:progress_state['integration_finished_elapsed_seconds']=elapsed
+        if 'extension' in value:progress_state['extension']=value['extension']
+        progress_state['sequence']+=1
+        publish(out/'progress.json',dict(schema='n-fit04-progress-v1',attempt_id=product.attempt_id,
+            input_sha256=base['input_sha256'],stage=value['stage'],elapsed_seconds=elapsed,K=value.get('K'),**progress_state))
     try:
         stage(dict(stage='preparing'))
         if ready['status']!='eligible':
@@ -105,6 +117,7 @@ def run(source,out,*,seconds=7200):
                 remaining=min(1800.,deadline-time.monotonic())
                 if remaining<=0:raise TimeoutError('N integration has no remaining host budget')
                 effect,integration=integrate(draws,seed=seed,stage=stage,seconds=remaining)
+                stage(dict(stage='rollouts',integration_finished=True))
                 base['diagnostics']['integration']=integration
                 if effect is None:base.update(status='abstained',reason='numerical-precision-unmet')
                 else:
