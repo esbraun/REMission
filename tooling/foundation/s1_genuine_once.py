@@ -27,6 +27,16 @@ HOST_FILES=(('C:/Python313/python.exe',105816,'d932e5e2f324d57f392e8fd063dcf6d01
     ('C:/Python313/Lib/subprocess.py',91718,'970207fdd712c92f7dc14d1623d2574f7e0910ceb0b5c37652a7a0850f35a396'))
 PUBLIC_NAME='public-result.json'
 PUBLIC_PATH='/data/s1-p3-submit-r1/'+PUBLIC_NAME
+BIND_KIND='S1_SELECTED_OWNER_BINDING_V1'
+BIND_NAME='remission-s1-selected-owner-261024-r1'
+BIND_FILES={'helpers/analysis_lifecycle.py','helpers/qualify_build_once.py','payload/s1_genuine_submit.py',
+    'payload/binding-spec.json','payload/support-authority.json'}
+BIND_PUBLIC_NAME='owner-binding.json'
+BIND_PUBLIC_PATH='/data/s1-p3-owner-binding-r1/'+BIND_PUBLIC_NAME
+BIND_EXPECTED=dict(store_instance='f4d6bea5-10aa-4247-afa0-76b8e5c3fceb',authority_generation=1,
+    archive_id='support-dev-once-20261022:support-dev-cohort-20261022',archive_export_id='accepted-support-dev-20261022',
+    admission_sha256='7f411f3cc7b60fa28eb61481db15c590089fa874827ca8fdab547628438bcf98')
+AUTHORITY_SHA='048960f15bc0cc1ca7136a491755bbb64bfd1e0778418fd88e50a15480c65004'
 TYPED='{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Path":{{json .Path}},"Args":{{json .Args}},"State":{{json .State}},"RestartCount":{{json .RestartCount}},"Labels":{{json .Config.Labels}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"LogConfig":{{json .HostConfig.LogConfig}},"Mounts":{{json .Mounts}}}'
 
 
@@ -55,6 +65,19 @@ def save(path,value):
 def admit(spec):
     # First refusal precedes helper import, reservation and every private path.
     require(type(spec) is dict and spec.get('executable') is True)
+    if spec.get('kind')==BIND_KIND:
+        require(spec.get('namespace')==BIND_NAME and spec.get('volume')==VOLUME and spec.get('image')==IMAGE
+            and spec.get('bounds')==BOUNDS and type(spec.get('bounds')) is dict
+            and all(type(spec['bounds'].get(k)) is int for k in BOUNDS)
+            and spec.get('binding_only') is True and spec.get('no_submit_claim_fit') is True
+            and spec.get('owner_id') is None and spec.get('public_authority_sha256')==AUTHORITY_SHA)
+        require(all(spec.get(k)==v and type(spec.get(k)) is type(v) for k,v in BIND_EXPECTED.items()))
+        require(not any(k in spec for k in ('private_auth_path','public_archive_path','public_authority_path','key',
+            'no_claim_or_fit','source_review','operation_review','root_go')))
+        require(type(spec.get('source_commit')) is str and re.fullmatch('[a-f0-9]{40}',spec['source_commit']) is not None
+            and spec.get('authority_mode')=='EXTERNAL_ROOT_EXACT_ONCE_AFTER_SOURCE_OP')
+        require(type(spec.get('binding_spec_sha256')) is str and re.fullmatch('[a-f0-9]{64}',spec['binding_spec_sha256']) is not None)
+        return spec
     require(spec.get('kind')=='S1_GENUINE_SUBMIT_EXPORT_V1' and spec.get('namespace')==NAME
         and spec.get('volume')==VOLUME and spec.get('image')==IMAGE and spec.get('bounds')==BOUNDS
         and spec.get('no_claim_or_fit') is True)
@@ -77,9 +100,22 @@ def admit(spec):
     return spec
 
 
-def public_rows(raw):
+def public_rows(raw,*,binding=False):
+    require(type(binding) is bool)
     require(0<len(raw)<=4096)
     envelope=strict_json(raw)
+    if binding:
+        fields={'schema','kind','status',*BIND_EXPECTED,'owner_id','members','selected_owner_consistency',
+            'no_conflicting_analysis','binding_only','submit','claim','fit'}
+        require(type(envelope) is dict and set(envelope)==fields
+            and envelope['schema']=='s1-selected-owner-control-v1' and envelope['kind']=='s1_selected_owner_binding'
+            and envelope['status']=='selected_owner_bound'
+            and all(envelope[k]==v and type(envelope[k]) is type(v) for k,v in BIND_EXPECTED.items())
+            and type(envelope['owner_id']) is str and re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}',envelope['owner_id']) is not None
+            and type(envelope['members']) is int and envelope['members']==12
+            and all(envelope[k] is True for k in ('selected_owner_consistency','no_conflicting_analysis','binding_only'))
+            and all(envelope[k] is False for k in ('submit','claim','fit')))
+        return [envelope]
     require(type(envelope) is dict and set(envelope)=={'schema','rows'} and envelope['schema']=='s1-p3-public-v1'
         and type(envelope['rows']) is list and 1<=len(envelope['rows'])<=12)
     rows=[]
@@ -109,21 +145,25 @@ def load(path,name):
 
 
 def argv(spec,packet):
-    mounts=[('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True),
+    binding=spec['kind']==BIND_KIND;name=BIND_NAME if binding else NAME
+    mounts=[('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True)] if binding else [
+        ('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True),
         ('bind',spec['public_archive_path'],'/public',True),
         ('bind',spec['public_authority_path'],'/config/authority.json',True),
         ('bind',spec['private_auth_path'],'/private/auth.json',True)]
-    args=['docker','create','--name',NAME,'--label','remission.task='+NAME,'--network','none','--log-driver','none',
+    args=['docker','create','--name',name,'--label','remission.task='+name,'--network','none','--log-driver','none',
         '--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64','--read-only',
         '--cap-drop','ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=128m',
         '--restart','no','--user','10001:10001','--workdir','/app']
     for kind,source,target,readonly in mounts:
         args+=['--mount','type='+kind+',source='+source+',target='+target+(',readonly' if readonly else '')]
-    for key,value in dict(REMISSION_CONTROL_BUNDLE='/data/bootstrap/bundle.json',REMISSION_DATABASE='/data/remission.sqlite',
+    environment={} if binding else dict(REMISSION_CONTROL_BUNDLE='/data/bootstrap/bundle.json',REMISSION_DATABASE='/data/remission.sqlite',
             REMISSION_ARCHIVE_CONFIG='/operation/archive-config.json',REMISSION_SOURCE_COMMIT=spec['source_commit'],
-            REMISSION_ORIGIN='http://127.0.0.1:8765').items():args+=['--env',key+'='+value]
-    args += [IMAGE,'python','-B','/operation/s1_genuine_submit.py','--spec','/operation/submit-spec.json',
-        '--authorized-spec-sha256',spec['submit_spec_sha256']]
+            REMISSION_ORIGIN='http://127.0.0.1:8765')
+    for key,value in environment.items():args+=['--env',key+'='+value]
+    args += [IMAGE,'python','-B','/operation/s1_genuine_submit.py','--spec',
+        '/operation/binding-spec.json' if binding else '/operation/submit-spec.json',
+        '--authorized-spec-sha256',spec['binding_spec_sha256'] if binding else spec['submit_spec_sha256']]
     return args,mounts
 
 
@@ -135,9 +175,10 @@ def normalized(value):
     return value.casefold() if re.match('[a-zA-Z]:/',value) else value
 
 
-def audit_created(value,cid,arguments,mounts,life):
+def audit_created(value,cid,arguments,mounts,life,*,binding=False):
+    require(type(binding) is bool)
     life.checked_state(value,cid)
-    expected=dict(Image=IMAGE,User='10001:10001',Labels={'remission.task':NAME},Memory=2147483648,
+    expected=dict(Image=IMAGE,User='10001:10001',Labels={'remission.task':BIND_NAME if binding else NAME},Memory=2147483648,
         MemorySwap=2147483648,NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,
         CapAdd=None,CapDrop=['ALL'],SecurityOpt=['no-new-privileges'],Tmpfs={'/tmp':'rw,noexec,nosuid,nodev,size=128m'},
         NetworkMode='none',PublishAllPorts=False,RestartPolicy={'Name':'no','MaximumRetryCount':0},LogConfig={'Type':'none','Config':{}})
@@ -156,12 +197,25 @@ def audit_created(value,cid,arguments,mounts,life):
 def checked_packet(path,token):
     raw=path.read_bytes();require(sha(raw)==token)
     spec=admit(strict_json(raw));packet=path.parent
-    require(type(spec.get('public_inputs')) is list and len(spec['public_inputs'])==len(FILES)
-        and {r['path'] for r in spec['public_inputs']}==FILES)
+    binding=spec['kind']==BIND_KIND;files=BIND_FILES if binding else FILES
+    require(type(spec.get('public_inputs')) is list and len(spec['public_inputs'])==len(files)
+        and {r['path'] for r in spec['public_inputs']}==files)
     for item in spec['public_inputs']:
-        require(set(item)=={'path','bytes','sha256'} and type(item['bytes']) is int and 0<item['bytes']<=128*1024)
+        cap=699480 if binding and item['path']=='payload/support-authority.json' else 128*1024
+        require(set(item)=={'path','bytes','sha256'} and type(item['bytes']) is int and 0<item['bytes']<=cap)
         source=packet/item['path'];require(source.resolve().is_relative_to(packet.resolve()) and not source.is_symlink())
         value=source.read_bytes();require(len(value)==item['bytes'] and sha(value)==item['sha256'])
+    if binding:
+        authority=(packet/'payload/support-authority.json').read_bytes()
+        require(len(authority)==699480 and sha(authority)==AUTHORITY_SHA)
+        raw=(packet/'payload/binding-spec.json').read_bytes();require(sha(raw)==spec['binding_spec_sha256'])
+        payload=strict_json(raw)
+        keys=('kind','executable','namespace','volume',*BIND_EXPECTED,'owner_id','source_commit','authority_mode',
+            'public_authority_sha256','binding_only','no_submit_claim_fit')
+        require(type(payload) is dict and all(payload.get(k)==spec[k] and type(payload.get(k)) is type(spec[k]) for k in keys)
+            and not any(k in payload for k in ('private_auth_path','public_archive_path','public_authority_path','key',
+                'source_review','operation_review','root_go')))
+        return spec,packet
     require(sha((packet/'payload/archive-config.json').read_bytes())==spec['archive_configuration_sha256'])
     require(sha((packet/'payload/submit-spec.json').read_bytes())==spec['submit_spec_sha256'])
     payload=strict_json((packet/'payload/submit-spec.json').read_bytes())
@@ -182,22 +236,23 @@ def check_host():
         raw=Path(name).read_bytes();require(len(raw)==size and sha(raw)==digest)
 
 
-def public_tar(raw):
+def public_tar(raw,*,binding=False):
+    require(type(binding) is bool)
     # Exact-file framing reused from the accepted N transfer; no extraction.
     require(len(raw)>=1536 and len(raw)%512==0 and len(raw)<=20480)
     info=tarfile.TarInfo.frombuf(raw[:512],'utf-8','strict')
     end=512+((info.size+511)//512)*512
-    require(info.name==PUBLIC_NAME and info.type in (tarfile.REGTYPE,tarfile.AREGTYPE)
+    require(info.name==(BIND_PUBLIC_NAME if binding else PUBLIC_NAME) and info.type in (tarfile.REGTYPE,tarfile.AREGTYPE)
         and 0<info.size<=4096 and len(raw)>=end+1024 and not any(raw[512+info.size:]))
     return raw[512:512+info.size]
 
 
-def collect_public(cid,deadline,life,receipts):
+def collect_public(cid,deadline,life,receipts,*,binding=False):
     """One named public receipt; hard transport cap before JSON parsing."""
-    life.require_cid(cid);life.check_deadline(deadline)
+    require(type(binding) is bool);life.require_cid(cid);life.check_deadline(deadline)
     process=None;raw=bytearray();record=dict(pid=None,reaped=False,returncode=None)
     try:
-        process=subprocess.Popen(['docker','cp',cid+':'+PUBLIC_PATH,'-'],stdout=subprocess.PIPE,
+        process=subprocess.Popen(['docker','cp',cid+':'+(BIND_PUBLIC_PATH if binding else PUBLIC_PATH),'-'],stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
         record['pid']=process.pid;os.set_blocking(process.stdout.fileno(),False)
         end=min(deadline,time.monotonic()+15)
@@ -211,7 +266,7 @@ def collect_public(cid,deadline,life,receipts):
             else:time.sleep(min(.01,max(0,end-time.monotonic())))
         record['returncode']=process.wait(timeout=max(.001,min(2,end-time.monotonic())));record['reaped']=True
         life.check_deadline(end);require(record['returncode']==0)
-        return public_tar(raw)
+        return public_tar(raw,binding=binding)
     finally:
         if process is not None:
             if not record['reaped']:
@@ -224,6 +279,8 @@ def collect_public(cid,deadline,life,receipts):
 def execute(path,token,origin):
     require(type(origin) in (int,float) and math.isfinite(origin) and 0<=time.monotonic()-origin<BOUNDS['setup'])
     spec,packet=checked_packet(path,token)
+    binding=spec['kind']==BIND_KIND;name=BIND_NAME if binding else NAME
+    success='owner_binding_saved' if binding else 'queued_export_saved'
     life=load(packet/'helpers/analysis_lifecycle.py','s1_p3_life')
     runner=load(packet/'helpers/qualify_build_once.py','s1_p3_cli')
     output=packet/'results';output.mkdir(exist_ok=False);save(output/'reservation.json',dict(spec_sha256=token,consumed=True))
@@ -238,7 +295,7 @@ def execute(path,token,origin):
         return r['stdout']
     try:
         require(call(['docker','image','inspect','--format','{{.Id}}',IMAGE],'image',deadline=setup).strip()==IMAGE)
-        require(not call(['docker','ps','--all','--quiet','--filter','name=^/'+NAME+'$'],'name-absent',deadline=setup).strip())
+        require(not call(['docker','ps','--all','--quiet','--filter','name=^/'+name+'$'],'name-absent',deadline=setup).strip())
         require(not call(['docker','ps','--quiet','--filter','volume='+VOLUME],'volume-no-writer',deadline=setup).strip())
         value=json.loads(call(['docker','volume','inspect','--format','{"Name":{{json .Name}},"Labels":{{json .Labels}}}',VOLUME],'retained-volume',deadline=setup))
         require(value==dict(Name=VOLUME,Labels={'remission.task':'remission-s1-completion-261024-r1'}))
@@ -247,12 +304,12 @@ def execute(path,token,origin):
         except BaseException:raise life.StopUnconfirmed('selected create CID unknown') from None
         save(output/'cid.json',dict(cid=cid))
         created=json.loads(call(['docker','inspect','--format',TYPED,cid],'typed-created',deadline=setup))
-        audit_created(created,cid,arguments,mounts,life)
+        audit_created(created,cid,arguments,mounts,life,binding=binding)
         life.supervise(cid,output/'supervision',work,discard_output=True)
         # The stopped-container volume contains one explicitly public file.
         # No private input/export/auth file or process stream is collected.
-        captured=collect_public(cid,work,life,receipts)
-        rows=public_rows(captured)
+        captured=collect_public(cid,work,life,receipts,binding=binding)
+        rows=public_rows(captured,binding=binding)
         save(output/'public-result.json',rows[-1])
     except BaseException as failure:
         error=type(failure).__name__
@@ -263,7 +320,7 @@ def execute(path,token,origin):
                 events=life.stop_owned(cid);final=life.inspect(cid);require(life.stopped(final))
                 save(output/'independent-final.json',final)
             except BaseException:unresolved.append('owned_container_stop')
-        save(output/'terminal.json',dict(status='STOP UNCONFIRMED' if unresolved else 'failed' if error else 'queued_export_saved',
+        save(output/'terminal.json',dict(status='STOP UNCONFIRMED' if unresolved else 'failed' if error else success,
             error_class=error,cid=cid,cleanup=events,unresolved=unresolved,file_clients=receipts,
             resources_retained=True,private_outputs_not_read=True))
     require(error is None and not unresolved)
@@ -272,6 +329,7 @@ def execute(path,token,origin):
 def launch(path,token):
     """One owned controller; absolute common origin includes all preflight."""
     origin=time.monotonic();spec,packet=checked_packet(path,token);check_host()
+    success='owner_binding_saved' if spec['kind']==BIND_KIND else 'queued_export_saved'
     folder=packet/'launcher';folder.mkdir(exist_ok=False)
     save(folder/'reservation.json',dict(spec_sha256=token,consumed=True,origin=origin,outer_deadline=origin+900,work_deadline=origin+840))
     life=load(packet/'helpers/analysis_lifecycle.py','s1_p3_parent_life')
@@ -305,12 +363,12 @@ def launch(path,token):
                     terminal=packet/'results/terminal.json'
                     require(terminal.stat().st_size<=8192 and not terminal.is_symlink())
                     value=strict_json(terminal.read_bytes())
-                    require(value['status']=='queued_export_saved' and value['cid']==cid
+                    require(value['status']==success and value['cid']==cid
                         and value['error_class'] is None and value['unresolved']==[])
                 except BaseException:error='controller_terminal_unconfirmed'
         try:life.check_deadline(origin+900)
         except BaseException:unresolved.append('outer_deadline')
-        save(folder/'terminal.json',dict(status='STOP UNCONFIRMED' if unresolved else 'failed' if error or code!=0 else 'queued_export_saved',
+        save(folder/'terminal.json',dict(status='STOP UNCONFIRMED' if unresolved else 'failed' if error or code!=0 else success,
             controller_pid=None if process is None else process.pid,controller_exit=code,controller_reaped=process is not None and process.poll() is not None,
             cid=cid,error_class=error,cleanup=events,unresolved=unresolved,common_origin=origin,elapsed=time.monotonic()-origin))
     require(not unresolved and error is None and code==0)
