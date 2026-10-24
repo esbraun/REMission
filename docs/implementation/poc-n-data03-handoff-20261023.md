@@ -218,7 +218,7 @@ changes only the fresh literal namespace to `remission-n-data03-261024-r4` with
 its own `-positive` volume. There is no serializer/logger/framework/app fix.
 
 Guarded SOURCE controls run through the existing read-only scalar dependency
-environment with `-I -B tests/run_n_data03_source.py`. All46 pass, retaining the
+environment with `-I -B tests/run_n_data03_source.py`. All48 pass, retaining the
 previous38 controls. Real scalar `DecisionSnapshot.model_validate_json` followed
 by `model_dump(mode='json')`, as used by workflow, on pinned Pydantic2.14.1 emits
 `Z` from UTC `+00:00`. Old raw comparison rejects and repaired actual admit_rows
@@ -235,12 +235,27 @@ The whole-driver inverse restores exact Git blobe1b7c486172c121160dff82b3ea7a96d
 the whole-operator namespace inverse restores exact bloba7e51ea8633f24a1c4683e38146a7e314277c19c.
 Public schemas, H* construction, HTTP180 scope, output caps and lifecycle remain
 unchanged. The local helper rejects any supplied fractional component exceeding
-six digits before datetime parsing, including fractional offsets; no supplied
-precision can be silently truncated. Python datetime comparison supports exact
+six digits before datetime parsing and rejects all fractional timezone-offset
+syntax (dot or comma, either sign, including one through six digits). Accepted
+inputs use explicit aware stdlib ISO datetime syntax, seconds precision up to six
+fractional digits, with Z or whole-unit explicit offsets such as +00:00, +05:30
+or -07:00; fractional offsets are unsupported and refused. Python datetime supports exact
 microseconds. Distinct submicrosecond inputs and excess precision on DB/snapshot/
 origin sides reject, even where datetime alone would produce equal values.
 Fresh public packet/carrier/source proof,
-plan/spec and exact once command are frozen under `artifacts/n-data03-r4`.
+plan/spec and exact once command are frozen under `artifacts/n-data03-r4/packet-r2`.
+Candidate69bb7083d19706198df5cb93210dfc8acb35a59c and packet-r1 are retained
+SUPERSEDED_NEVER_AUTHORIZED. Different independent reviewa162179db5b50d2c825c5a8f16fff0717e57d2f3
+found a fractional zero-offset case that stdlib silently treats as UTC. The
+minimal preparse fractional-offset refusal closes that P2. Actual scalar controls
+reproduce the old equal result and reject the counterexample on every member's
+DB cutoff/snapshot/origin, both days, both signs/dot/comma and one-to-six digits.
+Actual receipt invalid-twelfth-member controls reject before guard/export on all
+three input sides. Full SOURCE+OP review of the corrected source and packet is
+still required; the prior review stopped before complete58/36 hashing and packet
+checks, so it supplies no inherited approval. Original candidate/packet/log/review
+bytes remain retained. The unattempted R4 namespace stays fixed; actual future
+resource absence remains UNKNOWN until separately authorized preflight.
 Independent exact SOURCE+OP review and a NEW root once GO are required before
 preflight, namespace query, Docker, private Store or native work. All R1-R3
 resources/raw/private evidence and consumed authorities remain untouched.

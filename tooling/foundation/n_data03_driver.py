@@ -192,6 +192,7 @@ class RequestLimit:
 def instant(value):
     import re
     require(not re.search(r'[.,]\d{7}',value))
+    require(not re.search(r'[+-]\d{2}(?::?\d{2}){0,2}[.,]',value))
     result=datetime.fromisoformat(value.replace('Z','+00:00'))
     require(result.tzinfo is not None and result.utcoffset() is not None)
     return result.astimezone(timezone.utc)

@@ -725,7 +725,7 @@ def cutoff_fixture(day):
 
 
 def cutoff_inverse(source):
-    helper="def instant(value):\n    import re\n    require(not re.search(r'[.,]\\d{7}',value))\n    result=datetime.fromisoformat(value.replace('Z','+00:00'))\n    require(result.tzinfo is not None and result.utcoffset() is not None)\n    return result.astimezone(timezone.utc)\n\n\n"
+    helper="def instant(value):\n    import re\n    require(not re.search(r'[.,]\\d{7}',value))\n    require(not re.search(r'[+-]\\d{2}(?::?\\d{2}){0,2}[.,]',value))\n    result=datetime.fromisoformat(value.replace('Z','+00:00'))\n    require(result.tzinfo is not None and result.utcoffset() is not None)\n    return result.astimezone(timezone.utc)\n\n\n"
     replacements=[(helper,''),
         ("        cutoff=instant(row['cutoff']);snapshot_cutoff=instant(s['cutoff']);origin=instant(sim['origin'])\n",''),
         ('and cutoff==snapshot_cutoff and sim.get',"and row['cutoff']==s['cutoff'] and sim.get"),
@@ -851,6 +851,35 @@ class Data03CutoffSource(unittest.TestCase):
         prior=operator.replace("'remission-n-data03-261024-r4'","'remission-n-data03-261024-r3'").encode()
         self.assertEqual(hashlib.sha1(b'blob '+str(len(prior)).encode()+b'\0'+prior).hexdigest(),'a7e51ea8633f24a1c4683e38146a7e314277c19c')
 
+    def test_fractional_zero_offset_counterexample_old_collapses_new_rejects(self):
+        guard="    require(not re.search(r'[+-]\\d{2}(?::?\\d{2}){0,2}[.,]',value))\n"
+        source=Path(d.__file__).read_text();self.assertEqual(source.count(guard),1)
+        node=next(n for n in ast.parse(source.replace(guard,'')).body if isinstance(n,ast.FunctionDef) and n.name=='instant')
+        namespace=dict(datetime=datetime,timezone=timezone,require=d.require)
+        exec(compile(ast.Module(body=[node],type_ignores=[]),'<superseded-scalar-parser>','exec'),namespace)
+        left='2026-02-06T12:00:00+00:00:00.000001';right='2026-02-06T12:00:00Z'
+        self.assertEqual(namespace['instant'](left),namespace['instant'](right))
+        with self.assertRaises(d.Data03Error):d.instant(left)
+        self.assertEqual(d.instant(right),datetime(2026,2,6,12,tzinfo=timezone.utc))
+
+    def test_fractional_offset_syntax_each_member_DB_snapshot_origin_rejects(self):
+        offsets=[sign+base+separator+('0'*(digits-1)+'1')
+                 for sign in ('+','-') for base in ('00','00:00','00:00:00','0000','000000')
+                 for separator in ('.',',') for digits in range(1,7)]
+        offsets.extend(('+00:00:00.000000','-00:00:00,000000'))
+        for day in (36,72):
+            for index in range(12):
+                for field in ('cutoff','snapshot','origin'):
+                    for offset in offsets:
+                        fixture=cutoff_fixture(day);rows,_selection,snapshots,origin,_law,_protocol=fixture;row=rows[index]
+                        if field=='origin':
+                            state=json.loads(row['state_json']);state['simulation']['origin']=origin.isoformat().replace('+00:00',offset);row['state_json']=json.dumps(state)
+                        elif field=='cutoff':row['cutoff']=row['cutoff'].replace('+00:00',offset)
+                        else:snapshots[row['id']]['cutoff']=snapshots[row['id']]['cutoff'].replace('+00:00',offset)
+                        frozen=copy.deepcopy(fixture)
+                        with self.assertRaises(d.Data03Error):self.admit(fixture,day)
+                        self.assertEqual(fixture,frozen)
+
     def test_actual_receipt_invalid_last_member_stops_before_guard_and_export(self):
         import sys
         from contracts.domain.protocol import LAW_REF,NOF1_REF
@@ -859,7 +888,6 @@ class Data03CutoffSource(unittest.TestCase):
             for row in rows:
                 state=json.loads(row['state_json']);state['simulation'].update(law=LAW_REF,law_version=LAW_REF['id'],protocol=NOF1_REF)
                 row['state_json']=json.dumps(state)
-            snapshots[rows[-1]['id']]['cutoff']=snapshots[rows[-1]['id']]['cutoff'].replace('+00:00','')
             guard=mock.Mock();export=mock.Mock()
             class DB:
                 def execute(self,query,*_args):
@@ -872,9 +900,17 @@ class Data03CutoffSource(unittest.TestCase):
                 self.assertFalse(write);yield DB()
             modules={'services.foundation.nof1':SimpleNamespace(guard=guard),
                      'services.foundation.protocol':SimpleNamespace(export_histories=export)}
-            with mock.patch.dict(sys.modules,modules),self.assertRaises(d.Data03Error):
-                d.receipt(SimpleNamespace(transaction=transaction),'owner',selection,snapshots,day)
-            guard.assert_not_called();export.assert_not_called()
+            for invalid in ('naive_snapshot','fractional_DB','fractional_snapshot','fractional_origin'):
+                original_rows=copy.deepcopy(rows);original_snapshots=copy.deepcopy(snapshots)
+                if invalid=='naive_snapshot':snapshots[rows[-1]['id']]['cutoff']=snapshots[rows[-1]['id']]['cutoff'].replace('+00:00','')
+                elif invalid=='fractional_DB':rows[-1]['cutoff']=rows[-1]['cutoff'].replace('+00:00','+00:00:00.000001')
+                elif invalid=='fractional_snapshot':snapshots[rows[-1]['id']]['cutoff']=snapshots[rows[-1]['id']]['cutoff'].replace('+00:00','-00:00:00,000001')
+                else:
+                    state=json.loads(rows[-1]['state_json']);state['simulation']['origin']=state['simulation']['origin'].replace('+00:00','+00:00:00.000001');rows[-1]['state_json']=json.dumps(state)
+                with mock.patch.dict(sys.modules,modules),self.assertRaises(d.Data03Error):
+                    d.receipt(SimpleNamespace(transaction=transaction),'owner',selection,snapshots,day)
+                guard.assert_not_called();export.assert_not_called()
+                rows[:]=original_rows;snapshots.clear();snapshots.update(original_snapshots)
 
     def test_source_tripwires_reject_science_app_Store_SQLite_network_and_process(self):
         import importlib
