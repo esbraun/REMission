@@ -1,0 +1,96 @@
+test_distribution_before_one_keyed_draw_and_assignment (test_s2_controller_source.DecisionTests.test_distribution_before_one_keyed_draw_and_assignment) ... ERROR
+test_fallback_is_frozen_against_late_result (test_s2_controller_source.DecisionTests.test_fallback_is_frozen_against_late_result) ... ERROR
+test_fault_after_distribution_can_roll_back_whole_inert_transaction (test_s2_controller_source.DecisionTests.test_fault_after_distribution_can_roll_back_whole_inert_transaction) ... ERROR
+test_stale_versions_fail_before_draw (test_s2_controller_source.DecisionTests.test_stale_versions_fail_before_draw) ... ok
+test_unavailable_and_deterministic_consume_no_draw (test_s2_controller_source.DecisionTests.test_unavailable_and_deterministic_consume_no_draw) ... ERROR
+test_N_block_washout_and_no_automatic_reentry (test_s2_controller_source.MaskTests.test_N_block_washout_and_no_automatic_reentry) ... ok
+test_consent_withdrawal_exact_cutoff_and_retraction (test_s2_controller_source.MaskTests.test_consent_withdrawal_exact_cutoff_and_retraction) ... ok
+test_delivered_burden_includes_tonight_and_consecutive_boundary (test_s2_controller_source.MaskTests.test_delivered_burden_includes_tonight_and_consecutive_boundary) ... ok
+test_expiry_is_exclusive_and_future_consent_does_not_authorize (test_s2_controller_source.MaskTests.test_expiry_is_exclusive_and_future_consent_does_not_authorize) ... ok
+test_hold_and_readiness (test_s2_controller_source.MaskTests.test_hold_and_readiness) ... ok
+test_expiry_before_day28_avoids_scalar_read_and_never_renews (test_s2_controller_source.SavedReadTests.test_expiry_before_day28_avoids_scalar_read_and_never_renews) ... ok
+test_pending_and_failed_do_not_attempt_current_projection (test_s2_controller_source.SavedReadTests.test_pending_and_failed_do_not_attempt_current_projection) ... ok
+test_read_passes_current_context_fit_and_original_at_without_launch (test_s2_controller_source.SavedReadTests.test_read_passes_current_context_fit_and_original_at_without_launch) ... ok
+test_stale_context_avoids_scalar_read (test_s2_controller_source.SavedReadTests.test_stale_context_avoids_scalar_read) ... ok
+test_contract_denies_history_and_extra_keys (test_s2_controller_source.ScalarTests.test_contract_denies_history_and_extra_keys) ... ok
+test_gate_still_closed (test_s2_controller_source.ScalarTests.test_gate_still_closed) ... ok
+test_one_none_and_invalid_masks (test_s2_controller_source.ScalarTests.test_one_none_and_invalid_masks) ... ok
+test_saved_authority_and_finite_bounds (test_s2_controller_source.ScalarTests.test_saved_authority_and_finite_bounds) ... ok
+
+======================================================================
+ERROR: test_distribution_before_one_keyed_draw_and_assignment (test_s2_controller_source.DecisionTests.test_distribution_before_one_keyed_draw_and_assignment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\tests\test_s2_controller_source.py", line 180, in test_distribution_before_one_keyed_draw_and_assignment
+    decision,assignment=code['decide'](db,NS(fault=None),patient,state,AT)
+                        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_controller.py", line 241, in decide
+    receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 118, in derive_execution_authorization
+    validate_basis(db,known_history(full,basis.known_refs),basis)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 68, in validate_basis
+    snapshot=resolve(known,basis.current_snapshot,{'decision_snapshot'})
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\contracts\domain\evidence_v2.py", line 23, in resolve
+    raise ValueError('exact_dependency_hash_patient_type_mismatch')
+ValueError: exact_dependency_hash_patient_type_mismatch
+
+======================================================================
+ERROR: test_fallback_is_frozen_against_late_result (test_s2_controller_source.DecisionTests.test_fallback_is_frozen_against_late_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\tests\test_s2_controller_source.py", line 193, in test_fallback_is_frozen_against_late_result
+    decision,_=code['decide'](db,NS(fault=None),patient,state,AT);original=decision.model_dump_json()
+               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_controller.py", line 241, in decide
+    receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 118, in derive_execution_authorization
+    validate_basis(db,known_history(full,basis.known_refs),basis)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 68, in validate_basis
+    snapshot=resolve(known,basis.current_snapshot,{'decision_snapshot'})
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\contracts\domain\evidence_v2.py", line 23, in resolve
+    raise ValueError('exact_dependency_hash_patient_type_mismatch')
+ValueError: exact_dependency_hash_patient_type_mismatch
+
+======================================================================
+ERROR: test_fault_after_distribution_can_roll_back_whole_inert_transaction (test_s2_controller_source.DecisionTests.test_fault_after_distribution_can_roll_back_whole_inert_transaction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\tests\test_s2_controller_source.py", line 200, in test_fault_after_distribution_can_roll_back_whole_inert_transaction
+    try:code['decide'](db,NS(fault=fault),patient,state,AT)
+        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_controller.py", line 241, in decide
+    receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 118, in derive_execution_authorization
+    validate_basis(db,known_history(full,basis.known_refs),basis)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 68, in validate_basis
+    snapshot=resolve(known,basis.current_snapshot,{'decision_snapshot'})
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\contracts\domain\evidence_v2.py", line 23, in resolve
+    raise ValueError('exact_dependency_hash_patient_type_mismatch')
+ValueError: exact_dependency_hash_patient_type_mismatch
+
+======================================================================
+ERROR: test_unavailable_and_deterministic_consume_no_draw (test_s2_controller_source.DecisionTests.test_unavailable_and_deterministic_consume_no_draw)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\tests\test_s2_controller_source.py", line 188, in test_unavailable_and_deterministic_consume_no_draw
+    decision,assignment=code['decide'](db,NS(fault=None),patient,state,AT)
+                        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_controller.py", line 241, in decide
+    receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 118, in derive_execution_authorization
+    validate_basis(db,known_history(full,basis.known_refs),basis)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\services\foundation\support_s2_authority.py", line 68, in validate_basis
+    snapshot=resolve(known,basis.current_snapshot,{'decision_snapshot'})
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\s2-controller-sol-261024\contracts\domain\evidence_v2.py", line 23, in resolve
+    raise ValueError('exact_dependency_hash_patient_type_mismatch')
+ValueError: exact_dependency_hash_patient_type_mismatch
+
+----------------------------------------------------------------------
+SOURCE ONLY: actual scalar/contract/AST bodies with inert typed records/transactions; no app/SQLite/science/process/network
+Ran 18 tests in 0.477s
+
+FAILED (errors=4)

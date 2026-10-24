@@ -12,7 +12,7 @@ from contracts.domain.boundaries import lineage_heads, visible_records, validate
 from contracts.domain.entities import Approval, DecisionSnapshot
 from contracts.domain.evidence_v2 import exact_ref, projection_hash
 from contracts.domain.protocol import SUPPORT_REF
-from contracts.domain.support_s2_controller import CONFIG_REF, SavedScalar, ExecutionBasis
+from contracts.domain.support_s2_controller import CONFIG_REF, SavedScalar
 from contracts.domain.support_s2_saved import require_executable
 
 VERSIONS = ('version', 'state_version', 'consent_version', 'eligibility_version')
@@ -80,7 +80,8 @@ def keyed_uniform(seed):
 def eligibility(db, patient, state, at, received_at):
     from .workflow import history
     from .live_journal import active_episodes
-    allowed, reasons = mask(history(db, patient['id']), state, at, received_at, approved=False)
+    allowed, reasons = mask(history(db, patient['id']), state, at, received_at,
+        approved=state['simulation'].get('support_controller',{}).get('status')=='active')
     if active_episodes(db, patient['id']): allowed, reasons = (), ['Independent clinical hold']
     return [dict(action=a, status='eligible' if a in allowed else 'excluded', reasons=[] if a in allowed else reasons) for a in ACTIONS]
 
@@ -99,6 +100,8 @@ def view(db, patient, received_at):
     state, sim = selected(patient)
     try:
         require_executable()
+        from .support_s2_authority import qualification
+        qualification(db)
         executable = True
     except ValueError:
         executable = False
@@ -163,6 +166,8 @@ def transition(db, settings, patient, actor, data, received_at):
     elif data.action == 'pause': loop['status'] = 'paused'
     else:
         require_executable()  # existing S2 qualification gate; no new OFF switch
+        from .support_s2_authority import qualification
+        qualification(db)
         if sim.get('nof1', {}).get('status') == 'active' or active_episodes(db, patient['id']):
             raise SimulationError('support_frozen', 'Review N freeze or the current independent hold first.')
         allowed, reasons = mask(full, state, at, received_at, approved=False)
@@ -187,8 +192,11 @@ def transition(db, settings, patient, actor, data, received_at):
     if data.action != 'approve':
         state['workflow'].update(support_mode='paused', learning='support_unavailable')
     else: state['workflow'].update(support_mode='adaptive', learning='support_active', support_policy=CONFIG_REF)
-    encoded = canonical(dict(kind='support_envelope_command', command=data.model_dump(mode='json'), actor=actor, at=received_at.isoformat()))
-    db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)', ('support-command-'+uuid.uuid4().hex, patient['id'], actor, received_at.isoformat(), encoded))
+    command_id='support-command-'+uuid.uuid4().hex
+    if data.action=='approve':loop['command_id']=command_id
+    encoded = canonical(dict(kind='support_envelope_command', command=data.model_dump(mode='json'), actor=actor,
+        envelope_id=loop.get('snapshot_id'),at=received_at.isoformat()))
+    db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)', (command_id, patient['id'], actor, received_at.isoformat(), encoded))
     db.execute('UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,consent_version=consent_version+? WHERE id=?',
                (canonical(state), int(data.action in ('consent','withdraw')), patient['id']))
     create_decision(db, patient['id'], received_at)
@@ -223,21 +231,17 @@ def decide(db, settings, patient, state, received_at):
         validate_snapshot(full, envelope, max(at,received_at)+timedelta(microseconds=1))
     expected = [dict(action=a,status='eligible' if a in allowed else 'excluded',reasons=[] if a in allowed else reasons) for a in ACTIONS]
     current = [e.model_dump(mode='json') for e in snapshot.eligibility if e.action in ACTIONS]
-    if current != expected: raise ValueError('support_eligibility_changed_refresh_required')
+    if state['workflow']['support_mode']!='paused' and current != expected:
+        raise ValueError('support_eligibility_changed_refresh_required')
     saved = saved_status(db, patient['owner_id'], patient, at)['saved'] if len(allowed)==2 else dict(summary_available=False,serving_authority=False,reason='current_mask_not_binary')
     availability, probabilities, fallback = final_distribution(allowed, saved)
-    # The receipt content binds all scalar provenance without extending OBS2.1.
-    basis = ExecutionBasis.model_validate(dict(schema_version='s2-controller-execution-v1',configuration=CONFIG_REF,
-        envelope_id=loop.get('snapshot_id') or 'support-unapproved',decision_id=snapshot.record_id,
-        patient_versions={k:patient[k] for k in VERSIONS},context_sha256=projection_hash(full,at),
-        fallback_reason=fallback,saved=saved,probabilities=probabilities))
-    receipt = reference('poc-support-s2-execution-basis-v1',basis.model_dump(mode='json'))
-    receipt_id = 'support-execution-'+receipt['sha256']
-    db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)',(receipt_id,patient['id'],loop.get('actor',patient['owner_id']),received_at.isoformat(),canonical(basis.model_dump(mode='json'))))
-    if not any(r.record_id==snapshot.record_id for r in full.records): persist(db,snapshot.model_dump(mode='json'),received_at)
+    if not any(r.record_id==snapshot.record_id for r in full.records):snapshot=persist(db,snapshot.model_dump(mode='json'),received_at)
+    full=history(db,patient['id'])
+    from .support_s2_authority import derive_execution_authorization
+    receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
     approval = None; assignment_id = 'support-assignment-'+sha([patient['id'],snapshot.record_id])[:32] if allowed else None
     if allowed:
-        value = dict(**record_header('support-execution-approval-'+uuid.uuid4().hex,patient['id'],at),kind='approval',
+        value = dict(**record_header('s2-admin-'+receipt['sha256'][:32],patient['id'],at),kind='approval',
             decision_id=snapshot.record_id,option='no_prompt' if len(allowed)==1 else None,
             permitted_options=[] if len(allowed)==1 else list(ACTIONS),clinician_id=loop['actor'],
             purpose='ordinary_treatment' if len(allowed)==1 else 'randomization_protocol',
@@ -281,3 +285,60 @@ def decide(db, settings, patient, state, received_at):
     loop['last_decision']=dict(id=decision.record_id,cutoff=at.isoformat(),probabilities=probabilities,fallback_reason=fallback,
         availability=availability,assignment_id=assignment_id,execution_receipt=receipt)
     return decision, assignment
+
+
+def dispatch(db,settings,patient,state,decision,assignment,received_at):
+    """Actual simulated 20:00 offer operation; never inferred from delivery."""
+    from .workflow import history,record_header
+    from .nof1 import persist
+    from .live_journal import active_episodes
+    from .support_s2_authority import qualification,put
+    qualification(db)
+    if assignment is None:return None,False
+    allowed,_=mask(history(db,patient['id']),state,decision.cutoff,received_at)
+    if active_episodes(db,patient['id']):allowed=()
+    if assignment.option not in allowed:
+        # Only the future generator schedule is canceled. Immutable probability,
+        # assignment and original authorization are retained with this refusal.
+        state['simulation']['support'][:]=[r for r in state['simulation']['support'] if r['assignment_id']!=assignment.record_id]
+        put(db,patient['id'],patient['owner_id'],'poc-support-interactive-cancellation-v1',
+            dict(decision=exact_ref(decision).model_dump(),assignment=exact_ref(assignment).model_dump(),
+                 at=(decision.cutoff+timedelta(hours=8)).isoformat(),reason='Current authority restricted pending dispatch'),received_at)
+        return None,True
+    if assignment.option=='no_prompt':return None,False
+    at=decision.cutoff+timedelta(hours=8)
+    header=record_header('support-offer-'+sha(assignment.record_id)[:32],patient['id'],at)
+    header['source'].update(id='foundation-support-offer-v1',version='1.0.0',adapter='research_configuration')
+    offered=persist(db,dict(**header,
+        kind='delivery',assignment_id=assignment.record_id,option='support_prompt',stage='offered',adherence=None,
+        rescue=False,protocol_deviations=[]),received_at)
+    if settings.fault:settings.fault('after_support_offer')
+    return offered,False
+
+
+def advance(db,settings,patient,state,target,received_at):
+    """One serialized app transaction, daily decisions even for visit advance."""
+    from .workflow import create_decision,patient_clock
+    from .simulation import product,persist_product
+    from .support_s2_authority import close_stages,qualification
+    require_executable();qualification(db)
+    sim=state['simulation'];count=0
+    while sim['day']<target:
+        current=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient['id'],patient['owner_id'])).fetchone()
+        decision,assignment=decide(db,settings,current,state,received_at)
+        offered,canceled=dispatch(db,settings,current,state,decision,assignment,received_at)
+        next_day=sim['day']+1;cutoff=decision.cutoff+timedelta(days=1)
+        generated=product(settings,sim,patient['id'],next_day)
+        count+=persist_product(db,generated,patient['id'],after=patient_clock(current,received_at),cutoff=cutoff,
+            received_at=received_at,actions=sim['actions'],simulation=sim)
+        if settings.fault:settings.fault('after_support_product')
+        close_stages(db,settings,current,decision,assignment,offered,received_at,canceled=canceled)
+        sim['day']=next_day
+        if next_day%14==0:
+            state['stage']='ASSIGN-10' if next_day==84 else 'ASSIGN-02'
+            state['workflow']['clinical']='maintenance_closeout' if next_day==84 else 'scheduled_reassessment'
+        db.execute('UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1 WHERE id=?',
+            (canonical(state),patient['id']))
+        if settings.fault:settings.fault('after_support_clock')
+        create_decision(db,patient['id'],received_at)
+    return dict(status='advanced',day=sim['day'],cutoff=cutoff.isoformat(),records_added=count)

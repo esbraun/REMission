@@ -6,12 +6,13 @@ import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace as NS
+from contextlib import contextmanager,nullcontext
 import unittest
-from contracts.domain.analysis import canonical,sha,reference
+from contracts.domain.analysis import canonical,sha,reference,FIXED_SUPPORT_REF
 from contracts.domain.entities import DecisionSnapshot
 from contracts.domain.evidence_v2 import exact_ref
 from contracts.domain.protocol import ObservedHistoryV21,RECORD_ADAPTER_V21,SUPPORT_REF
-from contracts.domain.support_s2_controller import CONFIG_REF,ControllerCommand
+from contracts.domain.support_s2_controller import CONFIG_REF,ControllerCommand,InteractiveSupportQualification,REQUIRED_APP_SOURCES,REQUIRED_GENERATOR_SOURCES
 
 ROOT=Path(__file__).resolve().parents[1]
 FILE='services/foundation/support_s2_controller.py'
@@ -37,7 +38,9 @@ def header(name,patient,at):
         duplicate_of=None,record_status='active')
 
 
-def typed(value):return RECORD_ADAPTER_V21.validate_json(canonical(value))
+def typed(value):
+    value=copy.deepcopy(value);value['source']['raw_sha256']=sha({k:v for k,v in value.items() if k!='source'})
+    return RECORD_ADAPTER_V21.validate_json(canonical(value))
 def history(records):return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0',synthetic=True,
     kind='observed_history',patient_id='UNIT-patient',records=[r.model_dump(mode='json') for r in records])))
 
@@ -61,22 +64,62 @@ class Cursor:
     def __init__(self,rows=()):self.rows=list(rows)
     def fetchone(self):return self.rows[0] if self.rows else None
     def fetchall(self):return self.rows
+    def __iter__(self):return iter(self.rows)
 
 
-class InertDB:
+class InertSupportConnection:
+    """Inert stand-in for the optional Store-owned sqlite connection subclass."""
+    pass
+
+
+class InertDB(InertSupportConnection):
     """Explicit SQL double. Unknown access fails, never opens SQLite."""
     def __init__(self,records,snapshot):
-        self.records=records;self.snapshot=snapshot;self.writes=[];self.audit=[]
+        self.records=records;self.snapshot=snapshot;self.writes=[];self.audit=[];self.proofs={};self.receipts={}
+        self.control=dict(database_instance_id='UNIT-store',authority_generation=1,enabled=True)
+        packet=dict(schema_version='poc-support-interactive-packet-v1',app_commit='0'*40,app_source_closure={p:'0'*64 for p in REQUIRED_APP_SOURCES},
+            generator_source_closure={p:'1'*64 for p in REQUIRED_GENERATOR_SOURCES},app_image='sha256:'+'2'*64,generator_image='sha256:'+'3'*64,
+            runtime=reference('UNIT-runtime','fabricated metadata only'),configuration=CONFIG_REF,invocation_class='owned-interactive-support-v1',
+            store_id='UNIT-store',authority_generation=1,installed_bundle_sha256='4'*64)
+        self.q=InteractiveSupportQualification.model_validate_json(canonical(dict(schema_version='poc-support-interactive-qualification-v1',
+            packet=packet,packet_sha256=sha(packet),actual_acceptance=reference('UNIT-FAKE-actual','fabricated SOURCE metadata; NO actual acceptance'),
+            acceptance_scope='ACTUAL_interactive_producer_accepted')))
+        self.expected_control=canonical(self.control)
+    def _read_support_binding(self):
+        return self.q.model_dump_json(),'4'*64,'0'*40,canonical(self.q.packet.runtime.model_dump()),self.expected_control
     def execute(self,sql,args=()):
         if sql=='SELECT snapshot FROM decisions WHERE id=?':return Cursor([(self.snapshot.model_dump_json(),)])
+        if sql=='SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id':
+            return Cursor([(r.model_dump_json(),) for r in self.records if r.patient_id==args[0]])
+        if sql=='SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?':return Cursor([self.receipts[args]] if args in self.receipts else [])
+        if sql=='INSERT INTO receipts VALUES(?,?,?,?,?,?)':
+            self.receipts[args[:3]]=dict(scope=args[3],payload_sha256=args[4],response=args[5]);return Cursor()
+        if sql=='SELECT payload FROM events WHERE id=? AND patient_id=? AND kind=?':
+            return Cursor([(r.model_dump_json(),) for r in self.records if (r.record_id,r.patient_id,r.kind)==args])
+        if sql=='SELECT * FROM service_control WHERE singleton=1':return Cursor([self.control])
+        if sql=='SELECT * FROM patients WHERE id=? AND owner_id=?':
+            return Cursor([self.patient] if args==(self.patient['id'],self.patient['owner_id']) else [])
+        if sql=='SELECT 1 FROM state_changes WHERE id=?':return Cursor([(1,)] if args[0] in self.proofs else [])
+        if sql=='SELECT patient_id,actor_id,payload FROM state_changes WHERE id=?':return Cursor([self.proofs[args[0]]] if args[0] in self.proofs else [])
         if sql=='INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)':
             record=RECORD_ADAPTER_V21.validate_json(args[6]);self.records.append(record);self.writes.append(record.kind);return Cursor()
-        if sql=='INSERT INTO state_changes VALUES(?,?,?,?,?)':self.audit.append(args);self.writes.append('basis');return Cursor()
+        if sql=='INSERT INTO state_changes VALUES(?,?,?,?,?)':
+            if args[0] in self.proofs:raise AssertionError('duplicate inert insert')
+            self.audit.append(args);self.proofs[args[0]]=dict(patient_id=args[1],actor_id=args[2],payload=args[4]);self.writes.append('basis');return Cursor()
+        if sql=='UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1 WHERE id=?':
+            self.patient['state_json']=args[0]
+            for k in ('version','state_version','eligibility_version'):self.patient[k]+=1
+            self.writes.append('clock');return Cursor()
+        if sql in ('BEGIN IMMEDIATE','BEGIN'):self.saved=copy.deepcopy({k:v for k,v in self.__dict__.items() if k!='saved'});return Cursor()
         raise AssertionError('Unmodeled UNIT SQL: '+sql)
+    def commit(self):self.committed=True
+    def rollback(self):self.__dict__=self.saved
+    def close(self):pass
 
 
-def fixture(allowed=('support_prompt','no_prompt'),saved=None):
+def fixture(allowed=('support_prompt','no_prompt'),saved=None,actual_mask=False):
     c=consent();old=snapshot('UNIT-original',BEFORE)
+    old=typed(old.model_dump(mode='json')|dict(workflow=old.workflow.model_dump(mode='json')|dict(support_policy=FIXED_SUPPORT_REF),policy=FIXED_SUPPORT_REF))
     def approve(name,option=None):
         return typed(dict(**header(name,'UNIT-patient',BEFORE),kind='approval',decision_id=old.record_id,
             option=option,permitted_options=[] if option else ['support_prompt','no_prompt'],clinician_id='UNIT-owner',
@@ -85,7 +128,7 @@ def fixture(allowed=('support_prompt','no_prompt'),saved=None):
     ap=approve('UNIT-envelope');background_approval=approve('UNIT-background-approval','behavioral_continue')
     background=typed(dict(**header('UNIT-background','UNIT-patient',BEFORE),kind='assignment',decision_id=old.record_id,
         approval_id=background_approval.record_id,option='behavioral_continue',experimental=False,component=None,
-        probability=None,seed=None,support_policy=CONFIG_REF,patient_blinded=False,clinician_blinded=False,clinician_override=None,override_reason=None))
+        probability=None,seed=None,support_policy=FIXED_SUPPORT_REF,patient_blinded=False,clinician_blinded=False,clinician_override=None,override_reason=None))
     envelope=typed(dict(**(header('UNIT-envelope-snapshot','UNIT-patient',BEFORE)|dict(schema_version='2.1.0')),
         kind='protocol_snapshot',family='support',protocol=SUPPORT_REF,template=SUPPORT_REF,
         consent_refs=[exact_ref(c).model_dump()],approval_refs=[exact_ref(ap).model_dump()],background_ref=exact_ref(background).model_dump(),
@@ -93,11 +136,20 @@ def fixture(allowed=('support_prompt','no_prompt'),saved=None):
     eligibility=[dict(action=a,status='eligible' if a in allowed else 'excluded',reasons=[] if a in allowed else ['UNIT mask']) for a in ('support_prompt','no_prompt')]
     current=snapshot('UNIT-current',AT,eligibility)
     records=[c,old,ap,background_approval,background,envelope]
+    for day in range(1,15):
+        value=dict(**(header('UNIT-prior-report-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day,minutes=-1))|dict(schema_version='2.0.0')),
+            kind='daily_report',sleep_quality=None,function=None,adverse_symptoms=[],diary_sleep_minutes=None,goals=[],burden=None,missingness='missing')
+        value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report')
+        records.append(typed(value))
     db=InertDB(records,current)
-    state=dict(workflow=current.workflow.model_dump(mode='json'),simulation=dict(day=14,seed=7,index=1,support=[],
-        support_controller=dict(status='active',snapshot_id=envelope.record_id,approval_id=ap.record_id,actor='UNIT-owner')))
+    state=dict(stage='ASSIGN-03',workflow=current.workflow.model_dump(mode='json'),simulation=dict(day=14,seed=7,index=1,support=[],panel_id='UNIT-generation',
+        origin=BEFORE.isoformat(),law_version='poc-longitudinal-v2',family='support',medications=[],actions=[dict(day=0,option='behavioral_continue',assignment_id=background.record_id)],
+        support_controller=dict(status='active',snapshot_id=envelope.record_id,approval_id=ap.record_id,actor='UNIT-owner',command_id='UNIT-command')))
     patient=dict(id='UNIT-patient',owner_id='UNIT-owner',current_decision=current.record_id,
-        version=1,state_version=1,consent_version=1,eligibility_version=1)
+        version=1,state_version=1,consent_version=1,eligibility_version=1,state_json=canonical(state),cutoff=AT.isoformat())
+    db.patient=patient
+    db.proofs['UNIT-command']=dict(patient_id=patient['id'],actor_id='UNIT-owner',payload=canonical(dict(kind='support_envelope_command',
+        command=dict(action='approve',decision_id=old.record_id),envelope_id=envelope.record_id)))
     # Run real persist and snapshot validator against typed records; only Store I/O is inert.
     from contracts.domain.evidence_v2 import projection_hash
     persist_source=ast.parse((ROOT/'services/foundation/nof1.py').read_text())
@@ -107,9 +159,15 @@ def fixture(allowed=('support_prompt','no_prompt'),saved=None):
     protocol=load('services/foundation/protocol.py')
     code=load(FILE,history=lambda db,p:history(db.records),patient_clock=lambda p,n:AT,record_header=header,persist=ns['persist'],
         active_episodes=lambda db,p:[],validate_snapshot=protocol['validate_snapshot'])
-    code['mask']=lambda full,state,at,received_at,**kw:(allowed,[] if len(allowed)==2 else ['UNIT mask'])
+    if not actual_mask:code['mask']=lambda full,state,at,received_at,**kw:(allowed,[] if len(allowed)==2 else ['UNIT mask'])
     code['saved_status']=lambda *args:dict(saved=saved or dict(summary_available=False,serving_authority=False,reason='UNIT unavailable'))
     code['require_executable']=lambda *args:None
+    authority=load('services/foundation/support_s2_authority.py',SupportConnection=InertSupportConnection,
+        validate_snapshot=protocol['validate_snapshot'],mask=code['mask'],final_distribution=code['final_distribution'])
+    code['derive_execution_authorization']=authority['derive_execution_authorization']
+    code['UNIT_authority']=authority
+    authority.update(history=code['history'],record_header=header,persist=ns['persist'])
+    code['qualification']=authority['qualification'];code['put']=authority['put']
     return code,db,patient,state
 
 
@@ -250,3 +308,246 @@ class SavedReadTests(unittest.TestCase):
             result=self.ns['saved_status'](self.db,'UNIT-owner',dict(id='UNIT-patient'),AT)
             self.assertEqual(result['saved']['reason'],'saved_prediction_'+status)
         self.assertEqual(self.calls,[])
+
+
+class ProducerConsumerTests(unittest.TestCase):
+    def prepared(self,prompt=True):
+        code,db,patient,state=fixture(actual_mask=True);code['keyed_uniform']=lambda seed:0. if prompt else .99
+        decision,assignment=code['decide'](db,NS(fault=None),patient,state,AT)
+        return code,db,patient,state,decision,assignment
+    def finish(self,prompt=True,missing=False):
+        code,db,patient,state,decision,assignment=self.prepared(prompt)
+        offered,canceled=code['dispatch'](db,NS(fault=None),patient,state,decision,assignment,AT)
+        delivery=dict(**header('UNIT-delivery','UNIT-patient',AT+timedelta(hours=8)),kind='delivery',assignment_id=assignment.record_id,
+            option=assignment.option,stage='delivered',adherence=1.,rescue=False,protocol_deviations=[])
+        delivery['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='simulation')
+        report=dict(**(header('UNIT-report','UNIT-patient',AT+timedelta(days=1,minutes=-1))|dict(schema_version='2.0.0')),
+            kind='daily_report',sleep_quality=None if missing else 7.,function=None if missing else 6.,adverse_symptoms=[],
+            diary_sleep_minutes=None if missing else 420.,goals=[],burden=None,missingness='missing' if missing else 'observed')
+        report['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report')
+        db.records.extend([typed(delivery),typed(report)])
+        a=code['UNIT_authority']
+        link=a['close_stages'](db,NS(fault=None,clock=lambda:AT),patient,decision,assignment,offered,AT,canceled=canceled)
+        return code,db,patient,state,decision,assignment,link
+    def test_real_authorization_required_in_live_and_protocol_consumers(self):
+        code,db,p,state,d,a=self.prepared();authority=code['UNIT_authority'];full=history(db.records)
+        authority['validate_live_history'](db,full)
+        protocol=load('services/foundation/protocol.py')
+        with self.assertRaisesRegex(ValueError,'interactive_authorization'):
+            protocol['validate_support_v21'](full,d,AT+timedelta(days=1))
+        protocol['validate_support_v21'](full,d,AT+timedelta(days=1),verify_authorization=authority['authorization_verifier'](db,full))
+        # A forged apparent admin Approval satisfying ordinary shape still lacks its binding.
+        orphan=typed(next(r for r in full.records if r.kind=='approval' and r.record_id.startswith('s2-admin-')).model_dump(mode='json')|
+            dict(record_id='s2-admin-forged',lineage_id='s2-admin-forged'))
+        with self.assertRaisesRegex(ValueError,'unbound'):authority['validate_live_history'](db,history([*db.records,orphan]))
+    def test_closed_prompt_and_no_prompt_stages_project_through_real_consumer(self):
+        for prompt in (True,False):
+            code,db,p,state,d,a,link=self.finish(prompt)
+            authority=code['UNIT_authority'];full=history(db.records);cutoff=AT+timedelta(days=1)
+            verify=authority['interactive_stage_verifier'](db,full)
+            for closure in (r for r in full.records if r.kind=='support_stage_closure'):verify(closure,cutoff)
+            from contracts.domain.evidence_v2 import validate_outcome_link
+            validate_outcome_link(full,link,verify_closure=verify)
+            reduced=load('services/foundation/protocol.py')['project_protocol'](full,cutoff,family='support',origin=BEFORE,
+                verify_closure=verify,verify_authorization=authority['authorization_verifier'](db,full))
+            self.assertTrue(any(r.kind=='support_outcome_link' for r in reduced.records))
+            self.assertEqual([b.value for b in link.burden],[int(prompt),int(prompt)])
+    def test_missing_reward_remains_missing(self):
+        *_,link=self.finish(missing=True)
+        self.assertEqual(link.reward.status,'missing');self.assertIsNone(link.reward.report_ref)
+    def test_forged_settings_or_changed_generation_cannot_supply_qualification(self):
+        code,db,p,state,d,a=self.prepared();authority=code['UNIT_authority']
+        with self.assertRaisesRegex(ValueError,'qualification_required'):
+            authority['qualification'](NS(_read_support_binding=db._read_support_binding))
+        db.control['authority_generation']=2
+        with self.assertRaisesRegex(ValueError,'generation_mismatch'):authority['qualification'](db)
+    def test_changed_basis_actor_owner_versions_and_vector_refuse(self):
+        for change in (dict(actor_id='UNIT-foreign'),dict(owner_id='UNIT-foreign'),dict(versions={'version':99}),
+                       dict(probabilities={'support_prompt':.9,'no_prompt':.1})):
+            code,db,p,state,d,a=self.prepared();authority=code['UNIT_authority']
+            basis=authority['get'](db,p['id'],d.execution_receipt)
+            basis.update(change)
+            from contracts.domain.support_s2_controller import AuthorizationBasis
+            with self.assertRaises(ValueError):authority['validate_basis'](db,history(db.records),AuthorizationBasis.model_validate_json(canonical(basis)))
+    def test_unknown_offer_and_corrupted_output_are_not_observed_zero(self):
+        code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority'];full=history(db.records)
+        closure=next(r for r in full.records if r.kind=='support_stage_closure')
+        receipt=authority['get'](db,p['id'],closure.completion_receipt)
+        output_id='s2-proof-'+receipt['output_ref']['sha256']
+        db.proofs[output_id]['payload']='[]'
+        with self.assertRaisesRegex(ValueError,'content_identity'):authority['interactive_stage_verifier'](db,full)(closure,AT+timedelta(days=1))
+    def test_actual_offer_precedes_product_and_cancellation_preserves_distribution(self):
+        code,db,p,state,d,a=self.prepared();before=d.model_dump_json()
+        code['mask']=lambda *args,**kwargs:((),['withdrawn before offer'])
+        offered,canceled=code['dispatch'](db,NS(fault=None),p,state,d,a,AT)
+        self.assertTrue(canceled);self.assertIsNone(offered);self.assertEqual(d.model_dump_json(),before)
+        self.assertFalse(any(r.kind=='delivery' for r in db.records))
+    def test_rehashed_missing_extra_duplicate_foreign_and_wrong_stage_outputs_refuse(self):
+        from contracts.domain.common import VersionRef
+        for case in ('missing_offer','duplicate','foreign_patient','wrong_stage','extra'):
+            code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority']
+            closure=next(r for r in db.records if r.kind=='support_stage_closure')
+            completion=authority['get'](db,p['id'],closure.completion_receipt)
+            output=authority['get'](db,p['id'],VersionRef.model_validate(completion['output_ref']))
+            if case=='missing_offer':output=[r for r in output if r['stage']!='offered']
+            elif case=='duplicate':output.append(copy.deepcopy(output[0]))
+            elif case=='foreign_patient':output[0]['patient_id']='UNIT-foreign'
+            elif case=='wrong_stage':output[0]['stage']='taken'
+            else:
+                extra=copy.deepcopy(output[0]);extra['record_id']='UNIT-extra';extra['lineage_id']='UNIT-extra';output.append(extra)
+            ref=reference('poc-support-interactive-stage-output-v1',output)
+            db.proofs['s2-proof-'+ref['sha256']]=dict(patient_id=p['id'],actor_id=p['owner_id'],payload=canonical(output))
+            completion.update(output_ref=ref,output_bytes=len(canonical(output).encode()),output_sha256=sha(output),output_count=len(output))
+            cref=reference('poc-support-interactive-completion-v1',completion)
+            db.proofs['s2-proof-'+cref['sha256']]=dict(patient_id=p['id'],actor_id=p['owner_id'],payload=canonical(completion))
+            changed=typed(closure.model_dump(mode='json')|dict(completion_receipt=cref))
+            db.records=[changed if r.record_id==closure.record_id else r for r in db.records]
+            with self.subTest(case=case),self.assertRaises(ValueError):
+                authority['interactive_stage_verifier'](db,history(db.records))(changed,AT+timedelta(days=1))
+    def test_active_revision_and_completion_clock_substitutions_refuse(self):
+        code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority']
+        closure=next(r for r in db.records if r.kind=='support_stage_closure')
+        delivery=next(r for r in db.records if r.kind=='delivery' and r.stage=='delivered')
+        value=delivery.model_dump(mode='json');value.update(record_id='UNIT-corrected-delivery',revision=2,supersedes=delivery.record_id,
+            recorded_at=(AT+timedelta(hours=9)).isoformat(),available_at=(AT+timedelta(hours=9)).isoformat())
+        db.records.append(typed(value))
+        with self.assertRaises(ValueError):authority['interactive_stage_verifier'](db,history(db.records))(closure,AT+timedelta(days=1))
+        code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority'];closure=next(r for r in db.records if r.kind=='support_stage_closure')
+        with self.assertRaises(ValueError):authority['interactive_stage_verifier'](db,history(db.records))(closure,closure.available_at)
+    def test_unavailable_outcome_never_claims_observed_zero_burden(self):
+        code,db,p,state=fixture(())
+        d,a=code['decide'](db,NS(fault=None),p,state,AT)
+        value=dict(**(header('UNIT-unavailable-report',p['id'],AT+timedelta(days=1,minutes=-1))|dict(schema_version='2.0.0')),
+            kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed')
+        value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report');db.records.append(typed(value))
+        link=code['UNIT_authority']['close_stages'](db,NS(fault=None,clock=lambda:AT),p,d,a,None,AT)
+        self.assertEqual(link.reward.status,'pending');self.assertTrue(all(b.status=='pending' and b.value is None for b in link.burden))
+        self.assertFalse(any(r.kind=='support_stage_closure' for r in db.records))
+
+
+def function(path,name,**bindings):
+    tree=ast.parse((ROOT/path).read_text())
+    fn=copy.deepcopy(next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name==name))
+    class ServiceImports(ast.NodeTransformer):
+        def visit_ImportFrom(self,node):return None if node.level else node
+    fn=ServiceImports().visit(fn);fn.returns=None
+    ns=dict(bindings);exec(compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),path,'exec'),ns)
+    return ns[name]
+
+
+class RouteAndConnectionTests(unittest.TestCase):
+    def test_owned_mutation_and_original_receipt_replay(self):
+        code,db,p,state=fixture();calls=[]
+        tree=ast.parse((ROOT/'services/foundation/app.py').read_text())
+        error=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='APIError')
+        ns={};exec(compile(ast.Module(body=[error],type_ignores=[]),'actual_APIError','exec'),ns);APIError=ns['APIError']
+        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
+        mutation=function('services/foundation/app.py','mutation_receipt',APIError=APIError,canonical=canonical,digest=digest,json=json)
+        save=function('services/foundation/app.py','save_mutation',canonical=canonical,digest=digest)
+        data=ControllerCommand.model_validate(dict(schema_version='s2-controller-source-1.0.0',mode='current',action='pause',decision_id='UNIT-current',
+            expected_version=1,expected_state_version=1,expected_consent_version=1,expected_eligibility_version=1,rationale='UNIT explicit command'))
+        async def body(request,model):return data
+        def session(db,request,**kwargs):
+            self.assertTrue(kwargs['mutation']);calls.append('mutation_session');return dict(account_id='UNIT-owner',token_hash='UNIT-auth')
+        def own(db,patient,owner):
+            calls.append('ownership')
+            if patient!=p['id'] or owner!=p['owner_id']:raise APIError(404,'not_found','Resource not found')
+            return p
+        def transition(*args):calls.append('transition');return dict(status='paused')
+        route=copy.deepcopy(next(n for n in ast.walk(tree) if isinstance(n,ast.AsyncFunctionDef) and n.name=='support_command'))
+        route.decorator_list=[]
+        class Strip(ast.NodeTransformer):
+            def visit_ImportFrom(self,node):return None
+        route=Strip().visit(route)
+        bindings=dict(ControllerCommand=ControllerCommand,Request=object,body=body,store=NS(transaction=lambda **kwargs:nullcontext(db)),
+            session=session,own=own,mutation_receipt=mutation,save_mutation=save,transition=transition,settings=NS(clock=lambda:AT),APIError=APIError)
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[route],type_ignores=[])),'actual_support_route','exec'),bindings)
+        def invoke():
+            coroutine=bindings['support_command'](p['id'],NS(headers={'idempotency-key':'UNIT-stable-key'}))
+            try:coroutine.send(None)
+            except StopIteration as done:return done.value
+            raise AssertionError('No actual async wait allowed in SOURCE route fixture')
+        self.assertEqual(invoke(),invoke());self.assertEqual(calls.count('transition'),1)
+        data.rationale='UNIT materially changed'
+        with self.assertRaises(APIError) as error:invoke()
+        self.assertEqual(error.exception.code,'idempotency_conflict')
+        p['owner_id']='UNIT-foreign'
+        with self.assertRaises(APIError) as error:invoke()
+        self.assertEqual(error.exception.code,'not_found');self.assertEqual(calls.count('transition'),1)
+    def test_orphan_admin_is_rejected_by_actual_live_history_entry(self):
+        code,db,p,state=fixture();authority=code['UNIT_authority']
+        original=next(r for r in db.records if r.kind=='approval')
+        orphan=typed(original.model_dump(mode='json')|dict(record_id='s2-admin-orphan',lineage_id='s2-admin-orphan'))
+        db.records=[orphan]
+        read=function('services/foundation/workflow.py','history',json=json,canonical=canonical,validate_live_history=authority['validate_live_history'])
+        with self.assertRaisesRegex(ValueError,'unbound'):read(db,p['id'])
+    def test_default_connection_keeps_original_sqlite_arguments(self):
+        calls=[]
+        class DB:
+            def execute(self,sql):return Cursor([(1 if 'foreign_keys' in sql else 2,)])
+        def connect(*args,**kwargs):calls.append((args,kwargs));return DB()
+        fn=function('services/foundation/store.py','connect',sqlite3=NS(connect=connect,Row='UNIT-row'),SupportConnection=InertSupportConnection)
+        fn(NS(path='UNIT-never-opened',support_qualification=None))
+        self.assertEqual(calls,[(('UNIT-never-opened',),dict(isolation_level=None,timeout=5))])
+
+
+class AtomicAdvanceTests(unittest.TestCase):
+    """Actual advance + product admission + Store transaction body; all I/O inert."""
+    def preparation(self):
+        code,db,p,state=fixture(actual_mask=True);a=code['UNIT_authority'];db.control['last_receipt_at']=(AT-timedelta(hours=1)).isoformat()
+        from pydantic import TypeAdapter
+        from contracts.domain.entities import ObservedRecord
+        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
+        actual_history=lambda db,p:a['validate_live_history'](db,history(db.records))
+        class UnitSimulationError(Exception):pass
+        admit=function('services/foundation/simulation.py','persist_product',history=actual_history,ADAPTER=TypeAdapter(ObservedRecord),
+            LAW='poc-longitudinal-v1',canonical=canonical,digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat,
+            START=BEFORE.isoformat(),timedelta=timedelta,SimulationError=UnitSimulationError,json=json)
+        def product(settings,sim,patient,day):
+            self.assertIn('support_decision',db.writes)
+            if sim['support'][-1]['option']=='support_prompt':
+                self.assertTrue(any(r.kind=='delivery' and r.stage=='offered' for r in db.records))
+            assignment=sim['support'][-1]
+            values=[dict(**header('UNIT-advance-delivery','UNIT-patient',BEFORE+timedelta(days=day-1,hours=8)),kind='delivery',
+                assignment_id=assignment['assignment_id'],option=assignment['option'],stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]),
+                dict(**(header('UNIT-advance-report','UNIT-patient',BEFORE+timedelta(days=day,minutes=-1))|dict(schema_version='2.0.0')),
+                    kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed')]
+            values.append(dict(**header('UNIT-background-delivery','UNIT-patient',BEFORE+timedelta(days=day-1,hours=8)),kind='delivery',
+                assignment_id=sim['actions'][-1]['assignment_id'],option='behavioral_continue',stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]))
+            entries=[]
+            for value in values:
+                value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report' if value['kind']=='daily_report' else 'simulation')
+                r=typed(value);data=r.model_dump(mode='json');raw=canonical({k:v for k,v in data.items() if k!='source'})
+                data['source']['raw_sha256']=digest(raw)
+                entries.append(dict(record=data,raw_source=raw))
+            return dict(name='UNIT patient',records=entries)
+        def next_decision(db,patient,received):
+            state=json.loads(db.patient['state_json']);day=state['simulation']['day']
+            s=snapshot('UNIT-next-'+str(day),BEFORE+timedelta(days=day))
+            value=s.model_dump(mode='json')
+            value.update(patient_version=db.patient['version'],state_version=db.patient['state_version'],
+                eligibility_version=db.patient['eligibility_version'],workflow=state['workflow'])
+            db.snapshot=typed(value);db.patient['current_decision']=db.snapshot.record_id;db.patient['cutoff']=db.snapshot.cutoff.isoformat()
+        code.update(history=actual_history,product=product,persist_product=admit,close_stages=a['close_stages'],create_decision=next_decision,
+            patient_clock=lambda p,n:datetime.fromisoformat(json.loads(p['state_json'])['simulation']['origin'])+timedelta(days=json.loads(p['state_json'])['simulation']['day']))
+        a['history']=actual_history
+        tx=function('services/foundation/store.py','transaction',contextmanager=contextmanager,
+            instant=datetime.fromisoformat,receive=lambda db,at:None,sqlite3=NS(OperationalError=type('UNIT-DBError',(Exception,),{})))
+        store=NS(gate=NS(hold=lambda:nullcontext()),connect=lambda:db,validate_control=lambda db:db.control,clock=lambda:AT)
+        return code,db,p,state,tx,store
+    def test_actual_source_admits_product_closes_stages_and_commits_clock(self):
+        code,db,p,state,tx,store=self.preparation()
+        with tx(store,write=True):result=code['advance'](db,NS(fault=None,clock=lambda:AT),p,state,15,AT)
+        self.assertEqual(result['day'],15);self.assertTrue(db.committed)
+        self.assertEqual(json.loads(db.patient['state_json'])['simulation']['day'],15)
+        self.assertTrue(any(r.kind=='support_outcome_link' for r in db.records))
+        self.assertEqual(db.writes.count('support_decision'),1);self.assertEqual(db.writes.count('assignment'),1)
+    def test_each_real_boundary_rolls_back_product_authority_and_clock(self):
+        for stage in ('after_support_distribution','after_support_offer','after_support_product','after_support_completion','after_support_outcome','after_support_clock'):
+            code,db,p,state,tx,store=self.preparation();code['keyed_uniform']=lambda seed:0.
+            before=(len(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
+            def fault(point):
+                if point==stage:raise RuntimeError(stage)
+            with self.assertRaisesRegex(RuntimeError,stage):
+                with tx(store,write=True):code['advance'](db,NS(fault=fault,clock=lambda:AT),p,state,15,AT)
+            self.assertEqual((len(db.records),db.proofs,db.patient['state_json']),before)

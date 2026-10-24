@@ -23,6 +23,7 @@ from .workflow import create_decision, current_safety, history, record_header, s
 from .simulation import SimulationError
 from .replay import append_event, apply_current_state, parse_observed
 from contracts.service.live_hold import InstalledBundle, InvalidationInput, ReviewInput, ClearanceInput, ExportInput
+from contracts.domain.support_s2_controller import InteractiveSupportQualification
 from .admission import AdmissionError
 from .live_hold import LiveError
 from .analysis import AnalysisError
@@ -51,6 +52,7 @@ class Settings:
     admission_timeout: float = 5
     generator_url: str | None = None
     support_intake_diagnostic: Callable[..., None] | None = None
+    support_qualification: InteractiveSupportQualification | None = None
 
     @property
     def secure_cookie(self):
@@ -171,7 +173,8 @@ class Nof1Input(StrictModel):
 
 
 def create_app(settings: Settings) -> FastAPI:
-    store = Store(settings.database,settings.installed,clock=settings.clock)
+    store = Store(settings.database,settings.installed,clock=settings.clock,
+        support_qualification=settings.support_qualification,source_commit=settings.source_commit,runtime_ref=settings.runtime_ref)
     store.gate.timeout=settings.admission_timeout
     app = FastAPI(title="REMission synthetic foundation", docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store, app.state.settings = store, settings
@@ -684,6 +687,12 @@ def create_app(settings: Settings) -> FastAPI:
         from .analysis import view
         from .appointment import current_information
         frozen=json.loads(row['request_json'])
+        if frozen.get('kind')=='poc_support_s2_saved_prediction_input':
+            # Job status is metadata. Current scalar admission is the owned
+            # support read; neither route launches or waits for a worker.
+            return dict(id=row['job_id'],kind='support_s2_prediction',patient_id=row['patient_id'],
+                status=row['status'],stage=row['stage'],cutoff=row['cutoff'],failure_reason=row['failure_reason'],
+                summary_endpoint='/api/patients/'+row['patient_id']+'/support')
         if frozen.get('kind')=='poc_support_s2_app_fit_input':
             from .support_s2_analysis import view as support_s2_view
             return support_s2_view(row)

@@ -1,8 +1,10 @@
 """Bounded interactive controller interface; no scientific or execution authority."""
 from typing import Annotated, Literal
-from pydantic import AwareDatetime, Field
-from .analysis import reference
-from .common import Identifier, StrictModel, VersionRef
+from pydantic import AwareDatetime, Field, ConfigDict, model_validator
+from .analysis import reference, sha
+from .common import Identifier, Sha256, StrictModel, VersionRef
+from .observed_v2 import ExactRef
+from contracts.runs.coverage_v2 import StageLedgerV2
 
 CONFIGURATION = dict(schema='s2-controller-source-1.0.0',
     order=['current_authority', 'mask', 'saved_scalar_or_fallback', 'bounds_normalize_feasibility',
@@ -14,6 +16,10 @@ CONFIGURATION = dict(schema='s2-controller-source-1.0.0',
     reentry='new explicit envelope after N stop/completion; never automatic',
     saved='exact current scalar only; no fit/predict launch/wait on appointment paths')
 CONFIG_REF = reference('poc-support-s2-controller-source-v1', CONFIGURATION)
+REQUIRED_APP_SOURCES={'services/foundation/'+name+'.py' for name in
+    ('app','store','protocol','workflow','simulation','support_s2_controller','support_s2_authority','support_s2_prediction')}
+REQUIRED_APP_SOURCES.add('contracts/domain/support_s2_controller.py')
+REQUIRED_GENERATOR_SOURCES={'services/generator/'+name+'.py' for name in ('server','restricted','restricted_v2')}
 
 
 class ControllerCommand(StrictModel):
@@ -40,13 +46,103 @@ class SavedScalar(StrictModel):
     fit_collection_reference: VersionRef | None = None
 
 
-class ExecutionBasis(StrictModel):
-    schema_version: Literal['s2-controller-execution-v1']
+class QualificationPacket(StrictModel):
+    """Frozen BEFORE qualification execution/actual acceptance; no self reference."""
+    schema_version: Literal['poc-support-interactive-packet-v1']
+    app_commit: Annotated[str, Field(pattern=r'^[a-f0-9]{40}$')]
+    app_source_closure: dict[str, Sha256]
+    generator_source_closure: dict[str, Sha256]
+    app_image: Annotated[str, Field(pattern=r'^sha256:[a-f0-9]{64}$')]
+    generator_image: Annotated[str, Field(pattern=r'^sha256:[a-f0-9]{64}$')]
+    runtime: VersionRef
     configuration: VersionRef
-    envelope_id: Identifier
-    decision_id: Identifier
-    patient_versions: dict[str, int]
-    context_sha256: str
-    fallback_reason: str | None
+    invocation_class: Literal['owned-interactive-support-v1']
+    store_id: Identifier
+    authority_generation: Annotated[int, Field(ge=1)]
+    installed_bundle_sha256: Sha256
+
+    @model_validator(mode='after')
+    def complete(self):
+        if (self.configuration.model_dump()!=CONFIG_REF or not REQUIRED_APP_SOURCES<=self.app_source_closure.keys()
+                or not REQUIRED_GENERATOR_SOURCES<=self.generator_source_closure.keys()):
+            raise ValueError('complete_exact_interactive_packet_required')
+        return self
+
+
+class InteractiveSupportQualification(StrictModel):
+    """Trusted installation input ONLY, after DIFFERENT ACTUAL evidence acceptance.
+
+    SOURCE/OP review, a worker/product object or a Settings label cannot install
+    this binding. The future operator installation supplies the accepted value.
+    """
+    model_config = ConfigDict(frozen=True)
+    schema_version: Literal['poc-support-interactive-qualification-v1']
+    packet: QualificationPacket
+    packet_sha256: Sha256
+    actual_acceptance: VersionRef
+    acceptance_scope: Literal['ACTUAL_interactive_producer_accepted']
+
+    @model_validator(mode='after')
+    def frozen_packet(self):
+        if self.packet_sha256!=sha(self.packet.model_dump(mode='json')):
+            raise ValueError('interactive_packet_digest_mismatch')
+        return self
+
+    @property
+    def reference(self):
+        return reference('poc-support-interactive-qualified-installation-v1',self.model_dump(mode='json'))
+
+
+class AuthorizationBasis(StrictModel):
+    schema_version: Literal['s2-controller-authorization-v1']
+    configuration: VersionRef
+    qualification: VersionRef
+    owner_id: Identifier
+    patient_id: Identifier
+    generation_id: Identifier
+    store_id: Identifier
+    authority_generation: Annotated[int,Field(ge=1)]
+    envelope: ExactRef
+    original_approval: ExactRef
+    original_command_id: Identifier
+    actor_id: Identifier
+    assignment_unit: Identifier
+    current_snapshot: ExactRef
+    versions: dict[str,int]
+    known_refs: Annotated[list[ExactRef],Field(max_length=4096)]
+    consent_heads: Annotated[list[ExactRef],Field(max_length=32)]
+    frozen_state: dict
+    at: AwareDatetime
+    received_at: AwareDatetime
+    allowed_actions: list[Literal['support_prompt','no_prompt']]
+    probabilities: dict[Literal['support_prompt','no_prompt'],float]
     saved: SavedScalar
-    probabilities: dict[Literal['support_prompt', 'no_prompt'], float]
+    fallback_reason: str | None
+
+
+class InteractiveStageCompletion(StrictModel):
+    schema_version: Literal['poc-support-interactive-completion-v1']
+    qualification: VersionRef
+    authorization: VersionRef
+    owner_id: Identifier
+    patient_id: Identifier
+    generation_id: Identifier
+    store_id: Identifier
+    authority_generation: Annotated[int,Field(ge=1)]
+    decision: ExactRef
+    assignment: ExactRef | None
+    output_ref: VersionRef
+    output_bytes: Annotated[int,Field(ge=2,le=524288)]
+    output_sha256: Sha256
+    output_count: Annotated[int,Field(ge=0,le=4)]
+    ledgers: list[StageLedgerV2]
+    simulated_completed_at: AwareDatetime
+    simulated_available_at: AwareDatetime
+    received_at: AwareDatetime
+    published_at: AwareDatetime
+
+    @model_validator(mode='after')
+    def clocks(self):
+        if not self.simulated_completed_at < self.simulated_available_at or self.received_at>self.published_at:
+            raise ValueError('separate_interactive_completion_clocks_required')
+        return self

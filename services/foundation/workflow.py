@@ -55,9 +55,12 @@ def record_header(record_id: str, patient_id: str, at: datetime) -> dict:
 
 def history(db, patient_id: str) -> ObservedHistory:
     records = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id", (patient_id,))]
-    if any(r['schema_version'] == '2.1.0' for r in records):
+    if any(r['schema_version'] == '2.1.0' or r['kind']=='approval' and r['record_id'].startswith('s2-admin-')
+           or r['kind']=='assignment' and r.get('support_policy',{}).get('id')=='poc-support-s2-controller-source-v1' for r in records):
         from contracts.domain.protocol import ObservedHistoryV21
-        return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
+        full=ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
+        from .support_s2_authority import validate_live_history
+        return validate_live_history(db,full)
     if any(r['schema_version'] == '2.0.0' for r in records):
         from contracts.domain.observed_v2 import ObservedHistoryV2
         return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
@@ -123,6 +126,10 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
         outcome="Ordinary synthetic care; statistical estimates unavailable", horizon_days=42,
         estimand=reference("EST-VISIT"), model=reference("foundation-no-estimator", "No statistical engine implemented"),
         posterior=None, evidence=[], policy=SUPPORT)))
+    if state.get('simulation',{}).get('family')=='support':
+        value=snapshot.model_dump(mode='json')
+        value['source']['raw_sha256']=digest(canonical({k:v for k,v in value.items() if k!='source'}))
+        snapshot=DecisionSnapshot.model_validate_json(canonical(value))
     projected = history(db, patient_id).project(at).model_dump(mode="json")
     options = eligibility if state["stage"] != "ASSIGN-07" else [e for e in eligibility if e["action"].startswith("behavioral_")]
     if nof1 is not None:options=[e for e in options if e['action']=='behavioral_continue']

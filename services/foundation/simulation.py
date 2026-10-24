@@ -174,6 +174,9 @@ def advance(db, settings, patient, expected_version, mode, now):
     if simulation.get('nof1',{}).get('status') in ('active','stopped','completed'):
         from .nof1 import advance as advance_nof1
         return advance_nof1(db,settings,patient,state,target,now)
+    if simulation.get('family')=='support' and simulation.get('support_controller',{}).get('snapshot_id'):
+        from .support_s2_controller import advance as advance_support
+        return advance_support(db,settings,patient,state,target,now)
     cutoff = instant(simulation['origin']) + timedelta(days=target)
     generated = product(settings, simulation, patient['id'], target)
     count = persist_product(db, generated, patient['id'], after=patient_clock(patient, now), cutoff=cutoff, received_at=now, actions=simulation['actions'], simulation=simulation)
@@ -194,6 +197,9 @@ def assign(db, patient, state, approval, now, received_at):
     """Persist the ordinary assignment separately from approval and later delivery."""
     from .workflow import record_header, SUPPORT
     simulation = state['simulation']
+    if simulation.get('family')=='support' and simulation.get('support_controller'):
+        simulation['support_controller']['status']='unapproved'
+        state['workflow'].update(support_mode='paused',learning='support_unavailable')
     if simulation['law_version'] == 'poc-longitudinal-v2' and approval.option != 'behavioral_continue':
         raise SimulationError('frozen_background', 'Protocol patients retain the continuing behavioral background.')
     if simulation['day'] >= 84:
