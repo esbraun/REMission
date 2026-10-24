@@ -226,11 +226,18 @@ def worker_limits(borrowing, *, cohort=False):return list(COMMON)
 
 
 def worker_module(input_value):
+    kind=str(input_value.get('kind',''))
+    if kind.startswith('poc_support_s2_'):
+        if kind=='poc_support_s2_native_fit_input':return 'services.learner.support_s2_worker'
+        raise ValueError('S2_unknown_or_unimplemented_worker_kind')
     if input_value.get('kind')=='poc_nof1_input':return 'services.learner.nof1_worker'
     return 'services.learner.support_s1_worker' if input_value.get('kind')=='poc_support_s1_input' else 'services.learner.analysis_worker'
 
 
 def require_dispatchable(input_value):
+    if str(input_value.get('kind','')).startswith('poc_support_s2_'):
+        from contracts.domain.support_s2_native import require_executable
+        require_executable()
     if input_value.get('kind')=='poc_nof1_input':
         from contracts.domain.nof1_app import NInput
         NInput.model_validate_json(json.dumps(input_value))
@@ -241,6 +248,64 @@ def require_dispatchable(input_value):
     if input_value.get('kind')=='poc_visit_cohort_input':
         from contracts.domain.cohort import CohortInput,require_executable
         require_executable(CohortInput.model_validate_json(json.dumps(input_value)))
+
+
+class S2Monitor:
+    """Prepared existing-supervise on_poll; runs independently of pm.sample.
+
+    Exact named bounded file collection and role/caps are not qualified yet.
+    No launch origin, fit deadline or phase can be reset by learner progress.
+    """
+    def __init__(self,origin,deadline,attempt,input_sha256, *, clock=time.monotonic):
+        if (type(origin) not in (int,float) or type(deadline) not in (int,float)
+                or not math.isfinite(origin) or not math.isfinite(deadline) or not origin<deadline<=origin+7200):
+            raise ValueError('S2_single_absolute_monitor_origin_required')
+        self.origin=origin;self.deadline=deadline;self.clock=clock
+        self.attempt=attempt;self.input_sha256=input_sha256;self.last=None
+    def check(self):
+        if self.clock()>=min(self.deadline,self.origin+6900):
+            raise TimeoutError('S2_independent_monitor_absolute_fit_deadline')
+    def admit(self,raw):
+        self.check()
+        if not isinstance(raw,bytes) or len(raw)>2048:raise ValueError('S2_progress_byte_cap')
+        value=n_json(raw,nodes=100)
+        if (not isinstance(value,dict) or set(value)!={'schema','attempt_id','input_sha256','sequence','stage','extension','elapsed_seconds'}
+                or value['schema']!='s2-native-progress-v1' or value['attempt_id']!=self.attempt
+                or value['input_sha256']!=self.input_sha256 or type(value['sequence']) is not int
+                or not 1<=value['sequence']<=250 or type(value['extension']) is not bool
+                or value['stage'] not in ('preparing','fitting','diagnostics')
+                or type(value['elapsed_seconds']) not in (int,float)
+                or not 0<=value['elapsed_seconds']<=self.clock()-self.origin):
+            raise ValueError('S2_progress_closed_identity_or_elapsed_invalid')
+        if self.last is not None:
+            old=self.last
+            if value==old:return None
+            order={'preparing':0,'fitting':1,'diagnostics':2}
+            if (value['sequence']<=old['sequence'] or value['elapsed_seconds']<old['elapsed_seconds']
+                    or order[value['stage']]<order[old['stage']] or value['extension']!=old['extension']):
+                raise ValueError('S2_independent_monitor_stage_or_origin_reset_veto')
+        self.last=value;self.check()
+        return {k:value[k] for k in ('attempt_id','input_sha256','stage','extension')}
+    def poll(self,read_progress,report):
+        self.check()  # before I/O and irrespective of learner/sample progress
+        raw=read_progress(2048,min(self.deadline,self.origin+6900))
+        self.check()
+        if raw is not None:
+            value=self.admit(raw)
+            if value is not None:report(value)
+        self.check()
+
+
+def supervise_s2(cid,folder,monitor,read_progress,report):
+    # Preparation only. A future separate source/OP admission must bind real
+    # exact-file reader/custody/resources before this existing supervisor runs.
+    from contracts.domain.support_s2_native import require_executable
+    require_executable()
+    monitor.check()
+    terminal=supervise(cid,folder,monitor.deadline,
+        lambda:monitor.poll(read_progress,report),discard_output=True)
+    monitor.check()
+    return terminal
 
 
 def cohort_reviewed_runtime(state, actual_image):
