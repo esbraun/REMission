@@ -164,6 +164,13 @@ def checked_packet(path,token):
         value=source.read_bytes();require(len(value)==item['bytes'] and sha(value)==item['sha256'])
     require(sha((packet/'payload/archive-config.json').read_bytes())==spec['archive_configuration_sha256'])
     require(sha((packet/'payload/submit-spec.json').read_bytes())==spec['submit_spec_sha256'])
+    payload=strict_json((packet/'payload/submit-spec.json').read_bytes())
+    keys=('kind','executable','namespace','volume','store_instance','authority_generation','owner_id',
+        'archive_id','archive_export_id','admission_sha256','source_commit','source_review','operation_review','root_go','no_claim_or_fit')
+    require(type(payload) is dict and all(payload.get(k)==spec[k] and type(payload.get(k)) is type(spec[k]) for k in keys)
+        and payload.get('key')=='s1-genuine-day84-261024-r1' and type(payload.get('cutoff_day')) is int
+        and payload['cutoff_day']==84 and type(payload.get('members')) is int and payload['members']==12
+        and payload.get('request_seconds')==180 and payload.get('private_export_cap')==16*1024*1024)
     return spec,packet
 
 

@@ -149,6 +149,22 @@ class AdmissionTests(unittest.TestCase):
             with patch.object(host,'load',side_effect=AssertionError('helper forbidden')):
                 with self.assertRaises(ValueError):host.launch(path,host.sha(path.read_bytes()))
             self.assertEqual(list(Path(directory).iterdir()),[path])
+    def test_host_payload_identity_mismatch_precedes_helper(self):
+        with tempfile.TemporaryDirectory() as directory:
+            packet=Path(directory);value=spec();value['public_inputs']=[]
+            payload=dict(value,key=driver.KEY,cutoff_day=84,members=12,request_seconds=180,private_export_cap=16*1024*1024)
+            for name in host.FILES:
+                path=packet/name;path.parent.mkdir(exist_ok=True)
+                raw=json.dumps(payload).encode() if name.endswith('submit-spec.json') else b'[]' if name.endswith('archive-config.json') else b'# inert public source\n'
+                path.write_bytes(raw);value['public_inputs'].append(dict(path=name,bytes=len(raw),sha256=host.sha(raw)))
+            value['submit_spec_sha256']=host.sha((packet/'payload/submit-spec.json').read_bytes())
+            value['archive_configuration_sha256']=host.sha((packet/'payload/archive-config.json').read_bytes())
+            path=packet/'spec.json';path.write_text(json.dumps(value));host.checked_packet(path,host.sha(path.read_bytes()))
+            payload['owner_id']='different-owner';raw=json.dumps(payload).encode();(packet/'payload/submit-spec.json').write_bytes(raw)
+            value['submit_spec_sha256']=host.sha(raw)
+            item=next(i for i in value['public_inputs'] if i['path']=='payload/submit-spec.json');item.update(bytes=len(raw),sha256=host.sha(raw))
+            path.write_text(json.dumps(value))
+            with self.assertRaises(ValueError):host.checked_packet(path,host.sha(path.read_bytes()))
     def test_discard_custody_and_fixed_receipt_after_supervise(self):
         tree=ast.parse((ROOT/'tooling/foundation/s1_genuine_once.py').read_bytes())
         execute=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='execute')
