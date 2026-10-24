@@ -81,7 +81,7 @@ The numerical tolerances below are engineering acceptance criteria, not clinical
 | Check | Acceptance/disposition |
 |---|---|
 | Hard constraints | Zero observed violations; investigate every violation and report uncertainty when zero occurred |
-| Truth | Independent simplified-case agreement and precision criteria in TRUTH-02; otherwise inconclusive |
+| Truth | Independent simplified-case agreement and precision criteria in [TRUTH-02](02-synthetic-dgp.md#truth-02--independent-verification), under its stochastic-law/implementation claim boundary; T2 and literal-generator equivalence remain unresolved, otherwise inconclusive |
 | SBC | No unresolved rank/ECDF discrepancy across prespecified quantities; retain plots and reviewer diagnosis; demonstrate rejection of the seeded faults |
 | Final fit | BAYES-02 diagnostics and estimand-specific numerical precision; otherwise failure or abstention |
 | Matched reference bias | (absolute mean error + 1.96 times bias MCSE) / fixed truth outcome SD ≤0.1; degenerate SD fixtures use analytic checks |
