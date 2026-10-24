@@ -146,7 +146,8 @@ def saved_status(db, owner, patient, at):
 def transition(db, settings, patient, actor, data, received_at):
     from .simulation import SimulationError
     from .workflow import _producer_history as history, patient_clock, record_header, create_decision
-    from .support_s2_authority import producer_persist as persist,producer_gate
+    from .support_s2_authority import producer_persist as persist,producer_gate,producer_id
+    from .support_s2_invocation import candidate_context
     from .live_journal import active_episodes
     state, sim = selected(patient); at = patient_clock(patient, received_at)
     if data.decision_id != patient['current_decision'] or any(getattr(data, 'expected_'+k) != patient[k] for k in VERSIONS):
@@ -174,7 +175,7 @@ def transition(db, settings, patient, actor, data, received_at):
         # This revises the same component-consent event. New knowledge and
         # effective/withdrawal times remain current; prior bytes stay immutable.
         if previous is not None:value['event_at']=previous.event_at.isoformat()
-        persist(db, value, received_at); loop['status'] = 'withdrawn' if withdrawn else 'unapproved'
+        changed_consent=persist(db, value, received_at); loop['status'] = 'withdrawn' if withdrawn else 'unapproved'
     elif data.action == 'pause': loop['status'] = 'paused'
     else:
         producer_gate(db,patient['id'])
@@ -207,10 +208,26 @@ def transition(db, settings, patient, actor, data, received_at):
     encoded = canonical(dict(kind='support_envelope_command', command=data.model_dump(mode='json'), actor=actor,
         envelope_id=loop.get('snapshot_id'),at=received_at.isoformat()))
     db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)', (command_id, patient['id'], actor, received_at.isoformat(), encoded))
+    task_id=None
+    if data.action=='withdraw':
+        task_id=producer_id(db,'support-review-'+uuid.uuid4().hex)
+        task=dict(id=task_id,owner_id=patient['owner_id'],due_at=at.isoformat(),status='pending',
+            trigger='support_consent_withdrawal',decision_id=data.decision_id,command_id=command_id,
+            consent_ref=exact_ref(changed_consent).model_dump(),rationale=data.rationale,
+            required_review='Ordinary care or fixed support where currently permitted; no support approval granted')
+        candidate=candidate_context(db)
+        if candidate is not None:task['candidate_invocation']=candidate.check(db,patient['id']).reference
+        # The legacy task anchor is unconstrained TEXT. A withdrawal anchors to
+        # its real command, not a fabricated approval/history bundle.
+        db.execute('INSERT INTO tasks VALUES(?,?,?,?,?,?)',
+            (task_id,patient['id'],command_id,patient['owner_id'],at.isoformat(),canonical(task)))
+        if settings.fault:settings.fault('after_follow_up')
     db.execute('UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,consent_version=consent_version+? WHERE id=?',
                (canonical(state), int(data.action in ('consent','withdraw')), patient['id']))
     create_decision(db, patient['id'], received_at)
-    return dict(status=loop['status'], action=data.action)
+    result=dict(status=loop['status'], action=data.action)
+    if task_id is not None:result['task_id']=task_id
+    return result
 
 
 def decide(db, settings, patient, state, received_at):

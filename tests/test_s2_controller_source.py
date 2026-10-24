@@ -81,7 +81,7 @@ class InertDB(InertSupportConnection):
     """Explicit SQL double. Unknown access fails, never opens SQLite."""
     def __init__(self,records,snapshot):
         self.records=records;self.snapshot=snapshot;self.writes=[];self.audit=[];self.proofs={};self.receipts={}
-        self.raw_sources={}
+        self.raw_sources={};self.tasks={}
         self.in_transaction=False;self.closed=False;self.decisions={snapshot.record_id:snapshot}
         self.control=dict(database_instance_id='UNIT-store',authority_generation=1,enabled=True)
         packet=dict(schema_version='poc-support-interactive-packet-v1',app_commit='0'*40,app_source_closure={p:'0'*64 for p in REQUIRED_APP_SOURCES},
@@ -113,6 +113,14 @@ class InertDB(InertSupportConnection):
         if sql=='SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?':return Cursor([self.receipts[args]] if args in self.receipts else [])
         if sql=='INSERT INTO receipts VALUES(?,?,?,?,?,?)':
             self.receipts[args[:3]]=dict(scope=args[3],payload_sha256=args[4],response=args[5]);return Cursor()
+        if sql=='INSERT INTO tasks VALUES(?,?,?,?,?,?)':
+            if args[0] in self.tasks:raise AssertionError('duplicate inert task')
+            self.tasks[args[0]]=dict(zip(('id','patient_id','bundle_id','owner_id','due_at','payload'),args));return Cursor()
+        if sql=='SELECT * FROM tasks WHERE patient_id=?':
+            return Cursor([r for r in self.tasks.values() if r['patient_id']==args[0]])
+        if sql=='SELECT t.payload FROM tasks t JOIN patients p ON t.patient_id=p.id WHERE t.id=? AND p.owner_id=?':
+            row=self.tasks.get(args[0])
+            return Cursor([(row['payload'],)] if row and row['patient_id']==self.patient['id'] and args[1]==self.patient['owner_id'] else [])
         if sql=='SELECT payload FROM events WHERE id=? AND patient_id=? AND kind=?':
             return Cursor([(r.model_dump_json(),) for r in self.records if (r.record_id,r.patient_id,r.kind)==args])
         if sql=='SELECT * FROM service_control WHERE singleton=1':return Cursor([self.control])
@@ -536,16 +544,25 @@ class AtomicAdvanceTests(unittest.TestCase):
             LAW='poc-longitudinal-v1',canonical=canonical,digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat,
             START=BEFORE.isoformat(),timedelta=timedelta,SimulationError=UnitSimulationError,json=json)
         def product(settings,sim,patient,day):
-            self.assertIn('support_decision',db.writes)
-            if sim['support'][-1]['option']=='support_prompt':
-                self.assertTrue(any(r.kind=='delivery' and r.stage=='offered' for r in db.records))
-            assignment=sim['support'][-1]
-            values=[dict(**header('UNIT-advance-delivery-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day-1,hours=8)),kind='delivery',
-                assignment_id=assignment['assignment_id'],option=assignment['option'],stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]),
-                dict(**(header('UNIT-advance-report-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day,minutes=-1))|dict(schema_version='2.0.0')),
-                    kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed')]
-            values.append(dict(**header('UNIT-background-delivery-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day-1,hours=8)),kind='delivery',
-                assignment_id=sim['actions'][-1]['assignment_id'],option='behavioral_continue',stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]))
+            # Fabricated exhaustive observed product, including the ordinary
+            # continuation's day/visit range. Never execute the generator law.
+            values=[]
+            for night in range(sim['day']+1,day+1):
+                support=next((item for item in reversed(sim['support']) if item['day']==night-1),None)
+                if support:
+                    self.assertIn('support_decision',db.writes)
+                    if support['option']=='support_prompt':
+                        self.assertTrue(any(r.kind=='delivery' and r.stage=='offered' and r.assignment_id==support['assignment_id'] for r in db.records))
+                    values.append(dict(**header('UNIT-advance-delivery-'+str(night),'UNIT-patient',BEFORE+timedelta(days=night-1,hours=8)),kind='delivery',
+                        assignment_id=support['assignment_id'],option=support['option'],stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]))
+                values.append(dict(**(header('UNIT-advance-report-'+str(night),'UNIT-patient',BEFORE+timedelta(days=night,minutes=-1))|dict(schema_version='2.0.0')),
+                    kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed'))
+                values.append(dict(**header('UNIT-background-delivery-'+str(night),'UNIT-patient',BEFORE+timedelta(days=night-1,hours=8)),kind='delivery',
+                    assignment_id=sim['actions'][-1]['assignment_id'],option='behavioral_continue',stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]))
+                if night%14==0:
+                    values.append(dict(**header('UNIT-isi-'+str(night),'UNIT-patient',BEFORE+timedelta(days=night,minutes=-1)),kind='isi',
+                        instrument_version='UNIT-inert-ISI',recall_days=14,recall_start=(BEFORE+timedelta(days=night-14,minutes=-1)).isoformat(),
+                        recall_end=(BEFORE+timedelta(days=night,minutes=-1)).isoformat(),items=[2,2,2,2,2,1,1]))
             entries=[]
             for value in values:
                 value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report' if value['kind']=='daily_report' else 'simulation')
@@ -642,7 +659,9 @@ class CandidateBootstrapTests(unittest.TestCase):
         safety=function('services/foundation/workflow.py','current_safety',history=real_history,
             lineage_heads=flow['lineage_heads'],visible_records=flow['visible_records'])
         entry=function('services/foundation/simulation.py','advance',json=json,SimulationError=type('UNIT-SimulationError',(Exception,),{}),
-            active_episodes=lambda *args:[],current_safety=safety,advance_support=code['advance'],advance_nof1=lambda *args:(_ for _ in ()).throw(AssertionError('N route')))
+            active_episodes=lambda *args:[],current_safety=safety,advance_support=code['advance'],advance_nof1=lambda *args:(_ for _ in ()).throw(AssertionError('N route')),
+            instant=datetime.fromisoformat,timedelta=timedelta,product=code['product'],persist_product=code['persist_product'],
+            patient_clock=code['patient_clock'],timestamp=lambda x:x.isoformat(),canonical=canonical,create_decision=create,state_for=flow['state_for'])
         invocation_code.update(transition=code['transition'],advance_simulation=entry,selected=code['selected'],_producer_history=real_history)
         def command(action,version,consent_version,decision):
             return dict(schema_version='s2-controller-source-1.0.0',mode='current',action=action,decision_id=decision,
@@ -661,7 +680,10 @@ class CandidateBootstrapTests(unittest.TestCase):
             version=4;consent_version=2;at=AT+timedelta(days=1)
             sequence=(later_consent_action,) if isinstance(later_consent_action,str) else later_consent_action
             for action in sequence:
-                if action=='advance':operations.append(dict(patient_id=p['id'],action='advance',target=16));continue
+                if action in ('advance','visit'):
+                    day=(at-BEFORE).days;target=day+1 if action=='advance' else (day//14+1)*14
+                    operations.append(dict(patient_id=p['id'],action='advance',target=target))
+                    version+=1;at=BEFORE+timedelta(days=target);continue
                 current='candidate-s2-decision-'+sha([p['id'],version,at.isoformat()])[:32]
                 data=command(action,version,consent_version,current)
                 if later_failure=='stale':data['expected_version']-=1
@@ -898,6 +920,135 @@ class CandidateBootstrapTests(unittest.TestCase):
             self.assertEqual((db.records,db.proofs,db.patient['state_json']),before);self.assertTrue(receipt.getvalue())
             self.assertFalse(getattr(db,'committed',False))
             with self.assertRaises(FileExistsError):run()
+
+    def test_withdrawn_and_merely_renewed_background_continues_without_support(self):
+        for commands,status in ((('withdraw','advance'),'withdrawn'),(('withdraw','consent','advance'),'unapproved'),
+                                (('pause','advance'),'paused'),(('consent','advance'),'unapproved')):
+            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action=commands)
+            draws=[];code['keyed_uniform']=lambda seed:draws.append(seed) or 1.
+            old={}
+            def capture(point):
+                if point=='after_support_clock':
+                    old['records']={r.record_id:r.model_dump_json() for r in db.records}
+                    old['snapshots']={k:v.model_dump_json() for k,v in db.decisions.items()}
+            with self.subTest(commands=commands):
+                result=run(NS(clock=lambda:AT,fault=capture));current=json.loads(db.patient['state_json'])
+                self.assertEqual(result['status'],'UNTRUSTED_candidate_evidence');self.assertEqual(current['simulation']['day'],16)
+                self.assertEqual(current['simulation']['support_controller']['status'],status)
+                self.assertEqual(len(draws),1);self.assertEqual(db.writes.count('support_decision'),1);self.assertEqual(db.writes.count('assignment'),1)
+                self.assertEqual(len([r for r in db.records if r.kind=='daily_report' and r.event_at>AT]),2)
+                later=[r for r in db.records if r.kind=='delivery' and r.event_at>=AT+timedelta(days=1)]
+                self.assertEqual([(r.option,r.assignment_id) for r in later],[('behavioral_continue','UNIT-background')])
+                self.assertEqual(db.patient['cutoff'],(AT+timedelta(days=2)).isoformat())
+                for key,value in old['records'].items():self.assertEqual(next(r for r in db.records if r.record_id==key).model_dump_json(),value)
+                for key,value in old['snapshots'].items():self.assertEqual(db.decisions[key].model_dump_json(),value)
+                # Ordinary continuation cannot promote the candidate's earlier
+                # linked history to LIVE, even after renaming every identifier.
+                with self.assertRaises(ValueError):flow['history'](db,p['id'])
+                renamed=history([typed(json.loads(r.model_dump_json().replace('candidate-s2-','UNIT-renamed-'))|
+                    dict(source=r.source.model_dump(mode='json'))) for r in db.records])
+                with self.assertRaises(ValueError):a['reject_candidate'](renamed)
+
+    def test_between_review_commands_visit_continuation_then_fresh_envelope_reentry(self):
+        commands=('withdraw','advance','consent','visit','approve','advance')
+        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action=commands)
+        draws=[];code['keyed_uniform']=lambda seed:draws.append(seed) or 1.
+        result=run();current=json.loads(db.patient['state_json'])
+        self.assertEqual(current['simulation']['day'],29);self.assertEqual(current['simulation']['support_controller']['status'],'active')
+        self.assertEqual(len(draws),2);self.assertEqual(db.writes.count('assignment'),2)
+        self.assertEqual(len([r for r in db.records if r.kind=='protocol_snapshot']),2)
+        self.assertEqual(len([r for r in db.records if r.kind=='isi']),1)
+        consents=[r for r in db.records if r.kind=='consent'];self.assertEqual(consents[1].withdrawn_at,AT+timedelta(days=1))
+        self.assertEqual(consents[2].effective_at,AT+timedelta(days=2))
+        support=[r for r in db.records if r.kind=='support_decision'];self.assertEqual([r.cutoff for r in support],[AT,BEFORE+timedelta(days=28)])
+        self.assertEqual(result['histories'][0]['current_snapshot']['cutoff'],(BEFORE+timedelta(days=29)).isoformat().replace('+00:00','Z'))
+
+    def test_inactive_support_continuation_still_enforces_outer_hold_death_and_N_route(self):
+        for restriction in ('hold','independent_hold','death','active_N','stopped_N','completed_N'):
+            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action=('withdraw','advance'))
+            original=h['transition'];entry=h['advance_simulation'];called=[]
+            def transition(*args):
+                result=original(*args)
+                if args[4].action=='withdraw':
+                    current=json.loads(db.patient['state_json'])
+                    if restriction=='hold':current['workflow']['hold_reasons']=['UNIT clinical hold']
+                    elif restriction.endswith('_N'):current['simulation']['nof1']=dict(status=restriction[:-2])
+                    db.patient['state_json']=canonical(current)
+                return result
+            h['transition']=transition
+            if restriction=='independent_hold':entry.__globals__['active_episodes']=lambda *args:[dict(id='UNIT-hold')] if json.loads(db.patient['state_json'])['simulation']['support_controller']['status']=='withdrawn' else []
+            if restriction=='death':
+                original_safety=entry.__globals__['current_safety']
+                entry.__globals__['current_safety']=lambda *args:list(original_safety(*args))+([NS(kind='intercurrent_event',event_type='death')] if json.loads(db.patient['state_json'])['simulation']['support_controller']['status']=='withdrawn' else [])
+            entry.__globals__['advance_nof1']=lambda *args:called.append('N') or (_ for _ in ()).throw(AssertionError('N route retained'))
+            reason='N route retained' if restriction.endswith('_N') else 'outside_scope' if restriction=='death' else 'clinical_hold'
+            with self.subTest(restriction=restriction),self.assertRaisesRegex(Exception,reason):run()
+            self.assertFalse(getattr(db,'committed',False));self.assertTrue(receipt.getvalue())
+            self.assertEqual(bool(called),restriction.endswith('_N'))
+
+    def test_real_withdrawal_task_owned_read_route_and_stable_command_replay(self):
+        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action='withdraw')
+        tree=ast.parse((ROOT/'services/foundation/app.py').read_text())
+        error=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='APIError')
+        errors={};exec(compile(ast.Module(body=[error],type_ignores=[]),'actual_APIError','exec'),errors);APIError=errors['APIError']
+        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
+        mutation=function('services/foundation/app.py','mutation_receipt',APIError=APIError,canonical=canonical,digest=digest,json=json)
+        save=function('services/foundation/app.py','save_mutation',canonical=canonical,digest=digest)
+        route=copy.deepcopy(next(n for n in ast.walk(tree) if isinstance(n,ast.AsyncFunctionDef) and n.name=='support_command'))
+        route.decorator_list=[]
+        class Strip(ast.NodeTransformer):
+            def visit_ImportFrom(self,node):return None
+        route=Strip().visit(route);original=h['transition'];pending=[];responses=[]
+        async def body(request,model):return pending[-1]
+        def own(current,patient,owner):
+            if (patient,owner)!=(p['id'],p['owner_id']):raise APIError(404,'not_found','Resource not found')
+            return db.patient
+        bindings=dict(ControllerCommand=ControllerCommand,Request=object,body=body,store=NS(transaction=lambda **kw:nullcontext(db)),
+            session=lambda *args,**kw:dict(account_id=p['owner_id'],token_hash='UNIT-owned-session'),own=own,
+            mutation_receipt=mutation,save_mutation=save,transition=original,settings=NS(clock=lambda:AT,fault=None),APIError=APIError)
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[route],type_ignores=[])),'actual_withdrawal_route','exec'),bindings)
+        def invoke(key='UNIT-withdraw-once'):
+            coroutine=bindings['support_command'](p['id'],NS(headers={'idempotency-key':key}))
+            try:coroutine.send(None)
+            except StopIteration as done:return done.value
+            raise AssertionError('No actual async wait in SOURCE fixture')
+        def transition(*args):
+            if args[4].action!='withdraw':return original(*args)
+            pending.append(args[4]);first=invoke();count=len(db.tasks)
+            self.assertEqual(invoke(),first);self.assertEqual(len(db.tasks),count)
+            with self.assertRaisesRegex(Exception,'stale_support'):invoke('UNIT-stale-new-key')
+            self.assertEqual(len(db.tasks),count);responses.append(first);return first
+        h['transition']=transition
+        run();self.assertEqual(len(db.tasks),1);self.assertEqual(len(db.receipts),1)
+        row=next(iter(db.tasks.values()));payload=json.loads(row['payload'])
+        self.assertEqual((row['patient_id'],row['owner_id']),(p['id'],p['owner_id']))
+        self.assertEqual(payload['owner_id'],p['owner_id']);self.assertEqual(payload['status'],'pending')
+        self.assertEqual(payload['trigger'],'support_consent_withdrawal');self.assertEqual(row['bundle_id'],payload['command_id'])
+        self.assertEqual(responses[0]['task_id'],row['id']);self.assertIn(payload['decision_id'],db.decisions)
+        command=json.loads(db.proofs[payload['command_id']]['payload']);self.assertEqual(command['command']['action'],'withdraw')
+        withdrawn=next(r for r in db.records if r.kind=='consent' and r.consent_status=='withdrawn')
+        self.assertEqual(payload['consent_ref'],exact_ref(withdrawn).model_dump())
+        self.assertEqual(payload['candidate_invocation'],inv.reference)
+        reader=function('services/foundation/app.py','task',Request=object,app=NS(get=lambda path:lambda fn:fn),
+            store=NS(transaction=lambda **kw:nullcontext(db)),session=lambda *args:dict(account_id=p['owner_id']),APIError=APIError,json=json)
+        self.assertEqual(reader(row['id'],object()),payload)
+        reader.__globals__['session']=lambda *args:dict(account_id='UNIT-other-owner')
+        with self.assertRaises(APIError) as denied:reader(row['id'],object())
+        self.assertEqual(denied.exception.code,'not_found')
+        self.assertEqual(len(db.execute('SELECT * FROM tasks WHERE patient_id=?',(p['id'],)).fetchall()),1)
+
+    def test_withdrawal_task_fault_rolls_back_consent_command_versions_and_clock(self):
+        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action='withdraw')
+        before=copy.deepcopy((db.records,db.proofs,db.patient,db.tasks,db.decisions,db.receipts))
+        def fault(point):
+            if point=='after_follow_up':
+                self.assertEqual(len(db.tasks),1)
+                self.assertTrue(any(r.kind=='consent' and r.consent_status=='withdrawn' for r in db.records))
+                raise RuntimeError('UNIT withdrawal task fault')
+        with self.assertRaisesRegex(RuntimeError,'withdrawal task fault'):run(NS(clock=lambda:AT,fault=fault))
+        self.assertEqual((db.records,db.proofs,db.patient,db.tasks,db.decisions,db.receipts),before)
+        self.assertFalse(getattr(db,'committed',False));self.assertTrue(receipt.getvalue())
+        with self.assertRaises(FileExistsError):run()
 
 
 class DispatchAuthorityTests(unittest.TestCase):
