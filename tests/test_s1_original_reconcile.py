@@ -1,5 +1,6 @@
 """Original-request metadata semantics; no actual Store/SQL/auth operation."""
 import ast
+import builtins
 from copy import deepcopy
 import hashlib
 import io
@@ -16,6 +17,7 @@ ROOT=Path(__file__).resolve().parents[1]
 BASELINE_HOST=BASELINE_DRIVER=None
 PRE_REPAIR_DRIVER=None
 PRE_REPAIR_HOST=None
+PREAUTH_BASE_DRIVER=PREAUTH_BASE_HOST=None
 OWNER='1946fb30-b736-402e-a6d0-a0b50eb92496';JOB='analysis-'+'a'*32;CID='b'*64
 MEMBERS=[f'member-{n:02}' for n in range(12)]
 PARTS=[(m,m+'-'+s) for m in MEMBERS for s in ('S0','S1')]
@@ -343,9 +345,40 @@ def scalar_contract():
         exec(compile(ast.Module(body=body,type_ignores=[]),path,'exec'),namespace)
     return namespace
 
+
+def undo_preauth(tree):
+    """Exact declared diagnostic/schema/namespace delta, no rule relaxation."""
+    tree=deepcopy(tree)
+    class Undo(ast.NodeTransformer):
+        def visit_Constant(self,node):
+            changes={'s1-original-request-control-v2':'s1-original-request-control-v1',
+                'remission-s1-original-reconcile-261024-r3':'remission-s1-original-reconcile-261024-r2',
+                '/data/s1-p3-original-reconcile-r3':'/data/s1-p3-original-reconcile-r2',
+                '/data/s1-p3-original-reconcile-r3/control.json':'/data/s1-p3-original-reconcile-r2/control.json'}
+            return ast.copy_location(ast.Constant(changes.get(node.value,node.value)),node) if type(node.value) is str else node
+        def visit_Set(self,node):
+            node.elts=[n for n in node.elts if not isinstance(n,ast.Constant) or n.value!='preauth_refusal'];return self.generic_visit(node)
+        def visit_Call(self,node):
+            if isinstance(node.func,ast.Name) and node.func.id=='dict':node.keywords=[k for k in node.keywords if k.arg!='preauth_refusal']
+            return self.generic_visit(node)
+    tree.body=[n for n in tree.body if not (isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='PREAUTH_REFUSALS' for t in n.targets))]
+    for fn in [n for n in tree.body if isinstance(n,ast.FunctionDef)]:
+        if fn.name=='run_reconcile':
+            body=[]
+            for n in fn.body:
+                if isinstance(n,ast.Try) and any(isinstance(v,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='preauth_refusal' for t in v.targets) for v in n.body):
+                    body.extend(v for v in n.body if not isinstance(v,ast.Assign) or not any(isinstance(t,ast.Name) and t.id=='preauth_refusal' for t in v.targets))
+                else:body.append(n)
+            fn.body=body
+        if fn.name in ('recon_result','recon_public'):
+            fn.body=[n for n in fn.body if not (isinstance(n,ast.Expr) and any((isinstance(v,ast.Name) and v.id=='preauth_refusal') or (isinstance(v,ast.Constant) and v.value=='preauth_refusal') for v in ast.walk(n)))]
+            kw=[(k,v) for k,v in zip(fn.args.kwonlyargs,fn.args.kw_defaults) if k.arg!='preauth_refusal']
+            fn.args.kwonlyargs=[k for k,_ in kw];fn.args.kw_defaults=[v for _,v in kw]
+    return Undo().visit(tree)
+
 class SourceInverseTests(unittest.TestCase):
     def test_narrow_repair_whole_module_inverse_to_reviewed_r1(self):
-        prior=ast.parse(PRE_REPAIR_DRIVER);current=ast.parse((ROOT/'tooling/foundation/s1_genuine_submit.py').read_bytes())
+        prior=ast.parse(PRE_REPAIR_DRIVER);current=undo_preauth(ast.parse((ROOT/'tooling/foundation/s1_genuine_submit.py').read_bytes()))
         old_metadata=next(n for n in prior.body if isinstance(n,ast.FunctionDef) and n.name=='recon_metadata')
         cutoff_stmt=next(n for n in old_metadata.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call)
             and any(isinstance(v,ast.Constant) and v.value=='request_cutoff' for v in ast.walk(n)))
@@ -366,7 +399,7 @@ class SourceInverseTests(unittest.TestCase):
         current.body=[n for n in current.body if not (isinstance(n,ast.FunctionDef) and n.name=='recon_instant')
             and not (isinstance(n,ast.ImportFrom) and n.module=='datetime')]
         self.assertEqual(ast.dump(Undo().visit(current),include_attributes=False),ast.dump(prior,include_attributes=False))
-        host_current=ast.parse((ROOT/'tooling/foundation/s1_genuine_once.py').read_bytes())
+        host_current=undo_preauth(ast.parse((ROOT/'tooling/foundation/s1_genuine_once.py').read_bytes()))
         self.assertEqual(ast.dump(Undo().visit(host_current),include_attributes=False),ast.dump(ast.parse(PRE_REPAIR_HOST),include_attributes=False))
     def test_original_typed_normalization_and_frozen_configuration(self):
         ns=scalar_contract();value=dict(SUB,configuration=ns['CONFIG_REF'])
@@ -396,3 +429,132 @@ class SourceInverseTests(unittest.TestCase):
                 fn.args.kwonlyargs=[k for k,_ in kw];fn.args.kw_defaults=[v for _,v in kw]
                 fn=Undo().visit(fn)
                 self.assertEqual(ast.dump(fn,include_attributes=False),ast.dump(oldfuncs[fn.name],include_attributes=False),(filename,fn.name))
+
+
+class PreauthRefusalTests(unittest.TestCase):
+    def exercise(self,failing=None,*,base_exception=False,publish_fault=False,outside_fault=None,actual_publisher=False):
+        from datetime import datetime,timedelta
+        events=[];published=[];failure=SystemExit(123) if base_exception=='exit' else KeyboardInterrupt('SECRET_SENTINEL') if base_exception else ValueError('SECRET_SENTINEL')
+        publisher_error=KeyboardInterrupt('PUBLISHER_SECRET') if publish_fault=='base' else RuntimeError('PUBLISHER_SECRET');seen=set();s=spec()
+        def stage(name):
+            if name not in seen:events.append(name);seen.add(name)
+            if name==failing:raise failure
+        class FakePath:
+            def __init__(self,value):self.value=value
+            def __eq__(self,other):return isinstance(other,FakePath) and self.value==other.value
+            def lstat(self):
+                stage('bundle_admission' if self.value=='/data/bootstrap/bundle.json' else 'auth_admission')
+                return NS(st_mode=stat.S_IFREG|0o600,st_nlink=1,st_uid=0,st_size=100)
+            def open(self,mode):
+                self.assert_mode=mode;stage('auth_decode')
+                return io.BytesIO(json.dumps({'owner':{'username':'SCALAR_USERNAME','password':'SECRET_SENTINEL'}}).encode())
+        class Settings:
+            source_commit=s['source_commit'];origin='http://scalar-only';clock=lambda self:NS(timestamp=lambda:100.)
+            installed=NS(control=NS(database_instance_id=s['store_instance'],authority_generation=1,enabled=False))
+            @property
+            def database(self):stage('settings_identity');return FakePath('/data/remission.sqlite')
+            @property
+            def observed_archives(self):
+                stage('archive_binding')
+                descriptor=NS(run_id=s['archive_id'].split(':')[0],cohort_id=COHORT,members=MEMBERS,
+                    origin=datetime.fromisoformat(CUTOFF)-timedelta(days=84),
+                    trajectories=[NS(member_id=m,partition_id=p,mode=mode) for m in MEMBERS for mode,p in [('S0',m+'-S0'),('S1',m+'-S1')]])
+                return {s['archive_export_id']:(b'PUBLIC_SCALAR_MANIFEST',None,NS(qualification_scope='accepted_saved_producer',admission_sha256=s['admission_sha256'],descriptor=descriptor))}
+        def settings():stage('settings_load');return Settings()
+        class Submission:
+            @staticmethod
+            def model_validate_json(raw):stage('original_submission');return NS(model_dump=lambda **_:deepcopy(SUB))
+        class Client:
+            cookies=NS(get=lambda _: 'SCALAR_COOKIE')
+            def __init__(self,*_,**__):
+                events.append('TestClient')
+                if outside_fault=='TestClient':raise failure
+            def __enter__(self):return self
+            def __exit__(self,*_):pass
+        def invoke(_client,stage_name,method,path,**kwargs):
+            events.append((method,path));return dict(payload=dict(principal={'id':OWNER},csrf='SCALAR_CSRF'))
+        fake_imports={'sqlite3':NS(connect='inert-connect',Row='inert-row'),
+            'fastapi.testclient':NS(TestClient=Client),'services.foundation.app':NS(create_app=lambda settings:'inert-app',COOKIE='scalar_cookie'),
+            'services.foundation.configuration':NS(environment_settings=settings),'services.foundation.admission':NS(AdmissionGate=lambda _: 'inert-gate'),
+            'services.foundation.store':NS(Store='inert-store',digest=lambda _: 'a'*64),
+            'contracts.domain.analysis':NS(canonical=lambda value:json.dumps(value),sha=lambda value:'e'*64),
+            'contracts.domain.support_s1':NS(S1Submission=Submission,MODEL_REF=REFS['model'],WCLS_PRIOR_REF=REFS['prior'],
+                S1_ESTIMAND=REFS['estimand'],LAW_REF=REFS['law'],SUPPORT_REF=REFS['protocol'])}
+        original_import=builtins.__import__
+        def substitute(name,*args,**kwargs):
+            if name in fake_imports:
+                if name=='sqlite3':stage('imports')
+                return fake_imports[name]
+            return original_import(name,*args,**kwargs)
+        actual=driver.recon_publish
+        def publish(value):
+            published.append(deepcopy(value))
+            if value['preauth_refusal'] is not None and publish_fault:raise publisher_error
+            if value['phase']=='authentication_before' and outside_fault=='publication':raise failure
+            if actual_publisher:actual(value)
+        def snapshot(*args):events.append('snapshot');return metadata(fixture())
+        with tempfile.TemporaryDirectory() as directory:
+            folder=Path(directory)/'operation'
+            with patch.object(driver,'RECON_FOLDER',folder),patch.object(driver,'Path',FakePath),patch.object(driver.os,'getuid',return_value=0,create=True),\
+                    patch.object(driver.sys,'meta_path',list(driver.sys.meta_path)),patch.object(builtins,'__import__',side_effect=substitute),\
+                    patch.object(driver,'recon_publish',side_effect=publish),patch.object(driver,'invoke',side_effect=invoke),\
+                    patch.object(driver,'protected_reconcile',side_effect=snapshot):
+                caught=None
+                try:driver.run_reconcile(s)
+                except BaseException as value:caught=value
+            saved=json.loads((folder/'control.json').read_bytes()) if actual_publisher and (folder/'control.json').exists() else None
+        return NS(events=events,published=published,failure=failure,caught=caught,saved=saved)
+    def test_actual_function_each_eight_groups_reports_only_fixed_stage(self):
+        for index,stage in enumerate(driver.PREAUTH_REFUSALS):
+            with self.subTest(stage=stage):
+                r=self.exercise(stage);self.assertIs(r.caught,r.failure)
+                self.assertEqual(r.events,list(driver.PREAUTH_REFUSALS[:index+1]))
+                self.assertEqual(len(r.published),2);v=r.published[-1]
+                self.assertEqual(v['preauth_refusal'],stage);self.assertEqual(v['phase'],'admitted');self.assertFalse(v['complete'])
+                self.assertIsNone(v['job_id']);self.assertNotIn('SECRET_SENTINEL',json.dumps(r.published))
+                self.assertEqual(host.recon_public(json.dumps(v).encode()),v)
+    def test_diagnostic_publication_fault_preserves_original_exception_object(self):
+        for stage in driver.PREAUTH_REFUSALS:
+            for fault in (True,'base'):
+                r=self.exercise(stage,publish_fault=fault);self.assertIs(r.caught,r.failure);self.assertEqual(len(r.published),2)
+                self.assertNotIn('PUBLISHER_SECRET',json.dumps(r.published))
+    def test_success_same_order_three_auth_calls_and_no_extra_checkpoints(self):
+        r=self.exercise();self.assertIsNone(r.caught)
+        self.assertEqual(r.events[:8],list(driver.PREAUTH_REFUSALS))
+        self.assertEqual([v for v in r.events if isinstance(v,tuple)],[('get','/api/session'),('post','/api/login'),('get','/api/session')])
+        self.assertEqual([v['phase'] for v in r.published],['admitted','authentication_before','authentication_after','snapshot_before','snapshot_after'])
+        self.assertTrue(all(v['preauth_refusal'] is None for v in r.published))
+    def test_actual_atomic_emitter_receives_finite_label_no_error_content(self):
+        r=self.exercise('auth_decode',actual_publisher=True);self.assertIs(r.caught,r.failure)
+        self.assertEqual(r.saved['preauth_refusal'],'auth_decode');self.assertNotIn('SECRET_SENTINEL',json.dumps(r.saved))
+    def test_baseexception_and_outside_boundary_failures_remain_unclassified(self):
+        for stage in driver.PREAUTH_REFUSALS:
+            for kind in (True,'exit'):
+                r=self.exercise(stage,base_exception=kind);self.assertIs(r.caught,r.failure)
+                self.assertEqual(len(r.published),1);self.assertIsNone(r.published[-1]['preauth_refusal'])
+        for fault in ('publication','TestClient'):
+            r=self.exercise(outside_fault=fault);self.assertIs(r.caught,r.failure)
+            self.assertTrue(all(v['preauth_refusal'] is None for v in r.published))
+    def test_schema_requires_field_plain_enum_and_exact_failure_placement(self):
+        class EnumString(str):pass
+        v=driver.recon_result('unavailable',phase='admitted',complete=False,preauth_refusal='imports')
+        for label in (False,1,{},['imports'],'unknown',EnumString('imports')):
+            with self.subTest(label=label),self.assertRaises(ValueError):driver.recon_result('unavailable',phase='admitted',complete=False,preauth_refusal=label)
+            with patch.object(host,'strict_json',return_value=dict(v,preauth_refusal=label)):
+                with self.assertRaises(ValueError):host.recon_public(b'{}')
+        for change in ({'phase':'authentication_before'},{'status':'conflict','complete':True},{'claimed':True},{'job_id':JOB}):
+            with self.subTest(change=change),self.assertRaises(ValueError):host.recon_public(json.dumps(dict(v,**change)).encode())
+        legacy=dict(v);legacy.pop('preauth_refusal');legacy['schema']='s1-original-request-control-v1'
+        with self.assertRaises(ValueError):host.recon_public(json.dumps(legacy).encode())
+        with self.assertRaises(ValueError):host.recon_public(json.dumps(dict(metadata(fixture()),preauth_refusal='imports')).encode())
+        candidates=[driver.recon_result('unavailable',phase='admitted',complete=False,preauth_refusal=stage) for stage in driver.PREAUTH_REFUSALS]
+        candidates += [driver.recon_result('unavailable',phase=phase,complete=False) for phase in driver.RECON_PHASES]
+        candidates += [driver.recon_result('matched_other_job_state',job=JOB,job_state=state,claimed=True,started=True,result_present=True)
+            for state in ('running','completed','abstained','failed')]
+        for item in candidates:host.recon_public(json.dumps(item).encode())
+        self.assertLessEqual(max(len(json.dumps(item).encode()) for item in candidates),4096)
+        self.assertNotIn('preauth_refusal',legacy)
+    def test_full_module_inverse_preserves_successful_body_guards_and_legacy_modes(self):
+        for name,previous in (('s1_genuine_submit',PREAUTH_BASE_DRIVER),('s1_genuine_once',PREAUTH_BASE_HOST)):
+            current=ast.parse((ROOT/('tooling/foundation/'+name+'.py')).read_bytes())
+            self.assertEqual(ast.dump(undo_preauth(current),include_attributes=False),ast.dump(ast.parse(previous),include_attributes=False))

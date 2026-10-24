@@ -46,8 +46,9 @@ SQL_PENDING="SELECT 1 FROM analysis_attempts WHERE status IN ('queued','running'
 SQL_PENDING_WORK="SELECT 1 FROM pending_work WHERE status IN ('queued','running') LIMIT 1"
 SQL_MIGRATIONS='SELECT version FROM schema_migrations LIMIT 6'
 RECON_KIND='S1_ORIGINAL_REQUEST_RECONCILIATION_V1'
-RECON_NAMESPACE='remission-s1-original-reconcile-261024-r2'
-RECON_FOLDER=Path('/data/s1-p3-original-reconcile-r2')
+RECON_NAMESPACE='remission-s1-original-reconcile-261024-r3'
+RECON_FOLDER=Path('/data/s1-p3-original-reconcile-r3')
+PREAUTH_REFUSALS=('imports','bundle_admission','settings_load','settings_identity','original_submission','archive_binding','auth_admission','auth_decode')
 RECON_PHASES=('admitted','authentication_before','authentication_after','snapshot_before','snapshot_after')
 RECON_STATUSES=('unavailable','receipt_absent_at_snapshot','matched_queued_metadata','matched_other_job_state','conflict')
 RECON_JOB_STATES=('queued','running','completed','failed','abstained')
@@ -174,14 +175,17 @@ def recon_admit(spec):
     return spec
 
 
-def recon_result(status,*,phase='snapshot_after',job=None,job_state=None,claimed=False,started=False,result_present=False,complete=True):
-    value=dict(schema='s1-original-request-control-v1',kind='s1_original_request_reconciliation',phase=phase,status=status,
+def recon_result(status,*,phase='snapshot_after',job=None,job_state=None,claimed=False,started=False,result_present=False,complete=True,preauth_refusal=None):
+    value=dict(schema='s1-original-request-control-v2',kind='s1_original_request_reconciliation',phase=phase,status=status,preauth_refusal=preauth_refusal,
         complete=complete,job_id=job,job_state=job_state,claimed=claimed,started=started,result_present=result_present,
         metadata_only=True,current_input_validated=False,submit=False,claim=False,fit=False)
     require(status in RECON_STATUSES and phase in RECON_PHASES and type(complete) is bool
         and (job is None or type(job) is str and re.fullmatch('analysis-[a-f0-9]{32}',job) is not None)
         and (job_state is None or job_state in RECON_JOB_STATES)
         and all(type(v) is bool for v in (claimed,started,result_present)))
+    require(preauth_refusal is None or type(preauth_refusal) is str and preauth_refusal in PREAUTH_REFUSALS
+        and phase=='admitted' and status=='unavailable' and complete is False and job is None and job_state is None
+        and claimed is False and started is False and result_present is False)
     return value
 
 
@@ -309,44 +313,57 @@ def run_reconcile(spec):
     recon_admit(spec)
     RECON_FOLDER.mkdir(mode=0o700,exist_ok=False)
     recon_publish(recon_result('unavailable',phase='admitted',complete=False))
-    class NoScience(importlib.abc.MetaPathFinder):
-        def find_spec(self,name,path=None,target=None):
-            if name.split('.')[0] in {'numpy','scipy','statsmodels','pymc','pytensor','arviz','arviz_stats','methods','pandas','xarray'}:
-                raise AssertionError('reconciliation cannot fit')
-    sys.meta_path.insert(0,NoScience())
-    import sqlite3
-    from datetime import timedelta
-    from fastapi.testclient import TestClient
-    from services.foundation.app import create_app,COOKIE
-    from services.foundation.configuration import environment_settings
-    from services.foundation.admission import AdmissionGate
-    from services.foundation.store import Store,digest
-    from contracts.domain.analysis import canonical,sha
-    from contracts.domain.support_s1 import S1Submission,MODEL_REF,WCLS_PRIOR_REF,S1_ESTIMAND,LAW_REF,SUPPORT_REF
-    bundle=Path('/data/bootstrap/bundle.json');info=bundle.lstat()
-    require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid()
-        and 0<info.st_size<=1024*1024 and stat.S_IMODE(info.st_mode)&0o022==0)
-    settings=environment_settings()
-    require(settings.database==Path('/data/remission.sqlite') and settings.source_commit==spec['source_commit']
-        and settings.installed.control.database_instance_id==spec['store_instance']
-        and settings.installed.control.authority_generation==1 and not settings.installed.control.enabled)
-    submission=S1Submission.model_validate_json(canonical(spec['original_submission'])).model_dump(mode='json')
-    require(submission==spec['original_submission'] and spec['expected_references']==dict(model=MODEL_REF,prior=WCLS_PRIOR_REF,
-        estimand=S1_ESTIMAND,law=LAW_REF,protocol=SUPPORT_REF))
-    raw,_,authority=settings.observed_archives[spec['archive_export_id']]
-    require(authority.qualification_scope=='accepted_saved_producer' and authority.admission_sha256==spec['admission_sha256'])
-    descriptor=authority.descriptor
-    require(descriptor.run_id+':'+descriptor.cohort_id==spec['archive_id']
-        and recon_instant(spec['expected_cutoff'])==(descriptor.origin+timedelta(days=84)).astimezone(timezone.utc))
-    auth=Path('/private/auth.json');info=auth.lstat()
-    require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid() and 0<info.st_size<=65536
-        and stat.S_IMODE(info.st_mode)&0o077==0)
-    with auth.open('rb') as stream:
-        credentials_raw=stream.read(65537)
-    require(0<len(credentials_raw)<=65536)
-    credentials=recon_json(credentials_raw)['owner']
-    require(type(credentials) is dict and set(credentials)=={'username','password'}
-        and all(type(v) is str and 0<len(v)<=1024 for v in credentials.values()))
+    try:
+        preauth_refusal='imports'
+        class NoScience(importlib.abc.MetaPathFinder):
+            def find_spec(self,name,path=None,target=None):
+                if name.split('.')[0] in {'numpy','scipy','statsmodels','pymc','pytensor','arviz','arviz_stats','methods','pandas','xarray'}:
+                    raise AssertionError('reconciliation cannot fit')
+        sys.meta_path.insert(0,NoScience())
+        import sqlite3
+        from datetime import timedelta
+        from fastapi.testclient import TestClient
+        from services.foundation.app import create_app,COOKIE
+        from services.foundation.configuration import environment_settings
+        from services.foundation.admission import AdmissionGate
+        from services.foundation.store import Store,digest
+        from contracts.domain.analysis import canonical,sha
+        from contracts.domain.support_s1 import S1Submission,MODEL_REF,WCLS_PRIOR_REF,S1_ESTIMAND,LAW_REF,SUPPORT_REF
+        preauth_refusal='bundle_admission'
+        bundle=Path('/data/bootstrap/bundle.json');info=bundle.lstat()
+        require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid()
+            and 0<info.st_size<=1024*1024 and stat.S_IMODE(info.st_mode)&0o022==0)
+        preauth_refusal='settings_load'
+        settings=environment_settings()
+        preauth_refusal='settings_identity'
+        require(settings.database==Path('/data/remission.sqlite') and settings.source_commit==spec['source_commit']
+            and settings.installed.control.database_instance_id==spec['store_instance']
+            and settings.installed.control.authority_generation==1 and not settings.installed.control.enabled)
+        preauth_refusal='original_submission'
+        submission=S1Submission.model_validate_json(canonical(spec['original_submission'])).model_dump(mode='json')
+        require(submission==spec['original_submission'] and spec['expected_references']==dict(model=MODEL_REF,prior=WCLS_PRIOR_REF,
+            estimand=S1_ESTIMAND,law=LAW_REF,protocol=SUPPORT_REF))
+        preauth_refusal='archive_binding'
+        raw,_,authority=settings.observed_archives[spec['archive_export_id']]
+        require(authority.qualification_scope=='accepted_saved_producer' and authority.admission_sha256==spec['admission_sha256'])
+        descriptor=authority.descriptor
+        require(descriptor.run_id+':'+descriptor.cohort_id==spec['archive_id']
+            and recon_instant(spec['expected_cutoff'])==(descriptor.origin+timedelta(days=84)).astimezone(timezone.utc))
+        preauth_refusal='auth_admission'
+        auth=Path('/private/auth.json');info=auth.lstat()
+        require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid() and 0<info.st_size<=65536
+            and stat.S_IMODE(info.st_mode)&0o077==0)
+        preauth_refusal='auth_decode'
+        with auth.open('rb') as stream:
+            credentials_raw=stream.read(65537)
+        require(0<len(credentials_raw)<=65536)
+        credentials=recon_json(credentials_raw)['owner']
+        require(type(credentials) is dict and set(credentials)=={'username','password'}
+            and all(type(v) is str and 0<len(v)<=1024 for v in credentials.values()))
+    except Exception:
+        try:recon_publish(recon_result('unavailable',phase='admitted',complete=False,preauth_refusal=preauth_refusal))
+        except BaseException:pass
+        raise
     recon_publish(recon_result('unavailable',phase='authentication_before',complete=False))
     with TestClient(create_app(settings),base_url=settings.origin) as client:
         session=invoke(client,'session','get','/api/session')['payload']

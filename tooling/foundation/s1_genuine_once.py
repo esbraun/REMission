@@ -39,9 +39,10 @@ BIND_EXPECTED=dict(store_instance='f4d6bea5-10aa-4247-afa0-76b8e5c3fceb',authori
     admission_sha256='7f411f3cc7b60fa28eb61481db15c590089fa874827ca8fdab547628438bcf98')
 AUTHORITY_SHA='048960f15bc0cc1ca7136a491755bbb64bfd1e0778418fd88e50a15480c65004'
 RECON_KIND='S1_ORIGINAL_REQUEST_RECONCILIATION_V1'
-RECON_NAME='remission-s1-original-reconcile-261024-r2'
+RECON_NAME='remission-s1-original-reconcile-261024-r3'
 RECON_PUBLIC_NAME='control.json'
-RECON_PUBLIC_PATH='/data/s1-p3-original-reconcile-r2/control.json'
+RECON_PUBLIC_PATH='/data/s1-p3-original-reconcile-r3/control.json'
+PREAUTH_REFUSALS=('imports','bundle_admission','settings_load','settings_identity','original_submission','archive_binding','auth_admission','auth_decode')
 RECON_FILES=(FILES-{'payload/submit-spec.json'})|{'payload/reconcile-spec.json'}
 TYPED='{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Path":{{json .Path}},"Args":{{json .Args}},"State":{{json .State}},"RestartCount":{{json .RestartCount}},"Labels":{{json .Config.Labels}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"LogConfig":{{json .HostConfig.LogConfig}},"Mounts":{{json .Mounts}}}'
 
@@ -426,8 +427,8 @@ def recon_admit(spec):
 def recon_public(raw):
     require(0<len(raw)<=4096);v=strict_json(raw)
     fields={'schema','kind','phase','status','complete','job_id','job_state','claimed','started','result_present',
-        'metadata_only','current_input_validated','submit','claim','fit'}
-    require(type(v) is dict and set(v)==fields and v['schema']=='s1-original-request-control-v1'
+        'metadata_only','current_input_validated','submit','claim','fit','preauth_refusal'}
+    require(type(v) is dict and set(v)==fields and v['schema']=='s1-original-request-control-v2'
         and v['kind']=='s1_original_request_reconciliation'
         and v['phase'] in ('admitted','authentication_before','authentication_after','snapshot_before','snapshot_after')
         and v['status'] in ('unavailable','receipt_absent_at_snapshot','matched_queued_metadata','matched_other_job_state','conflict')
@@ -441,6 +442,9 @@ def recon_public(raw):
     if v['status']=='matched_queued_metadata':require(v['job_state']=='queued' and not any(v[k] for k in ('claimed','started','result_present')))
     if v['status']=='matched_other_job_state':require(v['job_state']!='queued')
     if not matched:require(not any(v[k] for k in ('claimed','started','result_present')))
+    require(v['preauth_refusal'] is None or type(v['preauth_refusal']) is str and v['preauth_refusal'] in PREAUTH_REFUSALS
+        and v['phase']=='admitted' and v['status']=='unavailable' and v['complete'] is False and v['job_id'] is None
+        and v['job_state'] is None and not any(v[k] for k in ('claimed','started','result_present')))
     return v
 
 
