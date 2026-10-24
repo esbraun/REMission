@@ -1,0 +1,3351 @@
+{
+  "AdmittedWholeCohort": {
+    "$defs": {
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Binding returned by the isolated adapter, not self-authenticating proof.",
+    "properties": {
+      "admission_reference": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "artifact_manifest": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "experiment": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "input": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "planned_cohort": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "result": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "scalar_semantics": {
+        "const": "accepted_chain_draw_expected_effect_mean",
+        "title": "Scalar Semantics",
+        "type": "string"
+      }
+    },
+    "required": [
+      "experiment",
+      "planned_cohort",
+      "input",
+      "result",
+      "artifact_manifest",
+      "scalar_semantics",
+      "admission_reference"
+    ],
+    "title": "AdmittedWholeCohort",
+    "type": "object"
+  },
+  "CohortAttempt": {
+    "$defs": {
+      "AnalysisHistory": {
+        "additionalProperties": false,
+        "properties": {
+          "cutoff": {
+            "format": "date-time",
+            "title": "Cutoff",
+            "type": "string"
+          },
+          "eligibility": {
+            "const": "uninterrupted-v1-behavioral-no-prompt",
+            "title": "Eligibility",
+            "type": "string"
+          },
+          "kind": {
+            "const": "poc_analysis_history",
+            "title": "Kind",
+            "type": "string"
+          },
+          "origin": {
+            "format": "date-time",
+            "title": "Origin",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "protocol": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "provenance": {
+            "items": {
+              "$ref": "#/$defs/Header"
+            },
+            "title": "Provenance",
+            "type": "array"
+          },
+          "records": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "assignment": "#/$defs/Plan",
+                  "daily_report": "#/$defs/Quality",
+                  "delivery": "#/$defs/Taken",
+                  "isi": "#/$defs/ISI"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Quality"
+                },
+                {
+                  "$ref": "#/$defs/ISI"
+                },
+                {
+                  "$ref": "#/$defs/Plan"
+                },
+                {
+                  "$ref": "#/$defs/Taken"
+                }
+              ]
+            },
+            "title": "Records",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "synthetic": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          },
+          "version": {
+            "const": "poc-analysis-history-v1",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "synthetic",
+          "kind",
+          "version",
+          "patient_id",
+          "cutoff",
+          "origin",
+          "protocol",
+          "eligibility",
+          "records",
+          "provenance"
+        ],
+        "title": "AnalysisHistory",
+        "type": "object"
+      },
+      "CohortHistory": {
+        "additionalProperties": false,
+        "properties": {
+          "histories": {
+            "items": {
+              "$ref": "#/$defs/AnalysisHistory"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Histories",
+            "type": "array"
+          },
+          "manifest": {
+            "$ref": "#/$defs/CohortManifest"
+          },
+          "manifest_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Manifest Sha256",
+            "type": "string"
+          },
+          "schema": {
+            "const": "poc-cohort-history-v1/1.0.0",
+            "title": "Schema",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema",
+          "manifest",
+          "manifest_sha256",
+          "histories"
+        ],
+        "title": "CohortHistory",
+        "type": "object"
+      },
+      "CohortInput": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "cohort": {
+            "$ref": "#/$defs/CohortHistory"
+          },
+          "cohort_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Cohort Sha256",
+            "type": "string"
+          },
+          "kind": {
+            "const": "poc_visit_cohort_input",
+            "title": "Kind",
+            "type": "string"
+          },
+          "numerical_seeds": {
+            "$ref": "#/$defs/NumericalSeeds"
+          },
+          "request": {
+            "$ref": "#/$defs/FitRequest"
+          },
+          "schema_version": {
+            "const": "3.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "source_set_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Set Sha256"
+          },
+          "sources": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SourceBundle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "synthetic": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schema_version",
+          "synthetic",
+          "kind",
+          "attempt_id",
+          "request",
+          "cohort",
+          "cohort_sha256",
+          "sources",
+          "source_set_sha256",
+          "numerical_seeds"
+        ],
+        "title": "CohortInput",
+        "type": "object"
+      },
+      "CohortManifest": {
+        "additionalProperties": false,
+        "properties": {
+          "cohort_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Cohort Id",
+            "type": "string"
+          },
+          "coordinates": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "cutoff": {
+            "format": "date-time",
+            "title": "Cutoff",
+            "type": "string"
+          },
+          "members": {
+            "items": {
+              "$ref": "#/$defs/CohortMember"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Members",
+            "type": "array"
+          },
+          "origin": {
+            "format": "date-time",
+            "title": "Origin",
+            "type": "string"
+          },
+          "owner_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Owner Id",
+            "type": "string"
+          },
+          "panel_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Panel Id",
+            "type": "string"
+          },
+          "protocol": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "research_execution": {
+            "anyOf": [
+              {
+                "enum": [
+                  "engine_run",
+                  "contract_fixture"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Research Execution"
+          },
+          "research_run_id": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Research Run Id"
+          },
+          "schema": {
+            "const": "poc-cohort-manifest-v1/1.0.0",
+            "title": "Schema",
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "interactive",
+              "research"
+            ],
+            "title": "Scope",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema",
+          "cohort_id",
+          "owner_id",
+          "panel_id",
+          "scope",
+          "research_run_id",
+          "cutoff",
+          "origin",
+          "protocol",
+          "coordinates",
+          "members"
+        ],
+        "title": "CohortManifest",
+        "type": "object"
+      },
+      "CohortMember": {
+        "additionalProperties": false,
+        "properties": {
+          "history_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "History Sha256",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "patient_version": {
+            "minimum": 1,
+            "title": "Patient Version",
+            "type": "integer"
+          },
+          "provenance_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Provenance Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "patient_id",
+          "patient_version",
+          "history_sha256",
+          "provenance_sha256"
+        ],
+        "title": "CohortMember",
+        "type": "object"
+      },
+      "CohortResult": {
+        "additionalProperties": false,
+        "properties": {
+          "artifacts": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Artifacts",
+            "type": "array"
+          },
+          "attempt_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "cohort_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Cohort Sha256",
+            "type": "string"
+          },
+          "configuration": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "diagnostics": {
+            "additionalProperties": true,
+            "title": "Diagnostics",
+            "type": "object"
+          },
+          "estimand": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "input_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Input Sha256",
+            "type": "string"
+          },
+          "kind": {
+            "const": "poc_visit_cohort_result",
+            "title": "Kind",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "manifest": {
+            "$ref": "#/$defs/CohortManifest"
+          },
+          "manifest_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Manifest Sha256",
+            "type": "string"
+          },
+          "patients": {
+            "items": {
+              "$ref": "#/$defs/PatientEffect"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Patients",
+            "type": "array"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "schema_version": {
+            "const": "3.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "source_set_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Set Sha256"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "abstained",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "synthetic": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schema_version",
+          "synthetic",
+          "kind",
+          "attempt_id",
+          "input_sha256",
+          "cohort_sha256",
+          "manifest",
+          "manifest_sha256",
+          "source_set_sha256",
+          "configuration",
+          "estimand",
+          "status",
+          "reason",
+          "patients",
+          "diagnostics",
+          "artifacts",
+          "limitations"
+        ],
+        "title": "CohortResult",
+        "type": "object"
+      },
+      "Effect": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "conditional_expected_assignment_contrast",
+            "title": "Kind",
+            "type": "string"
+          },
+          "lower": {
+            "title": "Lower",
+            "type": "number"
+          },
+          "mean": {
+            "title": "Mean",
+            "type": "number"
+          },
+          "sd": {
+            "minimum": 0,
+            "title": "Sd",
+            "type": "number"
+          },
+          "unit": {
+            "const": "ISI_points",
+            "title": "Unit",
+            "type": "string"
+          },
+          "upper": {
+            "title": "Upper",
+            "type": "number"
+          }
+        },
+        "required": [
+          "mean",
+          "sd",
+          "lower",
+          "upper",
+          "unit",
+          "kind"
+        ],
+        "title": "Effect",
+        "type": "object"
+      },
+      "FitRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "backend": {
+            "const": "pymc",
+            "title": "Backend",
+            "type": "string"
+          },
+          "configuration": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "context": {
+            "$ref": "#/$defs/MethodContext"
+          },
+          "kind": {
+            "const": "fit_request",
+            "title": "Kind",
+            "type": "string"
+          },
+          "precision": {
+            "const": "float64",
+            "title": "Precision",
+            "type": "string"
+          },
+          "sampler": {
+            "const": "native_nuts",
+            "title": "Sampler",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": "1.0.0",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "synthetic": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schema_version",
+          "synthetic",
+          "kind",
+          "context",
+          "backend",
+          "sampler",
+          "precision",
+          "configuration"
+        ],
+        "title": "FitRequest",
+        "type": "object"
+      },
+      "Header": {
+        "additionalProperties": false,
+        "properties": {
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "duplicate_of": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          },
+          "event_at": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "daily_report",
+              "isi",
+              "assignment",
+              "delivery"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "lineage_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "record_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_status": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "supersedes": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "required": [
+          "record_id",
+          "patient_id",
+          "kind",
+          "event_at",
+          "recorded_at",
+          "available_at",
+          "lineage_id",
+          "revision",
+          "supersedes",
+          "duplicate_of",
+          "record_status"
+        ],
+        "title": "Header",
+        "type": "object"
+      },
+      "ISI": {
+        "additionalProperties": false,
+        "properties": {
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "duplicate_of": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          },
+          "event_at": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          },
+          "instrument_version": {
+            "const": "ISI-7-synthetic-14d-v1",
+            "title": "Instrument Version",
+            "type": "string"
+          },
+          "kind": {
+            "const": "isi",
+            "title": "Kind",
+            "type": "string"
+          },
+          "lineage_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "recall_days": {
+            "const": 14,
+            "title": "Recall Days",
+            "type": "integer"
+          },
+          "recall_end": {
+            "format": "date-time",
+            "title": "Recall End",
+            "type": "string"
+          },
+          "recall_start": {
+            "format": "date-time",
+            "title": "Recall Start",
+            "type": "string"
+          },
+          "record_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_status": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "supersedes": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          },
+          "total": {
+            "maximum": 28,
+            "minimum": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "record_id",
+          "patient_id",
+          "kind",
+          "event_at",
+          "recorded_at",
+          "available_at",
+          "lineage_id",
+          "revision",
+          "supersedes",
+          "duplicate_of",
+          "record_status",
+          "total",
+          "instrument_version",
+          "recall_days",
+          "recall_start",
+          "recall_end"
+        ],
+        "title": "ISI",
+        "type": "object"
+      },
+      "MethodContext": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_information": {
+            "const": "available_observed_history_only",
+            "title": "Allowed Information",
+            "type": "string"
+          },
+          "comparator_estimand": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "comparator_information": {
+            "const": "same_permitted_history",
+            "title": "Comparator Information",
+            "type": "string"
+          },
+          "dgp": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "estimand": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "failure_policy": {
+            "const": "retain_all_attempts_fail_or_abstain_never_fabricate",
+            "title": "Failure Policy",
+            "type": "string"
+          },
+          "input_data": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "model": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "observation_cutoff": {
+            "format": "date-time",
+            "title": "Observation Cutoff",
+            "type": "string"
+          },
+          "prior": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "protocol": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "scenario": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "seed": {
+            "$ref": "#/$defs/SeedKey"
+          },
+          "source_ids": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "truth_access": {
+            "const": "denied",
+            "title": "Truth Access",
+            "type": "string"
+          }
+        },
+        "required": [
+          "estimand",
+          "dgp",
+          "scenario",
+          "input_data",
+          "prior",
+          "model",
+          "protocol",
+          "observation_cutoff",
+          "seed",
+          "allowed_information",
+          "truth_access",
+          "comparator_estimand",
+          "comparator_information",
+          "source_ids",
+          "failure_policy"
+        ],
+        "title": "MethodContext",
+        "type": "object"
+      },
+      "NumericalSeeds": {
+        "additionalProperties": false,
+        "properties": {
+          "bridge_reference": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Bridge Reference",
+            "type": "integer"
+          },
+          "effect_rollout": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Effect Rollout",
+            "type": "integer"
+          },
+          "namespace": {
+            "const": "pa3-fit-20261021-v1",
+            "title": "Namespace",
+            "type": "string"
+          },
+          "nuts": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Nuts",
+            "type": "integer"
+          },
+          "prior_check": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Prior Check",
+            "type": "integer"
+          },
+          "recipe": {
+            "const": "poc-pa3-seeds-v1",
+            "title": "Recipe",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipe",
+          "namespace",
+          "nuts",
+          "effect_rollout",
+          "prior_check",
+          "bridge_reference"
+        ],
+        "title": "NumericalSeeds",
+        "type": "object"
+      },
+      "PatientEffect": {
+        "additionalProperties": false,
+        "properties": {
+          "diagnostics": {
+            "additionalProperties": true,
+            "title": "Diagnostics",
+            "type": "object"
+          },
+          "effect": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Effect"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "history_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "History Sha256",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "abstained",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "patient_id",
+          "history_sha256",
+          "status",
+          "reason",
+          "effect",
+          "diagnostics"
+        ],
+        "title": "PatientEffect",
+        "type": "object"
+      },
+      "Plan": {
+        "additionalProperties": false,
+        "properties": {
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "duplicate_of": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          },
+          "event_at": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          },
+          "experimental": {
+            "title": "Experimental",
+            "type": "boolean"
+          },
+          "kind": {
+            "const": "assignment",
+            "title": "Kind",
+            "type": "string"
+          },
+          "lineage_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          },
+          "option": {
+            "enum": [
+              "behavioral_continue",
+              "behavioral_escalate"
+            ],
+            "title": "Option",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "record_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_status": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "supersedes": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "required": [
+          "record_id",
+          "patient_id",
+          "kind",
+          "event_at",
+          "recorded_at",
+          "available_at",
+          "lineage_id",
+          "revision",
+          "supersedes",
+          "duplicate_of",
+          "record_status",
+          "option",
+          "experimental"
+        ],
+        "title": "Plan",
+        "type": "object"
+      },
+      "Quality": {
+        "additionalProperties": false,
+        "properties": {
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "duplicate_of": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          },
+          "event_at": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          },
+          "kind": {
+            "const": "daily_report",
+            "title": "Kind",
+            "type": "string"
+          },
+          "lineage_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          },
+          "missingness": {
+            "enum": [
+              "observed",
+              "missing",
+              "pending"
+            ],
+            "title": "Missingness",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "record_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_status": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "sleep_quality": {
+            "anyOf": [
+              {
+                "maximum": 10,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sleep Quality"
+          },
+          "supersedes": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "required": [
+          "record_id",
+          "patient_id",
+          "kind",
+          "event_at",
+          "recorded_at",
+          "available_at",
+          "lineage_id",
+          "revision",
+          "supersedes",
+          "duplicate_of",
+          "record_status",
+          "sleep_quality",
+          "missingness"
+        ],
+        "title": "Quality",
+        "type": "object"
+      },
+      "SeedKey": {
+        "additionalProperties": false,
+        "properties": {
+          "namespace": {
+            "enum": [
+              "fixture",
+              "development",
+              "confirmation",
+              "truth",
+              "fit",
+              "assignment"
+            ],
+            "title": "Namespace",
+            "type": "string"
+          },
+          "patient": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient",
+            "type": "string"
+          },
+          "process": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Process",
+            "type": "string"
+          },
+          "protocol": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Protocol",
+            "type": "string"
+          },
+          "replicate": {
+            "minimum": 0,
+            "title": "Replicate",
+            "type": "integer"
+          },
+          "scenario": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Scenario",
+            "type": "string"
+          },
+          "time_index": {
+            "title": "Time Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "namespace",
+          "protocol",
+          "scenario",
+          "replicate",
+          "patient",
+          "time_index",
+          "process"
+        ],
+        "title": "SeedKey",
+        "type": "object"
+      },
+      "SourceBundle": {
+        "additionalProperties": false,
+        "properties": {
+          "bundle_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Bundle Id",
+            "type": "string"
+          },
+          "schema": {
+            "const": "poc-source-bundle-v1/1.0.0",
+            "title": "Schema",
+            "type": "string"
+          },
+          "source_set_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Set Sha256",
+            "type": "string"
+          },
+          "studies": {
+            "items": {
+              "$ref": "#/$defs/StudySummary"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Studies",
+            "type": "array"
+          }
+        },
+        "required": [
+          "schema",
+          "bundle_id",
+          "studies",
+          "source_set_sha256"
+        ],
+        "title": "SourceBundle",
+        "type": "object"
+      },
+      "StudySummary": {
+        "additionalProperties": false,
+        "properties": {
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "checksum": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Checksum",
+            "type": "string"
+          },
+          "d": {
+            "title": "D",
+            "type": "number"
+          },
+          "dataset_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Dataset Id",
+            "type": "string"
+          },
+          "design": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Design",
+            "type": "object"
+          },
+          "n_continue": {
+            "const": 60,
+            "title": "N Continue",
+            "type": "integer"
+          },
+          "n_escalate": {
+            "const": 60,
+            "title": "N Escalate",
+            "type": "integer"
+          },
+          "provenance": {
+            "const": "fictional-randomized-study",
+            "title": "Provenance",
+            "type": "string"
+          },
+          "schema": {
+            "const": "poc-study-summary-v1/1.0.0",
+            "title": "Schema",
+            "type": "string"
+          },
+          "se": {
+            "exclusiveMinimum": 0,
+            "title": "Se",
+            "type": "number"
+          },
+          "study_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Study Id",
+            "type": "string"
+          },
+          "synthetic": {
+            "const": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schema",
+          "study_id",
+          "dataset_id",
+          "synthetic",
+          "provenance",
+          "n_continue",
+          "n_escalate",
+          "d",
+          "se",
+          "available_at",
+          "design",
+          "checksum"
+        ],
+        "title": "StudySummary",
+        "type": "object"
+      },
+      "Taken": {
+        "additionalProperties": false,
+        "properties": {
+          "adherence": {
+            "enum": [
+              0.0,
+              1.0
+            ],
+            "title": "Adherence",
+            "type": "number"
+          },
+          "assignment_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Assignment Id",
+            "type": "string"
+          },
+          "available_at": {
+            "format": "date-time",
+            "title": "Available At",
+            "type": "string"
+          },
+          "duplicate_of": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Of"
+          },
+          "event_at": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          },
+          "kind": {
+            "const": "delivery",
+            "title": "Kind",
+            "type": "string"
+          },
+          "lineage_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Lineage Id",
+            "type": "string"
+          },
+          "option": {
+            "enum": [
+              "behavioral_continue",
+              "behavioral_escalate"
+            ],
+            "title": "Option",
+            "type": "string"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "protocol_deviations": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 0,
+            "title": "Protocol Deviations",
+            "type": "array"
+          },
+          "record_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_status": {
+            "enum": [
+              "active",
+              "corrected",
+              "retracted"
+            ],
+            "title": "Record Status",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "rescue": {
+            "const": false,
+            "title": "Rescue",
+            "type": "boolean"
+          },
+          "revision": {
+            "minimum": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "stage": {
+            "enum": [
+              "taken",
+              "not_taken"
+            ],
+            "title": "Stage",
+            "type": "string"
+          },
+          "supersedes": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes"
+          }
+        },
+        "required": [
+          "record_id",
+          "patient_id",
+          "kind",
+          "event_at",
+          "recorded_at",
+          "available_at",
+          "lineage_id",
+          "revision",
+          "supersedes",
+          "duplicate_of",
+          "record_status",
+          "assignment_id",
+          "option",
+          "stage",
+          "adherence",
+          "rescue",
+          "protocol_deviations"
+        ],
+        "title": "Taken",
+        "type": "object"
+      },
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "inputs": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/$defs/CohortInput"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Inputs"
+      },
+      "reason": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Reason"
+      },
+      "replicate_id": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "title": "Replicate Id",
+        "type": "string"
+      },
+      "results": {
+        "anyOf": [
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/CohortResult"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Results"
+      }
+    },
+    "required": [
+      "replicate_id",
+      "inputs",
+      "results",
+      "reason"
+    ],
+    "title": "CohortAttempt",
+    "type": "object"
+  },
+  "MemberTarget": {
+    "$defs": {
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "cutoff": {
+        "title": "Cutoff",
+        "type": "string"
+      },
+      "estimand": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "expected_effect_artifacts": {
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "title": "Expected Effect Artifacts",
+        "type": "array"
+      },
+      "history_sha256": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "History Sha256",
+        "type": "string"
+      },
+      "input_refs": {
+        "items": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "title": "Input Refs",
+        "type": "array"
+      },
+      "ordinal": {
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Ordinal",
+        "type": "integer"
+      },
+      "patient_id": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "title": "Patient Id",
+        "type": "string"
+      },
+      "provenance_sha256": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Provenance Sha256",
+        "type": "string"
+      },
+      "result_refs": {
+        "items": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "title": "Result Refs",
+        "type": "array"
+      },
+      "unit": {
+        "const": "ISI_points",
+        "title": "Unit",
+        "type": "string"
+      }
+    },
+    "required": [
+      "patient_id",
+      "history_sha256",
+      "provenance_sha256",
+      "cutoff",
+      "ordinal",
+      "estimand",
+      "unit",
+      "input_refs",
+      "result_refs",
+      "expected_effect_artifacts"
+    ],
+    "title": "MemberTarget",
+    "type": "object"
+  },
+  "PlannedCohort": {
+    "$defs": {
+      "NumericalSeeds": {
+        "additionalProperties": false,
+        "properties": {
+          "bridge_reference": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Bridge Reference",
+            "type": "integer"
+          },
+          "effect_rollout": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Effect Rollout",
+            "type": "integer"
+          },
+          "namespace": {
+            "const": "pa3-fit-20261021-v1",
+            "title": "Namespace",
+            "type": "string"
+          },
+          "nuts": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Nuts",
+            "type": "integer"
+          },
+          "prior_check": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Prior Check",
+            "type": "integer"
+          },
+          "recipe": {
+            "const": "poc-pa3-seeds-v1",
+            "title": "Recipe",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipe",
+          "namespace",
+          "nuts",
+          "effect_rollout",
+          "prior_check",
+          "bridge_reference"
+        ],
+        "title": "NumericalSeeds",
+        "type": "object"
+      },
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "cohort_id": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "title": "Cohort Id",
+        "type": "string"
+      },
+      "fit_seeds": {
+        "items": {
+          "$ref": "#/$defs/NumericalSeeds"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "title": "Fit Seeds",
+        "type": "array"
+      },
+      "generation_key": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "member_ids": {
+        "items": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "type": "string"
+        },
+        "maxItems": 12,
+        "minItems": 12,
+        "title": "Member Ids",
+        "type": "array"
+      },
+      "panel_id": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "title": "Panel Id",
+        "type": "string"
+      },
+      "phase": {
+        "enum": [
+          "pilot",
+          "confirmation"
+        ],
+        "title": "Phase",
+        "type": "string"
+      },
+      "replicate_id": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "title": "Replicate Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "replicate_id",
+      "phase",
+      "cohort_id",
+      "panel_id",
+      "generation_key",
+      "member_ids",
+      "fit_seeds"
+    ],
+    "title": "PlannedCohort",
+    "type": "object"
+  },
+  "ReductionRow": {
+    "$defs": {
+      "AdmittedWholeCohort": {
+        "additionalProperties": false,
+        "description": "Binding returned by the isolated adapter, not self-authenticating proof.",
+        "properties": {
+          "admission_reference": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "artifact_manifest": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "experiment": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "input": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "planned_cohort": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "result": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "scalar_semantics": {
+            "const": "accepted_chain_draw_expected_effect_mean",
+            "title": "Scalar Semantics",
+            "type": "string"
+          }
+        },
+        "required": [
+          "experiment",
+          "planned_cohort",
+          "input",
+          "result",
+          "artifact_manifest",
+          "scalar_semantics",
+          "admission_reference"
+        ],
+        "title": "AdmittedWholeCohort",
+        "type": "object"
+      },
+      "MemberTarget": {
+        "additionalProperties": false,
+        "properties": {
+          "cutoff": {
+            "title": "Cutoff",
+            "type": "string"
+          },
+          "estimand": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "expected_effect_artifacts": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Expected Effect Artifacts",
+            "type": "array"
+          },
+          "history_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "History Sha256",
+            "type": "string"
+          },
+          "input_refs": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Input Refs",
+            "type": "array"
+          },
+          "ordinal": {
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Ordinal",
+            "type": "integer"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "provenance_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Provenance Sha256",
+            "type": "string"
+          },
+          "result_refs": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Result Refs",
+            "type": "array"
+          },
+          "unit": {
+            "const": "ISI_points",
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "patient_id",
+          "history_sha256",
+          "provenance_sha256",
+          "cutoff",
+          "ordinal",
+          "estimand",
+          "unit",
+          "input_refs",
+          "result_refs",
+          "expected_effect_artifacts"
+        ],
+        "title": "MemberTarget",
+        "type": "object"
+      },
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "admissions": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/$defs/AdmittedWholeCohort"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Admissions"
+      },
+      "artifacts": {
+        "anyOf": [
+          {
+            "items": {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Artifacts"
+      },
+      "cohort_sha256": {
+        "anyOf": [
+          {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Cohort Sha256"
+      },
+      "configuration_reasons": {
+        "anyOf": [
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Configuration Reasons"
+      },
+      "configuration_statuses": {
+        "anyOf": [
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "completed",
+                    "abstained",
+                    "failed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Configuration Statuses"
+      },
+      "input_refs": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Input Refs"
+      },
+      "manifest_sha256": {
+        "anyOf": [
+          {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Manifest Sha256"
+      },
+      "means": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Means"
+      },
+      "numerical_diagnostics": {
+        "anyOf": [
+          {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Numerical Diagnostics"
+      },
+      "phase": {
+        "enum": [
+          "pilot",
+          "confirmation"
+        ],
+        "title": "Phase",
+        "type": "string"
+      },
+      "reason": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Reason"
+      },
+      "replicate_id": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+        "title": "Replicate Id",
+        "type": "string"
+      },
+      "result_refs": {
+        "anyOf": [
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Result Refs"
+      },
+      "status": {
+        "enum": [
+          "not_attempted",
+          "incomplete",
+          "paired_failure",
+          "paired_success"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "target": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/MemberTarget"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      }
+    },
+    "required": [
+      "replicate_id",
+      "phase",
+      "status",
+      "reason"
+    ],
+    "title": "ReductionRow",
+    "type": "object"
+  },
+  "SamplingDesign": {
+    "$defs": {
+      "NumericalSeeds": {
+        "additionalProperties": false,
+        "properties": {
+          "bridge_reference": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Bridge Reference",
+            "type": "integer"
+          },
+          "effect_rollout": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Effect Rollout",
+            "type": "integer"
+          },
+          "namespace": {
+            "const": "pa3-fit-20261021-v1",
+            "title": "Namespace",
+            "type": "string"
+          },
+          "nuts": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Nuts",
+            "type": "integer"
+          },
+          "prior_check": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Prior Check",
+            "type": "integer"
+          },
+          "recipe": {
+            "const": "poc-pa3-seeds-v1",
+            "title": "Recipe",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipe",
+          "namespace",
+          "nuts",
+          "effect_rollout",
+          "prior_check",
+          "bridge_reference"
+        ],
+        "title": "NumericalSeeds",
+        "type": "object"
+      },
+      "PlannedCohort": {
+        "additionalProperties": false,
+        "properties": {
+          "cohort_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Cohort Id",
+            "type": "string"
+          },
+          "fit_seeds": {
+            "items": {
+              "$ref": "#/$defs/NumericalSeeds"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Fit Seeds",
+            "type": "array"
+          },
+          "generation_key": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "member_ids": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Member Ids",
+            "type": "array"
+          },
+          "panel_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Panel Id",
+            "type": "string"
+          },
+          "phase": {
+            "enum": [
+              "pilot",
+              "confirmation"
+            ],
+            "title": "Phase",
+            "type": "string"
+          },
+          "replicate_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Replicate Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "replicate_id",
+          "phase",
+          "cohort_id",
+          "panel_id",
+          "generation_key",
+          "member_ids",
+          "fit_seeds"
+        ],
+        "title": "PlannedCohort",
+        "type": "object"
+      },
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "algorithm_sources": {
+        "additionalProperties": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "title": "Algorithm Sources",
+        "type": "object"
+      },
+      "behavior": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "configurations": {
+        "items": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "title": "Configurations",
+        "type": "array"
+      },
+      "cutoff_day": {
+        "enum": [
+          14,
+          42,
+          84
+        ],
+        "title": "Cutoff Day",
+        "type": "integer"
+      },
+      "definition": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "enrollment_activation": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "estimand": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "external_source_policy": {
+        "const": "fixed_across_cohort_replications",
+        "title": "External Source Policy",
+        "type": "string"
+      },
+      "frozen_before_collection": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "learner_image": {
+        "pattern": "^sha256:[a-f0-9]{64}$",
+        "title": "Learner Image",
+        "type": "string"
+      },
+      "member_ordinal": {
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Member Ordinal",
+        "type": "integer"
+      },
+      "numerical_runtime": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "numerical_settings": {
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "maxItems": 2,
+        "minItems": 2,
+        "title": "Numerical Settings",
+        "type": "array"
+      },
+      "planned": {
+        "items": {
+          "$ref": "#/$defs/PlannedCohort"
+        },
+        "title": "Planned",
+        "type": "array"
+      },
+      "scenario": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "source_commit": {
+        "pattern": "^[a-f0-9]{40}$",
+        "title": "Source Commit",
+        "type": "string"
+      },
+      "source_set_sha256": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Source Set Sha256",
+        "type": "string"
+      },
+      "unit": {
+        "const": "ISI_points",
+        "title": "Unit",
+        "type": "string"
+      }
+    },
+    "required": [
+      "definition",
+      "scenario",
+      "behavior",
+      "enrollment_activation",
+      "external_source_policy",
+      "source_set_sha256",
+      "member_ordinal",
+      "cutoff_day",
+      "estimand",
+      "unit",
+      "configurations",
+      "numerical_settings",
+      "algorithm_sources",
+      "source_commit",
+      "learner_image",
+      "numerical_runtime",
+      "frozen_before_collection",
+      "planned"
+    ],
+    "title": "SamplingDesign",
+    "type": "object"
+  },
+  "SamplingSEBinding": {
+    "$defs": {
+      "AdmittedWholeCohort": {
+        "additionalProperties": false,
+        "description": "Binding returned by the isolated adapter, not self-authenticating proof.",
+        "properties": {
+          "admission_reference": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "artifact_manifest": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "experiment": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "input": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "planned_cohort": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "result": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "scalar_semantics": {
+            "const": "accepted_chain_draw_expected_effect_mean",
+            "title": "Scalar Semantics",
+            "type": "string"
+          }
+        },
+        "required": [
+          "experiment",
+          "planned_cohort",
+          "input",
+          "result",
+          "artifact_manifest",
+          "scalar_semantics",
+          "admission_reference"
+        ],
+        "title": "AdmittedWholeCohort",
+        "type": "object"
+      },
+      "MemberTarget": {
+        "additionalProperties": false,
+        "properties": {
+          "cutoff": {
+            "title": "Cutoff",
+            "type": "string"
+          },
+          "estimand": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "expected_effect_artifacts": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Expected Effect Artifacts",
+            "type": "array"
+          },
+          "history_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "History Sha256",
+            "type": "string"
+          },
+          "input_refs": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Input Refs",
+            "type": "array"
+          },
+          "ordinal": {
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Ordinal",
+            "type": "integer"
+          },
+          "patient_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Patient Id",
+            "type": "string"
+          },
+          "provenance_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Provenance Sha256",
+            "type": "string"
+          },
+          "result_refs": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Result Refs",
+            "type": "array"
+          },
+          "unit": {
+            "const": "ISI_points",
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "patient_id",
+          "history_sha256",
+          "provenance_sha256",
+          "cutoff",
+          "ordinal",
+          "estimand",
+          "unit",
+          "input_refs",
+          "result_refs",
+          "expected_effect_artifacts"
+        ],
+        "title": "MemberTarget",
+        "type": "object"
+      },
+      "NumericalSeeds": {
+        "additionalProperties": false,
+        "properties": {
+          "bridge_reference": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Bridge Reference",
+            "type": "integer"
+          },
+          "effect_rollout": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Effect Rollout",
+            "type": "integer"
+          },
+          "namespace": {
+            "const": "pa3-fit-20261021-v1",
+            "title": "Namespace",
+            "type": "string"
+          },
+          "nuts": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Nuts",
+            "type": "integer"
+          },
+          "prior_check": {
+            "maximum": 4294967295,
+            "minimum": 0,
+            "title": "Prior Check",
+            "type": "integer"
+          },
+          "recipe": {
+            "const": "poc-pa3-seeds-v1",
+            "title": "Recipe",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipe",
+          "namespace",
+          "nuts",
+          "effect_rollout",
+          "prior_check",
+          "bridge_reference"
+        ],
+        "title": "NumericalSeeds",
+        "type": "object"
+      },
+      "PlannedCohort": {
+        "additionalProperties": false,
+        "properties": {
+          "cohort_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Cohort Id",
+            "type": "string"
+          },
+          "fit_seeds": {
+            "items": {
+              "$ref": "#/$defs/NumericalSeeds"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Fit Seeds",
+            "type": "array"
+          },
+          "generation_key": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "member_ids": {
+            "items": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Member Ids",
+            "type": "array"
+          },
+          "panel_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Panel Id",
+            "type": "string"
+          },
+          "phase": {
+            "enum": [
+              "pilot",
+              "confirmation"
+            ],
+            "title": "Phase",
+            "type": "string"
+          },
+          "replicate_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Replicate Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "replicate_id",
+          "phase",
+          "cohort_id",
+          "panel_id",
+          "generation_key",
+          "member_ids",
+          "fit_seeds"
+        ],
+        "title": "PlannedCohort",
+        "type": "object"
+      },
+      "ReductionRow": {
+        "additionalProperties": false,
+        "properties": {
+          "admissions": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/AdmittedWholeCohort"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Admissions"
+          },
+          "artifacts": {
+            "anyOf": [
+              {
+                "items": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Artifacts"
+          },
+          "cohort_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cohort Sha256"
+          },
+          "configuration_reasons": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Configuration Reasons"
+          },
+          "configuration_statuses": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "completed",
+                        "abstained",
+                        "failed"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Configuration Statuses"
+          },
+          "input_refs": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Refs"
+          },
+          "manifest_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Manifest Sha256"
+          },
+          "means": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "maxItems": 2,
+                "minItems": 2,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Means"
+          },
+          "numerical_diagnostics": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Numerical Diagnostics"
+          },
+          "phase": {
+            "enum": [
+              "pilot",
+              "confirmation"
+            ],
+            "title": "Phase",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "replicate_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Replicate Id",
+            "type": "string"
+          },
+          "result_refs": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/VersionRef"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Result Refs"
+          },
+          "status": {
+            "enum": [
+              "not_attempted",
+              "incomplete",
+              "paired_failure",
+              "paired_success"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/MemberTarget"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "replicate_id",
+          "phase",
+          "status",
+          "reason"
+        ],
+        "title": "ReductionRow",
+        "type": "object"
+      },
+      "SamplingDesign": {
+        "additionalProperties": false,
+        "properties": {
+          "algorithm_sources": {
+            "additionalProperties": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            "title": "Algorithm Sources",
+            "type": "object"
+          },
+          "behavior": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "configurations": {
+            "items": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Configurations",
+            "type": "array"
+          },
+          "cutoff_day": {
+            "enum": [
+              14,
+              42,
+              84
+            ],
+            "title": "Cutoff Day",
+            "type": "integer"
+          },
+          "definition": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "enrollment_activation": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "estimand": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "external_source_policy": {
+            "const": "fixed_across_cohort_replications",
+            "title": "External Source Policy",
+            "type": "string"
+          },
+          "frozen_before_collection": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "learner_image": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "title": "Learner Image",
+            "type": "string"
+          },
+          "member_ordinal": {
+            "maximum": 12,
+            "minimum": 1,
+            "title": "Member Ordinal",
+            "type": "integer"
+          },
+          "numerical_runtime": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "numerical_settings": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Numerical Settings",
+            "type": "array"
+          },
+          "planned": {
+            "items": {
+              "$ref": "#/$defs/PlannedCohort"
+            },
+            "title": "Planned",
+            "type": "array"
+          },
+          "scenario": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "source_commit": {
+            "pattern": "^[a-f0-9]{40}$",
+            "title": "Source Commit",
+            "type": "string"
+          },
+          "source_set_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Set Sha256",
+            "type": "string"
+          },
+          "unit": {
+            "const": "ISI_points",
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "definition",
+          "scenario",
+          "behavior",
+          "enrollment_activation",
+          "external_source_policy",
+          "source_set_sha256",
+          "member_ordinal",
+          "cutoff_day",
+          "estimand",
+          "unit",
+          "configurations",
+          "numerical_settings",
+          "algorithm_sources",
+          "source_commit",
+          "learner_image",
+          "numerical_runtime",
+          "frozen_before_collection",
+          "planned"
+        ],
+        "title": "SamplingDesign",
+        "type": "object"
+      },
+      "VersionRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "version": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256"
+        ],
+        "title": "VersionRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "actual_admission": {
+        "const": "separately reviewed isolated result/artifact and calibration admission required",
+        "title": "Actual Admission",
+        "type": "string"
+      },
+      "conditional_population": {
+        "const": "prespecified paired-success fixed finite algorithm; not unconditional performance",
+        "title": "Conditional Population",
+        "type": "string"
+      },
+      "counts": {
+        "additionalProperties": true,
+        "title": "Counts",
+        "type": "object"
+      },
+      "definition": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "design": {
+        "$ref": "#/$defs/SamplingDesign"
+      },
+      "earlier": {
+        "items": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "title": "Earlier",
+        "type": "array"
+      },
+      "earlier_scales": {
+        "items": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "title": "Earlier Scales",
+        "type": "array"
+      },
+      "epsilon": {
+        "anyOf": [
+          {
+            "exclusiveMinimum": 0,
+            "maximum": 0.05,
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Epsilon"
+      },
+      "experiment": {
+        "$ref": "#/$defs/VersionRef"
+      },
+      "production_truth": {
+        "const": false,
+        "title": "Production Truth",
+        "type": "boolean"
+      },
+      "rows": {
+        "items": {
+          "$ref": "#/$defs/ReductionRow"
+        },
+        "title": "Rows",
+        "type": "array"
+      },
+      "scales": {
+        "additionalProperties": true,
+        "title": "Scales",
+        "type": "object"
+      },
+      "schema_version": {
+        "const": "matched_estimator_sampling_se-v1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "provisional",
+          "final",
+          "unresolved"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "unit": {
+        "const": "ISI_points",
+        "title": "Unit",
+        "type": "string"
+      },
+      "used_se": {
+        "anyOf": [
+          {
+            "exclusiveMinimum": 0,
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Used Se"
+      },
+      "zero_se_requires_analytic_truth": {
+        "title": "Zero Se Requires Analytic Truth",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "schema_version",
+      "definition",
+      "experiment",
+      "design",
+      "rows",
+      "counts",
+      "scales",
+      "earlier",
+      "earlier_scales",
+      "status",
+      "used_se",
+      "epsilon",
+      "zero_se_requires_analytic_truth",
+      "unit",
+      "conditional_population",
+      "production_truth",
+      "actual_admission"
+    ],
+    "title": "SamplingSEBinding",
+    "type": "object"
+  }
+}

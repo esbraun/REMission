@@ -1,0 +1,292 @@
+C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\contracts\domain\borrowing.py:68: UserWarning: Field name "schema" in "StudySummary" shadows an attribute in parent "StrictModel"
+  class StudySummary(StrictModel):
+C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\contracts\domain\borrowing.py:91: UserWarning: Field name "schema" in "SourceBundle" shadows an attribute in parent "StrictModel"
+  class SourceBundle(StrictModel):
+C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\contracts\domain\cohort.py:69: UserWarning: Field name "schema" in "CohortManifest" shadows an attribute in parent "StrictModel"
+  class CohortManifest(StrictModel):
+C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\contracts\domain\cohort.py:97: UserWarning: Field name "schema" in "CohortHistory" shadows an attribute in parent "StrictModel"
+  class CohortHistory(StrictModel):
+test_admission_mandatory_and_precedes_scalar_gate_selection (test_ta2_sampling_se_source.SamplingTests.test_admission_mandatory_and_precedes_scalar_gate_selection) ... ERROR
+test_closed_binding_reader_exact_target_final_status_and_counts_cannot_be_forged (test_ta2_sampling_se_source.SamplingTests.test_closed_binding_reader_exact_target_final_status_and_counts_cannot_be_forged) ... ERROR
+test_constant_estimator_diffuse_posterior_and_min_pair_zero_remain_unresolved (test_ta2_sampling_se_source.SamplingTests.test_constant_estimator_diffuse_posterior_and_min_pair_zero_remain_unresolved) ... ERROR
+test_earlier_smaller_matching_scale_requires_separate_admission (test_ta2_sampling_se_source.SamplingTests.test_earlier_smaller_matching_scale_requires_separate_admission) ... ERROR
+test_final_minimum_tightens_never_relaxes_and_does_not_rewrite_pilot (test_ta2_sampling_se_source.SamplingTests.test_final_minimum_tightens_never_relaxes_and_does_not_rewrite_pilot) ... ERROR
+test_full_ledger_and_independent_cohorts_required_not_nights_or_seed_reruns (test_ta2_sampling_se_source.SamplingTests.test_full_ledger_and_independent_cohorts_required_not_nights_or_seed_reruns) ... ERROR
+test_hand_sample_SD_and_jackknife_not_mean_SE_or_posterior_SD (test_ta2_sampling_se_source.SamplingTests.test_hand_sample_SD_and_jackknife_not_mean_SE_or_posterior_SD) ... ERROR
+test_incomplete_pair_preserved_without_peer_scalar_or_invented_success (test_ta2_sampling_se_source.SamplingTests.test_incomplete_pair_preserved_without_peer_scalar_or_invented_success) ... ERROR
+test_malformed_stratum_settings_input_result_and_nonfinite_refuse (test_ta2_sampling_se_source.SamplingTests.test_malformed_stratum_settings_input_result_and_nonfinite_refuse) ... ERROR
+test_two_successes_failure_and_partial_artifacts_stay_in_denominators (test_ta2_sampling_se_source.SamplingTests.test_two_successes_failure_and_partial_artifacts_stay_in_denominators) ... ERROR
+test_varying_truth_tiny_errors_sampling_SD_is_distinct_and_absolute_ceiling_remains (test_ta2_sampling_se_source.SamplingTests.test_varying_truth_tiny_errors_sampling_SD_is_distinct_and_absolute_ceiling_remains) ... ERROR
+test_bias_RMSE_common_truth_cancellation_and_no_RMSE_cancellation (test_ta2_sampling_se_source.SensitivityTests.test_bias_RMSE_common_truth_cancellation_and_no_RMSE_cancellation) ... ok
+test_coverage_sign_ranking_boundary_equality_is_ambiguous (test_ta2_sampling_se_source.SensitivityTests.test_coverage_sign_ranking_boundary_equality_is_ambiguous) ... ok
+test_source_semantics_and_existing_science_contracts_are_not_reinterpreted (test_ta2_sampling_se_source.SensitivityTests.test_source_semantics_and_existing_science_contracts_are_not_reinterpreted) ... ok
+
+======================================================================
+ERROR: test_admission_mandatory_and_precedes_scalar_gate_selection (test_ta2_sampling_se_source.SamplingTests.test_admission_mandatory_and_precedes_scalar_gate_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 179, in test_admission_mandatory_and_precedes_scalar_gate_selection
+    design,attempts,admit,calls,reduce=fixture()
+                                       ~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_closed_binding_reader_exact_target_final_status_and_counts_cannot_be_forged (test_ta2_sampling_se_source.SamplingTests.test_closed_binding_reader_exact_target_final_status_and_counts_cannot_be_forged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 213, in test_closed_binding_reader_exact_target_final_status_and_counts_cannot_be_forged
+    *_,reduce=fixture();b=reduce();ref=reference('matched-estimator-sampling-SE',b.model_dump(mode='json'));target=b.rows[0].target.model_dump(mode='json')
+              ~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_constant_estimator_diffuse_posterior_and_min_pair_zero_remain_unresolved (test_ta2_sampling_se_source.SamplingTests.test_constant_estimator_diffuse_posterior_and_min_pair_zero_remain_unresolved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 128, in test_constant_estimator_diffuse_posterior_and_min_pair_zero_remain_unresolved
+    *_,reduce=fixture(values);b=reduce()
+              ~~~~~~~^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_earlier_smaller_matching_scale_requires_separate_admission (test_ta2_sampling_se_source.SamplingTests.test_earlier_smaller_matching_scale_requires_separate_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 206, in test_earlier_smaller_matching_scale_requires_separate_admission
+    *_,small=fixture(((.01,.02,.03),(.02,.04,.06)));prior=small()
+             ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_final_minimum_tightens_never_relaxes_and_does_not_rewrite_pilot (test_ta2_sampling_se_source.SamplingTests.test_final_minimum_tightens_never_relaxes_and_does_not_rewrite_pilot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 194, in test_final_minimum_tightens_never_relaxes_and_does_not_rewrite_pilot
+    *_,pilot_reduce=fixture(((.1,.2,.3),(.2,.4,.6)));pilot=pilot_reduce();frozen=pilot.model_dump_json()
+                    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_full_ledger_and_independent_cohorts_required_not_nights_or_seed_reruns (test_ta2_sampling_se_source.SamplingTests.test_full_ledger_and_independent_cohorts_required_not_nights_or_seed_reruns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 150, in test_full_ledger_and_independent_cohorts_required_not_nights_or_seed_reruns
+    design,attempts,admit,calls,reduce=fixture()
+                                       ~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_hand_sample_SD_and_jackknife_not_mean_SE_or_posterior_SD (test_ta2_sampling_se_source.SamplingTests.test_hand_sample_SD_and_jackknife_not_mean_SE_or_posterior_SD)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 120, in test_hand_sample_SD_and_jackknife_not_mean_SE_or_posterior_SD
+    design,attempts,admit,calls,reduce=fixture();b=reduce();s.validate_binding(b.model_dump(mode='json'))
+                                       ~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_incomplete_pair_preserved_without_peer_scalar_or_invented_success (test_ta2_sampling_se_source.SamplingTests.test_incomplete_pair_preserved_without_peer_scalar_or_invented_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 189, in test_incomplete_pair_preserved_without_peer_scalar_or_invented_success
+    design,attempts,admit,calls,reduce=fixture();attempts[2].results[1]=None;attempts[2].reason='TEST-INERT interrupted'
+                                       ~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_malformed_stratum_settings_input_result_and_nonfinite_refuse (test_ta2_sampling_se_source.SamplingTests.test_malformed_stratum_settings_input_result_and_nonfinite_refuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 160, in test_malformed_stratum_settings_input_result_and_nonfinite_refuse
+    design,*_=fixture();value=design.model_dump(mode='json');value[field]=new
+              ~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_two_successes_failure_and_partial_artifacts_stay_in_denominators (test_ta2_sampling_se_source.SamplingTests.test_two_successes_failure_and_partial_artifacts_stay_in_denominators)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 140, in test_two_successes_failure_and_partial_artifacts_stay_in_denominators
+    design,attempts,admit,calls,reduce=fixture(failed=((2,1),));b=reduce()
+                                       ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+======================================================================
+ERROR: test_varying_truth_tiny_errors_sampling_SD_is_distinct_and_absolute_ceiling_remains (test_ta2_sampling_se_source.SamplingTests.test_varying_truth_tiny_errors_sampling_SD_is_distinct_and_absolute_ceiling_remains)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 133, in test_varying_truth_tiny_errors_sampling_SD_is_distinct_and_absolute_ceiling_remains
+    *_,reduce=fixture((means,means));b=reduce()
+              ~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 99, in fixture
+    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
+                  ~~~~~~~~^^
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 58, in prepared
+    cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
+        manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
+  File "C:\Users\erics\Documents\Projects\REMission\artifacts\s1-app\artifacts\source-check-env\Lib\site-packages\pydantic\main.py", line 845, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for CohortHistory
+  Value error, cohort manifest checksum mismatch [type=value_error, input_value={'histories': [{'cutoff':...ohort-history-v1/1.0.0'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.14/v/value_error
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.661s
+
+FAILED (errors=11)
+SOURCE ONLY: hand scalar/Pydantic and inert admission; no actual fits/artifact qualification/study/app/Store/SQLite/science/native/network
