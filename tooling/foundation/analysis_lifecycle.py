@@ -3,6 +3,7 @@
 No discovery cleanup, removal, retries or numerical work. All evidence is retained.
 """
 import argparse
+from contextlib import ExitStack
 import json
 import math
 import os
@@ -155,8 +156,9 @@ def reap(process):
         return process.wait(timeout=2)
 
 
-def supervise(cid, folder, deadline, on_poll=None):
+def supervise(cid, folder, deadline, on_poll=None, *, discard_output=False):
     """Prearm, start, audit and reap one already created literal CID."""
+    if type(discard_output) is not bool:raise ValueError('explicit boolean output policy required')
     require_cid(cid);folder.mkdir(exist_ok=False)
     child=None;attached=None;primary=None;cleanup=[];terminal=None;codes={};nonce=secrets.token_hex(24)
     expected=dict(cid=cid,nonce=nonce,deadline=deadline,pid=None)
@@ -176,8 +178,9 @@ def supervise(cid, folder, deadline, on_poll=None):
     try:
         check_deadline(deadline)
         if inspect(cid,deadline=deadline)['State']['Status']!='created':raise ValueError('workload already started')
-        with (folder/'watchdog.stdout').open('wb') as wo, (folder/'watchdog.stderr').open('wb') as we, \
-                (folder/'attach.stdout').open('wb') as ao, (folder/'attach.stderr').open('wb') as ae:
+        with ExitStack() as logs:
+            wo,we,ao,ae=(subprocess.DEVNULL,)*4 if discard_output else tuple(logs.enter_context((folder/name).open('wb'))
+                for name in ('watchdog.stdout','watchdog.stderr','attach.stdout','attach.stderr'))
             prearm['argv']=[sys.executable,'-P','-B',str(Path(__file__).resolve()),'--watchdog-cid',cid,
                 '--folder',str(folder),'--deadline',str(deadline),'--nonce',nonce]
             prearm['creationflags']=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0
@@ -258,6 +261,7 @@ def supervise(cid, folder, deadline, on_poll=None):
                 terminal=None
         result=dict(cid=cid,deadline=deadline,failure=primary,cleanup=cleanup,returncodes=codes,terminal=terminal,
             prearm=prearm,processes=processes,host_descendant_termination='UNKNOWN')
+        if discard_output:result['output_policy']='discard-stdout-stderr-v1'
         save(folder/'supervision.json',result)
     if terminal is None or any('reap_error' in event for event in cleanup):
         raise StopUnconfirmed('STOP UNCONFIRMED '+cid+'; retained supervision evidence')
