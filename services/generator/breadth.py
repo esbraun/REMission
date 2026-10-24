@@ -11,7 +11,7 @@ from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, Field, TypeAdapter, model_validator
 from contracts.domain.common import Identifier, StrictModel, VersionRef
-from contracts.domain.breadth import (LAW_VERSION,HISTORY_VERSION,FEATURE_VERSION,LAW_REF,HISTORY_REF,FEATURE_REF,
+from contracts.domain.breadth import (LAW_VERSION,HISTORY_VERSION,FEATURE_VERSION,LAW_REF,HISTORY_REF,FEATURE_REF,ORIGIN,
     SOURCE_IDS,ADAPTERS,ObservedEvent,BreadthHistory,BreadthExport,support_features,canonical)
 
 
@@ -58,6 +58,7 @@ class BreadthRequest(StrictModel):
 
     @model_validator(mode='after')
     def fixed_family_schedule(self):
+        if self.origin!=ORIGIN:raise ValueError('fixed breadth UTC-midnight origin required; old noon profile is distinct')
         if self.population=='target' and self.index>=12 or self.population=='external' and self.family!='V':
             raise ValueError('complete12 target or120-member external V study ordinal required')
         if self.family!='V' and self.scenario!='reference':raise ValueError('only five prespecified family/scenario cells')
@@ -143,6 +144,17 @@ def normal(seed,namespace,index,day,process):
 def clip(value,low,high):return min(high,max(low,value))
 
 
+def isi_total(burdens,noise):
+    if len(burdens)!=14 or any(type(x) not in (int,float) or not math.isfinite(x) for x in [*burdens,noise]):
+        raise ValueError('exact finite14-night recall required')
+    return int(clip(math.floor(sum(burdens)/14+noise+.5),0,28))
+
+
+def clinical_state(previous,z,person,day,eta):
+    steroid=int(day%21 in (0,1,2))
+    return .60*previous+.12*(z-19)+.50*steroid+.20*person['a']+.10*person['s']+.50*eta
+
+
 def baseline(draw_uniform,draw_normal):
     """Independent baseline draws; caller supplies fixed named exogenous draws."""
     age=30+45*draw_uniform('age');a=(age-52.5)/22.5
@@ -156,7 +168,7 @@ def baseline(draw_uniform,draw_normal):
 def step(state,person,day,*,eta,xi,taken,assigned_drug,coefficients=(2.,4.)):
     """One exact adopted transition. Latent state stays inside the generator."""
     steroid=int(day%21 in (0,1,2))
-    x=.60*state['x_previous']+.12*(state['z']-19)+.50*steroid+.20*person['a']+.10*person['s']+.50*eta
+    x=clinical_state(state['x_previous'],state['z'],person,day,eta)
     error=.55*state['e']+.80*xi
     c=.65*state['c']+.35*int(taken['behavioral_continue'])
     e=.80*state['escalate']+.20*int(taken['behavioral_escalate'])
@@ -168,8 +180,8 @@ def step(state,person,day,*,eta,xi,taken,assigned_drug,coefficients=(2.,4.)):
     return dict(x_previous=x,z=z,e=error,c=c,escalate=e,ma=ma,mb=mb,rebound=rebound,previous_assigned_drug=assigned_drug)
 
 
-def measurements(person,*,x,z,steroid,previous_support,prompt_count,clinical_noise,device_noise,report_noise,clinical_missing,device_status,report_missing,round_value):
-    """Measurement formulas only; clock/nonwear/tie policy awaits clarification."""
+def measurements(person,*,x,z,steroid,previous_support,prompt_count,clinical_noise,device_noise,report_noise,clinical_missing,device_status,report_missing,round_value=round):
+    """Literal binary64 measurements, not ideal-real quantizer equivalence."""
     p=None if clinical_missing else round_value(clip(4+x+.30*clinical_noise,0,10),1)
     d=None if device_status!='observed' else round_value(clip(480-8*z+person['device_bias']+25*device_noise,0,480),1)
     q=None if report_missing else round_value(clip(10-z/3+previous_support*(.60*person['response']-.10*prompt_count-.20*steroid)+.45*report_noise,0,10),3)

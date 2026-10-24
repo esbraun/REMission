@@ -16,6 +16,7 @@ from .boundaries import validate_lineage, visible_records, lineage_heads
 LAW_VERSION='poc-breadth-longitudinal-v3'
 HISTORY_VERSION='poc-breadth-history-v3'
 FEATURE_VERSION='poc-breadth-features-v1'
+ORIGIN=datetime(2026,1,1,tzinfo=timezone.utc)
 
 
 def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
@@ -23,9 +24,25 @@ def digest(value):return hashlib.sha256(canonical(value)).hexdigest()
 def reference(name,version,value):return dict(id=name,version=version,sha256=digest(value))
 
 
-# The exact numerical/clock descriptor is finalized with the accepted narrow
-# design clarifications before the producer path is frozen for source review.
-LAW_REF=reference(LAW_VERSION,'3.0.0','PR75 four-family fictional law; exact implementation descriptor bound by producer')
+LAW_DEFINITION=dict(version=LAW_VERSION,origin='2026-01-01T00:00:00Z',
+    design='PR75 four-family fictional law; routine clarification c0b9cf3345054257b2c50202f0dd67631aa14324',
+    assumption='independent exogenous draws conditional on baseline; no literal seeded-IEEE equivalence claim',
+    baseline=dict(age=[30,75],sex_probability=.5,b=[19,1.5,.5,-3,3],response=[-.15,.8,1.2],device_bias=[15,10]),
+    state=dict(x=[.60,.12,19,.50,.20,.10,.50],error=[.55,.80],continue_kernel=[.65,.35],escalate_kernel=[.80,.20],
+        medication_kernel=[.50,.50],rebound_decay=.50,burden=[.55,21,.60,.80,2,4,1.5,2.5],adherence=[.90,-.15]),
+    observation=dict(clinical=[4,.30,0,10,.05,.10],device=[480,8,25,.08,.60,.02,.80],
+        quality=[10,3,.60,-.10,-.20,.45,.10],isi=[14,1,0,28]),
+    scientific_quantizer='nearest real grid .1/.001; exact tie chooses even integer grid index; clip first',
+    literal_quantizer='Python binary64 round(x,1)/round(x,3) after clip; no decimal pretruncation',
+    isi_quantizer='floor(mean14+Normal(0,1)+.5), then clip0..28',
+    initialization='X_-15=0,e_-14=0,C/E/MA/MB/R_-14=0,Z_-14=b+.55sin(2pi*-14/21)',
+    terminal='transitions -14..125; X126 for P126 only; no Z127',
+    device_initial='episode ending-13 worn with independent rejection; first transition ending-12; never reset',
+    clock=dict(outcome='07:00',clinical='08:00',report='08:01',decision='12:00',delivery='20:00',isi='11:00/11:59',
+        sync='07:30 ending day or next day',episode='day(d-1)23:00 to day(d)07:00',cutoff='available_at strictly less'),
+    scenarios='V reference, V external_conflict externalE=1 targetE=4, V sharp_null C=E=0 in both; N/S reference',
+    implementation_status='unresolved_modeling_assumption_limited',finite_grid_discrepancy_bound=None,literal_equivalence=False)
+LAW_REF=reference(LAW_VERSION,'3.0.0',LAW_DEFINITION)
 HISTORY_REF=reference(HISTORY_VERSION,'3.0.0','complete available observed lineage; active heads explicit; no implicit old-reader conversion')
 FEATURE_REF=reference(FEATURE_VERSION,'1.0.0','support eight-column vector, S and prior-six interactions; source IDs and observation ages retained')
 SOURCE_IDS=dict(demographic='poc-breadth-demographic-v3',clinical='poc-breadth-emr-v3',steroid_schedule='poc-breadth-emr-v3',
@@ -47,6 +64,9 @@ class Header(Record):
             raise ValueError('exact versioned breadth source required')
         if any(t.utcoffset()!=timedelta(0) for t in (self.event_at,self.recorded_at,self.available_at)):
             raise ValueError('breadth source clocks must be UTC')
+        clocks={'clinical':8,'steroid_exposure':8,'device_sleep':7,'daily_report':7,'isi':11,'assignment':12,'delivery':20}
+        if self.kind in clocks and (self.event_at.hour!=clocks[self.kind] or any((self.event_at.minute,self.event_at.second,self.event_at.microsecond))):
+            raise ValueError('breadth event clock differs from prescribed source chronology')
         return self
 
 
@@ -201,7 +221,7 @@ class BreadthHistory(StrictModel):
 
     @model_validator(mode='after')
     def complete_lineage(self):
-        if self.law.model_dump()!=LAW_REF or self.origin.utcoffset()!=timedelta(0):raise ValueError('exact breadth law and UTC origin required')
+        if self.law.model_dump()!=LAW_REF or self.origin!=ORIGIN:raise ValueError('exact breadth law and fixed UTC-midnight origin required')
         if any(r.patient_id!=self.patient_id for r in self.records):raise ValueError('single patient history required')
         validate_lineage(self.records)
         originals={}
