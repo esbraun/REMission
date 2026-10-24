@@ -19,6 +19,7 @@ import n_data03 as op
 import analysis_lifecycle as frozen_life
 
 def startup_inverse_source(source):
+    source=source.replace("'remission-n-data03-261024-r4'","'remission-n-data03-261024-r3'")
     if 'def publish_startup(' not in source:return source
     source=source[:source.index('def publish_startup(')]+source[source.index('def ordinary('):]
     replacements=[
@@ -708,5 +709,180 @@ class Data03StartupSource(unittest.TestCase):
         calls=[n for n in ast.walk(helper) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)]
         self.assertEqual(sum(n.func.attr=='rename' for n in calls),1)
         self.assertFalse(any(n.func.attr in ('replace','unlink','remove','copy','copyfile') for n in calls))
+
+def cutoff_fixture(day):
+    selection=d.validate_generation(generation());rows=[];snapshots={}
+    origin=datetime(2026,1,1,12,0,0,123456,tzinfo=timezone.utc)
+    law={'id':'LAW'};protocol={'id':'N'}
+    for index,patient in enumerate(selection['generation_order']):
+        state={'simulation':dict(day=day,origin=origin.isoformat(),family='nof1_med',law_version='LAW',law=law,protocol=protocol,
+            panel_id=selection['panel_id'],seed=d.SEED,index=index,nof1=dict(start_day=0,uninterrupted=True,status='active' if day==36 else 'completed'))}
+        row=dict(id=patient,owner_id='owner',version=7,state_version=6,consent_version=2,eligibility_version=6,
+            current_decision='decision-'+patient,cutoff=(origin+timedelta(days=day)).isoformat(),state_json=json.dumps(state))
+        rows.append(row);snapshots[patient]=dict(record_id=row['current_decision'],patient_version=7,state_version=6,
+            consent_version=2,eligibility_version=6,cutoff=row['cutoff'])
+    return rows,selection,snapshots,origin,law,protocol
+
+
+def cutoff_inverse(source):
+    helper="def instant(value):\n    import re\n    require(not re.search(r'[.,]\\d{7}',value))\n    result=datetime.fromisoformat(value.replace('Z','+00:00'))\n    require(result.tzinfo is not None and result.utcoffset() is not None)\n    return result.astimezone(timezone.utc)\n\n\n"
+    replacements=[(helper,''),
+        ("        cutoff=instant(row['cutoff']);snapshot_cutoff=instant(s['cutoff']);origin=instant(sim['origin'])\n",''),
+        ('and cutoff==snapshot_cutoff and sim.get',"and row['cutoff']==s['cutoff'] and sim.get"),
+        ('        require(cutoff==origin+timedelta(days=day));',"        origin=datetime.fromisoformat(sim['origin']);cutoff=datetime.fromisoformat(row['cutoff'])\n        require(cutoff==origin+timedelta(days=day));")]
+    for before,after in replacements:
+        assert source.count(before)==1,before
+        source=source.replace(before,after)
+    return source
+
+
+class Data03CutoffSource(unittest.TestCase):
+    def admit(self,fixture,day):
+        rows,selection,snapshots,_origin,law,protocol=fixture
+        return d.admit_rows(rows,selection,snapshots,'owner',day,law,protocol)
+
+    def test_actual_DecisionSnapshot_producer_serialization_old_rejects_new_accepts(self):
+        from contracts.domain.entities import DecisionSnapshot
+        import pydantic
+        for day in (36,72):
+            fixture=cutoff_fixture(day);rows,selection,snapshots,origin,law,protocol=fixture
+            for row in rows:
+                patient=row['id'];at=row['cutoff'];ref=dict(id='fixture',version='1',sha256='0'*64)
+                value=dict(schema_version='1.0.0',synthetic=True,record_id=row['current_decision'],patient_id=patient,
+                    event_at=at,recorded_at=at,available_at=at,source=dict(id='fixture',version='1',adapter='simulation',raw_sha256='0'*64),
+                    lineage_id='fixture-'+patient,revision=1,supersedes=None,duplicate_of=None,record_status='active',
+                    kind='decision_snapshot',cutoff=at,patient_version=7,state_version=6,consent_version=2,eligibility_version=6,
+                    workflow=dict(clinical='treatment_active',learning='nof1_block',data_readiness='ready',hold_reasons=[],support_policy=ref,support_mode='frozen'),
+                    view=dict(patient_id=patient,mode='current',snapshot_id=None),eligibility=[],outcome='Scalar serialization fixture',
+                    horizon_days=42,estimand=ref,model=ref,posterior=None,evidence=[],policy=ref)
+                raw=json.dumps(value,sort_keys=True,separators=(',',':'));before=copy.deepcopy(value)
+                typed=DecisionSnapshot.model_validate_json(raw)
+                snapshots[patient]=typed.model_dump(mode='json')
+                self.assertEqual(value,before);self.assertEqual(raw,json.dumps(value,sort_keys=True,separators=(',',':')))
+                self.assertEqual(snapshots[patient]['cutoff'],at.replace('+00:00','Z'))
+                self.assertNotEqual(row['cutoff'],snapshots[patient]['cutoff'])
+            old={};exec(compile(cutoff_inverse(Path(d.__file__).read_text()),'<old-driver>','exec'),old)
+            frozen=copy.deepcopy(fixture)
+            with self.assertRaises(old['Data03Error']):old['admit_rows'](rows,selection,snapshots,'owner',day,law,protocol)
+            self.assertEqual(self.admit(fixture,day),origin+timedelta(days=day));self.assertEqual(fixture,frozen)
+        print('REAL scalar DecisionSnapshot producer: Pydantic '+pydantic.__version__+'; DB +00:00 -> typed JSON Z; old rejects/new accepts days36,72/all12')
+
+    def test_equivalent_spellings_all_members_exact_UTC_and_no_input_mutation(self):
+        for day in (36,72):
+            for spelling in ('identical','Z','offset','mixed'):
+                fixture=cutoff_fixture(day);rows,_selection,snapshots,origin,_law,_protocol=fixture
+                for index,row in enumerate(rows):
+                    cutoff=origin+timedelta(days=day);state=json.loads(row['state_json'])
+                    if spelling=='Z':snapshots[row['id']]['cutoff']=cutoff.isoformat().replace('+00:00','Z')
+                    if spelling in ('offset','mixed'):
+                        zone=timezone(timedelta(hours=5,minutes=30)) if index%2 else timezone(timedelta(hours=-7))
+                        row['cutoff']=cutoff.astimezone(zone).isoformat()
+                        state['simulation']['origin']=origin.astimezone(zone).isoformat()
+                        snapshots[row['id']]['cutoff']=cutoff.isoformat().replace('+00:00','Z') if spelling=='mixed' else cutoff.astimezone(zone).isoformat()
+                        row['state_json']=json.dumps(state)
+                frozen=copy.deepcopy(fixture);actual=self.admit(fixture,day)
+                self.assertEqual(actual,origin+timedelta(days=day));self.assertIs(actual.tzinfo,timezone.utc)
+                self.assertEqual(actual.microsecond,123456);self.assertEqual(fixture,frozen)
+
+    def test_each_member_invalid_timestamp_or_lineage_refuses_before_guard_export_persist(self):
+        for day in (36,72):
+            for index in range(12):
+                cases=[]
+                exact=cutoff_fixture(day)[3]+timedelta(days=day)
+                for field in ('cutoff','snapshot','origin'):
+                    for value in ((exact+timedelta(microseconds=1)).isoformat(),(exact+timedelta(hours=1)).isoformat(),
+                                  '2026-02-06T12:00:00.123456','2026-99-06T12:00:00+00:00','2026-02-06T12:00:00+25:00','2026-02-06'):
+                        cases.append((field,value))
+                cases.extend((field,value) for field,value in (('owner_id','wrong'),('current_decision','wrong'),('version',8),
+                    ('state_version',7),('consent_version',3),('eligibility_version',7)))
+                cases.extend(('sim.'+field,value) for field,value in (('day',0),('family','wrong'),('law_version','wrong'),('law',{}),
+                    ('protocol',{}),('panel_id','wrong'),('seed',0),('index',99),('research_run_id','wrong')))
+                cases.extend(('loop.'+field,value) for field,value in (('start_day',1),('uninterrupted',False),('status','wrong')))
+                for field,value in cases:
+                    with self.subTest(day=day,member=index,field=field,value=value):
+                        fixture=cutoff_fixture(day);rows,_selection,snapshots,_origin,_law,_protocol=fixture;row=rows[index]
+                        if field=='snapshot':snapshots[row['id']]['cutoff']=value
+                        elif field=='origin' or '.' in field:
+                            state=json.loads(row['state_json']);sim=state['simulation']
+                            if field.startswith('loop.'):sim['nof1'][field[5:]]=value
+                            else:sim['origin' if field=='origin' else field[4:]]=value
+                            row['state_json']=json.dumps(state)
+                        else:row[field]=value
+                        frozen=copy.deepcopy(fixture);downstream=mock.Mock()
+                        with self.assertRaises((d.Data03Error,ValueError)):
+                            self.admit(fixture,day);downstream.guard();downstream.export();downstream.persist()
+                        self.assertEqual(downstream.mock_calls,[]);self.assertEqual(fixture,frozen)
+
+    def test_common_origin_cutoff_and_membership_target_order_still_exact(self):
+        for day in (36,72):
+            for case in ('paired_shift','origin_only','missing_row','extra_row','missing_snapshot','extra_snapshot','target','order'):
+                fixture=cutoff_fixture(day);rows,selection,snapshots,origin,_law,_protocol=fixture
+                if case in ('paired_shift','origin_only'):
+                    state=json.loads(rows[-1]['state_json']);state['simulation']['origin']=(origin+timedelta(microseconds=1)).isoformat();rows[-1]['state_json']=json.dumps(state)
+                    if case=='paired_shift':rows[-1]['cutoff']=(origin+timedelta(days=day,microseconds=1)).isoformat();snapshots[rows[-1]['id']]['cutoff']=rows[-1]['cutoff']
+                elif case=='missing_row':rows.pop()
+                elif case=='extra_row':rows.append(copy.deepcopy(rows[-1]))
+                elif case=='missing_snapshot':snapshots.pop(rows[-1]['id'])
+                elif case=='extra_snapshot':snapshots['extra']=copy.deepcopy(snapshots[rows[-1]['id']])
+                elif case=='target':selection['target_id']=selection['generation_order'][0]
+                elif case=='order':selection['generation_order'][0],selection['generation_order'][1]=selection['generation_order'][1],selection['generation_order'][0]
+                with self.assertRaises(d.Data03Error):self.admit(fixture,day)
+
+    def test_submicrosecond_precision_rejects_without_truncation_on_each_input(self):
+        for day in (36,72):
+            for field in ('cutoff','snapshot','origin','both_cutoffs'):
+                for suffix in ('0','1','9'):
+                    fixture=cutoff_fixture(day);rows,_selection,snapshots,origin,_law,_protocol=fixture;row=rows[-1]
+                    if field in ('cutoff','both_cutoffs'):row['cutoff']=row['cutoff'].replace('123456+','123456'+suffix+'+')
+                    if field in ('snapshot','both_cutoffs'):snapshots[row['id']]['cutoff']=snapshots[row['id']]['cutoff'].replace('123456+','1234562+' if field=='both_cutoffs' else '123456'+suffix+'+')
+                    if field=='origin':
+                        state=json.loads(row['state_json']);state['simulation']['origin']=origin.isoformat().replace('123456+','123456'+suffix+'+');row['state_json']=json.dumps(state)
+                    frozen=copy.deepcopy(fixture)
+                    with self.assertRaises(d.Data03Error):self.admit(fixture,day)
+                    self.assertEqual(fixture,frozen)
+        for value in ('2026-01-01T00:00:00,1234567Z','2026-01-01T00:00:00+01:00:00.1234567'):
+            with self.assertRaises(d.Data03Error):d.instant(value)
+
+    def test_entire_driver_inverse_only_declared_scalar_timestamp_delta(self):
+        source=Path(d.__file__).read_text();inverse=cutoff_inverse(source).encode()
+        self.assertEqual(hashlib.sha1(b'blob '+str(len(inverse)).encode()+b'\0'+inverse).hexdigest(),'e1b7c486172c121160dff82b3ea7a96d5da38157')
+        operator=Path(op.__file__).read_text()
+        self.assertEqual(operator.count("'remission-n-data03-261024-r4'"),1)
+        prior=operator.replace("'remission-n-data03-261024-r4'","'remission-n-data03-261024-r3'").encode()
+        self.assertEqual(hashlib.sha1(b'blob '+str(len(prior)).encode()+b'\0'+prior).hexdigest(),'a7e51ea8633f24a1c4683e38146a7e314277c19c')
+
+    def test_actual_receipt_invalid_last_member_stops_before_guard_and_export(self):
+        import sys
+        from contracts.domain.protocol import LAW_REF,NOF1_REF
+        for day in (36,72):
+            rows,selection,snapshots,_origin,_law,_protocol=cutoff_fixture(day)
+            for row in rows:
+                state=json.loads(row['state_json']);state['simulation'].update(law=LAW_REF,law_version=LAW_REF['id'],protocol=NOF1_REF)
+                row['state_json']=json.dumps(state)
+            snapshots[rows[-1]['id']]['cutoff']=snapshots[rows[-1]['id']]['cutoff'].replace('+00:00','')
+            guard=mock.Mock();export=mock.Mock()
+            class DB:
+                def execute(self,query,*_args):
+                    if query=='PRAGMA query_only=ON':return None
+                    if query=='PRAGMA query_only':return SimpleNamespace(fetchone=lambda:(1,))
+                    if query.startswith('SELECT id,owner_id,'):return rows
+                    raise AssertionError('unexpected downstream query')
+            @contextlib.contextmanager
+            def transaction(*,write):
+                self.assertFalse(write);yield DB()
+            modules={'services.foundation.nof1':SimpleNamespace(guard=guard),
+                     'services.foundation.protocol':SimpleNamespace(export_histories=export)}
+            with mock.patch.dict(sys.modules,modules),self.assertRaises(d.Data03Error):
+                d.receipt(SimpleNamespace(transaction=transaction),'owner',selection,snapshots,day)
+            guard.assert_not_called();export.assert_not_called()
+
+    def test_source_tripwires_reject_science_app_Store_SQLite_network_and_process(self):
+        import importlib
+        import socket
+        for name in ('numpy','scipy','pymc','pandas','arviz','statsmodels','xarray','services.foundation.app','services.foundation.store','sqlite3'):
+            with self.assertRaises(AssertionError):importlib.import_module(name)
+        with self.assertRaises(AssertionError):subprocess.Popen(['forbidden'])
+        with self.assertRaises(AssertionError):socket.create_connection(('forbidden',1))
+
 
 if __name__=='__main__':unittest.main()

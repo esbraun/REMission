@@ -194,3 +194,57 @@ HTTP180, resource/private-output/networkEMPTY/custody bounds remain unchanged.
 This is no workflow feasibility/cause/success claim. Fresh exact packet/source
 review and NEW root GO remain required. No native/Docker/network/Store/science,
 old-private/raw stream or S1 execution is authorized or performed.
+
+## R4 exact timestamp comparison preparation
+
+Root-verified gpt-6.1-sol/high owns isolated `n-data03-r4-sol-261024`, branch
+`fix/poc-data03-cutoff-instant-20261024`, from R3 source61b5cdd49af475ad61b839e877af8ab94dacf682.
+The integration target remains feature `feat/poc-n-data03-driver-20261023` /
+PR62 at15c2e547a0b22094c9600bf3ac46aa52257476f2; integration and refreshed review
+are required. Accepted plan41b1a7c32025eefe46c1b657f20b8b4f15c2bdd3 and different
+critique65e69115858aec7675aeedabb367d05eef78a932 allow bounded SOURCE/OP PREP only.
+No native authority exists. R3 is KNOWN_OWNED_STOP_CONFIRMED_FAILURE_ONLY;
+underlying actual cause and broader descendants remain UNKNOWN.
+
+Only driver `admit_rows` timestamp comparison and its tiny local `instant`
+helper change behavior. Database cutoff, typed snapshot cutoff and simulation
+origin require explicit aware timestamps and normalize comparison values to UTC.
+Exact equality preserves cutoff=origin+day and twelve common origins/cutoffs;
+equivalent explicit offsets are valid. No data, snapshot, export or provenance
+bytes are rewritten. All owner/current-decision/version/law/protocol/panel/seed/
+index/start/status/uninterrupted/member/target-order gates and downstream guards,
+tasks/no-analysis/export/readiness/H* reexport checks remain unchanged. Operator
+changes only the fresh literal namespace to `remission-n-data03-261024-r4` with
+its own `-positive` volume. There is no serializer/logger/framework/app fix.
+
+Guarded SOURCE controls run through the existing read-only scalar dependency
+environment with `-I -B tests/run_n_data03_source.py`. All46 pass, retaining the
+previous38 controls. Real scalar `DecisionSnapshot.model_validate_json` followed
+by `model_dump(mode='json')`, as used by workflow, on pinned Pydantic2.14.1 emits
+`Z` from UTC `+00:00`. Old raw comparison rejects and repaired actual admit_rows
+accepts complete12 fixtures at36 and72. Identical, Z and nonzero equivalent
+offset spellings preserve exact123456 microseconds, return UTC and leave inputs
+unchanged. Every member is exercised with malformed/naive/different/microsecond
+timestamps and invalid ownership/version/lineage/status/activation fields.
+Common-origin/cutoff, missing/extra members and target/order failures reject.
+An actual receipt call with inert query-only DB/service boundaries rejects its
+invalid twelfth member before guard/export. Process/network/science/app/Store/
+SQLite tripwires are explicitly exercised. No actual DB or workflow runs.
+
+The whole-driver inverse restores exact Git blobe1b7c486172c121160dff82b3ea7a96d5da38157;
+the whole-operator namespace inverse restores exact bloba7e51ea8633f24a1c4683e38146a7e314277c19c.
+Public schemas, H* construction, HTTP180 scope, output caps and lifecycle remain
+unchanged. The local helper rejects any supplied fractional component exceeding
+six digits before datetime parsing, including fractional offsets; no supplied
+precision can be silently truncated. Python datetime comparison supports exact
+microseconds. Distinct submicrosecond inputs and excess precision on DB/snapshot/
+origin sides reject, even where datetime alone would produce equal values.
+Fresh public packet/carrier/source proof,
+plan/spec and exact once command are frozen under `artifacts/n-data03-r4`.
+Independent exact SOURCE+OP review and a NEW root once GO are required before
+preflight, namespace query, Docker, private Store or native work. All R1-R3
+resources/raw/private evidence and consumed authorities remain untouched.
+Fixed12/seed91731023/labelr1/ordinal7 before outcomes/all12day36 then72/
+180advances864nights and existing7200/7140/180/30/resource/custody/privacy bounds
+remain expected requirements only. Full workflow, readiness, scientific/human
+gates and current image/network/volume state are unaccepted or UNKNOWN. STOP.

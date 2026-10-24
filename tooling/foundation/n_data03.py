@@ -212,7 +212,7 @@ def validate_packet(spec_path,authorized,authority):
     require(normalized_mount(spec['carrier'])==normalized_mount(str(packet/'carrier')))
     require({p.name for p in (packet/'carrier').iterdir()}=={'admin.py','n_data03_driver.py','deployment.json'}
         and all(p.is_file() and not p.is_symlink() for p in (packet/'carrier').iterdir()))
-    require(spec['namespace']=='remission-n-data03-261024-r3' and spec['volume']==spec['namespace']+'-positive')
+    require(spec['namespace']=='remission-n-data03-261024-r4' and spec['volume']==spec['namespace']+'-positive')
     return packet,spec
 
 

@@ -189,21 +189,29 @@ class RequestLimit:
         finally:self.arm(0,0)
 
 
+def instant(value):
+    import re
+    require(not re.search(r'[.,]\d{7}',value))
+    result=datetime.fromisoformat(value.replace('Z','+00:00'))
+    require(result.tzinfo is not None and result.utcoffset() is not None)
+    return result.astimezone(timezone.utc)
+
+
 def admit_rows(rows,selection,snapshots,owner,day,law,protocol):
     require(day in (36,72) and len(rows)==COUNT and {r['id'] for r in rows}==set(selection['cohort'])
         and set(snapshots)==set(selection['cohort']) and selection['target_id']==selection['generation_order'][TARGET_INDEX])
     origins=set();cutoffs=set()
     for row in rows:
         s=snapshots[row['id']];state=json.loads(row['state_json']);sim=state.get('simulation',{});loop=sim.get('nof1',{})
+        cutoff=instant(row['cutoff']);snapshot_cutoff=instant(s['cutoff']);origin=instant(sim['origin'])
         require(row['owner_id']==owner and row['current_decision']==s['record_id']
             and all(row['version' if k=='patient_version' else k]==s[k] for k in VERSION_KEYS)
-            and row['cutoff']==s['cutoff'] and sim.get('day')==day and sim.get('family')=='nof1_med'
+            and cutoff==snapshot_cutoff and sim.get('day')==day and sim.get('family')=='nof1_med'
             and sim.get('law_version')==law['id'] and sim.get('law')==law and sim.get('protocol')==protocol
             and sim.get('panel_id')==selection['panel_id'] and sim.get('seed')==SEED
             and sim.get('index')==selection['generation_order'].index(row['id']) and sim.get('research_run_id') is None
             and loop.get('start_day')==0 and loop.get('uninterrupted') is True
             and loop.get('status')==('active' if day==36 else 'completed'))
-        origin=datetime.fromisoformat(sim['origin']);cutoff=datetime.fromisoformat(row['cutoff'])
         require(cutoff==origin+timedelta(days=day));origins.add(origin);cutoffs.add(cutoff)
     require(len(origins)==len(cutoffs)==1)
     return next(iter(cutoffs))
