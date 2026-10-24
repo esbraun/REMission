@@ -1,0 +1,153 @@
+{
+  "scope": "TA2-SE-SOURCE-01 canonical/source preparation only",
+  "base": "9292844a46aa4ba46701c9bb45cd703f0862dee6",
+  "source_candidate": "0a81a798792e2d83b87f30f5e694fdc1cd99dc00",
+  "source_tree": "f2d0afb7b2563e22f4ede26e7c37000f834d6fad",
+  "changed_paths": [
+    "docs/implementation/poc-ta2-se-definition-20261024.md",
+    "docs/implementation/poc-ta2-se-definition-sources-20261024.json",
+    "docs/implementation/poc-truth-ablation-plan-20261022.md",
+    "docs/implementation/poc-truth-ablation-task-ledger-20261022.json",
+    "docs/spec/02-synthetic-dgp.md",
+    "docs/spec/requirement-map.md",
+    "methods/truth/sampling_se.py",
+    "tests/run_ta2_sampling_se_source.py",
+    "tests/test_ta2_sampling_se_source.py"
+  ],
+  "source_paths": [
+    "methods/truth/sampling_se.py",
+    "tests/run_ta2_sampling_se_source.py",
+    "tests/test_ta2_sampling_se_source.py"
+  ],
+  "canonical_provenance_paths": [
+    "docs/spec/02-synthetic-dgp.md",
+    "docs/spec/requirement-map.md",
+    "docs/implementation/poc-truth-ablation-plan-20261022.md",
+    "docs/implementation/poc-truth-ablation-task-ledger-20261022.json",
+    "docs/implementation/poc-ta2-se-definition-20261024.md",
+    "docs/implementation/poc-ta2-se-definition-sources-20261024.json"
+  ],
+  "protected": [
+    {
+      "identical": true,
+      "path": "contracts",
+      "base_and_candidate_object": "904b790e2e63df26c4c2da0b0265958f2a0a9c86"
+    },
+    {
+      "identical": true,
+      "path": "services",
+      "base_and_candidate_object": "415689d52faea8c783582c10e637894f723e43f1"
+    },
+    {
+      "identical": true,
+      "path": "tooling",
+      "base_and_candidate_object": "017b4db336019ef3825b79ac63e6228d3e648871"
+    },
+    {
+      "identical": true,
+      "path": "web",
+      "base_and_candidate_object": "dfe12f933f90f15e9cedb56d34ea7441fe273404"
+    },
+    {
+      "identical": true,
+      "path": "methods/visit",
+      "base_and_candidate_object": "042c978352b91c659b16fff09dcf7b31300b1fd9"
+    },
+    {
+      "identical": true,
+      "path": "methods/nof1",
+      "base_and_candidate_object": "b162f229a160a73a335fbba188e055d0323e3866"
+    },
+    {
+      "identical": true,
+      "path": "methods/support",
+      "base_and_candidate_object": "1c909f4c1f8ad24c95a523c4841ec28f745af24e"
+    },
+    {
+      "identical": true,
+      "path": "methods/measurement.py",
+      "base_and_candidate_object": "595eabdb2260b3318effe405fd93d44ab427069e"
+    },
+    {
+      "identical": true,
+      "path": "methods/truth/refinement.py",
+      "base_and_candidate_object": "2851d52aa130f3ce05f1de9cb8eae6e65da7cd02"
+    },
+    {
+      "identical": true,
+      "path": "methods/truth/restricted.py",
+      "base_and_candidate_object": "98a8a3e8f3f1902a6e0552e7b46b94af55e0d616"
+    },
+    {
+      "identical": true,
+      "path": "methods/truth/checks.py",
+      "base_and_candidate_object": "e83fd22c44d388502bbeb7251be016609e798058"
+    },
+    {
+      "identical": true,
+      "path": "tests/methods/test_truth_refinement.py",
+      "base_and_candidate_object": "0302b9ca4867d9f0504f8d47529edaee73f335da"
+    },
+    {
+      "identical": true,
+      "path": "tests/methods/test_restricted_truth.py",
+      "base_and_candidate_object": "e2ba97641bd0e13e82fccf5ba6d3a1af981de380"
+    },
+    {
+      "identical": true,
+      "path": "docs/implementation/evidence/truth-ta2-refinement-20261023",
+      "base_and_candidate_object": "5886a47960509a05f6e556fad4fb7627fe6f5fd9"
+    }
+  ],
+  "inverses": [
+    {
+      "paths": [
+        "methods/truth/sampling_se.py",
+        "tests/run_ta2_sampling_se_source.py",
+        "tests/test_ta2_sampling_se_source.py"
+      ],
+      "blob": "3eedea8f1ffe3e27186c39b5ab953aa8fa6c6ba3",
+      "name": "scalar_source",
+      "patch": "docs/implementation/evidence/TA2-SE-SOURCE-20261024/inverse-scalar_source.patch"
+    },
+    {
+      "paths": [
+        "docs/spec/02-synthetic-dgp.md",
+        "docs/spec/requirement-map.md",
+        "docs/implementation/poc-truth-ablation-plan-20261022.md",
+        "docs/implementation/poc-truth-ablation-task-ledger-20261022.json",
+        "docs/implementation/poc-ta2-se-definition-20261024.md",
+        "docs/implementation/poc-ta2-se-definition-sources-20261024.json"
+      ],
+      "blob": "577d75dfc9fc40b0e16fcc8332512a8442d25597",
+      "name": "canonical_and_plan_provenance",
+      "patch": "docs/implementation/evidence/TA2-SE-SOURCE-20261024/inverse-canonical_and_plan_provenance.patch"
+    }
+  ],
+  "restored_whole_base_tree": "11e8c4136d973a53bd7c9f7b682862f7be4cdb95",
+  "outside_declared_paths": {
+    "identical": true,
+    "count": 8365,
+    "serialization": "git ls-tree -r complete mode/type/object/path lines in Git order; UTF8 LF join and final LF",
+    "sha256": "e3a03f948bdc5ff32ff6bb07d48d699f191e3b995a1a6ebae1c74fd136ae9523"
+  },
+  "tests": {
+    "seconds": 32.624,
+    "expected_failures": 0,
+    "failed": 0,
+    "passed": 19,
+    "guarded": true,
+    "log": "unit06.txt"
+  },
+  "actual_artifact_admission": false,
+  "actual_calibration": false,
+  "actual_study": false,
+  "root_admission": "closed",
+  "full_conditioning": "unresolved",
+  "quadrature": "unresolved",
+  "finite_grid": "unresolved",
+  "T0": "cfca8748867280d4285eb42796357a7709ed842d diagnostic only; historical fields untouched",
+  "retained_numerics": "17/18 one FAIL unchanged; no sealed operation",
+  "runtime_GO": false,
+  "source_self_accepted": false
+}

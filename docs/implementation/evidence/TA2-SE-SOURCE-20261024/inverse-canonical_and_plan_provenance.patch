@@ -1,0 +1,286 @@
+diff --git a/docs/implementation/poc-ta2-se-definition-20261024.md b/docs/implementation/poc-ta2-se-definition-20261024.md
+new file mode 100644
+index 0000000..b97296f
+--- /dev/null
++++ b/docs/implementation/poc-ta2-se-definition-20261024.md
+@@ -0,0 +1,84 @@
++# TA2-SE-DEFINITION-01: empirical sampling SE for the Bayesian PoC
++
++Decision proposal v1, 2026-10-24. Base `9292844a46aa4ba46701c9bb45cd703f0862dee6`; branch `docs/poc-ta2-se-definition-20261024`; assigned gpt-6-astra/medium. **Requires DIFFERENT independent statistical critique and explicit canonical acceptance.** Docs only; no source, threshold, model, fit, truth admission or execution authority changes. [Public sources](poc-ta2-se-definition-sources-20261024.json).
++
++## Decision and scope
++
++For the genuine V0/V1 PoC study, interpret the relative truth-precision comparator as the **empirical sampling standard deviation of the implemented reported point estimator across independent planned cohort replications**, at a fixed prespecified scenario, pre-outcome member ordinal and review cutoff. Do not use posterior spread, within-history seed variation, the SE of the study mean, or oracle MCSE as this quantity. This chooses one coherent sampling experiment instead of leaving an indefinite missing-SE exception. It reuses the already required POC-VAL exploration/confirmation fits; it requires no bootstrap fits, new backend or extra cohorts solely for terminology.
++
++This is an explicit clarification/change of the former *same-history estimator SE* wording: the truth and comparison result still match the exact individual H*, but the SE calibration is necessarily across a declared population of histories, not conditional on the entirety of that same H*. No theorem equates this scale to a same-history Bayesian uncertainty or to the ideal infinite-computation estimator's sampling SD. Independent critique must accept this interpretation before it resolves the canonical field. If rejected, the field remains pending and the critic must identify a specific alternate experiment; posterior variance cannot silently fill it.
++
++Original TRUTH-02 requires numerical MCSE <=.05 ISI/.01 quality and <=10% of the smallest estimator SE, pilot targets tightened by final fits, zero SE analytic or unresolved. TA-T5 specifies the smaller positive V/N final estimator SE and exact matching; POC-VAL distinguishes fit uncertainty, oracle error and dataset-to-dataset uncertainty. These words do not define a repeated-data experiment conditional on a fully fixed history: an exact fixed-model posterior mean is then deterministic. Repeating only chain seeds measures computational error, not sampling uncertainty. Our proposal makes the random experiment and artifact relation explicit while preserving the absolute ceiling, relative factor, min-pair, missing/zero refusal and final tightening. It does not retroactively qualify the prior posterior-scale proposal.
++
++## Exact experiment, target and estimator
++
++Let s identify the frozen restricted DGP/scenario, randomized behavior/retention policy, cohort size12, enrollment/activation design, law/profile and external-source convention; let t be14/42/84 and j the member ordinal1..12 fixed before outcomes. No pooling across s, t, j, cold-start status or incompatible cohort membership. In replicate r generate the entire cohort H_r under s using independent cohort seeds; preserve dependent observations and hierarchy within a cohort. V0 and V1 receive identical lawful reduced observed H_r and cutoff, but distinct independently keyed fit/integration streams U_0r and U_1r. V1's external study input is fixed across replications for the first experiment; a study that regenerates it is a different explicitly frozen s. No realized latent state, truth keys or future observations enter the fit.
++
++For c in {V0,V1}, define A_c(H_r,U_cr) to be the **implemented fixed algorithm**, including its declared diagnostics, finite sampling/integration budget and failure policy. On an accepted completed result its scalar estimate is
++
++    Y_crj = result.member[j].effect.mean
++          = average of accepted chain/draw conditional expected-effect estimates.
++
++The algorithm's randomness is included in this deployed estimator, not averaged away by pretending an unobserved exact posterior mean was computed. Existing chain/estimand integration quality gates remain prerequisites; a high numerical error cannot be used to inflate Y's variation and relax truth accuracy. Settings, seed distribution and any predeclared extension rule are frozen, never tuned to raise the SE. Numerical error of each Y is reported separately. We do not claim this definition estimates the infinite-NUTS posterior-mean sampling SD.
++
++The comparator truth is
++
++    theta_rj = E_DGP[ISI_escalate(t+42) - ISI_continue(t+42) | H*_rj],
++    e_crj = Y_crj - theta_rj.
++
++This uses exactly the registered reduced member H* information set, retained visits and no prompt. Learner cohort sharing does not enlarge evaluator conditioning; any alternative cohort-conditioned truth would require a separate estimand amendment. Absolute endpoints are56/84/126; no change to EST-VISIT:poc-hstar-v1 or its information set. theta_rj varies across r. Sampling variability Var(Y), error variability Var(e), posterior Var(effect|H), MCMC/integration variance, and oracle numerical variance are distinct: Var(e)=Var(Y)+Var(theta)-2Cov(Y,theta). Neither a posterior SD nor SD(e) can be substituted for SD(Y); RMSE includes squared bias as well. Dividing SD(Y) by sqrt(R) would instead estimate uncertainty of a replicate mean and is forbidden as the per-fit precision denominator.
++
++### Failures and conditional scope
++
++The implemented estimator is partial: a failed/abstained fit has no Y. Prespecify S_rjt=1 only when **both** V0/V1 target-member outputs at that stratum complete with all existing diagnostics and exact matching. Define the successful-pair calibration experiment as the distribution of (H,U) conditional on this declared event, not on effect magnitude, truth, favorable error or interval coverage. The selection uses observed H and independent algorithm streams only; it does not reveal latent truth or change the registered theta conditional on H*. For that conditional experiment,
++
++    sigma_csj t = SD(Y_crj | s,j,t,S=1),
++    s_csj t = sqrt(sum_{r:S=1}(Y_crj - mean(Y_c))^2 / (R_pair-1)).
++
++This is a standard empirical sampling-SD estimate for the declared successful-pair algorithm, not an unconditional SE of an estimator undefined on failures. All attempted cohorts remain in the immutable ledger and failure/abstention/undefined and success-and-coverage denominators. A missing member result never receives a scale or truth comparison via a successful peer. A configuration-specific success metric may still be reported separately, but its estimator-SE calibration needs its own declared experiment; it cannot borrow this paired scale. No survivor subset may be described as full-population performance.
++
++At least3 independent successful paired cohort replications are needed for a provisional s for each j/t/s. This minimum uses the existing3-panel exploration, not36 independent patient rows. If too few succeed, the stratum is pending; the already permitted extension to at most8 exploration panels may address documented fit/variance uncertainty, never replace failures or seed-search. Confirmation retains30-100 planned independent cohorts and reports actual paired-success counts. A cell with inadequate successful evidence remains inconclusive, not omitted from the seven-condition study. Existing accepted fits may be reused only if they belong to this exact predeclared experiment; the different served singleton cannot qualify it.
++
++## Operational precision rule and limitations
++
++Compute the provisional empirical pair scale s_pilot=min(s_V0,s_V1), separately for every admitted s/j/t. It is an estimate, not a lower confidence bound on unknown sigma; no normal/chi-square assumption or posterior bootstrap coverage is asserted. Report R_pair, all-attempt counts, the two SDs and uncertainty of the simulation performance estimates. For the SD estimate itself, predeclare a scalar delete-one-cohort jackknife diagnostic: compute s_(-r) on the paired-success cohort sample with r omitted, and report sqrt((R_pair-1)/R_pair * sum((s_(-r)-mean(s_(-r)))^2)). This estimates variability of the reported SD, not an additional estimator SE or a lower confidence bound. It is only an asymptotic diagnostic, potentially unreliable with 3-8 cohorts or nonsmooth/degenerate samples; flag those limitations and retain the raw scalar count/status evidence. It changes no precision denominator, creates no resampled fits and warrants no normality or coverage claim. The3-8 pilot cannot support a reliable population-SE theorem; use it only as the contract's initial engineering precision target. The finite confirmation estimate tightens by the frozen rule
++
++    s_used = min(s_pilot, s_confirmation, any earlier smaller accepted matched scale),
++    epsilon_rj = min(0.05 ISI, 0.1*s_used).
++
++Before confirmation is available the provisional target may guide numerical work, but final study truth-precision acceptance waits for the final binding; if it tightens, reassess every associated truth and refine only under a separately reviewed exact operation. Do not increase a tolerance after seeing confirmation, change model/settings, or discard a small positive scale. This deterministic precision tightening is predeclared numerical quality control, not confirmation tuning. Zero SD, missing calibration, nonfinite data, missing/failed matched fits or an unsupported stratum cannot resolve precision; zero requires analytic truth or unresolved. No floors or infinite-SE substitutions. S1's actual clustered sandwich SE remains unchanged for its different target; N needs its separately reviewed analogous experiment/artifacts and is not activated by this V decision.
++
++An optional posterior sqrt(L) remains an independently labeled diagnostic. If a separately frozen extra rule uses it, it may only reduce epsilon after this matched empirical-SE binding exists. It never supplies the binding itself. Truth within/between-filter MCSE and particle/move refinement errors remain separate and obey the existing four-allowance/move constraints, full-conditioning qualification and finite-grid budget. The canonical absolute quality ceiling remains.01 for separately qualified N/support targets.
++
++**What is and is not non-weakening:** operationally we preserve the original absolute and10%-of-smallest-*estimated* sampling-SE rule with explicit experiment, final tightening and more exact pairing. We do not assert s<=sigma, equivalence to any unspecified same-history SE, or a universal guarantee from a small pilot. Such a guarantee was not supplied by the original words. The ambiguity is resolved openly as an empirical simulation-calibrated criterion. This is a scientific decision for critique, not a proof that all possible original interpretations are equivalent.
++
++For the study's accuracy purpose, require a numerical-sensitivity report as well as the ratio. If an independently justified truth error envelope is |theta_tilde-theta|<=epsilon_rj, then for any fixed collection of scored pairs: absolute change in empirical bias <=mean(epsilon); absolute change in RMSE <=sqrt(mean(epsilon^2)); absolute change in mean paired error difference is zero when both methods use the identical theta_tilde (truth cancels). Each separate RMSE still needs its error bound. These follow respectively from the triangle inequality and reverse triangle inequality for the Euclidean norm; they are not empirical claims about the current evaluator. Paired squared-error/RMSE differences do not cancel and must propagate truth uncertainty.
++
++Coverage/sign/ranking are discontinuous: if the truth-error envelope overlaps an interval endpoint or zero/sign boundary, mark that classification numerically ambiguous and report lower/upper counts, not a confident success/failure or superiority badge. Interval width needs no oracle but fit acceptance still applies. The existing four TA2 allowances are empirical numerical evidence, not automatically a simultaneous deterministic envelope; label resulting sensitivity ranges as engineering uncertainty unless stronger bounds are proved. A claim smaller than unresolved oracle error is inconclusive. This prevents large between-history target variation or positive sampling SD from being used as proof of precise tiny effects. Full conditioning and finite-grid errors are not waived by these algebraic sensitivities.
++
++The general distinction between empirical SE of an estimator across simulation repetitions and Monte Carlo SE of a reported simulation performance measure follows Morris, White and Crowther's primary ADEMP tutorial ([Statistics in Medicine, 2019, section5](https://doi.org/10.1002/sim.8086)). The conditional-target experiment and proposed gates above are this project's proposal, not a claim that that paper validates them.
++
++## Required counterexamples and acceptance
++
++1. A data-insensitive constant reported estimator with a diffuse posterior gives s=0: unresolved/analytic truth, regardless of effect.sd or sqrt(L). A single fixed H* with many seed reruns does not meet independent-cohort calibration.
++2. Y follows varying theta nearly exactly: sampling SD can be large while RMSE is tiny. Preserve the.05 ceiling and numerical sensitivity/ambiguous-coverage reporting; never call sampling SD an error SD or claim tiny RMSE superiority without adequate oracle precision.
++3. Two different configurations/history/cutoff/ordinal or duplicated cohorts cannot be pooled; shared twelve members are not twelve independent replications. Pair before reducing. Constant V0 with variable V1 still yields min-pair zero, not V1-only tolerance.
++4. Failed/abstained members, insufficient paired successes, NaN, wrong units, missing expected-effect diagnostics and uncontrolled integration/MCMC error stay unavailable. All failed attempts remain in denominators. Numerically noisy accepted-estimate metadata must pass the unchanged applicable diagnostics, not an SE-driven exemption.
++5. A smaller final SD triggers stricter assessment without rewriting old truth records or increasing budgets automatically. An unchanged or larger final SD cannot relax the pilot target. An unmatched historical V1 patient cannot fill this binding.
++6. Algebraic bias/RMSE perturbation and coverage endpoint-overlap cases must pass hand-calculable scalar controls. No empirical TA2 allowance is silently relabeled a rigorous bound.
++
++## Minimal implementation/evidence package after critique
++
++Canonical proposed text insertion in TRUTH-02, with TA-T5 section4 linking to it (not implemented here):
++
++> For the V0/V1 PoC, matched estimator SE means empirical sampling SD of the fixed implemented reported expected-contrast point estimator across independent planned cohorts in the same frozen scenario/member-ordinal/cutoff and successful-pair experiment defined by TA2-SE-DEFINITION-01 v1. It is not posterior spread or finite-chain MCSE. Truth and results still match exact patient/cohort H*, target and configuration. Use the smaller positive configuration SD, provisional pilot target and final-only tightening; missing/zero/failed matching remains unresolved or requires analytic truth. Calibration SD is estimated, not a proven lower bound; retain cohort counts, failures and numerical sensitivity of accuracy/coverage conclusions. No other family or conditional target inherits this interpretation without its own reviewed mapping.
++
++Small existing-code tasks: add one closed evaluator-owned `matched_estimator_sampling_se` binding/reader and scalar reduction alongside `methods/truth/refinement.py` and existing restricted admission. Input is the planned study's immutable scalar member results and status/provenance, not posterior arrays on the host. Fields: definition/version, scenario/behavior/external-source policy, fixed j/t, estimator/config/source/numerical settings, planned/attempted/paired-success IDs and statuses, exact per-member input/H*/cutoff/result/artifact refs, s0/s1/R_pair, pilot/final linkage, epsilon and provisional/final/undefined status. Derive hashes from actual typed canonical content after definition acceptance. Do not add estimator_se to clinical Effect by reinterpreting effect.sd.
++
++`services/learner/cohort_worker.py` already emits effect.mean, effect.sd, chain/draw expected-effect artifact and accepted effect_mcmc/integration diagnostics; `contracts/domain/cohort.py` and analysis input/result refs supply identity. Use normal authenticated result/artifact admission before reading scalar summaries. Model/source checks must establish exact worker semantics and all-member bindings. Actual semantic artifact validation stays in its reviewed isolated runtime; no raw arrays, learner-private errors or truth access on the foundation host. No new posterior loader, bootstrap engine, app route or scheduler.
++
++Source tests are hand-calculated reductions and strict malformed/mismatched/duplicate/failure/final-tightening cases with inert scalar fixtures. Actual evidence comes from the already required3-8 exploratory and30-100 confirmation paired cohort runs under separate exact SOURCE/OP/GO, not extra fits for this note. Freeze scalar selection/aggregation before actual collection; independently verify raw result-to-summary bindings and arithmetic. Until that evidence exists the canonical field remains null, but the completion path is concrete rather than a permanent waiver. The historical one-history TA2 estimate can be reused only after lawful matching fits and this calibration-stratum applicability are demonstrated; otherwise it remains diagnostic.
++
++T0 is now independently accepted as **bounded diagnostic execution/custody/arithmetic only**: report `cfca8748867280d4285eb42796357a7709ed842d`, checks `ebf1a549bf40304ff07ad6debb25999655c61f9c`, index `3b957d55c954657fd959780cf55866f673d5024a`; publication `76dec96f774ad5460fb5f76df27a1a50cb92bf79`, executed `97d3ae8794b60f51232bf12b4e2c41af2292db75`. No128 rows or private payloads were opened here. Its null SE/quadrature/conditioning/grid and productionfalse/rootclosed remain. Accepted readiness plan `f45ebeae89cde04c1a8d0935422d2a20f827f443` / critique `a7864e4ef24616ce366a6997b1ace64223df7268` allows bounded preparation, not this definition or admission.
++
++All seven configurations,84-day horizon, target-specific truth, bias/RMSE/coverage/decision/failure denominators, whole-cohort adaptive study and appointment saved inference remain required. No fit during appointments, no confirmation tuning, no silent cap growth, no all-fixture/all-fallback substitute. Full-conditioning, independent quadrature, finite-grid proof and actual restricted isolation/admission are separate mandatory gates. This note supplies no runtime budget or GO and changes no current source/canonical text. Freeze for DIFFERENT statistical critique before adopting the definition.
+diff --git a/docs/implementation/poc-ta2-se-definition-sources-20261024.json b/docs/implementation/poc-ta2-se-definition-sources-20261024.json
+new file mode 100644
+index 0000000..504e183
+--- /dev/null
++++ b/docs/implementation/poc-ta2-se-definition-sources-20261024.json
+@@ -0,0 +1,130 @@
++{
++  "schema": "ta2-se-definition-public-sources-v1",
++  "status": "PROPOSED_FOR_DIFFERENT_STATISTICAL_CRITIQUE",
++  "base": "9292844a46aa4ba46701c9bb45cd703f0862dee6",
++  "plan": {
++    "path": "docs/implementation/poc-ta2-se-definition-20261024.md",
++    "git_blob": "b97296f43598fb9d2cff2473a4910dc9c1d999bb",
++    "bytes": 18794,
++    "sha256": "8891d5d700047f1ba8a8056b311a160fec8d078a1fcadc38b8b24976b56ab60b"
++  },
++  "hash_method": "SHA256 of exact Git blob bytes; plan staged blob equals LF working bytes; no self-hash of this manifest",
++  "public_sources": [
++    {
++      "path": "implementation-prompt.md",
++      "git_blob": "68c13bc2fa61a653ff80f1c32ae68e5cbaa54c6c",
++      "bytes": 9037,
++      "sha256": "87224c0e5d40f5e9d01a38735383504a5bf51f75cec2681e6fb952fd429c61db"
++    },
++    {
++      "path": "docs/execution/engineering-guidelines.md",
++      "git_blob": "dd405c7d22eb4b668cdf25f768e6917c7daa8ca9",
++      "bytes": 8437,
++      "sha256": "3cd32d6fbab68f85d4481724547f1bf937fe114809dee298ce445ee0e90db7d1"
++    },
++    {
++      "path": "docs/execution/runtime-and-workflow.md",
++      "git_blob": "779f60edf06b0a389cdbf258a7f066ac1c1390e8",
++      "bytes": 26682,
++      "sha256": "b71025231a8847b48584169f250ebe7cb5d37293e550d34b383adce9fcc4b4a8"
++    },
++    {
++      "path": "docs/execution/delegation.md",
++      "git_blob": "36a20183975e97343e95021b3da7b42a2e61965f",
++      "bytes": 23337,
++      "sha256": "003aeb4b7cb1c28cf4f3dbf6eb977a5c886c9e7a073e2a1eb2bb1b8db8258ace"
++    },
++    {
++      "path": "docs/spec/00-scope-and-invariants.md",
++      "git_blob": "502d4b9ac731a22292089f33d2cd6a60afbda8f8",
++      "bytes": 19413,
++      "sha256": "51e33ccf5a98914d745a1a72c5fced83930a3b87a9321c3454e673b46865eb34"
++    },
++    {
++      "path": "docs/spec/08-gates-and-release.md",
++      "git_blob": "617d3e2919c6862e37f9b52ddc1e73acbd5a5871",
++      "bytes": 14091,
++      "sha256": "1fe063708d02f2f0673a7f39622920f9806cff5757b4ed62db208270c79e4be9"
++    },
++    {
++      "path": "docs/spec/02-synthetic-dgp.md",
++      "git_blob": "786bc22dd95a49b916c75429dc7748d3c6bc3bf1",
++      "bytes": 12087,
++      "sha256": "0b4acb0c4e16b657a5226238d5e5721936f813b52f61cf5455952c32f149a4a6"
++    },
++    {
++      "path": "docs/spec/07-validation-protocol.md",
++      "git_blob": "5c6eecd3b7c1ec57f1c022df5aa19ed17bd9ef61",
++      "bytes": 24942,
++      "sha256": "7962af1480ee6ae166afa6df52c697d76f5cab949602c12d5808ebea501896ca"
++    },
++    {
++      "path": "docs/implementation/poc-truth-ablation-plan-20261022.md",
++      "git_blob": "29bdd2556f30f8cfc6176574353ff5c4c5f0e65a",
++      "bytes": 30647,
++      "sha256": "142c31b9d5bdaefb63300d355630334b37da6235e0d4c68035f1c416d3d5bd73"
++    },
++    {
++      "path": "services/learner/cohort_worker.py",
++      "git_blob": "4acc1f2727a36774c8b8ecb7aea81734a03fb0be",
++      "bytes": 11363,
++      "sha256": "633d59dc1730755acd2f6f40df739bceecab172a5c7c286cd4486a9a1569a504"
++    },
++    {
++      "path": "contracts/domain/analysis.py",
++      "git_blob": "8de671be4963e8a8cc15cdf1c05a2378bb2faa61",
++      "bytes": 16960,
++      "sha256": "a250d20c02fc331c11a3f0dd7a496120e720579bdb381ecfb3d630560341cb50"
++    },
++    {
++      "path": "contracts/domain/cohort.py",
++      "git_blob": "a0c8bcf388182ba42bf3e2fc30b3db9e42684773",
++      "bytes": 14128,
++      "sha256": "da8bd9496ae72be8fb2e547e1cac1ff1f30c5d2574817225730c865904bce5ca"
++    },
++    {
++      "path": "methods/visit/numerics.py",
++      "git_blob": "5c1ac014eb12822c6b21a430ba8dcf2c32cd64cf",
++      "bytes": 8526,
++      "sha256": "fd0d64d7ee9e29ed3f7d24c05d4526e09cf5357ae0e96a8c577e4b09d4deab14"
++    }
++  ],
++  "public_evidence": {
++    "repaired_plan": {
++      "path": null,
++      "git_blob": "ee88a2ff46835a813a8f08d085a04832e204f4d3",
++      "bytes": 25089,
++      "sha256": "0021bfb1674ba56e7d81375a2a7d5d5c7e3d8bf5975707ee57d13e89487b9588"
++    },
++    "independent_prep_acceptance": {
++      "path": null,
++      "git_blob": "a7864e4ef24616ce366a6997b1ace64223df7268",
++      "bytes": 6379,
++      "sha256": "7ced8061e6f7d781cef59ebc50bf3cc4154898f4cc2625eefbe8ca6f88470329"
++    },
++    "original_statistical_rejection": {
++      "path": null,
++      "git_blob": "d22974d045f37567f438f6aa6aed5f7a827bbc62",
++      "bytes": 8820,
++      "sha256": "aea8e374abf2547abffbdf3a50697f61bd0b038329b4fb4f41cb57c339399eb4"
++    },
++    "T0_independent_bounded_actual": {
++      "path": null,
++      "git_blob": "cfca8748867280d4285eb42796357a7709ed842d",
++      "bytes": 8719,
++      "sha256": "66febd8ddd326df082c82953b9f8f64678b74b9f348effffbdce0adbd80b028b"
++    }
++  },
++  "external_primary": {
++    "citation": "Morris TP, White IR, Crowther MJ (2019), Using simulation studies to evaluate statistical methods, Statistics in Medicine",
++    "doi": "https://doi.org/10.1002/sim.8086",
++    "author_repository_pdf": "https://discovery.ucl.ac.uk/id/eprint/10066118/1/2019%20-%20Morris%20-%20simulation%20studies%20tutorial%20-%20stat%20med.pdf",
++    "read_scope": "Section 5 empirical SE versus Monte Carlo SE and simulation-performance uncertainty; public read-only web; no byte attestation",
++    "access_date": "2026-10-24"
++  },
++  "exclusions": [
++    "No raw historical 128-run rows or truth/history/posterior/latent payloads",
++    "No scientific computation, tests, fitting, runtime, private paths or private hashes",
++    "No canonical amendment or source change adopted"
++  ]
++}
+diff --git a/docs/implementation/poc-truth-ablation-plan-20261022.md b/docs/implementation/poc-truth-ablation-plan-20261022.md
+index 29bdd25..2a6536a 100644
+--- a/docs/implementation/poc-truth-ablation-plan-20261022.md
++++ b/docs/implementation/poc-truth-ablation-plan-20261022.md
+@@ -68,6 +68,8 @@ Before publishing computed truth, require:
+ 
+ Set epsilon=min(.05 ISI or .01 quality, .1*smallest matched estimator SE). For V/N use the smaller positive final estimator SE across the paired configurations; for S1 use its actual clustered SE. Pilot SE sets a provisional target; tighten after final results. A missing matched SE leaves comparison precision pending; zero SE requires analytic truth or unresolved status. Never count missing/failed fits as an infinite SE that relaxes truth.
+ 
++For V0/V1 only, [TRUTH-02's accepted TA2-SE-DEFINITION-01 experiment](../spec/02-synthetic-dgp.md#truth-02--independent-verification) now defines that SE as the empirical SD of the fixed implemented reported point estimator across independent planned whole-cohort paired successes, at fixed scenario/ordinal/cutoff. [The exact definition proposal](poc-ta2-se-definition-20261024.md) is retained as provenance; its historical proposal disposition is not a claim of actual calibration. TA-T5 binds accepted WHOLE CohortResult inputs/results/artifacts and every member/chain/estimand gate before reading patients[j].effect.mean, retains failures and min-pair/final-only tightening, and reports bias/RMSE/coverage/sign/rank numerical sensitivity. N needs its own reviewed experiment; S1's clustered SE, Effect.sd, four empirical allowances, and all conditioning/grid/admission gates are unchanged. Source scalar controls cannot populate or admit historical null-SE truth artifacts.
++
+ Existing `ConditionalAccuracy.require_accuracy` allocates at most epsilon/4 each to quadrature change, maximum of two `abs(refinement difference)+1.96*paired_SE`, within-filter MCSE and between-filter MCSE, with sum <=epsilon. Keep these four quantities separately; rollout SE alone does not control conditioning bias. This is empirical numerical qualification, not a proof of asymptotic unbiasedness. Independent reduced checks and particle/move stability are required to detect jointly wrong or collapsed refinements. Preserve numerical scalar batch accounting (10,000 draws per batch; existing cap1,000) and bind actual draw counts, rather than pretending all particles are independent future trajectories. Freeze a wall-time/RSS cap before the first actual history evaluation; exhaustion retains partial diagnostics with inconclusive status. No compute measurement is claimed here.
+ 
+ `private.TruthRequest` currently rejects restricted profiles; `TruthRequestV2` and probability evidence also bind exact canonical artifacts. Therefore add only an explicitly reviewed restricted-target branch/descriptor to those existing request/response validators, plus a reduced-H* reference/hash; do not forge canonical full-DGP bindings or promote schemas by changing a version string. Retain response truth kind, information_set, request hash, source/runtime, policy/estimand/DGP/configuration versions, truth seeds, refinement/precision references, status and checksums. No interruption probabilities are needed for this uninterrupted PoC. Existing probability/filter/pilot receipts become applicable only if their exact probability/interruption targets are enabled; do not claim them from scalar ISI evidence or fabricate structural proofs. If a future target is undefined after death/out-of-scope, use the separate EST-INT contract; do not subtract nonexistent outcomes.
+diff --git a/docs/implementation/poc-truth-ablation-task-ledger-20261022.json b/docs/implementation/poc-truth-ablation-task-ledger-20261022.json
+index f7c9679..ba89fa5 100644
+--- a/docs/implementation/poc-truth-ablation-task-ledger-20261022.json
++++ b/docs/implementation/poc-truth-ablation-task-ledger-20261022.json
+@@ -315,6 +315,14 @@
+     {
+       "id": "TA-T5",
+       "status": "planned",
++      "sampling_se_source_preparation": {
++        "task": "TA2-SE-SOURCE-01",
++        "definition": "TA2-SE-DEFINITION-01 v1; explicitly adopted for V0/V1 canonical/source preparation after different critique f41b34efed3d7e3fd08dac846e3fc5e8886d95f5 and ROOT acceptance",
++        "source": "methods/truth/sampling_se.py; closed evaluator-owned binding/reader, scalar reductions and required isolated admission adapter seam",
++        "scope": "Guarded Pydantic/hand-scalar/inert admission controls only; exact source candidate requires fresh independent head/base review",
++        "actual_calibration": "pending existing3-8 exploratory and30-100 confirmation cohort evidence, exact artifact/plan custody admission and scientific precision applicability",
++        "retained": "T0 accepted cfca8748867280d4285eb42796357a7709ed842d is diagnostic custody/arithmetic only; historical null SE/conditioning/quadrature/grid and rootclosed unchanged. Four empirical allowances are not deterministic bounds. N mapping/S1 clustered SE/Effect.sd unchanged."
++      },
+       "evidence": "32 filters at approved levels, two successive refinements, quadrature/within/between budgets; cap/zero-SE/collapse failures",
+       "partial_evidence": "Time/slice cap, impossible weights and severe-collapse negatives executed in focused tests; 32-filter three-level real-history refinement remains unexecuted."
+     },
+diff --git a/docs/spec/02-synthetic-dgp.md b/docs/spec/02-synthetic-dgp.md
+index 786bc22..51c4def 100644
+--- a/docs/spec/02-synthetic-dgp.md
++++ b/docs/spec/02-synthetic-dgp.md
+@@ -42,6 +42,10 @@ Use keyed independent streams for generation, assignment, measurement/missingnes
+ 
+ Numerical truth includes a Monte Carlo SE. Accumulate independent batches until SE ≤0.05 ISI points or ≤0.01 on a 0–10 proximal scale, and ≤10% of the smallest estimator SE used in comparison. Pilot estimator SEs set the initial target; tighten if final fits require it. A zero target SE requires analytic truth or unresolved status. A recorded compute cap yields inconclusive truth when exhausted, not a pass.
+ 
++For the V0/V1 PoC, matched estimator SE means empirical sampling SD of the fixed implemented reported expected-contrast point estimator across independent planned cohorts in the same frozen scenario/member-ordinal/cutoff and successful-pair experiment defined by [TA2-SE-DEFINITION-01 v1](../implementation/poc-ta2-se-definition-20261024.md). It is not posterior spread or finite-chain MCSE. Truth and results still match exact patient/cohort H*, target and configuration. Use the smaller positive configuration SD, provisional pilot target and final-only tightening; missing/zero/failed matching remains unresolved or requires analytic truth. Calibration SD is estimated, not a proven lower bound; retain cohort counts, failures and numerical sensitivity of accuracy/coverage conclusions. No other family or conditional target inherits this interpretation without its own reviewed mapping.
++
++This explicitly replaces an unspecified same-history SE experiment for these V0/V1 comparisons; it does not claim equivalence to posterior uncertainty or an infinite-computation estimator. At least three independent successful pairs give only a provisional engineering estimate. Freeze the existing3–8 exploratory/30–100 confirmation cohort design before collection, retain every attempted failure, and use min(pilot, confirmation, earlier smaller admitted exact matches) without a floor. The.05 ISI ceiling and all conditioning, quadrature/refinement, finite-grid and actual artifact-admission requirements remain. Shared truth cancels only in an identically paired mean error difference, not separate RMSEs or squared-error differences; retain numerical ambiguity at coverage/sign/ranking boundaries. Empirical numerical allowances are not automatically deterministic error bounds. Canonical adoption follows explicit ROOT acceptance after independent critique f41b34efed3d7e3fd08dac846e3fc5e8886d95f5; populated calibration and actual truth admission remain pending.
++
+ Truth storage/processes are evaluator-only. Test denied access as well as export columns; debug endpoints cannot leak truth to ordinary UI/learners. Use only available-at history.
+ 
+ ### DGP-03 — Development and confirmation
+diff --git a/docs/spec/requirement-map.md b/docs/spec/requirement-map.md
+index ef55a9b..9d58a07 100644
+--- a/docs/spec/requirement-map.md
++++ b/docs/spec/requirement-map.md
+@@ -19,7 +19,7 @@ Legacy section IDs retain all original requirements in the mapped canonical sect
+ | SYN-BOUNDARY, CLIN-UPDATE | [Scope](00-scope-and-invariants.md) | G0/G7: separate claim statuses and evidence scope | esmo, cochrane-cbti, zhang-leukemia, dimsdale-inpatient |
+ | CONTRACT-01, TIME-01, EST-INT | [Contracts](01-estimands-and-contracts.md) | G0/G5: schema versions, temporal DAG, no scalarized interruption winner | iche9, gformula; vector is engineering choice |
+ | DGP-01, DGP-02, DGP-03 | [DGP](02-synthetic-dgp.md) and [equations](dgp-reference.md) | G0/G1: parameter manifest, independent layers, locked namespaces | sim-check, recsim; numerical equations are invented |
+-| TRUTH-01, TRUTH-02 | [DGP](02-synthetic-dgp.md) | G1: analytic versus rollout agreement, numerical SE, denied truth access | sim-check; precision cutoffs are engineering choices |
++| TRUTH-01, TRUTH-02 | [DGP](02-synthetic-dgp.md) | G1: analytic versus rollout agreement, numerical SE, denied truth access; V0/V1 matched sampling-SE experiment [TA2-SE-DEFINITION-01](../implementation/poc-ta2-se-definition-20261024.md), populated calibration/admission pending | sim-check; precision cutoffs and empirical successful-pair SE convention are engineering choices |
+ | BAYES-01, BAYES-02 | [Bayesian](03-bayesian-models.md) | G2: analytic posteriors, SBC quantities/faults, diagnostics | sbc-talts, sbc-quantities, stan-diagnostics |
+ | BORROW-01, MEASURE-01 | [Bayesian](03-bayesian-models.md) | G2: bridge/transport/measurement comparisons | robustmap, rover, gformula; new bridge is proposed |
+ | EXP-01, SMART-01 | [Experiments](04-individual-experiments.md) | G3: block and strategy recovery, consent/stopping | n1bayes, smart-adaptr |

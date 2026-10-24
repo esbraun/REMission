@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\run_ta2_sampling_se_source.py", line 53, in <module>
+    result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_ta2_sampling_se_source'))
+                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\unittest\loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "C:\Users\erics\Documents\Projects\REMission-worktrees\ta2-sampling-se-sol-261024\tests\test_ta2_sampling_se_source.py", line 87
+    return CohortResult.model_validate_json(canonical(dict(schema_version='3.0.0',synthetic=True,kind='poc_visit_cohort_result',
+                                           ^
+SyntaxError: '(' was never closed

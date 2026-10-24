@@ -1,0 +1,837 @@
+diff --git a/methods/truth/sampling_se.py b/methods/truth/sampling_se.py
+new file mode 100644
+index 0000000..471b6de
+--- /dev/null
++++ b/methods/truth/sampling_se.py
+@@ -0,0 +1,455 @@
++"""Evaluator-owned TA2-SE-DEFINITION-01 scalar preparation, never truth admission.
++
++Only scalar summaries of previously admitted WHOLE cohort results cross here.
++The required admission callable belongs to the separately reviewed isolated
++result/artifact boundary; a content hash, callback return or this module's output
++does not confer runtime authority or qualify an artifact. No posterior is loaded.
++"""
++import math
++import re
++from datetime import datetime
++from statistics import fmean, stdev
++from typing import Annotated, Literal
++
++from pydantic import Field, model_validator
++from contracts.domain.common import Identifier, Sha256, StrictModel, VersionRef
++from contracts.domain.analysis import ESTIMAND_REF, canonical, reference, sha
++from contracts.domain.cohort import (CohortInput, CohortResult, COHORT_CONFIG,
++    COHORT_BORROW_CONFIG, COHORT_CONFIG_REF, COHORT_BORROW_CONFIG_REF)
++from contracts.domain.borrowing import NumericalSeeds
++
++DEFINITION = reference('TA2-SE-DEFINITION-01', dict(version=1,
++    experiment='fixed implemented estimator; independent whole cohorts; paired success',
++    scalar='member.effect.mean; accepted expected-effect chain/draw average',
++    scale='sample SD(Y), ddof=1, never divided by sqrt(R)', minimum_pairs=3,
++    target='individual reduced Hstar; not cohort-conditioned truth',
++    tightening='min(pilot,confirmation,earlier smaller admitted exact matches)',
++    absolute=.05, fraction=.1))
++CONFIGS = (COHORT_CONFIG_REF, COHORT_BORROW_CONFIG_REF)
++SETTINGS = (COHORT_CONFIG, COHORT_BORROW_CONFIG)
++ALGORITHM_PATHS = {'services/learner/cohort_worker.py', 'methods/visit/cohort_model.py',
++    'methods/visit/cohort_geometry.py', 'methods/visit/cohort_execution.py',
++    'methods/visit/model.py', 'methods/visit/numerics.py', 'methods/visit/source_precision.py',
++    'contracts/domain/cohort.py', 'contracts/domain/analysis.py', 'contracts/domain/borrowing.py'}
++
++
++class PlannedCohort(StrictModel):
++    replicate_id: Identifier
++    phase: Literal['pilot', 'confirmation']
++    cohort_id: Identifier
++    panel_id: Identifier
++    generation_key: VersionRef
++    member_ids: Annotated[list[Identifier], Field(min_length=12, max_length=12)]
++    fit_seeds: Annotated[list[NumericalSeeds], Field(min_length=2, max_length=2)]
++
++
++class SamplingDesign(StrictModel):
++    definition: VersionRef
++    scenario: VersionRef
++    behavior: VersionRef
++    enrollment_activation: VersionRef
++    external_source_policy: Literal['fixed_across_cohort_replications']
++    source_set_sha256: Sha256
++    member_ordinal: Annotated[int, Field(ge=1, le=12)]
++    cutoff_day: Literal[14, 42, 84]
++    estimand: VersionRef
++    unit: Literal['ISI_points']
++    configurations: Annotated[list[VersionRef], Field(min_length=2, max_length=2)]
++    numerical_settings: Annotated[list[dict], Field(min_length=2, max_length=2)]
++    algorithm_sources: dict[str, Sha256]
++    source_commit: Annotated[str, Field(pattern=r'^[a-f0-9]{40}$')]
++    learner_image: Annotated[str, Field(pattern=r'^sha256:[a-f0-9]{64}$')]
++    numerical_runtime: VersionRef
++    frozen_before_collection: VersionRef
++    planned: list[PlannedCohort]
++
++    @model_validator(mode='after')
++    def closed_experiment(self):
++        if (self.definition.model_dump()!=DEFINITION or self.estimand.model_dump()!=ESTIMAND_REF
++                or [v.model_dump() for v in self.configurations]!=list(CONFIGS)
++                or self.numerical_settings!=list(SETTINGS) or set(self.algorithm_sources)!=ALGORITHM_PATHS):
++            raise ValueError('unsupported definition/target/algorithm/configuration/settings closure')
++        if not 3<=sum(p.phase=='pilot' for p in self.planned)<=8 or not 30<=sum(p.phase=='confirmation' for p in self.planned)<=100:
++            raise ValueError('freeze existing3-8 pilot and30-100 confirmation cohorts before collection')
++        for name in ('replicate_id','cohort_id','panel_id'):
++            values=[getattr(p,name) for p in self.planned]
++            if len(set(values))!=len(values):raise ValueError('duplicate planned independent cohort '+name)
++        keys=[canonical(p.generation_key.model_dump()) for p in self.planned]
++        patients=[patient for p in self.planned for patient in p.member_ids]
++        seeds=[getattr(s,k) for p in self.planned for s in p.fit_seeds
++            for k in ('nuts','effect_rollout','prior_check','bridge_reference')]
++        if len(set(keys))!=len(keys) or len(set(patients))!=len(patients) or len(set(seeds))!=len(seeds):
++            raise ValueError('cohort/member/generation/fit-stream reuse is not independent replication')
++        if any(p.member_ids!=sorted(set(p.member_ids)) for p in self.planned):
++            raise ValueError('member ordinals must be distinct and frozen before outcomes')
++        return self
++
++    @property
++    def reference(self):return reference('matched-estimator-sampling-experiment-v1',self.model_dump(mode='json'))
++
++
++class CohortAttempt(StrictModel):
++    replicate_id: Identifier
++    # None denotes planned but not attempted; no successful peer supplies it.
++    inputs: Annotated[list[CohortInput], Field(min_length=2, max_length=2)] | None
++    results: Annotated[list[CohortResult | None], Field(min_length=2, max_length=2)] | None
++    reason: str | None
++
++
++class AdmittedWholeCohort(StrictModel):
++    """Binding returned by the isolated adapter, not self-authenticating proof."""
++    experiment: VersionRef
++    planned_cohort: VersionRef
++    input: VersionRef
++    result: VersionRef
++    artifact_manifest: VersionRef
++    scalar_semantics: Literal['accepted_chain_draw_expected_effect_mean']
++    admission_reference: VersionRef
++
++
++class MemberTarget(StrictModel):
++    patient_id: Identifier
++    history_sha256: Sha256
++    provenance_sha256: Sha256
++    cutoff: str
++    ordinal: Annotated[int, Field(ge=1, le=12)]
++    estimand: VersionRef
++    unit: Literal['ISI_points']
++    input_refs: Annotated[list[VersionRef],Field(min_length=2,max_length=2)]
++    result_refs: Annotated[list[VersionRef],Field(min_length=2,max_length=2)]
++    expected_effect_artifacts: Annotated[list[dict],Field(min_length=2,max_length=2)]
++
++
++class ReductionRow(StrictModel):
++    replicate_id: Identifier
++    phase: Literal['pilot','confirmation']
++    status: Literal['not_attempted','incomplete','paired_failure','paired_success']
++    reason: str | None
++    configuration_statuses: list[Literal['completed','abstained','failed'] | None] | None = None
++    configuration_reasons: list[str | None] | None = None
++    input_refs: list[VersionRef] | None = None
++    result_refs: list[VersionRef | None] | None = None
++    admissions: list[AdmittedWholeCohort] | None = None
++    cohort_sha256: Sha256 | None = None
++    manifest_sha256: Sha256 | None = None
++    means: Annotated[list[float],Field(min_length=2,max_length=2)] | None = None
++    target: MemberTarget | None = None
++    artifacts: list[list[dict]] | None = None
++    numerical_diagnostics: list[dict] | None = None
++
++
++class SamplingSEBinding(StrictModel):
++    schema_version: Literal['matched_estimator_sampling_se-v1']
++    definition: VersionRef
++    experiment: VersionRef
++    design: SamplingDesign
++    rows: list[ReductionRow]
++    counts: dict
++    scales: dict
++    earlier: list[VersionRef]
++    earlier_scales: list[Annotated[float,Field(gt=0)]]
++    status: Literal['provisional','final','unresolved']
++    used_se: Annotated[float,Field(gt=0)] | None
++    epsilon: Annotated[float,Field(gt=0,le=.05)] | None
++    zero_se_requires_analytic_truth: bool
++    unit: Literal['ISI_points']
++    conditional_population: Literal['prespecified paired-success fixed finite algorithm; not unconditional performance']
++    production_truth: Literal[False]
++    actual_admission: Literal['separately reviewed isolated result/artifact and calibration admission required']
++
++
++def fresh(model, cls):
++    if type(model) is not cls:raise ValueError('exact typed '+cls.__name__+' required')
++    return cls.model_validate_json(model.model_dump_json())
++
++
++def mcmc_gate(value, *, effect=False):
++    """Check current numeric gates as well as labels; no relaxed SE-driven gate."""
++    if value.get('accepted') is not True:raise ValueError('MCMC diagnostics not accepted')
++    for name, predicate in (('rhat',lambda x:x<1.01),('ess_bulk',lambda x:x>=400),('ess_tail',lambda x:x>=400)):
++        numbers=value.get(name,{})
++        if not numbers or (effect and set(numbers)!={'effect'}) or any(type(x) not in (int,float) or not math.isfinite(x) or not predicate(x) for x in numbers.values()):
++            raise ValueError('missing/nonfinite/failed MCMC '+name)
++    mcse=value.get('mcse',{})
++    if not mcse or (effect and set(mcse)!={'effect'}) or any(type(x) not in (int,float) or not math.isfinite(x) or x<0 for x in mcse.values()):
++        raise ValueError('separate finite fit numerical-error report required')
++    if (value.get('divergences',0)!=0 or value.get('maximum_tree_depth',0)>=12
++            or any(type(x) not in (int,float) or not math.isfinite(x) or x<=.3 for x in value.get('energy_bfmi',[1.]))):
++        raise ValueError('MCMC divergence/depth/energy gate')
++
++
++def completed_gates(product, result):
++    d=result.diagnostics;fits=d.get('fits',[])
++    if not 1<=len(fits)<=2:raise ValueError('whole cohort fit/extension diagnostics required')
++    for i,fit in enumerate(fits):
++        if fit.get('extension') is not bool(i) or fit.get('seed')!=product.numerical_seeds.nuts+i:
++            raise ValueError('frozen initial/extension algorithm mismatch')
++    mcmc_gate(fits[-1]['diagnostics'])
++    names={a.get('path') for a in result.artifacts}
++    if len(names)!=len(result.artifacts) or any(set(a)!={'path','sha256'} for a in result.artifacts):
++        raise ValueError('duplicate/malformed whole result artifacts')
++    if any(not re.fullmatch(r'[A-Za-z0-9_.-]+',a['path']) or not re.fullmatch(r'[a-f0-9]{64}',a['sha256']) for a in result.artifacts):
++        raise ValueError('noncanonical artifact name/hash')
++    for member in result.patients:
++        if member.status!='completed' or member.effect is None:raise ValueError('every member must complete')
++        pd=d.get('patients',{}).get(member.patient_id,{})
++        if pd!=member.diagnostics:raise ValueError('member/whole diagnostic binding mismatch')
++        mcmc_gate(pd.get('effect_mcmc',{}),effect=True)
++        integration=pd.get('integration',{});attempts=integration.get('attempted',[])
++        if integration.get('status')!='accepted' or not attempts:raise ValueError('expected-effect integration required')
++        final=attempts[-1]
++        required=('U','L','mean_integration_se','K')
++        if any(type(final.get(k)) not in (int,float) or not math.isfinite(final[k]) or final[k]<0 for k in required):
++            raise ValueError('nonfinite/missing integration diagnostics')
++        if (final['K'] not in (1024,2048,4096,8192,16384,32768,65536)
++                or any(final.get(k) is not True for k in ('variance_pass','mean_pass','stability_pass'))
++                or final['U']>.01*max(final['L'],.1**2)
++                or final['mean_integration_se']>min(.05,.1*max(math.sqrt(final['L']),.1))):
++            raise ValueError('existing expected-effect numerical gates failed')
++        expected='patient-'+sha(member.patient_id)[:16]+'-expected-effect.npz'
++        if expected not in names:raise ValueError('whole cohort expected-effect artifact missing')
++        canonical(member.effect.model_dump())  # rejects nonfinite mean/sd/limits
++    if product.sources and (d.get('bridge_precision',{}).get('status')!='accepted'
++            or not {'bridge-precision.json','bridge-marginals.npz'}<=names):
++        raise ValueError('existing shared source bridge gate failed')
++
++
++def read_attempt(design, planned, attempt, *, admit_whole_cohort):
++    """Required isolated admission FIRST, then exact bindings/gates, then means.
++
++    admit_whole_cohort(product,result) must authenticate result bytes, complete
++    artifacts, trusted launch and chain/draw expected-effect semantics using the
++    normal reviewed result admission plus isolated semantic artifact checks.
++    No implementation of that actual boundary or permission is supplied here.
++    Source tests use inert callbacks; callback identity hashes are not authority.
++    """
++    if attempt.inputs is None:
++        if attempt.results is not None or not attempt.reason:raise ValueError('unattempted ledger needs reason and no results')
++        return dict(replicate_id=planned.replicate_id,phase=planned.phase,status='not_attempted',reason=attempt.reason)
++    products=attempt.inputs;results=attempt.results or [None,None];admissions=[]
++    for index,(product,result) in enumerate(zip(products,results,strict=True)):
++        manifest=product.cohort.manifest
++        if (product.cohort.manifest.scope!='research' or manifest.research_execution!='engine_run'
++                or (manifest.cohort_id,manifest.panel_id)!=(planned.cohort_id,planned.panel_id)
++                or [m.patient_id for m in manifest.members]!=planned.member_ids
++                or product.numerical_seeds!=planned.fit_seeds[index]
++                or (manifest.cutoff-manifest.origin).total_seconds()!=design.cutoff_day*86400
++                or product.request.configuration!=design.configurations[index]
++                or product.request.context.scenario!=design.scenario
++                or product.source_set_sha256!=(None if index==0 else design.source_set_sha256)):
++            raise ValueError('planned cohort/ordinal/cutoff/config/source/stream mismatch')
++        if result is None:continue
++        # Mandatory even when a failed result retains earlier member files.
++        admitted=AdmittedWholeCohort.model_validate(admit_whole_cohort(product,result))
++        if any(getattr(admitted,k).model_dump()!=v for k,v in dict(experiment=design.reference,
++                planned_cohort=reference('planned-independent-cohort',planned.model_dump(mode='json')),
++                input=reference('cohort-input',product.model_dump(mode='json')),
++                result=reference('cohort-result',result.model_dump(mode='json')),
++                artifact_manifest=reference('cohort-artifact-manifest',result.artifacts)).items()):
++            raise ValueError('isolated admission adapter returned mismatched binding')
++        admissions.append(admitted.model_dump(mode='json'))
++        if (result.attempt_id!=product.attempt_id or result.input_sha256!=sha(product.model_dump(mode='json'))
++                or result.cohort_sha256!=product.cohort_sha256 or result.manifest!=manifest
++                or result.manifest_sha256!=product.cohort.manifest_sha256
++                or result.configuration!=product.request.configuration or result.source_set_sha256!=product.source_set_sha256):
++            raise ValueError('exact whole result/input/artifact context mismatch')
++    if products[0].cohort!=products[1].cohort:raise ValueError('paired V0/V1 must receive identical whole reduced cohort')
++    if any(result is None for result in results):
++        if not attempt.reason:raise ValueError('incomplete attempt requires retained reason')
++        return dict(replicate_id=planned.replicate_id,phase=planned.phase,status='incomplete',reason=attempt.reason,
++            input_refs=[reference('cohort-input',p.model_dump(mode='json')) for p in products],
++            result_refs=[reference('cohort-result',r.model_dump(mode='json')) if r else None for r in results],
++            configuration_statuses=[r.status if r else None for r in results],configuration_reasons=[r.reason if r else 'not_completed' for r in results])
++    row=dict(replicate_id=planned.replicate_id,phase=planned.phase,status='paired_failure',
++        reason=attempt.reason or '; '.join(r.reason for r in results if r.reason),configuration_statuses=[r.status for r in results],
++        configuration_reasons=[r.reason for r in results],
++        input_refs=[reference('cohort-input',p.model_dump(mode='json')) for p in products],
++        result_refs=[reference('cohort-result',r.model_dump(mode='json')) for r in results],admissions=admissions,
++        cohort_sha256=products[0].cohort_sha256,manifest_sha256=products[0].cohort.manifest_sha256)
++    if any(r.status!='completed' for r in results):return row
++    for product,result in zip(products,results,strict=True):
++        completed_gates(product,result)
++        execution=result.diagnostics.get('execution',{})
++        if (execution.get('source_commit'),execution.get('learner_image'))!=(design.source_commit,design.learner_image):
++            raise ValueError('fixed algorithm source/image execution identity mismatch')
++    ordinal=design.member_ordinal-1;member=products[0].cohort.manifest.members[ordinal]
++    row.update(status='paired_success',reason=None,means=[r.patients[ordinal].effect.mean for r in results],
++        target=dict(patient_id=member.patient_id,history_sha256=member.history_sha256,
++            provenance_sha256=member.provenance_sha256,cutoff=products[0].cohort.manifest.cutoff.isoformat(),
++            ordinal=design.member_ordinal,estimand=design.estimand.model_dump(),unit=design.unit,
++            input_refs=row['input_refs'],result_refs=row['result_refs'],expected_effect_artifacts=[
++                next(a for a in r.artifacts if a['path']=='patient-'+sha(member.patient_id)[:16]+'-expected-effect.npz') for r in results]),
++        artifacts=[r.artifacts for r in results],numerical_diagnostics=[r.patients[ordinal].diagnostics for r in results])
++    return row
++
++
++def sample_scale(values):
++    if len(values)<3:return dict(count=len(values),sd=None,jackknife=None,unreliable=True)
++    value=stdev(values)
++    leave=[stdev(values[:i]+values[i+1:]) for i in range(len(values))]
++    center=fmean(leave)
++    return dict(count=len(values),sd=value,jackknife=math.sqrt((len(values)-1)/len(values)*math.fsum((x-center)**2 for x in leave)),
++        unreliable=len(values)<=8,diagnostic='delete-one-cohort SD variability; not estimator SE or confidence bound')
++
++
++def phase_statistics(rows):
++    scales={};counts={}
++    for phase in ('pilot','confirmation'):
++        group=[r for r in rows if r['phase']==phase];pairs=[r for r in group if r['status']=='paired_success']
++        counts[phase]=dict(planned=len(group),attempted=sum(r['status']!='not_attempted' for r in group),paired_success=len(pairs),
++            paired_failure=sum(r['status']=='paired_failure' for r in group),incomplete=sum(r['status']=='incomplete' for r in group),
++            not_attempted=sum(r['status']=='not_attempted' for r in group),configurations=[
++                {label:sum((r.get('configuration_statuses') or [None,None])[i]==status for r in group)
++                    for label,status in (('completed','completed'),('abstained','abstained'),('failed','failed'),('not_completed',None))} for i in (0,1)])
++        scales[phase]=[sample_scale([r['means'][index] for r in pairs]) for index in (0,1)]
++    return scales,counts
++
++
++def precision(scales,counts,earlier):
++    pilot=[s['sd'] for s in scales['pilot']];final=[s['sd'] for s in scales['confirmation']]
++    candidates=pilot
++    done=all(counts[p]['not_attempted']==counts[p]['incomplete']==0 for p in ('pilot','confirmation'))
++    if done:candidates=pilot+final
++    usable=all(s is not None and math.isfinite(s) and s>0 for s in candidates)
++    used=min(candidates+list(earlier)) if usable else None
++    status=('final' if done else 'provisional') if usable else 'unresolved'
++    return status,used,(min(.05,.1*used) if used is not None else None),not usable and 0. in candidates
++
++
++def reduce_sampling_se(design, attempts, *, expected_design, admit_whole_cohort, earlier=(), admit_earlier_binding=None):
++    """Content-bound candidate only. Actual admission/collection remain external."""
++    design=fresh(design,SamplingDesign)
++    if design.reference!=expected_design:raise ValueError('independently frozen exact design reference required')
++    attempts=[fresh(a,CohortAttempt) for a in attempts]
++    by_id={a.replicate_id:a for a in attempts}
++    if len(by_id)!=len(attempts) or set(by_id)!={p.replicate_id for p in design.planned}:
++        raise ValueError('immutable full planned attempt ledger required; no dropped/replaced/duplicate cohorts')
++    rows=[read_attempt(design,p,by_id[p.replicate_id],admit_whole_cohort=admit_whole_cohort) for p in design.planned]
++    cohorts=[r['cohort_sha256'] for r in rows if 'cohort_sha256' in r]
++    if len(set(cohorts))!=len(cohorts):raise ValueError('duplicate realized cohort is not another replication')
++    scales,counts=phase_statistics(rows)
++    for prior in earlier:
++        prior=fresh(prior,SamplingSEBinding).model_dump(mode='json')
++        if prior['experiment']!=design.reference:raise ValueError('earlier scale must exactly match this frozen experiment')
++        # Reader recomputes prior scalar arithmetic; caller must separately admit
++        # the prior binding just as the current artifact boundary is external.
++        validate_binding(prior)
++        if admit_earlier_binding is None:raise ValueError('earlier calibration requires separate isolated admission')
++        admit_earlier_binding(prior)
++        if prior['used_se'] is None or prior['used_se']<=0:raise ValueError('earlier missing/zero scale cannot resolve precision')
++    phase,used,epsilon,zero=precision(scales,counts,[p.used_se for p in earlier])
++    value=dict(schema_version='matched_estimator_sampling_se-v1',definition=DEFINITION,experiment=design.reference,
++        design=design.model_dump(mode='json'),rows=rows,counts=counts,scales=scales,
++        earlier=[reference('earlier-matched-sampling-SE',p.model_dump(mode='json')) for p in earlier],earlier_scales=[p.used_se for p in earlier],
++        status=phase,used_se=used,epsilon=epsilon,zero_se_requires_analytic_truth=zero,
++        unit='ISI_points',conditional_population='prespecified paired-success fixed finite algorithm; not unconditional performance',
++        production_truth=False,actual_admission='separately reviewed isolated result/artifact and calibration admission required')
++    return SamplingSEBinding.model_validate(value)
++
++
++def validate_binding(value):
++    """Recompute serialized scalar arithmetic; integrity does not confer authority."""
++    value=SamplingSEBinding.model_validate_json(canonical(value)).model_dump(mode='json')
++    if value['definition']!=DEFINITION or value['production_truth'] is not False:
++        raise ValueError('unsupported sampling binding')
++    design=SamplingDesign.model_validate_json(canonical(value['design']))
++    if value['experiment']!=design.reference:raise ValueError('exact frozen experiment identity changed')
++    if [(r['replicate_id'],r['phase']) for r in value['rows']]!=[(p.replicate_id,p.phase) for p in design.planned]:
++        raise ValueError('complete immutable ordered cohort ledger changed')
++    for row,planned in zip(value['rows'],design.planned,strict=True):
++        if row['status']=='not_attempted':
++            if not row['reason'] or any(row[k] is not None for k in ('means','target','input_refs','result_refs','admissions','configuration_statuses')):
++                raise ValueError('unattempted row cannot expose results or scalar')
++            continue
++        if row['input_refs'] is None or len(row['input_refs'])!=2 or row['result_refs'] is None or len(row['result_refs'])!=2:
++            raise ValueError('paired exact input/result references required')
++        if row['status']!='paired_success':
++            if not row['reason'] or any(row[k] is not None for k in ('means','target','artifacts','numerical_diagnostics')):
++                raise ValueError('failed/incomplete whole cohort cannot expose a member scalar')
++            statuses=row['configuration_statuses']
++            if statuses is None or len(statuses)!=2 or (row['status']=='incomplete')!=(None in statuses):
++                raise ValueError('incomplete and failed configuration statuses must remain distinct')
++            if row['status']=='paired_failure' and statuses==['completed','completed']:
++                raise ValueError('cannot select successful cohorts out of the prespecified pair set')
++        else:
++            target=row['target']
++            if (row['configuration_statuses']!=['completed','completed'] or row['means'] is None
++                    or row['admissions'] is None or len(row['admissions'])!=2 or target is None
++                    or (target['patient_id'],target['ordinal'])!=(planned.member_ids[design.member_ordinal-1],design.member_ordinal)
++                    or target['estimand']!=design.estimand.model_dump() or target['unit']!='ISI_points'):
++                raise ValueError('whole paired-success target/admission binding changed')
++            if target['input_refs']!=row['input_refs'] or target['result_refs']!=row['result_refs']:
++                raise ValueError('scored target input/result identity changed')
++            for index,artifact in enumerate(target['expected_effect_artifacts']):
++                if artifact not in row['artifacts'][index] or artifact['path']!='patient-'+sha(target['patient_id'])[:16]+'-expected-effect.npz':
++                    raise ValueError('scored expected-effect artifact identity changed')
++        if row['status'] in ('paired_success','paired_failure'):
++            if row['admissions'] is None or len(row['admissions'])!=2:raise ValueError('both whole-result admission bindings required')
++            for i,admission in enumerate(row['admissions']):
++                if (admission['experiment']!=design.reference
++                        or admission['planned_cohort']!=reference('planned-independent-cohort',planned.model_dump(mode='json'))
++                        or admission['input']!=row['input_refs'][i] or admission['result']!=row['result_refs'][i]):
++                    raise ValueError('whole-cohort admission/scored result references changed')
++                if row['status']=='paired_success' and admission['artifact_manifest']!=reference('cohort-artifact-manifest',row['artifacts'][i]):
++                    raise ValueError('whole result artifact manifest changed')
++    cohort_ids=[r['cohort_sha256'] for r in value['rows'] if r['cohort_sha256'] is not None]
++    if len(set(cohort_ids))!=len(cohort_ids):raise ValueError('duplicated cohort is not independent evidence')
++    scales,counts=phase_statistics(value['rows'])
++    if value['scales']!=scales or value['counts']!=counts:raise ValueError('sampling scale/count/denominator arithmetic changed')
++    if len(value['earlier'])!=len(value['earlier_scales']):raise ValueError('earlier exact scale references missing')
++    status,used,epsilon,zero=precision(scales,counts,value['earlier_scales'])
++    if (value['status'],value['used_se'],value['epsilon'],value['zero_se_requires_analytic_truth'])!=(status,used,epsilon,zero):
++        raise ValueError('precision scale/tightening arithmetic changed')
++
++
++def matched_estimator_sampling_se(value, *, expected_binding, target):
++    """Read only an independently admitted exact binding for a scored pair.
++
++    expected_binding must come from evaluator-owned admission, never from the
++    payload being read. Hash equality supplies identity only, not actual custody.
++    """
++    value=fresh(value,SamplingSEBinding).model_dump(mode='json')
++    target=MemberTarget.model_validate(target).model_dump(mode='json')
++    if reference('matched-estimator-sampling-SE',value)!=expected_binding:raise ValueError('independent exact admitted binding required')
++    validate_binding(value)
++    if not any(r.get('target')==target and r['status']=='paired_success' for r in value['rows']):
++        raise ValueError('missing/failed/unmatched per-member Hstar/cutoff/ordinal target')
++    return value['used_se']
++
++
++def reduce_refinement_with_sampling_se(rows, inventory, truth_binding, sampling, *, expected_sampling_binding, target):
++    from .refinement import reduce_rows
++    if (target['patient_id']!=truth_binding['patient_id'] or target['history_sha256']!=truth_binding['history_sha256']
++            or datetime.fromisoformat(target['cutoff'])!=datetime.fromisoformat(truth_binding['target']['cutoff']) or target['unit']!='ISI_points'):
++        raise ValueError('refinement must match exact scored Hstar/cutoff/ISI target')
++    matched=matched_estimator_sampling_se(sampling,expected_binding=expected_sampling_binding,target=target)
++    report=reduce_rows(rows,inventory,truth_binding,matched_se=matched)
++    report.update(matched_estimator_sampling_se=expected_sampling_binding,matched_precision_status=sampling.status,
++        matched_precision_epsilon=sampling.epsilon,zero_se_requires_analytic_truth=sampling.zero_se_requires_analytic_truth)
++    return report
++
++
++def truth_sensitivity(y0,y1,truth,epsilon,intervals=None,*,pair_ids,envelope='engineering_allowance'):
++    """Equal scored pairs/weights/common truth only; no oracle bound is invented."""
++    n=len(truth)
++    if not n or any(len(values)!=n for values in (y0,y1,epsilon)):raise ValueError('identical nonempty scored pairs required')
++    if (len(pair_ids)!=3 or any(len(ids)!=n for ids in pair_ids) or pair_ids[0]!=pair_ids[1] or pair_ids[0]!=pair_ids[2]
++            or len(set(pair_ids[0]))!=n):
++        raise ValueError('same distinct ordered scored-pair IDs for both methods and common truth required')
++    if any(type(x) not in (int,float) or not math.isfinite(x) for values in (y0,y1,truth,epsilon) for x in values) or min(epsilon)<0:
++        raise ValueError('finite scalar effects and nonnegative truth allowances required')
++    if envelope not in ('engineering_allowance','independently_justified_bound'):raise ValueError('explicit envelope scope required')
++    errors=[[y-t for y,t in zip(values,truth)] for values in (y0,y1)]
++    out=dict(scope=envelope,bias_allowance=fmean(epsilon),rmse_allowance=math.sqrt(fmean([x*x for x in epsilon])),
++        bias=[fmean(e) for e in errors],rmse=[math.sqrt(fmean([x*x for x in e])) for e in errors],
++        paired_mean_error_difference=fmean([a-b for a,b in zip(y0,y1)]),common_truth_cancels_for_mean_error_difference=True,
++        truth_cancels_for_squared_error_or_RMSE_difference=False,
++        rmse_difference_allowance=2*math.sqrt(fmean([x*x for x in epsilon])),
++        sign_ambiguous=[abs(t)<=e for t,e in zip(truth,epsilon)],
++        ranking_ambiguous=[(i,j) for i in range(n) for j in range(i+1,n) if abs(truth[i]-truth[j])<=epsilon[i]+epsilon[j]])
++    if intervals is not None:
++        if len(intervals)!=n or any(len(pair)!=2 or not all(math.isfinite(x) for x in pair) or pair[0]>pair[1] for pair in intervals):raise ValueError('valid matched intervals required')
++        certain=sum(lo<t-e and t+e<hi for (lo,hi),t,e in zip(intervals,truth,epsilon))
++        possible=sum(not(t+e<lo or t-e>hi) for (lo,hi),t,e in zip(intervals,truth,epsilon))
++        out['coverage']=dict(lower_count=certain,upper_count=possible,denominator=n,ambiguous=possible-certain)
++    return out
+diff --git a/tests/run_ta2_sampling_se_source.py b/tests/run_ta2_sampling_se_source.py
+new file mode 100644
+index 0000000..44ad3fb
+--- /dev/null
++++ b/tests/run_ta2_sampling_se_source.py
+@@ -0,0 +1,65 @@
++"""Isolated TA2 SE SOURCE controls; active private/app/science/native tripwires."""
++import builtins
++from contextlib import ExitStack
++import importlib.abc
++import io
++import json
++import os
++from pathlib import Path
++import socket
++import subprocess
++import sys
++import unittest
++from unittest.mock import patch
++
++ROOT=Path(__file__).resolve().parents[1]
++if __name__=='__main__':
++    sys.path[:0]=[str(ROOT),str(ROOT/'tests')]
++    forbidden={'numpy','scipy','pymc','pytensor','arviz','arviz_stats','xarray','netCDF4','pandas','statsmodels',
++        'services','apps','sqlite3','sqlalchemy','ctypes','requests','winreg','win32api','win32file','win32security','win32process','psutil'}
++    preloaded=forbidden.intersection(sys.modules)
++    assert not preloaded-{'winreg'}
++    safe_methods={'methods','methods.truth','methods.truth.sampling_se','methods.truth.refinement'}
++    class Tripwire(importlib.abc.MetaPathFinder):
++        def find_spec(self,fullname,path=None,target=None):
++            if fullname.split('.')[0] in forbidden or fullname.startswith('methods.') and fullname not in safe_methods:
++                raise AssertionError('forbidden SOURCE import: '+fullname)
++    sys.meta_path.insert(0,Tripwire())
++    def refuse(*args,**kwargs):raise AssertionError('process/network/native forbidden in SOURCE controls')
++    roots=[str(p).replace('\\','/').lower() for p in (ROOT,Path(sys.prefix),Path(sys.base_prefix))]
++    def permitted(path):
++        if isinstance(path,int):return
++        value=os.path.abspath(os.fspath(path)).replace('\\','/').lower()
++        if ('supplemental-blind' in value or 'supplemental_blind' in value or '/raw/' in value
++                or not any(value==r or value.startswith(r+'/') for r in roots)):
++            raise AssertionError('private/sealed/historical raw filesystem forbidden in SOURCE controls')
++    original_open,original_io_open=builtins.open,io.open
++    original_stat,original_lstat=os.stat,os.lstat
++    def guarded_open(path,*args,**kwargs):permitted(path);return original_open(path,*args,**kwargs)
++    def guarded_io_open(path,*args,**kwargs):permitted(path);return original_io_open(path,*args,**kwargs)
++    def guarded_stat(path,*args,**kwargs):permitted(path);return original_stat(path,*args,**kwargs)
++    def guarded_lstat(path,*args,**kwargs):permitted(path);return original_lstat(path,*args,**kwargs)
++    with ExitStack() as guards:
++        for obj,name,replacement in ((subprocess,'Popen',refuse),(subprocess,'run',refuse),(os,'system',refuse),
++                (socket,'socket',refuse),(socket,'create_connection',refuse),(socket,'getaddrinfo',refuse),
++                (builtins,'open',guarded_open),(io,'open',guarded_io_open),(os,'stat',guarded_stat),(os,'lstat',guarded_lstat)):
++            guards.enter_context(patch.object(obj,name,replacement))
++        for module,names in (('winreg',('OpenKey','OpenKeyEx','CreateKey','CreateKeyEx','QueryValue','QueryValueEx','SetValue','SetValueEx','DeleteKey','DeleteValue','ConnectRegistry')),
++                             ('_winapi',('CreateProcess','OpenProcess'))):
++            loaded=sys.modules.get(module)
++            if loaded:
++                for name in names:
++                    if hasattr(loaded,name):guards.enter_context(patch.object(loaded,name,refuse))
++        result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_ta2_sampling_se_source'))
++        from methods.truth import sampling_se as s
++        output=ROOT/'artifacts/ta2-sampling-se-source'
++        output.joinpath('checks.json').write_text(json.dumps(dict(scope='guarded SOURCE/Pydantic/hand-scalar/inert admission only',
++            tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),expected_failures=len(result.expectedFailures),
++            status='PASS' if result.wasSuccessful() else 'FAIL',actual_fit=False,actual_artifact_admission=False,actual_study=False,
++            actual_app_Store_SQLite=False,actual_runtime_GO=False,retained_numerics='17/18 oneFAIL unchanged; no sealed operation'),sort_keys=True,indent=2)+'\n')
++        if result.wasSuccessful():
++            models=(s.SamplingDesign,s.PlannedCohort,s.CohortAttempt,s.AdmittedWholeCohort,s.MemberTarget,s.ReductionRow,s.SamplingSEBinding)
++            output.joinpath('schema.json').write_text(json.dumps({m.__name__:m.model_json_schema() for m in models},sort_keys=True,indent=2)+'\n')
++    assert not forbidden.intersection(sys.modules)-preloaded
++    print('SOURCE ONLY: hand scalar/Pydantic and inert admission; no actual fits/artifact qualification/study/app/Store/SQLite/science/native/network')
++    sys.exit(not result.wasSuccessful())
+diff --git a/tests/test_ta2_sampling_se_source.py b/tests/test_ta2_sampling_se_source.py
+new file mode 100644
+index 0000000..9451058
+--- /dev/null
++++ b/tests/test_ta2_sampling_se_source.py
+@@ -0,0 +1,299 @@
++"""Hand-scalar/source controls with fabricated cohorts, never fit/study evidence."""
++import ast
++from copy import deepcopy
++from datetime import datetime,timedelta,timezone
++from functools import lru_cache
++import json
++import math
++from pathlib import Path
++from unittest.mock import patch
++import unittest
++
++from contracts.domain.analysis import (AnalysisHistory,PROTOCOL_REF,ESTIMAND_REF,
++    SCENARIO_REF,canonical,sha,reference,Effect)
++from contracts.domain.borrowing import SourceBundle
++from contracts.domain.cohort import CohortHistory,CohortManifest,CohortResult,COORDINATE_REF,make_cohort_input
++from methods.truth import sampling_se as s
++
++ROOT=Path(__file__).resolve().parents[1]
++ORIGIN=datetime(2026,1,1,12,tzinfo=timezone.utc)
++
++
++def header(patient,name,kind,at):
++    return dict(record_id=patient+'-'+name,patient_id=patient,kind=kind,event_at=at.isoformat(),recorded_at=at.isoformat(),
++        available_at=at.isoformat(),lineage_id=patient+'-'+name,revision=1,supersedes=None,duplicate_of=None,record_status='active')
++
++
++def history(patient):
++    # Complete typed inert grid, hand constants only. No generator/data/fit call.
++    records=[dict(**header(patient,'plan','assignment',ORIGIN),option='behavioral_continue',experimental=True)]
++    for day in range(1,15):
++        records.append(dict(**header(patient,'q'+str(day),'daily_report',ORIGIN+timedelta(days=day,minutes=-1)),sleep_quality=7.,missingness='observed'))
++        records.append(dict(**header(patient,'d'+str(day),'delivery',ORIGIN+timedelta(days=day-1,hours=8)),assignment_id=patient+'-plan',
++            option='behavioral_continue',stage='taken',adherence=1.,rescue=False,protocol_deviations=[]))
++    for day in (0,14):
++        end=ORIGIN+timedelta(days=day,hours=-1)
++        records.append(dict(**header(patient,'isi'+str(day),'isi',end+timedelta(minutes=59)),total=14,
++            instrument_version='ISI-7-synthetic-14d-v1',recall_days=14,recall_start=(end-timedelta(days=14)).isoformat(),recall_end=end.isoformat()))
++    return AnalysisHistory.model_validate_json(canonical(dict(schema_version='1.0.0',synthetic=True,kind='poc_analysis_history',
++        version='poc-analysis-history-v1',patient_id=patient,cutoff=(ORIGIN+timedelta(days=14)).isoformat(),origin=ORIGIN.isoformat(),
++        protocol=PROTOCOL_REF,eligibility='uninterrupted-v1-behavioral-no-prompt',records=records,
++        provenance=[{k:v for k,v in r.items() if k in header(patient,'','',ORIGIN)} for r in records])))
++
++
++@lru_cache(maxsize=1)
++def prepared():
++    # Existing PUBLIC frozen source-summary JSON is parsed only to construct
++    # lawful typed V1 input identity, not analyzed or treated as a genuine fit.
++    source=SourceBundle.model_validate_json((ROOT/'services/foundation/studies/source-7c97862d.json').read_bytes())
++    planned=[];inputs={}
++    for index in range(33):
++        rid=f'TEST-INERT-cohort-{index:02}';members=[f'{rid}-patient-{j:02}' for j in range(12)]
++        histories=[history(patient) for patient in members]
++        manifest=dict(schema='poc-cohort-manifest-v1/1.0.0',cohort_id=rid,owner_id='TEST-INERT-owner',panel_id=rid+'-panel',
++            scope='research',research_run_id=rid+'-run',research_execution='engine_run',cutoff=histories[0].cutoff.isoformat(),
++            origin=ORIGIN.isoformat(),protocol=PROTOCOL_REF,coordinates=COORDINATE_REF,
++            members=[dict(patient_id=h.patient_id,patient_version=1,history_sha256=sha(h.model_dump(mode='json')),
++                provenance_sha256=sha([r.model_dump(mode='json') for r in h.provenance])) for h in histories])
++        manifest=CohortManifest.model_validate_json(canonical(manifest)).model_dump(mode='json')
++        cohort=CohortHistory.model_validate_json(canonical(dict(schema='poc-cohort-history-v1/1.0.0',manifest=manifest,
++            manifest_sha256=sha(manifest),histories=[h.model_dump(mode='json') for h in histories])))
++        products=[make_cohort_input(cohort,rid+'-V0'),make_cohort_input(cohort,rid+'-V1',source)]
++        planned.append(dict(replicate_id=rid,phase='pilot' if index<3 else 'confirmation',cohort_id=rid,panel_id=rid+'-panel',
++            generation_key=reference('TEST-INERT-independent-generation',index),member_ids=members,
++            fit_seeds=[p.numerical_seeds.model_dump() for p in products]))
++        inputs[rid]=products
++    design=s.SamplingDesign.model_validate_json(canonical(dict(definition=s.DEFINITION,scenario=SCENARIO_REF,
++        behavior=reference('TEST-INERT-retained-behavior','frozen before outcomes'),enrollment_activation=reference('TEST-INERT-enrollment','t0'),
++        external_source_policy='fixed_across_cohort_replications',source_set_sha256=source.source_set_sha256,
++        member_ordinal=1,cutoff_day=14,estimand=ESTIMAND_REF,unit='ISI_points',configurations=list(s.CONFIGS),numerical_settings=list(s.SETTINGS),
++        algorithm_sources={path:'1'*64 for path in s.ALGORITHM_PATHS},source_commit='1'*40,learner_image='sha256:'+'2'*64,
++        numerical_runtime=reference('TEST-INERT-runtime','not installed/qualified'),
++        frozen_before_collection=reference('TEST-INERT-preregistration','before any cohort outcome'),planned=planned)))
++    return design,inputs
++
++
++def diagnostics():
++    return dict(accepted=True,rhat={'effect':1.},ess_bulk={'effect':500.},ess_tail={'effect':500.},mcse={'effect':.001})
++
++
++def sensitivity(y0,y1,truth,epsilon,intervals=None):
++    ids=[f'TEST-INERT-pair-{i}' for i in range(len(truth))]
++    return s.truth_sensitivity(y0,y1,truth,epsilon,intervals,pair_ids=(ids,ids,ids))
++
++
++def result(product,mean,*,status='completed',sd=100.):
++    pd=dict(integration=dict(status='accepted',attempted=[dict(K=2048,U=.00001,L=.1,mean_integration_se=.001,
++        variance_pass=True,mean_pass=True,stability_pass=True)]),effect_mcmc=diagnostics())
++    patients=[dict(patient_id=m.patient_id,history_sha256=m.history_sha256,status=status,reason=None if status=='completed' else 'TEST-INERT-joint-failure',
++        effect=dict(mean=mean,sd=sd,lower=mean-sd,upper=mean+sd,unit='ISI_points',kind='conditional_expected_assignment_contrast') if status=='completed' else None,
++        diagnostics=deepcopy(pd)) for m in product.cohort.manifest.members]
++    names=['patient-'+sha(m.patient_id)[:16]+'-expected-effect.npz' for m in product.cohort.manifest.members]
++    if product.sources:names+=['bridge-precision.json','bridge-marginals.npz']
++    return CohortResult.model_validate_json(canonical(dict(schema_version='3.0.0',synthetic=True,kind='poc_visit_cohort_result',
++        attempt_id=product.attempt_id,input_sha256=sha(product.model_dump(mode='json')),cohort_sha256=product.cohort_sha256,
++        manifest=product.cohort.manifest.model_dump(mode='json'),manifest_sha256=product.cohort.manifest_sha256,
++        source_set_sha256=product.source_set_sha256,configuration=product.request.configuration.model_dump(),estimand=ESTIMAND_REF,
++        status=status,reason=None if status=='completed' else 'TEST-INERT-joint-failure',patients=patients,
++        diagnostics=dict(fits=[dict(extension=False,seed=product.numerical_seeds.nuts,diagnostics=diagnostics())],
++            patients={m['patient_id']:deepcopy(pd) for m in patients},bridge_precision=dict(status='accepted'),
++            execution=dict(source_commit='1'*40,learner_image='sha256:'+'2'*64)),
++        artifacts=[dict(path=name,sha256='3'*64) for name in names],limitations=['TEST INERT; no artifact/fit admission'])))
++
++
++def fixture(values=((1.,3.,5.),(2.,4.,6.)),confirmation=None,failed=()):
++    design,inputs=prepared();design=s.fresh(design,s.SamplingDesign);attempts=[]
++    for index,planned in enumerate(design.planned):
++        if index<3 or confirmation is not None:
++            means=[v[index] for v in values] if index<3 else [v[index-3] for v in confirmation]
++            products=deepcopy(inputs[planned.replicate_id]);rs=[result(p,means[i],status='failed' if (index,i) in failed else 'completed') for i,p in enumerate(products)]
++            attempts.append(s.CohortAttempt(replicate_id=planned.replicate_id,inputs=products,results=rs,reason=None))
++        else:attempts.append(s.CohortAttempt(replicate_id=planned.replicate_id,inputs=None,results=None,reason='planned_not_collected'))
++    admissions=[]
++    def admit(product,r):
++        planned=next(p for p in design.planned if p.cohort_id==product.cohort.manifest.cohort_id)
++        admissions.append((product.attempt_id,r.status))
++        return dict(experiment=design.reference,planned_cohort=reference('planned-independent-cohort',planned.model_dump(mode='json')),
++            input=reference('cohort-input',product.model_dump(mode='json')),result=reference('cohort-result',r.model_dump(mode='json')),
++            artifact_manifest=reference('cohort-artifact-manifest',r.artifacts),scalar_semantics='accepted_chain_draw_expected_effect_mean',
++            admission_reference=reference('TEST-INERT-admission','fabricated SOURCE double, not actual acceptance'))
++    def reduce(**kw):return s.reduce_sampling_se(design,attempts,expected_design=design.reference,admit_whole_cohort=admit,**kw)
++    return design,attempts,admit,admissions,reduce
++
++
++class SamplingTests(unittest.TestCase):
++    def test_hand_sample_SD_and_jackknife_not_mean_SE_or_posterior_SD(self):
++        design,attempts,admit,calls,reduce=fixture();b=reduce();s.validate_binding(b.model_dump(mode='json'))
++        self.assertEqual(b.scales['pilot'][0]['sd'],2.);self.assertEqual(b.used_se,2.);self.assertEqual(b.epsilon,.05)
++        self.assertAlmostEqual(b.scales['pilot'][0]['jackknife'],math.sqrt(8/9));self.assertTrue(b.scales['pilot'][0]['unreliable'])
++        self.assertEqual(b.status,'provisional');self.assertEqual(b.counts['pilot']['attempted'],3);self.assertEqual(len(calls),6)
++        self.assertEqual(b.counts['confirmation']['not_attempted'],30);self.assertFalse(b.production_truth)
++
++    def test_constant_estimator_diffuse_posterior_and_min_pair_zero_remain_unresolved(self):
++        for values in (((5.,5.,5.),(5.,5.,5.)),((5.,5.,5.),(1.,3.,5.))):
++            *_,reduce=fixture(values);b=reduce()
++            self.assertEqual(b.status,'unresolved');self.assertIsNone(b.used_se);self.assertIsNone(b.epsilon);self.assertTrue(b.zero_se_requires_analytic_truth)
++
++    def test_varying_truth_tiny_errors_sampling_SD_is_distinct_and_absolute_ceiling_remains(self):
++        truth=[-10.,0.,10.];means=tuple(t+.0001 for t in truth)
++        *_,reduce=fixture((means,means));b=reduce()
++        self.assertGreater(b.used_se,9.);self.assertEqual(b.epsilon,.05)
++        report=sensitivity(list(means),list(means),truth,[.05]*3)
++        self.assertAlmostEqual(report['rmse'][0],.0001);self.assertEqual(report['scope'],'engineering_allowance')
++        self.assertGreater(report['rmse_allowance'],report['rmse'][0])
++
++    def test_two_successes_failure_and_partial_artifacts_stay_in_denominators(self):
++        design,attempts,admit,calls,reduce=fixture(failed=((2,1),));b=reduce()
++        self.assertEqual(b.counts['pilot']['attempted'],3);self.assertEqual(b.counts['pilot']['paired_failure'],1)
++        self.assertEqual(b.counts['pilot']['paired_success'],2);self.assertEqual(b.counts['pilot']['configurations'][0]['completed'],3)
++        self.assertEqual(b.counts['pilot']['configurations'][1]['failed'],1)
++        self.assertIsNone(b.rows[2].means);self.assertIsNone(b.used_se);self.assertEqual(len(calls),6)
++        self.assertTrue(attempts[2].results[1].artifacts)  # retained earlier files are not eligible estimates
++        forged=attempts[2].results[1].model_dump(mode='json');forged['patients'][0].update(status='completed',reason=None,effect=attempts[2].results[0].patients[0].effect.model_dump())
++        with self.assertRaisesRegex(ValueError,'unaccepted joint fit'):CohortResult.model_validate_json(canonical(forged))
++
++    def test_full_ledger_and_independent_cohorts_required_not_nights_or_seed_reruns(self):
++        design,attempts,admit,calls,reduce=fixture()
++        for changed in (attempts[:-1],attempts+[attempts[0]],attempts[1:]+[attempts[1]]):
++            with self.assertRaisesRegex(ValueError,'full planned attempt ledger'):s.reduce_sampling_se(design,changed,expected_design=design.reference,admit_whole_cohort=admit)
++        for field in ('replicate_id','cohort_id','panel_id','generation_key','member_ids','fit_seeds'):
++            value=design.model_dump(mode='json');value['planned'][1][field]=value['planned'][0][field]
++            with self.subTest(field=field),self.assertRaises(ValueError):s.SamplingDesign.model_validate_json(canonical(value))
++
++    def test_malformed_stratum_settings_input_result_and_nonfinite_refuse(self):
++        for field,new in (('unit','quality'),('cutoff_day',15),('member_ordinal',0),('definition',reference('wrong','wrong')),
++                          ('numerical_settings',[{},{}]),('configurations',list(reversed(s.CONFIGS)))):
++            design,*_=fixture();value=design.model_dump(mode='json');value[field]=new
++            with self.subTest(field=field),self.assertRaises(ValueError):s.SamplingDesign.model_validate_json(canonical(value))
++        for mutate in ('result_hash','wrong_patient','wrong_config','diagnostic','integration','nonfinite','partial_member','artifact'):
++            design,attempts,admit,calls,reduce=fixture();raw=attempts[0].results[0].model_dump(mode='json')
++            if mutate=='result_hash':raw['input_sha256']='9'*64
++            elif mutate=='wrong_patient':raw['patients'][0]['patient_id']='wrong'
++            elif mutate=='wrong_config':raw['configuration']=s.CONFIGS[1];raw['source_set_sha256']='9'*64
++            elif mutate=='nonfinite':raw['patients'][0]['effect']['mean']=float('nan')
++            elif mutate=='partial_member':raw['patients'][-1].update(status='failed',effect=None,reason='failed-late')
++            elif mutate=='artifact':raw['artifacts'].pop(1)
++            else:
++                pd=raw['patients'][0]['diagnostics']
++                if mutate=='diagnostic':pd['effect_mcmc']['rhat']['effect']=1.02
++                else:pd['integration']['attempted'][-1]['mean_integration_se']=1.
++                raw['diagnostics']['patients'][raw['patients'][0]['patient_id']]=deepcopy(pd)
++            with self.subTest(mutate=mutate),self.assertRaises(ValueError):
++                attempts[0].results[0]=CohortResult.model_validate_json(json.dumps(raw));reduce()
++
++    def test_admission_mandatory_and_precedes_scalar_gate_selection(self):
++        design,attempts,admit,calls,reduce=fixture()
++        def refuse(*args):raise ValueError('TEST-INERT artifact admission refused')
++        with patch.object(s,'sample_scale',side_effect=AssertionError('no scalar reduction before admission')):
++            with self.assertRaisesRegex(ValueError,'artifact admission refused'):
++                s.reduce_sampling_se(design,attempts,expected_design=design.reference,admit_whole_cohort=refuse)
++        def wrong(p,r):return admit(p,r)|dict(result=reference('wrong-result','wrong'))
++        with self.assertRaisesRegex(ValueError,'mismatched binding'):s.reduce_sampling_se(design,attempts,expected_design=design.reference,admit_whole_cohort=wrong)
++        b=reduce();self.assertIn('separately reviewed isolated',b.actual_admission)
++
++    def test_incomplete_pair_preserved_without_peer_scalar_or_invented_success(self):
++        design,attempts,admit,calls,reduce=fixture();attempts[2].results[1]=None;attempts[2].reason='TEST-INERT interrupted'
++        b=reduce();self.assertEqual(b.counts['pilot']['incomplete'],1);self.assertEqual(b.counts['pilot']['attempted'],3)
++        self.assertEqual(b.counts['pilot']['paired_success'],2);self.assertIsNone(b.rows[2].means);self.assertIsNone(b.used_se)
++
++    def test_final_minimum_tightens_never_relaxes_and_does_not_rewrite_pilot(self):
++        *_,pilot_reduce=fixture(((.1,.2,.3),(.2,.4,.6)));pilot=pilot_reduce();frozen=pilot.model_dump_json()
++        for spread in (.01,1.):
++            values=tuple(spread*(i-15) for i in range(30))
++            *_,reduce=fixture(((.1,.2,.3),(.2,.4,.6)),confirmation=(values,values));final=reduce()
++            self.assertEqual(final.status,'final');self.assertEqual(final.counts['confirmation']['attempted'],30)
++            if spread==.01:self.assertLess(final.used_se,pilot.used_se)
++            else:self.assertEqual(final.used_se,pilot.used_se)
++            self.assertAlmostEqual(final.used_se,min(.1,spread*math.sqrt(77.5)))
++            self.assertLessEqual(final.epsilon,pilot.epsilon);self.assertEqual(pilot.model_dump_json(),frozen)
++        *_,reduce=fixture(((.1,.2,.3),(.2,.4,.6)),confirmation=((0.,)*30,(1.,)*30));b=reduce()
++        self.assertEqual(b.status,'unresolved');self.assertTrue(b.zero_se_requires_analytic_truth)
++
++    def test_earlier_smaller_matching_scale_requires_separate_admission(self):
++        *_,small=fixture(((.01,.02,.03),(.02,.04,.06)));prior=small()
++        *_,reduce=fixture();
++        with self.assertRaisesRegex(ValueError,'separate isolated admission'):reduce(earlier=[prior])
++        b=reduce(earlier=[prior],admit_earlier_binding=lambda value:None)
++        self.assertEqual(b.used_se,prior.used_se);self.assertEqual(b.epsilon,prior.epsilon)
++
++    def test_closed_binding_reader_exact_target_final_status_and_counts_cannot_be_forged(self):
++        *_,reduce=fixture();b=reduce();ref=reference('matched-estimator-sampling-SE',b.model_dump(mode='json'));target=b.rows[0].target.model_dump(mode='json')
++        self.assertEqual(s.matched_estimator_sampling_se(b,expected_binding=ref,target=target),2.)
++        for change in (dict(patient_id='wrong'),dict(ordinal=2),dict(history_sha256='0'*64),dict(cutoff='2026-01-16T12:00:00+00:00')):
++            with self.assertRaisesRegex(ValueError,'unmatched'):s.matched_estimator_sampling_se(b,expected_binding=ref,target=target|change)
++        with self.assertRaises(ValueError):s.matched_estimator_sampling_se(b,expected_binding=reference('self','wrong'),target=target)
++        changed=deepcopy(target);changed['expected_effect_artifacts'][0]['sha256']='8'*64
++        with self.assertRaisesRegex(ValueError,'unmatched'):s.matched_estimator_sampling_se(b,expected_binding=ref,target=changed)
++        for field in ('status','counts','epsilon','extra'):
++            value=b.model_dump(mode='json')
++            if field=='status':value['status']='final'
++            elif field=='counts':value['counts']['pilot']['attempted']=36
++            elif field=='epsilon':value['epsilon']=.01
++            else:value['authority']=True
++            with self.subTest(field=field),self.assertRaises(ValueError):s.validate_binding(value)
++
++    def test_wrong_planned_cohort_and_reused_integration_stream_cannot_pool(self):
++        design,attempts,admit,calls,reduce=fixture()
++        attempts[0].inputs=attempts[1].inputs
++        with self.assertRaisesRegex(ValueError,'planned cohort'):reduce()
++        value=design.model_dump(mode='json')
++        value['planned'][1]['fit_seeds'][1]['effect_rollout']=value['planned'][0]['fit_seeds'][0]['effect_rollout']
++        with self.assertRaisesRegex(ValueError,'stream reuse'):s.SamplingDesign.model_validate_json(canonical(value))
++
++    def test_sparse_final_failures_remain_unresolved_not_infinite_precision_scale(self):
++        confirmation=(tuple(float(i) for i in range(30)),tuple(float(i) for i in range(30)))
++        *_,reduce=fixture(confirmation=confirmation,failed=tuple((i,1) for i in range(5,33)))
++        b=reduce();self.assertEqual(b.counts['confirmation']['attempted'],30)
++        self.assertEqual(b.counts['confirmation']['paired_success'],2);self.assertEqual(b.counts['confirmation']['paired_failure'],28)
++        self.assertIsNone(b.used_se);self.assertEqual(b.status,'unresolved')
++
++    def test_refinement_wrapper_passes_only_exact_scalar_and_keeps_other_gates_unresolved(self):
++        from methods.truth import refinement
++        *_,reduce=fixture(((.1,.2,.3),(.2,.4,.6)));b=reduce();target=b.rows[0].target.model_dump(mode='json')
++        binding=dict(patient_id=target['patient_id'],history_sha256=target['history_sha256'],target=dict(cutoff=target['cutoff']))
++        calls=[]
++        def inert_rows(*args,**kw):calls.append(kw);return dict(status='unresolved',production_truth=False,finite_grid_discrepancy_bound=None)
++        ref=reference('matched-estimator-sampling-SE',b.model_dump(mode='json'))
++        with patch.object(refinement,'reduce_rows',inert_rows):
++            report=s.reduce_refinement_with_sampling_se([],[],binding,b,expected_sampling_binding=ref,target=target)
++        self.assertAlmostEqual(calls[0]['matched_se'],.1);self.assertEqual(report['status'],'unresolved');self.assertIsNone(report['finite_grid_discrepancy_bound'])
++        binding['history_sha256']='0'*64
++        with self.assertRaisesRegex(ValueError,'exact scored Hstar'):s.reduce_refinement_with_sampling_se([],[],binding,b,expected_sampling_binding=ref,target=target)
++
++    def test_active_import_process_network_and_private_filesystem_guards(self):
++        import subprocess,socket
++        for module in ('numpy','scipy','pymc','sqlite3','services.foundation.store'):
++            with self.subTest(module=module),self.assertRaises(AssertionError):__import__(module)
++        with self.assertRaises(AssertionError):subprocess.run(['TEST-INERT-NEVER-START'])
++        with self.assertRaises(AssertionError):socket.create_connection(('TEST-INERT-NEVER-CONNECT',1))
++        with self.assertRaises(AssertionError):Path('C:/TEST-INERT-NEVER-TOUCH/private.txt').read_bytes()
++
++
++class SensitivityTests(unittest.TestCase):
++    def test_bias_RMSE_common_truth_cancellation_and_no_RMSE_cancellation(self):
++        a=sensitivity([1.,4.],[0.,2.],[0.,2.],[.1,.2])
++        b=sensitivity([1.,4.],[0.,2.],[.1,1.8],[.1,.2])
++        self.assertAlmostEqual(a['bias_allowance'],.15);self.assertAlmostEqual(a['rmse_allowance'],math.sqrt(.025))
++        self.assertEqual(a['paired_mean_error_difference'],1.5);self.assertEqual(a['paired_mean_error_difference'],b['paired_mean_error_difference'])
++        self.assertFalse(a['truth_cancels_for_squared_error_or_RMSE_difference']);self.assertNotEqual(a['rmse'],b['rmse'])
++        self.assertEqual(a['scope'],'engineering_allowance')
++
++    def test_coverage_sign_ranking_boundary_equality_is_ambiguous(self):
++        report=sensitivity([0.,0.,0.],[0.,0.,0.],[0.,1.,1.1],[.1,.1,.1],[[-1.,1.],[.9,2.],[.5,2.]])
++        self.assertEqual(report['coverage'],dict(lower_count=2,upper_count=3,denominator=3,ambiguous=1))
++        self.assertTrue(report['sign_ambiguous'][0]);self.assertIn((1,2),report['ranking_ambiguous'])
++        for bad in (float('nan'),float('inf'),-.1):
++            with self.assertRaises(ValueError):sensitivity([0.],[0.],[0.],[bad])
++
++    def test_common_truth_cancellation_refuses_reordered_unequal_or_duplicated_pairs(self):
++        for ids in ((['a','b'],['b','a'],['a','b']),(['a','b'],['a','b'],['a','c']),(['a','a'],['a','a'],['a','a'])):
++            with self.assertRaisesRegex(ValueError,'same distinct ordered'):
++                s.truth_sensitivity([1.,2.],[2.,3.],[0.,1.],[.1,.1],pair_ids=ids)
++
++    def test_source_semantics_and_existing_science_contracts_are_not_reinterpreted(self):
++        worker=(ROOT/'services/learner/cohort_worker.py').read_text()
++        self.assertIn('mean=float(effect.mean())',worker);self.assertIn('for member in members:member.update(status=status,reason=reason,effect=None)',worker)
++        self.assertEqual(Effect.model_fields['sd'].annotation,float)
++        tree=ast.parse((ROOT/'methods/truth/sampling_se.py').read_text())
++        modules=[n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)]
++        self.assertFalse(any(name and name.startswith(('numpy','pymc','scipy','services')) for name in modules))

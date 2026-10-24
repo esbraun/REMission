@@ -1,0 +1,34 @@
+{
+  "scope": "bounded public source and contract map; no tests/imports/computation/runtime or artifact payload reads",
+  "source_commit": "9292844a46aa4ba46701c9bb45cd703f0862dee6",
+  "branch": "docs/poc-ta2-se-admission-map-20261024",
+  "base": "9292844a46aa4ba46701c9bb45cd703f0862dee6",
+  "application_sources": [
+    {"path":"services/foundation/analysis.py","blob":"fd4a6d44af9561f22cdc6b7318664816bc2037d5","bytes":34882,"sha256":"ea5e2c0040f7314b147468184101b3739459298df14b3fb329c662a258a7c24e"},
+    {"path":"services/foundation/cohort_analysis.py","blob":"40c932a89983eb7de79e56fa4303b5313f123fda","bytes":10712,"sha256":"b07615bbec5812c59008573c3880bb2e5161ccceae16cc5715f00101756be490"},
+    {"path":"services/foundation/appointment.py","blob":"c0c0d424258a02f645e07eec2f826ab32df4948e","bytes":7887,"sha256":"31f3cb60520bcab76c5e5d537bdc10054a92cca84370dca29090517004a4898c"},
+    {"path":"services/foundation/app.py","blob":"b77878bbe7b98c3a10b5be42f6a52b57347757d8","bytes":76640,"sha256":"7de986e2400acd55878708d54403e395958eb12c9924c99e664ab461419b56b0"},
+    {"path":"services/learner/cohort_worker.py","blob":"4acc1f2727a36774c8b8ecb7aea81734a03fb0be","bytes":11363,"sha256":"633d59dc1730755acd2f6f40df739bceecab172a5c7c286cd4486a9a1569a504"},
+    {"path":"services/evaluator/restricted.py","blob":"f48a93b68cdd4cfe5b48a48e57c85920b0171ab3","bytes":3044,"sha256":"6d26c756fbcdadb9796ae595498c7f94cd06aa0922dd845c50d4c181a25dcdc6"}
+  ],
+  "contracts": [
+    {"path":"contracts/domain/cohort.py","blob":"a0c8bcf388182ba42bf3e2fc30b3db9e42684773","bytes":14128,"sha256":"da8bd9496ae72be8fb2e547e1cac1ff1f30c5d2574817225730c865904bce5ca"},
+    {"path":"contracts/runs/private.py","blob":"31554a866a1e271dd85ea3bdfcb0e7ff1256baa4","bytes":39707,"sha256":"8d14cc32a886446796c4d09924016a6d372a75b0ff00df6697864020bf9d1b43"},
+    {"path":"contracts/runs/private_v2.py","blob":"faa66ba2eacc3b6bb0e099db7e815cd5fbba0dc9","bytes":18420,"sha256":"69b87e8e5d0c99aa9c15fb950cb6265078f32c861aa91284ab31bff465dc763e"}
+  ],
+  "accepted_public_plan_blobs": [
+    {"blob":"b97296f43598fb9d2cff2473a4910dc9c1d999bb","bytes":18794,"scope":"accepted TA2-SE plan; docs only"},
+    {"blob":"f41b34efed3d7e3fd08dac846e3fc5e8886d95f5","bytes":10658,"scope":"different independent critique; not fit/result acceptance"}
+  ],
+  "line_focus": {
+    "cohort.py":"48-94,196-246",
+    "analysis.py":"328-435,443-459",
+    "cohort_analysis.py":"55-107,110-157",
+    "appointment.py":"30-112",
+    "app.py":"836-873",
+    "cohort_worker.py":"43-68,130-159",
+    "private.py":"276-315,430-471,538-583",
+    "private_v2.py":"57-66",
+    "restricted.py":"1-60"
+  }
+}
