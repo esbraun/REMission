@@ -1,0 +1,21 @@
+diff --git a/services/foundation/support_s2_prediction.py b/services/foundation/support_s2_prediction.py
+index c06a00a..0a02970 100644
+--- a/services/foundation/support_s2_prediction.py
++++ b/services/foundation/support_s2_prediction.py
+@@ -21,11 +21,15 @@ def current_sources(db,patient,cutoff,origin,verify_closure):
+     from .workflow import history
+     from .protocol import project_protocol,validate_snapshot
+     full=history(db,patient)
++    from .support_s2_authority import authorization_verifier,interactive_stage_verifier
++    interactive=any(r.kind=='support_decision' and r.policy.id=='poc-support-s2-controller-source-v1' for r in full.records)
++    if verify_closure is None and interactive:verify_closure=interactive_stage_verifier(db,full)
+     snapshots=[r for r in full.as_known_at(cutoff) if r.kind=='protocol_snapshot' and r.family=='support']
+     if len(snapshots)!=1 or snapshots[0].activation_at!=origin:
+         raise ValueError('S2_pending_reactivation_or_delayed_activation_context_coverage')
+     validate_snapshot(full,snapshots[0],cutoff)
+-    projection=project_protocol(full,cutoff,family='support',origin=origin,verify_closure=verify_closure)
++    projection=project_protocol(full,cutoff,family='support',origin=origin,verify_closure=verify_closure,
++        verify_authorization=authorization_verifier(db,full) if interactive else None)
+     # Inclusive current consent heads retain withdrawals/retractions at cutoff;
+     # feature projection remains strictly predecision. They are separate inputs.
+     heads=lineage_heads(visible_records([r for r in full.records if r.kind=='consent'

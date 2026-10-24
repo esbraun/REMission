@@ -45,3 +45,25 @@ expected failures. Known failed reviewer/producer evidence retained; schema,
 config, web, Store, scientific/N/protected sources unchanged. Four inverses and
 all17 source blobs re-frozen. No runtime/actual/merge/PR. See Repair1 handoff and
 index; same independent Astra repaired SOURCE review required. Frozen STOP.
+
+Repair2: same independent full-source review e80cae850fdd2343cf3bc982d130eca611b22ec3
+verified all57 but required ordinary continuation after withdrawal/unapproved
+renewal and the existing owned review task. Exact source candidate
+d1042620df29b535068f0ada6890903f1dfab469, tree
+cf391b1b41578d98115716b5b3b2b03cab074a1d, repair base
+a8c96b3d3d1ec95deaac97f0ca882486888e8fb1. Two S2 routing branches now require
+active status; inactive support uses unchanged ordinary background continuation
+under existing hold/death/N gates. Withdrawal atomically inserts an owned task
+with exact consent/current decision/real command refs. Legacy tasks.bundle_id
+truthfully anchors the real withdrawal command, never an approval bundle; ROOT
+authorized bounded preparation, with reader/reference compatibility explicitly
+reserved for independent review. Existing task readers use owned patient/payload
+and never dereference the anchor as an approval. Final62 guarded PASS, no expected
+failures, all57 retained; real between-review continuation/reentry and owned route
+task replay/stale/read/fault rollback controls. All prior failures/repros retained.
+Exact17 source closure,18 protected objects/four inverses, unchanged schema/config/
+web and inherited TS-only evidence. No Store/app/UI/science/N/protocol changes in
+Repair2; no sealed operations, retained numerics17/18 one FAIL. Full Repair2 handoff,
+checks/proof/public Git-byte index frozen; no actual/GO/push/merge/PR. STOP for SAME
+independent Astra full-source re-review. Larger actual/scientific/browser/release
+obligations above remain pending, not waived.
