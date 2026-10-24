@@ -140,12 +140,12 @@ def predecision_features(history,*,cutoff,context,context_projection_sha256,acti
     return inverse.replace('for ref in refs:','for ref in decision.context:')
 
 
-def prediction_result(p,status='fallback',reason='current_mask_not_binary',candidate=None):
+def prediction_result(p,status='failed',reason='worker_refused',candidate=None):
     launch=dict(schema_version='s2-saved-prediction-launch-v1',attempt_id=p.attempt_id,input_sha256=sha(p.model_dump(mode='json')),
         configuration=CONFIG_REF,source_commit='6'*40,learner_image='sha256:'+'7'*64,installed_closure_sha256='8'*64,claim_sha256='9'*64)
     value=dict(schema_version='s2-saved-prediction-source-1.0.0',kind='poc_support_s2_saved_prediction_result',attempt_id=p.attempt_id,
         input_sha256=launch['input_sha256'],context_reference=p.context.reference.model_dump(),fit_collection_reference=p.fit.collection_reference.model_dump(),
-        configuration=CONFIG_REF,launch=launch,binary=p.fit.result.semantics.model_dump(mode='json'),candidate=candidate,
+        configuration=CONFIG_REF,launch=launch,binary=None if candidate is None else p.fit.result.semantics.model_dump(mode='json'),candidate=candidate,
         status=status,reason=reason,probability=.5 if candidate is None else candidate['probability'],serving_authority=False)
     return SavedPredictionResult.model_validate_json(canonical(value)),launch
 
@@ -219,7 +219,7 @@ class SavedChecks(unittest.TestCase):
     def test_saved_result_finite_status_identity_and_no_ready_promotion(self):
         r,t=prediction_result(self.p);validate_saved_result(r,self.p,t,at=self.ctx.decision.cutoff)
         for mutate in (lambda d:d.update(probability=.7),lambda d:d.update(status='candidate_ready'),
-                lambda d:d['binary']['artifact'].update(sha256='0'*64),lambda d:d['launch'].update(claim_sha256='0'*64)):
+                lambda d:d.update(binary=dict(self.fit.result.semantics.model_dump(mode='json'),artifact=dict(self.fit.result.semantics.artifact.model_dump(mode='json'),sha256='0'*64))),lambda d:d['launch'].update(claim_sha256='0'*64)):
             d=r.model_dump(mode='json');mutate(d)
             with self.assertRaises(ValueError):validate_saved_result(SavedPredictionResult.model_validate_json(canonical(d)),self.p,t,at=self.ctx.decision.cutoff)
     def test_scalar_precision_all_thresholds_and_no_relaxation(self):
@@ -370,7 +370,7 @@ class SavedChecks(unittest.TestCase):
         precision=dict(probability=.7,rhat=1.,ess_bulk=500.,ess_tail=500.,mcse=.01,half_probability=.7,constant_chain=False,status='candidate_ready')
         candidate=dict(schema_version='s2-prediction-candidate-1.0.0',request_sha256=sha(self.p.request.model_dump(mode='json')),
             target_id=self.p.request.target_id,context_id=self.p.request.context_id,context_version=self.p.request.context_version,
-            status='candidate_ready',reason='INERT precision metadata, never numerical evidence',primary=precision,
+            status='candidate_ready',reason='candidate empirical guards only; no serving authority',primary=precision,
             cells=[dict(delta0=a,delta1=b,precision=copy.deepcopy(precision)) for a,b in CELLS],probability=.7,
             serving_authority=False,empirical_domain_only=True)
         r,t=prediction_result(self.p,'candidate_ready','candidate_evidence_only',candidate)
@@ -404,7 +404,7 @@ class SavedChecks(unittest.TestCase):
         candidate=S2Result.model_validate_json(canonical(dict(schema_version='s2-prediction-candidate-1.0.0',
             request_sha256=sha(self.p.request.model_dump(mode='json')),target_id=self.p.request.target_id,
             context_id=self.p.request.context_id,context_version=self.p.request.context_version,status='probability_unready',
-            reason='INERT API declaration; no numerical calculation',primary=None,
+            reason='primary/cell precision, neutrality or sensitivity reversal',primary=None,
             cells=[dict(delta0=a,delta1=b,precision=None) for a,b in CELLS],probability=.5,
             serving_authority=False,empirical_domain_only=True)))
         _,trusted=prediction_result(self.p)
@@ -424,6 +424,42 @@ class SavedChecks(unittest.TestCase):
         result=fn(masked,Path('INERT-NO-BINARY'),Path('INERT-NO-OUTPUT'),budget=worker['Budget'](90.,clock=lambda:100.,monotonic=lambda:10.),
             trusted=trusted,progress=lambda e:None)
         self.assertEqual(result.reason,'current_mask_not_binary');self.assertEqual(len(loaded),1)
+    def test_actual_saved_fit_admission_requires_current_all12_and_external_custody(self):
+        ns=namespace(FOUNDATION);old=namespace('services/foundation/support_s2_analysis.py');db=PredictionDB(self.ctx)
+        row=dict(job_id=self.fit.product.attempt_id,owner_id='UNIT-owner',patient_id=self.fit.product.initial.export.provenance.target_id,
+            status='completed',finished_at='INERT-terminal-time',request_json=self.fit.product.model_dump_json(),
+            input_sha256=sha(self.fit.product.model_dump(mode='json')),cohort_json=canonical([m.patient_id for m in self.fit.product.initial.export.provenance.members]),
+            history_sha256=self.fit.product.initial.export.provenance.histories_sha256,result_json=self.fit.result.model_dump_json(),
+            progress_json=canonical(dict(trusted_launch=self.fit.launch.model_dump(mode='json'))))
+        db.attempts=[row];current=[self.fit.product.initial.export]
+        fn=function_without_imports(FOUNDATION,'admitted_fit',**dict(ns,export=lambda *args,**kw:current[0],
+            store_identity=old['store_identity'],validate_native_collection=old['validate_native_collection']))
+        custody=self.fit.collection.model_dump(mode='json',by_alias=True)
+        kwargs=dict(file_custody=custody,collection_sha256=sha(custody),selection_key='UNIT-original-selection',source_commit='1'*40)
+        self.assertEqual(fn(db,'UNIT-owner',row['job_id'],**kwargs),self.fit)
+        with self.assertRaises(ValueError):fn(db,'UNIT-owner',row['job_id'],**dict(kwargs,file_custody=dict(custody,terminal='running')))
+        current[0]=current[0].model_copy(update=dict(contribution_sha256='0'*64))
+        with self.assertRaisesRegex(ValueError,'asof_authority'):fn(db,'UNIT-owner',row['job_id'],**kwargs)
+        current[0]=self.fit.product.initial.export
+        row['status']='running'
+        with self.assertRaisesRegex(ValueError,'completed_owned'):fn(db,'UNIT-owner',row['job_id'],**kwargs)
+    def test_recursive_new_scalar_import_closure_has_no_science(self):
+        forbidden={'numpy','scipy','pymc','pytensor','arviz','arviz_stats','xarray','netCDF4','pandas','statsmodels'}
+        visited=set()
+        def visit(path):
+            path=Path(path)
+            if path in visited or not (ROOT/path).is_file():return
+            visited.add(path)
+            for node in ast.parse((ROOT/path).read_text()).body:
+                if isinstance(node,ast.Import):
+                    for alias in node.names:self.assertNotIn(alias.name.split('.')[0],forbidden)
+                elif isinstance(node,ast.ImportFrom):
+                    self.assertNotIn((node.module or '').split('.')[0],forbidden)
+                    target=Path((node.module or '').replace('.','/')+'.py')
+                    if node.level:target=path.parent/('../'*(node.level-1))/target
+                    if node.module:visit(target)
+        for path in ('contracts/domain/support_s2_saved.py',FOUNDATION,'methods/support/s2_data.py'):visit(path)
+        self.assertGreaterEqual(len(visited),15)
 
 
 if __name__=='__main__':unittest.main()

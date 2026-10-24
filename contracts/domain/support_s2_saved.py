@@ -33,6 +33,14 @@ CONFIG=dict(schema='s2-saved-prediction-source-1.0.0',fit_configuration=FIT_REF,
         blocked_native='existing independent supervisor/watchdog required; no syscall preemption claim'),
     qualification=dict(image=None,source_closure=None,installed_API=None,genuine_fit=None,operation=None),
     executable=False,serving_authority=False)
+CANDIDATE_REASONS={
+    'candidate_ready':{'candidate empirical guards only; no serving authority'},
+    'probability_unready':{'primary/cell precision, neutrality or sensitivity reversal'},
+    'arm_unavailable':{'no complete two-action opportunity in an arm'},
+    'numerical_unready':{'S2 horizon/parameter support mismatch','nonfinite/underflow S2 arithmetic',
+        'draw outside candidate empirical domain','invalid reference quality expectation',
+        'exact-zero rounding threshold arithmetic ambiguous','at least one required sensitivity sign is unresolved'}}
+CONFIG['candidate_reasons']={key:sorted(value) for key,value in CANDIDATE_REASONS.items()}
 CONFIG_REF=reference('poc-support-s2-saved-prediction-source-v1',CONFIG)
 
 
@@ -238,6 +246,13 @@ class SavedPredictionResult(StrictModel):
         elif self.probability!=.5:raise ValueError('S2_saved_unready_requires_point5')
         if self.status!='candidate_ready' and self.candidate is not None and self.candidate.status=='candidate_ready':
             raise ValueError('S2_saved_status_candidate_contradiction')
+        if self.candidate is not None and self.candidate.reason not in CANDIDATE_REASONS[self.candidate.status]:
+            raise ValueError('S2_saved_candidate_requires_finite_reference_reason')
+        if self.reason=='current_mask_not_binary' and (self.candidate is not None or self.binary is not None):
+            raise ValueError('S2_saved_mask_fallback_has_no_binary_or_prediction')
+        if self.reason=='numerical_or_precision_unready' and (self.candidate is None or self.binary is None):
+            raise ValueError('S2_saved_numerical_fallback_retains_candidate_and_binary')
+        if self.status=='failed' and self.candidate is not None:raise ValueError('S2_saved_failure_cannot_retain_candidate')
         expected={'candidate_ready':{'candidate_evidence_only'},'fallback':{'current_mask_not_binary','numerical_or_precision_unready'},
             'failed':{'worker_refused','deadline_exceeded'}}
         if self.reason not in expected[self.status]:raise ValueError('S2_saved_status_reason_contradiction')
@@ -262,6 +277,8 @@ def validate_saved_result(result,product,trusted,*,at):
             raise ValueError('S2_saved_candidate_exact_context_mismatch')
     if result.status=='candidate_ready' and product.context.allowed_actions!=('support_prompt','no_prompt'):
         raise ValueError('S2_saved_ready_requires_current_binary_mask')
+    if result.reason=='current_mask_not_binary' and product.context.allowed_actions==('support_prompt','no_prompt'):
+        raise ValueError('S2_saved_mask_fallback_current_mask_contradiction')
     if len(canonical(result.model_dump(mode='json')).encode())>RESULT_CAP:
         raise ValueError('S2_saved_summary_byte_cap')
     return result
