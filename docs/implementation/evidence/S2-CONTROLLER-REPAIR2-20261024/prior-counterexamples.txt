@@ -1,0 +1,6 @@
+PASS original16:00consent/20:00dispatch counterexample now cancels
+PASS original latejournal counterexample now rollsback consumedreceipt
+REPRO successful actual withdrawal command has no task insert; final loop= withdrawn
+REPRO subsequent ordinary advance after ('withdraw', 'advance') refuses: ValueError stale_or_not_visible_dependency
+REPRO subsequent ordinary advance after ('withdraw', 'consent', 'advance') refuses: ValueError stale_or_not_visible_dependency
+SOURCE ONLY: actual scalar/contract/AST bodies with inert typed records/transactions; no app/SQLite/science/process/network

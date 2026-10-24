@@ -1,0 +1,209 @@
+{
+  "schema": "s2-controller-repair1-source-proof-v1",
+  "status": "SOURCE_REPAIR_PREPARED_PENDING_INDEPENDENT_REREVIEW",
+  "production_base": "88aec132ad0cbf182e2fb1fc697f479477ef2e36",
+  "repair_base": "837abdbb40c69c1fa4b2be8b2e189e06b5e5bb36",
+  "source_candidate": "5a17897d6a9e1fe7db1ae6e47187d3e8dd3b19c3",
+  "source_tree": "705f8d4256e26975202d5bd324a51ea3c7eb337c",
+  "failed_SOURCE_review": "b5ec20e691b712a25dded65f360ac8a9ce44abfe",
+  "failed_review_checks": "96904824491e83980643c9a0754f699615967c3c",
+  "failed_review_index": "9b766d69912a4561cdfafb8e62a828c616f20526",
+  "reviewer_counterexample_script": "601cd7d337f04f30f7e0c0246d8816f8b614c463",
+  "reviewer_counterexample_log": "27d71a207e1509bab318b41b57625c0d4f944dda",
+  "lineage_proposal": "9913b82e271e97427c164e152a758250d007e56f",
+  "lineage_PLAN_review": "b8e1317505c2c29c6fc7f287dbd6aac89dac6c8a",
+  "lineage_PLAN_checks": "317e4ae001950f4d1de1252bb37deae73b13aeb3",
+  "lineage_PLAN_index": "c029fb136e0ad29b223ff9dfcd2f2defe6391a2d",
+  "source_checks": {
+    "passed": 57,
+    "failed": 0,
+    "expected_failures": 0,
+    "latest_log": "repair1-r8.txt",
+    "known_before_lineage_fix": "repair1-r4:52 PASS plus2 producer FAIL, explicit expectedFailure traces retained",
+    "actual_SQLite_app_science_browser": false
+  },
+  "inverses": [
+    {
+      "group": "app_controller",
+      "paths": [
+        "contracts/domain/support_s2_controller.py",
+        "services/foundation/app.py",
+        "services/foundation/store.py",
+        "services/foundation/workflow.py",
+        "services/foundation/support_s2_controller.py",
+        "services/foundation/support_s2_authority.py",
+        "services/foundation/support_s2_invocation.py",
+        "tests/run_s2_controller_source.py",
+        "tests/test_s2_controller_source.py",
+        "tests/freeze_s2_controller_source.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-app_controller.patch",
+      "git_blob": "889af677e76f6cf783a541bd4c687ec9b86cca25"
+    },
+    {
+      "group": "simulation_protocol",
+      "paths": [
+        "services/foundation/simulation.py",
+        "services/foundation/protocol.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-simulation_protocol.patch",
+      "git_blob": "1ba29dee13582af6b091d8d7ed3d60c46f27a10a"
+    },
+    {
+      "group": "saved_prediction",
+      "paths": [
+        "services/foundation/support_s2_prediction.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-saved_prediction.patch",
+      "git_blob": "ce751fd352615263e59a0a334bda45e3ecd31cd8"
+    },
+    {
+      "group": "ui_shell",
+      "paths": [
+        "web/src/main.tsx",
+        "web/src/types.ts",
+        "web/src/SimulationPanel.tsx",
+        "web/src/SupportPanel.tsx"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-ui_shell.patch",
+      "git_blob": "2d22df7ae7c2cb154c17e49655899d2794bd0502"
+    }
+  ],
+  "inverse_reconstructed_tree": "d0be0db97cf1a8364de1e2399116cb0709440ffc",
+  "inverse_remaining_source_paths": [],
+  "protected": [
+    {
+      "path": "methods",
+      "base_git_object": "5c5586bf880df8eefe910066bf814cf745f6d7f9",
+      "candidate_git_object": "5c5586bf880df8eefe910066bf814cf745f6d7f9",
+      "identical": true
+    },
+    {
+      "path": "services/generator",
+      "base_git_object": "a6308207a15722587cd6b5f26fbb526a3606e6b0",
+      "candidate_git_object": "a6308207a15722587cd6b5f26fbb526a3606e6b0",
+      "identical": true
+    },
+    {
+      "path": "services/learner",
+      "base_git_object": "3a7585abce9bca030e0411b43d16a96fa3f660a9",
+      "candidate_git_object": "3a7585abce9bca030e0411b43d16a96fa3f660a9",
+      "identical": true
+    },
+    {
+      "path": "contracts/runs",
+      "base_git_object": "9473f93b51d6c0295f0da6daca74882475c526f8",
+      "candidate_git_object": "9473f93b51d6c0295f0da6daca74882475c526f8",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/boundaries.py",
+      "base_git_object": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+      "candidate_git_object": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/evidence_v2.py",
+      "base_git_object": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+      "candidate_git_object": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/nof1_config.py",
+      "base_git_object": "a291240de324739bc606e8ce883ff2dfc4961904",
+      "candidate_git_object": "a291240de324739bc606e8ce883ff2dfc4961904",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/nof1_app.py",
+      "base_git_object": "12a45d3a63c204b11dfaa35e5653ac6eaeadadbc",
+      "candidate_git_object": "12a45d3a63c204b11dfaa35e5653ac6eaeadadbc",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2.py",
+      "base_git_object": "eb593adb5e30d58e2822dfea01e57be375a4e54a",
+      "candidate_git_object": "eb593adb5e30d58e2822dfea01e57be375a4e54a",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_app.py",
+      "base_git_object": "78c4c26e865e47cc9e6ce6ecaacdb535febee06f",
+      "candidate_git_object": "78c4c26e865e47cc9e6ce6ecaacdb535febee06f",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_saved.py",
+      "base_git_object": "74fbe93f7d49538e7d6af361360c4294a5b4d439",
+      "candidate_git_object": "74fbe93f7d49538e7d6af361360c4294a5b4d439",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_native.py",
+      "base_git_object": "9093f551b8177f449dbf189ed3531d8be306f2e8",
+      "candidate_git_object": "9093f551b8177f449dbf189ed3531d8be306f2e8",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_fit.py",
+      "base_git_object": "66bfd348ee4cc435ba35b8bdc40315f4b34296be",
+      "candidate_git_object": "66bfd348ee4cc435ba35b8bdc40315f4b34296be",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/nof1.py",
+      "base_git_object": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+      "candidate_git_object": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/nof1_clock.py",
+      "base_git_object": "17aaa857d3d5039feceec9539e78ded207fefedc",
+      "candidate_git_object": "17aaa857d3d5039feceec9539e78ded207fefedc",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/nof1_analysis.py",
+      "base_git_object": "47a2397768be9aa6ed1dff1576ba9f829b022894",
+      "candidate_git_object": "47a2397768be9aa6ed1dff1576ba9f829b022894",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/support_s2_analysis.py",
+      "base_git_object": "164a0a892e2f1c7672557d61f2e71a75e7256c53",
+      "candidate_git_object": "164a0a892e2f1c7672557d61f2e71a75e7256c53",
+      "identical": true
+    },
+    {
+      "path": "tooling",
+      "base_git_object": "017b4db336019ef3825b79ac63e6228d3e648871",
+      "candidate_git_object": "017b4db336019ef3825b79ac63e6228d3e648871",
+      "identical": true
+    }
+  ],
+  "schema_blob": "ed39e96d928885f87aff5fc158357c530ee4aebf",
+  "config_blob": "fdd717fa52495b0e99e00c209824bebc3d0d42a4",
+  "schema_config_unchanged": true,
+  "Store_source_unchanged_from_repair_base": true,
+  "TS": {
+    "rerun": false,
+    "reason": "Entire web tree and schema/config unchanged from reviewed837abdb",
+    "inherited_typecheck": "PASS",
+    "inherited_build": "PASS",
+    "Node": "24.19.0",
+    "browser": false
+  },
+  "retained_numerics": {
+    "passed": 17,
+    "failed": 1,
+    "rerun": false,
+    "sealed_operation": false
+  },
+  "runtime_GO": false,
+  "source_self_accepted": false,
+  "output_semantics": "Precommit failure rolls back write; postcommit failure withholds evidence and explicitly reports committed write, no rollback claim",
+  "whitespace": {
+    "source_prose": "PASS",
+    "raw_evidence": "verbatim retained logs and patch context whitespace"
+  }
+}

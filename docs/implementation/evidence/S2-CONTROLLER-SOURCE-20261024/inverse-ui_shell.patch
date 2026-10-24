@@ -1,0 +1,156 @@
+diff --git a/web/src/SimulationPanel.tsx b/web/src/SimulationPanel.tsx
+index 3353cf1..92e5b1a 100644
+--- a/web/src/SimulationPanel.tsx
++++ b/web/src/SimulationPanel.tsx
+@@ -21,7 +21,7 @@ export function PanelGenerator({ generate }: { generate: (seed: number, count: n
+     <h2 id="generate-title">Generate a synthetic panel</h2>
+     <p>Create fictional patients and explore your own decisions over 84 simulated days. The seed reproduces patient content and noise on the pinned runtime. Earlier generated patients and their history remain saved.</p>
+     <form onSubmit={event => void submit(event)}>
+-      <label htmlFor="panel-family">Synthetic patient family</label><select id="panel-family" name="family" disabled={pending || Boolean(submitted.current)}><option value="visit">Ordinary behavioral care · v1</option><option value="nof1_med">Fictional N-of-1 medication protocol · v2</option></select>
++      <label htmlFor="panel-family">Synthetic patient family</label><select id="panel-family" name="family" disabled={pending || Boolean(submitted.current)}><option value="visit">Ordinary behavioral care · v1</option><option value="nof1_med">Fictional N-of-1 medication protocol · v2</option><option value="support">Behavioral support simulation · v2</option></select>
+       <fieldset disabled={pending || Boolean(submitted.current)}><div className="generator-fields"><div><label htmlFor="panel-seed">Panel seed</label><input id="panel-seed" name="seed" type="number" min="0" max="2147483647" step="1" defaultValue="20261021" inputMode="numeric" autoComplete="off" required/></div><div><label htmlFor="panel-count">Patient count · 2–24</label><input id="panel-count" name="count" type="number" min="2" max="24" step="1" defaultValue="12" inputMode="numeric" autoComplete="off" required/></div></div></fieldset>
+       <button type="submit" disabled={pending}>{pending ? 'Generating panel…' : submitted.current ? 'Retry original panel request' : 'Generate and load panel'}</button>
+     </form>
+@@ -70,7 +70,7 @@ export function SimulationPanel({ workspace, advance, dirty }: { workspace: Work
+   const lastISI = assessments.at(-1);
+   return <section aria-labelledby="simulation-title">
+     <p className="eyebrow">Generated synthetic patient · UTC fictional clock</p><h2 id="simulation-title">Simulation · day {simulation.day} of 84</h2>
+-    <p>Seed {simulation.seed}. Next visit: day {Math.min(84, (Math.floor(simulation.day / 14) + 1) * 14)}. Fixed support: no prompt. Daily reports describe one night; scheduled ISI describes the preceding 14 nights. Neither is a fitted treatment-effect estimate.</p>
++    <p>Seed {simulation.seed}. Next visit: day {Math.min(84, (Math.floor(simulation.day / 14) + 1) * 14)}. Support: {label(workspace.snapshot.workflow.support_mode)}. Daily reports describe one night; scheduled ISI describes the preceding 14 nights. Neither is a fitted treatment-effect estimate.</p>
+     {lastISI ? <p>Latest scheduled ISI: <strong>{lastISI.items?.reduce((a, b) => a + b, 0)}/28</strong> · 14-day recall from {date(lastISI.recall_start!)} to {date(lastISI.recall_end!)} UTC.</p> : null}
+     <div className="actions">
+       <button disabled={blocked || submitted.current?.mode === 'visit'} onClick={() => void step('day')}>{pending ? 'Advancing…' : submitted.current?.mode === 'day' ? 'Retry original advancement' : 'Advance 1 day'}</button>
+diff --git a/web/src/SupportPanel.tsx b/web/src/SupportPanel.tsx
+new file mode 100644
+index 0000000..57b55ab
+--- /dev/null
++++ b/web/src/SupportPanel.tsx
+@@ -0,0 +1,72 @@
++import { useEffect, useRef, useState } from 'react';
++import type { SupportControllerView, Workspace } from './types';
++
++type Action = 'consent' | 'withdraw' | 'approve' | 'pause';
++type Intent = { payload: Record<string, unknown>; key: string };
++const label = (value: string) => value.replaceAll('_', ' ');
++const date = (value: string) => new Date(value).toLocaleString();
++
++export function SupportPanel({ workspace, request, commit, dirty }: {
++  workspace: Workspace;
++  request: <T>(url: string, init?: RequestInit) => Promise<T>;
++  commit: (payload: Record<string, unknown>, key: string) => Promise<void>;
++  dirty: boolean;
++}) {
++  const [status, setStatus] = useState<SupportControllerView | null>(null);
++  const [failure, setFailure] = useState('');
++  const [rationale, setRationale] = useState('');
++  const [pending, setPending] = useState(false);
++  const [intent, setIntent] = useState<Intent | null>(null);
++  const current = useRef(true);
++  useEffect(() => {
++    let active = true;
++    current.current = true;
++    void request<SupportControllerView>(`/api/patients/${encodeURIComponent(workspace.patient_id)}/support`)
++      .then(value => { if (active) setStatus(value); })
++      .catch(error => { if (active) setFailure(String(error)); });
++    return () => { active = false; current.current = false; };
++  }, [request, workspace.patient_id]);
++  async function send(action?: Action) {
++    if (pending || dirty) return;
++    const s = workspace.snapshot;
++    const original = intent ?? { key: crypto.randomUUID(), payload: {
++      schema_version: 's2-controller-source-1.0.0', mode: 'current', action,
++      decision_id: s.record_id, expected_version: s.patient_version,
++      expected_state_version: s.state_version, expected_consent_version: s.consent_version,
++      expected_eligibility_version: s.eligibility_version, rationale, consent_expires_at: null,
++    } };
++    setIntent(original); setPending(true); setFailure('');
++    try { await commit(original.payload, original.key); if (current.current) setIntent(null); }
++    catch (error) { if (current.current) setFailure(String(error)); }
++    finally { if (current.current) setPending(false); }
++  }
++  const last = status?.loop.last_decision;
++  const reports = workspace.projection.records.filter(r => r.kind === 'daily_report');
++  const missing = reports.filter(r => r.missingness !== 'observed').length;
++  return <section aria-labelledby="support-title">
++    <h2 id="support-title">Behavioral support</h2>
++    <p>Approved support only; no medication choices. A ready saved prediction may guide a future draw. Opening this panel, approving care and advancing time never start or wait for fitting or prediction.</p>
++    {!status && !failure ? <p role="status">Loading saved support status…</p> : null}
++    {status ? <>
++      <p>Envelope: <strong>{label(status.loop.status)}</strong>. Saved prediction: {status.saved.summary_available && status.saved.serving_authority ? 'current and admitted' : label(status.saved.reason ?? 'unavailable')}.</p>
++      {!status.execution_available ? <p className="warning">Support assignment is unavailable: {status.activation_gap}. Existing support consent and decisions remain saved.</p> : null}
++      {status.attempt ? <p>Saved attempt {status.attempt.job_id}: {label(status.attempt.status)}. Data through {date(status.attempt.cutoff)}; completed {status.attempt.finished_at ? date(status.attempt.finished_at) : 'not completed'}. {status.attempt.failure_reason ?? ''}</p> : <p>No saved prediction attempt. When both actions are eligible, a missing, stale, expired or unready result uses an explicitly recorded 0.5 fallback.</p>}
++      {last ? <p>Last immutable decision {date(last.cutoff)}: {label(last.availability)}; final prompt probability {last.probabilities.support_prompt}; no-prompt probability {last.probabilities.no_prompt}. {last.fallback_reason ? `Fallback: ${label(last.fallback_reason)}.` : ''} Later worker output cannot change it.</p> : null}
++      <p>{reports.length - missing} of {reports.length} reports observed; {missing} missing. No missing reward is scored as zero. Prompt cap: three in seven nights, with no consecutive prompts. N-of-1 block and washout retain their frozen no-prompt policy; restarting support requires a new explicit review.</p>
++      <label htmlFor="support-rationale">Support review rationale</label>
++      <textarea id="support-rationale" value={rationale} onChange={event => setRationale(event.target.value)} required maxLength={1000} disabled={pending || Boolean(intent) || dirty}/>
++      <fieldset disabled={pending || Boolean(intent) || dirty || !rationale.trim()}>
++        <legend>Separate component permission and support approval</legend>
++        <div className="actions">
++          <button className="secondary" onClick={() => void send('consent')}>Record synthetic support consent</button>
++          <button disabled={!status.execution_available} onClick={() => void send('approve')}>Approve both support options</button>
++          <button className="secondary" onClick={() => void send('pause')}>Pause support</button>
++          <button className="secondary" onClick={() => void send('withdraw')}>Withdraw support consent</button>
++        </div>
++      </fieldset>
++    </> : null}
++    {dirty ? <p role="status">Save or discard your decision draft before a support command.</p> : null}
++    {failure ? <p role="alert" className="error">{failure}</p> : null}
++    {intent ? <p role="status">Keep the original command until its outcome is confirmed. <button disabled={pending} onClick={() => void send()}>{pending ? 'Checking saved command…' : 'Retry original support command'}</button></p> : null}
++  </section>;
++}
+diff --git a/web/src/main.tsx b/web/src/main.tsx
+index f29535f..655463b 100644
+--- a/web/src/main.tsx
++++ b/web/src/main.tsx
+@@ -9,6 +9,7 @@ import { AnalysisPanel } from './AnalysisPanel';
+ import { ResearchPanel } from './ResearchPanel';
+ import { Nof1Panel, Nof1Timeline, Nof1Analysis } from './Nof1Panel';
+ import { HistoricalSupportPanel } from './HistoricalSupportPanel';
++import { SupportPanel } from './SupportPanel';
+ 
+ type Route = { patient: string; view: string; bundle: string };
+ class RequestFailure extends Error { constructor(public status: number, message: string) { super(message); } }
+@@ -199,7 +200,7 @@ function App() {
+   async function saveReport(report: Report, key: string) { const ticket = gate.current.capture(); await request(`/api/patients/${route.patient}/reports`, { method: 'POST', body: JSON.stringify(report), headers: { 'Idempotency-Key': key } }); if (gate.current.accepts(ticket)) { setNotice('Observed report persisted with actual receipt time.'); refresh(); } }
+   async function generatePanel(seed: number, count: number, key: string, family: string) {
+     const ticket = gate.current.capture();
+-    const definition = family === 'nof1_med' ? (await request<{ nof1_med: Record<string, unknown> }>('/api/panel-options')).nof1_med : {};
++    const definition = family === 'nof1_med' || family === 'support' ? (await request<Record<string, Record<string, unknown>>>('/api/panel-options'))[family] : {};
+     if (!gate.current.accepts(ticket)) return;
+     await request('/api/panels/generate', { method: 'POST', body: JSON.stringify({ ...definition, seed, count }), headers: { 'Idempotency-Key': key } });
+     if (gate.current.accepts(ticket)) { setPanelGroup('latest'); setNotice(`Generated and loaded ${count} fictional patients with seed ${seed}.`); refresh(); }
+@@ -217,6 +218,12 @@ function App() {
+     await request(`/api/patients/${workspace.patient_id}/nof1`, { method: 'POST', body: JSON.stringify(payload), headers: { 'Idempotency-Key': key } });
+     if (gate.current.accepts(ticket)) { setNotice('Explicit N-of-1 command saved; no estimated winner.'); refresh(); }
+   }
++  async function commitSupport(payload: Record<string, unknown>, key: string) {
++    if (!workspace || dirty) return;
++    const ticket = gate.current.capture();
++    await request(`/api/patients/${workspace.patient_id}/support`, { method: 'POST', body: JSON.stringify(payload), headers: { 'Idempotency-Key': key } });
++    if (gate.current.accepts(ticket)) { setNotice('Explicit support command saved.'); refresh(); }
++  }
+   const visibleWorkspace = workspace?.patient_id === route.patient && !(route.view === 'history' && route.bundle) && workspace.auth_generation === session?.auth_generation ? workspace : null;
+   const visibleBundle = bundle?.patient_id === route.patient && bundle.snapshot_id === route.bundle && route.view === 'history' && bundle.auth_generation === session?.auth_generation ? bundle : null;
+   const groups = new Map(panel?.patients.flatMap(patient => patient.state.simulation ? [[patient.state.simulation.panel_id, patient.state.simulation.seed] as const] : []));
+@@ -240,6 +247,7 @@ function App() {
+     {visibleWorkspace ? <><StateBanner workspace={visibleWorkspace} mode="current"/><nav className="tabs" aria-label="Patient views">{['overview', 'current', 'monitoring', 'analysis', 'research', 'history'].map(view => <NavLink key={view} href={`/patients/${route.patient}/${view}`} navigate={navigate} current={route.view === view}>{view === 'current' ? 'Current decision' : view[0].toUpperCase() + view.slice(1)}</NavLink>)}</nav>
+     {route.view === 'current' ? <LiveHoldPanel key={'live-hold:' + `${visibleWorkspace.patient_id}:${session?.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} request={request} refresh={refresh} changed={setDirty}/> : null}
+     {route.view === 'current' && visibleWorkspace.nof1 ? <Nof1Panel key={'nof1:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} commit={commitNof1} dirty={dirty} request={request} ownerId={session.principal.id}/> : null}
++    {(route.view === 'current' || route.view === 'analysis') && visibleWorkspace.simulation?.family === 'support' ? <SupportPanel key={'support:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} commit={commitSupport} dirty={dirty} request={request}/> : null}
+     {route.view !== 'history' && visibleWorkspace.simulation ? <SimulationPanel key={'simulation:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} advance={advanceSimulation} dirty={dirty}/> : null}
+     {route.view === 'history' ? null : route.view === 'research' ? <ResearchPanel key={'research:' + visibleWorkspace.patient_id + ':' + session.auth_generation + ':' + visibleWorkspace.snapshot.record_id} workspace={visibleWorkspace} request={request}/> : route.view === 'analysis' ? (visibleWorkspace.nof1 ? <Nof1Analysis key={'N-analysis:' + visibleWorkspace.patient_id + ':' + session.auth_generation + ':' + visibleWorkspace.snapshot.record_id} workspace={visibleWorkspace} request={request} ownerId={session.principal.id} context="current"/> : <AnalysisPanel key={'analysis:' + visibleWorkspace.patient_id + ':' + session.auth_generation + ':' + visibleWorkspace.snapshot.record_id} workspace={visibleWorkspace} request={request} refresh={refresh}/>) : route.view === 'monitoring' ? <><ObservationTable workspace={visibleWorkspace}/>{!visibleWorkspace.simulation ? <ReportForm key={visibleWorkspace.patient_id} save={saveReport}/> : null}</> : route.view === 'overview' ? <><section><h2>Current ordinary plan</h2>{visibleWorkspace.plan ? <><p><strong>{readable(visibleWorkspace.plan.option)}</strong></p><p>{visibleWorkspace.plan.rationale}</p>{visibleWorkspace.plan.effective_at ? <p>Decision: {date(visibleWorkspace.plan.decided_at!)}. Effective: {date(visibleWorkspace.plan.effective_at)}. Actual nightly delivery and adherence are recorded separately.</p> : null}</> : <p>No ordinary treatment choice has been approved.</p>}<h3>Follow-up tasks</h3>{visibleWorkspace.tasks.length ? <ul>{visibleWorkspace.tasks.map(task => <li key={task.id}>{date(task.due_at)} · {task.owner_id} · pending synthetic follow-up</li>)}</ul> : <p>No saved follow-up tasks.</p>}<button onClick={() => navigate(`/patients/${route.patient}/current`)}>Open current decision</button></section><ObservationTable workspace={visibleWorkspace}/></> : <>
+       {pendingAdvance ? <p role="status">Resolve the original advancement before editing another decision. You can retry above or reload the saved current state.</p> : null}
+diff --git a/web/src/types.ts b/web/src/types.ts
+index 0feb8c3..f2ae7fc 100644
+--- a/web/src/types.ts
++++ b/web/src/types.ts
+@@ -1,7 +1,8 @@
+ export type Session = { principal: { id: string; name: string } | null; csrf: string; auth_generation: string; expires_at: number };
+ export type Nof1 = { template: { id: string; version: string; sha256: string }; readiness_reasons: string[]; loop: null | { status: string; phase?: string; block?: number; protocol_day?: number; approval_id?: string; draws: { block: number; day: number; option: string; assignment_id: string; washout_starts_day: number; next_boundary_day: number }[]; reviews: { day: number; protocol_day: number; counts: { MED_A: number; MED_B: number }; analysis_status: string }[]; deviations: { at: string; reasons: string[] }[] } };
+ export type ProjectionRecord = { record_id: string; kind: string; event_at: string; available_at: string; sleep_quality?: number | null; function?: number | null; missingness?: string; items?: number[]; instrument_version?: string; recall_days?: number; recall_start?: string; recall_end?: string; estimated_sleep_minutes?: number | null; device_version?: string; option?: string; stage?: string; adherence?: number | null; assignment_id?: string };
+-export type Simulation = { panel_id: string; seed: number; index: number; day: number; horizon_days: number; origin: string; law_version: string; actions: { day: number; option: string; assignment_id: string }[] };
++export type Simulation = { panel_id: string; seed: number; index: number; day: number; horizon_days: number; origin: string; law_version: string; family?: string; actions: { day: number; option: string; assignment_id: string }[] };
++export type SupportControllerView = { configuration: { id: string; version: string; sha256: string }; execution_available: boolean; activation_gap: string; loop: { status: string; last_decision?: { cutoff: string; availability: string; probabilities: { support_prompt: number; no_prompt: number }; fallback_reason: string | null } }; saved: { summary_available: boolean; serving_authority: boolean; status?: string | null; reason?: string | null; probability?: number | null }; attempt: null | { job_id: string; status: string; cutoff: string; finished_at: string | null; failure_reason: string | null } };
+ export type Snapshot = { record_id: string; patient_id: string; cutoff: string; patient_version: number; state_version: number; consent_version: number; eligibility_version: number; posterior: null; workflow: { clinical: string; learning: string; data_readiness: string; hold_reasons: string[]; support_mode: string; support_policy: { id: string; version: string; sha256: string } }; model: { id: string; version: string }; outcome: string; horizon_days: number };
+ export type Workspace = { patient_id: string; name: string; mode: string; stage: string; stage_label: string; snapshot: Snapshot; options: { action: string; status: string; reasons: string[] }[]; permissions: { approve_ordinary: boolean; randomize: boolean }; engines: Record<string, string>; estimates: { status: string; reason: string }; projection: { records: ProjectionRecord[] }; plan: { option: string; rationale: string; decided_at?: string; effective_at?: string; received_at?: string } | null; tasks: { id: string; owner_id: string; due_at: string }[]; history: { id: string; approved_at: string; display_sha256: string }[]; auth_generation: string; simulation?: Simulation; nof1?: Nof1; live_safety_summary?: { active_episodes: { episode_id: string; generation: number }[] } };
+ export type Bundle = { mode: 'historical'; patient_id: string; snapshot_id: string; auth_generation: string; display_sha256: string; display: { workspace: Workspace; rationale: string; approval: { option: string | null; permitted_options?: string[] }; follow_up: { id: string; due_at: string; owner_id: string } } };

@@ -21,7 +21,7 @@ export function PanelGenerator({ generate }: { generate: (seed: number, count: n
     <h2 id="generate-title">Generate a synthetic panel</h2>
     <p>Create fictional patients and explore your own decisions over 84 simulated days. The seed reproduces patient content and noise on the pinned runtime. Earlier generated patients and their history remain saved.</p>
     <form onSubmit={event => void submit(event)}>
-      <label htmlFor="panel-family">Synthetic patient family</label><select id="panel-family" name="family" disabled={pending || Boolean(submitted.current)}><option value="visit">Ordinary behavioral care · v1</option><option value="nof1_med">Fictional N-of-1 medication protocol · v2</option></select>
+      <label htmlFor="panel-family">Synthetic patient family</label><select id="panel-family" name="family" disabled={pending || Boolean(submitted.current)}><option value="visit">Ordinary behavioral care · v1</option><option value="nof1_med">Fictional N-of-1 medication protocol · v2</option><option value="support">Behavioral support simulation · v2</option></select>
       <fieldset disabled={pending || Boolean(submitted.current)}><div className="generator-fields"><div><label htmlFor="panel-seed">Panel seed</label><input id="panel-seed" name="seed" type="number" min="0" max="2147483647" step="1" defaultValue="20261021" inputMode="numeric" autoComplete="off" required/></div><div><label htmlFor="panel-count">Patient count · 2–24</label><input id="panel-count" name="count" type="number" min="2" max="24" step="1" defaultValue="12" inputMode="numeric" autoComplete="off" required/></div></div></fieldset>
       <button type="submit" disabled={pending}>{pending ? 'Generating panel…' : submitted.current ? 'Retry original panel request' : 'Generate and load panel'}</button>
     </form>
@@ -70,7 +70,7 @@ export function SimulationPanel({ workspace, advance, dirty }: { workspace: Work
   const lastISI = assessments.at(-1);
   return <section aria-labelledby="simulation-title">
     <p className="eyebrow">Generated synthetic patient · UTC fictional clock</p><h2 id="simulation-title">Simulation · day {simulation.day} of 84</h2>
-    <p>Seed {simulation.seed}. Next visit: day {Math.min(84, (Math.floor(simulation.day / 14) + 1) * 14)}. Fixed support: no prompt. Daily reports describe one night; scheduled ISI describes the preceding 14 nights. Neither is a fitted treatment-effect estimate.</p>
+    <p>Seed {simulation.seed}. Next visit: day {Math.min(84, (Math.floor(simulation.day / 14) + 1) * 14)}. Support: {label(workspace.snapshot.workflow.support_mode)}. Daily reports describe one night; scheduled ISI describes the preceding 14 nights. Neither is a fitted treatment-effect estimate.</p>
     {lastISI ? <p>Latest scheduled ISI: <strong>{lastISI.items?.reduce((a, b) => a + b, 0)}/28</strong> · 14-day recall from {date(lastISI.recall_start!)} to {date(lastISI.recall_end!)} UTC.</p> : null}
     <div className="actions">
       <button disabled={blocked || submitted.current?.mode === 'visit'} onClick={() => void step('day')}>{pending ? 'Advancing…' : submitted.current?.mode === 'day' ? 'Retry original advancement' : 'Advance 1 day'}</button>

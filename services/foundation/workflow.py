@@ -53,15 +53,31 @@ def record_header(record_id: str, patient_id: str, at: datetime) -> dict:
                 lineage_id=record_id, revision=1, supersedes=None, duplicate_of=None, record_status="active")
 
 
-def history(db, patient_id: str) -> ObservedHistory:
+def history(db, patient_id: str, *, _support_context=None) -> ObservedHistory:
+    if _support_context is not None:
+        from .support_s2_invocation import candidate_context
+        if _support_context is not candidate_context(db):raise ValueError('closed_producer_history_context_required')
+        _support_context.check(db,patient_id)
     records = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id", (patient_id,))]
-    if any(r['schema_version'] == '2.1.0' for r in records):
+    if any(r['schema_version'] == '2.1.0' or r.get('source',{}).get('id')=='candidate-s2-interactive-v1'
+           or r['record_id'].startswith('candidate-s2-') or r['kind']=='approval' and r['record_id'].startswith('s2-admin-')
+           or r['kind']=='assignment' and r.get('support_policy',{}).get('id')=='poc-support-s2-controller-source-v1' for r in records):
         from contracts.domain.protocol import ObservedHistoryV21
-        return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
+        full=ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
+        from .support_s2_authority import validate_live_history
+        return validate_live_history(db,full,_candidate=_support_context is not None)
     if any(r['schema_version'] == '2.0.0' for r in records):
         from contracts.domain.observed_v2 import ObservedHistoryV2
-        return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
-    return ObservedHistory.model_validate_json(canonical(dict(schema_version="1.0.0", synthetic=True, kind="observed_history", patient_id=patient_id, records=records)))
+        full=ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
+    else:full=ObservedHistory.model_validate_json(canonical(dict(schema_version="1.0.0", synthetic=True, kind="observed_history", patient_id=patient_id, records=records)))
+    from .support_s2_authority import validate_live_history
+    return validate_live_history(db,full,_candidate=_support_context is not None)
+
+
+def _producer_history(db,patient_id):
+    from .support_s2_invocation import candidate_context
+    context=candidate_context(db)
+    return history(db,patient_id,_support_context=context) if context is not None else history(db,patient_id)
 
 
 def current_safety(db, patient_id: str, at: datetime):
@@ -71,11 +87,13 @@ def current_safety(db, patient_id: str, at: datetime):
     retraction or duplicate cannot revive an older clinical fact. Call inside
     the same transaction as the state transition or approval being admitted.
     """
+    from .workflow import _producer_history as history
     heads = lineage_heads(visible_records(history(db, patient_id).records, at, inclusive=True))
     return [r for r in heads if r.record_status != "retracted" and r.kind in ("consent", "intercurrent_event")]
 
 
 def create_decision(db, patient_id: str, at: datetime) -> str:
+    from .workflow import _producer_history as history
     row = db.execute("SELECT * FROM patients WHERE id=?", (patient_id,)).fetchone()
     receipt_at = at
     at = patient_clock(row, at)
@@ -103,6 +121,11 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
     eligibility = [dict(action=action, status="excluded" if state["workflow"]["hold_reasons"] else "eligible",
                         reasons=state["workflow"]["hold_reasons"]) for action in actions]
     nof1=None
+    if state.get('simulation',{}).get('family')=='support':
+        from .support_s2_authority import producer_id
+        identifier=producer_id(db,identifier)
+        from .support_s2_controller import eligibility as support_eligibility
+        eligibility.extend(support_eligibility(db,row,state,at,receipt_at))
     if state.get('simulation',{}).get('family')=='nof1_med':
         from .nof1 import readiness
         from contracts.domain.protocol import NOF1_REF
@@ -120,9 +143,15 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
         outcome="Ordinary synthetic care; statistical estimates unavailable", horizon_days=42,
         estimand=reference("EST-VISIT"), model=reference("foundation-no-estimator", "No statistical engine implemented"),
         posterior=None, evidence=[], policy=SUPPORT)))
+    if state.get('simulation',{}).get('family')=='support':
+        value=snapshot.model_dump(mode='json')
+        if identifier.startswith('candidate-s2-'):value['source']['id']='candidate-s2-interactive-v1'
+        value['source']['raw_sha256']=digest(canonical({k:v for k,v in value.items() if k!='source'}))
+        snapshot=DecisionSnapshot.model_validate_json(canonical(value))
     projected = history(db, patient_id).project(at).model_dump(mode="json")
     options = eligibility if state["stage"] != "ASSIGN-07" else [e for e in eligibility if e["action"].startswith("behavioral_")]
     if nof1 is not None:options=[e for e in options if e['action']=='behavioral_continue']
+    if state.get('simulation',{}).get('family')=='support':options=[e for e in options if e['action']=='behavioral_continue']
     ordinary = state["stage"] in ("ASSIGN-02", "ASSIGN-07") and state["workflow"]["data_readiness"] == "ready" and not state["workflow"]["hold_reasons"]
     if state.get('simulation', {}).get('day', 0) >= 84:
         ordinary = False

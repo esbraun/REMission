@@ -1,0 +1,17 @@
+{
+  "schema": "s2-controller-observed-known-failure-record-v1",
+  "observed_run": "repair1-r4.txt",
+  "observed_status": "52 PASS plus2 producer FAIL, then fixed after different PLAN critique",
+  "observation": "ExpectedFailures trace suffixes inspected in guarded checks.json before later passing runs replaced it; original r4 log is retained",
+  "tests": [
+    "test_real_later_renew_command_stays_unapproved_and_preserves_prior_consent",
+    "test_real_later_withdraw_command_preserves_lineage_and_prior_as_known_consent"
+  ],
+  "exception_type": "pydantic_core.ValidationError",
+  "exception_message": "ObservedHistoryV21: correction must extend exactly one same-event lineage",
+  "pre_fix_transition_blob": "48354dca1ef33751c6a583c3d4deef918c42203b",
+  "proposal": "9913b82e271e97427c164e152a758250d007e56f",
+  "PLAN_review": "b8e1317505c2c29c6fc7f287dbd6aac89dac6c8a",
+  "final_status": "Both are normal passing regressions in final57PASS; no expectedFailure decorators remain",
+  "actual_runtime": false
+}

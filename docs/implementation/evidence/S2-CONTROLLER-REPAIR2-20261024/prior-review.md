@@ -1,0 +1,23 @@
+# Independent S2-PROD4 Repair1 SOURCE review
+
+**changes_requested — SOURCE_ONLY**
+
+Head a8c96b3d3d1ec95deaac97f0ca882486888e8fb1; production base 88aec132ad0cbf182e2fb1fc697f479477ef2e36; repair base 837abdbb40c69c1fa4b2be8b2e189e06b5e5bb36. Assigned reviewer gpt-6-astra/medium. No operation or actual qualification is approved.
+
+1. **P1 — ordinary continuation is blocked after withdrawal or renewal without approval.** services/foundation/simulation.py:183 routes by retained snapshot_id; services/foundation/support_s2_controller.py:253 derives execution authorization even when no support action is permitted. The real withdrawal supersedes the old envelope's consent. Independent actual-source/inert-transaction reproductions of withdraw -> advance and withdraw -> consent -> advance both raise stale_or_not_visible_dependency, despite continuing approved behavioral background and no hold/death. Blocking support assignment is correct; blocking otherwise permitted ordinary outcomes/clock progression is not. Use the smallest existing routing/controller unavailable path for ordinary/fixed continuation. Never weaken envelope validation, invent authorization, revive stale approval or draw while withdrawn/unapproved. Require real-command regressions for continued background/outcomes/clock, no unauthorized support draw/assignment, immutable history, fresh explicit approval before S2 reentry, and unchanged hold/death/N-freeze gates. Include commands between review dates.
+
+2. **P2 — withdrawal creates no owned review task.** docs/implementation/workflow-contract.md:82 requires it. services/foundation/support_s2_controller.py:146–214 persists consent/state/version/decision changes but no task; workflow.create_decision at services/foundation/workflow.py:95 and journal receipt do not create one. The successful real withdrawal fixture records no task insertion. Existing ordinary approval task creation at services/foundation/app.py:1009 is not called here. Reuse the existing task/follow-up representation, valid references and owned read surface within the withdrawal transaction, without a new framework. Required controls: actual command creates correctly owned/referenced task; stale/replayed commands cannot duplicate it; fault rollback is atomic; existing task read exposes it. A scope disclaimer cannot satisfy this current app requirement.
+
+## Repairs independently verified
+
+The original consent-expiry16:00/dispatch20:00 counterexample now cancels the offer while preserving noon burden/distribution/assignment. The original late-journal expiry now rolls back and retains the consumed receipt. Fresh postcommit output admission checks current authority/state and honestly reports committed-output-withheld rather than false rollback. Real consent revisions preserve original event_at with current knowledge/effective/withdrawal times, and renewal requires fresh approval. These fixes do not resolve the workflow findings above.
+
+## Checks and evidence
+
+All57 guarded controls PASS in11.955s, zero expected failures. Additional guarded actual-function reproductions confirm both original fixes and both remaining blockers. Six public baseline files were checked against exactbase. Verified17source+22evidence entries,94production paths/27repair paths,18protected objects, four temporary-index inverses restoring all7source trees, and generated schema/config equality. Exactweb/schema/config remain unchanged; prior TS evidence is reused only for those bytes, not browser or Node-version equivalence. Full changed source authority/time/transaction/closure/nonpromotion and ordinary/N obligations were reviewed, not just the repaired tests. Store.py unchanged.
+
+One verification-script attempt compared differently ordered equal path lists and stopped before report creation; corrected set comparison proves equal complete path sets. No candidate mutation or failed source test is hidden by that correction.
+
+## Limits
+
+Only guarded scalar/Pydantic/AST/inert-I/O controls ran: no real app, Store/SQLite, scientific imports, native children, network, private filesystem or Docker. All execution/serving gates remain OFF. No operator/launcher/actual installation, genuine posterior/controller roundtrip, browser, SQLite integration or seven-configuration study is accepted. All-fallback is not full functionality. Delayed/multiple-snapshot/reactivation/corrected-fit scientific applicability remains pending, not waived; the two findings are present app-source obligations. Historical numerics17/18 with oneFAIL remains untouched; no sealed-file exists/stat/read/hash or rerun. External identity hashes are not permission. A bounded Repair2 and fresh independent full-source review are required; no merge or runtime GO.

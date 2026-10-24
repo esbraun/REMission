@@ -1,0 +1,319 @@
+{
+  "schema": "s2-controller-repair2-source-proof-v1",
+  "status": "SOURCE_REPAIR_PENDING_SAME_ASTRA_FULL_REVIEW",
+  "production_base": "88aec132ad0cbf182e2fb1fc697f479477ef2e36",
+  "repair_base": "a8c96b3d3d1ec95deaac97f0ca882486888e8fb1",
+  "source_candidate": "d1042620df29b535068f0ada6890903f1dfab469",
+  "source_tree": "cf391b1b41578d98115716b5b3b2b03cab074a1d",
+  "failed_SOURCE_review": "e80cae850fdd2343cf3bc982d130eca611b22ec3",
+  "failed_review_checks": "6ce6ffe044d9c8982b034bda44ec9c40d341a299",
+  "failed_review_index": "9174967e0baa57d72ced92311e64aae578d028c6",
+  "reviewer_counterexample_script": "0c3716710f6ee68f3e0089951a3fe10c69d1d0c0",
+  "reviewer_counterexample_log": "5bb3f8b0cf799cab3220958618f710c256a2f54b",
+  "source_checks": {
+    "latest_log": "repair2-r5.txt",
+    "actual_SQLite_app_science_browser": false,
+    "passed": 62,
+    "prior57_retained": true,
+    "failed": 0,
+    "expected_failures": 0
+  },
+  "repair_source_paths": [
+    "services/foundation/simulation.py",
+    "services/foundation/support_s2_controller.py",
+    "tests/test_s2_controller_source.py"
+  ],
+  "production_changed_paths": [
+    "contracts/domain/support_s2_controller.py",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/build.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r10.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r11.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r12.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r13.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r14.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r15.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r16.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r17.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r2.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r3.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r4.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r5.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r6.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r7.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r8.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/checks-r9.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/proof.json",
+    "docs/implementation/evidence/S2-CONTROLLER-PARTIAL2-20261024/typecheck.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/checks.json",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/controller-config.json",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/controller-schema.json",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/function-inverses.json",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-app_controller.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-saved_prediction.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-simulation_protocol.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/inverse-ui_shell.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/known-lineage-failures.json",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/proof.json",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r1.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r2.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r3.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r4.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r5.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r6.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r7.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/repair1-r8.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-REPAIR1-20261024/source-closure.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/build-final.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r18.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r19.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r20.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r21.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r22.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r23.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r24.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r25.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r26.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r27.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r28.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r29.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r30.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r31.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks-r32.txt",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/checks.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/controller-config.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/controller-schema.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/function-inverses.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-app_controller.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-saved_prediction.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-simulation_protocol.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-ui_shell.patch",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/proof.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/source-closure.json",
+    "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/typecheck-final.txt",
+    "docs/implementation/poc-s2-consent-lineage-repair-proposal-20261024.md",
+    "docs/implementation/poc-s2-controller-checkpoint-20261024.md",
+    "docs/implementation/poc-s2-controller-partial2-20261024.md",
+    "docs/implementation/poc-s2-controller-partial2-index-20261024.json",
+    "docs/implementation/poc-s2-controller-repair1-handoff-20261024.md",
+    "docs/implementation/poc-s2-controller-repair1-index-20261024.json",
+    "docs/implementation/poc-s2-controller-source-handoff-20261024.md",
+    "docs/implementation/poc-s2-controller-source-index-20261024.json",
+    "docs/implementation/poc-s2-controller-task-ledger-20261024.md",
+    "docs/implementation/poc-s2-interactive-bootstrap-proposal-20261024.md",
+    "docs/implementation/poc-s2-interactive-closure-proposal-20261024.md",
+    "docs/implementation/poc-s2-interactive-closure-proposal-r1-20261024.md",
+    "services/foundation/app.py",
+    "services/foundation/protocol.py",
+    "services/foundation/simulation.py",
+    "services/foundation/store.py",
+    "services/foundation/support_s2_authority.py",
+    "services/foundation/support_s2_controller.py",
+    "services/foundation/support_s2_invocation.py",
+    "services/foundation/support_s2_prediction.py",
+    "services/foundation/workflow.py",
+    "tests/freeze_s2_controller_source.py",
+    "tests/run_s2_controller_source.py",
+    "tests/test_s2_controller_source.py",
+    "web/src/SimulationPanel.tsx",
+    "web/src/SupportPanel.tsx",
+    "web/src/main.tsx",
+    "web/src/types.ts"
+  ],
+  "inverses": [
+    {
+      "git_blob": "625a64150ae400bd352787b21ed2aa727f07d989",
+      "paths": [
+        "contracts/domain/support_s2_controller.py",
+        "services/foundation/app.py",
+        "services/foundation/store.py",
+        "services/foundation/workflow.py",
+        "services/foundation/support_s2_controller.py",
+        "services/foundation/support_s2_authority.py",
+        "services/foundation/support_s2_invocation.py",
+        "tests/run_s2_controller_source.py",
+        "tests/test_s2_controller_source.py",
+        "tests/freeze_s2_controller_source.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR2-20261024/inverse-app_controller.patch",
+      "group": "app_controller"
+    },
+    {
+      "git_blob": "018757a5b3279b739dbf3ad1942f44e2e16b8bc1",
+      "paths": [
+        "services/foundation/simulation.py",
+        "services/foundation/protocol.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR2-20261024/inverse-simulation_protocol.patch",
+      "group": "simulation_protocol"
+    },
+    {
+      "git_blob": "ce751fd352615263e59a0a334bda45e3ecd31cd8",
+      "paths": [
+        "services/foundation/support_s2_prediction.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR2-20261024/inverse-saved_prediction.patch",
+      "group": "saved_prediction"
+    },
+    {
+      "git_blob": "2d22df7ae7c2cb154c17e49655899d2794bd0502",
+      "paths": [
+        "web/src/main.tsx",
+        "web/src/types.ts",
+        "web/src/SimulationPanel.tsx",
+        "web/src/SupportPanel.tsx"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-REPAIR2-20261024/inverse-ui_shell.patch",
+      "group": "ui_shell"
+    }
+  ],
+  "inverse_reconstructed_tree": "a672d2897dedd8a3a8ce9da4abbe363b711e5fa4",
+  "inverse_remaining_source_paths": [],
+  "protected": [
+    {
+      "candidate_git_object": "5c5586bf880df8eefe910066bf814cf745f6d7f9",
+      "base_git_object": "5c5586bf880df8eefe910066bf814cf745f6d7f9",
+      "path": "methods",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "a6308207a15722587cd6b5f26fbb526a3606e6b0",
+      "base_git_object": "a6308207a15722587cd6b5f26fbb526a3606e6b0",
+      "path": "services/generator",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "3a7585abce9bca030e0411b43d16a96fa3f660a9",
+      "base_git_object": "3a7585abce9bca030e0411b43d16a96fa3f660a9",
+      "path": "services/learner",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "9473f93b51d6c0295f0da6daca74882475c526f8",
+      "base_git_object": "9473f93b51d6c0295f0da6daca74882475c526f8",
+      "path": "contracts/runs",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+      "base_git_object": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+      "path": "contracts/domain/boundaries.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+      "base_git_object": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+      "path": "contracts/domain/evidence_v2.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "a291240de324739bc606e8ce883ff2dfc4961904",
+      "base_git_object": "a291240de324739bc606e8ce883ff2dfc4961904",
+      "path": "contracts/domain/nof1_config.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "12a45d3a63c204b11dfaa35e5653ac6eaeadadbc",
+      "base_git_object": "12a45d3a63c204b11dfaa35e5653ac6eaeadadbc",
+      "path": "contracts/domain/nof1_app.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "eb593adb5e30d58e2822dfea01e57be375a4e54a",
+      "base_git_object": "eb593adb5e30d58e2822dfea01e57be375a4e54a",
+      "path": "contracts/domain/support_s2.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "78c4c26e865e47cc9e6ce6ecaacdb535febee06f",
+      "base_git_object": "78c4c26e865e47cc9e6ce6ecaacdb535febee06f",
+      "path": "contracts/domain/support_s2_app.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "74fbe93f7d49538e7d6af361360c4294a5b4d439",
+      "base_git_object": "74fbe93f7d49538e7d6af361360c4294a5b4d439",
+      "path": "contracts/domain/support_s2_saved.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "9093f551b8177f449dbf189ed3531d8be306f2e8",
+      "base_git_object": "9093f551b8177f449dbf189ed3531d8be306f2e8",
+      "path": "contracts/domain/support_s2_native.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "66bfd348ee4cc435ba35b8bdc40315f4b34296be",
+      "base_git_object": "66bfd348ee4cc435ba35b8bdc40315f4b34296be",
+      "path": "contracts/domain/support_s2_fit.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+      "base_git_object": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+      "path": "services/foundation/nof1.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "17aaa857d3d5039feceec9539e78ded207fefedc",
+      "base_git_object": "17aaa857d3d5039feceec9539e78ded207fefedc",
+      "path": "services/foundation/nof1_clock.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "47a2397768be9aa6ed1dff1576ba9f829b022894",
+      "base_git_object": "47a2397768be9aa6ed1dff1576ba9f829b022894",
+      "path": "services/foundation/nof1_analysis.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "164a0a892e2f1c7672557d61f2e71a75e7256c53",
+      "base_git_object": "164a0a892e2f1c7672557d61f2e71a75e7256c53",
+      "path": "services/foundation/support_s2_analysis.py",
+      "identical": true
+    },
+    {
+      "candidate_git_object": "017b4db336019ef3825b79ac63e6228d3e648871",
+      "base_git_object": "017b4db336019ef3825b79ac63e6228d3e648871",
+      "path": "tooling",
+      "identical": true
+    }
+  ],
+  "schema_blob": "ed39e96d928885f87aff5fc158357c530ee4aebf",
+  "config_blob": "fdd717fa52495b0e99e00c209824bebc3d0d42a4",
+  "schema_config_unchanged": true,
+  "web_tree": "dfe12f933f90f15e9cedb56d34ea7441fe273404",
+  "Store_source_unchanged_from_repair_base": true,
+  "task_semantics": {
+    "consent": "exact withdrawn revision",
+    "owner": "patient.owner_id",
+    "not_approval_bundle": true,
+    "readers": "existing current workspace task list and owner-joined GET task payload",
+    "candidate": "explicit candidate invocation reference; never approval",
+    "due": "immediate fictional clock review",
+    "anchor_kind": "persisted withdrawal state_changes command",
+    "table": "tasks",
+    "new_schema": false,
+    "legacy_anchor_column": "bundle_id"
+  },
+  "TS": {
+    "Node": "24.19.0",
+    "browser": false,
+    "inherited_build": "PASS",
+    "inherited_typecheck": "PASS",
+    "reason": "Entire web tree/schema/config unchanged from Repair1 and reviewed837abdb",
+    "rerun": false
+  },
+  "retained_numerics": {
+    "passed": 17,
+    "rerun": false,
+    "failed": 1,
+    "sealed_operation": false
+  },
+  "runtime_GO": false,
+  "source_self_accepted": false,
+  "prior_fixes": "Dispatch-time current authority; before_commit afterjournal check; postcommit output withholding; consent chronology/as-known immutable revisions; closed context nonpromotion",
+  "whitespace": {
+    "raw_evidence": "Retained verbatim logs and inverse patch context; no cleanup",
+    "source_prose": "PASS"
+  }
+}

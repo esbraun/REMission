@@ -1,0 +1,1229 @@
+{
+  "reference": {
+    "id": "poc-s2-controller-schema-v1",
+    "sha256": "d900437a1005c2af2ae8ab27501bac6b4aa7d032ea7547d0ebc6ebf68e6efe2d",
+    "version": "1.0.0"
+  },
+  "schemas": {
+    "AuthorizationBasis": {
+      "$defs": {
+        "ExactRef": {
+          "additionalProperties": false,
+          "properties": {
+            "payload_sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Payload Sha256",
+              "type": "string"
+            },
+            "record_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Record Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "record_id",
+            "payload_sha256"
+          ],
+          "title": "ExactRef",
+          "type": "object"
+        },
+        "SavedScalar": {
+          "additionalProperties": false,
+          "description": "Service-owned scalar view, never accepted from an HTTP command.",
+          "properties": {
+            "context_reference": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "fit_collection_reference": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "probability": {
+              "anyOf": [
+                {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Probability"
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reason"
+            },
+            "serving_authority": {
+              "title": "Serving Authority",
+              "type": "boolean"
+            },
+            "status": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Status"
+            },
+            "summary_available": {
+              "title": "Summary Available",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "summary_available",
+            "serving_authority"
+          ],
+          "title": "SavedScalar",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 256,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "actor_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Actor Id",
+          "type": "string"
+        },
+        "allowed_actions": {
+          "items": {
+            "enum": [
+              "support_prompt",
+              "no_prompt"
+            ],
+            "type": "string"
+          },
+          "title": "Allowed Actions",
+          "type": "array"
+        },
+        "assignment_unit": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Assignment Unit",
+          "type": "string"
+        },
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "authority_generation": {
+          "minimum": 1,
+          "title": "Authority Generation",
+          "type": "integer"
+        },
+        "configuration": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "consent_heads": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "maxItems": 32,
+          "title": "Consent Heads",
+          "type": "array"
+        },
+        "current_snapshot": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "envelope": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "fallback_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fallback Reason"
+        },
+        "frozen_state": {
+          "additionalProperties": true,
+          "title": "Frozen State",
+          "type": "object"
+        },
+        "generation_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Generation Id",
+          "type": "string"
+        },
+        "known_refs": {
+          "items": {
+            "$ref": "#/$defs/ExactRef"
+          },
+          "maxItems": 4096,
+          "title": "Known Refs",
+          "type": "array"
+        },
+        "original_approval": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "original_command_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Original Command Id",
+          "type": "string"
+        },
+        "owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "probabilities": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "propertyNames": {
+            "enum": [
+              "support_prompt",
+              "no_prompt"
+            ]
+          },
+          "title": "Probabilities",
+          "type": "object"
+        },
+        "qualification": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "received_at": {
+          "format": "date-time",
+          "title": "Received At",
+          "type": "string"
+        },
+        "saved": {
+          "$ref": "#/$defs/SavedScalar"
+        },
+        "schema_version": {
+          "const": "s2-controller-authorization-v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "store_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Store Id",
+          "type": "string"
+        },
+        "versions": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Versions",
+          "type": "object"
+        }
+      },
+      "required": [
+        "schema_version",
+        "configuration",
+        "qualification",
+        "owner_id",
+        "patient_id",
+        "generation_id",
+        "store_id",
+        "authority_generation",
+        "envelope",
+        "original_approval",
+        "original_command_id",
+        "actor_id",
+        "assignment_unit",
+        "current_snapshot",
+        "versions",
+        "known_refs",
+        "consent_heads",
+        "frozen_state",
+        "at",
+        "received_at",
+        "allowed_actions",
+        "probabilities",
+        "saved",
+        "fallback_reason"
+      ],
+      "title": "AuthorizationBasis",
+      "type": "object"
+    },
+    "ControllerCommand": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "consent",
+            "withdraw",
+            "approve",
+            "pause"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "consent_expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Consent Expires At"
+        },
+        "decision_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "expected_consent_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Consent Version",
+          "type": "integer"
+        },
+        "expected_eligibility_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Eligibility Version",
+          "type": "integer"
+        },
+        "expected_state_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected State Version",
+          "type": "integer"
+        },
+        "expected_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "mode": {
+          "const": "current",
+          "title": "Mode",
+          "type": "string"
+        },
+        "rationale": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "s2-controller-source-1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "mode",
+        "action",
+        "decision_id",
+        "expected_version",
+        "expected_state_version",
+        "expected_consent_version",
+        "expected_eligibility_version",
+        "rationale"
+      ],
+      "title": "ControllerCommand",
+      "type": "object"
+    },
+    "InteractiveStageCompletion": {
+      "$defs": {
+        "ExactRef": {
+          "additionalProperties": false,
+          "properties": {
+            "payload_sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Payload Sha256",
+              "type": "string"
+            },
+            "record_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Record Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "record_id",
+            "payload_sha256"
+          ],
+          "title": "ExactRef",
+          "type": "object"
+        },
+        "StageLedgerV2": {
+          "additionalProperties": false,
+          "properties": {
+            "decision_index": {
+              "maximum": 84,
+              "minimum": 0,
+              "title": "Decision Index",
+              "type": "integer"
+            },
+            "event_refs": {
+              "items": {
+                "$ref": "#/$defs/ExactRef"
+              },
+              "title": "Event Refs",
+              "type": "array"
+            },
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "const": "support_stage_ledger",
+              "title": "Kind",
+              "type": "string"
+            },
+            "partition_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+              "title": "Partition Id",
+              "type": "string"
+            },
+            "patient_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Patient Id",
+              "type": "string"
+            },
+            "rule": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "run_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,95}$",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": "2.0.0",
+              "title": "Schema Version",
+              "type": "string"
+            },
+            "stage": {
+              "enum": [
+                "offered",
+                "delivered"
+              ],
+              "title": "Stage",
+              "type": "string"
+            },
+            "synthetic": {
+              "const": true,
+              "title": "Synthetic",
+              "type": "boolean"
+            },
+            "window_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Window Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "schema_version",
+            "synthetic",
+            "kind",
+            "id",
+            "run_id",
+            "partition_id",
+            "patient_id",
+            "decision_index",
+            "window_id",
+            "stage",
+            "rule",
+            "event_refs"
+          ],
+          "title": "StageLedgerV2",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 256,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "assignment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authority_generation": {
+          "minimum": 1,
+          "title": "Authority Generation",
+          "type": "integer"
+        },
+        "authorization": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "decision": {
+          "$ref": "#/$defs/ExactRef"
+        },
+        "generation_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Generation Id",
+          "type": "string"
+        },
+        "ledgers": {
+          "items": {
+            "$ref": "#/$defs/StageLedgerV2"
+          },
+          "title": "Ledgers",
+          "type": "array"
+        },
+        "output_bytes": {
+          "maximum": 524288,
+          "minimum": 2,
+          "title": "Output Bytes",
+          "type": "integer"
+        },
+        "output_count": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Output Count",
+          "type": "integer"
+        },
+        "output_ref": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "output_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Output Sha256",
+          "type": "string"
+        },
+        "owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "patient_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "published_at": {
+          "format": "date-time",
+          "title": "Published At",
+          "type": "string"
+        },
+        "qualification": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "received_at": {
+          "format": "date-time",
+          "title": "Received At",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "poc-support-interactive-completion-v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "simulated_available_at": {
+          "format": "date-time",
+          "title": "Simulated Available At",
+          "type": "string"
+        },
+        "simulated_completed_at": {
+          "format": "date-time",
+          "title": "Simulated Completed At",
+          "type": "string"
+        },
+        "store_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Store Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "qualification",
+        "authorization",
+        "owner_id",
+        "patient_id",
+        "generation_id",
+        "store_id",
+        "authority_generation",
+        "decision",
+        "assignment",
+        "output_ref",
+        "output_bytes",
+        "output_sha256",
+        "output_count",
+        "ledgers",
+        "simulated_completed_at",
+        "simulated_available_at",
+        "received_at",
+        "published_at"
+      ],
+      "title": "InteractiveStageCompletion",
+      "type": "object"
+    },
+    "InteractiveSupportQualification": {
+      "$defs": {
+        "QualificationPacket": {
+          "additionalProperties": false,
+          "description": "Frozen BEFORE qualification execution/actual acceptance; no self reference.",
+          "properties": {
+            "app_commit": {
+              "pattern": "^[a-f0-9]{40}$",
+              "title": "App Commit",
+              "type": "string"
+            },
+            "app_image": {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "title": "App Image",
+              "type": "string"
+            },
+            "app_source_closure": {
+              "additionalProperties": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "title": "App Source Closure",
+              "type": "object"
+            },
+            "authority_generation": {
+              "minimum": 1,
+              "title": "Authority Generation",
+              "type": "integer"
+            },
+            "configuration": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "generator_image": {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "title": "Generator Image",
+              "type": "string"
+            },
+            "generator_source_closure": {
+              "additionalProperties": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "title": "Generator Source Closure",
+              "type": "object"
+            },
+            "installed_bundle_sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Installed Bundle Sha256",
+              "type": "string"
+            },
+            "invocation_class": {
+              "const": "owned-interactive-support-v1",
+              "title": "Invocation Class",
+              "type": "string"
+            },
+            "runtime": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "schema_version": {
+              "const": "poc-support-interactive-packet-v1",
+              "title": "Schema Version",
+              "type": "string"
+            },
+            "store_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Store Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "schema_version",
+            "app_commit",
+            "app_source_closure",
+            "generator_source_closure",
+            "app_image",
+            "generator_image",
+            "runtime",
+            "configuration",
+            "invocation_class",
+            "store_id",
+            "authority_generation",
+            "installed_bundle_sha256"
+          ],
+          "title": "QualificationPacket",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 256,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Trusted installation input ONLY, after DIFFERENT ACTUAL evidence acceptance.\n\nSOURCE/OP review, a worker/product object or a Settings label cannot install\nthis binding. The future operator installation supplies the accepted value.",
+      "properties": {
+        "acceptance_scope": {
+          "const": "ACTUAL_interactive_producer_accepted",
+          "title": "Acceptance Scope",
+          "type": "string"
+        },
+        "actual_acceptance": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "packet": {
+          "$ref": "#/$defs/QualificationPacket"
+        },
+        "packet_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Packet Sha256",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "poc-support-interactive-qualification-v1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "packet",
+        "packet_sha256",
+        "actual_acceptance",
+        "acceptance_scope"
+      ],
+      "title": "InteractiveSupportQualification",
+      "type": "object"
+    },
+    "QualificationPacket": {
+      "$defs": {
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 256,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Frozen BEFORE qualification execution/actual acceptance; no self reference.",
+      "properties": {
+        "app_commit": {
+          "pattern": "^[a-f0-9]{40}$",
+          "title": "App Commit",
+          "type": "string"
+        },
+        "app_image": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "App Image",
+          "type": "string"
+        },
+        "app_source_closure": {
+          "additionalProperties": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "title": "App Source Closure",
+          "type": "object"
+        },
+        "authority_generation": {
+          "minimum": 1,
+          "title": "Authority Generation",
+          "type": "integer"
+        },
+        "configuration": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "generator_image": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Generator Image",
+          "type": "string"
+        },
+        "generator_source_closure": {
+          "additionalProperties": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "title": "Generator Source Closure",
+          "type": "object"
+        },
+        "installed_bundle_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Installed Bundle Sha256",
+          "type": "string"
+        },
+        "invocation_class": {
+          "const": "owned-interactive-support-v1",
+          "title": "Invocation Class",
+          "type": "string"
+        },
+        "runtime": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "schema_version": {
+          "const": "poc-support-interactive-packet-v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "store_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Store Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "app_commit",
+        "app_source_closure",
+        "generator_source_closure",
+        "app_image",
+        "generator_image",
+        "runtime",
+        "configuration",
+        "invocation_class",
+        "store_id",
+        "authority_generation",
+        "installed_bundle_sha256"
+      ],
+      "title": "QualificationPacket",
+      "type": "object"
+    },
+    "SavedScalar": {
+      "$defs": {
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 256,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Service-owned scalar view, never accepted from an HTTP command.",
+      "properties": {
+        "context_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fit_collection_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "probability": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Probability"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "serving_authority": {
+          "title": "Serving Authority",
+          "type": "boolean"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        },
+        "summary_available": {
+          "title": "Summary Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "summary_available",
+        "serving_authority"
+      ],
+      "title": "SavedScalar",
+      "type": "object"
+    },
+    "UntrustedInteractiveInvocation": {
+      "$defs": {
+        "QualificationPacket": {
+          "additionalProperties": false,
+          "description": "Frozen BEFORE qualification execution/actual acceptance; no self reference.",
+          "properties": {
+            "app_commit": {
+              "pattern": "^[a-f0-9]{40}$",
+              "title": "App Commit",
+              "type": "string"
+            },
+            "app_image": {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "title": "App Image",
+              "type": "string"
+            },
+            "app_source_closure": {
+              "additionalProperties": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "title": "App Source Closure",
+              "type": "object"
+            },
+            "authority_generation": {
+              "minimum": 1,
+              "title": "Authority Generation",
+              "type": "integer"
+            },
+            "configuration": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "generator_image": {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "title": "Generator Image",
+              "type": "string"
+            },
+            "generator_source_closure": {
+              "additionalProperties": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "title": "Generator Source Closure",
+              "type": "object"
+            },
+            "installed_bundle_sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Installed Bundle Sha256",
+              "type": "string"
+            },
+            "invocation_class": {
+              "const": "owned-interactive-support-v1",
+              "title": "Invocation Class",
+              "type": "string"
+            },
+            "runtime": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "schema_version": {
+              "const": "poc-support-interactive-packet-v1",
+              "title": "Schema Version",
+              "type": "string"
+            },
+            "store_id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Store Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "schema_version",
+            "app_commit",
+            "app_source_closure",
+            "generator_source_closure",
+            "app_image",
+            "generator_image",
+            "runtime",
+            "configuration",
+            "invocation_class",
+            "store_id",
+            "authority_generation",
+            "installed_bundle_sha256"
+          ],
+          "title": "QualificationPacket",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "title": "Id",
+              "type": "string"
+            },
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 256,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Untrusted candidate scope. External SOURCE/OP authority is supplied separately.",
+      "properties": {
+        "cases": {
+          "patternProperties": {
+            "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+              "type": "string"
+            }
+          },
+          "title": "Cases",
+          "type": "object"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "invocation_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Invocation Id",
+          "type": "string"
+        },
+        "not_before": {
+          "format": "date-time",
+          "title": "Not Before",
+          "type": "string"
+        },
+        "operation_go": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "operations_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Operations Sha256",
+          "type": "string"
+        },
+        "output_cap": {
+          "maximum": 524288,
+          "minimum": 1,
+          "title": "Output Cap",
+          "type": "integer"
+        },
+        "owner_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "packet": {
+          "$ref": "#/$defs/QualificationPacket"
+        },
+        "packet_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Packet Sha256",
+          "type": "string"
+        },
+        "receipt_path": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "title": "Receipt Path",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "poc-support-untrusted-invocation-v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_acceptance": {
+          "$ref": "#/$defs/VersionRef"
+        }
+      },
+      "required": [
+        "schema_version",
+        "invocation_id",
+        "packet",
+        "packet_sha256",
+        "source_acceptance",
+        "operation_go",
+        "owner_id",
+        "cases",
+        "operations_sha256",
+        "not_before",
+        "expires_at",
+        "receipt_path",
+        "output_cap"
+      ],
+      "title": "UntrustedInteractiveInvocation",
+      "type": "object"
+    }
+  },
+  "scope": "SOURCE_ONLY"
+}

@@ -55,7 +55,17 @@ def validate_snapshot(history,snapshot,cutoff):
     return snapshot
 
 
-def validate_support_v21(history,decision,cutoff):
+def validate_support_v21(history,decision,cutoff,*,verify_authorization=None):
+    from .support_s2_authority import reject_candidate
+    reject_candidate(history)
+    return _validate_support_v21(history,decision,cutoff,verify_authorization=verify_authorization)
+
+
+def _validate_support_v21(history,decision,cutoff,*,verify_authorization=None):
+    """Shared ordinary rules; candidate producer supplies only its closed verifier."""
+    if decision.policy.id=='poc-support-s2-controller-source-v1' or decision.execution_receipt.id in ('poc-support-s2-execution-basis-v1','candidate-s2-poc-support-s2-execution-basis-v1'):
+        if verify_authorization is None:raise ValueError('interactive_authorization_verifier_required')
+        verify_authorization(decision,cutoff)
     snapshot=resolve(history,decision.decision_snapshot,{'decision_snapshot'},cutoff=cutoff)
     resolve(history,decision.decision_snapshot,{'decision_snapshot'},cutoff=decision.cutoff,inclusive=True)
     if (snapshot.cutoff!=decision.cutoff or snapshot.workflow.support_policy!=decision.policy
@@ -110,13 +120,21 @@ def validate_support_v21(history,decision,cutoff):
     return decision
 
 
-def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
+def project_protocol(full,cutoff,*,family,origin,verify_closure=None,verify_authorization=None):
     """Full source/ref verification precedes recursive reduction; no raw hashes.
 
     verify_closure, when needed, is a trusted installed archive/ledger verifier,
     never a caller-provided HTTP argument. Without proof observed burden fails.
     """
+    from .support_s2_authority import reject_candidate
+    reject_candidate(full)
     projected=full.project(cutoff)
+    for approval in (r for r in projected.records if r.kind=='approval' and r.record_id.startswith('s2-admin-')):
+        assignments=[r for r in projected.records if r.kind=='assignment' and r.approval_id==approval.record_id]
+        owners=[r for r in projected.records if r.kind=='support_decision' and any(a.record_id==r.assignment_id for a in assignments)]
+        if len(assignments)!=1 or len(owners)!=1 or verify_authorization is None:
+            raise ValueError('bound_interactive_administrative_proof_required')
+        verify_authorization(owners[0],cutoff)
     selected=set(REDUCED_MODELS)
     if family=='support':
         # S1/S2 condition on declared quality context, not the separate ISI
@@ -159,13 +177,24 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
                 if name in copied:value[name]=copied[name]
         if record.kind in {'daily_report','isi','delivery','patient'}:
             expected_adapter='patient_report' if record.kind=='daily_report' else 'simulation'
-            if record.source.id!=LAW or record.source.version!='2.0.0' or record.source.adapter!=expected_adapter:
+            interactive_offer=(record.kind=='delivery' and record.stage=='offered' and record.source.id=='foundation-support-offer-v1'
+                and record.source.version=='1.0.0' and record.source.adapter=='research_configuration')
+            if interactive_offer:
+                owners=[r for r in full.records if r.kind=='support_decision' and r.assignment_id==record.assignment_id
+                        and r.policy.id=='poc-support-s2-controller-source-v1']
+                if len(owners)!=1 or verify_authorization is None:raise ValueError('qualified_interactive_offer_authority_required')
+                verify_authorization(owners[0],cutoff)
+            elif record.source.id!=LAW or record.source.version!='2.0.0' or record.source.adapter!=expected_adapter:
                 raise ValueError('unqualified_v2_observed_producer')
         if record.kind=='assignment':
             approval=records.get(record.approval_id);decision=records.get(record.decision_id)
             if approval is None or approval.kind!='approval' or decision is None or decision.kind!='decision_snapshot':
                 raise ValueError('owned_assignment_approval_and_decision_required')
             _validate_assignment_known(record,approval,decision,[r for r in full.records if r.kind=='consent'])
+            if record.support_policy.id=='poc-support-s2-controller-source-v1' or approval.record_id.startswith('s2-admin-'):
+                owners=[r for r in full.records if r.kind=='support_decision' and r.assignment_id==record.record_id]
+                if len(owners)!=1:raise ValueError('unique_interactive_support_owner_required')
+                validate_support_v21(full,owners[0],cutoff,verify_authorization=verify_authorization)
             if record.experimental and record.seed.namespace!='assignment':raise ValueError('independent_protocol_execution_key_required')
             if not record.experimental:
                 owners=[r for r in full.records if r.kind=='support_decision' and r.schema_version=='2.1.0'
@@ -173,7 +202,7 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
                 if owners:
                     if len(owners)!=1 or owners[0].availability!='deterministic':
                         raise ValueError('unique_deterministic_support_owner_required')
-                    validate_support_v21(full,owners[0],cutoff)
+                    validate_support_v21(full,owners[0],cutoff,verify_authorization=verify_authorization)
                 elif record.option not in ('behavioral_continue','no_prompt') or record.support_policy.model_dump()!=FIXED_SUPPORT_REF:
                     raise ValueError('fixed_protocol_background_or_no_prompt_required')
         elif record.kind=='protocol_snapshot':
@@ -181,7 +210,7 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None):
             value.update(consent_refs=[exact(r,{'consent'}) for r in record.consent_refs],approval_refs=[exact(r,{'approval'}) for r in record.approval_refs],
                          background_ref=exact(record.background_ref,{'assignment'}),support_refs=[exact(r) for r in record.support_refs])
         elif record.kind=='support_decision':
-            if record.schema_version=='2.1.0':validate_support_v21(full,record,cutoff)
+            if record.schema_version=='2.1.0':validate_support_v21(full,record,cutoff,verify_authorization=verify_authorization)
             else:validate_support_decision(full,record)
             context=sorted((link for r in record.context if (link:=context_ref(r,at=record.cutoff)) is not None),key=lambda r:r['record_id'])
             if record.schema_version!='2.1.0':raise ValueError('protocol_consumer_requires_explicit_2_1_policy_constraint')
@@ -225,6 +254,11 @@ def export_histories(db,owner,patient_ids,cutoff):
         if simulation.get('law_version')!=LAW or simulation.get('family') not in PROTOCOL_REFS:
             raise ValueError('explicit_v2_protocol_patient_required')
         if patient_clock(patient,cutoff)<cutoff:raise ValueError('common_protocol_cutoff_not_reached')
-        result.append(project_protocol(history(db,patient_id),cutoff,family=simulation['family'],origin=instant(simulation['origin'])))
+        full=history(db,patient_id)
+        if any(r.kind=='support_decision' and r.policy.id=='poc-support-s2-controller-source-v1' for r in full.records):
+            from .support_s2_authority import authorization_verifier,interactive_stage_verifier
+            result.append(project_protocol(full,cutoff,family=simulation['family'],origin=instant(simulation['origin']),
+                verify_authorization=authorization_verifier(db,full),verify_closure=interactive_stage_verifier(db,full)))
+        else:result.append(project_protocol(full,cutoff,family=simulation['family'],origin=instant(simulation['origin'])))
     if len({r.family for r in result})!=1:raise ValueError('protocol_families_cannot_share_cohort')
     return result

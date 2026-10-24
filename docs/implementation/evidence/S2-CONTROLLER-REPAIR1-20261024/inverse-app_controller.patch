@@ -1,0 +1,2536 @@
+diff --git a/contracts/domain/support_s2_controller.py b/contracts/domain/support_s2_controller.py
+new file mode 100644
+index 0000000..88afc44
+--- /dev/null
++++ b/contracts/domain/support_s2_controller.py
+@@ -0,0 +1,184 @@
++"""Bounded interactive controller interface; no scientific or execution authority."""
++from typing import Annotated, Literal
++from pydantic import AwareDatetime, Field, ConfigDict, model_validator
++from .analysis import reference, sha
++from .common import Identifier, Sha256, StrictModel, VersionRef
++from .observed_v2 import ExactRef
++from contracts.runs.coverage_v2 import StageLedgerV2
++
++CONFIGURATION = dict(schema='s2-controller-source-1.0.0',
++    order=['current_authority', 'mask', 'saved_scalar_or_fallback', 'bounds_normalize_feasibility',
++           'persist_final_distribution', 'keyed_assignment', 'delivery_outcome_clock'],
++    actions=['support_prompt', 'no_prompt'], bounds=[.1, .9], fallback=.5,
++    max_prompts_rolling_seven=3, no_consecutive=True,
++    rng=dict(namespace='assignment', process='s2-support-assignment-v1',
++             algorithm='sha256 first53 bits midpoint; independent from generator outcomes'),
++    reentry='new explicit envelope after N stop/completion; never automatic',
++    saved='exact current scalar only; no fit/predict launch/wait on appointment paths')
++CONFIGURATION['qualification']=dict(contexts=['installed_ACTUAL','untrusted_once_SOURCE_OP'],
++    candidate='external nonHTTP invocation only; never LIVE history/export/fit/serving',
++    clocks='synthetic stage clocks distinct from actual receipt/publication')
++CONFIG_REF = reference('poc-support-s2-controller-source-v1', CONFIGURATION)
++REQUIRED_APP_SOURCES={'services/foundation/'+name+'.py' for name in
++    ('app','store','protocol','workflow','simulation','support_s2_controller','support_s2_authority','support_s2_invocation','support_s2_prediction')}
++REQUIRED_APP_SOURCES.add('contracts/domain/support_s2_controller.py')
++REQUIRED_GENERATOR_SOURCES={'services/generator/'+name+'.py' for name in ('server','restricted','restricted_v2')}
++
++
++class ControllerCommand(StrictModel):
++    schema_version: Literal['s2-controller-source-1.0.0']
++    mode: Literal['current']
++    action: Literal['consent', 'withdraw', 'approve', 'pause']
++    decision_id: Identifier
++    expected_version: Annotated[int, Field(gt=0)]
++    expected_state_version: Annotated[int, Field(gt=0)]
++    expected_consent_version: Annotated[int, Field(gt=0)]
++    expected_eligibility_version: Annotated[int, Field(gt=0)]
++    rationale: Annotated[str, Field(min_length=1, max_length=1000)]
++    consent_expires_at: AwareDatetime | None = None
++
++
++class SavedScalar(StrictModel):
++    """Service-owned scalar view, never accepted from an HTTP command."""
++    summary_available: bool
++    serving_authority: bool
++    status: str | None = None
++    reason: str | None = None
++    probability: Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)] | None = None
++    context_reference: VersionRef | None = None
++    fit_collection_reference: VersionRef | None = None
++
++
++class QualificationPacket(StrictModel):
++    """Frozen BEFORE qualification execution/actual acceptance; no self reference."""
++    schema_version: Literal['poc-support-interactive-packet-v1']
++    app_commit: Annotated[str, Field(pattern=r'^[a-f0-9]{40}$')]
++    app_source_closure: dict[str, Sha256]
++    generator_source_closure: dict[str, Sha256]
++    app_image: Annotated[str, Field(pattern=r'^sha256:[a-f0-9]{64}$')]
++    generator_image: Annotated[str, Field(pattern=r'^sha256:[a-f0-9]{64}$')]
++    runtime: VersionRef
++    configuration: VersionRef
++    invocation_class: Literal['owned-interactive-support-v1']
++    store_id: Identifier
++    authority_generation: Annotated[int, Field(ge=1)]
++    installed_bundle_sha256: Sha256
++
++    @model_validator(mode='after')
++    def complete(self):
++        if (self.configuration.model_dump()!=CONFIG_REF or not REQUIRED_APP_SOURCES<=self.app_source_closure.keys()
++                or not REQUIRED_GENERATOR_SOURCES<=self.generator_source_closure.keys()):
++            raise ValueError('complete_exact_interactive_packet_required')
++        return self
++
++
++class UntrustedInteractiveInvocation(StrictModel):
++    """Untrusted candidate scope. External SOURCE/OP authority is supplied separately."""
++    model_config = ConfigDict(frozen=True)
++    schema_version: Literal['poc-support-untrusted-invocation-v1']
++    invocation_id: Identifier
++    packet: QualificationPacket
++    packet_sha256: Sha256
++    source_acceptance: VersionRef
++    operation_go: VersionRef
++    owner_id: Identifier
++    cases: dict[Identifier, Identifier]  # patient -> exact generation
++    operations_sha256: Sha256
++    not_before: AwareDatetime
++    expires_at: AwareDatetime
++    receipt_path: Annotated[str, Field(min_length=1,max_length=1024)]
++    output_cap: Annotated[int,Field(ge=1,le=524288)]
++
++    @model_validator(mode='after')
++    def exact_scope(self):
++        if self.packet_sha256!=sha(self.packet.model_dump(mode='json')) or not self.cases or self.not_before>=self.expires_at:
++            raise ValueError('exact_finite_candidate_invocation_required')
++        return self
++
++    @property
++    def authority_body(self):
++        # The external GO hashes this upstream scope, never its own reference.
++        return dict(scope='UNTRUSTED_interactive_candidate_once',**self.model_dump(mode='json',exclude={'operation_go'}))
++
++    @property
++    def reference(self):
++        return reference('candidate-s2-invocation-v1',self.model_dump(mode='json'))
++
++
++class InteractiveSupportQualification(StrictModel):
++    """Trusted installation input ONLY, after DIFFERENT ACTUAL evidence acceptance.
++
++    SOURCE/OP review, a worker/product object or a Settings label cannot install
++    this binding. The future operator installation supplies the accepted value.
++    """
++    model_config = ConfigDict(frozen=True)
++    schema_version: Literal['poc-support-interactive-qualification-v1']
++    packet: QualificationPacket
++    packet_sha256: Sha256
++    actual_acceptance: VersionRef
++    acceptance_scope: Literal['ACTUAL_interactive_producer_accepted']
++
++    @model_validator(mode='after')
++    def frozen_packet(self):
++        if self.packet_sha256!=sha(self.packet.model_dump(mode='json')):
++            raise ValueError('interactive_packet_digest_mismatch')
++        return self
++
++    @property
++    def reference(self):
++        return reference('poc-support-interactive-qualified-installation-v1',self.model_dump(mode='json'))
++
++
++class AuthorizationBasis(StrictModel):
++    schema_version: Literal['s2-controller-authorization-v1']
++    configuration: VersionRef
++    qualification: VersionRef
++    owner_id: Identifier
++    patient_id: Identifier
++    generation_id: Identifier
++    store_id: Identifier
++    authority_generation: Annotated[int,Field(ge=1)]
++    envelope: ExactRef
++    original_approval: ExactRef
++    original_command_id: Identifier
++    actor_id: Identifier
++    assignment_unit: Identifier
++    current_snapshot: ExactRef
++    versions: dict[str,int]
++    known_refs: Annotated[list[ExactRef],Field(max_length=4096)]
++    consent_heads: Annotated[list[ExactRef],Field(max_length=32)]
++    frozen_state: dict
++    at: AwareDatetime
++    received_at: AwareDatetime
++    allowed_actions: list[Literal['support_prompt','no_prompt']]
++    probabilities: dict[Literal['support_prompt','no_prompt'],float]
++    saved: SavedScalar
++    fallback_reason: str | None
++
++
++class InteractiveStageCompletion(StrictModel):
++    schema_version: Literal['poc-support-interactive-completion-v1']
++    qualification: VersionRef
++    authorization: VersionRef
++    owner_id: Identifier
++    patient_id: Identifier
++    generation_id: Identifier
++    store_id: Identifier
++    authority_generation: Annotated[int,Field(ge=1)]
++    decision: ExactRef
++    assignment: ExactRef | None
++    output_ref: VersionRef
++    output_bytes: Annotated[int,Field(ge=2,le=524288)]
++    output_sha256: Sha256
++    output_count: Annotated[int,Field(ge=0,le=4)]
++    ledgers: list[StageLedgerV2]
++    simulated_completed_at: AwareDatetime
++    simulated_available_at: AwareDatetime
++    received_at: AwareDatetime
++    published_at: AwareDatetime
++
++    @model_validator(mode='after')
++    def clocks(self):
++        if not self.simulated_completed_at < self.simulated_available_at or self.received_at>self.published_at:
++            raise ValueError('separate_interactive_completion_clocks_required')
++        return self
+diff --git a/services/foundation/app.py b/services/foundation/app.py
+index b2e8b11..b77878b 100644
+--- a/services/foundation/app.py
++++ b/services/foundation/app.py
+@@ -23,6 +23,7 @@ from .workflow import create_decision, current_safety, history, record_header, s
+ from .simulation import SimulationError
+ from .replay import append_event, apply_current_state, parse_observed
+ from contracts.service.live_hold import InstalledBundle, InvalidationInput, ReviewInput, ClearanceInput, ExportInput
++from contracts.domain.support_s2_controller import InteractiveSupportQualification
+ from .admission import AdmissionError
+ from .live_hold import LiveError
+ from .analysis import AnalysisError
+@@ -51,6 +52,7 @@ class Settings:
+     admission_timeout: float = 5
+     generator_url: str | None = None
+     support_intake_diagnostic: Callable[..., None] | None = None
++    support_qualification: InteractiveSupportQualification | None = None
+ 
+     @property
+     def secure_cookie(self):
+@@ -171,7 +173,8 @@ class Nof1Input(StrictModel):
+ 
+ 
+ def create_app(settings: Settings) -> FastAPI:
+-    store = Store(settings.database,settings.installed,clock=settings.clock)
++    store = Store(settings.database,settings.installed,clock=settings.clock,
++        support_qualification=settings.support_qualification,source_commit=settings.source_commit,runtime_ref=settings.runtime_ref)
+     store.gate.timeout=settings.admission_timeout
+     app = FastAPI(title="REMission synthetic foundation", docs_url=None, redoc_url=None, openapi_url=None)
+     app.state.store, app.state.settings = store, settings
+@@ -583,8 +586,9 @@ def create_app(settings: Settings) -> FastAPI:
+     def panel_options(request: Request):
+         with store.transaction() as db:
+             session(db,request)
+-            from contracts.domain.protocol import LAW_REF,NOF1_REF
+-            return dict(nof1_med=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='nof1_med',law=LAW_REF,protocol=NOF1_REF))
++            from contracts.domain.protocol import LAW_REF,NOF1_REF,SUPPORT_REF
++            return dict(nof1_med=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='nof1_med',law=LAW_REF,protocol=NOF1_REF),
++                support=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='support',law=LAW_REF,protocol=SUPPORT_REF))
+ 
+     @app.post('/api/patients/{patient_id}/advance')
+     async def advance_patient(patient_id: str, request: Request):
+@@ -623,6 +627,29 @@ def create_app(settings: Settings) -> FastAPI:
+             result["mode"]="current";result["auth_generation"]=current["token_hash"]
+             return result
+ 
++    @app.get('/api/patients/{patient_id}/support')
++    def support_workspace(patient_id: str,request: Request):
++        from .support_s2_controller import view
++        with store.transaction() as db:
++            current=session(db,request);patient=own(db,patient_id,current['account_id'])
++            try:return view(db,patient,settings.clock())
++            except ValueError as error:raise APIError(409,'support_unavailable',str(error)) from error
++
++    @app.post('/api/patients/{patient_id}/support')
++    async def support_command(patient_id: str,request: Request):
++        from contracts.domain.support_s2_controller import ControllerCommand
++        from .support_s2_controller import transition
++        data=await body(request,ControllerCommand)
++        with store.transaction(write=True) as db:
++            current=session(db,request,mutation=True);patient=own(db,patient_id,current['account_id'])
++            payload=data.model_dump(mode='json');scope=patient_id+':support'
++            key,prior=mutation_receipt(db,current,request,scope,payload)
++            if prior:return prior
++            try:response=transition(db,settings,patient,current['account_id'],data,settings.clock())
++            except ValueError as error:raise APIError(409,'support_command_unavailable',str(error)) from error
++            save_mutation(db,current,key,scope,payload,response)
++            return response
++
+     @app.post('/api/patients/{patient_id}/nof1')
+     async def nof1_command(patient_id: str,request: Request):
+         data=await body(request,Nof1Input)
+@@ -660,6 +687,12 @@ def create_app(settings: Settings) -> FastAPI:
+         from .analysis import view
+         from .appointment import current_information
+         frozen=json.loads(row['request_json'])
++        if frozen.get('kind')=='poc_support_s2_saved_prediction_input':
++            # Job status is metadata. Current scalar admission is the owned
++            # support read; neither route launches or waits for a worker.
++            return dict(id=row['job_id'],kind='support_s2_prediction',patient_id=row['patient_id'],
++                status=row['status'],stage=row['stage'],cutoff=row['cutoff'],failure_reason=row['failure_reason'],
++                summary_endpoint='/api/patients/'+row['patient_id']+'/support')
+         if frozen.get('kind')=='poc_support_s2_app_fit_input':
+             from .support_s2_analysis import view as support_s2_view
+             return support_s2_view(row)
+diff --git a/services/foundation/store.py b/services/foundation/store.py
+index 6e65daf..52ad07a 100644
+--- a/services/foundation/store.py
++++ b/services/foundation/store.py
+@@ -43,12 +43,35 @@ def validate_bundle(installed):
+         raise AdmissionError('service_generation_mismatch')
+ 
+ 
++class SupportConnection(sqlite3.Connection):
++    """Only the qualified S2 Store constructor selects this connection factory."""
++    def _install_support_binding(self, qualification, installed, source_commit, runtime_ref):
++        from contracts.domain.support_s2_controller import InteractiveSupportQualification
++        from .support_s2_invocation import InstalledInteractiveContext
++        if type(qualification) is not InteractiveSupportQualification or hasattr(self,'_support_binding'):
++            raise ValueError('trusted_typed_support_installation_required')
++        self._support_binding=(InstalledInteractiveContext(qualification.model_dump_json()),digest(canonical(installed.model_dump(mode='json'))),
++                               source_commit,canonical(runtime_ref),canonical(installed.control.model_dump(mode='json')))
++
++    def _read_support_binding(self):
++        return self._support_binding
++
++
+ class Store:
+-    def __init__(self, path: str | Path, installed: InstalledBundle, *, clock=lambda: datetime.now(timezone.utc)):
++    def __init__(self, path: str | Path, installed: InstalledBundle, *, clock=lambda: datetime.now(timezone.utc),
++                 support_qualification=None, source_commit=None, runtime_ref=None):
+         # Normal startup never creates directories, DBs or runs legacy SQL.
+         self.path = Path(path)
+         self.installed = InstalledBundle.model_validate_json(installed.model_dump_json())
+         self.clock = clock
++        self.support_qualification=support_qualification
++        if support_qualification is not None:
++            from contracts.domain.support_s2_controller import InteractiveSupportQualification
++            if type(support_qualification) is not InteractiveSupportQualification:
++                raise ValueError('trusted_typed_support_installation_required')
++            self.support_qualification=InteractiveSupportQualification.model_validate_json(support_qualification.model_dump_json())
++        self.support_source_commit=source_commit
++        self.support_runtime_ref=runtime_ref
+         self.gate = AdmissionGate(self.path)
+         with self.gate.hold(), closing(self.connect()) as db:
+             self.validate_control(db)
+@@ -76,8 +99,21 @@ class Store:
+             raise AdmissionError('service_generation_mismatch')
+         return row
+ 
+-    def connect(self) -> sqlite3.Connection:
+-        db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
++    def connect(self, *, _support_candidate=None) -> sqlite3.Connection:
++        if _support_candidate is not None:
++            from .support_s2_invocation import UntrustedInteractiveContext
++            if type(_support_candidate) is not UntrustedInteractiveContext or self.support_qualification is not None:
++                raise ValueError('closed_isolated_candidate_construction_required')
++            db=sqlite3.connect(self.path,isolation_level=None,timeout=5,factory=SupportConnection)
++            db._candidate_context=_support_candidate
++            db._candidate_installation=(digest(canonical(self.installed.model_dump(mode='json'))),self.support_source_commit,
++                canonical(self.support_runtime_ref),canonical(self.installed.control.model_dump(mode='json')))
++            _support_candidate.bind(db)
++        elif self.support_qualification is None:
++            db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
++        else:
++            db = sqlite3.connect(self.path, isolation_level=None, timeout=5,factory=SupportConnection)
++            db._install_support_binding(self.support_qualification,self.installed,self.support_source_commit,self.support_runtime_ref)
+         db.row_factory = sqlite3.Row
+         db.execute("PRAGMA foreign_keys=ON")
+         db.execute("PRAGMA synchronous=FULL")
+@@ -87,9 +123,9 @@ class Store:
+         return db
+ 
+     @contextmanager
+-    def transaction(self, *, write: bool = False, prepare=None, authorize=None, before_commit=None) -> Iterator[sqlite3.Connection]:
++    def transaction(self, *, write: bool = False, prepare=None, authorize=None, before_commit=None, _support_candidate=None) -> Iterator[sqlite3.Connection]:
+         with self.gate.hold():
+-            db = self.connect()
++            db = self.connect() if _support_candidate is None else self.connect(_support_candidate=_support_candidate)
+             try:
+                 self.validate_control(db)
+                 if prepare:
+diff --git a/services/foundation/support_s2_authority.py b/services/foundation/support_s2_authority.py
+new file mode 100644
+index 0000000..fa49771
+--- /dev/null
++++ b/services/foundation/support_s2_authority.py
+@@ -0,0 +1,375 @@
++"""Narrow S2 administrative derivation and installed interactive closure verifier.
++
++No HTTP input or worker object constructs these verifiers. Every call checks the
++current Store control against the typed binding attached by Store construction.
++"""
++from datetime import timedelta
++import json
++from contracts.domain.analysis import canonical,sha,reference
++from contracts.domain.boundaries import lineage_heads,visible_records
++from contracts.domain.evidence_v2 import exact_ref,resolve,projection_hash
++from contracts.domain.protocol import ObservedHistoryV21,RECORD_ADAPTER_V21
++from contracts.domain.support_s2_controller import (CONFIG_REF,AuthorizationBasis,
++    InteractiveSupportQualification,InteractiveStageCompletion)
++from contracts.domain.support_s2_saved import require_executable
++
++BASIS_ID='poc-support-s2-execution-basis-v1'
++STAGE_RULE=reference('poc-support-stage-rule-v1','Explicit offered/delivered transitions; exhaustive active stage events per noon window')
++
++
++def qualification(db):
++    from .store import SupportConnection
++    from .support_s2_invocation import InstalledInteractiveContext
++    if not isinstance(db,SupportConnection) or getattr(db,'_candidate_context',None) is not None:
++        raise ValueError('installed_interactive_support_qualification_required')
++    context,bundle,source,runtime,control=db._read_support_binding()
++    if type(context) is not InstalledInteractiveContext:raise ValueError('closed_installed_interactive_context_required')
++    q=InteractiveSupportQualification.model_validate_json(context.binding_json)
++    p=q.packet
++    current=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone()
++    if (not current or not current['enabled'] or (current['database_instance_id'],current['authority_generation'])!=(p.store_id,p.authority_generation)
++            or any(current[k]!=v for k,v in json.loads(control).items())
++            or bundle!=p.installed_bundle_sha256 or source!=p.app_commit or json.loads(runtime)!=p.runtime.model_dump(mode='json')):
++        raise ValueError('interactive_installation_source_runtime_Store_generation_mismatch')
++    # Store.validate_control independently checks all current service/control and
++    # InstalledBundle identities under the existing transaction admission lock.
++    return q
++
++
++def producer_qualification(db,patient=None):
++    from .support_s2_invocation import candidate_context
++    context=candidate_context(db)
++    return context.check(db,patient) if context is not None else qualification(db)
++
++
++def producer_gate(db,patient=None):
++    from .support_s2_invocation import candidate_context
++    if candidate_context(db) is None:require_executable()
++    return producer_qualification(db,patient)
++
++
++def producer_id(db,identifier):
++    from .support_s2_invocation import candidate_context
++    return 'candidate-s2-'+identifier if candidate_context(db) is not None and not identifier.startswith('candidate-s2-') else identifier
++
++
++def producer_persist(db,value,received_at):
++    from .nof1 import persist
++    from .support_s2_invocation import candidate_context
++    context=candidate_context(db)
++    if context is not None:
++        context.check(db,value['patient_id'])
++        if value['record_id'].startswith('candidate-s2-'):
++            value=dict(value,source=dict(value['source'],id='candidate-s2-interactive-v1'))
++    return persist(db,value,received_at)
++
++
++def put(db,patient,actor,kind,value,received_at):
++    producer_qualification(db,patient)
++    ref=reference(producer_id(db,kind),value);identifier=producer_id(db,'s2-proof-'+ref['sha256'])
++    if db.execute('SELECT 1 FROM state_changes WHERE id=?',(identifier,)).fetchone():
++        raise ValueError('interactive_proof_identity_already_inserted')
++    db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)',(identifier,patient,actor,received_at.isoformat(),canonical(value)))
++    return ref
++
++
++def get(db,patient,ref,model=None):
++    row=db.execute('SELECT patient_id,actor_id,payload FROM state_changes WHERE id=?',(producer_id(db,'s2-proof-'+ref.sha256),)).fetchone()
++    if not row or row['patient_id']!=patient:raise ValueError('owned_interactive_proof_required')
++    value=json.loads(row['payload'])
++    if reference(ref.id,value)!=ref.model_dump():raise ValueError('interactive_proof_content_identity_changed')
++    return model.model_validate_json(canonical(value)) if model else value
++
++
++def known_history(full,refs):
++    if len({r.record_id for r in refs})!=len(refs):raise ValueError('duplicate_authorization_context')
++    records=[resolve(full,ref) for ref in refs]
++    return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0',synthetic=True,
++        kind='observed_history',patient_id=full.patient_id,records=[r.model_dump(mode='json') for r in records])))
++
++
++def validate_basis(db,full,basis,*,_candidate=False):
++    from .protocol import validate_snapshot
++    from .support_s2_controller import mask,final_distribution
++    q=producer_qualification(db,full.patient_id) if _candidate else qualification(db);p=q.packet
++    patient=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(basis.patient_id,basis.owner_id)).fetchone()
++    if (not patient or full.patient_id!=basis.patient_id or basis.configuration.model_dump()!=CONFIG_REF
++            or basis.qualification.model_dump()!=q.reference or (basis.store_id,basis.authority_generation)!=(p.store_id,p.authority_generation)
++            or json.loads(patient['state_json']).get('simulation',{}).get('panel_id')!=basis.generation_id):
++        raise ValueError('authorization_owned_installation_or_generation_changed')
++    known=known_history(full,basis.known_refs)
++    snapshot=resolve(known,basis.current_snapshot,{'decision_snapshot'})
++    envelope=resolve(known,basis.envelope,{'protocol_snapshot'})
++    original=resolve(known,basis.original_approval,{'approval'})
++    command=db.execute('SELECT patient_id,actor_id,payload FROM state_changes WHERE id=?',(basis.original_command_id,)).fetchone()
++    if not command or command['patient_id']!=basis.patient_id or command['actor_id']!=basis.actor_id:
++        raise ValueError('original_explicit_envelope_command_required')
++    command=json.loads(command['payload'])
++    loop=basis.frozen_state['simulation']['support_controller']
++    if (command.get('kind')!='support_envelope_command' or command['command']['action']!='approve'
++            or command['command']['decision_id']!=original.decision_id or command.get('envelope_id')!=envelope.record_id
++            or original.record_id.startswith('s2-admin-') or original.clinician_id!=basis.actor_id or basis.actor_id!=basis.owner_id
++            or original.purpose!='randomization_protocol' or original.option is not None
++            or set(original.permitted_options)!={'support_prompt','no_prompt'} or basis.original_approval not in envelope.approval_refs
++            or (loop.get('snapshot_id'),loop.get('approval_id'),loop.get('actor'),loop.get('command_id'))!=
++                (envelope.record_id,original.record_id,original.clinician_id,basis.original_command_id)):
++        raise ValueError('original_envelope_actor_or_binary_authority_changed')
++    validate_snapshot(known,envelope,max(basis.at,basis.received_at)+timedelta(microseconds=1))
++    versions=dict(zip(('version','state_version','consent_version','eligibility_version'),
++        (snapshot.patient_version,snapshot.state_version,snapshot.consent_version,snapshot.eligibility_version)))
++    if (basis.versions!=versions or snapshot.cutoff!=basis.at or snapshot.view.mode!='current'
++            or snapshot.workflow.model_dump(mode='json')!=basis.frozen_state['workflow']):
++        raise ValueError('authorization_exact_current_snapshot_versions_required')
++    heads=lineage_heads(visible_records([r for r in known.records if r.kind=='consent' and r.component=='mrt_bandit'],max(basis.at,basis.received_at),inclusive=True))
++    if [exact_ref(r) for r in sorted(heads,key=lambda r:r.record_id)]!=basis.consent_heads:
++        raise ValueError('authorization_current_consent_heads_changed')
++    allowed,reasons=mask(known,basis.frozen_state,basis.at,basis.received_at)
++    if tuple(basis.allowed_actions)!=allowed:raise ValueError('authorization_current_mask_changed')
++    _,probabilities,fallback=final_distribution(allowed,basis.saved)
++    if probabilities!=basis.probabilities or fallback!=basis.fallback_reason:
++        raise ValueError('authorization_final_distribution_or_saved_basis_changed')
++    eligibility=[e for e in snapshot.eligibility if e.action in ('support_prompt','no_prompt')]
++    executed={e.action for e in eligibility if e.status=='eligible'} if snapshot.workflow.support_mode!='paused' else set()
++    if executed!=set(allowed):
++        raise ValueError('authorization_snapshot_eligibility_changed')
++    return snapshot,envelope,original
++
++
++def derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at):
++    from .support_s2_controller import mask
++    q=producer_qualification(db,patient['id']);loop=state['simulation']['support_controller']
++    current=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient['id'],patient['owner_id'])).fetchone()
++    actual=json.loads(current['state_json']) if current else {}
++    if (not current or any(current[k]!=patient[k] for k in ('version','state_version','consent_version','eligibility_version'))
++            or actual.get('workflow')!=state['workflow'] or actual.get('simulation',{}).get('support_controller')!=loop
++            or actual.get('simulation',{}).get('nof1',{})!=state['simulation'].get('nof1',{})):
++        raise ValueError('derive_authorization_requires_actual_current_locked_state')
++    envelope=next(r for r in full.records if r.record_id==loop['snapshot_id'])
++    original=next(r for r in full.records if r.record_id==loop['approval_id'])
++    known=full.records if any(r.record_id==snapshot.record_id for r in full.records) else [*full.records,snapshot]
++    heads=lineage_heads(visible_records([r for r in known if r.kind=='consent' and r.component=='mrt_bandit'],max(at,received_at),inclusive=True))
++    allowed,_=mask(full,state,at,received_at)
++    basis=AuthorizationBasis.model_validate_json(canonical(dict(schema_version='s2-controller-authorization-v1',configuration=CONFIG_REF,
++        qualification=q.reference,owner_id=patient['owner_id'],patient_id=patient['id'],generation_id=state['simulation']['panel_id'],
++        store_id=q.packet.store_id,authority_generation=q.packet.authority_generation,envelope=exact_ref(envelope).model_dump(),
++        original_approval=exact_ref(original).model_dump(),original_command_id=loop['command_id'],actor_id=original.clinician_id,
++        assignment_unit='assignment-unit-'+sha(['s2-assignment-unit-v1',state['simulation']['seed'],state['simulation']['index']])[:32],
++        current_snapshot=exact_ref(snapshot).model_dump(),versions={k:patient[k] for k in ('version','state_version','consent_version','eligibility_version')},
++        known_refs=[exact_ref(r).model_dump() for r in known],consent_heads=[exact_ref(r).model_dump() for r in sorted(heads,key=lambda r:r.record_id)],
++        frozen_state=dict(workflow=state['workflow'],simulation=dict(day=state['simulation']['day'],support_controller=loop,nof1=state['simulation'].get('nof1',{}))),
++        at=at.isoformat(),received_at=received_at.isoformat(),allowed_actions=list(allowed),probabilities=probabilities,saved=saved,fallback_reason=fallback)))
++    validate_basis(db,known_history(full,basis.known_refs),basis,_candidate=q.reference['id']=='candidate-s2-invocation-v1')
++    return put(db,patient['id'],original.clinician_id,BASIS_ID,basis.model_dump(mode='json'),received_at)
++
++
++def authorization_verifier(db,full,*,_candidate=False):
++    if not _candidate:reject_candidate(full)
++    def verify(decision,cutoff):
++        expected=producer_id(db,BASIS_ID) if _candidate else BASIS_ID
++        if decision.execution_receipt.id!=expected:raise ValueError('interactive_derivation_basis_required')
++        basis=get(db,full.patient_id,decision.execution_receipt,AuthorizationBasis)
++        snapshot,envelope,original=validate_basis(db,full,basis,_candidate=_candidate)
++        if (decision.decision_snapshot!=basis.current_snapshot or decision.cutoff!=basis.at or decision.probabilities!=basis.probabilities
++                or decision.context_projection_sha256!=projection_hash(known_history(full,basis.known_refs),basis.at)
++                or decision.context_projection_sha256!=projection_hash(full,basis.at)):
++            raise ValueError('interactive_decision_basis_or_context_mismatch')
++        if decision.assignment_id:
++            assignment=next(r for r in full.records if r.record_id==decision.assignment_id)
++            approval=next(r for r in full.records if r.record_id==assignment.approval_id)
++            if (approval.record_id!=(producer_id(db,'s2-admin-'+decision.execution_receipt.sha256[:32]) if _candidate else 's2-admin-'+decision.execution_receipt.sha256[:32]) or approval.clinician_id!=original.clinician_id
++                    or approval.decision_id!=snapshot.record_id or assignment.decision_id!=snapshot.record_id
++                    or assignment.option not in basis.allowed_actions or assignment.probability!=
++                        (basis.probabilities[assignment.option] if decision.availability=='randomized' else None)):
++                raise ValueError('administrative_execution_not_derived_from_original_envelope')
++            if decision.availability=='randomized':
++                expected=dict(namespace='assignment',protocol=CONFIG_REF['id'],scenario='interactive-synthetic',replicate=0,
++                    patient=basis.assignment_unit,time_index=basis.frozen_state['simulation']['day'],process='s2-support-assignment-v1')
++                if assignment.seed is None or assignment.seed.model_dump()!=expected:
++                    raise ValueError('interactive_assignment_purpose_key_changed')
++            elif assignment.seed is not None:raise ValueError('deterministic_interactive_execution_has_no_rng')
++        return basis
++    return verify
++
++
++def is_interactive(decision):
++    return decision.policy.id==CONFIG_REF['id'] or decision.execution_receipt.id in (BASIS_ID,'candidate-s2-'+BASIS_ID)
++
++
++def reject_candidate(full):
++    # Identity prefixes are a first diagnostic. Source/proof/linked policy identity
++    # remains decisive when a record is renamed or its content rehashed.
++    for r in full.records:
++        value=r.model_dump(mode='json')
++        if (r.source.id=='candidate-s2-interactive-v1' or r.record_id.startswith('candidate-s2-')
++                or any('candidate-s2-' in canonical(value.get(k)) for k in
++                    ('execution_receipt','completion_receipt','stage_ledger','support_decision','assignment_ref'))):
++            raise ValueError('untrusted_candidate_cannot_enter_LIVE_history_export_fit_serving')
++
++
++def producer_authorization_verifier(db,full):
++    from .support_s2_invocation import candidate_context
++    return authorization_verifier(db,full,_candidate=candidate_context(db) is not None)
++
++
++def validate_live_history(db,full,*,_candidate=False):
++    """Shared live projection/export admission; legacy records remain untouched."""
++    if not _candidate:reject_candidate(full)
++    else:producer_qualification(db,full.patient_id)
++    for row in db.execute('SELECT id,payload FROM state_changes WHERE patient_id=?',(full.patient_id,)):
++        value=json.loads(row['payload'])
++        provenance=value.get('qualification') if isinstance(value,dict) else None
++        if not _candidate and (row['id'].startswith('candidate-s2-') or isinstance(provenance,dict)
++                and provenance.get('id')=='candidate-s2-invocation-v1'):
++            raise ValueError('untrusted_orphan_candidate_proof_cannot_enter_LIVE')
++        if isinstance(value,dict) and value.get('schema_version')=='s2-controller-authorization-v1':
++            q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)
++            if value.get('qualification')!=q.reference or not any(r.kind=='support_decision'
++                    and r.execution_receipt.sha256==sha(value) for r in full.records):
++                raise ValueError('orphan_or_cross_context_administrative_basis')
++        if isinstance(value,dict) and value.get('schema_version')=='poc-support-interactive-completion-v1':
++            q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)
++            if value.get('qualification')!=q.reference or not any(r.kind=='support_stage_closure' and r.completion_receipt
++                    and r.completion_receipt.sha256==sha(value) for r in full.records):
++                raise ValueError('orphan_or_cross_context_interactive_completion')
++    decisions=[r for r in full.records if r.kind=='support_decision' and is_interactive(r)]
++    snapshots={r.record_id:r for r in full.records if r.kind=='decision_snapshot'}
++    originals={ref.record_id for r in full.records if r.kind=='protocol_snapshot' for ref in r.approval_refs}
++    admins=[r for r in full.records if r.kind=='approval' and (r.record_id.startswith(('s2-admin-','candidate-s2-s2-admin-'))
++        or r.source.id=='candidate-s2-interactive-v1' or r.decision_id in snapshots
++        and snapshots[r.decision_id].workflow.support_policy.model_dump()==CONFIG_REF and r.record_id not in originals)]
++    if not decisions and not admins:return full
++    verify=authorization_verifier(db,full,_candidate=_candidate)
++    from .protocol import _validate_support_v21
++    for decision in decisions:
++        cutoff=max(r.available_at for r in full.records)+timedelta(microseconds=1)
++        _validate_support_v21(full,decision,cutoff,verify_authorization=verify)
++    owned={r.approval_id for r in full.records if r.kind=='assignment' and r.record_id in {d.assignment_id for d in decisions}}
++    if any(r.record_id not in owned for r in admins):raise ValueError('unbound_interactive_administrative_approval')
++    return full
++
++
++def interactive_stage_verifier(db,full,*,_candidate=False):
++    if not _candidate:reject_candidate(full)
++    def verify(closure,cutoff):
++        q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)
++        if not hasattr(closure,'stage'):closure=resolve(full,closure,{'support_stage_closure'},cutoff=cutoff)
++        else:resolve(full,exact_ref(closure),{'support_stage_closure'},cutoff=cutoff)
++        if closure.completion_receipt is None or closure.completion_receipt.id!=(producer_id(db,'poc-support-interactive-completion-v1') if _candidate else 'poc-support-interactive-completion-v1'):
++            raise ValueError('interactive_completed_stage_proof_required')
++        completion=get(db,full.patient_id,closure.completion_receipt,InteractiveStageCompletion)
++        decision=resolve(full,completion.decision,{'support_decision'},cutoff=cutoff)
++        basis=authorization_verifier(db,full,_candidate=_candidate)(decision,cutoff)
++        if (completion.qualification.model_dump()!=q.reference or completion.authorization!=decision.execution_receipt
++                or (completion.owner_id,completion.patient_id,completion.generation_id,completion.store_id,completion.authority_generation)!=
++                    (basis.owner_id,basis.patient_id,basis.generation_id,basis.store_id,basis.authority_generation)
++                or closure.support_decision!=completion.decision or closure.assignment_ref!=completion.assignment
++                or closure.window_id!=decision.outcome_window.id or closure.decision_index!=decision.decision_index
++                or closure.status!='complete' or closure.stage_completed_at!=completion.simulated_completed_at
++                or closure.available_at!=completion.simulated_available_at or not completion.simulated_available_at<cutoff
++                or not decision.cutoff<=completion.simulated_completed_at<decision.outcome_window.ends_at):
++            raise ValueError('interactive_completion_identity_or_clock_mismatch')
++        assignment=resolve(full,completion.assignment,{'assignment'},cutoff=cutoff) if completion.assignment else None
++        if assignment is None or assignment.record_id!=decision.assignment_id:
++            raise ValueError('interactive_unavailable_or_canceled_stage_is_unknown')
++        output=get(db,full.patient_id,completion.output_ref)
++        encoded=canonical(output).encode()
++        if (len(encoded)!=completion.output_bytes or sha(output)!=completion.output_sha256
++                or not isinstance(output,list) or len(output)!=completion.output_count
++                or len({r['record_id'] for r in output})!=len(output)):
++            raise ValueError('interactive_preclosure_output_integrity')
++        rows=[RECORD_ADAPTER_V21.validate_json(canonical(r)) for r in output]
++        dispatch=decision.cutoff+timedelta(hours=8)
++        expected_stages=['delivered','offered'] if assignment.option=='support_prompt' else ['delivered']
++        if sorted(r.stage for r in rows if r.kind=='delivery')!=expected_stages or any(r.kind!='delivery' for r in rows):
++            raise ValueError('interactive_actual_offer_and_delivery_required')
++        for r in rows:
++            if (r.patient_id!=full.patient_id or r.assignment_id!=assignment.record_id or r.option!=assignment.option
++                    or r.event_at!=dispatch or r.available_at>completion.simulated_completed_at
++                    or resolve(full,exact_ref(r),{'delivery'},cutoff=cutoff)!=r):
++                raise ValueError('interactive_output_foreign_changed_or_outside_stage')
++            expected_source=(('candidate-s2-interactive-v1' if _candidate else 'foundation-support-offer-v1'),'1.0.0','research_configuration') if r.stage=='offered' else ('poc-longitudinal-v2','2.0.0','simulation')
++            if (r.source.id,r.source.version,r.source.adapter)!=expected_source:
++                raise ValueError('interactive_stage_registered_producer_required')
++        active=full.as_known_at(cutoff)
++        exhaustive=[r for r in active if r.kind=='delivery' and r.assignment_id==assignment.record_id and r.stage in ('offered','delivered')]
++        if sorted((exact_ref(r).model_dump() for r in rows),key=lambda r:r['record_id'])!=sorted((exact_ref(r).model_dump() for r in exhaustive),key=lambda r:r['record_id']):
++            raise ValueError('interactive_stage_output_not_exhaustive')
++        ledgers=completion.ledgers
++        if len(ledgers)!=2 or {r.stage for r in ledgers}!={'offered','delivered'}:
++            raise ValueError('interactive_two_separate_stage_ledgers_required')
++        ledger=next(r for r in ledgers if r.stage==closure.stage)
++        expected=[exact_ref(r) for r in rows if r.stage==closure.stage]
++        if (ledger.patient_id!=full.patient_id or ledger.run_id!=completion.generation_id
++                or ledger.window_id!=closure.window_id or ledger.decision_index!=closure.decision_index
++                or ledger.stage!=closure.stage or ledger.rule.model_dump()!=STAGE_RULE
++                or ledger.event_refs!=expected or closure.stage_event_refs!=expected or closure.row_count!=len(expected)
++                or closure.run_id!=ledger.run_id or closure.partition_id!=ledger.partition_id
++                or reference(ledger.id,ledger.model_dump(mode='json'))!=closure.stage_ledger.model_dump()):
++            raise ValueError('interactive_stage_ledger_or_event_set_changed')
++        return [r for r in rows if r.stage==closure.stage]
++    return verify
++
++
++def close_stages(db,settings,patient,decision,assignment,offered,received_at,*,canceled=False):
++    """Called AFTER full product admission, in the same app transaction."""
++    from .workflow import _producer_history as history,record_header
++    persist=producer_persist
++    from contracts.runs.coverage_v2 import StageLedgerV2
++    q=producer_qualification(db,patient['id']);full=history(db,patient['id'])
++    candidate=q.reference['id']=='candidate-s2-invocation-v1'
++    basis=authorization_verifier(db,full,_candidate=candidate)(decision,decision.outcome_window.ends_at+timedelta(minutes=1))
++    cutoff=decision.outcome_window.ends_at+timedelta(minutes=1)
++    reports=[r for r in full.as_known_at(cutoff) if r.kind=='daily_report' and r.event_at==decision.outcome_window.assessment_at]
++    if len(reports)!=1:raise ValueError('interactive_exact_mature_report_required')
++    report=reports[0];closures=[];rows=[]
++    if assignment is not None and not canceled:
++        rows=[r for r in full.as_known_at(cutoff) if r.kind=='delivery' and r.assignment_id==assignment.record_id and r.stage in ('offered','delivered')]
++        if assignment.option=='support_prompt' and (offered is None or not any(r==offered for r in rows)):
++            raise ValueError('interactive_missing_actual_offer_remains_unknown')
++        # Independent delivery-only output precedes the completion/closure hashes.
++        output=[r.model_dump(mode='json') for r in rows]
++        output_ref=put(db,patient['id'],basis.actor_id,'poc-support-interactive-stage-output-v1',output,received_at)
++        completed=decision.cutoff+timedelta(hours=8,seconds=1);available=completed+timedelta(seconds=1)
++        ledgers=[StageLedgerV2.model_validate_json(canonical(dict(schema_version='2.0.0',synthetic=True,kind='support_stage_ledger',
++            id=producer_id(db,'interactive-ledger-'+sha([decision.record_id,stage])[:32]),run_id=basis.generation_id,
++            partition_id='interactive-'+sha(patient['id'])[:32],patient_id=patient['id'],decision_index=decision.decision_index,
++            window_id=decision.outcome_window.id,stage=stage,rule=STAGE_RULE,event_refs=[exact_ref(r).model_dump() for r in rows if r.stage==stage])))
++            for stage in ('offered','delivered')]
++        completion=InteractiveStageCompletion.model_validate_json(canonical(dict(schema_version='poc-support-interactive-completion-v1',
++            qualification=q.reference,authorization=decision.execution_receipt.model_dump(),owner_id=patient['owner_id'],patient_id=patient['id'],
++            generation_id=basis.generation_id,store_id=q.packet.store_id,authority_generation=q.packet.authority_generation,
++            decision=exact_ref(decision).model_dump(),assignment=exact_ref(assignment).model_dump(),output_ref=output_ref,
++            output_bytes=len(canonical(output).encode()),output_sha256=sha(output),output_count=len(output),ledgers=[r.model_dump(mode='json') for r in ledgers],
++            simulated_completed_at=completed.isoformat(),simulated_available_at=available.isoformat(),received_at=received_at.isoformat(),
++            published_at=settings.clock().isoformat())))
++        ref=put(db,patient['id'],basis.actor_id,'poc-support-interactive-completion-v1',completion.model_dump(mode='json'),received_at)
++        if settings.fault:settings.fault('after_support_completion')
++        for ledger in ledgers:
++            header=record_header(producer_id(db,'interactive-closure-'+sha([decision.record_id,ledger.stage])[:32]),patient['id'],completed)
++            header.update(schema_version='2.0.0',recorded_at=available.isoformat(),available_at=available.isoformat())
++            closures.append(persist(db,dict(**header,kind='support_stage_closure',run_id=ledger.run_id,partition_id=ledger.partition_id,
++                support_decision=exact_ref(decision).model_dump(),assignment_ref=exact_ref(assignment).model_dump(),window_id=decision.outcome_window.id,
++                decision_index=decision.decision_index,stage=ledger.stage,rule=STAGE_RULE,stage_completed_at=completed.isoformat(),status='complete',
++                stage_event_refs=[r.model_dump() for r in ledger.event_refs],stage_ledger=reference(ledger.id,ledger.model_dump(mode='json')),
++                row_count=len(ledger.event_refs),reason='Actual interactive simulated stage closed exhaustively',completion_receipt=ref),received_at))
++        full=history(db,patient['id']);verify=interactive_stage_verifier(db,full,_candidate=candidate)
++        for closure in closures:verify(closure,cutoff)
++    assessment=decision.outcome_window.assessment_at;published=assessment+timedelta(seconds=20)
++    header=record_header(decision.outcome_link_id,patient['id'],assessment)
++    header.update(schema_version='2.0.0',recorded_at=published.isoformat(),available_at=published.isoformat())
++    observed=report.missingness=='observed' and report.sleep_quality is not None
++    available=assignment is not None and not canceled
++    reward=dict(status=('observed' if observed else 'missing') if available else 'pending',
++        report_ref=exact_ref(report).model_dump() if available and observed else None,field='sleep_quality',unit='quality_points',
++        reason=None if available and observed else ('Independent reported reward missing' if available else 'Unavailable or canceled assignment; no selector reward'),
++        evidence_refs=[exact_ref(report).model_dump()] if available else [],definition_refs=[])
++    link=persist(db,dict(**header,kind='support_outcome_link',support_decision=exact_ref(decision).model_dump(),
++        assignment_ref=exact_ref(assignment).model_dump() if assignment else None,window_id=decision.outcome_window.id,
++        assessment_at=assessment.isoformat(),evaluated_as_of=(assessment+timedelta(seconds=10)).isoformat(),reward=reward,
++        burden=[dict(definition=STAGE_RULE,type=stage+'_prompt_count',unit='count',status='observed' if closures else 'pending',
++            value=int(assignment.option=='support_prompt') if closures else None,
++            source_refs=[exact_ref(r).model_dump() for r in rows if r.stage==stage] if closures else []) for stage in ('offered','delivered')],
++        offered_closure_ref=exact_ref(closures[0]).model_dump() if closures else None,
++        delivered_closure_ref=exact_ref(closures[1]).model_dump() if closures else None),received_at)
++    if settings.fault:settings.fault('after_support_outcome')
++    return link
+diff --git a/services/foundation/support_s2_controller.py b/services/foundation/support_s2_controller.py
+new file mode 100644
+index 0000000..9d7d25e
+--- /dev/null
++++ b/services/foundation/support_s2_controller.py
+@@ -0,0 +1,358 @@
++"""Owned support envelope and decision-time controller. No scientific computation.
++
++Called only inside the existing serialized app transaction. The accepted saved
++execution gate controls this branch; ordinary simulation and N paths bypass it.
++"""
++from datetime import timedelta
++import hashlib
++import json
++import uuid
++from contracts.domain.analysis import canonical, sha, reference
++from contracts.domain.boundaries import lineage_heads, visible_records, validate_approval, validate_assignment
++from contracts.domain.entities import Approval, DecisionSnapshot
++from contracts.domain.evidence_v2 import exact_ref, projection_hash
++from contracts.domain.protocol import SUPPORT_REF
++from contracts.domain.support_s2_controller import CONFIG_REF, SavedScalar
++from contracts.domain.support_s2_saved import require_executable
++
++VERSIONS = ('version', 'state_version', 'consent_version', 'eligibility_version')
++ACTIONS = ('support_prompt', 'no_prompt')
++
++
++def authority(full, state, at, received_at, *, approved=True):
++    """Current permission/restrictions at an operation's actual simulated instant."""
++    heads = lineage_heads(visible_records(full.records, max(at, received_at), inclusive=True))
++    consents = [r for r in heads if r.kind == 'consent' and r.component == 'mrt_bandit']
++    consent = max(consents, key=lambda r: (r.available_at, r.recorded_at, r.revision, r.record_id), default=None)
++    flow = state['workflow']; sim = state['simulation']; loop = sim.get('support_controller', {})
++    reasons = []
++    if not consent or not consent.permits('mrt_bandit', at): reasons.append('Current support consent and synthetic oversight required')
++    if flow['clinical'] == 'clinical_hold' or flow['hold_reasons']: reasons.append('Clinical hold')
++    if flow['data_readiness'] != 'ready': reasons.append('Current data review required')
++    if any(r.kind == 'intercurrent_event' and r.record_status != 'retracted' and r.event_type in
++           ('death', 'rescue', 'fall', 'regimen_change', 'steroid_change', 'discontinuation', 'override') for r in heads):
++        reasons.append('Current safety assessment required')
++    if approved and (loop.get('status') != 'active' or not loop.get('snapshot_id')): reasons.append('Explicit current support envelope required')
++    n = sim.get('nof1', {})
++    if approved and n.get('status') in ('stopped', 'completed') and loop.get('nof1_review_identity') != sha(n):
++        reasons.append('New explicit support approval required after N review')
++    if reasons: return (), reasons
++    if (approved and flow['support_mode'] in ('fixed', 'frozen')) or flow['learning'] in ('nof1_block', 'nof1_washout') or n.get('status') == 'active':
++        return ('no_prompt',), ['Frozen no-prompt policy']
++    if approved and flow['support_mode'] == 'paused': return (), ['Support paused']
++    return ACTIONS, []
++
++
++def mask(full, state, at, received_at, *, approved=True):
++    """Authority plus predecision burden; never shift features to dispatch time."""
++    allowed,reasons=authority(full,state,at,received_at,approved=approved)
++    if allowed!=ACTIONS:return allowed,reasons
++    prior = full.as_known_at(at)
++    delivered = [r for r in prior if r.kind == 'delivery' and r.option == 'support_prompt' and r.stage == 'delivered']
++    offered = [r for r in prior if r.kind == 'support_decision' and r.assignment_id and
++               r.probabilities['support_prompt'] > 0 and at-timedelta(days=6) <= r.cutoff < at]
++    assignments = {r.record_id: r for r in prior if r.kind == 'assignment'}
++    offered_days = {r.cutoff.date() for r in offered if r.assignment_id in assignments and assignments[r.assignment_id].option == 'support_prompt'}
++    delivered_days = {r.event_at.date() for r in delivered if at-timedelta(days=6) <= r.event_at < at}
++    if len(offered_days | delivered_days) >= 3 or any(at-timedelta(days=1) <= r.event_at < at for r in delivered) or (at-timedelta(days=1)).date() in offered_days:
++        return ('no_prompt',), ['Rolling seven-night cap or consecutive-night restriction']
++    return ACTIONS, []
++
++
++def final_distribution(allowed, saved):
++    """Finite saved scalar admission precedes clipping; never infer authority."""
++    saved = SavedScalar.model_validate(saved)
++    if len(set(allowed)) != len(allowed) or not set(allowed) <= set(ACTIONS): raise ValueError('invalid_support_mask')
++    if not allowed: return 'unavailable', dict.fromkeys(ACTIONS, 0.), 'current_support_unavailable'
++    if len(allowed) == 1:
++        if allowed != ('no_prompt',): raise ValueError('unsupported_deterministic_prompt_policy')
++        return 'deterministic', dict(support_prompt=0., no_prompt=1.), 'current_mask_no_prompt'
++    ready = saved.summary_available and saved.serving_authority and saved.status == 'candidate_ready' and saved.probability is not None
++    p = saved.probability if ready else .5
++    p = min(.9, max(.1, p)); result = dict(support_prompt=p, no_prompt=1-p)
++    if abs(sum(result.values())-1) > 1e-12 or any(not .1-1e-12 <= p <= .9+1e-12 for p in result.values()):
++        raise ValueError('infeasible_support_distribution')
++    return 'randomized', result, None if ready else (saved.reason or 'saved_prediction_unavailable')
++
++
++def keyed_uniform(seed):
++    raw = hashlib.sha256(canonical(seed).encode()).digest()
++    return ((int.from_bytes(raw[:8], 'big') >> 11)+.5)/2**53
++
++
++def eligibility(db, patient, state, at, received_at):
++    from .workflow import _producer_history as history
++    from .live_journal import active_episodes
++    allowed, reasons = mask(history(db, patient['id']), state, at, received_at,
++        approved=state['simulation'].get('support_controller',{}).get('status')=='active')
++    if active_episodes(db, patient['id']): allowed, reasons = (), ['Independent clinical hold']
++    return [dict(action=a, status='eligible' if a in allowed else 'excluded', reasons=[] if a in allowed else reasons) for a in ACTIONS]
++
++
++def selected(patient):
++    from .simulation import SimulationError
++    state = json.loads(patient['state_json']); sim = state.get('simulation', {})
++    if (sim.get('family') != 'support' or sim.get('law_version') != 'poc-longitudinal-v2'
++            or state.get('historical_read_only') or state.get('observed_archive') or sim.get('research_run_id')):
++        raise SimulationError('support_patient_required', 'Select an owned current support simulation patient.')
++    return state, sim
++
++
++def view(db, patient, received_at):
++    from .workflow import patient_clock
++    state, sim = selected(patient)
++    try:
++        require_executable()
++        from .support_s2_authority import qualification
++        qualification(db)
++        executable = True
++    except ValueError:
++        executable = False
++    return dict(configuration=CONFIG_REF, execution_available=executable,
++        loop=sim.get('support_controller',dict(status='unapproved')),
++        **saved_status(db,patient['owner_id'],patient,patient_clock(patient,received_at)))
++
++
++def saved_status(db, owner, patient, at):
++    """Reads saved scalar metadata only. Existing admission remains authoritative."""
++    from .support_s2_prediction import read_summary, current_context
++    from contracts.domain.support_s2_saved import SavedPredictionInput, INPUT_CAP
++    rows = db.execute('SELECT * FROM analysis_attempts WHERE owner_id=? AND patient_id=? AND purpose=? ORDER BY created_at DESC,rowid DESC LIMIT 1',
++                      (owner, patient['id'], 'EST-POLICY:poc-support-prediction-v1')).fetchall()
++    row = dict(rows[0]) if rows else None
++    view = dict(summary_available=False, serving_authority=False, reason='saved_prediction_missing')
++    if row:
++        if row['status'] != 'completed': view['reason'] = 'saved_prediction_'+row['status']
++        elif len(row['request_json'].encode()) > INPUT_CAP: view['reason'] = 'saved_prediction_input_cap'
++        else:
++            try:
++                product = SavedPredictionInput.model_validate_json(row['request_json'])
++                p = product.fit.product.initial.export.provenance
++                if not product.context.decision.cutoff <= at < p.origin+timedelta(days=p.cutoff_day+14):
++                    raise ValueError('saved_prediction_expired')
++                context = current_context(db, owner, patient['id'], product.fit)
++                if context != product.context: raise ValueError('saved_prediction_stale_current_context')
++                view = read_summary(db, owner, row['job_id'], current_context=context, current_fit=product.fit, at=at)
++                typed = SavedScalar.model_validate(view)
++                if typed.summary_available and (typed.context_reference != context.reference or typed.fit_collection_reference != product.fit.collection_reference):
++                    raise ValueError('saved_prediction_identity_mismatch')
++            except ValueError as error:
++                view = dict(summary_available=False, serving_authority=False, reason=str(error))
++    attempt = {k:row[k] for k in ('job_id','status','cutoff','finished_at','failure_reason')} if row else None
++    return dict(saved=SavedScalar.model_validate(view).model_dump(mode='json'), attempt=attempt,
++                activation_gap='Exact installed fit/image/operation/current-context and interactive completion qualification required')
++
++
++def transition(db, settings, patient, actor, data, received_at):
++    from .simulation import SimulationError
++    from .workflow import _producer_history as history, patient_clock, record_header, create_decision
++    from .support_s2_authority import producer_persist as persist,producer_gate
++    from .live_journal import active_episodes
++    state, sim = selected(patient); at = patient_clock(patient, received_at)
++    if data.decision_id != patient['current_decision'] or any(getattr(data, 'expected_'+k) != patient[k] for k in VERSIONS):
++        raise SimulationError('stale_support', 'Refresh and review current patient, state, consent and eligibility versions.')
++    loop = sim.setdefault('support_controller', dict(status='unapproved'))
++    full = history(db, patient['id'])
++    if data.action in ('consent', 'withdraw'):
++        if data.action == 'consent' and data.consent_expires_at is not None and data.consent_expires_at <= at:
++            raise SimulationError('expired_support_consent', 'Consent expiry must follow the fictional clock.')
++        prior = [r for r in full.records if r.lineage_id == 'support-consent-'+patient['id']]
++        if any(r.kind!='consent' or r.patient_id!=patient['id'] or r.component!='mrt_bandit' for r in prior):
++            raise ValueError('support_consent_requires_same_patient_component_lineage')
++        heads=lineage_heads(prior)
++        if len(heads)>1:raise ValueError('support_consent_requires_one_validated_lineage_head')
++        previous=heads[0] if heads else None
++        if previous is not None and at<previous.available_at:
++            raise ValueError('support_consent_chronology_regression')
++        withdrawn = data.action == 'withdraw'
++        value = dict(**record_header('support-consent-'+uuid.uuid4().hex, patient['id'], at), kind='consent', component='mrt_bandit',
++            consent_version='poc-support-consent-v1', oversight_version='synthetic-engineering-v1', consent_status='withdrawn' if withdrawn else 'active',
++            oversight_status='withdrawn' if withdrawn else 'approved_synthetic', effective_at=at.isoformat(),
++            expires_at=data.consent_expires_at.isoformat() if data.consent_expires_at else None, withdrawn_at=at.isoformat() if withdrawn else None)
++        value.update(lineage_id='support-consent-'+patient['id'], revision=previous.revision+1 if previous else 1,
++                     supersedes=previous.record_id if previous else None)
++        # This revises the same component-consent event. New knowledge and
++        # effective/withdrawal times remain current; prior bytes stay immutable.
++        if previous is not None:value['event_at']=previous.event_at.isoformat()
++        persist(db, value, received_at); loop['status'] = 'withdrawn' if withdrawn else 'unapproved'
++    elif data.action == 'pause': loop['status'] = 'paused'
++    else:
++        producer_gate(db,patient['id'])
++        if sim.get('nof1', {}).get('status') == 'active' or active_episodes(db, patient['id']):
++            raise SimulationError('support_frozen', 'Review N freeze or the current independent hold first.')
++        allowed, reasons = mask(full, state, at, received_at, approved=False)
++        if reasons and allowed != ACTIONS: raise SimulationError('support_not_ready', '; '.join(reasons))
++        if not sim['actions'] or sim['actions'][-1]['option'] != 'behavioral_continue':
++            raise SimulationError('support_background_required', 'Approve continuing behavioral care first.')
++        decision = DecisionSnapshot.model_validate_json(db.execute('SELECT snapshot FROM decisions WHERE id=?', (patient['current_decision'],)).fetchone()[0])
++        if db.execute('SELECT 1 FROM events WHERE id=?', (decision.record_id,)).fetchone() is None: persist(db, decision.model_dump(mode='json'), received_at)
++        approval = Approval.model_validate_json(canonical(dict(**record_header('support-envelope-'+uuid.uuid4().hex, patient['id'], at), kind='approval',
++            decision_id=decision.record_id, option=None, permitted_options=list(ACTIONS), clinician_id=actor, purpose='randomization_protocol',
++            **dict(zip(('expected_patient_version','expected_state_version','expected_consent_version','expected_eligibility_version'), (patient[k] for k in VERSIONS))))))
++        validate_approval(approval, decision, decision.view, 'doctor', at, 'mrt_bandit', [r for r in full.records if r.kind=='consent'])
++        approval = persist(db, approval.model_dump(mode='json'), received_at)
++        consent = max((r for r in full.as_known_at(at+timedelta(microseconds=1)) if r.kind=='consent' and r.component=='mrt_bandit'), key=lambda r:(r.available_at,r.recorded_at,r.revision,r.record_id))
++        background = next(r for r in full.records if r.record_id == sim['actions'][-1]['assignment_id'])
++        snapshot = persist(db, dict(**(record_header('support-envelope-snapshot-'+uuid.uuid4().hex, patient['id'], at)|dict(schema_version='2.1.0')),
++            kind='protocol_snapshot', family='support', protocol=SUPPORT_REF, template=SUPPORT_REF,
++            consent_refs=[exact_ref(consent).model_dump()], approval_refs=[exact_ref(approval).model_dump()],
++            background_ref=exact_ref(background).model_dump(), support_refs=[], activation_at=at.isoformat()), received_at)
++        loop.update(status='active', snapshot_id=snapshot.record_id, approval_id=approval.record_id, actor=actor,
++                    nof1_review_identity=sha(sim.get('nof1', {})), configuration=CONFIG_REF)
++    if data.action != 'approve':
++        state['workflow'].update(support_mode='paused', learning='support_unavailable')
++    else: state['workflow'].update(support_mode='adaptive', learning='support_active', support_policy=CONFIG_REF)
++    command_id='support-command-'+uuid.uuid4().hex
++    if data.action=='approve':loop['command_id']=command_id
++    encoded = canonical(dict(kind='support_envelope_command', command=data.model_dump(mode='json'), actor=actor,
++        envelope_id=loop.get('snapshot_id'),at=received_at.isoformat()))
++    db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)', (command_id, patient['id'], actor, received_at.isoformat(), encoded))
++    db.execute('UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,consent_version=consent_version+? WHERE id=?',
++               (canonical(state), int(data.action in ('consent','withdraw')), patient['id']))
++    create_decision(db, patient['id'], received_at)
++    return dict(status=loop['status'], action=data.action)
++
++
++def decide(db, settings, patient, state, received_at):
++    """Persist the final distribution BEFORE the single purpose-keyed draw.
++
++    Caller owns rollback, and never invokes this from a read/approval/navigation.
++    Original envelope persists; per-decision Approval is an administrative
++    execution record under that envelope, not a new claim of human approval.
++    """
++    from .workflow import _producer_history as history, patient_clock, record_header
++    from .support_s2_authority import producer_persist as persist,producer_gate,producer_id
++    from .live_journal import active_episodes
++    producer_gate(db,patient['id'])
++    sim = state['simulation']; loop = sim['support_controller']; at = patient_clock(patient, received_at)
++    full = history(db, patient['id'])
++    allowed, reasons = mask(full, state, at, received_at)
++    if active_episodes(db, patient['id']): allowed, reasons = (), ['Independent clinical hold']
++    snapshot = DecisionSnapshot.model_validate_json(db.execute('SELECT snapshot FROM decisions WHERE id=?', (patient['current_decision'],)).fetchone()[0])
++    if ((snapshot.patient_version,snapshot.state_version,snapshot.consent_version,snapshot.eligibility_version) != tuple(patient[k] for k in VERSIONS)
++            or snapshot.cutoff != at or snapshot.patient_id != patient['id'] or snapshot.view.mode != 'current'
++            or snapshot.workflow.model_dump(mode='json') != state['workflow']):
++        raise ValueError('support_exact_current_snapshot_required')
++    if any(r.kind=='support_decision' and r.cutoff==at for r in full.records):
++        raise ValueError('support_decision_already_persisted')
++    envelope = next((r for r in full.records if r.record_id==loop.get('snapshot_id')), None)
++    if allowed:
++        from .protocol import validate_snapshot
++        validate_snapshot(full, envelope, max(at,received_at)+timedelta(microseconds=1))
++    expected = [dict(action=a,status='eligible' if a in allowed else 'excluded',reasons=[] if a in allowed else reasons) for a in ACTIONS]
++    current = [e.model_dump(mode='json') for e in snapshot.eligibility if e.action in ACTIONS]
++    if state['workflow']['support_mode']!='paused' and current != expected:
++        raise ValueError('support_eligibility_changed_refresh_required')
++    from .support_s2_invocation import candidate_context
++    saved = (dict(summary_available=False,serving_authority=False,reason='UNTRUSTED_candidate_fallback_no_scientific_authority')
++        if candidate_context(db) is not None else saved_status(db, patient['owner_id'], patient, at)['saved']) if len(allowed)==2 else dict(summary_available=False,serving_authority=False,reason='current_mask_not_binary')
++    availability, probabilities, fallback = final_distribution(allowed, saved)
++    if not any(r.record_id==snapshot.record_id for r in full.records):snapshot=persist(db,snapshot.model_dump(mode='json'),received_at)
++    full=history(db,patient['id'])
++    from .support_s2_authority import derive_execution_authorization
++    receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
++    approval = None; assignment_id = producer_id(db,'support-assignment-'+sha([patient['id'],snapshot.record_id])[:32]) if allowed else None
++    if allowed:
++        value = dict(**record_header(producer_id(db,'s2-admin-'+receipt['sha256'][:32]),patient['id'],at),kind='approval',
++            decision_id=snapshot.record_id,option='no_prompt' if len(allowed)==1 else None,
++            permitted_options=[] if len(allowed)==1 else list(ACTIONS),clinician_id=loop['actor'],
++            purpose='ordinary_treatment' if len(allowed)==1 else 'randomization_protocol',
++            **dict(zip(('expected_patient_version','expected_state_version','expected_consent_version','expected_eligibility_version'),(patient[k] for k in VERSIONS))))
++        approval = Approval.model_validate_json(canonical(value))
++        validate_approval(approval,snapshot,snapshot.view,'doctor',at,'mrt_bandit' if len(allowed)==2 else None,[r for r in full.records if r.kind=='consent'])
++        approval = persist(db,value,received_at)
++    known = full.as_known_at(at)
++    report = max((r for r in known if r.kind=='daily_report' and r.missingness=='observed'),key=lambda r:(r.event_at,r.available_at,r.record_id),default=None)
++    context = ([report] if report else [])+[r for r in known if r.kind=='delivery' and r.option=='support_prompt' and r.stage=='delivered' and at-timedelta(days=6)<=r.event_at<at]
++    identifier=producer_id(db,'support-decision-'+sha([patient['id'],snapshot.record_id])[:32]); assessment=at+timedelta(days=1,minutes=-1)
++    decision = persist(db,dict(**(record_header(identifier,patient['id'],at)|dict(schema_version='2.1.0')),kind='support_decision',
++        decision_snapshot=exact_ref(snapshot).model_dump(),decision_index=sim['day'],cutoff=at.isoformat(),
++        context=[exact_ref(r).model_dump() for r in context],context_projection_sha256=projection_hash(full,at),
++        context_mapping=reference('poc-support-public-context-v1','Latest available quality and preceding six nights delivered prompts'),
++        policy=state['workflow']['support_policy'],mechanism=SUPPORT_REF,mode=state['workflow']['support_mode'],
++        eligibility=current,policy_constraint=dict(allowed_actions=list(ACTIONS),reason='unrestricted',snapshot_ref=None),
++        availability=availability,unavailable_reasons=reasons if not allowed else [],probabilities=probabilities,probability_tolerance=1e-12,
++        assignment_id=assignment_id,distribution_persisted_at=at.isoformat(),execution_receipt=receipt,
++        outcome_window=dict(id=identifier+'-window',starts_at=at.isoformat(),ends_at=assessment.isoformat(),assessment_at=assessment.isoformat(),
++            timezone='UTC',local_date=at.date().isoformat(),endpoint_definition=reference('poc-support-quality-window-v1','Noon through next day11:59; exact next-morning reported quality')),
++        outcome_link_id=identifier+'-outcome'),received_at)
++    if settings.fault: settings.fault('after_support_distribution')
++    assignment = None
++    if allowed:
++        seed = None; option='no_prompt'
++        if availability=='randomized':
++            unit=sha(['s2-assignment-unit-v1',sim['seed'],sim['index']])
++            seed=dict(namespace='assignment',protocol=CONFIG_REF['id'],scenario='interactive-synthetic',replicate=0,
++                patient='assignment-unit-'+unit[:32],time_index=sim['day'],process='s2-support-assignment-v1')
++            option='support_prompt' if keyed_uniform(seed)<probabilities['support_prompt'] else 'no_prompt'
++        value=dict(**record_header(assignment_id,patient['id'],at),kind='assignment',decision_id=snapshot.record_id,
++            approval_id=approval.record_id,option=option,experimental=seed is not None,component='mrt_bandit' if seed else None,
++            probability=probabilities[option] if seed else None,seed=seed,support_policy=state['workflow']['support_policy'],
++            patient_blinded=False,clinician_blinded=False,clinician_override=None,override_reason=None)
++        from contracts.domain.entities import Assignment
++        typed=Assignment.model_validate_json(canonical(value))
++        validate_assignment(typed,approval,snapshot,snapshot.view,'doctor',[r for r in full.records if r.kind=='consent'])
++        assignment=persist(db,value,received_at)
++        sim['support'].append(dict(day=sim['day'],option=option,assignment_id=assignment.record_id))
++    loop['last_decision']=dict(id=decision.record_id,cutoff=at.isoformat(),probabilities=probabilities,fallback_reason=fallback,
++        availability=availability,assignment_id=assignment_id,execution_receipt=receipt)
++    return decision, assignment
++
++
++def dispatch(db,settings,patient,state,decision,assignment,received_at):
++    """Actual simulated 20:00 offer operation; never inferred from delivery."""
++    from .workflow import _producer_history as history,record_header
++    from .support_s2_authority import producer_persist as persist,producer_id
++    from .live_journal import active_episodes
++    from .support_s2_authority import producer_qualification as qualification,put
++    qualification(db,patient['id'])
++    if assignment is None:return None,False
++    full=history(db,patient['id']);at=decision.cutoff+timedelta(hours=8)
++    allowed,_=mask(full,state,decision.cutoff,received_at)
++    current,_=authority(full,state,at,received_at)
++    allowed=tuple(a for a in allowed if a in current)
++    if active_episodes(db,patient['id']):allowed=()
++    if assignment.option not in allowed:
++        # Only the future generator schedule is canceled. Immutable probability,
++        # assignment and original authorization are retained with this refusal.
++        state['simulation']['support'][:]=[r for r in state['simulation']['support'] if r['assignment_id']!=assignment.record_id]
++        put(db,patient['id'],patient['owner_id'],'poc-support-interactive-cancellation-v1',
++            dict(decision=exact_ref(decision).model_dump(),assignment=exact_ref(assignment).model_dump(),
++                 at=(decision.cutoff+timedelta(hours=8)).isoformat(),reason='Current authority restricted pending dispatch'),received_at)
++        return None,True
++    if assignment.option=='no_prompt':return None,False
++    header=record_header(producer_id(db,'support-offer-'+sha(assignment.record_id)[:32]),patient['id'],at)
++    header['source'].update(id='foundation-support-offer-v1',version='1.0.0',adapter='research_configuration')
++    offered=persist(db,dict(**header,
++        kind='delivery',assignment_id=assignment.record_id,option='support_prompt',stage='offered',adherence=None,
++        rescue=False,protocol_deviations=[]),received_at)
++    if settings.fault:settings.fault('after_support_offer')
++    return offered,False
++
++
++def advance(db,settings,patient,state,target,received_at):
++    """One serialized app transaction, daily decisions even for visit advance."""
++    from .workflow import create_decision,patient_clock
++    from .simulation import product,persist_product
++    from .support_s2_authority import close_stages,producer_gate
++    producer_gate(db,patient['id'])
++    sim=state['simulation'];count=0
++    while sim['day']<target:
++        current=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient['id'],patient['owner_id'])).fetchone()
++        decision,assignment=decide(db,settings,current,state,received_at)
++        offered,canceled=dispatch(db,settings,current,state,decision,assignment,received_at)
++        next_day=sim['day']+1;cutoff=decision.cutoff+timedelta(days=1)
++        generated=product(settings,sim,patient['id'],next_day)
++        count+=persist_product(db,generated,patient['id'],after=patient_clock(current,received_at),cutoff=cutoff,
++            received_at=received_at,actions=sim['actions'],simulation=sim)
++        if settings.fault:settings.fault('after_support_product')
++        close_stages(db,settings,current,decision,assignment,offered,received_at,canceled=canceled)
++        sim['day']=next_day
++        if next_day%14==0:
++            state['stage']='ASSIGN-10' if next_day==84 else 'ASSIGN-02'
++            state['workflow']['clinical']='maintenance_closeout' if next_day==84 else 'scheduled_reassessment'
++        db.execute('UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1 WHERE id=?',
++            (canonical(state),patient['id']))
++        if settings.fault:settings.fault('after_support_clock')
++        create_decision(db,patient['id'],received_at)
++    return dict(status='advanced',day=sim['day'],cutoff=cutoff.isoformat(),records_added=count)
+diff --git a/services/foundation/support_s2_invocation.py b/services/foundation/support_s2_invocation.py
+new file mode 100644
+index 0000000..49b1d67
+--- /dev/null
++++ b/services/foundation/support_s2_invocation.py
+@@ -0,0 +1,171 @@
++"""Non-HTTP, once-authorized UNTRUSTED qualification entrypoint.
++
++Only the trusted operator launcher supplies the independent GO stream and receipt
++path. Matching hashes identify that external authorization; they do not create it.
++No app/worker route imports run_candidate, no candidate Setting exists, and no
++candidate output can install qualification or enter live history/fit/serving.
++"""
++from dataclasses import dataclass
++import json
++from contracts.domain.analysis import canonical,sha
++from contracts.domain.support_s2_controller import UntrustedInteractiveInvocation,ControllerCommand
++
++
++@dataclass(frozen=True)
++class InstalledInteractiveContext:
++    binding_json: str
++
++
++class UntrustedInteractiveContext:
++    """Invocation-local, connection-bound lease; never module-global readiness."""
++    def __init__(self, invocation, authority, receipt, clock):
++        if type(invocation) is not UntrustedInteractiveInvocation:
++            raise ValueError('typed_candidate_invocation_required')
++        self._raw=invocation.model_dump_json();self._authority=authority
++        self._receipt=receipt;self._clock=clock;self._connection=None;self._active=True
++
++    def bind(self, db):
++        if self._connection is not None or not self._active:
++            raise ValueError('candidate_connection_cannot_be_reused')
++        self._connection=db
++
++    def check(self,db,patient=None):
++        from .store import SupportConnection
++        if (type(self) is not UntrustedInteractiveContext or not isinstance(db,SupportConnection)
++                or db is not self._connection or not self._active or self._receipt.closed or self._authority.closed
++                or not db.in_transaction):
++            raise ValueError('active_owned_candidate_transaction_required')
++        invocation=self._check_authority()
++        self._check_store(db,invocation,db._candidate_installation)
++        if patient is not None:self._check_case(db,invocation,patient)
++        return invocation
++
++    def _check_authority(self):
++        if not self._active or self._receipt.closed or self._authority.closed:
++            raise ValueError('active_candidate_authority_and_receipt_required')
++        invocation=UntrustedInteractiveInvocation.model_validate_json(self._raw)
++        now=self._clock()
++        if not invocation.not_before<=now<invocation.expires_at:raise ValueError('candidate_authority_expired')
++        self._authority.seek(0);raw=self._authority.read(65537)
++        if (len(raw)>65536 or sha(json.loads(raw))!=invocation.operation_go.sha256
++                or json.loads(raw)!=invocation.authority_body):
++            raise ValueError('independent_SOURCE_OP_authority_changed')
++        self._receipt.seek(0)
++        if self._receipt.read()!=canonical(dict(consumed=invocation.reference)).encode():
++            raise ValueError('candidate_once_receipt_changed')
++        return invocation
++
++    def _check_store(self,db,invocation,installation):
++        packet=invocation.packet
++        current=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone()
++        bundle,source,runtime,control=installation
++        if (not current or not current['enabled'] or any(current[k]!=v for k,v in json.loads(control).items())
++                or (current['database_instance_id'],current['authority_generation'])!=(packet.store_id,packet.authority_generation)
++                or (bundle,source,json.loads(runtime))!=(packet.installed_bundle_sha256,packet.app_commit,packet.runtime.model_dump(mode='json'))):
++            raise ValueError('candidate_current_Store_source_runtime_generation_changed')
++
++    def _check_case(self,db,invocation,patient):
++        row=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient,invocation.owner_id)).fetchone()
++        state=json.loads(row['state_json']) if row else {}
++        if (patient not in invocation.cases or not row or state.get('simulation',{}).get('panel_id')!=invocation.cases[patient]
++                or state.get('simulation',{}).get('research_run_id') or state.get('historical_read_only') or state.get('observed_archive')):
++            raise ValueError('candidate_exact_owned_case_generation_required')
++        return row
++
++    def admit_output(self,store,result):
++        """After write finalization: fresh read only, never reuse its closed DB.
++
++        A failure here withholds output; it cannot undo the committed write.
++        """
++        from .store import digest
++        invocation=self._check_authority()
++        with store.transaction() as db:
++            installation=(digest(canonical(store.installed.model_dump(mode='json'))),store.support_source_commit,
++                canonical(store.support_runtime_ref),canonical(store.installed.control.model_dump(mode='json')))
++            self._check_store(db,invocation,installation)
++            for output in result['histories']:
++                row=self._check_case(db,invocation,output['patient_id'])
++                if output['current']!={k:row[k] for k in output['current']}:
++                    raise ValueError('candidate_finalized_current_output_changed')
++                saved=json.loads(db.execute('SELECT snapshot FROM decisions WHERE id=?',(row['current_decision'],)).fetchone()[0])
++                if saved!=output['current_snapshot']:raise ValueError('candidate_finalized_snapshot_changed')
++            self._check_authority()
++        self._check_authority()
++
++    def finish(self):
++        self._active=False;self._connection=None
++
++
++def candidate_context(db):
++    from .store import SupportConnection
++    context=getattr(db,'_candidate_context',None)
++    if context is None:return None
++    if not isinstance(db,SupportConnection) or type(context) is not UntrustedInteractiveContext:
++        raise ValueError('closed_candidate_context_required')
++    context.check(db)
++    return context
++
++
++def run_candidate(store,settings,invocation,operations,*,external_authority):
++    """Trusted operator-only entry, with separately supplied exact SOURCE/OP GO.
++
++    External launcher custody/GO is a prerequisite, not inferred from a caller's
++    digest. Receipt creation consumes it once even if the transaction fails.
++    This source entrypoint grants no permission to execute without that launcher.
++    """
++    from pathlib import Path
++    from .support_s2_controller import transition,selected
++    from .simulation import advance as advance_simulation
++    from .workflow import _producer_history
++    if type(invocation) is not UntrustedInteractiveInvocation or store.support_qualification is not None:
++        raise ValueError('isolated_uninstalled_candidate_Store_required')
++    # Never retain caller-owned nested mappings as authority or operation input.
++    invocation=UntrustedInteractiveInvocation.model_validate_json(invocation.model_dump_json())
++    operations=json.loads(canonical(operations))
++    if sha(operations)!=invocation.operations_sha256 or not operations or len(operations)>128:
++        raise ValueError('exact_bounded_operations_required')
++    external_authority.seek(0);raw=external_authority.read(65537)
++    if len(raw)>65536 or json.loads(raw)!=invocation.authority_body or sha(json.loads(raw))!=invocation.operation_go.sha256:
++        raise ValueError('external_exact_SOURCE_OP_GO_required')
++    now=settings.clock()
++    if not invocation.not_before<=now<invocation.expires_at:raise ValueError('candidate_authority_expired')
++    # Existing exclusive-receipt pattern. No retry/replay of a consumed GO.
++    with Path(invocation.receipt_path).open('x+b') as receipt:
++        receipt.write(canonical(dict(consumed=invocation.reference)).encode());receipt.flush()
++        context=UntrustedInteractiveContext(invocation,external_authority,receipt,settings.clock)
++        try:
++            with store.transaction(write=True,_support_candidate=context,before_commit=context.check) as db:
++                for operation in operations:
++                    patient_id=operation['patient_id'];context.check(db,patient_id)
++                    patient=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient_id,invocation.owner_id)).fetchone()
++                    if operation['action']=='advance':
++                        if set(operation)!={'patient_id','action','target'} or not isinstance(operation['target'],int):
++                            raise ValueError('exact_candidate_advance_required')
++                        state,sim=selected(patient)
++                        if not sim['day']<operation['target']<=84:raise ValueError('bounded_forward_candidate_clock_required')
++                        day=sim['day'];target=operation['target']
++                        mode='day' if target==day+1 else 'visit' if target==min(84,(day//14+1)*14) else None
++                        if mode is None:raise ValueError('candidate_uses_existing_day_or_visit_advance')
++                        advance_simulation(db,settings,patient,patient['version'],mode,now)
++                    else:
++                        if set(operation)!={'patient_id','action','command'}:raise ValueError('exact_candidate_command_required')
++                        command=ControllerCommand.model_validate_json(canonical(operation['command']))
++                        if command.action!=operation['action']:raise ValueError('candidate_command_action_changed')
++                        transition(db,settings,patient,invocation.owner_id,command,now)
++                outputs=[]
++                for patient_id in invocation.cases:
++                    row=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient_id,invocation.owner_id)).fetchone()
++                    current=json.loads(db.execute('SELECT snapshot FROM decisions WHERE id=?',(row['current_decision'],)).fetchone()[0])
++                    outputs.append(dict(patient_id=patient_id,records=[r.model_dump(mode='json') for r in _producer_history(db,patient_id).records],
++                        current={k:row[k] for k in ('version','state_version','consent_version','eligibility_version','cutoff','current_decision')},
++                        current_snapshot=current))
++                proofs=[dict(row) for row in db.execute('SELECT id,patient_id,actor_id,created_at,payload FROM state_changes WHERE patient_id IN ('+
++                    ','.join('?' for _ in invocation.cases)+')',tuple(invocation.cases))]
++                result=dict(status='UNTRUSTED_candidate_evidence',invocation=invocation.model_dump(mode='json'),histories=outputs,proofs=proofs)
++                if len(canonical(result).encode())>invocation.output_cap:raise ValueError('candidate_evidence_cap')
++                context.check(db)
++            try:context.admit_output(store,result)
++            except Exception as error:
++                raise ValueError('candidate_committed_output_withheld: '+str(error)) from error
++            return result
++        finally:context.finish()
+diff --git a/services/foundation/workflow.py b/services/foundation/workflow.py
+index b30701f..baa5249 100644
+--- a/services/foundation/workflow.py
++++ b/services/foundation/workflow.py
+@@ -53,15 +53,31 @@ def record_header(record_id: str, patient_id: str, at: datetime) -> dict:
+                 lineage_id=record_id, revision=1, supersedes=None, duplicate_of=None, record_status="active")
+ 
+ 
+-def history(db, patient_id: str) -> ObservedHistory:
++def history(db, patient_id: str, *, _support_context=None) -> ObservedHistory:
++    if _support_context is not None:
++        from .support_s2_invocation import candidate_context
++        if _support_context is not candidate_context(db):raise ValueError('closed_producer_history_context_required')
++        _support_context.check(db,patient_id)
+     records = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id", (patient_id,))]
+-    if any(r['schema_version'] == '2.1.0' for r in records):
++    if any(r['schema_version'] == '2.1.0' or r.get('source',{}).get('id')=='candidate-s2-interactive-v1'
++           or r['record_id'].startswith('candidate-s2-') or r['kind']=='approval' and r['record_id'].startswith('s2-admin-')
++           or r['kind']=='assignment' and r.get('support_policy',{}).get('id')=='poc-support-s2-controller-source-v1' for r in records):
+         from contracts.domain.protocol import ObservedHistoryV21
+-        return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
++        full=ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
++        from .support_s2_authority import validate_live_history
++        return validate_live_history(db,full,_candidate=_support_context is not None)
+     if any(r['schema_version'] == '2.0.0' for r in records):
+         from contracts.domain.observed_v2 import ObservedHistoryV2
+-        return ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
+-    return ObservedHistory.model_validate_json(canonical(dict(schema_version="1.0.0", synthetic=True, kind="observed_history", patient_id=patient_id, records=records)))
++        full=ObservedHistoryV2.model_validate_json(canonical(dict(schema_version='2.0.0', synthetic=True, kind='observed_history', patient_id=patient_id, records=records)))
++    else:full=ObservedHistory.model_validate_json(canonical(dict(schema_version="1.0.0", synthetic=True, kind="observed_history", patient_id=patient_id, records=records)))
++    from .support_s2_authority import validate_live_history
++    return validate_live_history(db,full,_candidate=_support_context is not None)
++
++
++def _producer_history(db,patient_id):
++    from .support_s2_invocation import candidate_context
++    context=candidate_context(db)
++    return history(db,patient_id,_support_context=context) if context is not None else history(db,patient_id)
+ 
+ 
+ def current_safety(db, patient_id: str, at: datetime):
+@@ -71,11 +87,13 @@ def current_safety(db, patient_id: str, at: datetime):
+     retraction or duplicate cannot revive an older clinical fact. Call inside
+     the same transaction as the state transition or approval being admitted.
+     """
++    from .workflow import _producer_history as history
+     heads = lineage_heads(visible_records(history(db, patient_id).records, at, inclusive=True))
+     return [r for r in heads if r.record_status != "retracted" and r.kind in ("consent", "intercurrent_event")]
+ 
+ 
+ def create_decision(db, patient_id: str, at: datetime) -> str:
++    from .workflow import _producer_history as history
+     row = db.execute("SELECT * FROM patients WHERE id=?", (patient_id,)).fetchone()
+     receipt_at = at
+     at = patient_clock(row, at)
+@@ -103,6 +121,11 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
+     eligibility = [dict(action=action, status="excluded" if state["workflow"]["hold_reasons"] else "eligible",
+                         reasons=state["workflow"]["hold_reasons"]) for action in actions]
+     nof1=None
++    if state.get('simulation',{}).get('family')=='support':
++        from .support_s2_authority import producer_id
++        identifier=producer_id(db,identifier)
++        from .support_s2_controller import eligibility as support_eligibility
++        eligibility.extend(support_eligibility(db,row,state,at,receipt_at))
+     if state.get('simulation',{}).get('family')=='nof1_med':
+         from .nof1 import readiness
+         from contracts.domain.protocol import NOF1_REF
+@@ -120,9 +143,15 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
+         outcome="Ordinary synthetic care; statistical estimates unavailable", horizon_days=42,
+         estimand=reference("EST-VISIT"), model=reference("foundation-no-estimator", "No statistical engine implemented"),
+         posterior=None, evidence=[], policy=SUPPORT)))
++    if state.get('simulation',{}).get('family')=='support':
++        value=snapshot.model_dump(mode='json')
++        if identifier.startswith('candidate-s2-'):value['source']['id']='candidate-s2-interactive-v1'
++        value['source']['raw_sha256']=digest(canonical({k:v for k,v in value.items() if k!='source'}))
++        snapshot=DecisionSnapshot.model_validate_json(canonical(value))
+     projected = history(db, patient_id).project(at).model_dump(mode="json")
+     options = eligibility if state["stage"] != "ASSIGN-07" else [e for e in eligibility if e["action"].startswith("behavioral_")]
+     if nof1 is not None:options=[e for e in options if e['action']=='behavioral_continue']
++    if state.get('simulation',{}).get('family')=='support':options=[e for e in options if e['action']=='behavioral_continue']
+     ordinary = state["stage"] in ("ASSIGN-02", "ASSIGN-07") and state["workflow"]["data_readiness"] == "ready" and not state["workflow"]["hold_reasons"]
+     if state.get('simulation', {}).get('day', 0) >= 84:
+         ordinary = False
+diff --git a/tests/freeze_s2_controller_source.py b/tests/freeze_s2_controller_source.py
+new file mode 100644
+index 0000000..b4d2842
+--- /dev/null
++++ b/tests/freeze_s2_controller_source.py
+@@ -0,0 +1,53 @@
++"""Freeze public SOURCE artifacts only, called inside the active source guards."""
++import ast
++import hashlib
++import json
++from contracts.domain.analysis import reference
++from contracts.domain.support_s2_controller import (CONFIGURATION,CONFIG_REF,ControllerCommand,SavedScalar,
++    QualificationPacket,InteractiveSupportQualification,UntrustedInteractiveInvocation,AuthorizationBasis,InteractiveStageCompletion)
++
++
++SOURCE_PATHS=['contracts/domain/support_s2_controller.py',*['services/foundation/'+name+'.py' for name in
++    ('app','store','workflow','protocol','simulation','support_s2_controller','support_s2_authority','support_s2_invocation','support_s2_prediction')],
++    'tests/run_s2_controller_source.py','tests/test_s2_controller_source.py','tests/freeze_s2_controller_source.py',
++    *['web/src/'+name for name in ('main.tsx','types.ts','SimulationPanel.tsx','SupportPanel.tsx')]]
++
++
++def freeze(root,result):
++    output=root/'artifacts/s2-controller/source'
++    def save(name,value):
++        (output/name).write_text(json.dumps(value,sort_keys=True,indent=2,allow_nan=False)+'\n',encoding='utf-8')
++    schema={model.__name__:model.model_json_schema() for model in (ControllerCommand,SavedScalar,QualificationPacket,
++        InteractiveSupportQualification,UntrustedInteractiveInvocation,AuthorizationBasis,InteractiveStageCompletion)}
++    save('controller-schema.json',dict(scope='SOURCE_ONLY',schemas=schema,reference=reference('poc-s2-controller-schema-v1',schema)))
++    save('controller-config.json',dict(configuration=CONFIGURATION,reference=CONFIG_REF))
++    closure=[]
++    for path in SOURCE_PATHS:
++        raw=root.joinpath(path).read_bytes();canonical=raw.replace(b'\r\n',b'\n')
++        closure.append(dict(path=path,checkout_bytes=len(raw),checkout_sha256=hashlib.sha256(raw).hexdigest(),
++            git_bytes=len(canonical),git_sha256=hashlib.sha256(canonical).hexdigest(),
++            git_blob=hashlib.sha1(b'blob '+str(len(canonical)).encode()+b'\0'+canonical).hexdigest()))
++    save('source-closure.json',dict(scope='public Git SOURCE; no installed-image byte qualification',files=closure))
++    save('checks.json',dict(scope='guarded SOURCE AST/contracts/inert I/O only',tests=result.testsRun,
++        failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),
++        expected_failures=[dict(test=str(test),traceback=trace) for test,trace in result.expectedFailures],
++        status='KNOWN_PRODUCER_REPAIR_PENDING' if result.expectedFailures else 'PASS',
++        actual_app=False,actual_SQLite=False,actual_science=False,actual_browser=False,runtime_GO=False,
++        retained_numerics=dict(passed=17,failed=1,rerun=False,sealed_operation=False)))
++    # Reproducible AST inventory supplements the exact Git reverse-patch proof.
++    def functions(tree,prefix=''):
++        found={}
++        for node in getattr(tree,'body',[]):
++            if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):
++                name=prefix+node.name
++                if not isinstance(node,ast.ClassDef):found[name]=ast.dump(node,include_attributes=False)
++                found.update(functions(node,name+'.'))
++        return found
++    inventory=[]
++    for name in ('app','store','workflow','protocol','simulation','support_s2_prediction'):
++        base=functions(ast.parse(output.joinpath('base-'+name+'.py').read_text()))
++        candidate=functions(ast.parse(root.joinpath('services/foundation/'+name+'.py').read_text()))
++        inventory.append(dict(path='services/foundation/'+name+'.py',
++            unchanged=[key for key in base if base[key]==candidate.get(key)],
++            changed=[key for key in base if base[key]!=candidate.get(key)],added=sorted(candidate.keys()-base.keys())))
++    save('function-inverses.json',dict(scope='AST identity and declared changed functions; see focused inverse controls and Git reverse-patch proof',files=inventory))
+diff --git a/tests/run_s2_controller_source.py b/tests/run_s2_controller_source.py
+new file mode 100644
+index 0000000..0596099
+--- /dev/null
++++ b/tests/run_s2_controller_source.py
+@@ -0,0 +1,58 @@
++"""Host SOURCE-only runner: active science/app/DB/process/network tripwires."""
++import importlib.abc
++import builtins
++import io
++import os
++from pathlib import Path
++import socket
++import subprocess
++import sys
++import unittest
++from contextlib import ExitStack
++from unittest.mock import patch
++
++ROOT=Path(__file__).resolve().parents[1]
++if __name__=='__main__':
++    sys.path[:0]=[str(ROOT),str(ROOT/'tests')]
++    forbidden={'numpy','scipy','pymc','pytensor','arviz','arviz_stats','xarray','netCDF4','pandas',
++        'statsmodels','services','adapters','apps','sqlalchemy','sqlite3','ctypes','requests','methods',
++        'win32api','win32file','win32security','win32process','winreg','psutil'}
++    preloaded=forbidden.intersection(sys.modules)
++    assert not preloaded-{'winreg'}
++    class Tripwire(importlib.abc.MetaPathFinder):
++        def find_spec(self,fullname,path=None,target=None):
++            if fullname.split('.')[0] in forbidden:raise AssertionError('forbidden SOURCE import: '+fullname)
++    sys.meta_path.insert(0,Tripwire())
++    def refuse(*args,**kwargs):raise AssertionError('process/network forbidden in SOURCE checks')
++    roots=[str(ROOT).replace('\\','/').lower(),str(Path(sys.prefix)).replace('\\','/').lower(),
++           str(Path(sys.base_prefix)).replace('\\','/').lower()]
++    def permitted(path):
++        if isinstance(path,int):return
++        value=os.path.abspath(os.fspath(path)).replace('\\','/').lower()
++        if ('supplemental-blind' in value or 'supplemental_blind' in value
++                or not any(value==root or value.startswith(root+'/') for root in roots)):
++            raise AssertionError('private/sealed filesystem operation forbidden in SOURCE checks')
++    original_open,original_io_open=builtins.open,io.open
++    original_stat,original_lstat=os.stat,os.lstat
++    def guarded_open(path,*args,**kwargs):permitted(path);return original_open(path,*args,**kwargs)
++    def guarded_io_open(path,*args,**kwargs):permitted(path);return original_io_open(path,*args,**kwargs)
++    def guarded_stat(path,*args,**kwargs):permitted(path);return original_stat(path,*args,**kwargs)
++    def guarded_lstat(path,*args,**kwargs):permitted(path);return original_lstat(path,*args,**kwargs)
++    with ExitStack() as guards,patch.object(subprocess,'Popen',side_effect=refuse),patch.object(subprocess,'run',side_effect=refuse), \
++            patch.object(socket,'socket',side_effect=refuse),patch.object(socket,'create_connection',side_effect=refuse), \
++            patch.object(socket,'getaddrinfo',side_effect=refuse),patch.object(os,'system',side_effect=refuse), \
++            patch.object(builtins,'open',side_effect=guarded_open),patch.object(io,'open',side_effect=guarded_io_open), \
++            patch.object(os,'stat',side_effect=guarded_stat),patch.object(os,'lstat',side_effect=guarded_lstat):
++        for module,names in (('winreg',('OpenKey','OpenKeyEx','CreateKey','CreateKeyEx','QueryValue','QueryValueEx','SetValue','SetValueEx','DeleteKey','DeleteValue','ConnectRegistry')),
++                             ('_winapi',('CreateProcess','OpenProcess'))):
++            loaded=sys.modules.get(module)
++            if loaded:
++                for name in names:
++                    if hasattr(loaded,name):guards.enter_context(patch.object(loaded,name,side_effect=refuse))
++        result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_s2_controller_source'))
++        if result.wasSuccessful():
++            from freeze_s2_controller_source import freeze
++            freeze(ROOT,result)
++    assert not forbidden.intersection(sys.modules)-preloaded
++    print('SOURCE ONLY: actual scalar/contract/AST bodies with inert typed records/transactions; no app/SQLite/science/process/network')
++    sys.exit(not result.wasSuccessful())
+diff --git a/tests/test_s2_controller_source.py b/tests/test_s2_controller_source.py
+new file mode 100644
+index 0000000..a050668
+--- /dev/null
++++ b/tests/test_s2_controller_source.py
+@@ -0,0 +1,1050 @@
++"""Labeled inert SOURCE records and DB doubles; never actual app/fit/browser evidence."""
++import ast
++import copy
++from datetime import datetime,timedelta,timezone
++import hashlib
++import json
++import io
++from pathlib import Path
++from types import SimpleNamespace as NS
++from contextlib import contextmanager,nullcontext
++from unittest.mock import patch
++import unittest
++from contracts.domain.analysis import canonical,sha,reference,FIXED_SUPPORT_REF
++from contracts.domain.entities import DecisionSnapshot
++from contracts.domain.evidence_v2 import exact_ref
++from contracts.domain.protocol import ObservedHistoryV21,RECORD_ADAPTER_V21,SUPPORT_REF
++from contracts.domain.support_s2_controller import CONFIG_REF,ControllerCommand,InteractiveSupportQualification,REQUIRED_APP_SOURCES,REQUIRED_GENERATOR_SOURCES
++
++ROOT=Path(__file__).resolve().parents[1]
++FILE='services/foundation/support_s2_controller.py'
++AT=datetime(2026,1,15,12,tzinfo=timezone.utc)
++BEFORE=AT-timedelta(days=14)
++
++
++def load(path, **bindings):
++    """Execute actual source; ONLY service-relative imports are replaced seams."""
++    tree=ast.parse((ROOT/path).read_text(encoding='utf-8'))
++    class ReplaceServiceImports(ast.NodeTransformer):
++        def visit_ImportFrom(self,node):return None if node.level or (node.module or '').startswith('services') else node
++    tree=ReplaceServiceImports().visit(tree)
++    ns=dict(__name__='UNIT_actual_source',candidate_context=lambda db:None,reject_candidate=lambda full:None);ns.update(bindings)
++    exec(compile(ast.fix_missing_locations(tree),str(ROOT/path),'exec'),ns)
++    return ns
++
++
++INSTALLED_CONTEXT=load('services/foundation/support_s2_invocation.py')['InstalledInteractiveContext']
++
++
++def header(name,patient,at):
++    return dict(schema_version='1.0.0',synthetic=True,record_id=name,patient_id=patient,event_at=at.isoformat(),
++        recorded_at=at.isoformat(),available_at=at.isoformat(),source=dict(id='UNIT-INERT',version='1.0.0',
++        adapter='research_configuration',raw_sha256=sha(name)),lineage_id=name,revision=1,supersedes=None,
++        duplicate_of=None,record_status='active')
++
++
++def typed(value):
++    value=copy.deepcopy(value);value['source']['raw_sha256']=sha({k:v for k,v in value.items() if k!='source'})
++    return RECORD_ADAPTER_V21.validate_json(canonical(value))
++def history(records):return ObservedHistoryV21.model_validate_json(canonical(dict(schema_version='2.1.0',synthetic=True,
++    kind='observed_history',patient_id='UNIT-patient',records=[r.model_dump(mode='json') for r in records])))
++
++
++def snapshot(name,at,eligibility=None):
++    return typed(dict(**header(name,'UNIT-patient',at),kind='decision_snapshot',cutoff=at.isoformat(),
++        patient_version=1,state_version=1,consent_version=1,eligibility_version=1,
++        workflow=dict(clinical='treatment_active',learning='support_active',data_readiness='ready',hold_reasons=[],
++            support_mode='adaptive',support_policy=CONFIG_REF),view=dict(patient_id='UNIT-patient',mode='current',snapshot_id=None),
++        eligibility=eligibility or [dict(action=a,status='eligible',reasons=[]) for a in ('support_prompt','no_prompt','behavioral_continue')],
++        outcome='UNIT quality',horizon_days=1,estimand=reference('UNIT-estimand','inert'),model=reference('UNIT-model','inert'),posterior=None,evidence=[],policy=CONFIG_REF))
++
++
++def consent(at=BEFORE-timedelta(seconds=1),status='active'):
++    return typed(dict(**header('UNIT-consent','UNIT-patient',at),kind='consent',component='mrt_bandit',consent_version='UNIT',
++        oversight_version='UNIT',consent_status=status,oversight_status='approved_synthetic' if status=='active' else 'withdrawn',
++        effective_at=at.isoformat(),expires_at=None,withdrawn_at=None if status=='active' else at.isoformat()))
++
++
++class Cursor:
++    def __init__(self,rows=()):self.rows=list(rows)
++    def fetchone(self):return self.rows[0] if self.rows else None
++    def fetchall(self):return self.rows
++    def __iter__(self):return iter(self.rows)
++
++
++class InertSupportConnection:
++    """Inert stand-in for the optional Store-owned sqlite connection subclass."""
++    pass
++
++
++class InertDB(InertSupportConnection):
++    """Explicit SQL double. Unknown access fails, never opens SQLite."""
++    def __init__(self,records,snapshot):
++        self.records=records;self.snapshot=snapshot;self.writes=[];self.audit=[];self.proofs={};self.receipts={}
++        self.raw_sources={}
++        self.in_transaction=False;self.closed=False;self.decisions={snapshot.record_id:snapshot}
++        self.control=dict(database_instance_id='UNIT-store',authority_generation=1,enabled=True)
++        packet=dict(schema_version='poc-support-interactive-packet-v1',app_commit='0'*40,app_source_closure={p:'0'*64 for p in REQUIRED_APP_SOURCES},
++            generator_source_closure={p:'1'*64 for p in REQUIRED_GENERATOR_SOURCES},app_image='sha256:'+'2'*64,generator_image='sha256:'+'3'*64,
++            runtime=reference('UNIT-runtime','fabricated metadata only'),configuration=CONFIG_REF,invocation_class='owned-interactive-support-v1',
++            store_id='UNIT-store',authority_generation=1,installed_bundle_sha256='4'*64)
++        self.q=InteractiveSupportQualification.model_validate_json(canonical(dict(schema_version='poc-support-interactive-qualification-v1',
++            packet=packet,packet_sha256=sha(packet),actual_acceptance=reference('UNIT-FAKE-actual','fabricated SOURCE metadata; NO actual acceptance'),
++            acceptance_scope='ACTUAL_interactive_producer_accepted')))
++        self.expected_control=canonical(self.control)
++    def _read_support_binding(self):
++        return INSTALLED_CONTEXT(self.q.model_dump_json()),'4'*64,'0'*40,canonical(self.q.packet.runtime.model_dump()),self.expected_control
++    def execute(self,sql,args=()):
++        if sql=='SELECT snapshot FROM decisions WHERE id=?':return Cursor([(self.decisions.get(args[0],self.snapshot).model_dump_json(),)])
++        if sql=='SELECT * FROM patients WHERE id=?':return Cursor([self.patient] if args[0]==self.patient['id'] else [])
++        if sql=='SELECT 1 FROM events WHERE id=?':return Cursor([(1,)] if any(r.record_id==args[0] for r in self.records) else [])
++        if sql.startswith('SELECT job_id,cutoff,result_json,input_sha256 FROM analysis_attempts'):return Cursor()
++        if sql.startswith('SELECT id,patient_id,actor_id,created_at,payload FROM state_changes WHERE patient_id IN'):
++            return Cursor([dict(v,id=k,created_at=AT.isoformat()) for k,v in self.proofs.items()])
++        if sql=='SELECT id,payload FROM state_changes WHERE patient_id=?':
++            return Cursor([dict(id=k,payload=v['payload']) for k,v in self.proofs.items() if v['patient_id']==args[0]])
++        if sql=='UPDATE patients SET state_json=? WHERE id=?':self.patient['state_json']=args[0];return Cursor()
++        if sql=='INSERT INTO decisions VALUES (?,?,?,?,?)':
++            self.snapshot=DecisionSnapshot.model_validate_json(args[2]);self.decisions[args[0]]=self.snapshot;return Cursor()
++        if sql=='UPDATE patients SET current_decision=?,cutoff=? WHERE id=?':
++            self.patient.update(current_decision=args[0],cutoff=args[1]);return Cursor()
++        if sql=='SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id':
++            return Cursor([(r.model_dump_json(),) for r in self.records if r.patient_id==args[0]])
++        if sql=='SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?':return Cursor([self.receipts[args]] if args in self.receipts else [])
++        if sql=='INSERT INTO receipts VALUES(?,?,?,?,?,?)':
++            self.receipts[args[:3]]=dict(scope=args[3],payload_sha256=args[4],response=args[5]);return Cursor()
++        if sql=='SELECT payload FROM events WHERE id=? AND patient_id=? AND kind=?':
++            return Cursor([(r.model_dump_json(),) for r in self.records if (r.record_id,r.patient_id,r.kind)==args])
++        if sql=='SELECT * FROM service_control WHERE singleton=1':return Cursor([self.control])
++        if sql.startswith('PRAGMA '):return Cursor([(1 if 'foreign_keys' in sql else 2,)])
++        if sql=='SELECT * FROM patients WHERE id=? AND owner_id=?':
++            return Cursor([self.patient] if args==(self.patient['id'],self.patient['owner_id']) else [])
++        if sql=='SELECT 1 FROM state_changes WHERE id=?':return Cursor([(1,)] if args[0] in self.proofs else [])
++        if sql=='SELECT patient_id,actor_id,payload FROM state_changes WHERE id=?':return Cursor([self.proofs[args[0]]] if args[0] in self.proofs else [])
++        if sql=='INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)':
++            record=RECORD_ADAPTER_V21.validate_json(args[6]);self.records.append(record);self.raw_sources[record.record_id]=args[8]
++            self.writes.append(record.kind);return Cursor()
++        if sql=='INSERT INTO state_changes VALUES(?,?,?,?,?)':
++            if args[0] in self.proofs:raise AssertionError('duplicate inert insert')
++            self.audit.append(args);self.proofs[args[0]]=dict(patient_id=args[1],actor_id=args[2],payload=args[4]);self.writes.append('basis');return Cursor()
++        if sql=='UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1 WHERE id=?':
++            self.patient['state_json']=args[0]
++            for k in ('version','state_version','eligibility_version'):self.patient[k]+=1
++            self.writes.append('clock');return Cursor()
++        if sql=='UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,consent_version=consent_version+? WHERE id=?':
++            self.patient['state_json']=args[0]
++            for k in ('version','state_version','eligibility_version'):self.patient[k]+=1
++            self.patient['consent_version']+=args[1];return Cursor()
++        if sql in ('BEGIN IMMEDIATE','BEGIN'):
++            self.saved=copy.deepcopy({k:v for k,v in self.__dict__.items() if k!='saved' and not k.startswith('_candidate')});self.in_transaction=True;return Cursor()
++        raise AssertionError('Unmodeled UNIT SQL: '+sql)
++    def commit(self):self.committed=True;self.in_transaction=False
++    def rollback(self):
++        bindings={k:v for k,v in self.__dict__.items() if k.startswith('_candidate')}
++        self.__dict__=self.saved;self.__dict__.update(bindings);self.in_transaction=False
++    def close(self):self.closed=True;self.in_transaction=False
++
++
++def fixture(allowed=('support_prompt','no_prompt'),saved=None,actual_mask=False):
++    c=consent();old=snapshot('UNIT-original',BEFORE)
++    old=typed(old.model_dump(mode='json')|dict(workflow=old.workflow.model_dump(mode='json')|dict(support_policy=FIXED_SUPPORT_REF),policy=FIXED_SUPPORT_REF))
++    def approve(name,option=None):
++        return typed(dict(**header(name,'UNIT-patient',BEFORE),kind='approval',decision_id=old.record_id,
++            option=option,permitted_options=[] if option else ['support_prompt','no_prompt'],clinician_id='UNIT-owner',
++            purpose='ordinary_treatment' if option else 'randomization_protocol',expected_patient_version=1,
++            expected_state_version=1,expected_consent_version=1,expected_eligibility_version=1))
++    ap=approve('UNIT-envelope');background_approval=approve('UNIT-background-approval','behavioral_continue')
++    background=typed(dict(**header('UNIT-background','UNIT-patient',BEFORE),kind='assignment',decision_id=old.record_id,
++        approval_id=background_approval.record_id,option='behavioral_continue',experimental=False,component=None,
++        probability=None,seed=None,support_policy=FIXED_SUPPORT_REF,patient_blinded=False,clinician_blinded=False,clinician_override=None,override_reason=None))
++    envelope=typed(dict(**(header('UNIT-envelope-snapshot','UNIT-patient',BEFORE)|dict(schema_version='2.1.0')),
++        kind='protocol_snapshot',family='support',protocol=SUPPORT_REF,template=SUPPORT_REF,
++        consent_refs=[exact_ref(c).model_dump()],approval_refs=[exact_ref(ap).model_dump()],background_ref=exact_ref(background).model_dump(),
++        support_refs=[],activation_at=BEFORE.isoformat()))
++    eligibility=[dict(action=a,status='eligible' if a in allowed else 'excluded',reasons=[] if a in allowed else ['UNIT mask']) for a in ('support_prompt','no_prompt')]
++    current=snapshot('UNIT-current',AT,eligibility)
++    records=[c,old,ap,background_approval,background,envelope]
++    for day in range(1,15):
++        value=dict(**(header('UNIT-prior-report-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day,minutes=-1))|dict(schema_version='2.0.0')),
++            kind='daily_report',sleep_quality=None,function=None,adverse_symptoms=[],diary_sleep_minutes=None,goals=[],burden=None,missingness='missing')
++        value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report')
++        records.append(typed(value))
++    db=InertDB(records,current)
++    state=dict(stage='ASSIGN-03',workflow=current.workflow.model_dump(mode='json'),simulation=dict(day=14,seed=7,index=1,support=[],panel_id='UNIT-generation',
++        origin=BEFORE.isoformat(),law_version='poc-longitudinal-v2',family='support',medications=[],actions=[dict(day=0,option='behavioral_continue',assignment_id=background.record_id)],
++        support_controller=dict(status='active',snapshot_id=envelope.record_id,approval_id=ap.record_id,actor='UNIT-owner',command_id='UNIT-command')))
++    patient=dict(id='UNIT-patient',owner_id='UNIT-owner',current_decision=current.record_id,
++        version=1,state_version=1,consent_version=1,eligibility_version=1,state_json=canonical(state),cutoff=AT.isoformat())
++    db.patient=patient
++    db.proofs['UNIT-command']=dict(patient_id=patient['id'],actor_id='UNIT-owner',payload=canonical(dict(kind='support_envelope_command',
++        command=dict(action='approve',decision_id=old.record_id),envelope_id=envelope.record_id)))
++    # Run real persist and snapshot validator against typed records; only Store I/O is inert.
++    from contracts.domain.evidence_v2 import projection_hash
++    persist_source=ast.parse((ROOT/'services/foundation/nof1.py').read_text())
++    fn=next(n for n in persist_source.body if isinstance(n,ast.FunctionDef) and n.name=='persist')
++    ns=dict(RECORD_ADAPTER_V21=RECORD_ADAPTER_V21,canonical=canonical,digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest(),timestamp=lambda x:x.isoformat())
++    exec(compile(ast.Module(body=[fn],type_ignores=[]),'actual_nof1_persist','exec'),ns)
++    protocol=load('services/foundation/protocol.py')
++    code=load(FILE,history=lambda db,p:history(db.records),patient_clock=lambda p,n:AT,record_header=header,persist=ns['persist'],
++        active_episodes=lambda db,p:[],validate_snapshot=protocol['validate_snapshot'])
++    if not actual_mask:code['mask']=lambda full,state,at,received_at,**kw:(allowed,[] if len(allowed)==2 else ['UNIT mask'])
++    code['saved_status']=lambda *args:dict(saved=saved or dict(summary_available=False,serving_authority=False,reason='UNIT unavailable'))
++    code['require_executable']=lambda *args:None
++    authority=load('services/foundation/support_s2_authority.py',SupportConnection=InertSupportConnection,
++        InstalledInteractiveContext=INSTALLED_CONTEXT,validate_snapshot=protocol['validate_snapshot'],_validate_support_v21=protocol['_validate_support_v21'],mask=code['mask'],final_distribution=code['final_distribution'])
++    code['derive_execution_authorization']=authority['derive_execution_authorization']
++    authority['require_executable']=lambda:None  # Explicit SOURCE-only deployment-gate double.
++    code['producer_gate']=authority['producer_gate'];code['producer_id']=authority['producer_id']
++    protocol['reject_candidate']=authority['reject_candidate']
++    code['UNIT_authority']=authority
++    authority.update(history=code['history'],record_header=header,persist=ns['persist'])
++    code['qualification']=authority['producer_qualification'];code['put']=authority['put']
++    return code,db,patient,state
++
++
++class ScalarTests(unittest.TestCase):
++    def setUp(self):self.code=load(FILE)
++    def test_contract_denies_history_and_extra_keys(self):
++        base=dict(schema_version='s2-controller-source-1.0.0',mode='current',action='approve',decision_id='UNIT-current',expected_version=1,
++            expected_state_version=1,expected_consent_version=1,expected_eligibility_version=1,rationale='UNIT explicit review')
++        self.assertEqual(ControllerCommand.model_validate(base).action,'approve')
++        for change in (dict(mode='historical'),dict(serving_authority=True),dict(expected_version=0)):
++            with self.assertRaises(ValueError):ControllerCommand.model_validate(base|change)
++    def test_saved_authority_and_finite_bounds(self):
++        for p,expected in ((0.,.1),(.4,.4),(1.,.9)):
++            result=self.code['final_distribution'](('support_prompt','no_prompt'),dict(summary_available=True,serving_authority=True,status='candidate_ready',probability=p))
++            self.assertAlmostEqual(result[1]['support_prompt'],expected)
++        for change in (dict(serving_authority=False),dict(status='fallback'),dict(summary_available=False)):
++            result=self.code['final_distribution'](('support_prompt','no_prompt'),dict(summary_available=True,serving_authority=True,status='candidate_ready',probability=.8)|change)
++            self.assertEqual(result[1],dict(support_prompt=.5,no_prompt=.5));self.assertIsNotNone(result[2])
++        with self.assertRaises(ValueError):self.code['final_distribution'](('support_prompt','no_prompt'),dict(summary_available=True,serving_authority=True,probability=float('nan')))
++    def test_one_none_and_invalid_masks(self):
++        saved=dict(summary_available=False,serving_authority=False)
++        self.assertEqual(self.code['final_distribution'](('no_prompt',),saved)[1],dict(support_prompt=0.,no_prompt=1.))
++        self.assertEqual(self.code['final_distribution']((),saved)[0],'unavailable')
++        for allowed in (('no_prompt','no_prompt'),('support_prompt',),('MED_A',)):
++            with self.assertRaises(ValueError):self.code['final_distribution'](allowed,saved)
++    def test_gate_still_closed(self):
++        with self.assertRaisesRegex(ValueError,'unqualified'):self.code['require_executable']()
++
++
++class DecisionTests(unittest.TestCase):
++    def test_distribution_before_one_keyed_draw_and_assignment(self):
++        code,db,patient,state=fixture(saved=dict(summary_available=True,serving_authority=True,status='candidate_ready',probability=.8))
++        calls=[]
++        def draw(seed):
++            self.assertIn('support_decision',db.writes);self.assertNotIn('assignment',db.writes)
++            calls.append(seed);return .7
++        code['keyed_uniform']=draw
++        decision,assignment=code['decide'](db,NS(fault=None),patient,state,AT)
++        self.assertEqual(len(calls),1);self.assertEqual(assignment.option,'support_prompt')
++        self.assertEqual(assignment.probability,decision.probabilities[assignment.option]);self.assertEqual(assignment.seed.process,'s2-support-assignment-v1')
++        self.assertEqual(json.loads(db.audit[0][4])['probabilities'],decision.probabilities)
++    def test_unavailable_and_deterministic_consume_no_draw(self):
++        for allowed in ((),('no_prompt',)):
++            code,db,patient,state=fixture(allowed)
++            code['keyed_uniform']=lambda seed:(_ for _ in ()).throw(AssertionError('RNG forbidden'))
++            decision,assignment=code['decide'](db,NS(fault=None),patient,state,AT)
++            self.assertEqual(assignment is None,not allowed)
++            if assignment:self.assertIsNone(assignment.seed)
++    def test_fallback_is_frozen_against_late_result(self):
++        code,db,patient,state=fixture();code['keyed_uniform']=lambda seed:.6
++        decision,_=code['decide'](db,NS(fault=None),patient,state,AT);original=decision.model_dump_json()
++        code['saved_status']=lambda *args:dict(saved=dict(summary_available=True,serving_authority=True,status='candidate_ready',probability=.9))
++        self.assertEqual(decision.model_dump_json(),original)
++        with self.assertRaisesRegex(ValueError,'already_persisted'):code['decide'](db,NS(fault=None),patient,state,AT)
++    def test_fault_after_distribution_can_roll_back_whole_inert_transaction(self):
++        code,db,patient,state=fixture();before=copy.deepcopy(db.__dict__)
++        def fault(stage):raise RuntimeError(stage)
++        try:code['decide'](db,NS(fault=fault),patient,state,AT)
++        except RuntimeError:db.__dict__=before  # LABELED transaction rollback double
++        self.assertEqual(db.writes,[]);self.assertEqual(db.audit,[])
++    def test_stale_versions_fail_before_draw(self):
++        code,db,patient,state=fixture();patient['version']=2
++        with self.assertRaisesRegex(ValueError,'exact_current'):code['decide'](db,NS(fault=None),patient,state,AT)
++        self.assertEqual(db.writes,[])
++
++
++class MaskTests(unittest.TestCase):
++    def setUp(self):
++        self.code=load(FILE);self.state=dict(workflow=dict(clinical='treatment_active',learning='support_active',data_readiness='ready',hold_reasons=[],support_mode='adaptive'),
++            simulation=dict(support_controller=dict(status='active',snapshot_id='UNIT-approved')))
++    def mask(self,records):return self.code['mask'](history(records),self.state,AT,AT)[0]
++    def test_consent_withdrawal_exact_cutoff_and_retraction(self):
++        self.assertEqual(set(self.mask([consent()])),{'support_prompt','no_prompt'})
++        c=consent(AT,'withdrawn');self.assertEqual(self.mask([c]),())
++        c=consent().model_copy(update=dict(record_status='retracted'));self.assertEqual(self.mask([c]),())
++    def test_hold_and_readiness(self):
++        for key,value in (('hold_reasons',['review']),('data_readiness','stale')):
++            self.state['workflow'][key]=value;self.assertEqual(self.mask([consent()]),())
++    def test_N_block_washout_and_no_automatic_reentry(self):
++        for learning in ('nof1_block','nof1_washout'):
++            self.state['workflow']['learning']=learning;self.assertEqual(self.mask([consent()]),('no_prompt',))
++        self.state['workflow']['learning']='support_active'
++        for status in ('stopped','completed'):
++            self.state['simulation']['nof1']=dict(status=status);self.assertEqual(self.mask([consent()]),())
++            self.state['simulation']['support_controller']['nof1_review_identity']=sha(self.state['simulation']['nof1'])
++            self.assertEqual(set(self.mask([consent()])),{'support_prompt','no_prompt'})
++    def test_expiry_is_exclusive_and_future_consent_does_not_authorize(self):
++        c=consent().model_copy(update=dict(expires_at=AT));self.assertEqual(self.mask([c]),())
++        self.assertEqual(self.mask([consent(AT+timedelta(microseconds=1))]),())
++    def test_delivered_burden_includes_tonight_and_consecutive_boundary(self):
++        def delivered(name,at):
++            return typed(dict(**header(name,'UNIT-patient',at),kind='delivery',assignment_id=name+'-assignment',option='support_prompt',
++                stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]))
++        c=consent()
++        self.assertEqual(self.mask([c,delivered('yesterday',AT-timedelta(days=1)+timedelta(hours=8))]),('no_prompt',))
++        three=[delivered('prompt-'+str(day),AT-timedelta(days=day)+timedelta(hours=8)) for day in (2,4,6)]
++        self.assertEqual(self.mask([c,*three]),('no_prompt',))
++        # Oldest delivery just outside the previous-six-night window frees tonight's third slot.
++        three[-1]=delivered('outside',AT-timedelta(days=6,microseconds=1))
++        self.assertEqual(set(self.mask([c,*three])),{'support_prompt','no_prompt'})
++
++
++class SavedReadTests(unittest.TestCase):
++    """Exact control flow, metadata-only parser double; never a saved fit admission."""
++    def setUp(self):
++        self.calls=[];self.context=NS(reference=NS())
++        self.product=NS(context=self.context,fit=NS(product=NS(initial=NS(export=NS(provenance=NS(origin=BEFORE,cutoff_day=14))))))
++        self.context.decision=NS(cutoff=AT)
++        self.row=dict(job_id='UNIT-prediction',status='completed',cutoff=AT.isoformat(),finished_at=AT.isoformat(),failure_reason=None,request_json='UNIT-parser-double')
++        self.db=NS(execute=lambda sql,args:Cursor([self.row]))
++        tree=ast.parse((ROOT/FILE).read_text())
++        fn=copy.deepcopy(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='saved_status'))
++        fn.body=[n for n in fn.body if not isinstance(n,ast.ImportFrom)]
++        from contracts.domain.support_s2_controller import SavedScalar
++        self.ns=dict(SavedScalar=SavedScalar,timedelta=timedelta,INPUT_CAP=10485760,
++            SavedPredictionInput=NS(model_validate_json=lambda raw:self.product),
++            current_context=lambda *args:self.context,read_summary=lambda *args,**kwargs:self.read(**kwargs))
++        exec(compile(ast.Module(body=[fn],type_ignores=[]),'actual_saved_status','exec'),self.ns)
++    def read(self,**kwargs):
++        self.calls.append(kwargs)
++        return dict(summary_available=False,serving_authority=False,reason='UNIT existing admission off')
++    def test_expiry_before_day28_avoids_scalar_read_and_never_renews(self):
++        result=self.ns['saved_status'](self.db,'UNIT-owner',dict(id='UNIT-patient'),BEFORE+timedelta(days=28))
++        self.assertEqual(result['saved']['reason'],'saved_prediction_expired');self.assertEqual(self.calls,[])
++    def test_stale_context_avoids_scalar_read(self):
++        self.ns['current_context']=lambda *args:NS(reference='UNIT changed')
++        result=self.ns['saved_status'](self.db,'UNIT-owner',dict(id='UNIT-patient'),AT)
++        self.assertEqual(result['saved']['reason'],'saved_prediction_stale_current_context');self.assertEqual(self.calls,[])
++    def test_read_passes_current_context_fit_and_original_at_without_launch(self):
++        result=self.ns['saved_status'](self.db,'UNIT-owner',dict(id='UNIT-patient'),AT)
++        self.assertEqual(len(self.calls),1);self.assertIs(self.calls[0]['current_context'],self.context)
++        self.assertIs(self.calls[0]['current_fit'],self.product.fit);self.assertEqual(self.calls[0]['at'],AT)
++        self.assertFalse(result['saved']['summary_available'])
++    def test_pending_and_failed_do_not_attempt_current_projection(self):
++        self.ns['current_context']=lambda *args:(_ for _ in ()).throw(AssertionError('pending projection'))
++        for status in ('queued','running','failed'):
++            self.row['status']=status
++            result=self.ns['saved_status'](self.db,'UNIT-owner',dict(id='UNIT-patient'),AT)
++            self.assertEqual(result['saved']['reason'],'saved_prediction_'+status)
++        self.assertEqual(self.calls,[])
++
++
++class ProducerConsumerTests(unittest.TestCase):
++    def prepared(self,prompt=True):
++        code,db,patient,state=fixture(actual_mask=True);code['keyed_uniform']=lambda seed:0. if prompt else .99
++        decision,assignment=code['decide'](db,NS(fault=None),patient,state,AT)
++        return code,db,patient,state,decision,assignment
++    def finish(self,prompt=True,missing=False):
++        code,db,patient,state,decision,assignment=self.prepared(prompt)
++        offered,canceled=code['dispatch'](db,NS(fault=None),patient,state,decision,assignment,AT)
++        delivery=dict(**header('UNIT-delivery','UNIT-patient',AT+timedelta(hours=8)),kind='delivery',assignment_id=assignment.record_id,
++            option=assignment.option,stage='delivered',adherence=1.,rescue=False,protocol_deviations=[])
++        delivery['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='simulation')
++        report=dict(**(header('UNIT-report','UNIT-patient',AT+timedelta(days=1,minutes=-1))|dict(schema_version='2.0.0')),
++            kind='daily_report',sleep_quality=None if missing else 7.,function=None if missing else 6.,adverse_symptoms=[],
++            diary_sleep_minutes=None if missing else 420.,goals=[],burden=None,missingness='missing' if missing else 'observed')
++        report['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report')
++        db.records.extend([typed(delivery),typed(report)])
++        a=code['UNIT_authority']
++        link=a['close_stages'](db,NS(fault=None,clock=lambda:AT),patient,decision,assignment,offered,AT,canceled=canceled)
++        return code,db,patient,state,decision,assignment,link
++    def test_real_authorization_required_in_live_and_protocol_consumers(self):
++        code,db,p,state,d,a=self.prepared();authority=code['UNIT_authority'];full=history(db.records)
++        authority['validate_live_history'](db,full)
++        protocol=load('services/foundation/protocol.py')
++        with self.assertRaisesRegex(ValueError,'interactive_authorization'):
++            protocol['validate_support_v21'](full,d,AT+timedelta(days=1))
++        protocol['validate_support_v21'](full,d,AT+timedelta(days=1),verify_authorization=authority['authorization_verifier'](db,full))
++        # A forged apparent admin Approval satisfying ordinary shape still lacks its binding.
++        orphan=typed(next(r for r in full.records if r.kind=='approval' and r.record_id.startswith('s2-admin-')).model_dump(mode='json')|
++            dict(record_id='s2-admin-forged',lineage_id='s2-admin-forged'))
++        with self.assertRaisesRegex(ValueError,'unbound'):authority['validate_live_history'](db,history([*db.records,orphan]))
++    def test_closed_prompt_and_no_prompt_stages_project_through_real_consumer(self):
++        for prompt in (True,False):
++            code,db,p,state,d,a,link=self.finish(prompt)
++            authority=code['UNIT_authority'];full=history(db.records);cutoff=AT+timedelta(days=1)
++            verify=authority['interactive_stage_verifier'](db,full)
++            for closure in (r for r in full.records if r.kind=='support_stage_closure'):verify(closure,cutoff)
++            from contracts.domain.evidence_v2 import validate_outcome_link
++            validate_outcome_link(full,link,verify_closure=verify)
++            reduced=load('services/foundation/protocol.py')['project_protocol'](full,cutoff,family='support',origin=BEFORE,
++                verify_closure=verify,verify_authorization=authority['authorization_verifier'](db,full))
++            self.assertTrue(any(r.kind=='support_outcome_link' for r in reduced.records))
++            self.assertEqual([b.value for b in link.burden],[int(prompt),int(prompt)])
++    def test_missing_reward_remains_missing(self):
++        *_,link=self.finish(missing=True)
++        self.assertEqual(link.reward.status,'missing');self.assertIsNone(link.reward.report_ref)
++    def test_forged_settings_or_changed_generation_cannot_supply_qualification(self):
++        code,db,p,state,d,a=self.prepared();authority=code['UNIT_authority']
++        with self.assertRaisesRegex(ValueError,'qualification_required'):
++            authority['qualification'](NS(_read_support_binding=db._read_support_binding))
++        db.control['authority_generation']=2
++        with self.assertRaisesRegex(ValueError,'generation_mismatch'):authority['qualification'](db)
++    def test_changed_basis_actor_owner_versions_and_vector_refuse(self):
++        for change in (dict(actor_id='UNIT-foreign'),dict(owner_id='UNIT-foreign'),dict(versions={'version':99}),
++                       dict(probabilities={'support_prompt':.9,'no_prompt':.1})):
++            code,db,p,state,d,a=self.prepared();authority=code['UNIT_authority']
++            basis=authority['get'](db,p['id'],d.execution_receipt)
++            basis.update(change)
++            from contracts.domain.support_s2_controller import AuthorizationBasis
++            with self.assertRaises(ValueError):authority['validate_basis'](db,history(db.records),AuthorizationBasis.model_validate_json(canonical(basis)))
++    def test_unknown_offer_and_corrupted_output_are_not_observed_zero(self):
++        code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority'];full=history(db.records)
++        closure=next(r for r in full.records if r.kind=='support_stage_closure')
++        receipt=authority['get'](db,p['id'],closure.completion_receipt)
++        output_id='s2-proof-'+receipt['output_ref']['sha256']
++        db.proofs[output_id]['payload']='[]'
++        with self.assertRaisesRegex(ValueError,'content_identity'):authority['interactive_stage_verifier'](db,full)(closure,AT+timedelta(days=1))
++    def test_actual_offer_precedes_product_and_cancellation_preserves_distribution(self):
++        code,db,p,state,d,a=self.prepared();before=d.model_dump_json()
++        code['mask']=lambda *args,**kwargs:((),['withdrawn before offer'])
++        offered,canceled=code['dispatch'](db,NS(fault=None),p,state,d,a,AT)
++        self.assertTrue(canceled);self.assertIsNone(offered);self.assertEqual(d.model_dump_json(),before)
++        self.assertFalse(any(r.kind=='delivery' for r in db.records))
++    def test_rehashed_missing_extra_duplicate_foreign_and_wrong_stage_outputs_refuse(self):
++        from contracts.domain.common import VersionRef
++        for case in ('missing_offer','duplicate','foreign_patient','wrong_stage','extra'):
++            code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority']
++            closure=next(r for r in db.records if r.kind=='support_stage_closure')
++            completion=authority['get'](db,p['id'],closure.completion_receipt)
++            output=authority['get'](db,p['id'],VersionRef.model_validate(completion['output_ref']))
++            if case=='missing_offer':output=[r for r in output if r['stage']!='offered']
++            elif case=='duplicate':output.append(copy.deepcopy(output[0]))
++            elif case=='foreign_patient':output[0]['patient_id']='UNIT-foreign'
++            elif case=='wrong_stage':output[0]['stage']='taken'
++            else:
++                extra=copy.deepcopy(output[0]);extra['record_id']='UNIT-extra';extra['lineage_id']='UNIT-extra';output.append(extra)
++            ref=reference('poc-support-interactive-stage-output-v1',output)
++            db.proofs['s2-proof-'+ref['sha256']]=dict(patient_id=p['id'],actor_id=p['owner_id'],payload=canonical(output))
++            completion.update(output_ref=ref,output_bytes=len(canonical(output).encode()),output_sha256=sha(output),output_count=len(output))
++            cref=reference('poc-support-interactive-completion-v1',completion)
++            db.proofs['s2-proof-'+cref['sha256']]=dict(patient_id=p['id'],actor_id=p['owner_id'],payload=canonical(completion))
++            changed=typed(closure.model_dump(mode='json')|dict(completion_receipt=cref))
++            db.records=[changed if r.record_id==closure.record_id else r for r in db.records]
++            with self.subTest(case=case),self.assertRaises(ValueError):
++                authority['interactive_stage_verifier'](db,history(db.records))(changed,AT+timedelta(days=1))
++    def test_active_revision_and_completion_clock_substitutions_refuse(self):
++        code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority']
++        closure=next(r for r in db.records if r.kind=='support_stage_closure')
++        delivery=next(r for r in db.records if r.kind=='delivery' and r.stage=='delivered')
++        value=delivery.model_dump(mode='json');value.update(record_id='UNIT-corrected-delivery',revision=2,supersedes=delivery.record_id,
++            recorded_at=(AT+timedelta(hours=9)).isoformat(),available_at=(AT+timedelta(hours=9)).isoformat())
++        db.records.append(typed(value))
++        with self.assertRaises(ValueError):authority['interactive_stage_verifier'](db,history(db.records))(closure,AT+timedelta(days=1))
++        code,db,p,state,d,a,link=self.finish();authority=code['UNIT_authority'];closure=next(r for r in db.records if r.kind=='support_stage_closure')
++        with self.assertRaises(ValueError):authority['interactive_stage_verifier'](db,history(db.records))(closure,closure.available_at)
++    def test_unavailable_outcome_never_claims_observed_zero_burden(self):
++        code,db,p,state=fixture(())
++        d,a=code['decide'](db,NS(fault=None),p,state,AT)
++        value=dict(**(header('UNIT-unavailable-report',p['id'],AT+timedelta(days=1,minutes=-1))|dict(schema_version='2.0.0')),
++            kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed')
++        value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report');db.records.append(typed(value))
++        link=code['UNIT_authority']['close_stages'](db,NS(fault=None,clock=lambda:AT),p,d,a,None,AT)
++        self.assertEqual(link.reward.status,'pending');self.assertTrue(all(b.status=='pending' and b.value is None for b in link.burden))
++        self.assertFalse(any(r.kind=='support_stage_closure' for r in db.records))
++
++
++def function(path,name,**bindings):
++    tree=ast.parse((ROOT/path).read_text())
++    fn=copy.deepcopy(next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name==name))
++    class ServiceImports(ast.NodeTransformer):
++        def visit_ImportFrom(self,node):return None if node.level else node
++    fn=ServiceImports().visit(fn);fn.returns=None
++    ns=dict(datetime=datetime,timedelta=timedelta);ns.update(bindings)
++    exec(compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),path,'exec'),ns)
++    return ns[name]
++
++
++class RouteAndConnectionTests(unittest.TestCase):
++    def test_owned_mutation_and_original_receipt_replay(self):
++        code,db,p,state=fixture();calls=[]
++        tree=ast.parse((ROOT/'services/foundation/app.py').read_text())
++        error=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='APIError')
++        ns={};exec(compile(ast.Module(body=[error],type_ignores=[]),'actual_APIError','exec'),ns);APIError=ns['APIError']
++        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
++        mutation=function('services/foundation/app.py','mutation_receipt',APIError=APIError,canonical=canonical,digest=digest,json=json)
++        save=function('services/foundation/app.py','save_mutation',canonical=canonical,digest=digest)
++        data=ControllerCommand.model_validate(dict(schema_version='s2-controller-source-1.0.0',mode='current',action='pause',decision_id='UNIT-current',
++            expected_version=1,expected_state_version=1,expected_consent_version=1,expected_eligibility_version=1,rationale='UNIT explicit command'))
++        async def body(request,model):return data
++        def session(db,request,**kwargs):
++            self.assertTrue(kwargs['mutation']);calls.append('mutation_session');return dict(account_id='UNIT-owner',token_hash='UNIT-auth')
++        def own(db,patient,owner):
++            calls.append('ownership')
++            if patient!=p['id'] or owner!=p['owner_id']:raise APIError(404,'not_found','Resource not found')
++            return p
++        def transition(*args):calls.append('transition');return dict(status='paused')
++        route=copy.deepcopy(next(n for n in ast.walk(tree) if isinstance(n,ast.AsyncFunctionDef) and n.name=='support_command'))
++        route.decorator_list=[]
++        class Strip(ast.NodeTransformer):
++            def visit_ImportFrom(self,node):return None
++        route=Strip().visit(route)
++        bindings=dict(ControllerCommand=ControllerCommand,Request=object,body=body,store=NS(transaction=lambda **kwargs:nullcontext(db)),
++            session=session,own=own,mutation_receipt=mutation,save_mutation=save,transition=transition,settings=NS(clock=lambda:AT),APIError=APIError)
++        exec(compile(ast.fix_missing_locations(ast.Module(body=[route],type_ignores=[])),'actual_support_route','exec'),bindings)
++        def invoke():
++            coroutine=bindings['support_command'](p['id'],NS(headers={'idempotency-key':'UNIT-stable-key'}))
++            try:coroutine.send(None)
++            except StopIteration as done:return done.value
++            raise AssertionError('No actual async wait allowed in SOURCE route fixture')
++        self.assertEqual(invoke(),invoke());self.assertEqual(calls.count('transition'),1)
++        data.rationale='UNIT materially changed'
++        with self.assertRaises(APIError) as error:invoke()
++        self.assertEqual(error.exception.code,'idempotency_conflict')
++        p['owner_id']='UNIT-foreign'
++        with self.assertRaises(APIError) as error:invoke()
++        self.assertEqual(error.exception.code,'not_found');self.assertEqual(calls.count('transition'),1)
++    def test_orphan_admin_is_rejected_by_actual_live_history_entry(self):
++        code,db,p,state=fixture();authority=code['UNIT_authority']
++        original=next(r for r in db.records if r.kind=='approval')
++        orphan=typed(original.model_dump(mode='json')|dict(record_id='s2-admin-orphan',lineage_id='s2-admin-orphan'))
++        db.records=[orphan]
++        read=function('services/foundation/workflow.py','history',json=json,canonical=canonical,validate_live_history=authority['validate_live_history'])
++        with self.assertRaisesRegex(ValueError,'unbound'):read(db,p['id'])
++    def test_default_connection_keeps_original_sqlite_arguments(self):
++        calls=[]
++        class DB:
++            def execute(self,sql):return Cursor([(1 if 'foreign_keys' in sql else 2,)])
++        def connect(*args,**kwargs):calls.append((args,kwargs));return DB()
++        fn=function('services/foundation/store.py','connect',sqlite3=NS(connect=connect,Row='UNIT-row'),SupportConnection=InertSupportConnection)
++        fn(NS(path='UNIT-never-opened',support_qualification=None))
++        self.assertEqual(calls,[(('UNIT-never-opened',),dict(isolation_level=None,timeout=5))])
++
++
++class AtomicAdvanceTests(unittest.TestCase):
++    """Actual advance + product admission + Store transaction body; all I/O inert."""
++    def preparation(self):
++        code,db,p,state=fixture(actual_mask=True);a=code['UNIT_authority'];db.control['last_receipt_at']=(AT-timedelta(hours=1)).isoformat()
++        from pydantic import TypeAdapter
++        from contracts.domain.entities import ObservedRecord
++        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
++        actual_history=lambda db,p:a['validate_live_history'](db,history(db.records))
++        class UnitSimulationError(Exception):pass
++        admit=function('services/foundation/simulation.py','persist_product',history=actual_history,ADAPTER=TypeAdapter(ObservedRecord),
++            LAW='poc-longitudinal-v1',canonical=canonical,digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat,
++            START=BEFORE.isoformat(),timedelta=timedelta,SimulationError=UnitSimulationError,json=json)
++        def product(settings,sim,patient,day):
++            self.assertIn('support_decision',db.writes)
++            if sim['support'][-1]['option']=='support_prompt':
++                self.assertTrue(any(r.kind=='delivery' and r.stage=='offered' for r in db.records))
++            assignment=sim['support'][-1]
++            values=[dict(**header('UNIT-advance-delivery-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day-1,hours=8)),kind='delivery',
++                assignment_id=assignment['assignment_id'],option=assignment['option'],stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]),
++                dict(**(header('UNIT-advance-report-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day,minutes=-1))|dict(schema_version='2.0.0')),
++                    kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed')]
++            values.append(dict(**header('UNIT-background-delivery-'+str(day),'UNIT-patient',BEFORE+timedelta(days=day-1,hours=8)),kind='delivery',
++                assignment_id=sim['actions'][-1]['assignment_id'],option='behavioral_continue',stage='delivered',adherence=1.,rescue=False,protocol_deviations=[]))
++            entries=[]
++            for value in values:
++                value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report' if value['kind']=='daily_report' else 'simulation')
++                r=typed(value);data=r.model_dump(mode='json');raw=canonical({k:v for k,v in data.items() if k!='source'})
++                data['source']['raw_sha256']=digest(raw)
++                entries.append(dict(record=data,raw_source=raw))
++            return dict(name='UNIT patient',records=entries)
++        def next_decision(db,patient,received):
++            state=json.loads(db.patient['state_json']);day=state['simulation']['day']
++            s=snapshot('UNIT-next-'+str(day),BEFORE+timedelta(days=day))
++            value=s.model_dump(mode='json')
++            value.update(patient_version=db.patient['version'],state_version=db.patient['state_version'],
++                eligibility_version=db.patient['eligibility_version'],workflow=state['workflow'])
++            db.snapshot=typed(value);db.patient['current_decision']=db.snapshot.record_id;db.patient['cutoff']=db.snapshot.cutoff.isoformat()
++        code.update(history=actual_history,product=product,persist_product=admit,close_stages=a['close_stages'],create_decision=next_decision,
++            patient_clock=lambda p,n:datetime.fromisoformat(json.loads(p['state_json'])['simulation']['origin'])+timedelta(days=json.loads(p['state_json'])['simulation']['day']))
++        a['history']=actual_history
++        tx=function('services/foundation/store.py','transaction',contextmanager=contextmanager,
++            instant=datetime.fromisoformat,receive=lambda db,at:None,sqlite3=NS(OperationalError=type('UNIT-DBError',(Exception,),{})))
++        store=NS(gate=NS(hold=lambda:nullcontext()),connect=lambda:db,validate_control=lambda db:db.control,clock=lambda:AT)
++        return code,db,p,state,tx,store
++    def test_actual_source_admits_product_closes_stages_and_commits_clock(self):
++        code,db,p,state,tx,store=self.preparation()
++        with tx(store,write=True):result=code['advance'](db,NS(fault=None,clock=lambda:AT),p,state,15,AT)
++        self.assertEqual(result['day'],15);self.assertTrue(db.committed)
++        self.assertEqual(json.loads(db.patient['state_json'])['simulation']['day'],15)
++        self.assertTrue(any(r.kind=='support_outcome_link' for r in db.records))
++        self.assertEqual(db.writes.count('support_decision'),1);self.assertEqual(db.writes.count('assignment'),1)
++    def test_each_real_boundary_rolls_back_product_authority_and_clock(self):
++        for stage in ('after_support_distribution','after_support_offer','after_support_product','after_support_completion','after_support_outcome','after_support_clock'):
++            code,db,p,state,tx,store=self.preparation();code['keyed_uniform']=lambda seed:0.
++            before=(len(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
++            def fault(point):
++                if point==stage:raise RuntimeError(stage)
++            with self.assertRaisesRegex(RuntimeError,stage):
++                with tx(store,write=True):code['advance'](db,NS(fault=fault,clock=lambda:AT),p,state,15,AT)
++            self.assertEqual((len(db.records),db.proofs,db.patient['state_json']),before)
++
++
++class CandidateBootstrapTests(unittest.TestCase):
++    """Actual consent -> envelope -> product -> create_decision; no ACTUAL ref.
++
++    External GO/receipt and all I/O are labeled inert authority/transaction doubles,
++    never host authorization, app execution, SQLite or generator qualification.
++    """
++    def preparation(self,reactivate=False,post_N=False,later_consent_action=None,later_failure=None):
++        from contracts.domain.support_s2_controller import UntrustedInteractiveInvocation
++        code,db,p,state,tx,store=AtomicAdvanceTests().preparation();a=code['UNIT_authority']
++        invocation_code=load('services/foundation/support_s2_invocation.py',SupportConnection=InertSupportConnection,
++            digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest())
++        contexts=invocation_code['candidate_context']
++        a['candidate_context']=contexts;code['candidate_context']=contexts
++        error_tree=ast.parse((ROOT/'services/foundation/simulation.py').read_text())
++        error_class=next(n for n in error_tree.body if isinstance(n,ast.ClassDef) and n.name=='SimulationError')
++        error_ns={};exec(compile(ast.Module(body=[error_class],type_ignores=[]),'actual_SimulationError','exec'),error_ns)
++        code['SimulationError']=error_ns['SimulationError']
++        # Remove ALL prebuilt support consent/approval/envelope/command fixtures.
++        db.records=[r for r in db.records if r.kind not in ('consent','protocol_snapshot') and r.record_id!='UNIT-envelope']
++        db.proofs={};state['simulation']['support_controller']=dict(status='unapproved')
++        state['workflow'].update(support_policy=FIXED_SUPPORT_REF,support_mode='paused',learning='support_unavailable')
++        if post_N:state['simulation']['nof1']=dict(status='completed',review='UNIT inert completed N')
++        state['plan']='behavioral_continue';p['name']='UNIT synthetic';p['state_json']=canonical(state)
++        packet=db.q.packet.model_dump(mode='json');db.q=None
++        installed=dict(control=copy.deepcopy(db.control))
++        packet['installed_bundle_sha256']=sha(installed)
++        store.installed=NS(model_dump=lambda **kwargs:installed,control=NS(model_dump=lambda **kwargs:installed['control']))
++        store.path='UNIT-no-SQLite';store.support_qualification=None
++        store.support_source_commit=packet['app_commit'];store.support_runtime_ref=packet['runtime']
++        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
++        read_connections=[]
++        def open_connection(*args,**kwargs):
++            if 'factory' in kwargs:return db
++            current=InertDB(copy.deepcopy(db.records),copy.deepcopy(db.snapshot));current.q=None
++            for key in ('control','patient','proofs','decisions'):setattr(current,key,copy.deepcopy(getattr(db,key)))
++            read_connections.append(current);return current
++        connect=function('services/foundation/store.py','connect',sqlite3=NS(connect=open_connection,Row='UNIT-row'),
++            SupportConnection=InertSupportConnection,UntrustedInteractiveContext=invocation_code['UntrustedInteractiveContext'],canonical=canonical,digest=digest)
++        store.connect=lambda **kwargs:connect(store,**kwargs)
++        store.transaction=lambda **kwargs:tx(store,**kwargs)
++        invocation_code['UNIT_transaction']=tx;invocation_code['UNIT_read_connections']=read_connections
++        flow=load('services/foundation/workflow.py',candidate_context=contexts,validate_live_history=a['validate_live_history'],
++            canonical=canonical,digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat)
++        real_history=flow['_producer_history']
++        create=function('services/foundation/workflow.py','create_decision',json=json,patient_clock=code['patient_clock'],canonical=canonical,
++            digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat,record_header=header,DecisionSnapshot=DecisionSnapshot,
++            reference=flow['reference'],SUPPORT=FIXED_SUPPORT_REF,STAGES=flow['STAGES'],history=real_history,producer_id=a['producer_id'],
++            support_eligibility=code['eligibility'],initialize_journal=lambda *args:None,overlay=lambda db,p,s:s,
++            summary=lambda *args:[],dispute_reviews=lambda *args:None,active_episodes=lambda *args:[],reconcile=lambda db,row,state,at:state)
++        code.update(history=real_history,create_decision=create,persist=a['producer_persist'])
++        a.update(history=real_history)
++        # persist_product is real source and now reaches the candidate-aware raw
++        # history seam; product is the explicit fabricated exhaustive generator double.
++        code['persist_product'].__globals__['history']=real_history
++        safety=function('services/foundation/workflow.py','current_safety',history=real_history,
++            lineage_heads=flow['lineage_heads'],visible_records=flow['visible_records'])
++        entry=function('services/foundation/simulation.py','advance',json=json,SimulationError=type('UNIT-SimulationError',(Exception,),{}),
++            active_episodes=lambda *args:[],current_safety=safety,advance_support=code['advance'],advance_nof1=lambda *args:(_ for _ in ()).throw(AssertionError('N route')))
++        invocation_code.update(transition=code['transition'],advance_simulation=entry,selected=code['selected'],_producer_history=real_history)
++        def command(action,version,consent_version,decision):
++            return dict(schema_version='s2-controller-source-1.0.0',mode='current',action=action,decision_id=decision,
++                expected_version=version,expected_state_version=version,expected_consent_version=consent_version,
++                expected_eligibility_version=version,rationale='UNIT explicit synthetic case command')
++        after_consent='candidate-s2-decision-'+sha([p['id'],2,AT.isoformat()])[:32]
++        operations=[dict(patient_id=p['id'],action='consent',command=command('consent',1,1,p['current_decision'])),
++            dict(patient_id=p['id'],action='approve',command=command('approve',2,2,after_consent)),
++            dict(patient_id=p['id'],action='advance',target=15)]
++        if reactivate:
++            after_approve='candidate-s2-decision-'+sha([p['id'],3,AT.isoformat()])[:32]
++            after_pause='candidate-s2-decision-'+sha([p['id'],4,AT.isoformat()])[:32]
++            operations[2:2]=[dict(patient_id=p['id'],action='pause',command=command('pause',3,2,after_approve)),
++                dict(patient_id=p['id'],action='approve',command=command('approve',4,2,after_pause))]
++        if later_consent_action is not None:
++            version=4;consent_version=2;at=AT+timedelta(days=1)
++            sequence=(later_consent_action,) if isinstance(later_consent_action,str) else later_consent_action
++            for action in sequence:
++                if action=='advance':operations.append(dict(patient_id=p['id'],action='advance',target=16));continue
++                current='candidate-s2-decision-'+sha([p['id'],version,at.isoformat()])[:32]
++                data=command(action,version,consent_version,current)
++                if later_failure=='stale':data['expected_version']-=1
++                elif later_failure=='expired':data['consent_expires_at']=at.isoformat()
++                operations.append(dict(patient_id=p['id'],action=action,command=data))
++                version+=1;consent_version+=int(action in ('consent','withdraw'))
++        inv=dict(schema_version='poc-support-untrusted-invocation-v1',invocation_id='UNIT-candidate',packet=packet,packet_sha256=sha(packet),
++            source_acceptance=reference('UNIT-source-review','inert SOURCE review identity'),operation_go=reference('UNIT-OP-GO','placeholder'),
++            owner_id=p['owner_id'],cases={p['id']:'UNIT-generation'},operations_sha256=sha(operations),
++            not_before=(AT-timedelta(minutes=1)).isoformat(),expires_at=(AT+timedelta(minutes=1)).isoformat(),
++            receipt_path='UNIT-exclusive-no-host-receipt',output_cap=524288)
++        invocation=UntrustedInteractiveInvocation.model_validate_json(canonical(inv))
++        inv['operation_go']=reference('UNIT-OP-GO',invocation.authority_body)
++        invocation=UntrustedInteractiveInvocation.model_validate_json(canonical(inv))
++        authority=io.BytesIO(canonical(invocation.authority_body).encode())
++        receipt=io.BytesIO();opened=[]
++        @contextmanager
++        def exclusive(path,mode):
++            self.assertEqual(str(path),invocation.receipt_path);self.assertEqual(mode,'x+b')
++            if opened:raise FileExistsError('UNIT exact once receipt consumed')
++            opened.append(True);yield receipt
++        def run(settings=None):
++            with patch.object(Path,'open',exclusive):
++                return invocation_code['run_candidate'](store,settings or NS(clock=lambda:AT,fault=None),invocation,operations,external_authority=authority)
++        return code,db,p,state,a,invocation_code,invocation,authority,receipt,run,flow
++
++    def test_same_producer_bootstraps_without_ACTUAL_and_cannot_replay(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation()
++        result=run()
++        self.assertEqual(result['status'],'UNTRUSTED_candidate_evidence');self.assertNotIn('actual_acceptance',canonical(result))
++        self.assertIsNone(db.q);self.assertTrue(db.committed);self.assertEqual(json.loads(db.patient['state_json'])['simulation']['day'],15)
++        self.assertTrue(any(r.kind=='consent' for r in db.records));self.assertTrue(any(r.kind=='protocol_snapshot' for r in db.records))
++        self.assertTrue(any(r.kind=='support_outcome_link' for r in db.records))
++        self.assertEqual(db.writes.count('support_decision'),1);self.assertEqual(db.writes.count('assignment'),1)
++        self.assertTrue(db.patient['current_decision'].startswith('candidate-s2-'))
++        self.assertEqual(result['histories'][0]['current']['current_decision'],result['histories'][0]['current_snapshot']['record_id'])
++        self.assertTrue(all('id' in proof and 'created_at' in proof for proof in result['proofs']))
++        with self.assertRaises(FileExistsError):run()
++        with self.assertRaises(ValueError):h['candidate_context'](db)
++        with self.assertRaises(ValueError):a['qualification'](db)
++        with self.assertRaises(ValueError):flow['history'](db,p['id'])
++
++    def test_candidate_full_path_rolls_back_each_actual_boundary(self):
++        for boundary in ('after_support_distribution','after_support_offer','after_support_product','after_support_completion','after_support_outcome','after_support_clock'):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();code['keyed_uniform']=lambda seed:0.
++            before=(copy.deepcopy(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
++            def fault(point):
++                if point==boundary:raise RuntimeError(boundary)
++            with self.subTest(boundary=boundary),self.assertRaisesRegex(RuntimeError,boundary):run(NS(clock=lambda:AT,fault=fault))
++            self.assertEqual((db.records,db.proofs,db.patient['state_json']),before)
++            self.assertTrue(receipt.getvalue());self.assertTrue(db.closed)
++
++    def test_delayed_multiple_activation_and_explicit_post_N_reentry_use_current_envelope(self):
++        for post_N in (False,True):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(reactivate=True,post_N=post_N)
++            result=run();envelopes=[r for r in db.records if r.kind=='protocol_snapshot']
++            self.assertEqual(len(envelopes),2);self.assertTrue(all(r.activation_at==AT and r.activation_at>BEFORE for r in envelopes))
++            final=json.loads(db.patient['state_json'])['simulation']['support_controller']
++            self.assertIn(final['snapshot_id'],[r.record_id for r in envelopes])
++            self.assertEqual(next(r for r in db.records if r.kind=='support_decision').execution_receipt.id,'candidate-s2-'+a['BASIS_ID'])
++            self.assertIn('UNTRUSTED_candidate_fallback_no_scientific_authority',canonical(result))
++            if post_N:self.assertEqual(final['nof1_review_identity'],sha(state['simulation']['nof1']))
++
++    def test_every_live_consumer_and_renamed_orphan_basis_refuses_candidate(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();run()
++        protocol=load('services/foundation/protocol.py',history=flow['history'],patient_clock=code['patient_clock'],
++            instant=datetime.fromisoformat,reject_candidate=a['reject_candidate'])
++        prediction=load('services/foundation/support_s2_prediction.py',history=flow['history'])
++        with self.assertRaises(ValueError):protocol['export_histories'](db,p['owner_id'],[p['id']],AT+timedelta(days=1))
++        with self.assertRaises(ValueError):prediction['current_sources'](db,p['id'],AT+timedelta(days=1),BEFORE,None)
++        basis=next(v for v in db.proofs.values() if json.loads(v['payload']).get('schema_version')=='s2-controller-authorization-v1')
++        db.records=[];db.proofs={'UNIT-renamed-rehashed-orphan':basis}
++        with self.assertRaises(ValueError):a['validate_live_history'](db,history([]))
++
++    def test_external_authority_expiry_packet_case_generation_and_duck_refuse(self):
++        for mutation in ('authority','expired','generation','owner','case','packet','duck'):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation()
++            if mutation=='authority':go.seek(0);go.write(b'{}');go.truncate()
++            elif mutation=='generation':db.control['authority_generation']+=1
++            elif mutation=='owner':db.patient['owner_id']='UNIT-foreign'
++            elif mutation=='case':
++                value=json.loads(db.patient['state_json']);value['simulation']['panel_id']='UNIT-reset';db.patient['state_json']=canonical(value)
++            elif mutation=='packet':inv.packet.app_commit='1'*40
++            elif mutation=='duck':db._candidate_context=NS(check=lambda *args:inv)
++            with self.subTest(mutation=mutation),self.assertRaises(ValueError):
++                if mutation=='duck':h['candidate_context'](db)
++                else:run(NS(clock=lambda:AT+timedelta(minutes=2) if mutation=='expired' else AT,fault=None))
++
++    def test_authority_and_generation_are_rechecked_during_the_producer(self):
++        for change in ('GO','generation','expiry','closed_lease'):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();now=[AT]
++            before=(copy.deepcopy(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
++            def fault(point):
++                if point!='after_support_distribution':return
++                if change=='GO':go.seek(0);go.write(b'{}');go.truncate()
++                elif change=='generation':db.control['authority_generation']+=1
++                elif change=='expiry':now[0]=AT+timedelta(minutes=2)
++                else:go.close()
++            with self.subTest(change=change),self.assertRaises(ValueError):run(NS(clock=lambda:now[0],fault=fault))
++            self.assertEqual((db.records,db.proofs,db.patient['state_json']),before)
++
++    def test_renamed_rehashed_and_orphan_candidate_evidence_refuses_all_live_projection(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();run()
++        protocol=load('services/foundation/protocol.py',reject_candidate=a['reject_candidate'])
++        for r in db.records:
++            if r.source.id!='candidate-s2-interactive-v1':continue
++            value=r.model_dump(mode='json');value.update(record_id='UNIT-renamed-'+sha(r.record_id)[:16],lineage_id='UNIT-renamed-'+sha(r.record_id)[:16])
++            changed=typed(value)
++            for full in (history([changed]),history(db.records)):
++                with self.assertRaises(ValueError):a['validate_live_history'](db,full)
++                with self.assertRaises(ValueError):protocol['project_protocol'](full,AT+timedelta(days=1),family='support',origin=BEFORE)
++        # Even removing visible prefixes/source labels from a support decision
++        # cannot replace its candidate qualification with installed provenance.
++        decision=next(r for r in db.records if r.kind=='support_decision')
++        value=decision.model_dump(mode='json');value['source']['id']='UNIT-renamed-source'
++        value.update(record_id='UNIT-renamed-decision',lineage_id='UNIT-renamed-decision')
++        changed=typed(value)
++        with self.assertRaises(ValueError):a['authorization_verifier'](db,history([changed]))(changed,AT+timedelta(days=1))
++
++
++    def test_final_journal_rechecks_authority_before_commit_and_consumes_receipt(self):
++        for change in ('expiry_equal','expiry_after','GO','receipt','generation','exception'):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();now=[AT]
++            before=(copy.deepcopy(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
++            def journal(current,at):
++                if change=='expiry_equal':now[0]=inv.expires_at
++                elif change=='expiry_after':now[0]=inv.expires_at+timedelta(seconds=1)
++                elif change=='GO':go.seek(0);go.write(b'{}');go.truncate()
++                elif change=='receipt':receipt.seek(0);receipt.write(b'UNIT-revoked');receipt.truncate()
++                elif change=='generation':current.control['authority_generation']+=1
++                else:raise RuntimeError('UNIT-journal-exception')
++            h['UNIT_transaction'].__wrapped__.__globals__['receive']=journal
++            with self.subTest(change=change),self.assertRaises((ValueError,RuntimeError)) as error:
++                run(NS(clock=lambda:now[0],fault=None))
++            self.assertNotIn('committed_output_withheld',str(error.exception))
++            self.assertFalse(getattr(db,'committed',False));self.assertTrue(db.closed)
++            self.assertEqual((db.records,db.proofs,db.patient['state_json']),before)
++            self.assertTrue(receipt.getvalue());self.assertFalse(h['UNIT_read_connections'])
++            # Restoring revoked external bytes does not refund the consumed path.
++            go.seek(0);go.write(canonical(inv.authority_body).encode());go.truncate()
++            with self.assertRaises(FileExistsError):run(NS(clock=lambda:AT,fault=None))
++
++    def test_postcommit_rejection_withholds_output_without_claiming_write_rollback(self):
++        for change in ('expiry','GO','receipt','generation','current_version','read_finalize_expiry'):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();now=[AT]
++            original_commit=InertDB.commit
++            def commit(current):
++                original_commit(current)
++                if change=='read_finalize_expiry':
++                    if current is not db:now[0]=inv.expires_at
++                    return
++                if current is not db:return
++                if change=='expiry':now[0]=inv.expires_at+timedelta(seconds=1)
++                elif change=='GO':go.seek(0);go.write(b'{}');go.truncate()
++                elif change=='receipt':receipt.seek(0);receipt.write(b'UNIT-revoked');receipt.truncate()
++                elif change=='generation':current.control['authority_generation']+=1
++                elif change=='current_version':current.patient['version']+=1
++            with self.subTest(change=change),patch.object(InertDB,'commit',commit),self.assertRaisesRegex(ValueError,'candidate_committed_output_withheld'):
++                run(NS(clock=lambda:now[0],fault=None))
++            self.assertTrue(db.committed);self.assertTrue(db.closed)
++            self.assertEqual(json.loads(db.patient['state_json'])['simulation']['day'],15)
++            self.assertTrue(any(r.kind=='support_outcome_link' for r in db.records));self.assertTrue(receipt.getvalue())
++            self.assertTrue(all(read is not db and read.closed for read in h['UNIT_read_connections']))
++
++    def test_ontime_finalization_uses_fresh_read_and_emits_original_exact_output(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();seen=[]
++        h['UNIT_transaction'].__wrapped__.__globals__['receive']=lambda current,at:seen.append((current,at))
++        result=run()
++        self.assertEqual(seen,[(db,AT)]);self.assertTrue(db.committed)
++        self.assertEqual(result['status'],'UNTRUSTED_candidate_evidence')
++        self.assertEqual(len(h['UNIT_read_connections']),1)
++        self.assertIsNot(h['UNIT_read_connections'][0],db);self.assertTrue(h['UNIT_read_connections'][0].closed)
++
++    def test_real_later_withdraw_command_preserves_lineage_and_prior_as_known_consent(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action='withdraw')
++        draws=[];code['keyed_uniform']=lambda seed:draws.append(seed) or 1.
++        result=run();consents=[r for r in db.records if r.kind=='consent']
++        self.assertEqual(len(consents),2);self.assertEqual(consents[1].event_at,consents[0].event_at)
++        self.assertEqual(consents[1].available_at,AT+timedelta(days=1));self.assertEqual(consents[1].supersedes,consents[0].record_id)
++        self.assertEqual(json.loads(db.patient['state_json'])['simulation']['support_controller']['status'],'withdrawn')
++        self.assertEqual(code['mask'](history(db.records),json.loads(db.patient['state_json']),AT+timedelta(days=1),AT)[0],())
++        self.assertEqual(len(draws),1);self.assertFalse(consents[1].permits('mrt_bandit',AT+timedelta(days=1)))
++        self.assertEqual([r for r in history(db.records).as_known_at(AT+timedelta(microseconds=1)) if r.kind=='consent'],[consents[0]])
++        self.assertEqual(result['status'],'UNTRUSTED_candidate_evidence')
++
++    def test_real_later_renew_command_stays_unapproved_and_preserves_prior_consent(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action='consent')
++        run();consents=[r for r in db.records if r.kind=='consent'];current=json.loads(db.patient['state_json'])
++        self.assertEqual(len(consents),2);self.assertEqual(consents[1].event_at,consents[0].event_at)
++        self.assertEqual(consents[1].revision,2);self.assertEqual(current['simulation']['support_controller']['status'],'unapproved')
++        self.assertEqual(code['mask'](history(db.records),current,AT+timedelta(days=1),AT)[0],())
++
++    def test_real_withdraw_renew_revision3_and_new_approval_allow_reentry_only_then(self):
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action=('withdraw','consent'))
++        draws=[];code['keyed_uniform']=lambda seed:draws.append(seed) or 1.
++        frozen={}
++        def capture(point):
++            if point=='after_support_clock':
++                frozen['records']={r.record_id:r.model_dump_json() for r in db.records}
++                frozen['snapshots']={key:value.model_dump_json() for key,value in db.decisions.items()}
++        result=run(NS(clock=lambda:AT,fault=capture));consents=sorted((r for r in db.records if r.kind=='consent'),key=lambda r:r.revision)
++        self.assertEqual([r.revision for r in consents],[1,2,3]);self.assertEqual(len({r.event_at for r in consents}),1)
++        self.assertEqual([r.supersedes for r in consents],[None,consents[0].record_id,consents[1].record_id])
++        self.assertEqual([r.consent_status for r in consents],['active','withdrawn','active'])
++        self.assertEqual([r.available_at for r in consents],[AT,AT+timedelta(days=1),AT+timedelta(days=1)])
++        self.assertEqual(consents[1].withdrawn_at,AT+timedelta(days=1));self.assertIsNone(consents[2].withdrawn_at)
++        self.assertEqual(consents[2].effective_at,AT+timedelta(days=1));self.assertEqual(len(draws),1)
++        self.assertEqual(consents[1].recorded_at,consents[2].recorded_at)
++        self.assertEqual([r for r in history(db.records).as_known_at(AT+timedelta(days=1)) if r.kind=='consent'],[consents[0]])
++        inclusive=code['lineage_heads'](code['visible_records'](consents,AT+timedelta(days=1),inclusive=True))
++        self.assertEqual(inclusive,[consents[2]])
++        for identifier,encoded in frozen['records'].items():self.assertEqual(next(r for r in db.records if r.record_id==identifier).model_dump_json(),encoded)
++        for identifier,encoded in frozen['snapshots'].items():self.assertEqual(db.decisions[identifier].model_dump_json(),encoded)
++        current=json.loads(db.patient['state_json']);self.assertEqual(current['simulation']['support_controller']['status'],'unapproved')
++        self.assertEqual(code['mask'](history(db.records),current,AT+timedelta(days=1),AT)[0],())
++        self.assertEqual([db.patient[k] for k in ('version','state_version','consent_version','eligibility_version')],[6,6,4,6])
++        self.assertEqual(db.snapshot.patient_version,6);self.assertEqual(db.snapshot.consent_version,4)
++        self.assertTrue(all(json.loads(v['payload']).get('actor')==p['owner_id'] for v in db.proofs.values()
++            if isinstance(json.loads(v['payload']),dict) and json.loads(v['payload']).get('kind')=='support_envelope_command'))
++        for c in consents:
++            raw=db.raw_sources[c.record_id];self.assertEqual(c.source.raw_sha256,hashlib.sha256(raw).hexdigest())
++            self.assertEqual(RECORD_ADAPTER_V21.validate_json(canonical(json.loads(raw)|dict(source=c.source.model_dump(mode='json')))),c)
++        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action=('withdraw','consent','approve','advance'))
++        draws=[];code['keyed_uniform']=lambda seed:draws.append(seed) or 1.
++        run();self.assertEqual(len(draws),2);self.assertEqual(db.writes.count('support_decision'),2)
++        self.assertEqual(len([r for r in db.records if r.kind=='protocol_snapshot']),2)
++        self.assertEqual(json.loads(db.patient['state_json'])['simulation']['support_controller']['status'],'active')
++
++    def test_real_later_stale_or_expired_renewal_rolls_back_and_consumes_receipt(self):
++        for failure,reason in (('stale','stale_support'),('expired','expired_support_consent')):
++            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(later_consent_action='consent',later_failure=failure)
++            before=(copy.deepcopy(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
++            with self.subTest(failure=failure),self.assertRaisesRegex(Exception,reason):run()
++            self.assertEqual((db.records,db.proofs,db.patient['state_json']),before);self.assertTrue(receipt.getvalue())
++            self.assertFalse(getattr(db,'committed',False))
++            with self.assertRaises(FileExistsError):run()
++
++
++class DispatchAuthorityTests(unittest.TestCase):
++    def preparation(self,expires=None,prompt=True):
++        original=consent
++        def expiring(*args,**kwargs):
++            value=original(*args,**kwargs).model_dump(mode='json')
++            value['expires_at']=expires.isoformat() if expires else None
++            return typed(value)
++        with patch(__name__+'.consent',expiring):code,db,p,state=fixture(actual_mask=True)
++        code['keyed_uniform']=lambda seed:0. if prompt else 1.
++        decision,assignment=code['decide'](db,NS(fault=None),p,state,AT)
++        return code,db,p,state,decision,assignment
++
++    def test_dispatch_expiry_between_equal_after_and_valid_prompt_noprompt(self):
++        for expiry,cancel in ((AT+timedelta(hours=4),True),(AT+timedelta(hours=8),True),
++                              (AT+timedelta(hours=8,microseconds=1),False),(None,False)):
++            for prompt in (True,False):
++                code,db,p,state,decision,assignment=self.preparation(expiry,prompt)
++                frozen=(decision.model_dump_json(),assignment.model_dump_json())
++                offered,canceled=code['dispatch'](db,NS(fault=None),p,state,decision,assignment,AT)
++                with self.subTest(expiry=expiry,prompt=prompt):
++                    self.assertEqual(canceled,cancel)
++                    self.assertEqual((decision.model_dump_json(),assignment.model_dump_json()),frozen)
++                    self.assertEqual(offered is not None,prompt and not cancel)
++                    self.assertEqual(any(s['assignment_id']==assignment.record_id for s in state['simulation']['support']),not cancel)
++                    if offered:self.assertTrue(next(r for r in db.records if r.kind=='consent').permits('mrt_bandit',offered.event_at))
++
++    def test_dispatch_current_withdrawal_hold_N_and_pause_cancel_frozen_prompt(self):
++        for change in ('withdrawal','hold','N','pause','independent_hold'):
++            code,db,p,state,decision,assignment=self.preparation()
++            frozen=(decision.model_dump_json(),assignment.model_dump_json())
++            if change=='withdrawal':
++                previous=next(r for r in db.records if r.kind=='consent');at=AT+timedelta(hours=5)
++                value=previous.model_dump(mode='json')
++                value.update(record_id='UNIT-later-withdrawal',lineage_id='UNIT-later-withdrawal',revision=1,supersedes=None,
++                    event_at=at.isoformat(),recorded_at=at.isoformat(),available_at=at.isoformat(),effective_at=at.isoformat(),
++                    withdrawn_at=at.isoformat(),consent_status='withdrawn',oversight_status='withdrawn')
++                db.records.append(typed(value))
++            elif change=='hold':state['workflow']['hold_reasons']=['UNIT newly effective hold']
++            elif change=='N':state['simulation']['nof1']=dict(status='active')
++            elif change=='pause':state['workflow']['support_mode']='paused'
++            else:code['active_episodes']=lambda *args:[dict(id='UNIT new independent hold')]
++            offered,canceled=code['dispatch'](db,NS(fault=None),p,state,decision,assignment,AT)
++            with self.subTest(change=change):
++                self.assertIsNone(offered);self.assertTrue(canceled)
++                self.assertEqual((decision.model_dump_json(),assignment.model_dump_json()),frozen)
++
++    def test_dispatch_does_not_count_its_own_pending_assignment_in_burden(self):
++        code,db,p,state=fixture(actual_mask=True)
++        for days in (2,4):
++            db.records.append(typed(dict(**header('UNIT-prior-prompt-'+str(days),p['id'],AT-timedelta(days=days)+timedelta(hours=8)),
++                kind='delivery',assignment_id='UNIT-prior-assignment-'+str(days),option='support_prompt',stage='delivered',
++                adherence=1.,rescue=False,protocol_deviations=[])))
++        code['keyed_uniform']=lambda seed:0.
++        decision,assignment=code['decide'](db,NS(fault=None),p,state,AT)
++        self.assertEqual(code['mask'](history(db.records),state,AT+timedelta(hours=8),AT)[0],('no_prompt',))
++        offered,canceled=code['dispatch'](db,NS(fault=None),p,state,decision,assignment,AT)
++        self.assertFalse(canceled);self.assertIsNotNone(offered)
++
++    def test_canceled_expired_assignment_never_closes_observed_offer_delivery_burden(self):
++        code,db,p,state,decision,assignment=self.preparation(AT+timedelta(hours=4))
++        offered,canceled=code['dispatch'](db,NS(fault=None),p,state,decision,assignment,AT)
++        value=dict(**(header('UNIT-after-cancel-report',p['id'],AT+timedelta(days=1,minutes=-1))|dict(schema_version='2.0.0')),
++            kind='daily_report',sleep_quality=7.,function=6.,adverse_symptoms=[],diary_sleep_minutes=420.,goals=[],burden=None,missingness='observed')
++        value['source'].update(id='poc-longitudinal-v2',version='2.0.0',adapter='patient_report');db.records.append(typed(value))
++        link=code['UNIT_authority']['close_stages'](db,NS(fault=None,clock=lambda:AT),p,decision,assignment,offered,AT,canceled=canceled)
++        self.assertTrue(canceled);self.assertEqual(link.reward.status,'pending')
++        self.assertTrue(all(b.status=='pending' and b.value is None for b in link.burden))
++        self.assertFalse(any(r.kind=='support_stage_closure' or r.kind=='delivery' and r.assignment_id==assignment.record_id for r in db.records))
++
++    def test_consent_revision_refuses_chronology_and_component_substitution_before_write(self):
++        for change in ('future_availability','wrong_component'):
++            code,db,p,state=fixture(actual_mask=True)
++            value=consent().model_dump(mode='json')
++            value.update(record_id='UNIT-stable-head',lineage_id='support-consent-'+p['id'])
++            if change=='future_availability':
++                value.update(recorded_at=(AT+timedelta(days=1)).isoformat(),available_at=(AT+timedelta(days=1)).isoformat())
++            else:value['component']='nof1'
++            db.records.append(typed(value))
++            data=ControllerCommand.model_validate(dict(schema_version='s2-controller-source-1.0.0',mode='current',action='consent',
++                decision_id=p['current_decision'],expected_version=1,expected_state_version=1,expected_consent_version=1,
++                expected_eligibility_version=1,rationale='UNIT real command rejection'))
++            with self.subTest(change=change),self.assertRaisesRegex(ValueError,'chronology_regression|same_patient_component'):
++                code['transition'](db,NS(fault=None),p,p['owner_id'],data,AT)
++            self.assertFalse(db.writes)
++
++
++class ProtectedInverseTests(unittest.TestCase):
++    """Compare public Git baseline ASTs; no service/app modules are imported."""
++    def trees(self,module):
++        return (ast.parse((ROOT/f'artifacts/s2-controller/source/base-{module}.py').read_text()),
++                ast.parse((ROOT/f'services/foundation/{module}.py').read_text()))
++    def dump(self,node):return ast.dump(node,include_attributes=False)
++    def functions(self,tree):
++        result={}
++        def visit(node,prefix=''):
++            for item in getattr(node,'body',[]):
++                if isinstance(item,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):
++                    key=prefix+item.name
++                    if not isinstance(item,ast.ClassDef):result[key]=item
++                    visit(item,key+'.')
++        visit(tree);return result
++    def test_all_undeclared_existing_function_bodies_are_identical(self):
++        allowed=dict(app={'create_app','create_app.panel_options','create_app.owned_analysis_view'},
++            store={'Store.__init__','Store.connect','Store.transaction'},workflow={'history','current_safety','create_decision'},
++            simulation={'persist_product','advance','assign'},protocol={'validate_support_v21','project_protocol','project_protocol.reduce','export_histories'},
++            support_s2_prediction={'current_sources'})
++        count=0
++        for module,changed in allowed.items():
++            old,new=map(self.functions,self.trees(module))
++            self.assertTrue(old.keys()<=new.keys())
++            for name,node in old.items():
++                if name not in changed:
++                    with self.subTest(module=module,function=name):self.assertEqual(self.dump(node),self.dump(new[name]))
++                    count+=1
++        self.assertGreater(count,75)
++    def test_simulation_inverse_keeps_ordinary_N_and_product_laws(self):
++        old,new=map(self.functions,self.trees('simulation'))
++        for name in ('advance','assign'):
++            node=copy.deepcopy(new[name]);node.body=[n for n in node.body if not (isinstance(n,ast.If) and "'support'" in ast.unparse(n.test))]
++            self.assertEqual(self.dump(old[name]),self.dump(node))
++        node=copy.deepcopy(new['persist_product'])
++        node.body[1]=ast.ImportFrom(module='workflow',names=[ast.alias(name='history')],level=1)
++        self.assertEqual(self.dump(old['persist_product']),self.dump(node))
++    def test_store_default_transaction_and_connect_inverse(self):
++        old,new=map(self.functions,self.trees('store'))
++        for name in ('Store.connect','Store.transaction'):
++            node=copy.deepcopy(new[name]);node.args.kwonlyargs=[] if name.endswith('connect') else node.args.kwonlyargs[:-1]
++            node.args.kw_defaults=[] if name.endswith('connect') else node.args.kw_defaults[:-1]
++            if name.endswith('connect'):node.body=node.body[0].orelse[0].body+node.body[1:]
++            else:
++                assignment=node.body[0].body[0];self.assertIsInstance(assignment.value,ast.IfExp);assignment.value=assignment.value.body
++            self.assertEqual(self.dump(old[name]),self.dump(node))
++    def test_shared_ordinary_support_validator_inverse(self):
++        old,new=map(self.functions,self.trees('protocol'))
++        node=copy.deepcopy(new['_validate_support_v21']);node.name='validate_support_v21'
++        node.body=node.body[2:];node.args.kwonlyargs=[];node.args.kw_defaults=[]
++        self.assertEqual(self.dump(old['validate_support_v21']),self.dump(node))
++    def test_legacy_histories_keep_exact_typed_outputs(self):
++        code,db,p,state=fixture();a=code['UNIT_authority']
++        records=[r for r in db.records if r.schema_version=='1.0.0']
++        db.proofs={str(i):dict(patient_id=p['id'],actor_id=p['owner_id'],payload=canonical(value))
++            for i,value in enumerate(({},[],dict(qualification=None),dict(qualification='ordinary legacy metadata')))}
++        for rows in ([],records):
++            db.records=rows
++            digest=lambda x:hashlib.sha256(x.encode()).hexdigest()
++            old=load('artifacts/s2-controller/source/base-workflow.py',canonical=canonical,digest=digest)
++            new=load('services/foundation/workflow.py',canonical=canonical,digest=digest,validate_live_history=a['validate_live_history'])
++            self.assertEqual(old['history'](db,p['id']).model_dump(),new['history'](db,p['id']).model_dump())

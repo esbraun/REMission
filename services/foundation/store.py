@@ -43,12 +43,35 @@ def validate_bundle(installed):
         raise AdmissionError('service_generation_mismatch')
 
 
+class SupportConnection(sqlite3.Connection):
+    """Only the qualified S2 Store constructor selects this connection factory."""
+    def _install_support_binding(self, qualification, installed, source_commit, runtime_ref):
+        from contracts.domain.support_s2_controller import InteractiveSupportQualification
+        from .support_s2_invocation import InstalledInteractiveContext
+        if type(qualification) is not InteractiveSupportQualification or hasattr(self,'_support_binding'):
+            raise ValueError('trusted_typed_support_installation_required')
+        self._support_binding=(InstalledInteractiveContext(qualification.model_dump_json()),digest(canonical(installed.model_dump(mode='json'))),
+                               source_commit,canonical(runtime_ref),canonical(installed.control.model_dump(mode='json')))
+
+    def _read_support_binding(self):
+        return self._support_binding
+
+
 class Store:
-    def __init__(self, path: str | Path, installed: InstalledBundle, *, clock=lambda: datetime.now(timezone.utc)):
+    def __init__(self, path: str | Path, installed: InstalledBundle, *, clock=lambda: datetime.now(timezone.utc),
+                 support_qualification=None, source_commit=None, runtime_ref=None):
         # Normal startup never creates directories, DBs or runs legacy SQL.
         self.path = Path(path)
         self.installed = InstalledBundle.model_validate_json(installed.model_dump_json())
         self.clock = clock
+        self.support_qualification=support_qualification
+        if support_qualification is not None:
+            from contracts.domain.support_s2_controller import InteractiveSupportQualification
+            if type(support_qualification) is not InteractiveSupportQualification:
+                raise ValueError('trusted_typed_support_installation_required')
+            self.support_qualification=InteractiveSupportQualification.model_validate_json(support_qualification.model_dump_json())
+        self.support_source_commit=source_commit
+        self.support_runtime_ref=runtime_ref
         self.gate = AdmissionGate(self.path)
         with self.gate.hold(), closing(self.connect()) as db:
             self.validate_control(db)
@@ -76,8 +99,21 @@ class Store:
             raise AdmissionError('service_generation_mismatch')
         return row
 
-    def connect(self) -> sqlite3.Connection:
-        db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
+    def connect(self, *, _support_candidate=None) -> sqlite3.Connection:
+        if _support_candidate is not None:
+            from .support_s2_invocation import UntrustedInteractiveContext
+            if type(_support_candidate) is not UntrustedInteractiveContext or self.support_qualification is not None:
+                raise ValueError('closed_isolated_candidate_construction_required')
+            db=sqlite3.connect(self.path,isolation_level=None,timeout=5,factory=SupportConnection)
+            db._candidate_context=_support_candidate
+            db._candidate_installation=(digest(canonical(self.installed.model_dump(mode='json'))),self.support_source_commit,
+                canonical(self.support_runtime_ref),canonical(self.installed.control.model_dump(mode='json')))
+            _support_candidate.bind(db)
+        elif self.support_qualification is None:
+            db = sqlite3.connect(self.path, isolation_level=None, timeout=5)
+        else:
+            db = sqlite3.connect(self.path, isolation_level=None, timeout=5,factory=SupportConnection)
+            db._install_support_binding(self.support_qualification,self.installed,self.support_source_commit,self.support_runtime_ref)
         db.row_factory = sqlite3.Row
         db.execute("PRAGMA foreign_keys=ON")
         db.execute("PRAGMA synchronous=FULL")
@@ -87,9 +123,9 @@ class Store:
         return db
 
     @contextmanager
-    def transaction(self, *, write: bool = False, prepare=None, authorize=None, before_commit=None) -> Iterator[sqlite3.Connection]:
+    def transaction(self, *, write: bool = False, prepare=None, authorize=None, before_commit=None, _support_candidate=None) -> Iterator[sqlite3.Connection]:
         with self.gate.hold():
-            db = self.connect()
+            db = self.connect() if _support_candidate is None else self.connect(_support_candidate=_support_candidate)
             try:
                 self.validate_control(db)
                 if prepare:

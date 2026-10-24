@@ -1,0 +1,184 @@
+{
+  "files": [
+    {
+      "added": [
+        "create_app.support_command",
+        "create_app.support_workspace"
+      ],
+      "changed": [
+        "create_app",
+        "create_app.panel_options",
+        "create_app.owned_analysis_view"
+      ],
+      "path": "services/foundation/app.py",
+      "unchanged": [
+        "Settings.secure_cookie",
+        "APIError.__init__",
+        "Nof1Input.explicit_authority",
+        "create_app.api_error",
+        "create_app.contract_error",
+        "create_app.admission_error",
+        "create_app.live_error",
+        "create_app.simulation_error",
+        "create_app.headers",
+        "create_app.body",
+        "create_app.session",
+        "create_app.own",
+        "create_app.put_cookie",
+        "create_app.read_decision",
+        "create_app.health",
+        "create_app.live_key",
+        "create_app.live_operation",
+        "create_app.live_operation.authorize",
+        "create_app.live_operation.prepare",
+        "create_app.enter_live_hold",
+        "create_app.read_live_holds",
+        "create_app.live_review",
+        "create_app.live_clearance",
+        "create_app.live_receipt",
+        "create_app.live_export",
+        "create_app.live_export.authorize",
+        "create_app.download_live_export",
+        "create_app.import_archive",
+        "create_app.import_archive.authorize",
+        "create_app.read_archive",
+        "create_app.support_authority",
+        "create_app.bootstrap",
+        "create_app.login",
+        "create_app.logout",
+        "create_app.panel",
+        "create_app.mutation_receipt",
+        "create_app.save_mutation",
+        "create_app.generated_panel",
+        "create_app.advance_patient",
+        "create_app.workspace",
+        "create_app.nof1_command",
+        "create_app.submit_analysis",
+        "create_app.comparison_view",
+        "create_app.nof1_analysis_options",
+        "create_app.submit_nof1_analysis",
+        "create_app.nof1_analysis_receipt",
+        "create_app.select_support_s2",
+        "create_app.preview_support_s2",
+        "create_app.submit_support_s2",
+        "create_app.support_s2_receipt",
+        "create_app.submit_support_s1",
+        "create_app.support_s1_attempts",
+        "create_app.preview_cohort_analysis",
+        "create_app.submit_cohort_analysis",
+        "create_app.analyses",
+        "create_app.analysis_sources",
+        "create_app.freeze_comparison",
+        "create_app.saved_comparisons",
+        "create_app.analysis_status",
+        "create_app.historical",
+        "create_app.later",
+        "create_app.event",
+        "create_app.task",
+        "create_app.job",
+        "create_app.approve",
+        "create_app.receipt",
+        "create_app.state_change",
+        "create_app.ingest",
+        "create_app.save_draft",
+        "create_app.saved_draft",
+        "create_app.report",
+        "create_app.unavailable"
+      ]
+    },
+    {
+      "added": [
+        "SupportConnection._install_support_binding",
+        "SupportConnection._read_support_binding"
+      ],
+      "changed": [
+        "Store.__init__",
+        "Store.connect",
+        "Store.transaction"
+      ],
+      "path": "services/foundation/store.py",
+      "unchanged": [
+        "canonical",
+        "digest",
+        "instant",
+        "timestamp",
+        "validate_bundle",
+        "Store.validate_control"
+      ]
+    },
+    {
+      "added": [
+        "_producer_history"
+      ],
+      "changed": [
+        "history",
+        "current_safety",
+        "create_decision"
+      ],
+      "path": "services/foundation/workflow.py",
+      "unchanged": [
+        "reference",
+        "patient_clock",
+        "preserve_simulation",
+        "state_for",
+        "record_header"
+      ]
+    },
+    {
+      "added": [
+        "_validate_support_v21"
+      ],
+      "changed": [
+        "validate_support_v21",
+        "project_protocol",
+        "project_protocol.reduce",
+        "export_histories"
+      ],
+      "path": "services/foundation/protocol.py",
+      "unchanged": [
+        "_available",
+        "_validate_assignment_known",
+        "validate_snapshot",
+        "validate_snapshot.exact",
+        "project_protocol.reduced_ref",
+        "project_protocol.exact",
+        "project_protocol.closure",
+        "project_protocol.context_ref"
+      ]
+    },
+    {
+      "added": [],
+      "changed": [
+        "persist_product",
+        "advance",
+        "assign"
+      ],
+      "path": "services/foundation/simulation.py",
+      "unchanged": [
+        "SimulationError.__init__",
+        "product",
+        "generate_panel"
+      ]
+    },
+    {
+      "added": [],
+      "changed": [
+        "current_sources"
+      ],
+      "path": "services/foundation/support_s2_prediction.py",
+      "unchanged": [
+        "current_context",
+        "admitted_fit",
+        "validate_collection",
+        "prepare",
+        "enqueue",
+        "_enqueue",
+        "reconcile",
+        "read_summary",
+        "_read_summary",
+        "ingest_saved"
+      ]
+    }
+  ],
+  "scope": "AST identity and declared changed functions; see focused inverse controls and Git reverse-patch proof"
+}
