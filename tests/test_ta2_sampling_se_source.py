@@ -240,6 +240,42 @@ class SamplingTests(unittest.TestCase):
         value['planned'][1]['fit_seeds'][1]['effect_rollout']=value['planned'][0]['fit_seeds'][0]['effect_rollout']
         with self.assertRaisesRegex(ValueError,'stream reuse'):s.SamplingDesign.model_validate_json(canonical(value))
 
+    def test_initial_extension_seed_collisions_in_both_directions_and_configurations_refuse(self):
+        design,*_=fixture()
+        for source,destination,offset in (((0,0),(1,0),1),((1,0),(0,0),-1),((0,0),(0,1),1)):
+            raw=design.model_dump(mode='json');a,b=source;c,d=destination
+            raw['planned'][c]['fit_seeds'][d]['nuts']=raw['planned'][a]['fit_seeds'][b]['nuts']+offset
+            with self.subTest(source=source,destination=destination,offset=offset),self.assertRaisesRegex(ValueError,'fit-stream reuse'):
+                s.SamplingDesign.model_validate_json(canonical(raw))
+
+    def test_extension_reservation_includes_all_other_declared_streams(self):
+        design,*_=fixture()
+        for destination in ((0,0),(0,1),(1,0)):
+            for stream in ('effect_rollout','prior_check','bridge_reference'):
+                raw=design.model_dump(mode='json');i,j=destination
+                raw['planned'][i]['fit_seeds'][j][stream]=raw['planned'][0]['fit_seeds'][0]['nuts']+1
+                with self.subTest(destination=destination,stream=stream),self.assertRaisesRegex(ValueError,'fit-stream reuse'):
+                    s.SamplingDesign.model_validate_json(canonical(raw))
+
+    def test_derived_seed_range_boundaries_and_noncolliding_design(self):
+        design,*_=fixture();raw=design.model_dump(mode='json')
+        # Hand-spaced SOURCE fixture, not a production seed allocator or search.
+        for i,planned in enumerate(raw['planned']):
+            for j,seeds in enumerate(planned['fit_seeds']):
+                base=10*(2*i+j)
+                seeds.update(nuts=base,effect_rollout=base+2,prior_check=base+3,bridge_reference=base+4)
+        self.assertEqual(s.SamplingDesign.model_validate_json(canonical(raw)).planned[0].fit_seeds[0].nuts,0)
+        maximum=4294967295
+        upper=deepcopy(raw);upper['planned'][0]['fit_seeds'][0]['nuts']=maximum-1
+        self.assertEqual(s.SamplingDesign.model_validate_json(canonical(upper)).planned[0].fit_seeds[0].nuts,maximum-1)
+        for value in (-1,maximum,maximum+1):
+            bad=deepcopy(raw);bad['planned'][0]['fit_seeds'][0]['nuts']=value
+            with self.subTest(value=value),self.assertRaises(ValueError):s.SamplingDesign.model_validate_json(canonical(bad))
+        lower=deepcopy(raw);lower['planned'][1]['fit_seeds'][0]['nuts']=1
+        with self.assertRaisesRegex(ValueError,'fit-stream reuse'):s.SamplingDesign.model_validate_json(canonical(lower))
+        upper['planned'][1]['fit_seeds'][0]['bridge_reference']=maximum
+        with self.assertRaisesRegex(ValueError,'fit-stream reuse'):s.SamplingDesign.model_validate_json(canonical(upper))
+
     def test_sparse_final_failures_remain_unresolved_not_infinite_precision_scale(self):
         confirmation=(tuple(float(i) for i in range(30)),tuple(float(i) for i in range(30)))
         *_,reduce=fixture(confirmation=confirmation,failed=tuple((i,1) for i in range(5,33)))

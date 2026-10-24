@@ -78,6 +78,12 @@ class SamplingDesign(StrictModel):
         patients=[patient for p in self.planned for patient in p.member_ids]
         seeds=[getattr(s,k) for p in self.planned for s in p.fit_seeds
             for k in ('nuts','effect_rollout','prior_check','bridge_reference')]
+        # The unchanged worker may fit once more at nuts+1. Reserve that stream
+        # before collection, even when the initial fit might later succeed.
+        extensions=[s.nuts+1 for p in self.planned for s in p.fit_seeds]
+        if any(seed>4294967295 for seed in extensions):
+            raise ValueError('permitted extension exceeds existing numerical seed range')
+        seeds+=extensions
         if len(set(keys))!=len(keys) or len(set(patients))!=len(patients) or len(set(seeds))!=len(seeds):
             raise ValueError('cohort/member/generation/fit-stream reuse is not independent replication')
         if any(p.member_ids!=sorted(set(p.member_ids)) for p in self.planned):
