@@ -14,7 +14,7 @@ Independent methods review checks the generator and truth evaluator against anal
 
 Use one orchestrator thread for user communication and feedback, plan and gate progress, task distribution, dependency scheduling, consolidated reporting, and reviewed PR integration. It assigns worktrees and ownership, opens PRs, and may merge accepted worktree branches under the procedure below; subagents perform technical work, including source integration edits and conflict resolution. All work packages have subagent owners, including exploration, technical planning, critique, implementation, integration edits, testing, evidence inspection, documentation, and release verification. The orchestrator uses returned review evidence to update gate status rather than performing the review itself. Each package receives independent review.
 
-The [entry point's model policy](../../implementation-prompt.md#launch-contract) is mandatory: `gpt-6-astra` at `medium` for planning, review, and critique; `gpt-6.1-sol` at `high` for implementation, integration, repairs, and verification; `gpt-6-luna` at `high` for exploration, summaries, and lightweight helpers. Sol implementation may increase to `xhigh` for difficult work without user confirmation; record the reason in the ledger and handoff. Do not silently substitute unsupported models or efforts.
+The [entry point's model policy and critical-gate classification](../../implementation-prompt.md#launch-contract) are mandatory: `gpt-6-astra/medium` only for critical gate plans and reviews, with ROOT's concrete reason recorded before assignment; `gpt-6.1-sol/high` by default for other planning, critique, review, implementation, integration, repairs, verification, documentation and ordinary decisions; `gpt-6-luna/high` for bounded exploration, summaries and helpers. Only difficult Sol implementation may increase to `xhigh` without user confirmation; record the reason in the ledger and handoff. Do not silently substitute unsupported models or efforts. Do not classify every edit or clarification as critical or add routine Astra review loops.
 
 Keep at most two non-Luna subagent threads concurrently open, excluding the primary orchestrator. **GPT-6 Luna (`gpt-6-luna`) helpers are exempt from this two-worker limit.** Count running and idle non-Luna threads by their effective model, not their task label; every model other than `gpt-6-luna` consumes a worker slot. Only the orchestrator may spawn agents or distribute tasks; workers request Luna assistance through it and do not spawn descendants. Launch requested Luna work while both Astra/Sol slots are occupied whenever the runtime has total capacity. There is no separate project count limit for Luna helpers; keep their tasks bounded and reuse suitable threads.
 
@@ -22,7 +22,7 @@ Track the non-Luna worker count separately from the total open-thread count. The
 
 Use the runtime's supported lifecycle controls to release completed threads and confirm capacity before replacements. Interrupting or finishing a turn does not prove that a thread is closed. If the runtime cannot close threads, enforce the cap by reusing existing threads only when they can run the required model and effort; otherwise report the capability blocker and retain the queued work. Follow the [runtime configuration checks](runtime-and-workflow.md#subagent-runtime-configuration).
 
-Suggested roles are contract/workflow, simulator/data, Bayesian methods, experiments/support, service/integration, frontend, browser/accessibility, independent methods review, and release/documentation. Assign non-Luna roles in waves within their two-worker cap; Luna exploration and summary helpers may run alongside them. A separate Astra reviewer must inspect implementation and reproduce relevant checks; switching the implementing worker's role or model does not make its self-review independent. Route findings to a Sol worker for correction and then back to the independent reviewer. Apply the same independent critique discipline to technical plans before dependent implementation.
+Suggested roles are contract/workflow, simulator/data, Bayesian methods, experiments/support, service/integration, frontend, browser/accessibility, independent methods review, and release/documentation. Assign non-Luna roles in waves within their two-worker cap; Luna exploration and summary helpers may run alongside them. A different reviewer selected under the model policy must inspect implementation and reproduce relevant checks; switching the implementing worker's role or model does not make its self-review independent. Route findings to a Sol worker for correction and then back to the appropriate independent reviewer. Apply the same independent critique discipline to technical plans before dependent implementation.
 
 ### Worktree isolation and reviewed merges
 
@@ -32,9 +32,9 @@ Writing workers use separate task branches created from an accepted integration 
 
 Allocate bounded write scopes even across isolated worktrees. Reserve dependency manifests, lockfiles, root configuration, shared schemas, generated clients, and migration numbering for the designated integration worker. Schedule cross-cutting edits explicitly. Publish each candidate as committed changes with its exact head SHA, base SHA, acceptance results, and evidence paths; stop writes to that candidate during review.
 
-The orchestrator is explicitly authorized to open PRs and merge worktree branches into the assigned integration target without another user confirmation when the independent Astra reviewer records a ready-to-ship disposition for that exact head/base, all required task/gate and repository checks pass, findings are resolved, and prerequisite packages are accepted. Observe branch protections and required approvals; do not bypass them. Merge in dependency order and record the PR URL, reviewed head/base, reviewer evidence, and resulting merge commit. Merging a package does not satisfy unrelated or outstanding human/clinical gates.
+The orchestrator is explicitly authorized to open PRs and merge worktree branches into the assigned integration target without another user confirmation when the independent reviewer selected under the model policy records a ready-to-ship disposition for that exact head/base, all required task/gate and repository checks pass, findings are resolved, and prerequisite packages are accepted. Routine documentation/code integration may use different Sol/high review; critical gate acceptance retains different Astra/medium review with ROOT's recorded reason. Observe branch protections and required approvals; do not bypass them. Merge in dependency order and record the PR URL, reviewed head/base, reviewer evidence, and resulting merge commit. Merging a package does not satisfy unrelated or outstanding human/clinical gates.
 
-If the candidate head or target base changes, obtain refreshed review and rerun affected checks before merging. Assign conflicts, rebases, and source repairs to a Sol integration worker in its own worktree, then submit the resulting candidate to Astra again. The orchestrator may execute the accepted merge, but does not resolve source conflicts itself. After merging, have a worker verify the integrated result and update downstream base commits. Archive/remove a worktree only after its needed commits and artifacts are preserved; retain failed or unfinished work for resumption. Closing an agent thread does not require deleting its worktree.
+If the candidate head or target base changes, obtain refreshed review and rerun affected checks before merging. Assign conflicts, rebases, and source repairs to a Sol integration worker in its own worktree, then submit the resulting candidate to the appropriate different reviewer under the model policy. The orchestrator may execute the accepted merge, but does not resolve source conflicts itself. After merging, have a worker verify the integrated result and update downstream base commits. Archive/remove a worktree only after its needed commits and artifacts are preserved; retain failed or unfinished work for resumption. Closing an agent thread does not require deleting its worktree.
 
 Workers read their assigned plan sections and relevant shared contracts, not just a coordinator's paraphrase. A change to a shared interface becomes a versioned contract proposal; integration accepts it and informs consumers before dependent work proceeds. On a worker failure, preserve its changes, record the failure, and resume or reassign the task with explicit ownership. Stop dependent tasks rather than filling the gap with invented results.
 
@@ -69,8 +69,9 @@ acceptance: [<observable checks and commands>]
 reviewer_role: invariant-review
 reviewer_thread: <separate subagent thread ID when assigned>
 reviewer_worktree: <separate absolute checkout pinned to candidate_commit>
-reviewer_model: gpt-6-astra
-reviewer_reasoning_effort: medium
+reviewer_model: gpt-6.1-sol # gpt-6-astra only for critical gate plans/reviews
+reviewer_reasoning_effort: high # medium for critical gate Astra
+critical_gate_reason: null # ROOT records before any Astra assignment
 status: queued # running | needs_review | failed | blocked | complete
 evidence: [<result manifests and artifact paths>]
 review_disposition: pending # changes_requested | ready_to_ship
@@ -86,6 +87,8 @@ blocker: null
 ```text
 You own task <ID>: <concrete behavior>.
 Assigned model/effort: <model>/<effort> from the entry point's model policy.
+Use Sol/high by default; Astra/medium only for a critical gate plan/review,
+with ROOT's concrete classification reason recorded before assignment.
 Report unavailable settings; do not silently substitute. For difficult Sol
 implementation, increase high to xhigh if supported and record the reason.
 Only the orchestrator assigns tasks or spawns agents. Request Luna help from
@@ -127,7 +130,12 @@ PR creation and merges after independent acceptance; do not merge it yourself.
 ### Review prompt
 
 ```text
-Use gpt-6-astra at medium in a thread separate from the implementing worker.
+Use gpt-6.1-sol/high for routine review. Only critical gate plans/reviews use
+gpt-6-astra/medium, with ROOT's concrete reason recorded before assignment.
+Always use a different worker; no self-review or routine Astra mini-review loop.
+Native work alone is not critical. Unchanged-control compatibility, fixtures,
+documentation and finite failed-stage checks default to Sol/high; reserve
+critical review for a material boundary change or actual gate acceptance.
 Use your own worktree <absolute path>, detached at candidate <head SHA>;
 compare against target base <base SHA>. Verify both commits before review.
 Review task <ID> independently against plan.md sections <sections>, contract

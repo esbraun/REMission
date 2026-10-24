@@ -1,5 +1,9 @@
 # Revision history
 
+## October 24 2026 critical-gate Astra allocation
+
+Per user direction, the [launch model policy](../../implementation-prompt.md#launch-contract) reserves gpt-6-astra/medium for critical gate plans/reviews with ROOT's reason recorded before assignment. Other planning, critique, review and engineering/documentation work defaults to gpt-6.1-sol/high; difficult implementation alone may use xhigh with a recorded reason. Different-worker review, exact head/base checks, protections, dependencies, two open non-Luna workers/Luna exemption and actual runtime capacity remain. Historical author/reviewer evidence and scientific/human/runtime gates are not relabeled or accepted by this guidance edit.
+
 ## October 24 2026 scientific truth-law clarification candidate
 
 [TRUTH-02](02-synthetic-dgp.md#primary-scientific-law-and-implementation-claim) states the primary stochastic scientific law and independent-exogenous-draw assumption without claiming literal keyed-generator equivalence. Complete lawful H*, scientific equations/targets and precision locks are preserved. Proposal ffb23b8f138ee7b474fab10cd5f966f272410532 and different mathematical critique 7a0e1a671b9d5a6727faa299e654b0b8ec20181f authorize bounded drafting only. T2 remains unresolved; different exact-candidate review and merge are required for canonical adoption. No code, result, historical artifact or runtime gate is promoted.
