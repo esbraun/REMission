@@ -1,0 +1,200 @@
+{
+  "schema": "s2-controller-source-proof-v1",
+  "status": "SOURCE_PREPARED_PENDING_DIFFERENT_ASTRA_REVIEW",
+  "production_base": "88aec132ad0cbf182e2fb1fc697f479477ef2e36",
+  "partial2": "a31919e5193f8adc8bc992d5afe95ab157566116",
+  "source_candidate": "3fe25e82b2fb1b27212831ae5600db90dc698dfa",
+  "source_candidate_tree": "684b02b8b3daec8e2745aa4e82e608243812e13e",
+  "inverse_reconstructed_tree": "25f0cfb65e600631667668550e947134df358095",
+  "inverses": [
+    {
+      "group": "app_controller",
+      "paths": [
+        "contracts/domain/support_s2_controller.py",
+        "services/foundation/app.py",
+        "services/foundation/store.py",
+        "services/foundation/workflow.py",
+        "services/foundation/support_s2_controller.py",
+        "services/foundation/support_s2_authority.py",
+        "services/foundation/support_s2_invocation.py",
+        "tests/run_s2_controller_source.py",
+        "tests/test_s2_controller_source.py",
+        "tests/freeze_s2_controller_source.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-app_controller.patch",
+      "git_blob": "3eb41435c4a52ffa457c1ceb2fddf08442c85625"
+    },
+    {
+      "group": "simulation_protocol",
+      "paths": [
+        "services/foundation/simulation.py",
+        "services/foundation/protocol.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-simulation_protocol.patch",
+      "git_blob": "1ba29dee13582af6b091d8d7ed3d60c46f27a10a"
+    },
+    {
+      "group": "saved_prediction",
+      "paths": [
+        "services/foundation/support_s2_prediction.py"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-saved_prediction.patch",
+      "git_blob": "ce751fd352615263e59a0a334bda45e3ecd31cd8"
+    },
+    {
+      "group": "ui_shell",
+      "paths": [
+        "web/src/main.tsx",
+        "web/src/types.ts",
+        "web/src/SimulationPanel.tsx",
+        "web/src/SupportPanel.tsx"
+      ],
+      "patch": "docs/implementation/evidence/S2-CONTROLLER-SOURCE-20261024/inverse-ui_shell.patch",
+      "git_blob": "2d22df7ae7c2cb154c17e49655899d2794bd0502"
+    }
+  ],
+  "inverse_remaining_source_paths": [],
+  "inverse_scope": "Four reverse patches in isolated temporary index restore ALL contracts/services/methods/tests/web/tooling bytes to production base; AST/behavior controls separately constrain ordinary changed seams",
+  "protected": [
+    {
+      "path": "methods",
+      "base_git_object": "5c5586bf880df8eefe910066bf814cf745f6d7f9",
+      "candidate_git_object": "5c5586bf880df8eefe910066bf814cf745f6d7f9",
+      "identical": true
+    },
+    {
+      "path": "services/generator",
+      "base_git_object": "a6308207a15722587cd6b5f26fbb526a3606e6b0",
+      "candidate_git_object": "a6308207a15722587cd6b5f26fbb526a3606e6b0",
+      "identical": true
+    },
+    {
+      "path": "services/learner",
+      "base_git_object": "3a7585abce9bca030e0411b43d16a96fa3f660a9",
+      "candidate_git_object": "3a7585abce9bca030e0411b43d16a96fa3f660a9",
+      "identical": true
+    },
+    {
+      "path": "contracts/runs",
+      "base_git_object": "9473f93b51d6c0295f0da6daca74882475c526f8",
+      "candidate_git_object": "9473f93b51d6c0295f0da6daca74882475c526f8",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/boundaries.py",
+      "base_git_object": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+      "candidate_git_object": "1f83d0cb20e11a8954d0455cd26a7e63fb9b702a",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/evidence_v2.py",
+      "base_git_object": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+      "candidate_git_object": "b7bbe16a910af1ca4766df5ad49c8c94a62093e7",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/nof1_config.py",
+      "base_git_object": "a291240de324739bc606e8ce883ff2dfc4961904",
+      "candidate_git_object": "a291240de324739bc606e8ce883ff2dfc4961904",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/nof1_app.py",
+      "base_git_object": "12a45d3a63c204b11dfaa35e5653ac6eaeadadbc",
+      "candidate_git_object": "12a45d3a63c204b11dfaa35e5653ac6eaeadadbc",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2.py",
+      "base_git_object": "eb593adb5e30d58e2822dfea01e57be375a4e54a",
+      "candidate_git_object": "eb593adb5e30d58e2822dfea01e57be375a4e54a",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_app.py",
+      "base_git_object": "78c4c26e865e47cc9e6ce6ecaacdb535febee06f",
+      "candidate_git_object": "78c4c26e865e47cc9e6ce6ecaacdb535febee06f",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_saved.py",
+      "base_git_object": "74fbe93f7d49538e7d6af361360c4294a5b4d439",
+      "candidate_git_object": "74fbe93f7d49538e7d6af361360c4294a5b4d439",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_native.py",
+      "base_git_object": "9093f551b8177f449dbf189ed3531d8be306f2e8",
+      "candidate_git_object": "9093f551b8177f449dbf189ed3531d8be306f2e8",
+      "identical": true
+    },
+    {
+      "path": "contracts/domain/support_s2_fit.py",
+      "base_git_object": "66bfd348ee4cc435ba35b8bdc40315f4b34296be",
+      "candidate_git_object": "66bfd348ee4cc435ba35b8bdc40315f4b34296be",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/nof1.py",
+      "base_git_object": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+      "candidate_git_object": "0fe64fd46a2037c8d71c18772354efe2e24bb72a",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/nof1_clock.py",
+      "base_git_object": "17aaa857d3d5039feceec9539e78ded207fefedc",
+      "candidate_git_object": "17aaa857d3d5039feceec9539e78ded207fefedc",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/nof1_analysis.py",
+      "base_git_object": "47a2397768be9aa6ed1dff1576ba9f829b022894",
+      "candidate_git_object": "47a2397768be9aa6ed1dff1576ba9f829b022894",
+      "identical": true
+    },
+    {
+      "path": "services/foundation/support_s2_analysis.py",
+      "base_git_object": "164a0a892e2f1c7672557d61f2e71a75e7256c53",
+      "candidate_git_object": "164a0a892e2f1c7672557d61f2e71a75e7256c53",
+      "identical": true
+    },
+    {
+      "path": "tooling",
+      "base_git_object": "017b4db336019ef3825b79ac63e6228d3e648871",
+      "candidate_git_object": "017b4db336019ef3825b79ac63e6228d3e648871",
+      "identical": true
+    }
+  ],
+  "source_checks": {
+    "passed": 45,
+    "failed": 0,
+    "log": "checks-r32.txt",
+    "scope": "guarded actual source AST/contracts with typed inert I/O and external authority doubles",
+    "actual_app_SQLite_science_browser": false
+  },
+  "typescript": {
+    "typecheck": "PASS",
+    "build": "PASS",
+    "node": "24.19.0",
+    "dependency_reuse": "qualified existing project node_modules, ignored readonly junction",
+    "runtime_equivalence_claim": false
+  },
+  "retained_numerics": {
+    "passed": 17,
+    "failed": 1,
+    "rerun": false,
+    "sealed_operation": false
+  },
+  "unsupported_fitted_contexts": [
+    "delayed activation",
+    "multiple activation",
+    "reactivation and corrected fitted-context applicability pending exact qualification"
+  ],
+  "execution_serving_gates": "UNCHANGED OFF",
+  "runtime_GO": false,
+  "whitespace": {
+    "source_prose": "PASS",
+    "unfiltered": "retained raw r22 progress-line and Git patch context whitespace warnings",
+    "raw_evidence_unchanged": true
+  }
+}
