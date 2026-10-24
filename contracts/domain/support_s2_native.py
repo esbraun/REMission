@@ -295,6 +295,8 @@ class NativeResult(StrictModel):
         finite_tree(self.model_dump())
         if self.configuration.model_dump()!=CONFIG_REF:
             raise ValueError('S2_native_result_configuration_changed')
+        if self.execution.python_warnings!=self.diagnostics.python_warnings:
+            raise ValueError('S2_result_python_warning_evidence_mismatch')
         if (self.status=='completed') is not self.diagnostics.accepted or self.reason != (None if self.diagnostics.accepted else 'fit_diagnostics_unmet'):
             raise ValueError('S2_result_diagnostics_status_mismatch')
         return self
@@ -302,6 +304,7 @@ class NativeResult(StrictModel):
 
 def validate_result(result, product, trusted):
     """trusted is service-owned launch/custody, never a worker-supplied claim."""
+    result=NativeResult.model_validate(result)
     expected=ownership(product)
     if (result.attempt_id!=product.attempt_id or result.ownership.model_dump(mode='json')!=expected
             or result.semantics.input_sha256!=expected['input_sha256']

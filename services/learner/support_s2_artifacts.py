@@ -88,6 +88,7 @@ def write(trace,directory,product, *, check):
     encoding['/posterior'].update({name:dict(dtype='S1',char_dim_name=name+'_label_byte') for name in ('patient','feature')})
     tree.to_netcdf(path,engine='netcdf4',encoding=encoding)
     check();file_digest(path,bound['file_cap'])
+    header(path,product);check()
     # Producer-to-binary roundtrip, all jointly aligned values, one bounded
     # variable at a time. No independent coordinate ordering or draw mapping.
     for group,original in (('posterior',posterior),('sample_stats',stats)):

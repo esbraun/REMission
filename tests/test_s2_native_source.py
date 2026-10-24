@@ -103,6 +103,34 @@ class ContractChecks(unittest.TestCase):
         self.assertEqual(validate_result(result,p,trusted),result)
         self.assertEqual(len(result.ownership.members),12)
         self.assertEqual(result.ownership.target_id,'UNIT-S2-07')
+    def test_result_warning_counts_match_for_parser_typed_and_admission(self):
+        p=product();result,trusted=fake_result(p)
+        zero=result.model_dump(mode='json')
+        parsed=parse_native_result(canonical(zero).encode())
+        self.assertEqual(validate_result(parsed,p,trusted).status,'completed')
+        self.assertTrue(parsed.diagnostics.accepted)
+        for execution_count,diagnostic_count in ((1,0),(0,1)):
+            mismatch=copy.deepcopy(zero)
+            mismatch['execution']['python_warnings']=execution_count
+            mismatch['diagnostics']['python_warnings']=diagnostic_count
+            if diagnostic_count:
+                mismatch['diagnostics']['accepted']=False
+                mismatch.update(status='abstained',reason='fit_diagnostics_unmet')
+            with self.assertRaisesRegex(ValueError,'warning_evidence_mismatch'):
+                NativeResult.model_validate_json(canonical(mismatch))
+            with self.assertRaisesRegex(ValueError,'warning_evidence_mismatch'):
+                parse_native_result(canonical(mismatch).encode())
+        # Nested model assignment cannot bypass the admission revalidation.
+        result.execution.python_warnings=1
+        with self.assertRaisesRegex(ValueError,'warning_evidence_mismatch'):
+            validate_result(result,p,trusted)
+        nonzero=copy.deepcopy(zero)
+        nonzero['execution']['python_warnings']=1
+        nonzero['diagnostics'].update(python_warnings=1,accepted=False)
+        nonzero.update(status='abstained',reason='fit_diagnostics_unmet')
+        abstained=parse_native_result(canonical(nonzero).encode())
+        self.assertEqual(validate_result(abstained,p,trusted).status,'abstained')
+        self.assertFalse(abstained.diagnostics.accepted)
     def test_missing_nonfinite_and_threshold_diagnostics_fail_closed(self):
         for key in ('bfmi','energy_min','variables','sampler_warnings','tree_depth_hits'):
             data=fake_diagnostics();data.pop(key)
@@ -388,6 +416,52 @@ class DispatchIngestSourceChecks(unittest.TestCase):
         self.assertIn('dimension_bound(cutoff,product.draws)',text)
         self.assertIn('header(path,product)',text);self.assertIn('xr.open_dataset',text)
         self.assertIn('np.array_equal',text);self.assertIn('S2_joint_latent_recurrence_alignment_corruption',text)
+    def test_actual_writer_postwrite_header_precedes_first_reopen_and_values(self):
+        # Execute the actual writer AST from its to_netcdf call through return.
+        # The pre-write producer preparation is outside this ordering control;
+        # every role/API/value below is a finite inert double, never an array.
+        write=copy.deepcopy(next(n for n in source(ARTIFACT).body if isinstance(n,ast.FunctionDef) and n.name=='write'))
+        start=next(i for i,n in enumerate(write.body) if isinstance(n,ast.Expr)
+            and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute)
+            and n.value.func.attr=='to_netcdf')
+        write.body=write.body[start:]
+        events=[];reject=[False];mismatch=[False]
+        class Value:
+            def __init__(self,label):self.label=label
+            @property
+            def values(self):events.append(self.label);return self.label.split(':')[1]
+        originals={'posterior':{'alpha':Value('original:inert')},'sample_stats':{'energy':Value('original:inert')}}
+        class Tree:
+            def to_netcdf(self,*args,**kwargs):events.append('write')
+        def digest(*args):events.append('bounded_file_check')
+        def header(*args):
+            events.append('header')
+            if reject[0]:raise ValueError('inert rejected raw header')
+        @contextmanager
+        def opened(*args,**kwargs):
+            events.append('data_open')
+            yield {name:Value('saved:changed' if mismatch[0] else 'saved:inert') for name in originals[kwargs['group']]}
+        def equal(a,b):events.append('producer_equality');return a==b
+        def validated(*args,**kwargs):events.append('semantic_validation');return 'inert-semantics'
+        ns=dict(tree=Tree(),path='inert-path',bound={'file_cap':1},encoding={},
+            posterior=originals['posterior'],stats=originals['sample_stats'],schema=originals,
+            file_digest=digest,header=header,xr=SimpleNamespace(open_dataset=opened),
+            np=SimpleNamespace(array_equal=equal),validate=validated)
+        exec(compile(ast.Module(body=[write],type_ignores=[]),'inert_actual_writer_postwrite_tail','exec'),ns)
+        reject[0]=True
+        with self.assertRaisesRegex(ValueError,'rejected raw header'):
+            ns['write'](None,'inert-directory','inert-product',check=lambda:None)
+        self.assertEqual(events,['write','bounded_file_check','header'])
+        events.clear();reject[0]=False
+        self.assertEqual(ns['write'](None,'inert-directory','inert-product',check=lambda:None),'inert-semantics')
+        self.assertEqual(events[:4],['write','bounded_file_check','header','data_open'])
+        self.assertEqual(events.count('producer_equality'),2)
+        self.assertEqual(events[-1],'semantic_validation')
+        events.clear();mismatch[0]=True
+        with self.assertRaisesRegex(ValueError,'roundtrip_value_changed'):
+            ns['write'](None,'inert-directory','inert-product',check=lambda:None)
+        self.assertIn('producer_equality',events)
+        self.assertNotIn('semantic_validation',events)
     def test_actual_binary_header_refuses_axis_dtype_unit_VLEN_and_group_corruption(self):
         # Only the scientific import is replaced with a finite inert API double.
         # The actual header validator executes unchanged; no binary file opens.
