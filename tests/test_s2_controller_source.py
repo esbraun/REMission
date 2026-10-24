@@ -98,7 +98,8 @@ class InertDB(InertSupportConnection):
         if sql=='SELECT * FROM patients WHERE id=?':return Cursor([self.patient] if args[0]==self.patient['id'] else [])
         if sql=='SELECT 1 FROM events WHERE id=?':return Cursor([(1,)] if any(r.record_id==args[0] for r in self.records) else [])
         if sql.startswith('SELECT job_id,cutoff,result_json,input_sha256 FROM analysis_attempts'):return Cursor()
-        if sql.startswith('SELECT patient_id,actor_id,payload FROM state_changes WHERE patient_id IN'):return Cursor(list(self.proofs.values()))
+        if sql.startswith('SELECT id,patient_id,actor_id,created_at,payload FROM state_changes WHERE patient_id IN'):
+            return Cursor([dict(v,id=k,created_at=AT.isoformat()) for k,v in self.proofs.items()])
         if sql=='SELECT id,payload FROM state_changes WHERE patient_id=?':
             return Cursor([dict(id=k,payload=v['payload']) for k,v in self.proofs.items() if v['patient_id']==args[0]])
         if sql=='UPDATE patients SET state_json=? WHERE id=?':self.patient['state_json']=args[0];return Cursor()
@@ -671,6 +672,8 @@ class CandidateBootstrapTests(unittest.TestCase):
         self.assertTrue(any(r.kind=='support_outcome_link' for r in db.records))
         self.assertEqual(db.writes.count('support_decision'),1);self.assertEqual(db.writes.count('assignment'),1)
         self.assertTrue(db.patient['current_decision'].startswith('candidate-s2-'))
+        self.assertEqual(result['histories'][0]['current']['current_decision'],result['histories'][0]['current_snapshot']['record_id'])
+        self.assertTrue(all('id' in proof and 'created_at' in proof for proof in result['proofs']))
         with self.assertRaises(FileExistsError):run()
         with self.assertRaises(ValueError):h['candidate_context'](db)
         with self.assertRaises(ValueError):a['qualification'](db)

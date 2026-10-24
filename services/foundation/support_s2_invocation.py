@@ -120,9 +120,14 @@ def run_candidate(store,settings,invocation,operations,*,external_authority):
                         command=ControllerCommand.model_validate_json(canonical(operation['command']))
                         if command.action!=operation['action']:raise ValueError('candidate_command_action_changed')
                         transition(db,settings,patient,invocation.owner_id,command,now)
-                outputs=[dict(patient_id=p,records=[r.model_dump(mode='json') for r in _producer_history(db,p).records])
-                    for p in invocation.cases]
-                proofs=[dict(row) for row in db.execute('SELECT patient_id,actor_id,payload FROM state_changes WHERE patient_id IN ('+
+                outputs=[]
+                for patient_id in invocation.cases:
+                    row=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient_id,invocation.owner_id)).fetchone()
+                    current=json.loads(db.execute('SELECT snapshot FROM decisions WHERE id=?',(row['current_decision'],)).fetchone()[0])
+                    outputs.append(dict(patient_id=patient_id,records=[r.model_dump(mode='json') for r in _producer_history(db,patient_id).records],
+                        current={k:row[k] for k in ('version','state_version','consent_version','eligibility_version','cutoff','current_decision')},
+                        current_snapshot=current))
+                proofs=[dict(row) for row in db.execute('SELECT id,patient_id,actor_id,created_at,payload FROM state_changes WHERE patient_id IN ('+
                     ','.join('?' for _ in invocation.cases)+')',tuple(invocation.cases))]
                 result=dict(status='UNTRUSTED_candidate_evidence',invocation=invocation.model_dump(mode='json'),histories=outputs,proofs=proofs)
                 if len(canonical(result).encode())>invocation.output_cap:raise ValueError('candidate_evidence_cap')
