@@ -15,7 +15,6 @@ from contracts.domain.support_s2_fit import CONFIG_REF as FIT_CONFIG_REF, DEFINI
 from contracts.domain.support_s2_app import (CONFIG_REF, POSTERIOR_SCHEMA_REF,
     SEED_POLICY_REF, INITIAL_PROCESS, S2Selection, SelectionIdentity, SelectionReceipt, S2Submission,
     S2Export, S2FitInput, FitSeedRecord, source_projection_sha256, require_executable)
-from methods.support.s2_data import prepare as prepare_rows
 
 
 def instant(value):
@@ -152,6 +151,7 @@ def selected(db, owner, key):
 
 def export(db, owner, selection_key, members, cutoff, *, source_commit, advancing=False):
     """Owned same-Store metadata and original rows; never creates seeds/jobs."""
+    from methods.support.s2_data import prepare as prepare_rows
     from contracts.domain.support_s2_app import MemberVersion
     members = tuple(MemberVersion.model_validate(m) for m in members)
     saved = selected(db, owner, selection_key)
