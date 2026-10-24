@@ -56,7 +56,14 @@ def validate_snapshot(history,snapshot,cutoff):
 
 
 def validate_support_v21(history,decision,cutoff,*,verify_authorization=None):
-    if decision.policy.id=='poc-support-s2-controller-source-v1' or decision.execution_receipt.id=='poc-support-s2-execution-basis-v1':
+    from .support_s2_authority import reject_candidate
+    reject_candidate(history)
+    return _validate_support_v21(history,decision,cutoff,verify_authorization=verify_authorization)
+
+
+def _validate_support_v21(history,decision,cutoff,*,verify_authorization=None):
+    """Shared ordinary rules; candidate producer supplies only its closed verifier."""
+    if decision.policy.id=='poc-support-s2-controller-source-v1' or decision.execution_receipt.id in ('poc-support-s2-execution-basis-v1','candidate-s2-poc-support-s2-execution-basis-v1'):
         if verify_authorization is None:raise ValueError('interactive_authorization_verifier_required')
         verify_authorization(decision,cutoff)
     snapshot=resolve(history,decision.decision_snapshot,{'decision_snapshot'},cutoff=cutoff)
@@ -119,6 +126,8 @@ def project_protocol(full,cutoff,*,family,origin,verify_closure=None,verify_auth
     verify_closure, when needed, is a trusted installed archive/ledger verifier,
     never a caller-provided HTTP argument. Without proof observed burden fails.
     """
+    from .support_s2_authority import reject_candidate
+    reject_candidate(full)
     projected=full.project(cutoff)
     for approval in (r for r in projected.records if r.kind=='approval' and r.record_id.startswith('s2-admin-')):
         assignments=[r for r in projected.records if r.kind=='assignment' and r.approval_id==approval.record_id]

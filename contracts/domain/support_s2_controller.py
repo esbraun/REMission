@@ -15,9 +15,12 @@ CONFIGURATION = dict(schema='s2-controller-source-1.0.0',
              algorithm='sha256 first53 bits midpoint; independent from generator outcomes'),
     reentry='new explicit envelope after N stop/completion; never automatic',
     saved='exact current scalar only; no fit/predict launch/wait on appointment paths')
+CONFIGURATION['qualification']=dict(contexts=['installed_ACTUAL','untrusted_once_SOURCE_OP'],
+    candidate='external nonHTTP invocation only; never LIVE history/export/fit/serving',
+    clocks='synthetic stage clocks distinct from actual receipt/publication')
 CONFIG_REF = reference('poc-support-s2-controller-source-v1', CONFIGURATION)
 REQUIRED_APP_SOURCES={'services/foundation/'+name+'.py' for name in
-    ('app','store','protocol','workflow','simulation','support_s2_controller','support_s2_authority','support_s2_prediction')}
+    ('app','store','protocol','workflow','simulation','support_s2_controller','support_s2_authority','support_s2_invocation','support_s2_prediction')}
 REQUIRED_APP_SOURCES.add('contracts/domain/support_s2_controller.py')
 REQUIRED_GENERATOR_SOURCES={'services/generator/'+name+'.py' for name in ('server','restricted','restricted_v2')}
 
@@ -67,6 +70,39 @@ class QualificationPacket(StrictModel):
                 or not REQUIRED_GENERATOR_SOURCES<=self.generator_source_closure.keys()):
             raise ValueError('complete_exact_interactive_packet_required')
         return self
+
+
+class UntrustedInteractiveInvocation(StrictModel):
+    """Untrusted candidate scope. External SOURCE/OP authority is supplied separately."""
+    model_config = ConfigDict(frozen=True)
+    schema_version: Literal['poc-support-untrusted-invocation-v1']
+    invocation_id: Identifier
+    packet: QualificationPacket
+    packet_sha256: Sha256
+    source_acceptance: VersionRef
+    operation_go: VersionRef
+    owner_id: Identifier
+    cases: dict[Identifier, Identifier]  # patient -> exact generation
+    operations_sha256: Sha256
+    not_before: AwareDatetime
+    expires_at: AwareDatetime
+    receipt_path: Annotated[str, Field(min_length=1,max_length=1024)]
+    output_cap: Annotated[int,Field(ge=1,le=524288)]
+
+    @model_validator(mode='after')
+    def exact_scope(self):
+        if self.packet_sha256!=sha(self.packet.model_dump(mode='json')) or not self.cases or self.not_before>=self.expires_at:
+            raise ValueError('exact_finite_candidate_invocation_required')
+        return self
+
+    @property
+    def authority_body(self):
+        # The external GO hashes this upstream scope, never its own reference.
+        return dict(scope='UNTRUSTED_interactive_candidate_once',**self.model_dump(mode='json',exclude={'operation_go'}))
+
+    @property
+    def reference(self):
+        return reference('candidate-s2-invocation-v1',self.model_dump(mode='json'))
 
 
 class InteractiveSupportQualification(StrictModel):

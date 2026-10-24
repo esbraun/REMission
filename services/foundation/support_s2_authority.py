@@ -11,6 +11,7 @@ from contracts.domain.evidence_v2 import exact_ref,resolve,projection_hash
 from contracts.domain.protocol import ObservedHistoryV21,RECORD_ADAPTER_V21
 from contracts.domain.support_s2_controller import (CONFIG_REF,AuthorizationBasis,
     InteractiveSupportQualification,InteractiveStageCompletion)
+from contracts.domain.support_s2_saved import require_executable
 
 BASIS_ID='poc-support-s2-execution-basis-v1'
 STAGE_RULE=reference('poc-support-stage-rule-v1','Explicit offered/delivered transitions; exhaustive active stage events per noon window')
@@ -18,9 +19,12 @@ STAGE_RULE=reference('poc-support-stage-rule-v1','Explicit offered/delivered tra
 
 def qualification(db):
     from .store import SupportConnection
-    if not isinstance(db,SupportConnection):raise ValueError('installed_interactive_support_qualification_required')
-    raw,bundle,source,runtime,control=db._read_support_binding()
-    q=InteractiveSupportQualification.model_validate_json(raw)
+    from .support_s2_invocation import InstalledInteractiveContext
+    if not isinstance(db,SupportConnection) or getattr(db,'_candidate_context',None) is not None:
+        raise ValueError('installed_interactive_support_qualification_required')
+    context,bundle,source,runtime,control=db._read_support_binding()
+    if type(context) is not InstalledInteractiveContext:raise ValueError('closed_installed_interactive_context_required')
+    q=InteractiveSupportQualification.model_validate_json(context.binding_json)
     p=q.packet
     current=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone()
     if (not current or not current['enabled'] or (current['database_instance_id'],current['authority_generation'])!=(p.store_id,p.authority_generation)
@@ -32,8 +36,37 @@ def qualification(db):
     return q
 
 
+def producer_qualification(db,patient=None):
+    from .support_s2_invocation import candidate_context
+    context=candidate_context(db)
+    return context.check(db,patient) if context is not None else qualification(db)
+
+
+def producer_gate(db,patient=None):
+    from .support_s2_invocation import candidate_context
+    if candidate_context(db) is None:require_executable()
+    return producer_qualification(db,patient)
+
+
+def producer_id(db,identifier):
+    from .support_s2_invocation import candidate_context
+    return 'candidate-s2-'+identifier if candidate_context(db) is not None and not identifier.startswith('candidate-s2-') else identifier
+
+
+def producer_persist(db,value,received_at):
+    from .nof1 import persist
+    from .support_s2_invocation import candidate_context
+    context=candidate_context(db)
+    if context is not None:
+        context.check(db,value['patient_id'])
+        if value['record_id'].startswith('candidate-s2-'):
+            value=dict(value,source=dict(value['source'],id='candidate-s2-interactive-v1'))
+    return persist(db,value,received_at)
+
+
 def put(db,patient,actor,kind,value,received_at):
-    ref=reference(kind,value);identifier='s2-proof-'+ref['sha256']
+    producer_qualification(db,patient)
+    ref=reference(producer_id(db,kind),value);identifier=producer_id(db,'s2-proof-'+ref['sha256'])
     if db.execute('SELECT 1 FROM state_changes WHERE id=?',(identifier,)).fetchone():
         raise ValueError('interactive_proof_identity_already_inserted')
     db.execute('INSERT INTO state_changes VALUES(?,?,?,?,?)',(identifier,patient,actor,received_at.isoformat(),canonical(value)))
@@ -41,7 +74,7 @@ def put(db,patient,actor,kind,value,received_at):
 
 
 def get(db,patient,ref,model=None):
-    row=db.execute('SELECT patient_id,actor_id,payload FROM state_changes WHERE id=?',('s2-proof-'+ref.sha256,)).fetchone()
+    row=db.execute('SELECT patient_id,actor_id,payload FROM state_changes WHERE id=?',(producer_id(db,'s2-proof-'+ref.sha256),)).fetchone()
     if not row or row['patient_id']!=patient:raise ValueError('owned_interactive_proof_required')
     value=json.loads(row['payload'])
     if reference(ref.id,value)!=ref.model_dump():raise ValueError('interactive_proof_content_identity_changed')
@@ -55,10 +88,10 @@ def known_history(full,refs):
         kind='observed_history',patient_id=full.patient_id,records=[r.model_dump(mode='json') for r in records])))
 
 
-def validate_basis(db,full,basis):
+def validate_basis(db,full,basis,*,_candidate=False):
     from .protocol import validate_snapshot
     from .support_s2_controller import mask,final_distribution
-    q=qualification(db);p=q.packet
+    q=producer_qualification(db,full.patient_id) if _candidate else qualification(db);p=q.packet
     patient=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(basis.patient_id,basis.owner_id)).fetchone()
     if (not patient or full.patient_id!=basis.patient_id or basis.configuration.model_dump()!=CONFIG_REF
             or basis.qualification.model_dump()!=q.reference or (basis.store_id,basis.authority_generation)!=(p.store_id,p.authority_generation)
@@ -104,7 +137,7 @@ def validate_basis(db,full,basis):
 
 def derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at):
     from .support_s2_controller import mask
-    q=qualification(db);loop=state['simulation']['support_controller']
+    q=producer_qualification(db,patient['id']);loop=state['simulation']['support_controller']
     current=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient['id'],patient['owner_id'])).fetchone()
     actual=json.loads(current['state_json']) if current else {}
     if (not current or any(current[k]!=patient[k] for k in ('version','state_version','consent_version','eligibility_version'))
@@ -125,15 +158,17 @@ def derive_execution_authorization(db,full,patient,state,snapshot,saved,probabil
         known_refs=[exact_ref(r).model_dump() for r in known],consent_heads=[exact_ref(r).model_dump() for r in sorted(heads,key=lambda r:r.record_id)],
         frozen_state=dict(workflow=state['workflow'],simulation=dict(day=state['simulation']['day'],support_controller=loop,nof1=state['simulation'].get('nof1',{}))),
         at=at.isoformat(),received_at=received_at.isoformat(),allowed_actions=list(allowed),probabilities=probabilities,saved=saved,fallback_reason=fallback)))
-    validate_basis(db,known_history(full,basis.known_refs),basis)
+    validate_basis(db,known_history(full,basis.known_refs),basis,_candidate=q.reference['id']=='candidate-s2-invocation-v1')
     return put(db,patient['id'],original.clinician_id,BASIS_ID,basis.model_dump(mode='json'),received_at)
 
 
-def authorization_verifier(db,full):
+def authorization_verifier(db,full,*,_candidate=False):
+    if not _candidate:reject_candidate(full)
     def verify(decision,cutoff):
-        if decision.execution_receipt.id!=BASIS_ID:raise ValueError('interactive_derivation_basis_required')
+        expected=producer_id(db,BASIS_ID) if _candidate else BASIS_ID
+        if decision.execution_receipt.id!=expected:raise ValueError('interactive_derivation_basis_required')
         basis=get(db,full.patient_id,decision.execution_receipt,AuthorizationBasis)
-        snapshot,envelope,original=validate_basis(db,full,basis)
+        snapshot,envelope,original=validate_basis(db,full,basis,_candidate=_candidate)
         if (decision.decision_snapshot!=basis.current_snapshot or decision.cutoff!=basis.at or decision.probabilities!=basis.probabilities
                 or decision.context_projection_sha256!=projection_hash(known_history(full,basis.known_refs),basis.at)
                 or decision.context_projection_sha256!=projection_hash(full,basis.at)):
@@ -141,7 +176,7 @@ def authorization_verifier(db,full):
         if decision.assignment_id:
             assignment=next(r for r in full.records if r.record_id==decision.assignment_id)
             approval=next(r for r in full.records if r.record_id==assignment.approval_id)
-            if (approval.record_id!='s2-admin-'+decision.execution_receipt.sha256[:32] or approval.clinician_id!=original.clinician_id
+            if (approval.record_id!=(producer_id(db,'s2-admin-'+decision.execution_receipt.sha256[:32]) if _candidate else 's2-admin-'+decision.execution_receipt.sha256[:32]) or approval.clinician_id!=original.clinician_id
                     or approval.decision_id!=snapshot.record_id or assignment.decision_id!=snapshot.record_id
                     or assignment.option not in basis.allowed_actions or assignment.probability!=
                         (basis.probabilities[assignment.option] if decision.availability=='randomized' else None)):
@@ -157,31 +192,72 @@ def authorization_verifier(db,full):
 
 
 def is_interactive(decision):
-    return decision.policy.id==CONFIG_REF['id'] or decision.execution_receipt.id==BASIS_ID
+    return decision.policy.id==CONFIG_REF['id'] or decision.execution_receipt.id in (BASIS_ID,'candidate-s2-'+BASIS_ID)
 
 
-def validate_live_history(db,full):
+def reject_candidate(full):
+    # Identity prefixes are a first diagnostic. Source/proof/linked policy identity
+    # remains decisive when a record is renamed or its content rehashed.
+    for r in full.records:
+        value=r.model_dump(mode='json')
+        if (r.source.id=='candidate-s2-interactive-v1' or r.record_id.startswith('candidate-s2-')
+                or any('candidate-s2-' in canonical(value.get(k)) for k in
+                    ('execution_receipt','completion_receipt','stage_ledger','support_decision','assignment_ref'))):
+            raise ValueError('untrusted_candidate_cannot_enter_LIVE_history_export_fit_serving')
+
+
+def producer_authorization_verifier(db,full):
+    from .support_s2_invocation import candidate_context
+    return authorization_verifier(db,full,_candidate=candidate_context(db) is not None)
+
+
+def validate_live_history(db,full,*,_candidate=False):
     """Shared live projection/export admission; legacy records remain untouched."""
+    if not _candidate:reject_candidate(full)
+    else:producer_qualification(db,full.patient_id)
+    for row in db.execute('SELECT id,payload FROM state_changes WHERE patient_id=?',(full.patient_id,)):
+        value=json.loads(row['payload'])
+        if not _candidate and (row['id'].startswith('candidate-s2-') or isinstance(value,dict)
+                and value.get('qualification',{}).get('id')=='candidate-s2-invocation-v1'):
+            raise ValueError('untrusted_orphan_candidate_proof_cannot_enter_LIVE')
+        if isinstance(value,dict) and value.get('schema_version')=='s2-controller-authorization-v1':
+            q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)
+            if value.get('qualification')!=q.reference or not any(r.kind=='support_decision'
+                    and r.execution_receipt.sha256==sha(value) for r in full.records):
+                raise ValueError('orphan_or_cross_context_administrative_basis')
+        if isinstance(value,dict) and value.get('schema_version')=='poc-support-interactive-completion-v1':
+            q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)
+            if value.get('qualification')!=q.reference or not any(r.kind=='support_stage_closure' and r.completion_receipt
+                    and r.completion_receipt.sha256==sha(value) for r in full.records):
+                raise ValueError('orphan_or_cross_context_interactive_completion')
     decisions=[r for r in full.records if r.kind=='support_decision' and is_interactive(r)]
-    admins=[r for r in full.records if r.kind=='approval' and r.record_id.startswith('s2-admin-')]
+    snapshots={r.record_id:r for r in full.records if r.kind=='decision_snapshot'}
+    originals={ref.record_id for r in full.records if r.kind=='protocol_snapshot' for ref in r.approval_refs}
+    admins=[r for r in full.records if r.kind=='approval' and (r.record_id.startswith(('s2-admin-','candidate-s2-s2-admin-'))
+        or r.source.id=='candidate-s2-interactive-v1' or r.decision_id in snapshots
+        and snapshots[r.decision_id].workflow.support_policy.model_dump()==CONFIG_REF and r.record_id not in originals)]
     if not decisions and not admins:return full
-    verify=authorization_verifier(db,full)
-    for decision in decisions:verify(decision,max(r.available_at for r in full.records)+timedelta(microseconds=1))
+    verify=authorization_verifier(db,full,_candidate=_candidate)
+    from .protocol import _validate_support_v21
+    for decision in decisions:
+        cutoff=max(r.available_at for r in full.records)+timedelta(microseconds=1)
+        _validate_support_v21(full,decision,cutoff,verify_authorization=verify)
     owned={r.approval_id for r in full.records if r.kind=='assignment' and r.record_id in {d.assignment_id for d in decisions}}
     if any(r.record_id not in owned for r in admins):raise ValueError('unbound_interactive_administrative_approval')
     return full
 
 
-def interactive_stage_verifier(db,full):
+def interactive_stage_verifier(db,full,*,_candidate=False):
+    if not _candidate:reject_candidate(full)
     def verify(closure,cutoff):
-        q=qualification(db)
+        q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)
         if not hasattr(closure,'stage'):closure=resolve(full,closure,{'support_stage_closure'},cutoff=cutoff)
         else:resolve(full,exact_ref(closure),{'support_stage_closure'},cutoff=cutoff)
-        if closure.completion_receipt is None or closure.completion_receipt.id!='poc-support-interactive-completion-v1':
+        if closure.completion_receipt is None or closure.completion_receipt.id!=(producer_id(db,'poc-support-interactive-completion-v1') if _candidate else 'poc-support-interactive-completion-v1'):
             raise ValueError('interactive_completed_stage_proof_required')
         completion=get(db,full.patient_id,closure.completion_receipt,InteractiveStageCompletion)
         decision=resolve(full,completion.decision,{'support_decision'},cutoff=cutoff)
-        basis=authorization_verifier(db,full)(decision,cutoff)
+        basis=authorization_verifier(db,full,_candidate=_candidate)(decision,cutoff)
         if (completion.qualification.model_dump()!=q.reference or completion.authorization!=decision.execution_receipt
                 or (completion.owner_id,completion.patient_id,completion.generation_id,completion.store_id,completion.authority_generation)!=
                     (basis.owner_id,basis.patient_id,basis.generation_id,basis.store_id,basis.authority_generation)
@@ -210,7 +286,7 @@ def interactive_stage_verifier(db,full):
                     or r.event_at!=dispatch or r.available_at>completion.simulated_completed_at
                     or resolve(full,exact_ref(r),{'delivery'},cutoff=cutoff)!=r):
                 raise ValueError('interactive_output_foreign_changed_or_outside_stage')
-            expected_source=('foundation-support-offer-v1','1.0.0','research_configuration') if r.stage=='offered' else ('poc-longitudinal-v2','2.0.0','simulation')
+            expected_source=(('candidate-s2-interactive-v1' if _candidate else 'foundation-support-offer-v1'),'1.0.0','research_configuration') if r.stage=='offered' else ('poc-longitudinal-v2','2.0.0','simulation')
             if (r.source.id,r.source.version,r.source.adapter)!=expected_source:
                 raise ValueError('interactive_stage_registered_producer_required')
         active=full.as_known_at(cutoff)
@@ -235,11 +311,12 @@ def interactive_stage_verifier(db,full):
 
 def close_stages(db,settings,patient,decision,assignment,offered,received_at,*,canceled=False):
     """Called AFTER full product admission, in the same app transaction."""
-    from .workflow import history,record_header
-    from .nof1 import persist
+    from .workflow import _producer_history as history,record_header
+    persist=producer_persist
     from contracts.runs.coverage_v2 import StageLedgerV2
-    q=qualification(db);full=history(db,patient['id'])
-    basis=authorization_verifier(db,full)(decision,decision.outcome_window.ends_at+timedelta(minutes=1))
+    q=producer_qualification(db,patient['id']);full=history(db,patient['id'])
+    candidate=q.reference['id']=='candidate-s2-invocation-v1'
+    basis=authorization_verifier(db,full,_candidate=candidate)(decision,decision.outcome_window.ends_at+timedelta(minutes=1))
     cutoff=decision.outcome_window.ends_at+timedelta(minutes=1)
     reports=[r for r in full.as_known_at(cutoff) if r.kind=='daily_report' and r.event_at==decision.outcome_window.assessment_at]
     if len(reports)!=1:raise ValueError('interactive_exact_mature_report_required')
@@ -253,7 +330,7 @@ def close_stages(db,settings,patient,decision,assignment,offered,received_at,*,c
         output_ref=put(db,patient['id'],basis.actor_id,'poc-support-interactive-stage-output-v1',output,received_at)
         completed=decision.cutoff+timedelta(hours=8,seconds=1);available=completed+timedelta(seconds=1)
         ledgers=[StageLedgerV2.model_validate_json(canonical(dict(schema_version='2.0.0',synthetic=True,kind='support_stage_ledger',
-            id='interactive-ledger-'+sha([decision.record_id,stage])[:32],run_id=basis.generation_id,
+            id=producer_id(db,'interactive-ledger-'+sha([decision.record_id,stage])[:32]),run_id=basis.generation_id,
             partition_id='interactive-'+sha(patient['id'])[:32],patient_id=patient['id'],decision_index=decision.decision_index,
             window_id=decision.outcome_window.id,stage=stage,rule=STAGE_RULE,event_refs=[exact_ref(r).model_dump() for r in rows if r.stage==stage])))
             for stage in ('offered','delivered')]
@@ -267,14 +344,14 @@ def close_stages(db,settings,patient,decision,assignment,offered,received_at,*,c
         ref=put(db,patient['id'],basis.actor_id,'poc-support-interactive-completion-v1',completion.model_dump(mode='json'),received_at)
         if settings.fault:settings.fault('after_support_completion')
         for ledger in ledgers:
-            header=record_header('interactive-closure-'+sha([decision.record_id,ledger.stage])[:32],patient['id'],completed)
+            header=record_header(producer_id(db,'interactive-closure-'+sha([decision.record_id,ledger.stage])[:32]),patient['id'],completed)
             header.update(schema_version='2.0.0',recorded_at=available.isoformat(),available_at=available.isoformat())
             closures.append(persist(db,dict(**header,kind='support_stage_closure',run_id=ledger.run_id,partition_id=ledger.partition_id,
                 support_decision=exact_ref(decision).model_dump(),assignment_ref=exact_ref(assignment).model_dump(),window_id=decision.outcome_window.id,
                 decision_index=decision.decision_index,stage=ledger.stage,rule=STAGE_RULE,stage_completed_at=completed.isoformat(),status='complete',
                 stage_event_refs=[r.model_dump() for r in ledger.event_refs],stage_ledger=reference(ledger.id,ledger.model_dump(mode='json')),
                 row_count=len(ledger.event_refs),reason='Actual interactive simulated stage closed exhaustively',completion_receipt=ref),received_at))
-        full=history(db,patient['id']);verify=interactive_stage_verifier(db,full)
+        full=history(db,patient['id']);verify=interactive_stage_verifier(db,full,_candidate=candidate)
         for closure in closures:verify(closure,cutoff)
     assessment=decision.outcome_window.assessment_at;published=assessment+timedelta(seconds=20)
     header=record_header(decision.outcome_link_id,patient['id'],assessment)

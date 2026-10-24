@@ -50,6 +50,9 @@ if __name__=='__main__':
                 for name in names:
                     if hasattr(loaded,name):guards.enter_context(patch.object(loaded,name,side_effect=refuse))
         result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_s2_controller_source'))
+        if result.wasSuccessful():
+            from freeze_s2_controller_source import freeze
+            freeze(ROOT,result)
     assert not forbidden.intersection(sys.modules)-preloaded
     print('SOURCE ONLY: actual scalar/contract/AST bodies with inert typed records/transactions; no app/SQLite/science/process/network')
     sys.exit(not result.wasSuccessful())

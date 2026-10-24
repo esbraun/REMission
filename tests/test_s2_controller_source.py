@@ -4,9 +4,11 @@ import copy
 from datetime import datetime,timedelta,timezone
 import hashlib
 import json
+import io
 from pathlib import Path
 from types import SimpleNamespace as NS
 from contextlib import contextmanager,nullcontext
+from unittest.mock import patch
 import unittest
 from contracts.domain.analysis import canonical,sha,reference,FIXED_SUPPORT_REF
 from contracts.domain.entities import DecisionSnapshot
@@ -26,9 +28,12 @@ def load(path, **bindings):
     class ReplaceServiceImports(ast.NodeTransformer):
         def visit_ImportFrom(self,node):return None if node.level or (node.module or '').startswith('services') else node
     tree=ReplaceServiceImports().visit(tree)
-    ns=dict(__name__='UNIT_actual_source',**bindings)
+    ns=dict(__name__='UNIT_actual_source',candidate_context=lambda db:None,reject_candidate=lambda full:None);ns.update(bindings)
     exec(compile(ast.fix_missing_locations(tree),str(ROOT/path),'exec'),ns)
     return ns
+
+
+INSTALLED_CONTEXT=load('services/foundation/support_s2_invocation.py')['InstalledInteractiveContext']
 
 
 def header(name,patient,at):
@@ -76,6 +81,7 @@ class InertDB(InertSupportConnection):
     """Explicit SQL double. Unknown access fails, never opens SQLite."""
     def __init__(self,records,snapshot):
         self.records=records;self.snapshot=snapshot;self.writes=[];self.audit=[];self.proofs={};self.receipts={}
+        self.in_transaction=False;self.closed=False;self.decisions={snapshot.record_id:snapshot}
         self.control=dict(database_instance_id='UNIT-store',authority_generation=1,enabled=True)
         packet=dict(schema_version='poc-support-interactive-packet-v1',app_commit='0'*40,app_source_closure={p:'0'*64 for p in REQUIRED_APP_SOURCES},
             generator_source_closure={p:'1'*64 for p in REQUIRED_GENERATOR_SOURCES},app_image='sha256:'+'2'*64,generator_image='sha256:'+'3'*64,
@@ -86,9 +92,20 @@ class InertDB(InertSupportConnection):
             acceptance_scope='ACTUAL_interactive_producer_accepted')))
         self.expected_control=canonical(self.control)
     def _read_support_binding(self):
-        return self.q.model_dump_json(),'4'*64,'0'*40,canonical(self.q.packet.runtime.model_dump()),self.expected_control
+        return INSTALLED_CONTEXT(self.q.model_dump_json()),'4'*64,'0'*40,canonical(self.q.packet.runtime.model_dump()),self.expected_control
     def execute(self,sql,args=()):
-        if sql=='SELECT snapshot FROM decisions WHERE id=?':return Cursor([(self.snapshot.model_dump_json(),)])
+        if sql=='SELECT snapshot FROM decisions WHERE id=?':return Cursor([(self.decisions.get(args[0],self.snapshot).model_dump_json(),)])
+        if sql=='SELECT * FROM patients WHERE id=?':return Cursor([self.patient] if args[0]==self.patient['id'] else [])
+        if sql=='SELECT 1 FROM events WHERE id=?':return Cursor([(1,)] if any(r.record_id==args[0] for r in self.records) else [])
+        if sql.startswith('SELECT job_id,cutoff,result_json,input_sha256 FROM analysis_attempts'):return Cursor()
+        if sql.startswith('SELECT patient_id,actor_id,payload FROM state_changes WHERE patient_id IN'):return Cursor(list(self.proofs.values()))
+        if sql=='SELECT id,payload FROM state_changes WHERE patient_id=?':
+            return Cursor([dict(id=k,payload=v['payload']) for k,v in self.proofs.items() if v['patient_id']==args[0]])
+        if sql=='UPDATE patients SET state_json=? WHERE id=?':self.patient['state_json']=args[0];return Cursor()
+        if sql=='INSERT INTO decisions VALUES (?,?,?,?,?)':
+            self.snapshot=DecisionSnapshot.model_validate_json(args[2]);self.decisions[args[0]]=self.snapshot;return Cursor()
+        if sql=='UPDATE patients SET current_decision=?,cutoff=? WHERE id=?':
+            self.patient.update(current_decision=args[0],cutoff=args[1]);return Cursor()
         if sql=='SELECT payload FROM events WHERE patient_id=? ORDER BY available_at,phase,id':
             return Cursor([(r.model_dump_json(),) for r in self.records if r.patient_id==args[0]])
         if sql=='SELECT * FROM receipts WHERE owner_id=? AND session_id=? AND key=?':return Cursor([self.receipts[args]] if args in self.receipts else [])
@@ -97,6 +114,7 @@ class InertDB(InertSupportConnection):
         if sql=='SELECT payload FROM events WHERE id=? AND patient_id=? AND kind=?':
             return Cursor([(r.model_dump_json(),) for r in self.records if (r.record_id,r.patient_id,r.kind)==args])
         if sql=='SELECT * FROM service_control WHERE singleton=1':return Cursor([self.control])
+        if sql.startswith('PRAGMA '):return Cursor([(1 if 'foreign_keys' in sql else 2,)])
         if sql=='SELECT * FROM patients WHERE id=? AND owner_id=?':
             return Cursor([self.patient] if args==(self.patient['id'],self.patient['owner_id']) else [])
         if sql=='SELECT 1 FROM state_changes WHERE id=?':return Cursor([(1,)] if args[0] in self.proofs else [])
@@ -110,11 +128,18 @@ class InertDB(InertSupportConnection):
             self.patient['state_json']=args[0]
             for k in ('version','state_version','eligibility_version'):self.patient[k]+=1
             self.writes.append('clock');return Cursor()
-        if sql in ('BEGIN IMMEDIATE','BEGIN'):self.saved=copy.deepcopy({k:v for k,v in self.__dict__.items() if k!='saved'});return Cursor()
+        if sql=='UPDATE patients SET state_json=?,version=version+1,state_version=state_version+1,eligibility_version=eligibility_version+1,consent_version=consent_version+? WHERE id=?':
+            self.patient['state_json']=args[0]
+            for k in ('version','state_version','eligibility_version'):self.patient[k]+=1
+            self.patient['consent_version']+=args[1];return Cursor()
+        if sql in ('BEGIN IMMEDIATE','BEGIN'):
+            self.saved=copy.deepcopy({k:v for k,v in self.__dict__.items() if k!='saved' and not k.startswith('_candidate')});self.in_transaction=True;return Cursor()
         raise AssertionError('Unmodeled UNIT SQL: '+sql)
-    def commit(self):self.committed=True
-    def rollback(self):self.__dict__=self.saved
-    def close(self):pass
+    def commit(self):self.committed=True;self.in_transaction=False
+    def rollback(self):
+        bindings={k:v for k,v in self.__dict__.items() if k.startswith('_candidate')}
+        self.__dict__=self.saved;self.__dict__.update(bindings);self.in_transaction=False
+    def close(self):self.closed=True;self.in_transaction=False
 
 
 def fixture(allowed=('support_prompt','no_prompt'),saved=None,actual_mask=False):
@@ -163,11 +188,14 @@ def fixture(allowed=('support_prompt','no_prompt'),saved=None,actual_mask=False)
     code['saved_status']=lambda *args:dict(saved=saved or dict(summary_available=False,serving_authority=False,reason='UNIT unavailable'))
     code['require_executable']=lambda *args:None
     authority=load('services/foundation/support_s2_authority.py',SupportConnection=InertSupportConnection,
-        validate_snapshot=protocol['validate_snapshot'],mask=code['mask'],final_distribution=code['final_distribution'])
+        InstalledInteractiveContext=INSTALLED_CONTEXT,validate_snapshot=protocol['validate_snapshot'],_validate_support_v21=protocol['_validate_support_v21'],mask=code['mask'],final_distribution=code['final_distribution'])
     code['derive_execution_authorization']=authority['derive_execution_authorization']
+    authority['require_executable']=lambda:None  # Explicit SOURCE-only deployment-gate double.
+    code['producer_gate']=authority['producer_gate'];code['producer_id']=authority['producer_id']
+    protocol['reject_candidate']=authority['reject_candidate']
     code['UNIT_authority']=authority
     authority.update(history=code['history'],record_header=header,persist=ns['persist'])
-    code['qualification']=authority['qualification'];code['put']=authority['put']
+    code['qualification']=authority['producer_qualification'];code['put']=authority['put']
     return code,db,patient,state
 
 
@@ -431,7 +459,8 @@ def function(path,name,**bindings):
     class ServiceImports(ast.NodeTransformer):
         def visit_ImportFrom(self,node):return None if node.level else node
     fn=ServiceImports().visit(fn);fn.returns=None
-    ns=dict(bindings);exec(compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),path,'exec'),ns)
+    ns=dict(datetime=datetime,timedelta=timedelta);ns.update(bindings)
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),path,'exec'),ns)
     return ns[name]
 
 
@@ -551,3 +580,237 @@ class AtomicAdvanceTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,stage):
                 with tx(store,write=True):code['advance'](db,NS(fault=fault,clock=lambda:AT),p,state,15,AT)
             self.assertEqual((len(db.records),db.proofs,db.patient['state_json']),before)
+
+
+class CandidateBootstrapTests(unittest.TestCase):
+    """Actual consent -> envelope -> product -> create_decision; no ACTUAL ref.
+
+    External GO/receipt and all I/O are labeled inert authority/transaction doubles,
+    never host authorization, app execution, SQLite or generator qualification.
+    """
+    def preparation(self,reactivate=False,post_N=False):
+        from contracts.domain.support_s2_controller import UntrustedInteractiveInvocation
+        code,db,p,state,tx,store=AtomicAdvanceTests().preparation();a=code['UNIT_authority']
+        invocation_code=load('services/foundation/support_s2_invocation.py',SupportConnection=InertSupportConnection)
+        contexts=invocation_code['candidate_context']
+        a['candidate_context']=contexts;code['candidate_context']=contexts
+        # Remove ALL prebuilt support consent/approval/envelope/command fixtures.
+        db.records=[r for r in db.records if r.kind not in ('consent','protocol_snapshot') and r.record_id!='UNIT-envelope']
+        db.proofs={};state['simulation']['support_controller']=dict(status='unapproved')
+        state['workflow'].update(support_policy=FIXED_SUPPORT_REF,support_mode='paused',learning='support_unavailable')
+        if post_N:state['simulation']['nof1']=dict(status='completed',review='UNIT inert completed N')
+        state['plan']='behavioral_continue';p['name']='UNIT synthetic';p['state_json']=canonical(state)
+        packet=db.q.packet.model_dump(mode='json');db.q=None
+        installed=dict(control=copy.deepcopy(db.control))
+        packet['installed_bundle_sha256']=sha(installed)
+        store.installed=NS(model_dump=lambda **kwargs:installed,control=NS(model_dump=lambda **kwargs:installed['control']))
+        store.path='UNIT-no-SQLite';store.support_qualification=None
+        store.support_source_commit=packet['app_commit'];store.support_runtime_ref=packet['runtime']
+        digest=lambda x:hashlib.sha256(x.encode() if isinstance(x,str) else x).hexdigest()
+        connect=function('services/foundation/store.py','connect',sqlite3=NS(connect=lambda *args,**kwargs:db,Row='UNIT-row'),
+            SupportConnection=InertSupportConnection,UntrustedInteractiveContext=invocation_code['UntrustedInteractiveContext'],canonical=canonical,digest=digest)
+        store.connect=lambda **kwargs:connect(store,**kwargs)
+        store.transaction=lambda **kwargs:tx(store,**kwargs)
+        flow=load('services/foundation/workflow.py',candidate_context=contexts,validate_live_history=a['validate_live_history'],
+            canonical=canonical,digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat)
+        real_history=flow['_producer_history']
+        create=function('services/foundation/workflow.py','create_decision',json=json,patient_clock=code['patient_clock'],canonical=canonical,
+            digest=digest,timestamp=lambda x:x.isoformat(),instant=datetime.fromisoformat,record_header=header,DecisionSnapshot=DecisionSnapshot,
+            reference=flow['reference'],SUPPORT=FIXED_SUPPORT_REF,STAGES=flow['STAGES'],history=real_history,producer_id=a['producer_id'],
+            support_eligibility=code['eligibility'],initialize_journal=lambda *args:None,overlay=lambda db,p,s:s,
+            summary=lambda *args:[],dispute_reviews=lambda *args:None,active_episodes=lambda *args:[],reconcile=lambda db,row,state,at:state)
+        code.update(history=real_history,create_decision=create,persist=a['producer_persist'])
+        a.update(history=real_history)
+        # persist_product is real source and now reaches the candidate-aware raw
+        # history seam; product is the explicit fabricated exhaustive generator double.
+        code['persist_product'].__globals__['history']=real_history
+        safety=function('services/foundation/workflow.py','current_safety',history=real_history,
+            lineage_heads=flow['lineage_heads'],visible_records=flow['visible_records'])
+        entry=function('services/foundation/simulation.py','advance',json=json,SimulationError=type('UNIT-SimulationError',(Exception,),{}),
+            active_episodes=lambda *args:[],current_safety=safety,advance_support=code['advance'],advance_nof1=lambda *args:(_ for _ in ()).throw(AssertionError('N route')))
+        invocation_code.update(transition=code['transition'],advance_simulation=entry,selected=code['selected'],_producer_history=real_history)
+        def command(action,version,consent_version,decision):
+            return dict(schema_version='s2-controller-source-1.0.0',mode='current',action=action,decision_id=decision,
+                expected_version=version,expected_state_version=version,expected_consent_version=consent_version,
+                expected_eligibility_version=version,rationale='UNIT explicit synthetic case command')
+        after_consent='candidate-s2-decision-'+sha([p['id'],2,AT.isoformat()])[:32]
+        operations=[dict(patient_id=p['id'],action='consent',command=command('consent',1,1,p['current_decision'])),
+            dict(patient_id=p['id'],action='approve',command=command('approve',2,2,after_consent)),
+            dict(patient_id=p['id'],action='advance',target=15)]
+        if reactivate:
+            after_approve='candidate-s2-decision-'+sha([p['id'],3,AT.isoformat()])[:32]
+            after_pause='candidate-s2-decision-'+sha([p['id'],4,AT.isoformat()])[:32]
+            operations[2:2]=[dict(patient_id=p['id'],action='pause',command=command('pause',3,2,after_approve)),
+                dict(patient_id=p['id'],action='approve',command=command('approve',4,2,after_pause))]
+        inv=dict(schema_version='poc-support-untrusted-invocation-v1',invocation_id='UNIT-candidate',packet=packet,packet_sha256=sha(packet),
+            source_acceptance=reference('UNIT-source-review','inert SOURCE review identity'),operation_go=reference('UNIT-OP-GO','placeholder'),
+            owner_id=p['owner_id'],cases={p['id']:'UNIT-generation'},operations_sha256=sha(operations),
+            not_before=(AT-timedelta(minutes=1)).isoformat(),expires_at=(AT+timedelta(minutes=1)).isoformat(),
+            receipt_path='UNIT-exclusive-no-host-receipt',output_cap=524288)
+        invocation=UntrustedInteractiveInvocation.model_validate_json(canonical(inv))
+        inv['operation_go']=reference('UNIT-OP-GO',invocation.authority_body)
+        invocation=UntrustedInteractiveInvocation.model_validate_json(canonical(inv))
+        authority=io.BytesIO(canonical(invocation.authority_body).encode())
+        receipt=io.BytesIO();opened=[]
+        @contextmanager
+        def exclusive(path,mode):
+            self.assertEqual(str(path),invocation.receipt_path);self.assertEqual(mode,'x+b')
+            if opened:raise FileExistsError('UNIT exact once receipt consumed')
+            opened.append(True);yield receipt
+        def run(settings=None):
+            with patch.object(Path,'open',exclusive):
+                return invocation_code['run_candidate'](store,settings or NS(clock=lambda:AT,fault=None),invocation,operations,external_authority=authority)
+        return code,db,p,state,a,invocation_code,invocation,authority,receipt,run,flow
+
+    def test_same_producer_bootstraps_without_ACTUAL_and_cannot_replay(self):
+        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation()
+        result=run()
+        self.assertEqual(result['status'],'UNTRUSTED_candidate_evidence');self.assertNotIn('actual_acceptance',canonical(result))
+        self.assertIsNone(db.q);self.assertTrue(db.committed);self.assertEqual(json.loads(db.patient['state_json'])['simulation']['day'],15)
+        self.assertTrue(any(r.kind=='consent' for r in db.records));self.assertTrue(any(r.kind=='protocol_snapshot' for r in db.records))
+        self.assertTrue(any(r.kind=='support_outcome_link' for r in db.records))
+        self.assertEqual(db.writes.count('support_decision'),1);self.assertEqual(db.writes.count('assignment'),1)
+        self.assertTrue(db.patient['current_decision'].startswith('candidate-s2-'))
+        with self.assertRaises(FileExistsError):run()
+        with self.assertRaises(ValueError):h['candidate_context'](db)
+        with self.assertRaises(ValueError):a['qualification'](db)
+        with self.assertRaises(ValueError):flow['history'](db,p['id'])
+
+    def test_candidate_full_path_rolls_back_each_actual_boundary(self):
+        for boundary in ('after_support_distribution','after_support_offer','after_support_product','after_support_completion','after_support_outcome','after_support_clock'):
+            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();code['keyed_uniform']=lambda seed:0.
+            before=(copy.deepcopy(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
+            def fault(point):
+                if point==boundary:raise RuntimeError(boundary)
+            with self.subTest(boundary=boundary),self.assertRaisesRegex(RuntimeError,boundary):run(NS(clock=lambda:AT,fault=fault))
+            self.assertEqual((db.records,db.proofs,db.patient['state_json']),before)
+            self.assertTrue(receipt.getvalue());self.assertTrue(db.closed)
+
+    def test_delayed_multiple_activation_and_explicit_post_N_reentry_use_current_envelope(self):
+        for post_N in (False,True):
+            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation(reactivate=True,post_N=post_N)
+            result=run();envelopes=[r for r in db.records if r.kind=='protocol_snapshot']
+            self.assertEqual(len(envelopes),2);self.assertTrue(all(r.activation_at==AT and r.activation_at>BEFORE for r in envelopes))
+            final=json.loads(db.patient['state_json'])['simulation']['support_controller']
+            self.assertIn(final['snapshot_id'],[r.record_id for r in envelopes])
+            self.assertEqual(next(r for r in db.records if r.kind=='support_decision').execution_receipt.id,'candidate-s2-'+a['BASIS_ID'])
+            self.assertIn('UNTRUSTED_candidate_fallback_no_scientific_authority',canonical(result))
+            if post_N:self.assertEqual(final['nof1_review_identity'],sha(state['simulation']['nof1']))
+
+    def test_every_live_consumer_and_renamed_orphan_basis_refuses_candidate(self):
+        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();run()
+        protocol=load('services/foundation/protocol.py',history=flow['history'],patient_clock=code['patient_clock'],
+            instant=datetime.fromisoformat,reject_candidate=a['reject_candidate'])
+        prediction=load('services/foundation/support_s2_prediction.py',history=flow['history'])
+        with self.assertRaises(ValueError):protocol['export_histories'](db,p['owner_id'],[p['id']],AT+timedelta(days=1))
+        with self.assertRaises(ValueError):prediction['current_sources'](db,p['id'],AT+timedelta(days=1),BEFORE,None)
+        basis=next(v for v in db.proofs.values() if json.loads(v['payload']).get('schema_version')=='s2-controller-authorization-v1')
+        db.records=[];db.proofs={'UNIT-renamed-rehashed-orphan':basis}
+        with self.assertRaises(ValueError):a['validate_live_history'](db,history([]))
+
+    def test_external_authority_expiry_packet_case_generation_and_duck_refuse(self):
+        for mutation in ('authority','expired','generation','owner','case','packet','duck'):
+            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation()
+            if mutation=='authority':go.seek(0);go.write(b'{}');go.truncate()
+            elif mutation=='generation':db.control['authority_generation']+=1
+            elif mutation=='owner':db.patient['owner_id']='UNIT-foreign'
+            elif mutation=='case':
+                value=json.loads(db.patient['state_json']);value['simulation']['panel_id']='UNIT-reset';db.patient['state_json']=canonical(value)
+            elif mutation=='packet':inv.packet.app_commit='1'*40
+            elif mutation=='duck':db._candidate_context=NS(check=lambda *args:inv)
+            with self.subTest(mutation=mutation),self.assertRaises(ValueError):
+                if mutation=='duck':h['candidate_context'](db)
+                else:run(NS(clock=lambda:AT+timedelta(minutes=2) if mutation=='expired' else AT,fault=None))
+
+    def test_authority_and_generation_are_rechecked_during_the_producer(self):
+        for change in ('GO','generation','expiry','closed_lease'):
+            code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();now=[AT]
+            before=(copy.deepcopy(db.records),copy.deepcopy(db.proofs),db.patient['state_json'])
+            def fault(point):
+                if point!='after_support_distribution':return
+                if change=='GO':go.seek(0);go.write(b'{}');go.truncate()
+                elif change=='generation':db.control['authority_generation']+=1
+                elif change=='expiry':now[0]=AT+timedelta(minutes=2)
+                else:go.close()
+            with self.subTest(change=change),self.assertRaises(ValueError):run(NS(clock=lambda:now[0],fault=fault))
+            self.assertEqual((db.records,db.proofs,db.patient['state_json']),before)
+
+    def test_renamed_rehashed_and_orphan_candidate_evidence_refuses_all_live_projection(self):
+        code,db,p,state,a,h,inv,go,receipt,run,flow=self.preparation();run()
+        protocol=load('services/foundation/protocol.py',reject_candidate=a['reject_candidate'])
+        for r in db.records:
+            if r.source.id!='candidate-s2-interactive-v1':continue
+            value=r.model_dump(mode='json');value.update(record_id='UNIT-renamed-'+sha(r.record_id)[:16],lineage_id='UNIT-renamed-'+sha(r.record_id)[:16])
+            changed=typed(value)
+            for full in (history([changed]),history(db.records)):
+                with self.assertRaises(ValueError):a['validate_live_history'](db,full)
+                with self.assertRaises(ValueError):protocol['project_protocol'](full,AT+timedelta(days=1),family='support',origin=BEFORE)
+        # Even removing visible prefixes/source labels from a support decision
+        # cannot replace its candidate qualification with installed provenance.
+        decision=next(r for r in db.records if r.kind=='support_decision')
+        value=decision.model_dump(mode='json');value['source']['id']='UNIT-renamed-source'
+        value.update(record_id='UNIT-renamed-decision',lineage_id='UNIT-renamed-decision')
+        changed=typed(value)
+        with self.assertRaises(ValueError):a['authorization_verifier'](db,history([changed]))(changed,AT+timedelta(days=1))
+
+
+class ProtectedInverseTests(unittest.TestCase):
+    """Compare public Git baseline ASTs; no service/app modules are imported."""
+    def trees(self,module):
+        return (ast.parse((ROOT/f'artifacts/s2-controller/source/base-{module}.py').read_text()),
+                ast.parse((ROOT/f'services/foundation/{module}.py').read_text()))
+    def dump(self,node):return ast.dump(node,include_attributes=False)
+    def functions(self,tree):
+        result={}
+        def visit(node,prefix=''):
+            for item in getattr(node,'body',[]):
+                if isinstance(item,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):
+                    key=prefix+item.name
+                    if not isinstance(item,ast.ClassDef):result[key]=item
+                    visit(item,key+'.')
+        visit(tree);return result
+    def test_all_undeclared_existing_function_bodies_are_identical(self):
+        allowed=dict(app={'create_app','create_app.panel_options','create_app.owned_analysis_view'},
+            store={'Store.__init__','Store.connect','Store.transaction'},workflow={'history','current_safety','create_decision'},
+            simulation={'persist_product','advance','assign'},protocol={'validate_support_v21','project_protocol','project_protocol.reduce','export_histories'},
+            support_s2_prediction={'current_sources'})
+        count=0
+        for module,changed in allowed.items():
+            old,new=map(self.functions,self.trees(module))
+            self.assertTrue(old.keys()<=new.keys())
+            for name,node in old.items():
+                if name not in changed:
+                    with self.subTest(module=module,function=name):self.assertEqual(self.dump(node),self.dump(new[name]))
+                    count+=1
+        self.assertGreater(count,75)
+    def test_simulation_inverse_keeps_ordinary_N_and_product_laws(self):
+        old,new=map(self.functions,self.trees('simulation'))
+        for name in ('advance','assign'):
+            node=copy.deepcopy(new[name]);node.body=[n for n in node.body if not (isinstance(n,ast.If) and "'support'" in ast.unparse(n.test))]
+            self.assertEqual(self.dump(old[name]),self.dump(node))
+        node=copy.deepcopy(new['persist_product'])
+        node.body[1]=ast.ImportFrom(module='workflow',names=[ast.alias(name='history')],level=1)
+        self.assertEqual(self.dump(old['persist_product']),self.dump(node))
+    def test_store_default_transaction_and_connect_inverse(self):
+        old,new=map(self.functions,self.trees('store'))
+        for name in ('Store.connect','Store.transaction'):
+            node=copy.deepcopy(new[name]);node.args.kwonlyargs=[] if name.endswith('connect') else node.args.kwonlyargs[:-1]
+            node.args.kw_defaults=[] if name.endswith('connect') else node.args.kw_defaults[:-1]
+            if name.endswith('connect'):node.body=node.body[0].orelse[0].body+node.body[1:]
+            else:
+                assignment=node.body[0].body[0];self.assertIsInstance(assignment.value,ast.IfExp);assignment.value=assignment.value.body
+            self.assertEqual(self.dump(old[name]),self.dump(node))
+    def test_shared_ordinary_support_validator_inverse(self):
+        old,new=map(self.functions,self.trees('protocol'))
+        node=copy.deepcopy(new['_validate_support_v21']);node.name='validate_support_v21'
+        node.body=node.body[2:];node.args.kwonlyargs=[];node.args.kw_defaults=[]
+        self.assertEqual(self.dump(old['validate_support_v21']),self.dump(node))
+    def test_legacy_histories_keep_exact_typed_outputs(self):
+        code,db,p,state=fixture();a=code['UNIT_authority']
+        records=[r for r in db.records if r.schema_version=='1.0.0'];db.proofs={}
+        for rows in ([],records):
+            db.records=rows
+            digest=lambda x:hashlib.sha256(x.encode()).hexdigest()
+            old=load('artifacts/s2-controller/source/base-workflow.py',canonical=canonical,digest=digest)
+            new=load('services/foundation/workflow.py',canonical=canonical,digest=digest,validate_live_history=a['validate_live_history'])
+            self.assertEqual(old['history'](db,p['id']).model_dump(),new['history'](db,p['id']).model_dump())

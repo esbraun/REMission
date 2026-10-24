@@ -43,7 +43,7 @@ def product(settings, simulation, patient_id, through):
 
 def persist_product(db, value, patient_id, *, after, cutoff, received_at, actions=(), simulation=None):
     """Admit observed records only, preserving synthetic availability and real receipt."""
-    from .workflow import history
+    from .workflow import _producer_history as history
     allowed = {'patient', 'daily_report', 'isi', 'delivery'}
     inserted = 0
     counts = {}
@@ -171,6 +171,12 @@ def advance(db, settings, patient, expected_version, mode, now):
     if day >= 84:
         raise SimulationError('simulation_complete', 'The 84-day demonstration is complete.')
     target = min(84, day + 1 if mode == 'day' else (day // 14 + 1) * 14)
+    if (simulation.get('family')=='support' and simulation.get('support_controller',{}).get('snapshot_id')
+            and simulation.get('nof1',{}).get('status') in ('stopped','completed')):
+        from contracts.domain.analysis import sha
+        if simulation['support_controller'].get('nof1_review_identity')==sha(simulation['nof1']):
+            from .support_s2_controller import advance as advance_support
+            return advance_support(db,settings,patient,state,target,now)
     if simulation.get('nof1',{}).get('status') in ('active','stopped','completed'):
         from .nof1 import advance as advance_nof1
         return advance_nof1(db,settings,patient,state,target,now)

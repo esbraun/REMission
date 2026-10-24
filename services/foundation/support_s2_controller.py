@@ -78,7 +78,7 @@ def keyed_uniform(seed):
 
 
 def eligibility(db, patient, state, at, received_at):
-    from .workflow import history
+    from .workflow import _producer_history as history
     from .live_journal import active_episodes
     allowed, reasons = mask(history(db, patient['id']), state, at, received_at,
         approved=state['simulation'].get('support_controller',{}).get('status')=='active')
@@ -142,8 +142,8 @@ def saved_status(db, owner, patient, at):
 
 def transition(db, settings, patient, actor, data, received_at):
     from .simulation import SimulationError
-    from .workflow import history, patient_clock, record_header, create_decision
-    from .nof1 import persist
+    from .workflow import _producer_history as history, patient_clock, record_header, create_decision
+    from .support_s2_authority import producer_persist as persist,producer_gate
     from .live_journal import active_episodes
     state, sim = selected(patient); at = patient_clock(patient, received_at)
     if data.decision_id != patient['current_decision'] or any(getattr(data, 'expected_'+k) != patient[k] for k in VERSIONS):
@@ -165,9 +165,7 @@ def transition(db, settings, patient, actor, data, received_at):
         persist(db, value, received_at); loop['status'] = 'withdrawn' if withdrawn else 'unapproved'
     elif data.action == 'pause': loop['status'] = 'paused'
     else:
-        require_executable()  # existing S2 qualification gate; no new OFF switch
-        from .support_s2_authority import qualification
-        qualification(db)
+        producer_gate(db,patient['id'])
         if sim.get('nof1', {}).get('status') == 'active' or active_episodes(db, patient['id']):
             raise SimulationError('support_frozen', 'Review N freeze or the current independent hold first.')
         allowed, reasons = mask(full, state, at, received_at, approved=False)
@@ -210,10 +208,10 @@ def decide(db, settings, patient, state, received_at):
     Original envelope persists; per-decision Approval is an administrative
     execution record under that envelope, not a new claim of human approval.
     """
-    from .workflow import history, patient_clock, record_header
-    from .nof1 import persist
+    from .workflow import _producer_history as history, patient_clock, record_header
+    from .support_s2_authority import producer_persist as persist,producer_gate,producer_id
     from .live_journal import active_episodes
-    require_executable()
+    producer_gate(db,patient['id'])
     sim = state['simulation']; loop = sim['support_controller']; at = patient_clock(patient, received_at)
     full = history(db, patient['id'])
     allowed, reasons = mask(full, state, at, received_at)
@@ -233,15 +231,17 @@ def decide(db, settings, patient, state, received_at):
     current = [e.model_dump(mode='json') for e in snapshot.eligibility if e.action in ACTIONS]
     if state['workflow']['support_mode']!='paused' and current != expected:
         raise ValueError('support_eligibility_changed_refresh_required')
-    saved = saved_status(db, patient['owner_id'], patient, at)['saved'] if len(allowed)==2 else dict(summary_available=False,serving_authority=False,reason='current_mask_not_binary')
+    from .support_s2_invocation import candidate_context
+    saved = (dict(summary_available=False,serving_authority=False,reason='UNTRUSTED_candidate_fallback_no_scientific_authority')
+        if candidate_context(db) is not None else saved_status(db, patient['owner_id'], patient, at)['saved']) if len(allowed)==2 else dict(summary_available=False,serving_authority=False,reason='current_mask_not_binary')
     availability, probabilities, fallback = final_distribution(allowed, saved)
     if not any(r.record_id==snapshot.record_id for r in full.records):snapshot=persist(db,snapshot.model_dump(mode='json'),received_at)
     full=history(db,patient['id'])
     from .support_s2_authority import derive_execution_authorization
     receipt=derive_execution_authorization(db,full,patient,state,snapshot,saved,probabilities,fallback,at,received_at)
-    approval = None; assignment_id = 'support-assignment-'+sha([patient['id'],snapshot.record_id])[:32] if allowed else None
+    approval = None; assignment_id = producer_id(db,'support-assignment-'+sha([patient['id'],snapshot.record_id])[:32]) if allowed else None
     if allowed:
-        value = dict(**record_header('s2-admin-'+receipt['sha256'][:32],patient['id'],at),kind='approval',
+        value = dict(**record_header(producer_id(db,'s2-admin-'+receipt['sha256'][:32]),patient['id'],at),kind='approval',
             decision_id=snapshot.record_id,option='no_prompt' if len(allowed)==1 else None,
             permitted_options=[] if len(allowed)==1 else list(ACTIONS),clinician_id=loop['actor'],
             purpose='ordinary_treatment' if len(allowed)==1 else 'randomization_protocol',
@@ -252,7 +252,7 @@ def decide(db, settings, patient, state, received_at):
     known = full.as_known_at(at)
     report = max((r for r in known if r.kind=='daily_report' and r.missingness=='observed'),key=lambda r:(r.event_at,r.available_at,r.record_id),default=None)
     context = ([report] if report else [])+[r for r in known if r.kind=='delivery' and r.option=='support_prompt' and r.stage=='delivered' and at-timedelta(days=6)<=r.event_at<at]
-    identifier='support-decision-'+sha([patient['id'],snapshot.record_id])[:32]; assessment=at+timedelta(days=1,minutes=-1)
+    identifier=producer_id(db,'support-decision-'+sha([patient['id'],snapshot.record_id])[:32]); assessment=at+timedelta(days=1,minutes=-1)
     decision = persist(db,dict(**(record_header(identifier,patient['id'],at)|dict(schema_version='2.1.0')),kind='support_decision',
         decision_snapshot=exact_ref(snapshot).model_dump(),decision_index=sim['day'],cutoff=at.isoformat(),
         context=[exact_ref(r).model_dump() for r in context],context_projection_sha256=projection_hash(full,at),
@@ -289,11 +289,11 @@ def decide(db, settings, patient, state, received_at):
 
 def dispatch(db,settings,patient,state,decision,assignment,received_at):
     """Actual simulated 20:00 offer operation; never inferred from delivery."""
-    from .workflow import history,record_header
-    from .nof1 import persist
+    from .workflow import _producer_history as history,record_header
+    from .support_s2_authority import producer_persist as persist,producer_id
     from .live_journal import active_episodes
-    from .support_s2_authority import qualification,put
-    qualification(db)
+    from .support_s2_authority import producer_qualification as qualification,put
+    qualification(db,patient['id'])
     if assignment is None:return None,False
     allowed,_=mask(history(db,patient['id']),state,decision.cutoff,received_at)
     if active_episodes(db,patient['id']):allowed=()
@@ -307,7 +307,7 @@ def dispatch(db,settings,patient,state,decision,assignment,received_at):
         return None,True
     if assignment.option=='no_prompt':return None,False
     at=decision.cutoff+timedelta(hours=8)
-    header=record_header('support-offer-'+sha(assignment.record_id)[:32],patient['id'],at)
+    header=record_header(producer_id(db,'support-offer-'+sha(assignment.record_id)[:32]),patient['id'],at)
     header['source'].update(id='foundation-support-offer-v1',version='1.0.0',adapter='research_configuration')
     offered=persist(db,dict(**header,
         kind='delivery',assignment_id=assignment.record_id,option='support_prompt',stage='offered',adherence=None,
@@ -320,8 +320,8 @@ def advance(db,settings,patient,state,target,received_at):
     """One serialized app transaction, daily decisions even for visit advance."""
     from .workflow import create_decision,patient_clock
     from .simulation import product,persist_product
-    from .support_s2_authority import close_stages,qualification
-    require_executable();qualification(db)
+    from .support_s2_authority import close_stages,producer_gate
+    producer_gate(db,patient['id'])
     sim=state['simulation'];count=0
     while sim['day']<target:
         current=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient['id'],patient['owner_id'])).fetchone()
