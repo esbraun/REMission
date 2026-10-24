@@ -337,6 +337,9 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
     if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
         raise AnalysisError('Invalid result file')
     raw_result=result_path.read_bytes()
+    if json.loads(raw_result).get('kind')=='poc_support_s2_saved_prediction_result':
+        from .support_s2_prediction import ingest_saved
+        return ingest_saved(store,job,token,directory,raw_result,accept_before=accept_before)
     if str(json.loads(raw_result).get('kind','')).startswith('poc_support_s2_'):
         from .support_s2_analysis import ingest_native
         return ingest_native(store,job,token,directory,raw_result,accept_before=accept_before)

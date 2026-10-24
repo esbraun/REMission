@@ -241,3 +241,30 @@ def corruption_controls(directory,product, *, check,retained_bytes):
             except ValueError:results[case]='refused'
             else:raise ValueError('S2_binary_corruption_was_admitted')
     return results
+
+
+def load_joint(directory,product,expected,*,check):
+    """Actual bounded saved bytes -> SAME chain/draw/patient/feature coordinates.
+
+    Full binary semantic validation precedes array materialization. The seven
+    prediction fields contain 3*12+4+3=43 float64 values per joint draw; even an
+    extension is 2,752,000 bytes. No thinning, ordering, filter, recast or RNG.
+    """
+    from contracts.domain.support_s2_saved import JOINT_ARRAY_CAP
+    semantic=validate(directory,product,check=check)
+    if semantic!=expected:raise ValueError('S2_saved_posterior_actual_bytes_or_semantics_changed')
+    if 43*4*product.draws*8>JOINT_ARRAY_CAP:raise ValueError('S2_saved_joint_array_cap')
+    import numpy as np
+    import xarray as xr
+    arrays={};path=directory/'posterior.nc'
+    with xr.open_dataset(path,engine='netcdf4',group='posterior',cache=False) as saved:
+        for name in ('alpha','tau','e_T','b','rho','s_e','s_Q'):
+            check();arrays[name]=np.asarray(saved[name].values)
+        # validate() already required exact original coordinates, axis names,
+        # units, float64 dtypes, hierarchy, AR recurrence and complete schema.
+    check()
+    if sum(v.nbytes for v in arrays.values())>JOINT_ARRAY_CAP:raise ValueError('S2_saved_joint_materialized_cap')
+    digest,length=file_digest(path,dimension_bound(semantic.cutoff,product.draws)['file_cap'])
+    if (digest,length)!=(expected.artifact.sha256,expected.artifact.bytes):
+        raise ValueError('S2_saved_posterior_changed_during_joint_read')
+    return arrays,list(coordinate_labels(product)['patient']),semantic

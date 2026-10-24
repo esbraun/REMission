@@ -228,6 +228,7 @@ def worker_limits(borrowing, *, cohort=False):return list(COMMON)
 def worker_module(input_value):
     kind=str(input_value.get('kind',''))
     if kind.startswith('poc_support_s2_'):
+        if kind=='poc_support_s2_saved_prediction_input':return 'services.learner.support_s2_predict_worker'
         if kind=='poc_support_s2_native_fit_input':return 'services.learner.support_s2_worker'
         raise ValueError('S2_unknown_or_unimplemented_worker_kind')
     if input_value.get('kind')=='poc_nof1_input':return 'services.learner.nof1_worker'
