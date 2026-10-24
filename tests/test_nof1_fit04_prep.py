@@ -32,6 +32,7 @@ class Tripwire(importlib.abc.MetaPathFinder):
 
 sys.meta_path.insert(0,Tripwire())
 import analysis_dispatcher as d
+import analysis_lifecycle as life
 from contracts.domain.analysis import sha
 from contracts.domain.nof1_app import NResult,execution_binding,ownership_manifest
 from tests.contracts.test_nof1_app import product
@@ -43,7 +44,7 @@ INPUT_HASH='2'*64
 
 def packet():
     return dict(schema='n-fit04-v1',executable=True,file_caps=d.N_FILE_CAPS.copy(),total_cap=d.N_TOTAL_CAP,
-        progress_cap=d.N_PROGRESS_CAP,json_rows=d.N_JSON_ROWS,**{k:'3'*64 for k in
+        progress_cap=d.N_PROGRESS_CAP,json_rows=d.N_JSON_ROWS,supervision_output='discard-stdout-stderr-v1',owned_container_logging='none',**{k:'3'*64 for k in
             ('data03_actual','queue_export_actual','source_review','operation_review','root_go')})
 
 
@@ -197,6 +198,9 @@ class DispatchControls(unittest.TestCase):
         for field in packet():
             value=packet();value.pop(field)
             with self.subTest(field=field),self.assertRaises(ValueError):d.n_packet({'n_fit04':value})
+        for field in ('supervision_output','owned_container_logging'):
+            value=packet();value[field]='UNREVIEWED'
+            with self.subTest(field=field),self.assertRaises(ValueError):d.n_packet({'n_fit04':value})
     def scenario(self,fault):
         import tempfile
         clock=[100.];calls=[];captures=[];callbacks=[]
@@ -230,7 +234,8 @@ class DispatchControls(unittest.TestCase):
             if fault in ('throttle-expiry','slow-publication'):return d.canonical(marker(elapsed=10 if fault=='slow-publication' else 4999))
             if fault=='integration-exhaustion':return d.canonical(marker(stage='rollouts',elapsed=10,start=5))
             return d.canonical(marker(stage='rollouts',elapsed=10,start=5,finish=9))
-        def supervised(cid,folder,deadline,on_poll=None):
+        def supervised(cid,folder,deadline,on_poll=None,**policy):
+            self.assertEqual(policy,dict(discard_output=True))
             if on_poll is None:return {}
             callbacks.append(on_poll);clock[0]=5099. if fault=='throttle-expiry' else 120.
             if fault=='terminal-late':clock[0]=5101.;return {}
@@ -260,6 +265,7 @@ class DispatchControls(unittest.TestCase):
             self.assertFalse(any(argv[:2]==['docker','logs'] or '/output/.' in ' '.join(argv) for argv,_ in calls))
             for argv,kw in calls:
                 if 'progress' in argv:self.assertLessEqual(kw['deadline'],7300.)
+                if argv[:2]==['docker','create']:self.assertEqual(argv[2:4],['--log-driver','none'])
             return calls,manifest
     def test_deadlines_veto_terminal_between_callbacks_and_slow_failed_copy_and_late_ingest(self):
         for fault in ('terminal-late','slow-copy','failed-copy','no-progress','late-ingest',
@@ -267,12 +273,84 @@ class DispatchControls(unittest.TestCase):
             with self.subTest(fault=fault):self.scenario(fault)
 
 
+class SupervisionOutputControls(unittest.TestCase):
+    def test_default_files_and_explicit_discard_keep_typed_authority_and_reaping(self):
+        from test_ordinary_dispatcher import inventory
+        for discard in (False,True):
+            with self.subTest(discard=discard),tempfile.TemporaryDirectory(dir=ROOT) as temp:
+                folder=Path(temp)/'supervision';processes=[];started=[False];sinks=[];binding={}
+                class Process:
+                    def __init__(self,argv,**kwargs):
+                        self.pid=101+len(processes);self.returncode=None;self.reaped=False;processes.append(self)
+                        sinks.extend((kwargs['stdout'],kwargs['stderr']))
+                        if len(processes)==1:
+                            binding.update(cid=CID,nonce=argv[-1],deadline=200.,pid=self.pid)
+                            life.save(folder/'watchdog-ready.json',binding)
+                        else:
+                            started[0]=True
+                            life.save(folder/'watchdog-terminal.json',dict(cid=CID,nonce=binding['nonce'],
+                                deadline=200.,failure=None,terminal=inventory()))
+                    def poll(self):
+                        if started[0]:self.returncode=0
+                        return self.returncode
+                    def wait(self,timeout):self.reaped=True;self.returncode=0;return 0
+                    def kill(self):self.returncode=-9
+                with patch.object(life,'inspect',side_effect=lambda *a,**kw:inventory() if started[0] else inventory('created')), \
+                        patch.object(life.subprocess,'Popen',side_effect=Process),patch.object(life.time,'monotonic',return_value=100.), \
+                        patch.object(life,'stop_owned',return_value=[]):
+                    kwargs=dict(discard_output=True) if discard else {}  # Exercise the actual default, too.
+                    self.assertEqual(life.supervise(CID,folder,200.,**kwargs),inventory())
+                result=json.loads((folder/'supervision.json').read_bytes())
+                self.assertTrue(result['prearm']['identity_matched']);self.assertTrue(result['prearm']['live_ack_before_start'])
+                self.assertTrue(all(p.reaped for p in processes));self.assertEqual(result['returncodes'],dict(attach=0,watchdog=0))
+                self.assertEqual(result['terminal'],inventory());self.assertIsNone(result['failure'])
+                names=('watchdog.stdout','watchdog.stderr','attach.stdout','attach.stderr')
+                if discard:
+                    self.assertEqual(sinks,[subprocess.DEVNULL]*4)
+                    self.assertFalse(any((folder/name).exists() for name in names))
+                    self.assertEqual(result['output_policy'],'discard-stdout-stderr-v1')
+                else:
+                    self.assertEqual([Path(s.name).name for s in sinks],list(names))
+                    self.assertTrue(all(s.closed for s in sinks));self.assertTrue(all((folder/name).is_file() for name in names))
+                    self.assertNotIn('output_policy',result)
+    def test_discard_preserves_no_start_failures_terminal_cleanup_and_uncertain_reap(self):
+        from test_ordinary_dispatcher import LifecycleControls
+        original=life.supervise
+        def selected(*args,**kwargs):return original(*args,**kwargs,discard_output=True)
+        controls=LifecycleControls()
+        with patch.object(life,'supervise',side_effect=selected):
+            for order in ('watch','attach'):
+                for fault in (None,'arm-exit','arm-timeout','arm-pid','missing','foreign','nonzero'):
+                    with self.subTest(order=order,fault=fault):
+                        result,processes=controls.supervise_double(order,fault)
+                        self.assertEqual(result['output_policy'],'discard-stdout-stderr-v1')
+                        if fault=='arm-pid':self.assertEqual(len(processes),1)
+            result,_=controls.supervise_double('watch','foreign',unconfirmed=True)
+            self.assertIsNone(result['terminal']);self.assertTrue(result['failure'])
+        process=Mock(pid=101);process.poll.return_value=1;process.wait.side_effect=RuntimeError('inert reap failure')
+        from test_ordinary_dispatcher import inventory
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp,patch.object(life,'inspect',return_value=inventory('created')), \
+                patch.object(life,'stop_owned',return_value=[]),patch.object(life.subprocess,'Popen',return_value=process), \
+                patch.object(life.time,'monotonic',return_value=100.):
+            folder=Path(temp)/'supervision'
+            with self.assertRaises(life.StopUnconfirmed):original(CID,folder,200.,discard_output=True)
+            result=json.loads((folder/'supervision.json').read_bytes())
+            self.assertTrue(any('reap_error' in event for event in result['cleanup']))
+            self.assertFalse(result['processes']['watchdog']['reaped'])
+    def test_non_boolean_policy_refuses_before_directory_or_process_creation(self):
+        for value in (None,'discard',0,1,[],{}):
+            with self.subTest(value=value),tempfile.TemporaryDirectory(dir=ROOT) as temp:
+                folder=Path(temp)/'must-not-exist'
+                with self.assertRaisesRegex(ValueError,'boolean output policy'):life.supervise(CID,folder,200.,discard_output=value)
+                self.assertFalse(folder.exists())
+
+
 def freeze_proof(payload):
     """Inverse only the declared N delta; compare complete residual source ASTs."""
     import hashlib
     base=payload['files'];dump=lambda tree:ast.dump(tree,include_attributes=False)
     digest=lambda raw:hashlib.sha256(raw).hexdigest()
-    worker='services/learner/nof1_worker.py';dispatcher='tooling/foundation/analysis_dispatcher.py'
+    worker='services/learner/nof1_worker.py';dispatcher='tooling/foundation/analysis_dispatcher.py';lifecycle='tooling/foundation/analysis_lifecycle.py'
     old_worker=ast.parse(base[worker]);old_run=next(n for n in old_worker.body if isinstance(n,ast.FunctionDef) and n.name=='run')
     old_progress={n.name:n for n in old_run.body if isinstance(n,ast.FunctionDef)}
     class WorkerInverse(ast.NodeTransformer):
@@ -325,8 +403,33 @@ def freeze_proof(payload):
                 assert dump(node.body[1])==dump(expected)
                 node.body=[ast.parse('failures.append(dict(cid=cid,cleanup=stop_owned(cid)))').body[0]]
             return node
+    old_lifecycle=ast.parse(base[lifecycle]);old_supervise=next(n for n in old_lifecycle.body if isinstance(n,ast.FunctionDef) and n.name=='supervise')
+    old_try=next(n for n in old_supervise.body if isinstance(n,ast.Try))
+    old_with=next(n for n in old_try.body if isinstance(n,ast.With))
+    class LifecycleDefaultInverse(ast.NodeTransformer):
+        def visit_ImportFrom(self,node):return None if node.module=='contextlib' else node
+        def visit_FunctionDef(self,node):
+            if node.name=='supervise':
+                assert len(node.args.kwonlyargs)==1 and node.args.kwonlyargs[0].arg=='discard_output'
+                assert dump(node.args.kw_defaults[0])==dump(ast.Constant(value=False))
+                node.args.kwonlyargs=[];node.args.kw_defaults=[]
+            return self.generic_visit(node)
+        def visit_If(self,node):
+            if isinstance(node.test,ast.Name) and node.test.id=='discard_output':return None
+            strict=ast.parse("if type(discard_output) is not bool:raise ValueError('explicit boolean output policy required')").body[0]
+            if dump(node)==dump(strict):return None
+            return self.generic_visit(node)
+        def visit_With(self,node):
+            if (len(node.items)==1 and isinstance(node.items[0].context_expr,ast.Call)
+                    and isinstance(node.items[0].context_expr.func,ast.Name) and node.items[0].context_expr.func.id=='ExitStack'):
+                assignment=node.body.pop(0)
+                assert isinstance(assignment,ast.Assign) and dump(assignment.targets[0])==dump(ast.parse('wo,we,ao,ae=(0,0,0,0)').body[0].targets[0])
+                assert isinstance(assignment.value,ast.IfExp) and assignment.value.test.id=='discard_output'
+                # Restore only the old default sink binding; the whole controller body must still match.
+                node.items=copy.deepcopy(old_with.items)
+            return self.generic_visit(node)
     proofs={}
-    for name,inverse in ((worker,WorkerInverse()),(dispatcher,DispatcherInverse())):
+    for name,inverse in ((worker,WorkerInverse()),(dispatcher,DispatcherInverse()),(lifecycle,LifecycleDefaultInverse())):
         original=ast.parse(base[name]);projected=inverse.visit(ast.parse((ROOT/name).read_text(encoding='utf-8')))
         before=dump(original);after=dump(projected)
         if before!=after:
@@ -336,17 +439,23 @@ def freeze_proof(payload):
         proofs[name]=dict(base_ast_sha256=digest(before.encode()),inverse_ast_sha256=digest(after.encode()),equal=True)
     protected={}
     for name,text in base.items():
-        if name in (worker,dispatcher):continue
+        if name in (worker,dispatcher,lifecycle):continue
         current=(ROOT/name).read_bytes();original=text.encode('utf-8')
         # Git text arrives through JSON with LF; normalize CRLF checkout bytes.
         normalized=current.replace(b'\r\n',b'\n')
         assert normalized==original.replace(b'\r\n',b'\n'),name
         protected[name]=dict(git_text_sha256=digest(original.replace(b'\r\n',b'\n')),checkout_sha256=digest(current),unchanged=True)
-    changed=[worker,dispatcher,'tests/test_nof1_fit04_prep.py','tooling/foundation/nof1_fit04_packet.json']
+    changed=[worker,dispatcher,lifecycle,'tests/test_nof1_fit04_prep.py','tooling/foundation/nof1_fit04_packet.json']
     index=dict(task='N-FIT04',status='PARTIAL_PREP_STOP_FOR_INDEPENDENT_SOURCE_REVIEW',base=payload['base'],source_head=payload['source_head'],
         branch='feat/poc-n-fit04-prep-20261024',model='gpt-6.1-sol',effort='xhigh',settings_verified_by='parent launch telemetry',
         plan_blob='8a6a814dc4f7e2cfdb76de368935d9ac214eb4b7',critique_blob='4629945e4d52b9cbcd9c8da8e1c4d5c105b5027a',
-        checks=dict(guarded_scalar_and_inert_double_tests=40,passed=True,actual_science_app_store_sqlite_native_network=False),
+        checks=dict(guarded_scalar_and_inert_double_tests=43,passed=True,actual_science_app_store_sqlite_native_network=False,
+            command='C:/Users/erics/Documents/Projects/REMission/artifacts/s1-app/artifacts/source-check-env/Scripts/python.exe -I -B tests/test_nof1_fit04_prep.py',diff_check='PASS'),
+        previous_source_review=dict(head='992e1704936e67c79fda65a2f677a2ed1a34707e',report='7828aee43707abae161ef60739fe7b3ac54438f6',
+            checks='249b83acc7c312075eedd6d1d9b94bb09ed4c6ae',index='726f7c592eebbe6ccc66cccc50726640b4f56828',scope='NONEXECUTABLE_PREP_ONLY'),
+        followup_scope='Root-authorized optional discard at existing supervise sink; only N selects True and Docker log-driver none; helper default preserved',
+        output_policy=dict(supervision_output='discard-stdout-stderr-v1',owned_container_logging='none',existing_service_logging_storage='UNKNOWN',actual_runtime_applicability='UNKNOWN'),
+        executable=False,refreshed_source_review='UNKNOWN',source_git_blobs=payload.get('source_git_blobs',{}),
         source_sha256={name:digest((ROOT/name).read_bytes()) for name in changed},inverse_ast=proofs,
         protected=protected,pr27_applicability='No changes from d889ca129c5dbae02ec642edfc82b85d616eab51 to methods/nof1, methods/measurement.py or nof1_config.py; runtime config/version applicability UNKNOWN',
         data03_actual='UNKNOWN',queue_export_actual='UNKNOWN',genuine_n12_feasibility='UNKNOWN',combined_source_op_ready=False)

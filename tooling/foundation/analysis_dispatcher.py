@@ -31,10 +31,11 @@ N_INPUT_CAP=8*1024**2
 def n_packet(state):
     packet=state.get('n_fit04')
     if (not isinstance(packet,dict) or set(packet)!={'schema','executable','file_caps','total_cap','progress_cap',
-            'json_rows','data03_actual','queue_export_actual','source_review','operation_review','root_go'}
+            'json_rows','supervision_output','owned_container_logging','data03_actual','queue_export_actual','source_review','operation_review','root_go'}
             or packet['schema']!='n-fit04-v1' or packet['executable'] is not True
             or packet['file_caps']!=N_FILE_CAPS or packet['total_cap']!=N_TOTAL_CAP
             or packet['progress_cap']!=N_PROGRESS_CAP or packet['json_rows']!=N_JSON_ROWS
+            or packet['supervision_output']!='discard-stdout-stderr-v1' or packet['owned_container_logging']!='none'
             or any(type(packet[k]) is not str or re.fullmatch('[a-f0-9]{64}',packet[k]) is None for k in
                 ('data03_actual','queue_export_actual','source_review','operation_review','root_go'))):
         raise ValueError('N-FIT04 requires exact caps and separately reviewed actual bindings')
@@ -320,7 +321,9 @@ def run_once(state, deployment, deployment_digest):
     common_origin=time.monotonic()
     deadline=common_origin+lifecycle_seconds;accept_before=datetime.fromtimestamp(time.time()+lifecycle_seconds,timezone.utc).isoformat()
     stages=NStages(common_origin,deadline,identifier,proof['input_sha256']) if nof1 else None
-    if nof1:manifest['file_clients']=[]
+    if nof1:
+        manifest['file_clients']=[]
+        manifest['output_policy']=dict(supervision_output='discard-stdout-stderr-v1',owned_container_logging='none')
     manifest.update(deadline_monotonic=deadline,accept_before=accept_before,watchdog_seconds=lifecycle_seconds)
     def call(argv, **kwargs):
         if nof1:stages.check()
@@ -329,6 +332,7 @@ def run_once(state, deployment, deployment_digest):
         return result
     def cli(*values):return json.loads(call(['docker','exec',state['service_cid'],'python','-m','services.foundation.analysis_cli',*values]).stdout)
     def create(argv, role):
+        if nof1:argv=[*argv[:2],'--log-driver','none',*argv[2:]]
         manifest['creating_role']=role;persist()
         try:cid=require_cid(call(argv,cap=30).stdout.decode().strip())
         except BaseException as error:
@@ -375,7 +379,8 @@ def run_once(state, deployment, deployment_digest):
             '--mount',f'type=volume,source={output_volume},target=/output',actual,'python','-c',
             "import os;os.chmod('/input',0o755);os.chmod('/input/input.json',0o444);os.chown('/input/input.json',10002,10002);os.chmod('/output',0o700);os.chown('/output',10002,10002)"],'stage')
         call(['docker','cp',str(directory/'input.json'),helper+':/input/input.json'])
-        supervise(helper,directory/'stage-supervision',min(stages.active_deadline() if nof1 else deadline,time.monotonic()+60))
+        if nof1:supervise(helper,directory/'stage-supervision',min(stages.active_deadline(),time.monotonic()+60),discard_output=True)
+        else:supervise(helper,directory/'stage-supervision',min(deadline,time.monotonic()+60))
         env=[]
         for key,value in dict(REMISSION_LEARNER_IMAGE=actual,REMISSION_SOURCE_COMMIT=state['source_commit'],
                 REMISSION_COHORT_REVIEWED_LEARNER_IMAGE=reviewed['learner_image'],REMISSION_COHORT_REVIEWED_SOURCE_COMMIT=reviewed['source_commit'],
@@ -407,7 +412,8 @@ def run_once(state, deployment, deployment_digest):
                 if encoded!=last[0] and value['stage'] in ('preparing','fitting','diagnostics','rollouts'):
                     cli('progress','--job',identifier,'--token',token,'--value',encoded);last[0]=encoded
         manifest.update(status='running',container_cid=cid);persist()
-        terminal=supervise(cid,directory/'learner-supervision',min(deadline,time.monotonic()+60) if lifecycle_seconds==180 else deadline,progress)
+        if nof1:terminal=supervise(cid,directory/'learner-supervision',deadline,progress,discard_output=True)
+        else:terminal=supervise(cid,directory/'learner-supervision',min(deadline,time.monotonic()+60) if lifecycle_seconds==180 else deadline,progress)
         if nof1:
             # supervise can return between callbacks; expiry still vetoes terminal success.
             stages.check();progress(force=True);stages.check()
