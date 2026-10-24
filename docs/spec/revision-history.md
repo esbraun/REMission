@@ -1,5 +1,9 @@
 # Revision history
 
+## October 24 2026 scientific truth-law clarification candidate
+
+[TRUTH-02](02-synthetic-dgp.md#primary-scientific-law-and-implementation-claim) states the primary stochastic scientific law and independent-exogenous-draw assumption without claiming literal keyed-generator equivalence. Complete lawful H*, scientific equations/targets and precision locks are preserved. Proposal ffb23b8f138ee7b474fab10cd5f966f272410532 and different mathematical critique 7a0e1a671b9d5a6727faa299e654b0b8ec20181f authorize bounded drafting only. T2 remains unresolved; different exact-candidate review and merge are required for canonical adoption. No code, result, historical artifact or runtime gate is promoted.
+
 ## October 22 2026 cloud physician simulation milestone
 
 The user's Google Cloud deployment/login request and clarification that training is not yet needed narrow immediate acceptance to physician interaction: POC-CLOUD-01–05, POC-1–3 and workflow/persistence/failure portions of POC-6. Updated the canonical PoC amendment, index, requirement/gate map and execution precedence, with a bounded service-only deployment/task/test ledger. POC-4/5, fitted protocols, APPT-01–05 and all seven POC-VAL configurations with accuracy/timeliness remain later analytics obligations. Prior evidence/statuses are preserved. This is a plan amendment, not a cloud deployment, credential test, fit or scientific/human/clinical validation result.

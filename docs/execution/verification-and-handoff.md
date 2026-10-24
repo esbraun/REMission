@@ -12,6 +12,8 @@ Methods handoff includes the [selected library decisions](../plans/methods/00-li
 
 Use [VAL-01–03](../spec/07-validation-protocol.md) and [RELEASE-01](../spec/08-gates-and-release.md#release-01--separate-evidence-statuses). A smoke run never satisfies recovery or SBC. Record unsuccessful attempts and truth uncertainty. Keep development and confirmation seeds separate; changing an estimator or threshold after inspecting confirmation requires a new protocol/version and fresh runs.
 
+Truth reports must distinguish the [primary stochastic scientific law from literal implementation equivalence](../spec/02-synthetic-dgp.md#primary-scientific-law-and-implementation-claim). T2 remains UNRESOLVED; day14 T0 diagnostics do not qualify full-prefix conditioning, endpoints84/126, calibration, artifact/runtime admission or the seven-configuration study. Label future source claim/admission changes separately; no historical result gains a certificate from this clarification.
+
 Review [source records](../evidence/README.md) before claims are released. Metadata-only or legacy-unverified records cannot silently support a new quantitative claim. Separate synthetic-engineering acceptance from human-factors, clinical review and clinical validation.
 
 ## Verification, prompt evaluation, and handoff
