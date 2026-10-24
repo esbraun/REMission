@@ -42,6 +42,8 @@ The web-design skill fetches a separate upstream document before each review. Re
 
 ## TEST-QUALITY — Tests that detect meaningful failures
 
+Assign planning and independent review under the [launch model policy](../../implementation-prompt.md#launch-contract): Sol/high by default; Astra/medium only for critical gate plans/reviews after ROOT records the material gate reason. Routine documentation, bug fixes and clarifications do not automatically require Astra. A different worker still reproduces relevant checks; neither self-review nor model selection substitutes for evidence. Difficult implementation alone may use Sol/xhigh with a recorded reason.
+
 Choose checks by risk and observable behavior. Keep all required scenarios while avoiding redundant assertions at every layer. Coverage percentages and test counts are diagnostics, not acceptance criteria.
 
 - Unit tests exercise meaningful seams: eligibility/readiness decisions, temporal cutoffs, evidence-state mapping, context isolation and draft-version validation. Use independent expectations and boundary cases; do not mirror implementation logic or assert trivial getters/internal call sequences.
