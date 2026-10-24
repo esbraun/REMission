@@ -19,12 +19,8 @@ VERSIONS = ('version', 'state_version', 'consent_version', 'eligibility_version'
 ACTIONS = ('support_prompt', 'no_prompt')
 
 
-def mask(full, state, at, received_at, *, approved=True):
-    """Safety is inclusive/current; feature/operational histories are predecision.
-
-    Prior offered assignments also restrict burden, so an outstanding delivery
-    cannot open capacity. Unknown observed closure must refuse at admission.
-    """
+def authority(full, state, at, received_at, *, approved=True):
+    """Current permission/restrictions at an operation's actual simulated instant."""
     heads = lineage_heads(visible_records(full.records, max(at, received_at), inclusive=True))
     consents = [r for r in heads if r.kind == 'consent' and r.component == 'mrt_bandit']
     consent = max(consents, key=lambda r: (r.available_at, r.recorded_at, r.revision, r.record_id), default=None)
@@ -44,6 +40,13 @@ def mask(full, state, at, received_at, *, approved=True):
     if (approved and flow['support_mode'] in ('fixed', 'frozen')) or flow['learning'] in ('nof1_block', 'nof1_washout') or n.get('status') == 'active':
         return ('no_prompt',), ['Frozen no-prompt policy']
     if approved and flow['support_mode'] == 'paused': return (), ['Support paused']
+    return ACTIONS, []
+
+
+def mask(full, state, at, received_at, *, approved=True):
+    """Authority plus predecision burden; never shift features to dispatch time."""
+    allowed,reasons=authority(full,state,at,received_at,approved=approved)
+    if allowed!=ACTIONS:return allowed,reasons
     prior = full.as_known_at(at)
     delivered = [r for r in prior if r.kind == 'delivery' and r.option == 'support_prompt' and r.stage == 'delivered']
     offered = [r for r in prior if r.kind == 'support_decision' and r.assignment_id and
@@ -153,8 +156,14 @@ def transition(db, settings, patient, actor, data, received_at):
     if data.action in ('consent', 'withdraw'):
         if data.action == 'consent' and data.consent_expires_at is not None and data.consent_expires_at <= at:
             raise SimulationError('expired_support_consent', 'Consent expiry must follow the fictional clock.')
-        prior = [r for r in full.records if r.kind == 'consent' and r.lineage_id == 'support-consent-'+patient['id']]
-        previous = max(prior, key=lambda r:r.revision, default=None)
+        prior = [r for r in full.records if r.lineage_id == 'support-consent-'+patient['id']]
+        if any(r.kind!='consent' or r.patient_id!=patient['id'] or r.component!='mrt_bandit' for r in prior):
+            raise ValueError('support_consent_requires_same_patient_component_lineage')
+        heads=lineage_heads(prior)
+        if len(heads)>1:raise ValueError('support_consent_requires_one_validated_lineage_head')
+        previous=heads[0] if heads else None
+        if previous is not None and at<previous.available_at:
+            raise ValueError('support_consent_chronology_regression')
         withdrawn = data.action == 'withdraw'
         value = dict(**record_header('support-consent-'+uuid.uuid4().hex, patient['id'], at), kind='consent', component='mrt_bandit',
             consent_version='poc-support-consent-v1', oversight_version='synthetic-engineering-v1', consent_status='withdrawn' if withdrawn else 'active',
@@ -162,6 +171,9 @@ def transition(db, settings, patient, actor, data, received_at):
             expires_at=data.consent_expires_at.isoformat() if data.consent_expires_at else None, withdrawn_at=at.isoformat() if withdrawn else None)
         value.update(lineage_id='support-consent-'+patient['id'], revision=previous.revision+1 if previous else 1,
                      supersedes=previous.record_id if previous else None)
+        # This revises the same component-consent event. New knowledge and
+        # effective/withdrawal times remain current; prior bytes stay immutable.
+        if previous is not None:value['event_at']=previous.event_at.isoformat()
         persist(db, value, received_at); loop['status'] = 'withdrawn' if withdrawn else 'unapproved'
     elif data.action == 'pause': loop['status'] = 'paused'
     else:
@@ -295,7 +307,10 @@ def dispatch(db,settings,patient,state,decision,assignment,received_at):
     from .support_s2_authority import producer_qualification as qualification,put
     qualification(db,patient['id'])
     if assignment is None:return None,False
-    allowed,_=mask(history(db,patient['id']),state,decision.cutoff,received_at)
+    full=history(db,patient['id']);at=decision.cutoff+timedelta(hours=8)
+    allowed,_=mask(full,state,decision.cutoff,received_at)
+    current,_=authority(full,state,at,received_at)
+    allowed=tuple(a for a in allowed if a in current)
     if active_episodes(db,patient['id']):allowed=()
     if assignment.option not in allowed:
         # Only the future generator schedule is canceled. Immutable probability,
@@ -306,7 +321,6 @@ def dispatch(db,settings,patient,state,decision,assignment,received_at):
                  at=(decision.cutoff+timedelta(hours=8)).isoformat(),reason='Current authority restricted pending dispatch'),received_at)
         return None,True
     if assignment.option=='no_prompt':return None,False
-    at=decision.cutoff+timedelta(hours=8)
     header=record_header(producer_id(db,'support-offer-'+sha(assignment.record_id)[:32]),patient['id'],at)
     header['source'].update(id='foundation-support-offer-v1',version='1.0.0',adapter='research_configuration')
     offered=persist(db,dict(**header,

@@ -35,6 +35,14 @@ class UntrustedInteractiveContext:
                 or db is not self._connection or not self._active or self._receipt.closed or self._authority.closed
                 or not db.in_transaction):
             raise ValueError('active_owned_candidate_transaction_required')
+        invocation=self._check_authority()
+        self._check_store(db,invocation,db._candidate_installation)
+        if patient is not None:self._check_case(db,invocation,patient)
+        return invocation
+
+    def _check_authority(self):
+        if not self._active or self._receipt.closed or self._authority.closed:
+            raise ValueError('active_candidate_authority_and_receipt_required')
         invocation=UntrustedInteractiveInvocation.model_validate_json(self._raw)
         now=self._clock()
         if not invocation.not_before<=now<invocation.expires_at:raise ValueError('candidate_authority_expired')
@@ -45,20 +53,44 @@ class UntrustedInteractiveContext:
         self._receipt.seek(0)
         if self._receipt.read()!=canonical(dict(consumed=invocation.reference)).encode():
             raise ValueError('candidate_once_receipt_changed')
+        return invocation
+
+    def _check_store(self,db,invocation,installation):
         packet=invocation.packet
         current=db.execute('SELECT * FROM service_control WHERE singleton=1').fetchone()
-        bundle,source,runtime,control=db._candidate_installation
+        bundle,source,runtime,control=installation
         if (not current or not current['enabled'] or any(current[k]!=v for k,v in json.loads(control).items())
                 or (current['database_instance_id'],current['authority_generation'])!=(packet.store_id,packet.authority_generation)
                 or (bundle,source,json.loads(runtime))!=(packet.installed_bundle_sha256,packet.app_commit,packet.runtime.model_dump(mode='json'))):
             raise ValueError('candidate_current_Store_source_runtime_generation_changed')
-        if patient is not None:
-            row=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient,invocation.owner_id)).fetchone()
-            state=json.loads(row['state_json']) if row else {}
-            if (patient not in invocation.cases or not row or state.get('simulation',{}).get('panel_id')!=invocation.cases[patient]
-                    or state.get('simulation',{}).get('research_run_id') or state.get('historical_read_only') or state.get('observed_archive')):
-                raise ValueError('candidate_exact_owned_case_generation_required')
-        return invocation
+
+    def _check_case(self,db,invocation,patient):
+        row=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient,invocation.owner_id)).fetchone()
+        state=json.loads(row['state_json']) if row else {}
+        if (patient not in invocation.cases or not row or state.get('simulation',{}).get('panel_id')!=invocation.cases[patient]
+                or state.get('simulation',{}).get('research_run_id') or state.get('historical_read_only') or state.get('observed_archive')):
+            raise ValueError('candidate_exact_owned_case_generation_required')
+        return row
+
+    def admit_output(self,store,result):
+        """After write finalization: fresh read only, never reuse its closed DB.
+
+        A failure here withholds output; it cannot undo the committed write.
+        """
+        from .store import digest
+        invocation=self._check_authority()
+        with store.transaction() as db:
+            installation=(digest(canonical(store.installed.model_dump(mode='json'))),store.support_source_commit,
+                canonical(store.support_runtime_ref),canonical(store.installed.control.model_dump(mode='json')))
+            self._check_store(db,invocation,installation)
+            for output in result['histories']:
+                row=self._check_case(db,invocation,output['patient_id'])
+                if output['current']!={k:row[k] for k in output['current']}:
+                    raise ValueError('candidate_finalized_current_output_changed')
+                saved=json.loads(db.execute('SELECT snapshot FROM decisions WHERE id=?',(row['current_decision'],)).fetchone()[0])
+                if saved!=output['current_snapshot']:raise ValueError('candidate_finalized_snapshot_changed')
+            self._check_authority()
+        self._check_authority()
 
     def finish(self):
         self._active=False;self._connection=None
@@ -102,7 +134,7 @@ def run_candidate(store,settings,invocation,operations,*,external_authority):
         receipt.write(canonical(dict(consumed=invocation.reference)).encode());receipt.flush()
         context=UntrustedInteractiveContext(invocation,external_authority,receipt,settings.clock)
         try:
-            with store.transaction(write=True,_support_candidate=context) as db:
+            with store.transaction(write=True,_support_candidate=context,before_commit=context.check) as db:
                 for operation in operations:
                     patient_id=operation['patient_id'];context.check(db,patient_id)
                     patient=db.execute('SELECT * FROM patients WHERE id=? AND owner_id=?',(patient_id,invocation.owner_id)).fetchone()
@@ -132,5 +164,8 @@ def run_candidate(store,settings,invocation,operations,*,external_authority):
                 result=dict(status='UNTRUSTED_candidate_evidence',invocation=invocation.model_dump(mode='json'),histories=outputs,proofs=proofs)
                 if len(canonical(result).encode())>invocation.output_cap:raise ValueError('candidate_evidence_cap')
                 context.check(db)
+            try:context.admit_output(store,result)
+            except Exception as error:
+                raise ValueError('candidate_committed_output_withheld: '+str(error)) from error
             return result
         finally:context.finish()

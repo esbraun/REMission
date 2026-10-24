@@ -30,6 +30,8 @@ def freeze(root,result):
     save('source-closure.json',dict(scope='public Git SOURCE; no installed-image byte qualification',files=closure))
     save('checks.json',dict(scope='guarded SOURCE AST/contracts/inert I/O only',tests=result.testsRun,
         failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),
+        expected_failures=[dict(test=str(test),traceback=trace) for test,trace in result.expectedFailures],
+        status='KNOWN_PRODUCER_REPAIR_PENDING' if result.expectedFailures else 'PASS',
         actual_app=False,actual_SQLite=False,actual_science=False,actual_browser=False,runtime_GO=False,
         retained_numerics=dict(passed=17,failed=1,rerun=False,sealed_operation=False)))
     # Reproducible AST inventory supplements the exact Git reverse-patch proof.
