@@ -277,7 +277,11 @@ def bind_execution(store,job,token,origin, *, configured=None):
     try:runtime_origin(origin['learner_image'],origin['source_commit'])
     except ValueError as error:raise AnalysisError('Invalid trusted host origin') from error
     with store.transaction(write=True) as db:
-        row=running(db,job,token);product=parse_input(row['request_json'])
+        row=running(db,job,token)
+        if str(json.loads(row['request_json']).get('kind','')).startswith('poc_support_s2_'):
+            from contracts.domain.support_s2_native import require_executable
+            require_executable()
+        product=parse_input(row['request_json'])
         if product.kind=='poc_nof1_input':
             from .nof1_analysis import revalidate
             from contracts.domain.nof1_app import execution_binding as nof1_binding
@@ -332,7 +336,11 @@ def ingest(store,job,token,directory, *, accept_before=None, configured=None):
     result_path=directory/'result.json'
     if result_path.is_symlink() or not result_path.is_file() or result_path.stat().st_size>10*1024*1024:
         raise AnalysisError('Invalid result file')
-    result=parse_result(result_path.read_bytes())
+    raw_result=result_path.read_bytes()
+    if str(json.loads(raw_result).get('kind','')).startswith('poc_support_s2_'):
+        from .support_s2_analysis import ingest_native
+        return ingest_native(store,job,token,directory,raw_result,accept_before=accept_before)
+    result=parse_result(raw_result)
     cohort_result=result.kind=='poc_visit_cohort_result'
     support_result=result.kind=='poc_support_s1_result'
     nof1_result=result.kind=='poc_nof1_result'

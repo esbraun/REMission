@@ -322,3 +322,40 @@ def queued_request(db, *, owner, job, key, submission, source_commit):
         input_sha256=row['input_sha256'], input=product.model_dump(mode='json'), submission=payload,
         receipt=dict(key=key, scope=receipts[0]['scope'], payload_sha256=receipts[0]['payload_sha256'],
             response_sha256=sha(json.loads(receipts[0]['response']))), active_attempts=[dict(attempt_id=job, status='queued')])
+
+
+def validate_native_collection(product,result,trusted, *, file_custody,current_export,
+        active_owner,active_store,authority_generation,job,claim_sha256,collection_sha256):
+    """Scalar foundation admission seam; custody comes from owned collection.
+
+    The collector must seal exact named bytes after the learner terminal/reap.
+    A digest supplied by result.json cannot stand in for that service-owned
+    custody. Current export uses the existing full12 as-of revalidation path.
+    No binary/science module is imported here.
+    """
+    from contracts.domain.support_s2_native import validate_result,ownership,RESULT_CAP,TOTAL_CAP
+    validate_result(result,product,trusted)
+    p=product.initial.export.provenance
+    if (current_export!=product.initial.export or active_owner!=p.owner_id or active_store!=p.store_id
+            or authority_generation!=product.initial.export.selection.authority_generation
+            or job!=product.attempt_id or claim_sha256!=trusted['claim_sha256']):
+        raise ValueError('S2_current_all_member_asof_authority_job_or_claim_changed')
+    artifact=result.semantics.artifact
+    expected=dict(schema='s2-native-owned-collection-v1',attempt_id=job,
+        input_sha256=ownership(product)['input_sha256'],claim_sha256=claim_sha256,
+        terminal='reaped_exit_0_no_oom_no_restart',files=[artifact.model_dump(mode='json')],
+        result_sha256=sha(result.model_dump(mode='json')))
+    if (not isinstance(file_custody,dict) or set(file_custody)!=set(expected)
+            or file_custody!=expected or sha(file_custody)!=collection_sha256):
+        raise ValueError('S2_owned_bounded_artifact_custody_required')
+    if artifact.bytes+RESULT_CAP>TOTAL_CAP:
+        raise ValueError('S2_owned_collection_aggregate_cap')
+    return result
+
+
+def ingest_native(store,job,token,directory,raw_result, *, accept_before=None):
+    # Guard before any Store transaction, result parsing or artifact access.
+    # The closed source seams above are ready for a later separately reviewed
+    # collector/launch qualification; no current product is ingestible.
+    from contracts.domain.support_s2_native import require_executable
+    require_executable()
