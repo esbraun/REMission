@@ -217,8 +217,9 @@ def validate_live_history(db,full,*,_candidate=False):
     else:producer_qualification(db,full.patient_id)
     for row in db.execute('SELECT id,payload FROM state_changes WHERE patient_id=?',(full.patient_id,)):
         value=json.loads(row['payload'])
-        if not _candidate and (row['id'].startswith('candidate-s2-') or isinstance(value,dict)
-                and value.get('qualification',{}).get('id')=='candidate-s2-invocation-v1'):
+        provenance=value.get('qualification') if isinstance(value,dict) else None
+        if not _candidate and (row['id'].startswith('candidate-s2-') or isinstance(provenance,dict)
+                and provenance.get('id')=='candidate-s2-invocation-v1'):
             raise ValueError('untrusted_orphan_candidate_proof_cannot_enter_LIVE')
         if isinstance(value,dict) and value.get('schema_version')=='s2-controller-authorization-v1':
             q=producer_qualification(db,full.patient_id) if _candidate else qualification(db)

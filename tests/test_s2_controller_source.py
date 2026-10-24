@@ -810,7 +810,9 @@ class ProtectedInverseTests(unittest.TestCase):
         self.assertEqual(self.dump(old['validate_support_v21']),self.dump(node))
     def test_legacy_histories_keep_exact_typed_outputs(self):
         code,db,p,state=fixture();a=code['UNIT_authority']
-        records=[r for r in db.records if r.schema_version=='1.0.0'];db.proofs={}
+        records=[r for r in db.records if r.schema_version=='1.0.0']
+        db.proofs={str(i):dict(patient_id=p['id'],actor_id=p['owner_id'],payload=canonical(value))
+            for i,value in enumerate(({},[],dict(qualification=None),dict(qualification='ordinary legacy metadata')))}
         for rows in ([],records):
             db.records=rows
             digest=lambda x:hashlib.sha256(x.encode()).hexdigest()
