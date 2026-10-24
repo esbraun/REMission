@@ -11,6 +11,7 @@ import json
 import math
 import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 import time
@@ -44,6 +45,8 @@ PRIOR_INPUT_DTYPES=('float16','float32','float64','float128')
 PRIOR_INPUT_MAX_ORDINAL=7
 CONSTRUCTION_FLAGS='base_compiledir=/tmp/pytensor,floatX=float64,cast_policy=numpy+floatX'
 CONSTRUCTION_POLICY=dict(floatX='float64',cast_policy='numpy+floatX',pymc_version='6.3.2',pytensor_version='3.3.4')
+FAILURE_PATH=Path('/tmp/s2-graph-parent/graph.failure.json')
+FAILURE_BYTES=4096
 
 
 def require_construction_policy(environ,bound):
@@ -109,15 +112,55 @@ def failure(error,stage):
         error_class=ERROR_CLASSES.get(type(error),'other'),locations=locations,omitted=omitted)
 
 
-def read_failure(path):
+def checked_receipt_fd(fd,identity=None,*,empty=False):
+    value=os.fstat(fd)
+    current=(value.st_dev,value.st_ino,value.st_uid)
+    if (not stat.S_ISREG(value.st_mode) or value.st_uid!=os.geteuid()
+            or stat.S_IMODE(value.st_mode)!=0o600 or (empty and value.st_size!=0)
+            or (identity is not None and current!=identity)):
+        raise ValueError('fixed receipt descriptor refused')
+    return current
+
+
+def reserve_failure(path):
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    try:return checked_receipt_fd(fd,empty=True)
+    finally:os.close(fd)
+
+
+def write_failure(row,identity):
+    fd=None
+    try:
+        raw=(json.dumps(row,separators=(',',':'),allow_nan=False)+'\n').encode()
+        if len(raw)>FAILURE_BYTES:return False
+        fd=os.open(FAILURE_PATH,os.O_WRONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+        checked_receipt_fd(fd,identity,empty=True)
+        return os.write(fd,raw)==len(raw)
+    except BaseException:return False
+    finally:
+        if fd is not None:
+            try:os.close(fd)
+            except BaseException:pass
+
+
+def read_failure(path,identity):
     def unavailable(code):return dict(status='unavailable',code=code)
+    fd=None
     try:
-        with path.open('rb') as stream:raw=stream.read(65537)
+        fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+        checked_receipt_fd(fd,identity)
+        with os.fdopen(fd,'rb') as stream:
+            fd=None;raw=stream.read(FAILURE_BYTES+1)
     except BaseException:return unavailable('read_failed')
-    if len(raw)>65536:return unavailable('oversized')
+    finally:
+        if fd is not None:
+            try:os.close(fd)
+            except BaseException:pass
+    if len(raw)>FAILURE_BYTES:return unavailable('oversized')
     if not raw.strip():return unavailable('missing')
+    try:value=strict_json(raw)
+    except BaseException:return unavailable('invalid_json')
     try:
-        value=strict_json(raw)
         if (type(value) is not dict or set(value) not in ({'kind','stage','error_class','locations','omitted'},
                 {'kind','stage','error_class','locations','omitted','prior_input'})
                 or value['kind']!='s2-graph-child-failure-v1' or value['stage'] not in STAGES
@@ -132,7 +175,16 @@ def read_failure(path):
             if value['stage']!='graph' or value['error_class']!='AssertionError':raise ValueError()
             checked_prior_input(value['prior_input'])
         return dict(status='available',failure=value)
-    except BaseException:return unavailable('invalid')
+    except BaseException:return unavailable('invalid_schema')
+
+
+def emit_parent_failure(reason,custody,detail):
+    row=dict(kind='s2-graph-parent-failure-v1',reason=reason,custody=custody,detail=detail)
+    try:
+        if len((json.dumps(row,separators=(',',':'),allow_nan=False)+'\n').encode())>FAILURE_BYTES:
+            row['detail']=dict(status='unavailable',code='outer_oversized')
+    except BaseException:row['detail']=dict(status='unavailable',code='outer_invalid')
+    return emit(row)
 
 
 def checked_sources(digest,root=ROOT,app=Path('/app')):
@@ -189,7 +241,7 @@ def package_setup(root=ROOT,staged=STAGED):
         if spec is None or spec.origin!=str(staged/path):raise ValueError('graph module precedence mismatch')
 
 
-def child(budget,digest):
+def child(budget,digest,receipt_identity):
     stage='source_check';qualification=None;started=time.monotonic()
     try:
         if type(budget) is not float or not 0<budget<=1080:raise ValueError('fixed graph child budget')
@@ -233,7 +285,7 @@ def child(budget,digest):
         if qualification is not None and stage=='graph' and type(error) is AssertionError:
             try:attach_prior_input(row,qualification.PRIOR_INPUT_FAILURE)
             except BaseException:row['prior_input']=dict(status='unavailable',code='classification_failed')
-        emit(row);return 1  # Never leak an automatic chained/raw traceback.
+        write_failure(row,receipt_identity);return 1  # Never leak an automatic chained/raw traceback.
 
 
 class ChildFailed(RuntimeError):
@@ -243,8 +295,11 @@ class ChildFailed(RuntimeError):
 def run_child(budget,digest,folder):
     argv=[sys.executable,'-I','-B','/qualification/entry.py','--child','--budget',str(budget),'--manifest-sha256',digest]
     output=folder/'graph.stdout';error=folder/'graph.stderr'
+    failure_path=folder/FAILURE_PATH.name;identity=None
     started=time.monotonic();process=None;returncode=None;timed_out=False;process_failed=False
     try:
+        identity=reserve_failure(failure_path)
+        argv+=['--failure-identity',':'.join(str(value) for value in identity)]
         with output.open('xb') as out,error.open('xb') as err:
             process=subprocess.Popen(argv,stdin=subprocess.DEVNULL,stdout=out,stderr=err)
             returncode=process.wait(timeout=max(.001,budget-3))
@@ -269,14 +324,15 @@ def run_child(budget,digest,folder):
                     else 'stderr_overflow' if error.stat().st_size>65536 else None)
         except BaseException:reason='capture_metadata_failed'
     if reason is not None:
-        detail=dict(status='unavailable',code='unreaped') if reason=='unreaped' else read_failure(error)
-        emit(dict(kind='s2-graph-parent-failure-v1',reason=reason,custody=receipt,detail=detail))
+        detail=(dict(status='unavailable',code='unreaped') if returncode is None
+                else read_failure(failure_path,identity))
+        emit_parent_failure(reason,receipt,detail)
         raise ChildFailed(reason) from None  # Failed stdout content is unread.
     try:
         result=strict_json(output.read_bytes())
         if result['kind']!='S2-ORIGINAL-COORDINATE-DENSITY-GRADIENT-STRUCTURAL-ONLY':raise ValueError()
     except BaseException:
-        emit(dict(kind='s2-graph-parent-failure-v1',reason='output_invalid',custody=receipt,detail=read_failure(error)))
+        emit_parent_failure('output_invalid',receipt,read_failure(failure_path,identity))
         raise ChildFailed('output_invalid') from None
     return dict(custody=receipt,argv=argv,result=result)
 
@@ -300,9 +356,16 @@ def main(argv=None):
     try:
         parser=argparse.ArgumentParser(add_help=False,exit_on_error=False)
         parser.add_argument('--manifest-sha256');parser.add_argument('--budget',type=float)
+        parser.add_argument('--failure-identity')
         parser.add_argument('--child',action='store_true');args,extra=parser.parse_known_args(argv)
         if extra or args.manifest_sha256 is None or args.budget is None:raise ValueError()
-        if args.child:return child(args.budget,args.manifest_sha256)
+        if args.child:
+            parts=[] if args.failure_identity is None else args.failure_identity.split(':')
+            if (len(parts)!=3 or any(not value.isascii() or not value.isdecimal()
+                    or len(value)>20 or str(int(value))!=value or int(value)>2**64-1 for value in parts)):
+                raise ValueError()
+            return child(args.budget,args.manifest_sha256,tuple(int(value) for value in parts))
+        if args.failure_identity is not None:raise ValueError()
         parent(args.manifest_sha256,args.budget);return 0
     except BaseException as error:
         reason=error.reason if type(error) is ChildFailed and error.reason in REASONS else 'entry_failed'

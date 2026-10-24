@@ -5,6 +5,7 @@ import copy
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -15,6 +16,28 @@ from tooling.foundation import s2_graph as host
 from tooling.foundation import s2_graph_entry as entry
 
 ROOT=Path(__file__).resolve().parents[1]
+
+
+@contextlib.contextmanager
+def receipt_platform():
+    # Production is Linux. Windows lacks O_NOFOLLOW/geteuid and reports mode666;
+    # only those descriptor metadata differences are inert doubles here.
+    if hasattr(os,'O_NOFOLLOW') and hasattr(os,'geteuid'):
+        yield;return
+    original=os.fstat
+    def metadata(fd):
+        value=original(fd)
+        return SimpleNamespace(st_dev=value.st_dev,st_ino=value.st_ino,st_uid=value.st_uid,
+            st_mode=(value.st_mode&~0o777)|0o600,st_size=value.st_size)
+    with patch.object(os,'O_NOFOLLOW',0,create=True),patch.object(os,'O_NONBLOCK',0,create=True),patch.object(os,'geteuid',return_value=0,create=True),patch.object(os,'fstat',side_effect=metadata):
+        yield
+
+
+def read_receipt_fixture(path):
+    if path.exists():
+        path.chmod(0o600);value=path.stat();identity=(value.st_dev,value.st_ino,value.st_uid)
+    else:identity=(0,0,0)
+    with receipt_platform():return entry.read_failure(path,identity)
 
 
 def without_policy_exception(function):
@@ -125,7 +148,7 @@ class PrivacyTests(unittest.TestCase):
         self.assertEqual(row['error_class'],'ValueError');self.assertTrue(row['omitted'])
         with tempfile.TemporaryDirectory() as temporary:
             path=Path(temporary)/'stderr';path.write_text(raw)
-            self.assertEqual(entry.read_failure(path)['status'],'available')
+            self.assertEqual(read_receipt_fixture(path)['status'],'available')
 
     def test_strict_failure_parser_rejects_unknown_duplicate_nonfinite_oversized_and_missing(self):
         valid=dict(kind='s2-graph-child-failure-v1',stage='compile',error_class='ValueError',locations=[],omitted=True)
@@ -137,8 +160,8 @@ class PrivacyTests(unittest.TestCase):
             path=Path(temporary)/'stderr'
             for raw in bad:
                 with self.subTest(raw_length=len(raw)):
-                    path.write_bytes(raw);self.assertEqual(entry.read_failure(path)['status'],'unavailable')
-            self.assertEqual(entry.read_failure(Path(temporary)/'absent')['code'],'read_failed')
+                    path.write_bytes(raw);self.assertEqual(read_receipt_fixture(path)['status'],'unavailable')
+            self.assertEqual(read_receipt_fixture(Path(temporary)/'absent')['code'],'read_failed')
 
     def test_failure_sink_error_does_not_raise_and_budget_is_bounded(self):
         with patch.object(entry.sys,'stderr',SimpleNamespace(write=lambda _:(_ for _ in ()).throw(OSError()))):
@@ -156,7 +179,9 @@ class PrivacyTests(unittest.TestCase):
             pid=77
             def __init__(self,argv,**kwargs):
                 events.append('spawn');kwargs['stdout'].write(json.dumps(result).encode());kwargs['stdout'].flush()
-                kwargs['stderr'].write(json.dumps(row).encode());kwargs['stderr'].flush();self.waits=0
+                kwargs['stderr'].write(b'UNTRANSPORTED-WARNING-SECRET\n');kwargs['stderr'].flush();self.waits=0
+                identity=tuple(int(v) for v in argv[-1].split(':'))
+                self.receipt_written=entry.write_failure(row,identity)
             def wait(self,timeout):
                 events.append('wait');self.waits+=1
                 if unreaped or (self.waits==1 and timeout_flag):raise subprocess.TimeoutExpired('fixed',1)
@@ -169,7 +194,10 @@ class PrivacyTests(unittest.TestCase):
             if path.name=='graph.stdout' and (returncode!=0 or timeout or unreaped):
                 raise AssertionError('failed stdout content read')
             events.append('read-'+path.name);return original(path)
-        with patch.object(entry.subprocess,'Popen',Process),patch.object(Path,'read_bytes',guarded),contextlib.redirect_stderr(io.StringIO()) as captured:
+        read=entry.read_failure
+        def projected(*args):
+            events.append('read-receipt');return read(*args)
+        with receipt_platform(),patch.object(entry,'FAILURE_PATH',base/'graph.failure.json'),patch.object(entry,'read_failure',side_effect=projected),patch.object(entry.subprocess,'Popen',Process),patch.object(Path,'read_bytes',guarded),contextlib.redirect_stderr(io.StringIO()) as captured:
             try:value=entry.run_child(20.,'a'*64,base)
             except entry.ChildFailed as error:value=error.reason
         return value,events,captured.getvalue()
@@ -189,6 +217,9 @@ class PrivacyTests(unittest.TestCase):
                 if reason!='nonzero':self.assertIn('kill',events)
                 self.assertIn(reason,raw)
                 if reason=='unreaped':self.assertIn('"code":"unreaped"',raw)
+                self.assertNotIn('UNTRANSPORTED',raw)
+                if reason=='unreaped':self.assertNotIn('read-receipt',events)
+                else:self.assertGreater(events.index('read-receipt'),events.index('wait'))
 
     def test_parent_one_child_subtracts_elapsed_and_reserve_not_a_fresh_1080(self):
         observed=[]
@@ -394,7 +425,7 @@ class PriorInputDiagnosticTests(unittest.TestCase):
             for item in (None,metadata,dict(status='unavailable',code='classification_failed')):
                 row=entry.attach_prior_input(copy.deepcopy(base),item);raw=json.dumps(row)
                 self.assertNotIn('SECRET',raw);path.write_text(raw)
-                self.assertEqual(entry.read_failure(path),dict(status='available',failure=row))
+                self.assertEqual(read_receipt_fixture(path),dict(status='available',failure=row))
                 self.assertEqual(raw.count('s2-graph-child-failure-v1'),1)
             for item in (dict(metadata,secret='SECRET'),dict(metadata,rv='SECRET'),dict(metadata,dtype='SECRET'),
                          dict(metadata,input_ordinal=True),dict(metadata,is_constant='SECRET'),dict(metadata,input_ordinal=8)):
@@ -404,9 +435,9 @@ class PriorInputDiagnosticTests(unittest.TestCase):
                 self.assertEqual(produced['prior_input'],dict(status='unavailable',code='refused'))
                 self.assertNotIn('SECRET',json.dumps(produced))
                 path.write_text(json.dumps(dict(base,prior_input=item)))
-                self.assertEqual(entry.read_failure(path)['status'],'unavailable')
+                self.assertEqual(read_receipt_fixture(path)['status'],'unavailable')
             path.write_text(json.dumps(dict(base,prior_input=metadata,stage='compile')))
-            self.assertEqual(entry.read_failure(path)['status'],'unavailable')
+            self.assertEqual(read_receipt_fixture(path)['status'],'unavailable')
 
     def test_original_predicate_first_failure_and_assertion_survive_classifier_failure(self):
         for broken in (False,True):
@@ -540,8 +571,6 @@ class ConstructionPolicyTests(unittest.TestCase):
         inverse=without_policy_exception(qualify)
         self.assertEqual(hashlib.sha256(ast.dump(inverse,include_attributes=False).encode()).hexdigest(),'d3cc84ad168c1c9d063b1014109b35a036a852d20928d1a9c7d1ef7062547a53')
         expected=dict(parent='2fb800e77e4a9276091fd335b0eeb12bbafc3a414aa1a4d668a1e487df417e73',
-            run_child='09804bd7a7d137d3c017fb1658ba7f71d54fa1cfff4750a1c0e84e44cbc58f0e',
-            read_failure='923f40a9f715c51a4beb97cfee7713c6a90422546dddad6680e5ca33bad1e776',
             failure='cb54c978eadbe6456b9bc8b99e083fd7a40fe8056ee327efd5d9661bc73eb502')
         entry_tree=ast.parse((ROOT/'tooling/foundation/s2_graph_entry.py').read_text())
         for name,digest in expected.items():
@@ -551,3 +580,154 @@ class ConstructionPolicyTests(unittest.TestCase):
         argv=host.proposed_argv('image',Path('C:/public/carrier'),'f'*64,1000.,LIMITS)
         flags=[argv[i+1] for i,v in enumerate(argv[:-1]) if v=='--env' and argv[i+1].startswith('PYTENSOR_FLAGS=')]
         self.assertEqual(flags,['PYTENSOR_FLAGS='+host.CONSTRUCTION_FLAGS])
+
+
+class DedicatedReceiptTests(unittest.TestCase):
+    @staticmethod
+    def row():
+        return dict(kind='s2-graph-child-failure-v1',stage='graph',error_class='AssertionError',
+            locations=[],omitted=True,prior_input=dict(status='available',rv='s_alpha',
+                input_ordinal=7,dtype='float32',is_constant=True))
+
+    def test_single_reserved_roundtrip_separate_warning_no_second_write_and_identity_argument(self):
+        with tempfile.TemporaryDirectory() as temporary,receipt_platform():
+            path=Path(temporary)/'graph.failure.json';identity=entry.reserve_failure(path)
+            with patch.object(entry,'FAILURE_PATH',path):
+                self.assertTrue(entry.write_failure(self.row(),identity))
+                self.assertFalse(entry.write_failure(dict(self.row(),stage='compile'),identity))
+            (Path(temporary)/'graph.stderr').write_text('SECRET library warning\nnot JSON')
+            self.assertEqual(entry.read_failure(path,identity),dict(status='available',failure=self.row()))
+            self.assertLessEqual(path.stat().st_size,4096)
+        with patch.object(entry,'child',return_value=1) as child,contextlib.redirect_stderr(io.StringIO()):
+            base=['--child','--budget','10','--manifest-sha256','a'*64]
+            self.assertEqual(entry.main(base+['--failure-identity','1:2:3']),1)
+            child.assert_called_once_with(10.,'a'*64,(1,2,3))
+            for value in ('','1:2','1:2:3:4','01:2:3','-1:2:3','True:2:3','1:2:'+str(2**64)):
+                child.reset_mock();self.assertEqual(entry.main(base+['--failure-identity',value]),1);child.assert_not_called()
+
+    def test_one_strict_bounded_envelope_and_finite_unavailable_codes(self):
+        row=self.row();encoded=json.dumps(row).encode()
+        cases=[(b'','missing'),(b'  ','missing'),(b'warning\n'+encoded,'invalid_json'),
+            (encoded+b'\n'+encoded,'invalid_json'),(b'{"x":1,"x":2}','invalid_json'),
+            (b'{"x":NaN}','invalid_json'),(b'{"x":1e999}','invalid_json'),(b'x'*4097,'oversized'),
+            (b'{}','invalid_schema'),(json.dumps(dict(row,secret='SECRET')).encode(),'invalid_schema'),
+            (json.dumps(dict(row,locations=[dict(file='/secret.py',line=1)])).encode(),'invalid_schema'),
+            (json.dumps(dict(row,locations=[dict(file='entry.py',line=True)])).encode(),'invalid_schema'),
+            (json.dumps(dict(row,locations=[dict(file='entry.py',line=100001)])).encode(),'invalid_schema'),
+            (json.dumps(dict(row,locations=[dict(file='entry.py',line=1)]*9)).encode(),'invalid_schema'),
+            (json.dumps(dict(row,stage='compile')).encode(),'invalid_schema'),
+            (json.dumps(dict(row,error_class='ValueError')).encode(),'invalid_schema'),
+            (json.dumps(dict(row,prior_input=dict(status='unavailable',code='SECRET'))).encode(),'invalid_schema')]
+        with tempfile.TemporaryDirectory() as temporary,receipt_platform():
+            path=Path(temporary)/'graph.failure.json';identity=entry.reserve_failure(path)
+            for raw,code in cases:
+                with self.subTest(code=code,length=len(raw)):
+                    path.write_bytes(raw);actual=entry.read_failure(path,identity)
+                    self.assertEqual(actual,dict(status='unavailable',code=code));self.assertNotIn('SECRET',json.dumps(actual))
+            path.write_bytes(encoded)
+            self.assertEqual(entry.read_failure(path,identity)['status'],'available')
+
+    def test_exclusive_preexisting_and_nonregular_refusal_precedes_launch(self):
+        for mode in ('preexisting','directory','symlink'):
+            with self.subTest(mode=mode),tempfile.TemporaryDirectory() as temporary,receipt_platform():
+                base=Path(temporary);path=base/'graph.failure.json'
+                if mode=='preexisting':path.write_bytes(b'RETAIN')
+                elif mode=='directory':path.mkdir()
+                else:
+                    target=base/'target';target.write_bytes(b'RETAIN')
+                    try:path.symlink_to(target)
+                    except OSError:continue  # Existing dedicated real-symlink test records Windows skip.
+                with patch.object(entry.subprocess,'Popen',side_effect=AssertionError('no launch')) as spawn,patch.object(entry,'read_failure',side_effect=AssertionError('no unreaped read')),contextlib.redirect_stderr(io.StringIO()) as out:
+                    with self.assertRaises(entry.ChildFailed) as raised:entry.run_child(20.,'a'*64,base)
+                    self.assertEqual(raised.exception.reason,'launch_failed');spawn.assert_not_called()
+                if mode=='preexisting':self.assertEqual(path.read_bytes(),b'RETAIN')
+                self.assertNotIn('RETAIN',out.getvalue())
+
+    def test_owner_mode_regular_empty_and_replacement_refuse_without_content_read(self):
+        with tempfile.TemporaryDirectory() as temporary,receipt_platform():
+            path=Path(temporary)/'graph.failure.json';identity=entry.reserve_failure(path)
+            real=entry.os.fstat
+            for change in (dict(st_uid=identity[2]+1),dict(st_mode=0o100640),dict(st_mode=0o040600),dict(st_size=1),dict(st_ino=identity[1]+1)):
+                def metadata(fd):
+                    v=real(fd);value=dict(st_uid=v.st_uid,st_mode=v.st_mode,st_dev=v.st_dev,st_ino=v.st_ino,st_size=v.st_size);value.update(change)
+                    return SimpleNamespace(**value)
+                with self.subTest(change=change),patch.object(entry,'FAILURE_PATH',path),patch.object(entry.os,'fstat',side_effect=metadata):
+                    self.assertFalse(entry.write_failure(self.row(),identity))
+            # Rename keeps the original inode alive, ensuring the replacement
+            # cannot accidentally reuse the same inode in this control.
+            path.rename(path.with_suffix('.original'));path.write_bytes(b'UNKNOWN NEVER FORWARDED')
+            self.assertEqual(entry.read_failure(path,identity),dict(status='unavailable',code='read_failed'))
+            with patch.object(entry,'FAILURE_PATH',path):self.assertFalse(entry.write_failure(self.row(),identity))
+
+    def test_descriptor_flags_existing_only_single_write_read_sentinel_and_file_faults(self):
+        with tempfile.TemporaryDirectory() as temporary,receipt_platform():
+            path=Path(temporary)/'graph.failure.json';opened=[];original=entry.os.open
+            def opening(p,flags,*args):opened.append(flags);return original(p,flags,*args)
+            with patch.object(entry.os,'open',side_effect=opening):
+                identity=entry.reserve_failure(path)
+                with patch.object(entry,'FAILURE_PATH',path),patch.object(entry.os,'write',wraps=entry.os.write) as write:
+                    self.assertTrue(entry.write_failure(self.row(),identity));self.assertEqual(write.call_count,1)
+                self.assertEqual(entry.read_failure(path,identity)['status'],'available')
+            self.assertTrue(opened[0]&os.O_EXCL);self.assertTrue(opened[0]&os.O_CREAT)
+            self.assertTrue(all(not flags&os.O_CREAT for flags in opened[1:]))
+            with patch.object(entry.os,'open',side_effect=OSError('SECRET')):
+                self.assertEqual(entry.read_failure(path,identity),dict(status='unavailable',code='read_failed'))
+                with patch.object(entry,'FAILURE_PATH',path):self.assertFalse(entry.write_failure(self.row(),identity))
+            path.write_bytes(b'')
+            with patch.object(entry,'FAILURE_PATH',path),patch.object(entry.os,'write',return_value=0):
+                self.assertFalse(entry.write_failure(self.row(),identity))
+            class Stream:
+                def __enter__(self):return self
+                def __exit__(self,*_):pass
+                def read(self,cap):self.cap=cap;return b'x'*cap
+            stream=Stream();original_close=entry.os.close
+            def wrapping(fd,*args):original_close(fd);return stream
+            with patch.object(entry.os,'fdopen',side_effect=wrapping):
+                self.assertEqual(entry.read_failure(path,identity),dict(status='unavailable',code='oversized'))
+            self.assertEqual(stream.cap,4097)
+
+    def test_maximum_outer_row_fits_and_oversized_detail_uses_fixed_unavailable(self):
+        row=self.row();longest=max(entry.LOCATIONS.values(),key=len)
+        row['locations']=[dict(file=longest,line=100000) for _ in range(8)]
+        row['prior_input'].update(rv='epsilon_1',dtype='float128',is_constant=False)
+        custody=dict(kind='s2-graph-internal-child-custody',pid=2**31-1,returncode=-2**31,reaped=True,timed_out=True,elapsed_seconds=1080.)
+        with contextlib.redirect_stderr(io.StringIO()) as out:
+            self.assertTrue(entry.emit_parent_failure('timeout',custody,dict(status='available',failure=row)))
+        raw=out.getvalue();self.assertLessEqual(len(raw.encode()),4096)
+        self.assertEqual(json.loads(raw)['detail']['failure'],row)
+        with contextlib.redirect_stderr(io.StringIO()) as out:
+            self.assertTrue(entry.emit_parent_failure('nonzero',custody,dict(secret='SECRET'*4096)))
+        self.assertNotIn('SECRET',out.getvalue())
+        self.assertEqual(json.loads(out.getvalue())['detail'],dict(status='unavailable',code='outer_oversized'))
+
+    def test_actual_child_failure_receipt_sink_error_preserves_nonzero_without_traceback(self):
+        for sink_failed in (False,True):
+            with self.subTest(sink_failed=sink_failed),tempfile.TemporaryDirectory() as temporary,receipt_platform():
+                path=Path(temporary)/'graph.failure.json';identity=entry.reserve_failure(path)
+                with patch.object(entry,'ROOT',Path(temporary)),patch.object(Path,'read_bytes',return_value=b'{}'),patch.object(entry,'strict_json',return_value=dict(construction_policy={})),patch.object(entry,'require_construction_policy',side_effect=ValueError('SECRET')),patch.object(entry,'FAILURE_PATH',path),contextlib.redirect_stderr(io.StringIO()) as err,contextlib.redirect_stdout(io.StringIO()) as out:
+                    if sink_failed:
+                        with patch.object(entry.os,'write',side_effect=OSError('SECRET')):code=entry.child(20.,'a'*64,identity)
+                    else:code=entry.child(20.,'a'*64,identity)
+                self.assertEqual(code,1);self.assertEqual(err.getvalue(),'');self.assertEqual(out.getvalue(),'')
+                result=entry.read_failure(path,identity)
+                self.assertEqual(result['status'],'unavailable' if sink_failed else 'available')
+                self.assertNotIn('SECRET',json.dumps(result))
+
+    def test_inverse_child_scientific_body_and_host_literal_restore_R3(self):
+        tree=ast.parse((ROOT/'tooling/foundation/s2_graph_entry.py').read_text())
+        child=copy.deepcopy(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='child'))
+        self.assertEqual(child.args.args.pop().arg,'receipt_identity')
+        writes=[n for n in ast.walk(child) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='write_failure']
+        self.assertEqual(len(writes),1);writes[0].func.id='emit';writes[0].args.pop()
+        self.assertEqual(hashlib.sha256(ast.dump(child,include_attributes=False).encode()).hexdigest(),'823c537a38793dfafb5260710df8d2afc4c0f87579a8f89e21985423f8d22b82')
+        old_host=(ROOT/'tooling/foundation/s2_graph.py').read_text().replace("NAME='remission-s2-graph-5ed3eb9-r4'","NAME='remission-s2-graph-5ed3eb9-r3'")
+        self.assertEqual(hashlib.sha256(old_host.encode()).hexdigest(),'2b39452c06c4fb5f6628d7e28076a706e79a4e16e58d9fc8d4f114b7a01cec2f')
+        expected={'tooling/foundation/s2_model_qualification.py':'983752d3c59f1807049796a9b0b24d77b4c1fcc711fe359ebeb6cc27d78c938c',
+            'methods/support/s2_data.py':'8b42e7099601334af2bd159823908b049985eac7f9e6c1e28ad07bf9c0f98505',
+            'methods/support/s2_model.py':'881977e1d86cfe0d064a84838ae0525279a11bac1c16482b879538bcdaa262d9',
+            'contracts/domain/support_s2_fit.py':'0894c474ecd259542816c292048d9f4f734d6109a38ac2c3086a6dc4d3abbb20',
+            'tests/s2_model_fixtures.py':'db6205b020e32ee02e1daf2f0acd68f070c632c591f71a670bf7c493f594a734',
+            'tooling/foundation/pa3_monitor.py':'d3f110f0a5ba1ccfc9505db547a6828696cd0355dd802ce5f7c5aa080850553c',
+            'tooling/foundation/pa3-cvm-policy.json':'bd708a70ed2f3a0df8ffc6985479e3269c8160571f8fbc97bfab364b0afd8892'}
+        for path,digest in expected.items():
+            self.assertEqual(hashlib.sha256((ROOT/path).read_text().encode()).hexdigest(),digest,path)

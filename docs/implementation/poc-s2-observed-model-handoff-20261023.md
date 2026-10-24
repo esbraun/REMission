@@ -1,6 +1,40 @@
 # S2 observed adapter and joint model source checkpoint
 
-## Current R3 isolated construction-policy proposal
+## Current R4 dedicated failure-receipt preparation
+
+R3 remains independently accepted CONFIRMED_STOPPED_FAILURE_ONLY; its inner
+stage, effective policy, guard outcome and scientific cause remain UNKNOWN.
+Plan `24ba51ce47042a8f5e0fb6c543304d25445bc8ec` and different critique
+`949f906a48b1c1931b76c110806cadd9481644c5` authorize this transport preparation.
+The existing single finite failure envelope now uses one parent-reserved
+`/tmp/s2-graph-parent/graph.failure.json`, mode0600, at most4096bytes including
+newline. Exclusive/no-follow reservation precedes the sole child. Child opens
+existing-only; descriptor regularity, owner, mode, emptiness and retained
+device/inode/owner identity must match before one write. Parent checks the same
+identity and reads at most4097bytes only after confirmed reap. No stderr scanning,
+failed stdout read, alternate sink, exception text/values/locals or raw fallback.
+Missing/read/write/malformed/oversized receipts stay unavailable; JSON and schema
+refusals have separate fixed codes. Timeout/nonzero/unreaped precedence remains.
+The enclosing failure row also has the original4096byte cap; an oversized detail
+becomes fixed unavailable, never truncated. Maximum eight-location/prior/custody
+controls prove the permitted outer row fits.
+
+The root separately authorized only the host NAME literal R3 to R4. Restoring it
+exactly restores original host bytes; child AST inversion restores the original
+scientific body. Qualification/model/adapter/fixtures/references/prior/directions/
+steps/tolerances/compiler/construction policy and lifecycle helper bytes remain
+unchanged. All ten observed cases, prior-only and full12day14/28 SHAPE ONLY and
+strict precision gates are still mandatory; no numerical pass is predicted.
+
+Guarded suite:53tests,52PASS and one unchanged Windows real-symlink privilege skip.
+Windows descriptor metadata/flag differences use explicit inert test doubles;
+actual Linux receipt APIs remain unexecuted. Initial two shim failures are kept.
+Fresh R4 source/16-input packet under `artifacts/s2-graph-5ed3eb9-r4` requires
+independent SOURCE+OP review and a NEW root GO. Clocks/resources/output/custody,
+strict live expected owned-PID ACK and all terminal/reap/STOP gates are unchanged.
+No native/scientific/Docker/private/old failed-stream or tmp access occurred.
+
+## R3 isolated construction-policy proposal (historical)
 
 R2 actual was independently accepted only as STOPPED_FAILURE_ONLY by `1c9693f738bea9bc33600bb5165a670a69076750`/`98ea63e49c2e3b917ce8de77af7ac752c2def7fd`. It identified `s_alpha` immediate input2 as float32/Constant, without retaining its value, actual cast policy or installed library source bytes. Source-backed plan `284fe8c6b2ca260a73fff9dd3813c27851be59b1`, primary provenance notes `7ed80844ca6176e21e5787688b5b23a60967b71f` and different critique `03a37e6bc384dbcd16a5885e0a0dd5faf0eff457` support the library-inserted HalfNormal location mechanism conditional on correspondence with pinned PyMC6.3.2/PyTensor3.3.4 source. Tagged upstream text is not installed-byte attestation or actual R2 policy evidence.
 

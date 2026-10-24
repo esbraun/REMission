@@ -15,7 +15,7 @@ import subprocess
 import time
 
 SOURCE_BASE='5ed3eb9be56bd338433c24a05c2dc3ac8e77e1e1'
-NAME='remission-s2-graph-5ed3eb9-r3'
+NAME='remission-s2-graph-5ed3eb9-r4'
 PRIMITIVE_SHA='2fcdee42c4c16b91d010fc223120d35a7bcb667af254aa939fbe4c2631ae65f8'
 LIFECYCLE_SHA='45cb568da0dd93642ab48fd5edb2aef76394393a1777c3c05c5645259f88ef2b'
 DEPENDENCY_BLOB='4bdb33116916ad362ed44d112d4a68f7bc6b6dd9'
