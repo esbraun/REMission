@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import importlib
 import importlib.util
+from importlib.metadata import version
 import json
 import math
 import os
@@ -28,7 +29,7 @@ PAYLOAD_FILES={'entry.py','dependency.json','settings.json','resources.json',
                'tooling/foundation/pa3-cvm-policy.json',*MODULES.values()}
 CHILD_OUTPUT=2*1024*1024
 PARENT_OUTPUT=3*1024*1024
-STAGES=('source_check','package_setup','module_import','fixtures','admission','shape',
+STAGES=('source_check','construction_policy','package_setup','module_import','fixtures','admission','shape',
         'graph','compile','density','gradient','serialization','serialization_output')
 ERROR_CLASSES={ValueError:'ValueError',TypeError:'TypeError',KeyError:'KeyError',
     AttributeError:'AttributeError',ImportError:'ImportError',ModuleNotFoundError:'ModuleNotFoundError',
@@ -41,6 +42,14 @@ REASONS=('launch_failed','unreaped','timeout','process_failed','nonzero','stdout
 PRIOR_INPUT_RVS=('mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u','epsilon_0','epsilon_1')
 PRIOR_INPUT_DTYPES=('float16','float32','float64','float128')
 PRIOR_INPUT_MAX_ORDINAL=7
+CONSTRUCTION_FLAGS='base_compiledir=/tmp/pytensor,floatX=float64,cast_policy=numpy+floatX'
+CONSTRUCTION_POLICY=dict(floatX='float64',cast_policy='numpy+floatX',pymc_version='6.3.2',pytensor_version='3.3.4')
+
+
+def require_construction_policy(environ,bound):
+    if (bound!=CONSTRUCTION_POLICY or environ.get('PYTENSOR_FLAGS')!=CONSTRUCTION_FLAGS
+            or environ.get('PYTENSORRC') not in (None,'')):
+        raise ValueError('fixed isolated construction policy required before imports')
 
 
 def checked_prior_input(value):
@@ -184,15 +193,23 @@ def child(budget,digest):
     stage='source_check';qualification=None;started=time.monotonic()
     try:
         if type(budget) is not float or not 0<budget<=1080:raise ValueError('fixed graph child budget')
+        stage='construction_policy'
+        settings=strict_json((ROOT/'settings.json').read_bytes())
+        require_construction_policy(os.environ,settings.pop('construction_policy'))
+        installed=dict(pymc_version=version('pymc'),pytensor_version=version('pytensor'))
+        if installed!={key:CONSTRUCTION_POLICY[key] for key in installed}:raise ValueError('pinned installed metadata conflict')
+        stage='source_check'
         checked_sources(digest);stage='package_setup';package_setup()
         threads={name:os.environ.get(name) for name in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS')}
         if any(value!='1' for value in threads.values()):raise ValueError('fixed single-thread environment required before science import')
         stage='module_import'
         from tooling.foundation import s2_model_qualification as qualification
+        import pytensor
+        qualification.require_actual_policy(pytensor.config)
         from tooling.foundation.pa3_monitor import compilation_options
         from methods.support.s2_data import prepare
         from s2_model_fixtures import cohort,provenance
-        settings=strict_json((ROOT/'settings.json').read_bytes());settings['steps']=tuple(settings['steps'])
+        settings['steps']=tuple(settings['steps'])
         qualification.require_admitted(settings)
         policy=strict_json((STAGED/'tooling/foundation/pa3-cvm-policy.json').read_bytes())
         options,compiler_policy=compilation_options(policy)

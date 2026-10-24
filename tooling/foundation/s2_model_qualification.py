@@ -16,6 +16,34 @@ PRIOR_INPUT_FAILURE=None
 PRIOR_INPUT_RVS=('mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u','epsilon_0','epsilon_1')
 PRIOR_INPUT_DTYPES=('float16','float32','float64','float128')
 PRIOR_INPUT_MAX_ORDINAL=7  # Diagnostic ceiling only; actual input count unknown.
+CONSTRUCTION_FLAGS='base_compiledir=/tmp/pytensor,floatX=float64,cast_policy=numpy+floatX'
+CONSTRUCTION_POLICY=dict(floatX='float64',cast_policy='numpy+floatX',pymc_version='6.3.2',pytensor_version='3.3.4')
+
+
+def require_construction_policy(environ):
+    if (environ.get('PYTENSOR_FLAGS')!=CONSTRUCTION_FLAGS
+            or environ.get('PYTENSORRC') not in (None,'')):
+        raise ValueError('exact isolated construction policy required before scientific imports')
+
+
+def require_actual_policy(config):
+    values=(config.floatX,config.cast_policy)
+    if any(type(value) is not str for value in values) or values!=('float64','numpy+floatX'):
+        raise ValueError('actual construction policy differs from freeze')
+    return dict(floatX='float64',cast_policy='numpy+floatX')
+
+
+def half_normal_metadata(model,constant_type):
+    result=[]
+    for name in ('s_alpha','s_tau','s_e','s_Q'):
+        inputs=model.named_vars[name].owner.inputs
+        if (len(inputs)!=4 or inputs[2].dtype!='float64' or inputs[3].dtype!='float64'
+                or not isinstance(inputs[2],constant_type) or not isinstance(inputs[3],constant_type)):
+            raise AssertionError('strict HalfNormal location/scale construction metadata mismatch')
+        result.append(dict(rv=name,location_ordinal=2,scale_ordinal=3,
+            location_dtype='float64',scale_dtype='float64',
+            location_is_constant=True,scale_is_constant=True))
+    return result
 
 
 def prior_input_metadata(rv,ordinal,dtype,is_constant,expected_names):
@@ -105,8 +133,16 @@ def point_for(members,rho,*,tail=False):
 
 def qualify(data14,data28,*,settings,compile_options):
     require_admitted(settings)  # MUST precede every scientific import/build.
+    require_construction_policy(os.environ)
     global STAGE,PRIOR_INPUT_FAILURE
     PRIOR_INPUT_FAILURE=None
+    STAGE='construction_policy'
+    import pytensor
+    construction_policy=require_actual_policy(pytensor.config)
+    import pymc
+    if (type(pymc.__version__) is not str or type(pytensor.__version__) is not str
+            or pymc.__version__!='6.3.2' or pytensor.__version__!='3.3.4'):raise ValueError('pinned library version conflict')
+    construction_policy.update(pymc_version='6.3.2',pytensor_version='3.3.4')
     import numpy as np
     from dataclasses import replace
     from pytensor.graph.basic import Constant
@@ -116,12 +152,14 @@ def qualify(data14,data28,*,settings,compile_options):
     from tooling.foundation.pa3_monitor import verify_cvm,optimizer_identity
     from contracts.domain.borrow_runtime import NATIVE_OPTIMIZER
     report=dict(kind='S2-ORIGINAL-COORDINATE-DENSITY-GRADIENT-STRUCTURAL-ONLY',
+        construction_policy=construction_policy,
         settings=settings,coordinates='mu_alpha,mu_tau,b,s_alpha,s_tau,s_e,s_Q,rho,z,u,epsilon; all original/untransformed; jacobian=False',
         qualification_fixture_only=True,model_fitted=False,genuine_data=False,serving_authority=False,shapes=[],density=[])
     # Full production shape/input checks stay12; small graph fixtures below do
     # not introduce a shortened production adapter or live API.
     STAGE='shape'
     for data,cutoff in ((data14,14),(data28,28)):
+        require_actual_policy(pytensor.config)
         if data.provenance.cutoff_day!=cutoff:raise ValueError('fixed structural14/28 inputs required')
         model=build(data)
         if len(model.coords['patient'])!=12 or len(model.coords['feature'])!=4:raise AssertionError('complete12/four-feature graph required')
@@ -134,6 +172,7 @@ def qualify(data14,data28,*,settings,compile_options):
     cases=[('observed',data14.members[:count],CORRELATIONS) for count in (1,2)]
     cases.append(('prior_only_empty_rows',(replace(data14.members[0],rows=()),),(0.,)))
     for fixture,members,correlations in cases:
+        require_actual_policy(pytensor.config)
         STAGE='graph';count=len(members);model=_graph(members,original_coordinates=True)
         expected_names=['mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u']+['epsilon_'+str(i) for i in range(count)]
         expected_shapes={name:() for name in expected_names}
@@ -151,10 +190,13 @@ def qualify(data14,data28,*,settings,compile_options):
         for rv in model.free_RVs:
             if any(prior_input_rejected(v,rv.name,ordinal,expected_names,Constant) for ordinal,v in enumerate(rv.owner.inputs)):
                 raise AssertionError('prior parameter input not float64')
+        half_normal_inputs=half_normal_metadata(model,Constant)
         for value in graph_inputs([model.logp(jacobian=False)]):
             if isinstance(value,Constant) and getattr(value,'dtype',None)=='float32':raise AssertionError('float32 graph constant')
         STAGE='compile';compiled=[]
+        require_actual_policy(pytensor.config)
         def checked(fn,label):
+            require_actual_policy(pytensor.config)
             optimizer=optimizer_identity(fn.f.maker.mode.provided_optimizer)
             if optimizer!=NATIVE_OPTIMIZER:raise AssertionError('actual post-PyMC optimizer changed')
             compiled.append(dict(label=label,optimizer=optimizer,vm=verify_cvm(fn.f)))
@@ -167,6 +209,7 @@ def qualify(data14,data28,*,settings,compile_options):
             factor_functions[rv.name]=checked(model.compile_logp(vars=[rv],jacobian=False,**compile_options),'prior:'+rv.name)
         if set(factor_functions)!=set(expected_names):raise AssertionError('prior factor inventory changed')
         for correlation in correlations:
+            require_actual_policy(pytensor.config)
             STAGE='density'
             # The last positive near-boundary point also exercises distant
             # clipped tails, without changing observations or accepting ties.
@@ -224,5 +267,7 @@ def qualify(data14,data28,*,settings,compile_options):
                 negative_controls=negative,gradient_sweeps=sweeps,directions=directions,value_variable_order=names,
                 point={n:point[n].tolist() for n in names},coordinate_shapes={n:list(expected_shapes[n]) for n in names},
                 compiled=compiled,ownership=ownership,prior_only_fixture_not_policy_input=fixture=='prior_only_empty_rows'))
+            report['density'][-1]['half_normal_inputs']=half_normal_inputs
+    require_actual_policy(pytensor.config)
     STAGE='serialization'
     return report

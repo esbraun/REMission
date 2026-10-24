@@ -15,7 +15,7 @@ import subprocess
 import time
 
 SOURCE_BASE='5ed3eb9be56bd338433c24a05c2dc3ac8e77e1e1'
-NAME='remission-s2-graph-5ed3eb9-r2'
+NAME='remission-s2-graph-5ed3eb9-r3'
 PRIMITIVE_SHA='2fcdee42c4c16b91d010fc223120d35a7bcb667af254aa939fbe4c2631ae65f8'
 LIFECYCLE_SHA='45cb568da0dd93642ab48fd5edb2aef76394393a1777c3c05c5645259f88ef2b'
 DEPENDENCY_BLOB='4bdb33116916ad362ed44d112d4a68f7bc6b6dd9'
@@ -39,6 +39,8 @@ RESOURCES=dict(outer_seconds=1200,setup_seconds=60,metadata_seconds=5,create_sec
     child_stdout_bytes=2097152,parent_stdout_bytes=3145728,stderr_bytes=65536)
 GATES=dict(density_atol=1e-8,normalizer_atol=1e-10,gradient_atol=1e-5,
     gradient_rtol=1e-5,steps=[1e-4,3e-5,1e-5,3e-6])
+CONSTRUCTION_FLAGS='base_compiledir=/tmp/pytensor,floatX=float64,cast_policy=numpy+floatX'
+CONSTRUCTION_POLICY=dict(floatX='float64',cast_policy='numpy+floatX',pymc_version='6.3.2',pytensor_version='3.3.4')
 
 
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -102,6 +104,7 @@ def proposed_argv(image,carrier,digest,budget,limits):
     argv=['docker','create','--name',NAME,*limits,
         '--mount',f'type=bind,source={carrier},target=/qualification,readonly',
         '--env','S2_MODEL_SYMBOLIC_QUALIFY=1',
+        '--env','PYTENSOR_FLAGS='+CONSTRUCTION_FLAGS,
         '--env','OPENBLAS_NUM_THREADS=1','--env','OMP_NUM_THREADS=1',
         '--env','MKL_NUM_THREADS=1','--env','NUMEXPR_NUM_THREADS=1',
         image,'python','-I','-B','/qualification/entry.py','--manifest-sha256',digest,
@@ -143,6 +146,7 @@ def decode_output(raw):
             or custody['reaped'] is not True or custody['timed_out'] is not False
             or result['kind']!='S2-ORIGINAL-COORDINATE-DENSITY-GRADIENT-STRUCTURAL-ONLY'
             or result['qualification_fixture_only'] is not True
+            or result['construction_policy']!=CONSTRUCTION_POLICY
             or any(result[k] is not False for k in ('model_fitted','genuine_data','serving_authority'))
             or len(result['density'])!=11 or len(result['shapes'])!=2):raise ValueError('complete graph result/custody required')
     expected=[('observed',n,rho) for n in (1,2) for rho in (-.949999,-.4,0.,.4,.949999)]
@@ -150,6 +154,11 @@ def decode_output(raw):
     if [(r['fixture'],r['members'],r['rho']) for r in result['density']]!=expected:
         raise ValueError('complete fixed graph points required')
     for row in result['density']:
+        expected_half=[dict(rv=name,location_ordinal=2,scale_ordinal=3,location_dtype='float64',scale_dtype='float64',
+            location_is_constant=True,scale_is_constant=True) for name in ('s_alpha','s_tau','s_e','s_Q')]
+        if (row['half_normal_inputs']!=expected_half or any(type(item[key]) is not bool
+                for item in row['half_normal_inputs'] for key in ('location_is_constant','scale_is_constant'))):
+            raise ValueError('all four HalfNormal finite location/scale metadata required')
         names=['mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u']+['epsilon_'+str(i) for i in range(row['members'])]
         if (row['value_variable_order']!=names
                 or [item['label'] for item in row['compiled']]!=['full','gradient','likelihood',*['prior:'+n for n in names]]):
@@ -200,7 +209,7 @@ def freeze(folder,source):
     dependency=subprocess.check_output(['git','show',DEPENDENCY_BLOB],cwd=source,timeout=15)
     if sha(dependency)!=DEPENDENCY_SHA:raise ValueError('accepted dependency bytes changed')
     resources=encoded(RESOURCES)
-    settings=encoded(dict(GATES,operation_review=PLAN_CRITIQUE,resource_plan_sha256=sha(resources)))
+    settings=encoded(dict(GATES,operation_review=PLAN_CRITIQUE,resource_plan_sha256=sha(resources),construction_policy=CONSTRUCTION_POLICY))
     entries={'payload/'+name:ordinary(source/path).read_bytes() for name,path in CARRIER.items()}
     entries.update({'payload/dependency.json':dependency,'payload/resources.json':resources,'payload/settings.json':settings})
     manifest=encoded(dict(kind='S2-fixed-graph-carrier-v1',files={k.removeprefix('payload/'):dict(bytes=len(v),sha256=sha(v)) for k,v in entries.items()}))
@@ -245,7 +254,7 @@ def validate(path,authorized):
     if sha((folder/'payload/dependency.json').read_bytes())!=DEPENDENCY_SHA:raise ValueError('accepted dependency changed')
     if sha((folder/'payload/manifest.json').read_bytes())!=plan['manifest_sha256']:raise ValueError('graph carrier manifest changed')
     if strict_json((folder/'payload/resources.json').read_bytes())!=RESOURCES:raise ValueError('graph resource leaf mismatch')
-    settings=dict(GATES,operation_review=PLAN_CRITIQUE,resource_plan_sha256=sha((folder/'payload/resources.json').read_bytes()))
+    settings=dict(GATES,operation_review=PLAN_CRITIQUE,resource_plan_sha256=sha((folder/'payload/resources.json').read_bytes()),construction_policy=CONSTRUCTION_POLICY)
     if strict_json((folder/'payload/settings.json').read_bytes())!=settings:raise ValueError('exact fixed gates/admission metadata mismatch')
     if Path(__file__).resolve()!=folder/'operator/s2_graph.py':raise ValueError('frozen graph operator required')
     return folder,plan

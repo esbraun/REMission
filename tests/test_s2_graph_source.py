@@ -17,6 +17,32 @@ from tooling.foundation import s2_graph_entry as entry
 ROOT=Path(__file__).resolve().parents[1]
 
 
+def without_policy_exception(function):
+    """Remove ONLY declared R3 policy preconditions/report metadata for inverse proof."""
+    class Inverse(ast.NodeTransformer):
+        def visit_Import(self,node):
+            if len(node.names)==1 and node.names[0].name in ('pytensor','pymc'):return None
+            return node
+        def visit_Expr(self,node):
+            call=node.value
+            if isinstance(call,ast.Call):
+                if isinstance(call.func,ast.Name) and call.func.id in ('require_construction_policy','require_actual_policy'):return None
+                if isinstance(call.func,ast.Attribute) and isinstance(call.func.value,ast.Name) and call.func.value.id=='construction_policy' and call.func.attr=='update':return None
+            return self.generic_visit(node)
+        def visit_Assign(self,node):
+            target=node.targets[0]
+            if isinstance(target,ast.Name) and target.id in ('construction_policy','half_normal_inputs'):return None
+            if isinstance(target,ast.Name) and target.id=='STAGE' and isinstance(node.value,ast.Constant) and node.value.value=='construction_policy':return None
+            if isinstance(target,ast.Subscript) and isinstance(target.slice,ast.Constant) and target.slice.value=='half_normal_inputs':return None
+            if isinstance(target,ast.Name) and target.id=='report':
+                node.value.keywords=[k for k in node.value.keywords if k.arg!='construction_policy']
+            return self.generic_visit(node)
+        def visit_If(self,node):
+            if 'pymc.__version__' in ast.unparse(node.test):return None
+            return self.generic_visit(node)
+    return Inverse().visit(copy.deepcopy(function))
+
+
 class CarrierTests(unittest.TestCase):
     def fixture(self,base):
         root=base/'carrier';app=base/'app';root.mkdir();app.mkdir()
@@ -179,16 +205,18 @@ class HostTests(unittest.TestCase):
         for fixture,members,rho in cases:
             names=['mu_alpha','mu_tau','b','s_alpha','s_tau','s_e','s_Q','rho','z','u']+['epsilon_'+str(i) for i in range(members)]
             rows.append(dict(fixture=fixture,members=members,rho=rho,value_variable_order=names,
+                half_normal_inputs=[dict(rv=name,location_ordinal=2,scale_ordinal=3,location_dtype='float64',scale_dtype='float64',location_is_constant=True,scale_is_constant=True) for name in ('s_alpha','s_tau','s_e','s_Q')],
                 compiled=[dict(label=n) for n in ['full','gradient','likelihood',*['prior:'+n for n in names]]],
                 gradient_sweeps=[dict(direction=d,step=s) for d in (0,1) for s in (1e-4,3e-5,1e-5,3e-6)],
                 directions=[{},{}],likelihood_actual=0.,negative_controls={}))
         result=dict(kind='S2-ORIGINAL-COORDINATE-DENSITY-GRADIENT-STRUCTURAL-ONLY',qualification_fixture_only=True,
+            construction_policy=dict(host.CONSTRUCTION_POLICY),
             model_fitted=False,genuine_data=False,serving_authority=False,density=rows,
             shapes=[dict(cutoff=day,compiled=False,members=list(range(12))) for day in (14,28)])
         original=dict(kind='S2-GRAPH-STRUCTURAL-ONLY',scientific_parent_imports=False,model_fitted=False,genuine_data=False,
             serving_authority=False,run=dict(custody=dict(pid=5,returncode=0,reaped=True,timed_out=False),result=result))
         self.assertEqual(host.decode_output(json.dumps(original)),original)
-        for mode in ('missing_case','missing_step','missing_compiled','not_reaped','prior_likelihood','full12_compiled'):
+        for mode in ('missing_case','missing_step','missing_compiled','not_reaped','prior_likelihood','full12_compiled','policy_conflict','missing_halfnormal','half_constant_wrongtype'):
             value=copy.deepcopy(original);run=value['run']
             if mode=='missing_case':run['result']['density'].pop()
             if mode=='missing_step':run['result']['density'][0]['gradient_sweeps'].pop()
@@ -196,6 +224,9 @@ class HostTests(unittest.TestCase):
             if mode=='not_reaped':run['custody']['reaped']=False
             if mode=='prior_likelihood':run['result']['density'][-1]['likelihood_actual']=1.
             if mode=='full12_compiled':run['result']['shapes'][0]['compiled']=True
+            if mode=='policy_conflict':run['result']['construction_policy']['cast_policy']='custom'
+            if mode=='missing_halfnormal':run['result']['density'][0]['half_normal_inputs'].pop()
+            if mode=='half_constant_wrongtype':run['result']['density'][0]['half_normal_inputs'][0]['location_is_constant']=1
             with self.subTest(mode=mode),self.assertRaises(ValueError):host.decode_output(json.dumps(value))
         with self.assertRaises(ValueError):host.decode_output('x'*(host.MAX_OUTPUT+1))
 
@@ -411,7 +442,7 @@ class PriorInputDiagnosticTests(unittest.TestCase):
         self.assertIsNone(namespace['PRIOR_INPUT_FAILURE'])
 
     def test_inverse_ast_restores_entire_R1_qualification_math_and_control_flow(self):
-        _,tree=self.namespace();qualify=copy.deepcopy(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify'))
+        _,tree=self.namespace();qualify=without_policy_exception(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify'))
         for node in qualify.body:
             if isinstance(node,ast.Global):node.names.remove('PRIOR_INPUT_FAILURE')
         qualify.body=[n for n in qualify.body if not (isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id=='PRIOR_INPUT_FAILURE')]
@@ -424,3 +455,99 @@ class PriorInputDiagnosticTests(unittest.TestCase):
         self.assertEqual(count,1)
         digest=hashlib.sha256(ast.dump(qualify,include_attributes=False).encode()).hexdigest()
         self.assertEqual(digest,'796179aaf6331ad50f881ba81e36626af34d7dfeffb4a3b12efb888652b5e4b9')
+
+
+class ConstructionPolicyTests(unittest.TestCase):
+    @staticmethod
+    def namespace():
+        tree=ast.parse((ROOT/'tooling/foundation/s2_model_qualification.py').read_text())
+        names={'CONSTRUCTION_FLAGS','CONSTRUCTION_POLICY'};functions={'require_construction_policy','require_actual_policy','half_normal_metadata'}
+        nodes=[n for n in tree.body if (isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id in names)
+               or (isinstance(n,ast.FunctionDef) and n.name in functions)]
+        result={};exec(compile(ast.Module(body=nodes,type_ignores=[]),'actual_policy_scalar_helpers','exec'),result)
+        return result,tree
+
+    def test_exact_flags_before_imports_no_duplicate_extra_or_inherited_override(self):
+        namespace,tree=self.namespace()
+        self.assertEqual(namespace['CONSTRUCTION_FLAGS'],entry.CONSTRUCTION_FLAGS)
+        self.assertEqual(namespace['CONSTRUCTION_POLICY'],entry.CONSTRUCTION_POLICY)
+        self.assertEqual(namespace['CONSTRUCTION_POLICY'],host.CONSTRUCTION_POLICY)
+        self.assertEqual(host.CONSTRUCTION_FLAGS,'base_compiledir=/tmp/pytensor,floatX=float64,cast_policy=numpy+floatX')
+        valid=dict(PYTENSOR_FLAGS=host.CONSTRUCTION_FLAGS)
+        namespace['require_construction_policy'](valid);entry.require_construction_policy(valid,host.CONSTRUCTION_POLICY)
+        for value in (None,'',host.CONSTRUCTION_FLAGS+',floatX=float32',host.CONSTRUCTION_FLAGS+',cast_policy=custom',
+                      host.CONSTRUCTION_FLAGS+',optimizer=None',host.CONSTRUCTION_FLAGS.replace('numpy+floatX','custom'),
+                      host.CONSTRUCTION_FLAGS.replace('float64','float32')):
+            for guard in (namespace['require_construction_policy'],lambda env:entry.require_construction_policy(env,host.CONSTRUCTION_POLICY)):
+                with self.subTest(flags=value),self.assertRaises(ValueError):guard(dict(PYTENSOR_FLAGS=value))
+        with self.assertRaises(ValueError):entry.require_construction_policy(dict(valid,PYTENSORRC='/SECRET'),host.CONSTRUCTION_POLICY)
+        with self.assertRaises(ValueError):entry.require_construction_policy(valid,dict(host.CONSTRUCTION_POLICY,pymc_version='wrong'))
+        qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+        source=ast.unparse(qualify)
+        self.assertLess(source.index('require_construction_policy(os.environ)'),source.index('import pytensor'))
+        self.assertLess(source.index('require_actual_policy(pytensor.config)'),source.index('import pymc'))
+        self.assertLess(source.index('require_actual_policy(pytensor.config)'),source.index('from methods.support.s2_model'))
+        child=ast.unparse(next(n for n in ast.parse((ROOT/'tooling/foundation/s2_graph_entry.py').read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='child'))
+        self.assertLess(child.index('require_construction_policy('),child.index('package_setup()'))
+        self.assertLess(child.index('qualification.require_actual_policy('),child.index('compilation_options(policy)'))
+
+    def test_actual_policy_scalar_checks_and_finite_report_no_guessed_version(self):
+        namespace,tree=self.namespace();check=namespace['require_actual_policy']
+        self.assertEqual(check(SimpleNamespace(floatX='float64',cast_policy='numpy+floatX')),dict(floatX='float64',cast_policy='numpy+floatX'))
+        for config in (SimpleNamespace(floatX='float32',cast_policy='numpy+floatX'),SimpleNamespace(floatX='float64',cast_policy='custom')):
+            with self.assertRaises(ValueError):check(config)
+        function=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+        guard=next(n for n in function.body if isinstance(n,ast.If) and 'pymc.__version__' in ast.unparse(n.test))
+        for pm,pt in (('6.3.2','3.3.4'),('WRONG','3.3.4'),('6.3.2','WRONG')):
+            values=dict(pymc=SimpleNamespace(__version__=pm),pytensor=SimpleNamespace(__version__=pt))
+            if pm=='6.3.2' and pt=='3.3.4':exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual_version_guard_only','exec'),values)
+            else:
+                with self.assertRaises(ValueError):exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual_version_guard_only','exec'),values)
+
+    def test_all_four_halfnormal_location_scale_metadata_without_values(self):
+        namespace,_=self.namespace()
+        class ConstantMetadata:
+            dtype='float64'
+            @property
+            def data(self):raise AssertionError('no value read')
+        model=SimpleNamespace(named_vars={name:SimpleNamespace(owner=SimpleNamespace(inputs=[object(),object(),ConstantMetadata(),ConstantMetadata()])) for name in ('s_alpha','s_tau','s_e','s_Q')})
+        rows=namespace['half_normal_metadata'](model,ConstantMetadata)
+        self.assertEqual([r['rv'] for r in rows],['s_alpha','s_tau','s_e','s_Q'])
+        self.assertTrue(all(r['location_dtype']==r['scale_dtype']=='float64' for r in rows))
+        self.assertTrue(all(set(r)=={'rv','location_ordinal','scale_ordinal','location_dtype','scale_dtype','location_is_constant','scale_is_constant'} for r in rows))
+        for change in ('float32','nonconstant'):
+            before=model.named_vars['s_alpha'].owner.inputs[2]
+            model.named_vars['s_alpha'].owner.inputs[2]=SimpleNamespace(dtype='float32' if change=='float32' else 'float64')
+            with self.assertRaises(AssertionError):namespace['half_normal_metadata'](model,ConstantMetadata)
+            model.named_vars['s_alpha'].owner.inputs[2]=before
+
+    def test_both_original_strict_dtype_guards_still_reject(self):
+        namespace,tree=PriorInputDiagnosticTests.namespace()
+        class ConstantMetadata:pass
+        for constant in (True,False):
+            value=ConstantMetadata() if constant else SimpleNamespace()
+            value.dtype='float32';namespace['PRIOR_INPUT_FAILURE']=None
+            self.assertTrue(namespace['prior_input_rejected'](value,'s_alpha',2,['s_alpha'],ConstantMetadata))
+            self.assertEqual(namespace['PRIOR_INPUT_FAILURE']['is_constant'],constant)
+        qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+        loop=next(n for n in ast.walk(qualify) if isinstance(n,ast.For) and isinstance(n.iter,ast.Call) and isinstance(n.iter.func,ast.Name) and n.iter.func.id=='graph_inputs')
+        value=ConstantMetadata();value.dtype='float32'
+        with self.assertRaisesRegex(AssertionError,'float32 graph constant'):
+            exec(compile(ast.Module(body=loop.body,type_ignores=[]),'actual_graph_constant_scalar_guard','exec'),dict(value=value,Constant=ConstantMetadata))
+
+    def test_policy_only_inverse_to_R2_and_unchanged_failure_reaping(self):
+        _,tree=self.namespace();qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+        inverse=without_policy_exception(qualify)
+        self.assertEqual(hashlib.sha256(ast.dump(inverse,include_attributes=False).encode()).hexdigest(),'d3cc84ad168c1c9d063b1014109b35a036a852d20928d1a9c7d1ef7062547a53')
+        expected=dict(parent='2fb800e77e4a9276091fd335b0eeb12bbafc3a414aa1a4d668a1e487df417e73',
+            run_child='09804bd7a7d137d3c017fb1658ba7f71d54fa1cfff4750a1c0e84e44cbc58f0e',
+            read_failure='923f40a9f715c51a4beb97cfee7713c6a90422546dddad6680e5ca33bad1e776',
+            failure='cb54c978eadbe6456b9bc8b99e083fd7a40fe8056ee327efd5d9661bc73eb502')
+        entry_tree=ast.parse((ROOT/'tooling/foundation/s2_graph_entry.py').read_text())
+        for name,digest in expected.items():
+            node=next(n for n in entry_tree.body if isinstance(n,ast.FunctionDef) and n.name==name)
+            self.assertEqual(hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest(),digest)
+        from tooling.foundation.n_api02 import LIMITS
+        argv=host.proposed_argv('image',Path('C:/public/carrier'),'f'*64,1000.,LIMITS)
+        flags=[argv[i+1] for i,v in enumerate(argv[:-1]) if v=='--env' and argv[i+1].startswith('PYTENSOR_FLAGS=')]
+        self.assertEqual(flags,['PYTENSOR_FLAGS='+host.CONSTRUCTION_FLAGS])
