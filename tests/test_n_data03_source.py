@@ -23,6 +23,13 @@ def startup_inverse_source(source):
     source=source[:source.index('def publish_startup(')]+source[source.index('def ordinary('):]
     replacements=[
       ("'remission-n-data03-261024-r3'","'remission-n-data03-261023-r2'"),
+      ("nonce=secrets.token_hex(24);child=None;reaped=False;code=None;acceptance_failed=False",
+       "nonce=secrets.token_hex(24);child=None;reaped=False;code=None"),
+      ("        except BaseException:\n            acceptance_failed=True  # A late ACK may already have reached the worker body.\n            if child is not None:",
+       "        except BaseException:\n            if child is not None:"),
+      ("status='worker_terminal' if not acceptance_failed and reaped and code in (0,1,2) else 'STOP UNCONFIRMED',\n            launcher_acceptance_failed=acceptance_failed,outer_deadline=outer,",
+       "status='worker_terminal' if reaped and code in (0,1,2) else 'STOP UNCONFIRMED',outer_deadline=outer,"),
+      ("    require(not acceptance_failed and reaped and code==0)","    require(reaped and code==0)"),
       ("                if ready.exists():\n                    require(json.loads(ready.read_bytes())==expected)\n                    require(time.monotonic()<min(until,start+7140));break",
        "                if ready.exists():require(json.loads(ready.read_bytes())==expected);break"),
       ("            require(child.poll() is None)\n            publish_startup(output,'worker-ack.json',expected,min(until,start+7140))\n            require(time.monotonic()<min(until,start+7140) and child.poll() is None)",
@@ -606,7 +613,9 @@ class Data03StartupSource(unittest.TestCase):
             packet=Path(folder);events=[];code=[None];polls=[0]
             def rename(source,destination):
                 self.rename_double(source,destination)
-                if case=='late_publication':clock[0]=105.0
+                if case in ('late_publication','late_publication_exited'):
+                    clock[0]=105.0
+                    if case=='late_publication_exited':code[0]=0
             class Child:
                 pid=41
                 def __init__(self,*args,**kwargs):
@@ -656,12 +665,14 @@ class Data03StartupSource(unittest.TestCase):
             else:
                 terminal=json.loads((packet/'attempt/launcher-terminal.json').read_bytes())
                 self.assertEqual(terminal['reaped'],case!='reap_unconfirmed')
-                if case=='reap_unconfirmed':self.assertEqual(terminal['status'],'STOP UNCONFIRMED')
+                self.assertEqual(terminal['launcher_acceptance_failed'],case!='matching')
+                self.assertEqual(terminal['status'],'worker_terminal' if case=='matching' else 'STOP UNCONFIRMED')
+                if case=='late_publication_exited':self.assertEqual(terminal['returncode'],0)
                 if case in ('malformed','mismatch','nan_identity','nested_identity','late_read','child_exit','child_exit_between','common_expired'):self.assertFalse((packet/'attempt/worker-ack.json').exists())
             return dict(body_entered='body' in events,reader_clock=clock[0])
 
     def test_parent_matching_malformed_mismatch_child_exit_late_deadline_and_reap(self):
-        for case in ('matching','malformed','mismatch','nan_identity','nested_identity','child_exit','child_exit_between','late_read','late_publication','common_expired','reap_unconfirmed'):
+        for case in ('matching','malformed','mismatch','nan_identity','nested_identity','child_exit','child_exit_between','late_read','late_publication','late_publication_exited','common_expired','reap_unconfirmed'):
             with self.subTest(case=case):self.startup(case)
 
     def test_worker_matching_invalid_ACK_late_read_publication_no_body(self):

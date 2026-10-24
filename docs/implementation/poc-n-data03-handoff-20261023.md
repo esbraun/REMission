@@ -176,6 +176,15 @@ Thus cross-local-cutoff body exclusion is NOT established by this visibility
 repair. Root routed this explicit existing limitation for different Astra
 disposition before SOURCE/OP acceptance. No shared-cutoff architecture is added.
 
+The different contract disposition2428dfdd0f6dc2acbdfe0d2ad4f0491bf2c29206
+accepts this limited PLAN scope. Parent acceptance failure now emits only the
+fixed boolean launcher_acceptance_failed and STOP UNCONFIRMED, even when the
+exact child was reaped with exit0. Such a refusal cannot authorize success or
+prove no role side effects; broader descendants remain UNKNOWN. No role lookup,
+discovery or guessed cleanup was added. Normal accepted worker completion keeps
+its existing worker_terminal meaning. This additional conservative launcher
+classification and success veto are included in the complete inverse proof.
+
 Guarded controls retain original29 plus focused ready/ACK partial visibility,
 fault/collision/race/deadline/malformed/mismatch/exit/reap/inverse cases. The first
 run's inconsistent exited-child double (poll1/wait0) was corrected to retain its

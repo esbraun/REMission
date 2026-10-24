@@ -296,7 +296,7 @@ def launch(spec_path,authorized,authority):
     require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=spec['worktree'],timeout=5).decode().strip()==spec['candidate_commit'])
     require(not subprocess.check_output(['git','status','--porcelain=v1'],cwd=spec['worktree'],timeout=5).strip())
     # A direct base interpreter owns the worker; no venv redirector/Job manager.
-    nonce=secrets.token_hex(24);child=None;reaped=False;code=None
+    nonce=secrets.token_hex(24);child=None;reaped=False;code=None;acceptance_failed=False
     argv=[sys.executable,'-I','-B',str(Path(__file__).resolve()),'--spec',str(spec_path),'--authorized-spec-sha256',authorized,
         '--authorization',str(authority),'--worker','--start',str(start),'--lease-unix',str(lease_unix),'--outer',str(outer),'--nonce',nonce]
     with (output/'operator.stdout').open('xb') as stdout,(output/'operator.stderr').open('xb') as stderr:
@@ -316,14 +316,16 @@ def launch(spec_path,authorized,authority):
             require(time.monotonic()<min(until,start+7140) and child.poll() is None)
             code=child.wait(timeout=max(.001,outer-2-time.monotonic()));reaped=True
         except BaseException:
+            acceptance_failed=True  # A late ACK may already have reached the worker body.
             if child is not None:
                 if child.poll() is None:child.kill()
                 try:code=child.wait(timeout=max(.001,min(2,outer-time.monotonic())));reaped=True
                 except BaseException:pass
         finally:save(output/'launcher-terminal.json',dict(pid=child.pid if child is not None else None,returncode=code,reaped=reaped,
-            status='worker_terminal' if reaped and code in (0,1,2) else 'STOP UNCONFIRMED',outer_deadline=outer,
+            status='worker_terminal' if not acceptance_failed and reaped and code in (0,1,2) else 'STOP UNCONFIRMED',
+            launcher_acceptance_failed=acceptance_failed,outer_deadline=outer,
             broader_descendants='UNKNOWN',resources_retained=True))
-    require(reaped and code==0)
+    require(not acceptance_failed and reaped and code==0)
     print(json.dumps(dict(status='N_DATA03_OBSERVED_ONLY_COMPLETE',resources_retained=True)))
 
 
