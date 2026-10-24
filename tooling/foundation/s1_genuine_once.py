@@ -206,6 +206,7 @@ def checked_packet(path,token):
         source=packet/item['path'];require(source.resolve().is_relative_to(packet.resolve()) and not source.is_symlink())
         value=source.read_bytes();require(len(value)==item['bytes'] and sha(value)==item['sha256'])
     if binding:
+        checked_binding_carrier(packet/'payload')
         authority=(packet/'payload/support-authority.json').read_bytes()
         require(len(authority)==699480 and sha(authority)==AUTHORITY_SHA)
         raw=(packet/'payload/binding-spec.json').read_bytes();require(sha(raw)==spec['binding_spec_sha256'])
@@ -226,6 +227,16 @@ def checked_packet(path,token):
         and payload['cutoff_day']==84 and type(payload.get('members')) is int and payload['members']==12
         and payload.get('request_seconds')==180 and payload.get('private_export_cap')==16*1024*1024)
     return spec,packet
+
+
+def checked_binding_carrier(payload):
+    # Fixed three public leaves only: no extra module may shadow the installed
+    # sqlite/contracts/services imports when Python starts at /operation.
+    names=set()
+    for path in payload.iterdir():
+        require(path.is_file() and not path.is_symlink() and not (getattr(path.lstat(),'st_file_attributes',0)&0x400))
+        names.add(path.name);require(len(names)<=3)
+    require(names=={'s1_genuine_submit.py','binding-spec.json','support-authority.json'})
 
 
 def check_host():

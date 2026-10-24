@@ -2,7 +2,7 @@
 import ast
 from contextlib import contextmanager
 from copy import deepcopy
-import hashlib,json
+import hashlib,json,tempfile
 from pathlib import Path
 from types import SimpleNamespace as NS
 import unittest
@@ -159,6 +159,13 @@ class ReadonlyTests(unittest.TestCase):
         self.assertIn('(opened.st_dev, opened.st_ino) != (current.st_dev, current.st_ino)',text)
 
 class ModeTests(unittest.TestCase):
+    def test_fixed_public_carrier_refuses_import_shadowing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)
+            for name in ('s1_genuine_submit.py','binding-spec.json','support-authority.json'):(path/name).write_bytes(b'public-unit')
+            host.checked_binding_carrier(path)
+            (path/'sqlite3.py').write_text('raise AssertionError("SECRET_SENTINEL")')
+            with self.assertRaises(ValueError):host.checked_binding_carrier(path)
     def test_binding_spec_no_auth_or_archive_mount_and_no_submit_fallthrough(self):
         value=binding_spec();host.admit(value);driver.binding_admit({k:v for k,v in value.items() if k not in ('image','bounds','binding_spec_sha256')})
         args,mounts=host.argv(value,Path('C:/public-unit/packet'))
