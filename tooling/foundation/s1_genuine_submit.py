@@ -7,10 +7,12 @@ import argparse
 import hashlib
 import importlib.abc
 import json
+import math
 import os
 from pathlib import Path
 import re
 import signal
+import stat
 import sys
 import time
 
@@ -42,6 +44,316 @@ SQL_PARTITIONS='SELECT DISTINCT patient_id,partition_id FROM observed_archive_en
 SQL_PENDING="SELECT 1 FROM analysis_attempts WHERE status IN ('queued','running') LIMIT 1"
 SQL_PENDING_WORK="SELECT 1 FROM pending_work WHERE status IN ('queued','running') LIMIT 1"
 SQL_MIGRATIONS='SELECT version FROM schema_migrations LIMIT 6'
+RECON_KIND='S1_ORIGINAL_REQUEST_RECONCILIATION_V1'
+RECON_NAMESPACE='remission-s1-original-reconcile-261024-r1'
+RECON_FOLDER=Path('/data/s1-p3-original-reconcile-r1')
+RECON_PHASES=('admitted','authentication_before','authentication_after','snapshot_before','snapshot_after')
+RECON_STATUSES=('unavailable','receipt_absent_at_snapshot','matched_queued_metadata','matched_other_job_state','conflict')
+RECON_JOB_STATES=('queued','running','completed','failed','abstained')
+SQL_RECON_SESSION="""SELECT CASE WHEN length(CAST(s.account_id AS BLOB))<=128 THEN s.account_id END AS account_id,
+ CASE WHEN typeof(s.revoked)='integer' THEN s.revoked END AS revoked,
+ CASE WHEN typeof(s.expires_at) IN ('real','integer') THEN s.expires_at END AS expires_at,
+ CASE WHEN typeof(s.auth_version)='integer' THEN s.auth_version END AS auth_version,
+ CASE WHEN typeof(a.auth_version)='integer' THEN a.auth_version END AS current_auth_version FROM sessions s LEFT JOIN accounts a ON a.id=s.account_id
+ WHERE s.token_hash=? LIMIT 2"""
+SQL_RECON_RECEIPT="""SELECT CASE WHEN length(CAST(scope AS BLOB))<=256 THEN scope END AS scope,
+ CASE WHEN length(CAST(payload_sha256 AS BLOB))<=64 THEN payload_sha256 END AS payload_sha256,typeof(response) AS response_type,
+ length(CAST(response AS BLOB)) AS response_bytes,
+ CASE WHEN length(CAST(response AS BLOB))<=131072 THEN response END AS response
+ FROM receipts WHERE owner_id=? AND key=? LIMIT 2"""
+SQL_RECON_PATIENTS='SELECT id,CASE WHEN length(CAST(owner_id AS BLOB))<=128 THEN owner_id END AS owner_id,CASE WHEN typeof(version)=\'integer\' THEN version END AS version FROM patients WHERE id IN ('+','.join(['?']*12)+') LIMIT 13'
+SQL_RECON_JOB="""SELECT job_id,owner_id,patient_id,status,stage,previous_attempt,
+ claim_token IS NOT NULL AND claim_token!='' AS claimed,started_at IS NOT NULL AS started,
+ finished_at IS NOT NULL AS finished,result_json IS NOT NULL AS result_present,
+ length(CAST(cohort_json AS BLOB)) AS cohort_bytes,
+ CASE WHEN length(CAST(cohort_json AS BLOB))<=4096 THEN cohort_json END AS cohort,
+ length(CAST(configuration_json AS BLOB)) AS config_bytes,
+ CASE WHEN length(CAST(configuration_json AS BLOB))<=1024 THEN configuration_json END AS configuration,
+ json_valid(request_json) AS valid_request,
+ json_extract(request_json,'$.schema_version') AS schema_version,
+ json_extract(request_json,'$.kind') AS kind,json_extract(request_json,'$.purpose') AS purpose,
+ json_extract(request_json,'$.attempt_id') AS attempt_id,
+ json_extract(request_json,'$.archive.owner_id') AS request_owner,
+ json_extract(request_json,'$.archive.archive_id') AS archive_id,
+ json_extract(request_json,'$.archive.run_id') AS run_id,
+ json_extract(request_json,'$.archive.cohort_id') AS cohort_id,
+ json_extract(request_json,'$.archive.admission_sha256') AS admission,
+ json_extract(request_json,'$.mode') AS mode,json_extract(request_json,'$.cutoff_day') AS cutoff_day,
+ json_type(request_json,'$.cohort') AS cohort_type,json_array_length(request_json,'$.cohort') AS cohort_count,
+ json_extract(request_json,'$.configuration') AS request_configuration
+ FROM analysis_attempts WHERE job_id=? AND owner_id=? LIMIT 2"""
+SQL_RECON_MEMBER_IDS="""SELECT CASE WHEN length(CAST(json_extract(value,'$.patient_id') AS BLOB))<=128 THEN json_extract(value,'$.patient_id') END AS patient_id,
+ CASE WHEN length(CAST(json_extract(value,'$.partition_id') AS BLOB))<=128 THEN json_extract(value,'$.partition_id') END AS partition_id,
+ json_type(value,'$.patient_version') AS version_type,
+ CASE WHEN json_type(value,'$.patient_version')='integer' THEN json_extract(value,'$.patient_version') END AS patient_version
+ FROM analysis_attempts,json_each(request_json,'$.cohort')
+ WHERE job_id=? AND owner_id=? ORDER BY CAST(json_each.key AS INTEGER) LIMIT 13"""
+SQL_RECON_PENDING='SELECT id,CASE WHEN length(CAST(patient_id AS BLOB))<=128 THEN patient_id END AS patient_id,CASE WHEN length(CAST(status AS BLOB))<=16 THEN status END AS status FROM pending_work WHERE id=? LIMIT 2'
+SQL_RECON_OVERLAP="""SELECT CASE WHEN length(CAST(job_id AS BLOB))<=64 THEN job_id END AS job_id,
+ CASE WHEN length(CAST(owner_id AS BLOB))<=128 THEN owner_id END AS owner_id,status FROM analysis_attempts a
+ WHERE status IN ('queued','running') AND (json_valid(cohort_json)=0 OR
+ json_type(CASE WHEN json_valid(cohort_json) THEN cohort_json ELSE '[]' END)!='array' OR EXISTS
+ (SELECT 1 FROM json_each(CASE WHEN json_valid(a.cohort_json) THEN a.cohort_json ELSE '[]' END) WHERE value IN ("""+','.join(['?']*12)+'))) LIMIT 3'
+SQL_RECON_PENDING_OVERLAP="""SELECT CASE WHEN length(CAST(id AS BLOB))<=64 THEN id END AS id,patient_id,status FROM pending_work
+ WHERE status IN ('queued','running') AND patient_id IN ("""+','.join(['?']*12)+') LIMIT 3'
+# Fixed selected scalar projection limits apply before Python materialization.
+# Never return request_json or result_json. SQL predicates may scan; the common
+# deadline, not LIMIT, bounds operation time.
+for _field,_cap in (('schema_version',16),('kind',64),('purpose',32),('attempt_id',64),
+        ('archive.owner_id',128),('archive.archive_id',128),('archive.run_id',128),
+        ('archive.cohort_id',128),('archive.admission_sha256',64),('mode',8),('configuration',1024)):
+    _expr="json_extract(request_json,'$."+_field+"')"
+    SQL_RECON_JOB=SQL_RECON_JOB.replace(_expr,'CASE WHEN length(CAST('+_expr+' AS BLOB))<='+str(_cap)+' THEN '+_expr+' END')
+SQL_RECON_JOB=SQL_RECON_JOB.replace("json_extract(request_json,'$.cutoff_day')",
+    "CASE WHEN json_type(request_json,'$.cutoff_day')='integer' THEN json_extract(request_json,'$.cutoff_day') END")
+for _field,_cap in (('patient_id',128),('status',16),('stage',32),('previous_attempt',128)):
+    SQL_RECON_JOB=SQL_RECON_JOB.replace(_field+',','CASE WHEN length(CAST('+_field+' AS BLOB))<='+str(_cap)+' THEN '+_field+' END AS '+_field+',',1)
+SQL_RECON_ARCHIVE=SQL_ARCHIVE.replace('SELECT owner_id,','SELECT CASE WHEN length(CAST(owner_id AS BLOB))<=128 THEN owner_id END AS owner_id,')
+SQL_RECON_ARCHIVE=SQL_RECON_ARCHIVE.replace('mode,export_sha256,',
+    'CASE WHEN length(CAST(mode AS BLOB))<=64 THEN mode END AS mode,CASE WHEN length(CAST(export_sha256 AS BLOB))<=64 THEN export_sha256 END AS export_sha256,')
+SQL_RECON_ARCHIVE=SQL_RECON_ARCHIVE.replace("json_extract(receipt,'$.members')",
+    "CASE WHEN json_type(receipt,'$.members')='integer' THEN json_extract(receipt,'$.members') END")
+for _field,_cap in (('admission_sha256',64),('manifest_sha256',64),('qualification_scope',64),('archive_id',128)):
+    _expr="json_extract(receipt,'$."+_field+"')"
+    SQL_RECON_ARCHIVE=SQL_RECON_ARCHIVE.replace(_expr,'CASE WHEN length(CAST('+_expr+' AS BLOB))<='+str(_cap)+' THEN '+_expr+' END')
+for _field in ('model','prior','estimand','protocol','law'):
+    _expr="json_extract(request_json,'$."+_field+"')"
+    SQL_RECON_JOB=SQL_RECON_JOB.replace('\n FROM analysis_attempts',',CASE WHEN length(CAST('+_expr+' AS BLOB))<=1024 THEN '+_expr+' END AS request_'+_field+'\n FROM analysis_attempts')
+SQL_RECON_JOB=SQL_RECON_JOB.replace('\n FROM analysis_attempts',
+    ",json_type(request_json,'$.synthetic') AS synthetic_type,CASE WHEN length(CAST(cutoff AS BLOB))<=64 THEN cutoff END AS cutoff,"
+    "CASE WHEN length(CAST(json_extract(request_json,'$.cutoff') AS BLOB))<=64 THEN json_extract(request_json,'$.cutoff') END AS request_cutoff\n FROM analysis_attempts")
+SQL_RECON_JSON="SELECT json_valid('{\"x\":[1]}') AS valid,json_type('{\"x\":[1]}','$.x') AS kind,json_array_length('[1]') AS count"
+
+
+class ReconcileConflict(ValueError):
+    pass
+
+
+def recon_require(value):
+    if not value:raise ReconcileConflict('original request metadata conflict')
+
+
+def recon_json(raw):
+    def pairs(items):
+        value={}
+        for key,item in items:recon_require(key not in value);value[key]=item
+        return value
+    return json.loads(raw,object_pairs_hook=pairs,
+        parse_constant=lambda _:(_ for _ in ()).throw(ReconcileConflict('nonfinite metadata')))
+
+
+def recon_admit(spec):
+    require(type(spec) is dict and spec.get('kind')==RECON_KIND and spec.get('executable') is True
+        and spec.get('namespace')==RECON_NAMESPACE and spec.get('volume')==VOLUME
+        and spec.get('key')==KEY and spec.get('owner_id')=='1946fb30-b736-402e-a6d0-a0b50eb92496'
+        and all(spec.get(k)==v and type(spec.get(k)) is type(v) for k,v in BIND_EXPECTED.items())
+        and spec.get('authority_mode')=='EXTERNAL_ROOT_EXACT_ONCE_AFTER_SOURCE_OP'
+        and spec.get('metadata_only') is True and spec.get('no_submit_claim_fit') is True
+        and spec.get('request_seconds')==180 and type(spec.get('request_seconds')) is int
+        and type(spec.get('source_commit')) is str and re.fullmatch('[a-f0-9]{40}',spec['source_commit']) is not None
+        and spec.get('original_spec_blob')=='a92f061741cf283e4bc5cf4f46a94979acf0731e'
+        and type(spec.get('original_submission')) is dict
+        and set(spec['original_submission'])=={'archive_id','mode','cutoff_day','configuration','previous_attempt'}
+        and spec['original_submission']['archive_id']==BIND_EXPECTED['archive_id']
+        and spec['original_submission']['mode']=='S1' and type(spec['original_submission']['cutoff_day']) is int
+        and spec['original_submission']['cutoff_day']==84 and spec['original_submission']['previous_attempt'] is None
+        and type(spec.get('expected_references')) is dict and set(spec['expected_references'])=={'model','prior','estimand','protocol','law'}
+        and type(spec.get('expected_cutoff')) is str and len(spec['expected_cutoff'])<=64
+        and not any(k in spec for k in ('source_review','operation_review','root_go','private_export_cap')))
+    return spec
+
+
+def recon_result(status,*,phase='snapshot_after',job=None,job_state=None,claimed=False,started=False,result_present=False,complete=True):
+    value=dict(schema='s1-original-request-control-v1',kind='s1_original_request_reconciliation',phase=phase,status=status,
+        complete=complete,job_id=job,job_state=job_state,claimed=claimed,started=started,result_present=result_present,
+        metadata_only=True,current_input_validated=False,submit=False,claim=False,fit=False)
+    require(status in RECON_STATUSES and phase in RECON_PHASES and type(complete) is bool
+        and (job is None or type(job) is str and re.fullmatch('analysis-[a-f0-9]{32}',job) is not None)
+        and (job_state is None or job_state in RECON_JOB_STATES)
+        and all(type(v) is bool for v in (claimed,started,result_present)))
+    return value
+
+
+def recon_publish(value):
+    raw=(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False)+'\n').encode()
+    require(0<len(raw)<=4096)
+    temporary=RECON_FOLDER/'.control.next';target=RECON_FOLDER/'control.json'
+    fd=os.open(temporary,os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,'O_NOFOLLOW',0),0o600)
+    try:
+        info=os.fstat(fd);require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid())
+        with os.fdopen(fd,'wb') as stream:fd=None;stream.write(raw);stream.flush();os.fsync(stream.fileno())
+        if target.exists() or target.is_symlink():
+            info=target.lstat();require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid())
+        os.replace(temporary,target)
+    finally:
+        if fd is not None:os.close(fd)
+
+
+def recon_session(db,token_hash,owner,now):
+    require(type(token_hash) is str and re.fullmatch('[a-f0-9]{64}',token_hash) is not None)
+    rows=bounded(db,SQL_RECON_SESSION,(token_hash,),1)
+    require(len(rows)==1);r=rows[0]
+    require(r['account_id']==owner and type(r['revoked']) is int and r['revoked']==0
+        and type(r['expires_at']) in (int,float) and math.isfinite(r['expires_at']) and r['expires_at']>now
+        and type(r['auth_version']) is int and r['auth_version']>=1
+        and type(r['current_auth_version']) is int and r['auth_version']==r['current_auth_version'])
+
+
+def recon_archive(db,members,partitions,manifest_sha256,owner):
+    require(len(members)==12 and len(set(members))==12 and len(partitions)==24 and len(set(partitions))==24)
+    rows=bounded(db,SQL_RECON_ARCHIVE,(BIND_EXPECTED['archive_id'],),1)
+    require(len(rows)==1);r=rows[0]
+    require(r['owner_id']==owner and r['mode']=='restricted_support_historical'
+        and r['export_sha256']==r['manifest_sha256']==manifest_sha256
+        and r['admission_sha256']==BIND_EXPECTED['admission_sha256']
+        and type(r['members']) is int and r['members']==12
+        and r['qualification_scope']=='accepted_saved_producer' and r['archive_id']==BIND_EXPECTED['archive_id'])
+    require(len(bounded(db,SQL_OWNER,(owner,),1))==1)
+    patients=bounded(db,SQL_RECON_PATIENTS,tuple(members),12)
+    require(len(patients)==12 and {r['id'] for r in patients}==set(members)
+        and all(r['owner_id']==owner and type(r['version']) is int and r['version']>=1 for r in patients))
+    linked=bounded(db,SQL_PARTITIONS,(BIND_EXPECTED['archive_id'],),24)
+    require(len(linked)==24 and {(r['patient_id'],r['partition_id']) for r in linked}==set(partitions))
+
+
+def recon_metadata(db,spec,members,partitions,submission,payload_sha,cohort_id,s1_partitions):
+    owner=spec['owner_id'];ordered=sorted(members)
+    receipt=bounded(db,SQL_RECON_RECEIPT,(owner,KEY),1)
+    active=bounded(db,SQL_RECON_OVERLAP,tuple(ordered),2)
+    work=bounded(db,SQL_RECON_PENDING_OVERLAP,tuple(ordered),2)
+    if not receipt:
+        recon_require(not active and not work)
+        return recon_result('receipt_absent_at_snapshot')
+    r=receipt[0]
+    recon_require(type(r['scope']) is str and r['scope']=='support-s1:'+submission['archive_id']
+        and r['payload_sha256']==payload_sha and r['response_type']=='text'
+        and type(r['response_bytes']) is int and 0<r['response_bytes']<=131072 and type(r['response']) is str
+        and len(r['response'].encode())==r['response_bytes'])
+    try:value=recon_json(r['response'])
+    except (ValueError,TypeError,RecursionError):raise ReconcileConflict('invalid response') from None
+    recon_require(type(value) is dict and type(value.get('id')) is str and re.fullmatch('analysis-[a-f0-9]{32}',value['id']) is not None)
+    job=value['id']
+    expected=dict(kind='support_s1_analysis',patient_id=ordered[0],archive_id=submission['archive_id'],cohort_id=cohort_id,
+        member_count=12,mode='S1',cutoff_day=84,configuration=submission['configuration'],cohort=ordered,
+        previous_attempt=None,status='queued',stage='queued')
+    recon_require(all(value.get(k)==v and type(value.get(k)) is type(v) for k,v in expected.items()))
+    rows=bounded(db,SQL_RECON_JOB,(job,owner),1);recon_require(len(rows)==1);r=rows[0]
+    expected=dict(job_id=job,owner_id=owner,patient_id=ordered[0],previous_attempt=None,valid_request=1,
+        schema_version='3.0.0',kind='poc_support_s1_input',purpose='S1-WCLS',attempt_id=job,request_owner=owner,
+        archive_id=submission['archive_id'],run_id=submission['archive_id'].split(':')[0],cohort_id=cohort_id,
+        admission=spec['admission_sha256'],mode='S1',cutoff_day=84,cohort_type='array',cohort_count=12,synthetic_type='true')
+    recon_require(all(r[k]==v and type(r[k]) is type(v) for k,v in expected.items()))
+    recon_require(type(r['cohort_bytes']) is int and 0<r['cohort_bytes']<=4096 and type(r['cohort']) is str
+        and type(r['config_bytes']) is int and 0<r['config_bytes']<=1024 and type(r['configuration']) is str
+        and type(r['request_configuration']) is str and len(r['request_configuration'].encode())<=1024)
+    recon_require(recon_json(r['cohort'])==ordered and recon_json(r['configuration'])==submission['configuration']
+        and recon_json(r['request_configuration'])==submission['configuration'])
+    recon_require(type(value.get('cutoff')) is str and len(value['cutoff'].encode())<=64
+        and value['cutoff']==r['cutoff']==r['request_cutoff']==spec['expected_cutoff'])
+    for name,expected in spec['expected_references'].items():
+        field=r['request_'+name]
+        recon_require(type(field) is str and len(field.encode())<=1024 and recon_json(field)==expected)
+    member_rows=bounded(db,SQL_RECON_MEMBER_IDS,(job,owner),12)
+    recon_require(len(member_rows)==12 and [v['patient_id'] for v in member_rows]==ordered
+        and all(type(v['patient_version']) is int and v['patient_version']>=1 and v['version_type']=='integer' for v in member_rows))
+    recon_require(len({(v['patient_id'],v['partition_id']) for v in member_rows})==12
+        and {(v['patient_id'],v['partition_id']) for v in member_rows}==set(s1_partitions))
+    pending=bounded(db,SQL_RECON_PENDING,(job,),1)
+    recon_require(len(pending)==1 and pending[0]['id']==job and pending[0]['patient_id']==ordered[0]
+        and r['status'] in RECON_JOB_STATES and pending[0]['status']==r['status']
+        and all(type(r[k]) is int and r[k] in (0,1) for k in ('claimed','started','finished','result_present')))
+    recon_require(all(v['job_id']==job and v['owner_id']==owner and v['status']==r['status'] for v in active)
+        and all(v['id']==job and v['patient_id']==ordered[0] and v['status']==r['status'] for v in work))
+    if r['status']=='queued':
+        recon_require(not any(r[k] for k in ('claimed','started','finished','result_present')) and r['stage']=='queued'
+            and len(active)==len(work)==1)
+        status='matched_queued_metadata'
+    else:
+        recon_require(r['stage'] in ('preparing','fitting','diagnostics','rollouts','complete','failed','abstained'))
+        status='matched_other_job_state'
+    return recon_result(status,job=job,job_state=r['status'],claimed=bool(r['claimed']),started=bool(r['started']),result_present=bool(r['result_present']))
+
+
+def protected_reconcile(connect,row_factory,installed,gate,store_type,members,partitions,manifest_sha256,spec,token_hash,clock,submission,payload_sha,cohort_id,s1_partitions):
+    store=object.__new__(store_type);store.path=gate.database;store.installed=installed;store.gate=gate
+    with gate.hold():
+        db=read_only_connection(connect,gate.database,row_factory)
+        try:
+            store_type.validate_control(store,db)
+            db.execute('BEGIN');store_type.validate_control(store,db)
+            capability=db.execute(SQL_RECON_JSON).fetchone()
+            require(capability['valid']==1 and capability['kind']=='array' and capability['count']==1)
+            recon_session(db,token_hash,spec['owner_id'],clock())
+            recon_archive(db,members,partitions,manifest_sha256,spec['owner_id'])
+            try:result=recon_metadata(db,spec,members,partitions,submission,payload_sha,cohort_id,s1_partitions)
+            except (ValueError,KeyError,TypeError,RecursionError):result=recon_result('conflict')
+            recon_session(db,token_hash,spec['owner_id'],clock());store_type.validate_control(store,db)
+            return result
+        finally:
+            try:db.rollback()
+            finally:db.close()
+
+
+def run_reconcile(spec):
+    recon_admit(spec)
+    RECON_FOLDER.mkdir(mode=0o700,exist_ok=False)
+    recon_publish(recon_result('unavailable',phase='admitted',complete=False))
+    class NoScience(importlib.abc.MetaPathFinder):
+        def find_spec(self,name,path=None,target=None):
+            if name.split('.')[0] in {'numpy','scipy','statsmodels','pymc','pytensor','arviz','arviz_stats','methods','pandas','xarray'}:
+                raise AssertionError('reconciliation cannot fit')
+    sys.meta_path.insert(0,NoScience())
+    import sqlite3
+    from datetime import timedelta
+    from fastapi.testclient import TestClient
+    from services.foundation.app import create_app,COOKIE
+    from services.foundation.configuration import environment_settings
+    from services.foundation.admission import AdmissionGate
+    from services.foundation.store import Store,digest
+    from contracts.domain.analysis import canonical,sha
+    from contracts.domain.support_s1 import S1Submission,MODEL_REF,WCLS_PRIOR_REF,S1_ESTIMAND,LAW_REF,SUPPORT_REF
+    bundle=Path('/data/bootstrap/bundle.json');info=bundle.lstat()
+    require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid()
+        and 0<info.st_size<=1024*1024 and stat.S_IMODE(info.st_mode)&0o022==0)
+    settings=environment_settings()
+    require(settings.database==Path('/data/remission.sqlite') and settings.source_commit==spec['source_commit']
+        and settings.installed.control.database_instance_id==spec['store_instance']
+        and settings.installed.control.authority_generation==1 and not settings.installed.control.enabled)
+    submission=S1Submission.model_validate_json(canonical(spec['original_submission'])).model_dump(mode='json')
+    require(submission==spec['original_submission'] and spec['expected_references']==dict(model=MODEL_REF,prior=WCLS_PRIOR_REF,
+        estimand=S1_ESTIMAND,law=LAW_REF,protocol=SUPPORT_REF))
+    raw,_,authority=settings.observed_archives[spec['archive_export_id']]
+    require(authority.qualification_scope=='accepted_saved_producer' and authority.admission_sha256==spec['admission_sha256'])
+    descriptor=authority.descriptor
+    require(descriptor.run_id+':'+descriptor.cohort_id==spec['archive_id']
+        and spec['expected_cutoff']==(descriptor.origin+timedelta(days=84)).isoformat())
+    auth=Path('/private/auth.json');info=auth.lstat()
+    require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid() and 0<info.st_size<=65536
+        and stat.S_IMODE(info.st_mode)&0o077==0)
+    with auth.open('rb') as stream:
+        credentials_raw=stream.read(65537)
+    require(0<len(credentials_raw)<=65536)
+    credentials=recon_json(credentials_raw)['owner']
+    require(type(credentials) is dict and set(credentials)=={'username','password'}
+        and all(type(v) is str and 0<len(v)<=1024 for v in credentials.values()))
+    recon_publish(recon_result('unavailable',phase='authentication_before',complete=False))
+    with TestClient(create_app(settings),base_url=settings.origin) as client:
+        session=invoke(client,'session','get','/api/session')['payload']
+        login=invoke(client,'login','post','/api/login',json=credentials,
+            headers={'Origin':settings.origin,'X-CSRF-Token':session['csrf']})['payload']
+        require(login['principal']['id']==spec['owner_id'])
+        current=invoke(client,'csrf','get','/api/session')['payload']
+        require(current['principal']['id']==spec['owner_id'])
+        token=client.cookies.get(COOKIE);require(type(token) is str and 1<=len(token)<=512)
+        token_hash=digest(token)
+        recon_publish(recon_result('unavailable',phase='authentication_after',complete=False))
+        gate=AdmissionGate(settings.database)
+        recon_publish(recon_result('unavailable',phase='snapshot_before',complete=False))
+        result=protected_reconcile(sqlite3.connect,sqlite3.Row,settings.installed,gate,Store,descriptor.members,
+            [(r.member_id,r.partition_id) for r in descriptor.trajectories],hashlib.sha256(raw).hexdigest(),spec,
+            token_hash,lambda:settings.clock().timestamp(),submission,sha(submission),descriptor.cohort_id,
+            [(r.member_id,r.partition_id) for r in descriptor.trajectories if r.mode=='S1'])
+        recon_publish(result)
 
 
 def require(value):
@@ -299,7 +611,8 @@ def main():
     parser.add_argument('--authorized-spec-sha256',required=True);args=parser.parse_args()
     raw=args.spec.read_bytes();require(hashlib.sha256(raw).hexdigest()==args.authorized_spec_sha256)
     value=json.loads(raw)
-    if type(value) is dict and value.get('kind')==BIND_KIND:run_binding(value)
+    if type(value) is dict and value.get('kind')==RECON_KIND:run_reconcile(value)
+    elif type(value) is dict and value.get('kind')==BIND_KIND:run_binding(value)
     else:run(value)
 
 

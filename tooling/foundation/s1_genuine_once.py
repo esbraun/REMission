@@ -38,6 +38,11 @@ BIND_EXPECTED=dict(store_instance='f4d6bea5-10aa-4247-afa0-76b8e5c3fceb',authori
     archive_id='support-dev-once-20261022:support-dev-cohort-20261022',archive_export_id='accepted-support-dev-20261022',
     admission_sha256='7f411f3cc7b60fa28eb61481db15c590089fa874827ca8fdab547628438bcf98')
 AUTHORITY_SHA='048960f15bc0cc1ca7136a491755bbb64bfd1e0778418fd88e50a15480c65004'
+RECON_KIND='S1_ORIGINAL_REQUEST_RECONCILIATION_V1'
+RECON_NAME='remission-s1-original-reconcile-261024-r1'
+RECON_PUBLIC_NAME='control.json'
+RECON_PUBLIC_PATH='/data/s1-p3-original-reconcile-r1/control.json'
+RECON_FILES=(FILES-{'payload/submit-spec.json'})|{'payload/reconcile-spec.json'}
 TYPED='{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Path":{{json .Path}},"Args":{{json .Args}},"State":{{json .State}},"RestartCount":{{json .RestartCount}},"Labels":{{json .Config.Labels}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"LogConfig":{{json .HostConfig.LogConfig}},"Mounts":{{json .Mounts}}}'
 
 
@@ -64,6 +69,7 @@ def save(path,value):
 
 
 def admit(spec):
+    if type(spec) is dict and spec.get('kind')==RECON_KIND:return recon_admit(spec)
     # First refusal precedes helper import, reservation and every private path.
     require(type(spec) is dict and spec.get('executable') is True)
     if spec.get('kind')==BIND_KIND:
@@ -102,7 +108,8 @@ def admit(spec):
     return spec
 
 
-def public_rows(raw,*,binding=False):
+def public_rows(raw,*,binding=False,reconcile=False):
+    if reconcile:return [recon_public(raw)]
     require(type(binding) is bool)
     require(0<len(raw)<=4096)
     envelope=strict_json(raw)
@@ -148,6 +155,7 @@ def load(path,name):
 
 
 def argv(spec,packet):
+    if spec['kind']==RECON_KIND:return recon_argv(spec,packet)
     binding=spec['kind']==BIND_KIND;name=BIND_NAME if binding else NAME
     mounts=[('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True)]
     if not binding:mounts.append(('bind',spec['private_auth_path'],'/private/auth.json',True))
@@ -175,10 +183,10 @@ def normalized(value):
     return value.casefold() if re.match('[a-zA-Z]:/',value) else value
 
 
-def audit_created(value,cid,arguments,mounts,life,*,binding=False):
+def audit_created(value,cid,arguments,mounts,life,*,binding=False,reconcile=False):
     require(type(binding) is bool)
     life.checked_state(value,cid)
-    expected=dict(Image=IMAGE,User='10001:10001',Labels={'remission.task':BIND_NAME if binding else NAME},Memory=2147483648,
+    expected=dict(Image=IMAGE,User='10001:10001',Labels={'remission.task':RECON_NAME if reconcile else BIND_NAME if binding else NAME},Memory=2147483648,
         MemorySwap=2147483648,NanoCpus=2000000000,PidsLimit=64,ReadonlyRootfs=True,Privileged=False,
         CapAdd=None,CapDrop=['ALL'],SecurityOpt=['no-new-privileges'],Tmpfs={'/tmp':'rw,noexec,nosuid,nodev,size=128m'},
         NetworkMode='none',PublishAllPorts=False,RestartPolicy={'Name':'no','MaximumRetryCount':0},LogConfig={'Type':'none','Config':{}})
@@ -197,6 +205,7 @@ def audit_created(value,cid,arguments,mounts,life,*,binding=False):
 def checked_packet(path,token):
     raw=path.read_bytes();require(sha(raw)==token)
     spec=admit(strict_json(raw));packet=path.parent
+    if spec['kind']==RECON_KIND:return checked_reconcile(path,token)
     binding=spec['kind']==BIND_KIND;files=BIND_FILES if binding else FILES
     require(type(spec.get('public_inputs')) is list and len(spec['public_inputs'])==len(files)
         and {r['path'] for r in spec['public_inputs']}==files)
@@ -260,23 +269,23 @@ def check_host():
         raw=Path(name).read_bytes();require(len(raw)==size and sha(raw)==digest)
 
 
-def public_tar(raw,*,binding=False):
+def public_tar(raw,*,binding=False,reconcile=False):
     require(type(binding) is bool)
     # Exact-file framing reused from the accepted N transfer; no extraction.
     require(len(raw)>=1536 and len(raw)%512==0 and len(raw)<=20480)
     info=tarfile.TarInfo.frombuf(raw[:512],'utf-8','strict')
     end=512+((info.size+511)//512)*512
-    require(info.name==(BIND_PUBLIC_NAME if binding else PUBLIC_NAME) and info.type in (tarfile.REGTYPE,tarfile.AREGTYPE)
+    require(info.name==(RECON_PUBLIC_NAME if reconcile else BIND_PUBLIC_NAME if binding else PUBLIC_NAME) and info.type in (tarfile.REGTYPE,tarfile.AREGTYPE)
         and 0<info.size<=4096 and len(raw)>=end+1024 and not any(raw[512+info.size:]))
     return raw[512:512+info.size]
 
 
-def collect_public(cid,deadline,life,receipts,*,binding=False):
+def collect_public(cid,deadline,life,receipts,*,binding=False,reconcile=False):
     """One named public receipt; hard transport cap before JSON parsing."""
     require(type(binding) is bool);life.require_cid(cid);life.check_deadline(deadline)
     process=None;raw=bytearray();record=dict(pid=None,reaped=False,returncode=None)
     try:
-        process=subprocess.Popen(['docker','cp',cid+':'+(BIND_PUBLIC_PATH if binding else PUBLIC_PATH),'-'],stdout=subprocess.PIPE,
+        process=subprocess.Popen(['docker','cp',cid+':'+(RECON_PUBLIC_PATH if reconcile else BIND_PUBLIC_PATH if binding else PUBLIC_PATH),'-'],stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
         record['pid']=process.pid;os.set_blocking(process.stdout.fileno(),False)
         end=min(deadline,time.monotonic()+15)
@@ -290,7 +299,7 @@ def collect_public(cid,deadline,life,receipts,*,binding=False):
             else:time.sleep(min(.01,max(0,end-time.monotonic())))
         record['returncode']=process.wait(timeout=max(.001,min(2,end-time.monotonic())));record['reaped']=True
         life.check_deadline(end);require(record['returncode']==0)
-        return public_tar(raw,binding=binding)
+        return public_tar(raw,binding=binding,reconcile=reconcile)
     finally:
         if process is not None:
             if not record['reaped']:
@@ -303,6 +312,7 @@ def collect_public(cid,deadline,life,receipts,*,binding=False):
 def execute(path,token,origin):
     require(type(origin) in (int,float) and math.isfinite(origin) and 0<=time.monotonic()-origin<BOUNDS['setup'])
     spec,packet=checked_packet(path,token)
+    if spec['kind']==RECON_KIND:return execute_reconcile(path,token,origin)
     binding=spec['kind']==BIND_KIND;name=BIND_NAME if binding else NAME
     success='owner_binding_saved' if binding else 'queued_export_saved'
     life=load(packet/'helpers/analysis_lifecycle.py','s1_p3_life')
@@ -353,7 +363,7 @@ def execute(path,token,origin):
 def launch(path,token):
     """One owned controller; absolute common origin includes all preflight."""
     origin=time.monotonic();spec,packet=checked_packet(path,token);check_host()
-    success='owner_binding_saved' if spec['kind']==BIND_KIND else 'queued_export_saved'
+    success='reconciliation_saved' if spec['kind']==RECON_KIND else 'owner_binding_saved' if spec['kind']==BIND_KIND else 'queued_export_saved'
     folder=packet/'launcher';folder.mkdir(exist_ok=False)
     save(folder/'reservation.json',dict(spec_sha256=token,consumed=True,origin=origin,outer_deadline=origin+900,work_deadline=origin+840))
     life=load(packet/'helpers/analysis_lifecycle.py','s1_p3_parent_life')
@@ -396,6 +406,167 @@ def launch(path,token):
             controller_pid=None if process is None else process.pid,controller_exit=code,controller_reaped=process is not None and process.poll() is not None,
             cid=cid,error_class=error,cleanup=events,unresolved=unresolved,common_origin=origin,elapsed=time.monotonic()-origin))
     require(not unresolved and error is None and code==0)
+
+
+def recon_admit(spec):
+    # Reuse all existing Phase A scalar/path/resource admission. The cloned
+    # values are admission inputs only, never command or operation identity.
+    require(type(spec) is dict and spec.get('kind')==RECON_KIND and spec.get('namespace')==RECON_NAME
+        and spec.get('metadata_only') is True and spec.get('no_submit_claim_fit') is True
+        and type(spec.get('request_seconds')) is int and spec['request_seconds']==180
+        and spec.get('owner_id')=='1946fb30-b736-402e-a6d0-a0b50eb92496'
+        and all(spec.get(k)==v and type(spec.get(k)) is type(v) for k,v in BIND_EXPECTED.items())
+        and spec.get('key')=='s1-genuine-day84-261024-r1'
+        and spec.get('original_spec_blob')=='a92f061741cf283e4bc5cf4f46a94979acf0731e')
+    admit(dict(spec,kind='S1_GENUINE_SUBMIT_EXPORT_V1',namespace=NAME,no_claim_or_fit=True,
+        submit_spec_sha256=spec.get('reconcile_spec_sha256')))
+    return spec
+
+
+def recon_public(raw):
+    require(0<len(raw)<=4096);v=strict_json(raw)
+    fields={'schema','kind','phase','status','complete','job_id','job_state','claimed','started','result_present',
+        'metadata_only','current_input_validated','submit','claim','fit'}
+    require(type(v) is dict and set(v)==fields and v['schema']=='s1-original-request-control-v1'
+        and v['kind']=='s1_original_request_reconciliation'
+        and v['phase'] in ('admitted','authentication_before','authentication_after','snapshot_before','snapshot_after')
+        and v['status'] in ('unavailable','receipt_absent_at_snapshot','matched_queued_metadata','matched_other_job_state','conflict')
+        and all(type(v[k]) is bool for k in ('complete','claimed','started','result_present','metadata_only','current_input_validated','submit','claim','fit'))
+        and v['metadata_only'] is True and all(v[k] is False for k in ('current_input_validated','submit','claim','fit')))
+    matched=v['status'] in ('matched_queued_metadata','matched_other_job_state')
+    require((v['job_id'] is None and not matched) or matched and type(v['job_id']) is str
+        and re.fullmatch('analysis-[a-f0-9]{32}',v['job_id']) is not None)
+    require(v['job_state'] in ('queued','running','completed','failed','abstained') if matched else v['job_state'] is None)
+    require(v['complete'] is (v['status']!='unavailable') and (not v['complete'] or v['phase']=='snapshot_after'))
+    if v['status']=='matched_queued_metadata':require(v['job_state']=='queued' and not any(v[k] for k in ('claimed','started','result_present')))
+    if v['status']=='matched_other_job_state':require(v['job_state']!='queued')
+    if not matched:require(not any(v[k] for k in ('claimed','started','result_present')))
+    return v
+
+
+def recon_argv(spec,packet):
+    mounts=[('volume',VOLUME,'/data',False),('bind',str(packet/'payload'),'/operation',True),
+        ('bind',spec['private_auth_path'],'/private/auth.json',True)]
+    args=['docker','create','--name',RECON_NAME,'--label','remission.task='+RECON_NAME,'--network','none','--log-driver','none',
+        '--cpus','2','--memory','2g','--memory-swap','2g','--pids-limit','64','--read-only','--cap-drop','ALL',
+        '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=128m','--restart','no',
+        '--user','10001:10001','--workdir','/app']
+    for kind,source,target,readonly in mounts:
+        args+=['--mount','type='+kind+',source='+source+',target='+target+(',readonly' if readonly else '')]
+    for key,value in dict(REMISSION_CONTROL_BUNDLE='/data/bootstrap/bundle.json',REMISSION_DATABASE='/data/remission.sqlite',
+            REMISSION_ARCHIVE_CONFIG='/operation/archive-config.json',REMISSION_SOURCE_COMMIT=spec['source_commit'],
+            REMISSION_ORIGIN='http://127.0.0.1:8765').items():args+=['--env',key+'='+value]
+    args += [IMAGE,'python','-B','/operation/s1_genuine_submit.py','--spec','/operation/reconcile-spec.json',
+        '--authorized-spec-sha256',spec['reconcile_spec_sha256']]
+    return args,mounts
+
+
+def checked_reconcile(path,token):
+    raw=path.read_bytes();require(sha(raw)==token);spec=recon_admit(strict_json(raw));packet=path.parent
+    require(type(spec.get('public_inputs')) is list and len(spec['public_inputs'])==7
+        and {r['path'] for r in spec['public_inputs']}==RECON_FILES)
+    for item in spec['public_inputs']:
+        cap=699480 if item['path']=='payload/support-authority.json' else 128*1024
+        require(set(item)=={'path','bytes','sha256'} and type(item['bytes']) is int and 0<item['bytes']<=cap)
+        source=packet/item['path'];require(source.resolve().is_relative_to(packet.resolve()) and not source.is_symlink())
+        value=source.read_bytes();require(len(value)==item['bytes'] and sha(value)==item['sha256'])
+    leaves=set()
+    for p in (packet/'payload').iterdir():
+        require(p.is_file() and not p.is_symlink() and not getattr(p.lstat(),'st_file_attributes',0)&0x400)
+        leaves.add(p.name);require(len(leaves)<=5)
+    require(leaves=={'s1_genuine_submit.py','reconcile-spec.json','archive-config.json','support-manifest.json','support-authority.json'})
+    require(sha((packet/'payload/support-manifest.json').read_bytes())==MANIFEST_SHA)
+    authority=(packet/'payload/support-authority.json').read_bytes();require(len(authority)==699480 and sha(authority)==AUTHORITY_SHA)
+    require(sha((packet/'payload/archive-config.json').read_bytes())==spec['archive_configuration_sha256'])
+    child=(packet/'payload/reconcile-spec.json').read_bytes();require(sha(child)==spec['reconcile_spec_sha256'])
+    value=strict_json(child)
+    keys=('kind','executable','namespace','volume',*BIND_EXPECTED,'owner_id','source_commit','authority_mode',
+        'metadata_only','no_submit_claim_fit','key','original_spec_blob','original_submission','expected_references','expected_cutoff','request_seconds')
+    require(all(value.get(k)==spec[k] and type(value.get(k)) is type(spec[k]) for k in keys)
+        and not any(k in value for k in ('source_review','operation_review','root_go','private_auth_path')))
+    return spec,packet
+
+
+def recon_collectable(record,final):
+    # A parent/CLI return alone is not stop or reap evidence. Missing/incomplete
+    # supervision deliberately prevents collection, even if it loses a phase.
+    if type(record) is not dict or type(final) is not dict:return False
+    arm=record.get('prearm',{});expected=arm.get('expected',{})
+    return (record.get('cid')==final.get('Id')
+        and record.get('prearm',{}).get('live_ack_before_start') is True
+        and record.get('prearm',{}).get('identity_matched') is True
+        and set(expected)=={'cid','pid','nonce','deadline'} and expected==arm.get('received')
+        and expected.get('cid')==final.get('Id') and type(expected.get('pid')) is int and expected['pid']>0
+        and expected['pid']==arm.get('popen_pid')==record.get('processes',{}).get('watchdog',{}).get('pid')
+        and type(expected.get('nonce')) is str and re.fullmatch('[a-f0-9]{48}',expected['nonce']) is not None
+        and type(expected.get('deadline')) in (int,float) and math.isfinite(expected['deadline'])
+        and arm.get('before_ready_poll',{}).get('returncode','missing') is None
+        and arm.get('after_ready_poll',{}).get('returncode','missing') is None
+        and all(record.get('processes',{}).get(k,{}).get('created') is True
+            and record['processes'][k].get('reaped') is True for k in ('attach','watchdog'))
+        and final.get('State',{}).get('Pid')==0 and final['State'].get('Running') is False)
+
+
+def execute_reconcile(path,token,origin):
+    require(type(origin) in (int,float) and math.isfinite(origin) and 0<=time.monotonic()-origin<60)
+    spec,packet=checked_reconcile(path,token)
+    life=load(packet/'helpers/analysis_lifecycle.py','s1_recon_life');runner=load(packet/'helpers/qualify_build_once.py','s1_recon_cli')
+    output=packet/'results';output.mkdir(exist_ok=False);save(output/'reservation.json',dict(spec_sha256=token,consumed=True))
+    work=origin+840;setup=origin+60;cid=None;error=None;events=[];unresolved=[];receipts=[];checkpoint=None;sequence=0;supervised=False
+    def call(args,label,cap=5,deadline=work):
+        nonlocal sequence
+        life.check_deadline(deadline);sequence+=1
+        r=runner.command_attempt(args,output,f'{sequence:03}-{label}',min(cap,deadline-time.monotonic()),2)
+        if r.get('timed_out') or r.get('deadline_rejected') or r.get('cli_terminal')!='OWNED_POPEN_CHILD_EXIT_OBSERVED':
+            raise life.StopUnconfirmed('selected command terminal unknown')
+        require(not r.get('error') and r['exit']==0 and not r.get('stdout_snapshot_truncated') and not r.get('stderr_snapshot_truncated'))
+        return r['stdout']
+    try:
+        require(call(['docker','image','inspect','--format','{{.Id}}',IMAGE],'image',deadline=setup).strip()==IMAGE)
+        require(not call(['docker','ps','--all','--quiet','--filter','name=^/'+RECON_NAME+'$'],'name-absent',deadline=setup).strip())
+        require(not call(['docker','ps','--quiet','--filter','volume='+VOLUME],'volume-no-writer',deadline=setup).strip())
+        value=strict_json(call(['docker','volume','inspect','--format','{"Name":{{json .Name}},"Labels":{{json .Labels}}}',VOLUME],'retained-volume',deadline=setup))
+        require(value==dict(Name=VOLUME,Labels={'remission.task':'remission-s1-completion-261024-r1'}))
+        arguments,mounts=recon_argv(spec,packet)
+        try:cid=life.require_cid(call(arguments,'create',10,deadline=setup).strip())
+        except BaseException:raise life.StopUnconfirmed('selected create CID unknown') from None
+        save(output/'cid.json',dict(cid=cid))
+        created=strict_json(call(['docker','inspect','--format',TYPED,cid],'typed-created',deadline=setup))
+        audit_created(created,cid,arguments,mounts,life,reconcile=True)
+        supervised=True;life.supervise(cid,output/'supervision',work,discard_output=True)
+    except BaseException as failure:
+        error=type(failure).__name__
+        if isinstance(failure,life.StopUnconfirmed):unresolved.append('command_or_create')
+    finally:
+        final=None
+        if cid is not None:
+            try:
+                events=life.stop_owned(cid);final=life.inspect(cid);require(life.stopped(final));save(output/'independent-final.json',final)
+            except BaseException:unresolved.append('owned_container_stop')
+        # The controller itself cannot publish terminal until this sole file
+        # client is reaped. No collection if ANY stop/custody uncertainty exists.
+        collection='not_admitted'
+        if supervised and final is not None and not unresolved:
+            try:
+                p=output/'supervision/supervision.json'
+                require(not p.is_symlink() and p.stat().st_size<=16384)
+                supervision=strict_json(p.read_bytes());require(recon_collectable(supervision,final))
+            except BaseException:unresolved.append('workload_custody')
+        if supervised and final is not None and not unresolved:
+            try:
+                life.check_deadline(work)
+                checkpoint=recon_public(collect_public(cid,work,life,receipts,reconcile=True))
+                save(output/'public-checkpoint.json',checkpoint);collection='collected'
+            except BaseException as failure:
+                collection='unavailable'
+                if isinstance(failure,life.StopUnconfirmed):unresolved.append('public_file_client_reap')
+                if error is None:error=type(failure).__name__
+        if error is None and (checkpoint is None or not checkpoint['complete']):error='reconciliation_incomplete'
+        save(output/'terminal.json',dict(status='STOP UNCONFIRMED' if unresolved else 'failed' if error else 'reconciliation_saved',
+            error_class=error,cid=cid,cleanup=events,unresolved=unresolved,file_clients=receipts,
+            checkpoint_collection=collection,checkpoint_status=None if checkpoint is None else checkpoint['status'],
+            supervision_invoked=supervised,resources_retained=True,private_outputs_not_read=True))
+    require(error is None and not unresolved)
 
 
 if __name__=='__main__':

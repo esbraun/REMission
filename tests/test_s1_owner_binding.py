@@ -211,9 +211,9 @@ class ModeTests(unittest.TestCase):
         self.assertFalse(settings.installed.control.enabled)
         with self.assertRaises(AttributeError):getattr(settings.installed,'enabled')
         raw=(ROOT/'tooling/foundation/s1_genuine_submit.py').read_text()
-        self.assertEqual(raw.count('not settings.installed.control.enabled'),1)
         prior=ast.parse(BASELINE);current=ast.parse(raw)
         def function(tree,name):return ast.unparse(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==name))
+        self.assertEqual(function(current,'run').count('not settings.installed.control.enabled'),1)
         self.assertEqual(function(prior,'run').replace('not settings.installed.enabled','not settings.installed.control.enabled'),function(current,'run'))
         # PhaseA authority alignment and bounded public job_id are separately
         # approved additions. All untouched auth/request/persistence seams stay
