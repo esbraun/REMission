@@ -1,7 +1,9 @@
 # S1 selected-owner binding preparation
 
-**SOURCE/OP preparation only; no current GO or private/runtime access.** Base
-`d530f940239ade9ac00b527ab2aabb6a61245f4d`; author gpt-6.1-sol/high.
+**SOURCE/OP preparation only; no current GO or private/runtime access.** Final
+base `9062858444a1de30ce9239798209c56b42c041de`; initial source checkpoint was
+based on`d530f940239ade9ac00b527ab2aabb6a61245f4d`. The ordinary integration adds
+only the accepted five N-DATA03 tool/test/doc paths. Author gpt-6.1-sol/high.
 
 The binding mode resolves one missing selected-archive owner before the genuine
 S1 submission. It does not authenticate, submit, claim, fit, initialize, import,
