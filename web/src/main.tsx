@@ -9,6 +9,7 @@ import { AnalysisPanel } from './AnalysisPanel';
 import { ResearchPanel } from './ResearchPanel';
 import { Nof1Panel, Nof1Timeline, Nof1Analysis } from './Nof1Panel';
 import { HistoricalSupportPanel } from './HistoricalSupportPanel';
+import { SupportPanel } from './SupportPanel';
 
 type Route = { patient: string; view: string; bundle: string };
 class RequestFailure extends Error { constructor(public status: number, message: string) { super(message); } }
@@ -199,7 +200,7 @@ function App() {
   async function saveReport(report: Report, key: string) { const ticket = gate.current.capture(); await request(`/api/patients/${route.patient}/reports`, { method: 'POST', body: JSON.stringify(report), headers: { 'Idempotency-Key': key } }); if (gate.current.accepts(ticket)) { setNotice('Observed report persisted with actual receipt time.'); refresh(); } }
   async function generatePanel(seed: number, count: number, key: string, family: string) {
     const ticket = gate.current.capture();
-    const definition = family === 'nof1_med' ? (await request<{ nof1_med: Record<string, unknown> }>('/api/panel-options')).nof1_med : {};
+    const definition = family === 'nof1_med' || family === 'support' ? (await request<Record<string, Record<string, unknown>>>('/api/panel-options'))[family] : {};
     if (!gate.current.accepts(ticket)) return;
     await request('/api/panels/generate', { method: 'POST', body: JSON.stringify({ ...definition, seed, count }), headers: { 'Idempotency-Key': key } });
     if (gate.current.accepts(ticket)) { setPanelGroup('latest'); setNotice(`Generated and loaded ${count} fictional patients with seed ${seed}.`); refresh(); }
@@ -216,6 +217,12 @@ function App() {
     const ticket = gate.current.capture();
     await request(`/api/patients/${workspace.patient_id}/nof1`, { method: 'POST', body: JSON.stringify(payload), headers: { 'Idempotency-Key': key } });
     if (gate.current.accepts(ticket)) { setNotice('Explicit N-of-1 command saved; no estimated winner.'); refresh(); }
+  }
+  async function commitSupport(payload: Record<string, unknown>, key: string) {
+    if (!workspace || dirty) return;
+    const ticket = gate.current.capture();
+    await request(`/api/patients/${workspace.patient_id}/support`, { method: 'POST', body: JSON.stringify(payload), headers: { 'Idempotency-Key': key } });
+    if (gate.current.accepts(ticket)) { setNotice('Explicit support command saved.'); refresh(); }
   }
   const visibleWorkspace = workspace?.patient_id === route.patient && !(route.view === 'history' && route.bundle) && workspace.auth_generation === session?.auth_generation ? workspace : null;
   const visibleBundle = bundle?.patient_id === route.patient && bundle.snapshot_id === route.bundle && route.view === 'history' && bundle.auth_generation === session?.auth_generation ? bundle : null;
@@ -240,6 +247,7 @@ function App() {
     {visibleWorkspace ? <><StateBanner workspace={visibleWorkspace} mode="current"/><nav className="tabs" aria-label="Patient views">{['overview', 'current', 'monitoring', 'analysis', 'research', 'history'].map(view => <NavLink key={view} href={`/patients/${route.patient}/${view}`} navigate={navigate} current={route.view === view}>{view === 'current' ? 'Current decision' : view[0].toUpperCase() + view.slice(1)}</NavLink>)}</nav>
     {route.view === 'current' ? <LiveHoldPanel key={'live-hold:' + `${visibleWorkspace.patient_id}:${session?.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} request={request} refresh={refresh} changed={setDirty}/> : null}
     {route.view === 'current' && visibleWorkspace.nof1 ? <Nof1Panel key={'nof1:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} commit={commitNof1} dirty={dirty} request={request} ownerId={session.principal.id}/> : null}
+    {(route.view === 'current' || route.view === 'analysis') && visibleWorkspace.simulation?.family === 'support' ? <SupportPanel key={'support:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} commit={commitSupport} dirty={dirty} request={request}/> : null}
     {route.view !== 'history' && visibleWorkspace.simulation ? <SimulationPanel key={'simulation:' + `${visibleWorkspace.patient_id}:${session.auth_generation}:${visibleWorkspace.snapshot.record_id}`} workspace={visibleWorkspace} advance={advanceSimulation} dirty={dirty}/> : null}
     {route.view === 'history' ? null : route.view === 'research' ? <ResearchPanel key={'research:' + visibleWorkspace.patient_id + ':' + session.auth_generation + ':' + visibleWorkspace.snapshot.record_id} workspace={visibleWorkspace} request={request}/> : route.view === 'analysis' ? (visibleWorkspace.nof1 ? <Nof1Analysis key={'N-analysis:' + visibleWorkspace.patient_id + ':' + session.auth_generation + ':' + visibleWorkspace.snapshot.record_id} workspace={visibleWorkspace} request={request} ownerId={session.principal.id} context="current"/> : <AnalysisPanel key={'analysis:' + visibleWorkspace.patient_id + ':' + session.auth_generation + ':' + visibleWorkspace.snapshot.record_id} workspace={visibleWorkspace} request={request} refresh={refresh}/>) : route.view === 'monitoring' ? <><ObservationTable workspace={visibleWorkspace}/>{!visibleWorkspace.simulation ? <ReportForm key={visibleWorkspace.patient_id} save={saveReport}/> : null}</> : route.view === 'overview' ? <><section><h2>Current ordinary plan</h2>{visibleWorkspace.plan ? <><p><strong>{readable(visibleWorkspace.plan.option)}</strong></p><p>{visibleWorkspace.plan.rationale}</p>{visibleWorkspace.plan.effective_at ? <p>Decision: {date(visibleWorkspace.plan.decided_at!)}. Effective: {date(visibleWorkspace.plan.effective_at)}. Actual nightly delivery and adherence are recorded separately.</p> : null}</> : <p>No ordinary treatment choice has been approved.</p>}<h3>Follow-up tasks</h3>{visibleWorkspace.tasks.length ? <ul>{visibleWorkspace.tasks.map(task => <li key={task.id}>{date(task.due_at)} · {task.owner_id} · pending synthetic follow-up</li>)}</ul> : <p>No saved follow-up tasks.</p>}<button onClick={() => navigate(`/patients/${route.patient}/current`)}>Open current decision</button></section><ObservationTable workspace={visibleWorkspace}/></> : <>
       {pendingAdvance ? <p role="status">Resolve the original advancement before editing another decision. You can retry above or reload the saved current state.</p> : null}

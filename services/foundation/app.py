@@ -583,8 +583,9 @@ def create_app(settings: Settings) -> FastAPI:
     def panel_options(request: Request):
         with store.transaction() as db:
             session(db,request)
-            from contracts.domain.protocol import LAW_REF,NOF1_REF
-            return dict(nof1_med=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='nof1_med',law=LAW_REF,protocol=NOF1_REF))
+            from contracts.domain.protocol import LAW_REF,NOF1_REF,SUPPORT_REF
+            return dict(nof1_med=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='nof1_med',law=LAW_REF,protocol=NOF1_REF),
+                support=dict(schema_version='2.0.0',kind='poc_protocol_panel',family='support',law=LAW_REF,protocol=SUPPORT_REF))
 
     @app.post('/api/patients/{patient_id}/advance')
     async def advance_patient(patient_id: str, request: Request):
@@ -622,6 +623,29 @@ def create_app(settings: Settings) -> FastAPI:
             result["history"]=[dict(id=r["id"],approved_at=r["approved_at"],display_sha256=r["display_sha256"]) for r in db.execute("SELECT id,approved_at,display_sha256 FROM bundles WHERE patient_id=? ORDER BY approved_at,id",(patient_id,))]
             result["mode"]="current";result["auth_generation"]=current["token_hash"]
             return result
+
+    @app.get('/api/patients/{patient_id}/support')
+    def support_workspace(patient_id: str,request: Request):
+        from .support_s2_controller import view
+        with store.transaction() as db:
+            current=session(db,request);patient=own(db,patient_id,current['account_id'])
+            try:return view(db,patient,settings.clock())
+            except ValueError as error:raise APIError(409,'support_unavailable',str(error)) from error
+
+    @app.post('/api/patients/{patient_id}/support')
+    async def support_command(patient_id: str,request: Request):
+        from contracts.domain.support_s2_controller import ControllerCommand
+        from .support_s2_controller import transition
+        data=await body(request,ControllerCommand)
+        with store.transaction(write=True) as db:
+            current=session(db,request,mutation=True);patient=own(db,patient_id,current['account_id'])
+            payload=data.model_dump(mode='json');scope=patient_id+':support'
+            key,prior=mutation_receipt(db,current,request,scope,payload)
+            if prior:return prior
+            try:response=transition(db,settings,patient,current['account_id'],data,settings.clock())
+            except ValueError as error:raise APIError(409,'support_command_unavailable',str(error)) from error
+            save_mutation(db,current,key,scope,payload,response)
+            return response
 
     @app.post('/api/patients/{patient_id}/nof1')
     async def nof1_command(patient_id: str,request: Request):

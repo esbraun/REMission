@@ -103,6 +103,9 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
     eligibility = [dict(action=action, status="excluded" if state["workflow"]["hold_reasons"] else "eligible",
                         reasons=state["workflow"]["hold_reasons"]) for action in actions]
     nof1=None
+    if state.get('simulation',{}).get('family')=='support':
+        from .support_s2_controller import eligibility as support_eligibility
+        eligibility.extend(support_eligibility(db,row,state,at,receipt_at))
     if state.get('simulation',{}).get('family')=='nof1_med':
         from .nof1 import readiness
         from contracts.domain.protocol import NOF1_REF
@@ -123,6 +126,7 @@ def create_decision(db, patient_id: str, at: datetime) -> str:
     projected = history(db, patient_id).project(at).model_dump(mode="json")
     options = eligibility if state["stage"] != "ASSIGN-07" else [e for e in eligibility if e["action"].startswith("behavioral_")]
     if nof1 is not None:options=[e for e in options if e['action']=='behavioral_continue']
+    if state.get('simulation',{}).get('family')=='support':options=[e for e in options if e['action']=='behavioral_continue']
     ordinary = state["stage"] in ("ASSIGN-02", "ASSIGN-07") and state["workflow"]["data_readiness"] == "ready" and not state["workflow"]["hold_reasons"]
     if state.get('simulation', {}).get('day', 0) >= 84:
         ordinary = False
