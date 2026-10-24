@@ -10,7 +10,7 @@ Research checked October 4, 2026. The 2026-10-19 checkout contains planning docu
 
 The historical prompting rationale is recorded below with its public guide and reviewed source revision. Do not depend on an unavailable conversation attachment. These are execution guidelines for a future app implementation; the current runtime instructions take precedence.
 
-The October 20, 2026 workflow update uses the [official subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents?surface=app). The [entry point's model policy](../../implementation-prompt.md#launch-contract) assigns `gpt-6-astra` at `medium` to planning, review, and critique; `gpt-6.1-sol` at `high` to implementation, integration, repairs, and verification; and `gpt-6-luna` at `high` to exploration, summaries, and lightweight helpers. Difficult Sol implementation may increase to `xhigh` without user confirmation, with the reason recorded in the ledger and handoff. These are runtime selectors, not claims about public API identifiers. Verify availability, supported reasoning settings, context handling, and delegation capabilities in the actual runtime. Report unsupported settings without silently substituting another model.
+The workflow uses the [official subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents?surface=app). Under the user's 2026-10-24 [model policy](../../implementation-prompt.md#launch-contract), reserve `gpt-6-astra/medium` only for critical gate plans and critical gate reviews; ROOT records the material gate reason before assignment. Default to `gpt-6.1-sol/high` for all other planning, critique, review, implementation, integration, repairs, verification, documentation and ordinary decisions. `gpt-6-luna/high` remains for bounded exploration, summaries and helpers. Only difficult Sol implementation may increase to `xhigh` without user confirmation, with the reason recorded in the ledger and handoff. These are runtime selectors, not claims about public API identifiers. Verify actual availability/settings and report unsupported choices without silent substitution. Historical model records remain unchanged.
 
 The supplied [OpenAI Codex prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) currently identifies `gpt-5.3-codex`, not GPT-6.1-Sol. Its [source notebook](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/codex_prompting_guide.ipynb), reviewed at blob `30b2eab0ba05235b8070c9838352cfdd2546d8b8`, supports the general practices below. Their application to GPT-6.1-Sol is an engineering recommendation to evaluate, not a claim of model-specific published research.
 
@@ -25,7 +25,7 @@ The supplied [OpenAI Codex prompting guide](https://developers.openai.com/cookbo
 | Native compaction for long runs | Use supported compaction and durable task records; resume from commits, contracts, and evidence instead of restarting |
 | Evaluate prompt changes against observed failures | Use seeded REMission tasks to measure constraint violations, completion, rework, and time to a useful artifact |
 
-The older guide's general reasoning suggestions do not override the project's explicit model policy: Sol implementation starts at `high`, with `xhigh` available for difficult implementation, while planning and review use Astra at `medium`. These are requested workflow settings, not benchmark results. Do not configure unavailable settings.
+The older guide's suggestions do not override the project's explicit model policy: Sol/high is the default, with xhigh only for difficult implementation and a recorded reason; Astra/medium is limited to critical gate plans/reviews. Routine edits and clarifications do not automatically require Astra. These are requested workflow settings, not benchmark results. Do not configure unavailable settings.
 
 The guide's older starter text discourages prompted preambles, while its later sections allow them for GPT-5.3-Codex and subsequent versions. Follow the current harness's communication instructions. Give concise progress updates without ending a working turn at a preamble. In a custom API harness, preserve tool results and supported assistant phase metadata; the guide specifically requires `phase` preservation for GPT-5.3-Codex. Verify applicability before using that field with another model.
 
@@ -33,22 +33,22 @@ Multi-agent orchestration and the phase map below are REMission-specific workflo
 
 ## Subagent runtime configuration
 
-Use one primary orchestrator and at most two concurrently open non-Luna subagent threads. **GPT-6 Luna (`gpt-6-luna`) helpers do not count toward the project's two-worker limit.** Enforce that model-specific limit in orchestration, counting idle as well as running non-Luna threads. Separately, the official runtime setting counts all spawned threads, including Luna, but excludes the primary. Configure sufficient total capacity for two workers plus helpers; for example, when supported:
+Use one primary orchestrator and at most two concurrently open non-Luna subagent threads. **GPT-6 Luna (`gpt-6-luna`) helpers do not count toward the project's two-worker limit.** Count idle as well as running non-Luna threads. The current assigned runtime capacity is four total live threads including ROOT; Luna helpers share that total capacity. Where a runtime setting counts spawned threads but excludes the primary, the corresponding illustrative setting is three children plus ROOT:
 
 ```toml
 [agents]
 enabled = true
-# Total runtime capacity: e.g. two non-Luna workers plus two Luna helpers.
-max_concurrent_threads_per_session = 4
+# If this setting excludes ROOT: two non-Luna workers plus one Luna helper.
+max_concurrent_threads_per_session = 3
 ```
 
-The value four is an illustrative total runtime capacity, not a separate project limit on Luna. Adjust the total setting to the supported helper capacity needed; do not use a total cap of two to express the non-Luna policy. This documentation update does not change local configuration. Verify the effective total setting at launch and report any capacity restrictions. Only the orchestrator spawns agents, including Luna helpers requested by workers. Do not create separate top-level tasks or nested agents to bypass runtime limits. Keep separate non-Luna and total thread counts, with open thread IDs, effective model/effort, task ownership, assigned Git worktrees/branches/base commits, and queued requests in the ledger. Acquire a non-Luna slot before changing a Luna thread to Astra/Sol.
+Four including ROOT is current capacity, not a separate project limit on Luna. Verify actual counting semantics and effective capacity at launch; do not use a total cap of two to express the non-Luna policy. This documentation update changes no local/global configuration. Only the orchestrator spawns agents, including Luna helpers requested by workers. Do not create separate top-level tasks or nested agents to bypass runtime limits. Keep separate non-Luna and total thread counts, with open IDs, effective model/effort, ownership, worktrees/branches/bases and queued requests in the ledger. Acquire a non-Luna slot before changing Luna to Astra/Sol.
 
 Confirm supported spawn, message, wait, resume/reuse, and close/release controls. A completed or interrupted turn may still occupy an open thread. Release completed threads before replacements, or reuse compatible existing threads if closing is unavailable. If the model/effort cannot be selected, the cap cannot be honored, or required threads cannot be released or reused, report the specific blocker and keep affected work queued; do not fall back to solo implementation.
 
 Set the model and reasoning effort explicitly on every assignment so parent inheritance cannot silently choose the wrong settings. If custom agent files are used, inspect their effective model and effort because file settings can override spawn settings. Use the runtime's supported independent-context spawn option when required for model overrides, supplying the bounded gate context and assignment rather than relying on inherited history. Subagents inherit session permissions; do not attempt to override those in custom role files.
 
-Schedule non-Luna work in waves: Astra planning and independent critique, Sol implementation, a separate Astra review, Sol repairs, and Astra re-review as needed. Luna exploration and summary helpers may run before or alongside these workers without consuming either project worker slot. Two Sol workers plus one Luna helper, or one Astra reviewer plus one Sol worker plus two Luna helpers, are valid when total runtime capacity allows; three non-Luna workers are not. Follow the [delegation contract](delegation.md#delegation-and-integration-contract) to queue helpers only when runtime capacity, resources, or dependencies require it and checkpoint waiting workers if needed.
+Schedule non-Luna work in waves: Sol/high routine planning/critique, implementation and different-worker review; use Astra/medium only for critical gate plans/reviews after ROOT records why. Route repairs to Sol, then obtain appropriate independent re-review; do not add an automatic Astra loop. Luna helpers may run alongside workers when total capacity permits. At current capacity, ROOT plus two non-Luna workers plus one Luna helper totals four; three non-Luna workers are forbidden. Follow the [delegation contract](delegation.md#delegation-and-integration-contract) for capacity/dependency queuing and waiting-worker checkpoints.
 
 Provision a separate Git worktree for every subagent before it starts, including read-only roles and helpers. Supply the absolute checkout path and verify that commands and edits use it; native subagent spawning does not itself satisfy this requirement. Writing workers own task branches from accepted commits; reviewers use separate worktrees pinned to the exact candidate. Use supported managed-worktree tools or native Git, preserve unrelated changes, and report unavailable isolation without a shared-checkout fallback. Follow [worktree isolation and reviewed merges](delegation.md#worktree-isolation-and-reviewed-merges) for lifecycle, review, and integration.
 
@@ -128,15 +128,22 @@ protocols, support policy, services, UI, tests, evaluation, documentation,
 integration repairs, technical planning, critique, and independent review.
 Your role covers user communication and feedback, plan/gate progress, task
 distribution, dependency scheduling, worktree provisioning, consolidated
-reporting, and opening/merging reviewed PRs. Have an Astra planner propose
-decomposition and contracts; schedule integration and
+reporting, and opening/merging reviewed PRs. Default to a Sol/high planner for
+decomposition and contracts; use Astra/medium only for critical gate plans
+with your reason recorded before assignment. Schedule integration and
 evidence checks through subagents and use their reports to update gate status.
 Use an integration subagent for source edits and repairs; do not become the
 implementer, explorer, planner, tester, or reviewer when a worker is blocked.
 
-Use gpt-6-astra at medium for technical planning, review, and critique;
-gpt-6.1-sol at high for implementation, integration, repairs, and verification;
-and gpt-6-luna at high for exploration, summaries, and lightweight helpers.
+Use gpt-6-astra/medium ONLY for critical gate plans and critical gate reviews.
+Record the concrete material-gate reason before assigning Astra; do not turn
+routine edits/clarifications into automatic Astra review loops. Default to
+gpt-6.1-sol/high for other planning, critique, independent review, implementation,
+integration, repairs, verification, documentation and ordinary decisions;
+use gpt-6-luna at high for bounded exploration, summaries and helpers.
+Native work alone is not critical: unchanged-control compatibility, fixtures,
+documentation and finite failed-stage checks default to Sol/high. Batch critical
+review at the actual gate boundary unless a material new boundary needs it sooner.
 Sol implementation may increase to xhigh for difficult work without user
 confirmation; record the reason. Set model/effort explicitly and verify effective
 settings, including custom-agent overrides. Never silently substitute models.
@@ -215,10 +222,11 @@ regressions. Browser checks
 do not replace statistical tests, manual accessibility review, or clinician
 task sessions.
 
-Have separate Astra medium review subagents examine technical plans, methods,
-software invariants, and UI evidence. Do not treat an implementer's self-review
-as independent review. Route findings to Sol for fixes and then to Astra for
-re-review; assign integration and gate reruns within the two-non-Luna worker
+Have different reviewers examine plans, methods, software invariants and UI
+evidence: Sol/high for routine review; Astra/medium only for critical gate
+plans/reviews under the entry point's classification and recorded ROOT reason.
+Do not treat self-review as independent. Route fixes to Sol then obtain the
+appropriate different-worker re-review; assign integration and gate reruns within the two-non-Luna worker
 cap. Luna helpers remain exempt. Never accept a worker's unsupported "done" claim.
 
 Persist task state, commits, contracts, model/data versions, seeds, commands,
@@ -233,7 +241,7 @@ Deliver a clean-checkout runnable PoC satisfying the amendment functional cases,
 reproducible evaluation outputs, source-to-requirement traceability, and an
 honest report of unresolved gates. You are authorized to open PRs and merge
 worktree branches into assigned integration targets without repeated user
-confirmation once independent Astra review explicitly deems the exact head/base
+confirmation once the appropriate independent reviewer under the model policy deems the exact head/base
 ready to ship, required task/gate and repository checks pass, findings are
 resolved, and dependencies are accepted. Respect branch protections. Refresh
 review and affected checks whenever the head or target base changes. Assign
