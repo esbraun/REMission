@@ -607,7 +607,7 @@ class Data03StartupSource(unittest.TestCase):
                     self.assertEqual((root/name).exists(),late=='rename') # retained late bytes are not authority
 
     def startup(self,case,worker=False):
-        clock=[100.5 if worker and case=='separate_windows' else 7240.0 if worker and case=='common_expired' else 100.0]
+        clock=[7239.0 if case.startswith('common_late_') else 100.5 if worker and case=='separate_windows' else 7240.0 if worker and case=='common_expired' else 100.0]
         nonce='a'*48;identity=dict(pid=41,ppid=42,nonce=nonce,start=100.0,outer=7300.0,lease_unix=8000.0)
         with tempfile.TemporaryDirectory(dir='artifacts') as folder:
             packet=Path(folder);events=[];code=[None];polls=[0]
@@ -616,6 +616,8 @@ class Data03StartupSource(unittest.TestCase):
                 if case in ('late_publication','late_publication_exited'):
                     clock[0]=105.0
                     if case=='late_publication_exited':code[0]=0
+                if case=='common_late_work_rename':clock[0]=7240.0
+                if case=='common_late_outer_rename':clock[0]=7300.0
             class Child:
                 pid=41
                 def __init__(self,*args,**kwargs):
@@ -647,6 +649,8 @@ class Data03StartupSource(unittest.TestCase):
                 value=real_loads(raw,*args,**kwargs)
                 if case=='late_read':clock[0]=105.0
                 if case=='separate_windows':clock[0]=105.25
+                if case=='common_late_work_read':clock[0]=7240.0
+                if case=='common_late_outer_read':clock[0]=7300.0
                 return value
             def metadata(argv,**kwargs):return b'fixed-candidate\n' if argv[1:]==['rev-parse','HEAD'] else b''
             with mock.patch.object(op,'validate_packet',return_value=(packet,spec)),\
@@ -685,6 +689,11 @@ class Data03StartupSource(unittest.TestCase):
         # Worker began at100.5 -> local105.5. Parent's assumed local105.0 is
         # absent from unchanged identity. This limitation is NOT repaired.
         self.assertTrue(105.0<observed['reader_clock']<105.5)
+
+    def test_common_work_outer_expiry_after_blocking_publication_or_read_refuses(self):
+        for worker in (False,True):
+            for case in ('common_late_work_rename','common_late_outer_rename','common_late_work_read','common_late_outer_read'):
+                with self.subTest(worker=worker,case=case):self.startup(case,worker=worker)
 
     def test_full_operator_inverse_confines_only_new_helper_seams_and_namespace(self):
         source=Path(op.__file__).read_text();before=startup_inverse_source(source)
