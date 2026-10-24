@@ -15,6 +15,7 @@ import signal
 import stat
 import sys
 import time
+from datetime import datetime,timezone
 
 VOLUME='remission-s1-completion-261024-r1-positive'
 NAMESPACE='remission-s1-genuine-submit-261024-r1'
@@ -45,8 +46,8 @@ SQL_PENDING="SELECT 1 FROM analysis_attempts WHERE status IN ('queued','running'
 SQL_PENDING_WORK="SELECT 1 FROM pending_work WHERE status IN ('queued','running') LIMIT 1"
 SQL_MIGRATIONS='SELECT version FROM schema_migrations LIMIT 6'
 RECON_KIND='S1_ORIGINAL_REQUEST_RECONCILIATION_V1'
-RECON_NAMESPACE='remission-s1-original-reconcile-261024-r1'
-RECON_FOLDER=Path('/data/s1-p3-original-reconcile-r1')
+RECON_NAMESPACE='remission-s1-original-reconcile-261024-r2'
+RECON_FOLDER=Path('/data/s1-p3-original-reconcile-r2')
 RECON_PHASES=('admitted','authentication_before','authentication_after','snapshot_before','snapshot_after')
 RECON_STATUSES=('unavailable','receipt_absent_at_snapshot','matched_queued_metadata','matched_other_job_state','conflict')
 RECON_JOB_STATES=('queued','running','completed','failed','abstained')
@@ -140,6 +141,16 @@ def recon_json(raw):
         return value
     return json.loads(raw,object_pairs_hook=pairs,
         parse_constant=lambda _:(_ for _ in ()).throw(ReconcileConflict('nonfinite metadata')))
+
+
+def recon_instant(value):
+    # Exact aware-instant comparison follows store.instant without importing
+    # Store. Reject finer-than-microsecond strings rather than truncating them.
+    recon_require(type(value) is str and 0<len(value.encode())<=64
+        and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})',value) is not None)
+    result=datetime.fromisoformat(value.replace('Z','+00:00'))
+    recon_require(result.tzinfo is not None and result.utcoffset() is not None)
+    return result.astimezone(timezone.utc)
 
 
 def recon_admit(spec):
@@ -248,8 +259,8 @@ def recon_metadata(db,spec,members,partitions,submission,payload_sha,cohort_id,s
         and type(r['request_configuration']) is str and len(r['request_configuration'].encode())<=1024)
     recon_require(recon_json(r['cohort'])==ordered and recon_json(r['configuration'])==submission['configuration']
         and recon_json(r['request_configuration'])==submission['configuration'])
-    recon_require(type(value.get('cutoff')) is str and len(value['cutoff'].encode())<=64
-        and value['cutoff']==r['cutoff']==r['request_cutoff']==spec['expected_cutoff'])
+    recon_require(recon_instant(value.get('cutoff'))==recon_instant(r['cutoff'])
+        ==recon_instant(r['request_cutoff'])==recon_instant(spec['expected_cutoff']))
     for name,expected in spec['expected_references'].items():
         field=r['request_'+name]
         recon_require(type(field) is str and len(field.encode())<=1024 and recon_json(field)==expected)
@@ -326,7 +337,7 @@ def run_reconcile(spec):
     require(authority.qualification_scope=='accepted_saved_producer' and authority.admission_sha256==spec['admission_sha256'])
     descriptor=authority.descriptor
     require(descriptor.run_id+':'+descriptor.cohort_id==spec['archive_id']
-        and spec['expected_cutoff']==(descriptor.origin+timedelta(days=84)).isoformat())
+        and recon_instant(spec['expected_cutoff'])==(descriptor.origin+timedelta(days=84)).astimezone(timezone.utc))
     auth=Path('/private/auth.json');info=auth.lstat()
     require(stat.S_ISREG(info.st_mode) and info.st_nlink==1 and info.st_uid==os.getuid() and 0<info.st_size<=65536
         and stat.S_IMODE(info.st_mode)&0o077==0)

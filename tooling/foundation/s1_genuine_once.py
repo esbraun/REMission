@@ -39,9 +39,9 @@ BIND_EXPECTED=dict(store_instance='f4d6bea5-10aa-4247-afa0-76b8e5c3fceb',authori
     admission_sha256='7f411f3cc7b60fa28eb61481db15c590089fa874827ca8fdab547628438bcf98')
 AUTHORITY_SHA='048960f15bc0cc1ca7136a491755bbb64bfd1e0778418fd88e50a15480c65004'
 RECON_KIND='S1_ORIGINAL_REQUEST_RECONCILIATION_V1'
-RECON_NAME='remission-s1-original-reconcile-261024-r1'
+RECON_NAME='remission-s1-original-reconcile-261024-r2'
 RECON_PUBLIC_NAME='control.json'
-RECON_PUBLIC_PATH='/data/s1-p3-original-reconcile-r1/control.json'
+RECON_PUBLIC_PATH='/data/s1-p3-original-reconcile-r2/control.json'
 RECON_FILES=(FILES-{'payload/submit-spec.json'})|{'payload/reconcile-spec.json'}
 TYPED='{"Id":{{json .Id}},"Image":{{json .Image}},"User":{{json .Config.User}},"Path":{{json .Path}},"Args":{{json .Args}},"State":{{json .State}},"RestartCount":{{json .RestartCount}},"Labels":{{json .Config.Labels}},"Memory":{{json .HostConfig.Memory}},"MemorySwap":{{json .HostConfig.MemorySwap}},"NanoCpus":{{json .HostConfig.NanoCpus}},"PidsLimit":{{json .HostConfig.PidsLimit}},"ReadonlyRootfs":{{json .HostConfig.ReadonlyRootfs}},"Privileged":{{json .HostConfig.Privileged}},"CapAdd":{{json .HostConfig.CapAdd}},"CapDrop":{{json .HostConfig.CapDrop}},"SecurityOpt":{{json .HostConfig.SecurityOpt}},"Tmpfs":{{json .HostConfig.Tmpfs}},"NetworkMode":{{json .HostConfig.NetworkMode}},"PortBindings":{{json .HostConfig.PortBindings}},"PublishAllPorts":{{json .HostConfig.PublishAllPorts}},"RestartPolicy":{{json .HostConfig.RestartPolicy}},"LogConfig":{{json .HostConfig.LogConfig}},"Mounts":{{json .Mounts}}}'
 

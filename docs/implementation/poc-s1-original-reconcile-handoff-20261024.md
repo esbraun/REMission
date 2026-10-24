@@ -8,7 +8,7 @@ only; no private query or runtime permission. Plan
 ## One original request, no replay
 
 The new `S1_ORIGINAL_REQUEST_RECONCILIATION_V1` mode and namespace
-`remission-s1-original-reconcile-261024-r1` use the original public specification
+`remission-s1-original-reconcile-261024-r2` use the original public specification
 `a92f061741cf283e4bc5cf4f46a94979acf0731e`: same owner, Store/generation,
 archive/export/admission, stable key, S1/day84/twelve-member request and
 `previous_attempt=None`. The packet freezes the actual scalar S1Submission
@@ -117,7 +117,7 @@ SHAa762...) are exact Git inputs; no 103MB archive mount or artifact fallback.
 | Failure/persistence/custody | atomic publication faults, fixed-name/size/privacy, post-stop collection, no collection on missing reaps, primary failure/absolute deadline/resource mutations |
 | Regression | 53 retained guarded source controls; full old-function inverse outside explicit mode dispatch |
 
-26 new and 53 retained guarded controls PASS, zero skips. The initial retained
+30 new and 53 retained guarded controls PASS, zero skips. The initial retained
 global enabled-expression count failed because a new mode now has its own check;
 it is narrowly scoped to the unchanged original run. An initial inverse checker
 omitted the explicit reconcile-boolean dispatch; its test-only failure is retained.
@@ -125,3 +125,21 @@ All logs are indexed. No actual SQLite/app/Store/science/native/network/private
 operation ran. Canonical methods/contracts/services/UI and old runtime evidence
 are unchanged. Different exact SOURCE/OP review and fresh root GO remain required.
 Genuine WCLS/ingest/saved-result/browser/study/clinical gates remain pending.
+
+### Narrow reviewed cutoff repair
+
+Review `ad5b6d6531d147920597bc54eedc049b91897453` requested changes to candidate
+917b8e: real Pydantic AwareDatetime request serialization uses `Z` while Store/
+receipt/spec use `+00:00`, so string equality falsely reports conflict. The
+repair compares all four bounded cutoff fields as exact timezone-aware UTC
+instants, including the fixed original-origin/day84 guard. It accepts equivalent
+explicit offsets, preserves all six microsecond digits, and rejects naive,
+malformed, different-instant/microsecond/day and overprecision strings. No
+tolerance, default timezone, rounding or producer/persisted-byte change is added.
+The actual scalar Pydantic serialization regression in the complete twelve-member
+metadata fixture demonstrates original rejection and repaired acceptance. A
+whole-module AST inverse back to 917b8e permits only this helper/import, two
+cutoff predicates and fresh R2 namespace/path literals. All other SQL, owner,
+request/config/member, precision, privacy, custody and budget rules are unchanged.
+Original R1 source, rejected packet, review and logs remain immutable; the new R2
+packet needs refreshed independent SOURCE/OP review and fresh root GO.

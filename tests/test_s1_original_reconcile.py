@@ -14,6 +14,8 @@ from test_s1_genuine_source import module,created,tar
 host=module('s1_genuine_once');driver=module('s1_genuine_submit')
 ROOT=Path(__file__).resolve().parents[1]
 BASELINE_HOST=BASELINE_DRIVER=None
+PRE_REPAIR_DRIVER=None
+PRE_REPAIR_HOST=None
 OWNER='1946fb30-b736-402e-a6d0-a0b50eb92496';JOB='analysis-'+'a'*32;CID='b'*64
 MEMBERS=[f'member-{n:02}' for n in range(12)]
 PARTS=[(m,m+'-'+s) for m in MEMBERS for s in ('S0','S1')]
@@ -61,6 +63,40 @@ class DB:
 def metadata(data):return driver.recon_metadata(DB(data),spec(),MEMBERS,PARTS,SUB,'e'*64,COHORT,S1PARTS)
 
 class MetadataTests(unittest.TestCase):
+    def test_actual_aware_datetime_JSON_serialization_old_rejects_repaired_accepts(self):
+        from datetime import datetime
+        from pydantic import BaseModel,AwareDatetime
+        class TypedCutoff(BaseModel):cutoff:AwareDatetime
+        typed=TypedCutoff(cutoff=datetime.fromisoformat(CUTOFF)).model_dump(mode='json')['cutoff']
+        self.assertTrue(typed.endswith('Z'))
+        cls=next(n for n in ast.parse((ROOT/'contracts/domain/support_s1.py').read_bytes()).body if isinstance(n,ast.ClassDef) and n.name=='S1Input')
+        annotation=next(n.annotation for n in cls.body if isinstance(n,ast.AnnAssign) and n.target.id=='cutoff')
+        self.assertEqual(ast.unparse(annotation),'AwareDatetime')
+        data=fixture();data[driver.SQL_RECON_JOB][0]['request_cutoff']=typed
+        old=next(n for n in ast.parse(PRE_REPAIR_DRIVER).body if isinstance(n,ast.FunctionDef) and n.name=='recon_metadata')
+        namespace=dict(vars(driver));exec(compile(ast.Module(body=[old],type_ignores=[]),'previous-public-source','exec'),namespace)
+        with self.assertRaises(driver.ReconcileConflict):namespace['recon_metadata'](DB(data),spec(),MEMBERS,PARTS,SUB,'e'*64,COHORT,S1PARTS)
+        self.assertEqual(metadata(data)['status'],'matched_queued_metadata')
+    def test_all_four_cutoffs_accept_equivalent_explicit_offsets(self):
+        for field in ('response','row','request','expected'):
+            data=fixture();s=spec();offset='2026-01-01T01:00:00+01:00'
+            if field=='response':
+                value=response();value['cutoff']=offset;raw=json.dumps(value)
+                data[driver.SQL_RECON_RECEIPT][0].update(response=raw,response_bytes=len(raw.encode()))
+            elif field=='expected':s['expected_cutoff']=offset
+            else:data[driver.SQL_RECON_JOB][0]['cutoff' if field=='row' else 'request_cutoff']=offset
+            with self.subTest(field=field):self.assertEqual(driver.recon_metadata(DB(data),s,MEMBERS,PARTS,SUB,'e'*64,COHORT,S1PARTS)['status'],'matched_queued_metadata')
+    def test_all_four_cutoffs_refuse_naive_malformed_changed_microsecond_or_day(self):
+        for value in ('2026-01-01T00:00:00','malformed','2026-01-01T00:00:01Z','2026-01-01T00:00:00.000001Z',
+                '2026-01-02T00:00:00Z','2026-01-01T00:00:00.0000001Z',True,None,'x'*65):
+            for field in ('response','row','request','expected'):
+                data=fixture();s=spec()
+                if field=='response':
+                    v=response();v['cutoff']=value;raw=json.dumps(v);data[driver.SQL_RECON_RECEIPT][0].update(response=raw,response_bytes=len(raw.encode()))
+                elif field=='expected':s['expected_cutoff']=value
+                else:data[driver.SQL_RECON_JOB][0]['cutoff' if field=='row' else 'request_cutoff']=value
+                with self.subTest(value=value,field=field),self.assertRaises(ValueError):driver.recon_metadata(DB(data),s,MEMBERS,PARTS,SUB,'e'*64,COHORT,S1PARTS)
+        self.assertEqual(driver.recon_instant('2026-01-01T00:00:00.123456Z'),driver.recon_instant('2026-01-01T01:00:00.123456+01:00'))
     def test_legitimate_original_pending_is_allowed_only_reconciliation(self):
         result=metadata(fixture());self.assertEqual(result['status'],'matched_queued_metadata');self.assertEqual(result['job_id'],JOB)
         self.assertNotIn('PRIVATE_SENTINEL',json.dumps(result));self.assertFalse(result['current_input_validated'])
@@ -308,6 +344,30 @@ def scalar_contract():
     return namespace
 
 class SourceInverseTests(unittest.TestCase):
+    def test_narrow_repair_whole_module_inverse_to_reviewed_r1(self):
+        prior=ast.parse(PRE_REPAIR_DRIVER);current=ast.parse((ROOT/'tooling/foundation/s1_genuine_submit.py').read_bytes())
+        old_metadata=next(n for n in prior.body if isinstance(n,ast.FunctionDef) and n.name=='recon_metadata')
+        cutoff_stmt=next(n for n in old_metadata.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call)
+            and any(isinstance(v,ast.Constant) and v.value=='request_cutoff' for v in ast.walk(n)))
+        old_run=next(n for n in prior.body if isinstance(n,ast.FunctionDef) and n.name=='run_reconcile')
+        origin=next(n for n in ast.walk(old_run) if isinstance(n,ast.Compare) and isinstance(n.left,ast.Subscript)
+            and isinstance(n.left.slice,ast.Constant) and n.left.slice.value=='expected_cutoff')
+        class Undo(ast.NodeTransformer):
+            def visit_Constant(self,node):
+                changes={'remission-s1-original-reconcile-261024-r2':'remission-s1-original-reconcile-261024-r1',
+                    '/data/s1-p3-original-reconcile-r2':'/data/s1-p3-original-reconcile-r1',
+                    '/data/s1-p3-original-reconcile-r2/control.json':'/data/s1-p3-original-reconcile-r1/control.json'}
+                return ast.copy_location(ast.Constant(changes.get(node.value,node.value)),node) if type(node.value) is str else node
+            def visit_Compare(self,node):
+                if isinstance(node.left,ast.Call) and isinstance(node.left.func,ast.Name) and node.left.func.id=='recon_instant':return deepcopy(origin)
+                return self.generic_visit(node)
+        for fn in [n for n in current.body if isinstance(n,ast.FunctionDef) and n.name=='recon_metadata']:
+            fn.body=[deepcopy(cutoff_stmt) if isinstance(n,ast.Expr) and any(isinstance(v,ast.Name) and v.id=='recon_instant' for v in ast.walk(n)) else n for n in fn.body]
+        current.body=[n for n in current.body if not (isinstance(n,ast.FunctionDef) and n.name=='recon_instant')
+            and not (isinstance(n,ast.ImportFrom) and n.module=='datetime')]
+        self.assertEqual(ast.dump(Undo().visit(current),include_attributes=False),ast.dump(prior,include_attributes=False))
+        host_current=ast.parse((ROOT/'tooling/foundation/s1_genuine_once.py').read_bytes())
+        self.assertEqual(ast.dump(Undo().visit(host_current),include_attributes=False),ast.dump(ast.parse(PRE_REPAIR_HOST),include_attributes=False))
     def test_original_typed_normalization_and_frozen_configuration(self):
         ns=scalar_contract();value=dict(SUB,configuration=ns['CONFIG_REF'])
         cls=ns['S1Submission'];normalized=cls.model_validate_json(ns['canonical'](value)).model_dump(mode='json')
