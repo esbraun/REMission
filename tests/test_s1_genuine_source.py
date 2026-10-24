@@ -17,16 +17,16 @@ def module(name):
     value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 host=module('s1_genuine_once');driver=module('s1_genuine_submit')
 CID='a'*64
+JOB='analysis-'+'a'*32
 SUB=dict(archive_id='archive-public-unit',mode='S1',cutoff_day=84,configuration={'unit':'scalar'},previous_attempt=None)
-def proof():return dict(schema='support-s1-queued-request-v1',attempt_id='job-unit',owner_id='owner-unit',submission=deepcopy(SUB),
-    receipt={'key':driver.KEY},active_attempts=[dict(attempt_id='job-unit',status='queued')])
+def proof():return dict(schema='support-s1-queued-request-v1',attempt_id=JOB,owner_id='owner-unit',submission=deepcopy(SUB),
+    receipt={'key':driver.KEY},active_attempts=[dict(attempt_id=JOB,status='queued')])
 def spec():return dict(kind='S1_GENUINE_SUBMIT_EXPORT_V1',executable=True,namespace=host.NAME,volume=host.VOLUME,image=host.IMAGE,
     bounds=dict(host.BOUNDS),no_claim_or_fit=True,store_instance='store-unit',authority_generation=1,owner_id='owner-unit',
     archive_id='archive-unit',archive_export_id='export-unit',admission_sha256='a'*64,source_commit='b'*40,
-    source_review='c'*40,operation_review='d'*40,root_go='e'*64,archive_configuration_sha256='f'*64,
-    submit_spec_sha256='a'*64,private_auth_path='C:/private-unit/auth.json',public_archive_path='C:/public-unit/archive',
-    public_authority_path='C:/public-unit/authority.json')
-def final():return dict(kind='s1_p3_submit_result',status='queued_export_saved',members=12,cutoff_day=84,
+    authority_mode='EXTERNAL_ROOT_EXACT_ONCE_AFTER_SOURCE_OP',archive_configuration_sha256='f'*64,
+    submit_spec_sha256='a'*64,private_auth_path='C:/private-unit/auth.json')
+def final():return dict(kind='s1_p3_submit_result',status='queued_export_saved',members=12,cutoff_day=84,job_id=JOB,
     response_confirmed=True,original_receipt_resolved=True,claim=False,fit=False)
 def encoded(rows):return json.dumps(dict(schema='s1-p3-public-v1',rows=rows)).encode()
 def tar(raw=b'{}',name=host.PUBLIC_NAME,kind=tarfile.REGTYPE):
@@ -46,7 +46,7 @@ def created(args,mounts):
 class SubmitTests(unittest.TestCase):
     def flow(self,request=None,resolve=None,save=None):
         log=[]
-        def request_default(value,key):log.append(('POST',key,deepcopy(value)));return dict(status_code=202,payload={'id':'job-unit'})
+        def request_default(value,key):log.append(('POST',key,deepcopy(value)));return dict(status_code=202,payload={'id':JOB})
         def resolve_default(key,value,job):log.append(('resolve',job));return proof()
         result=driver.submit_export(request or request_default,resolve or resolve_default,
             save or (lambda name,value:log.append(('save',name))),deepcopy(SUB),driver.KEY)
@@ -126,7 +126,7 @@ class AdmissionTests(unittest.TestCase):
             with self.subTest(value=value),self.assertRaises(ValueError):host.admit(dict(spec(),private_auth_path=value))
     def test_exact_mounts_no_new_volume_or_accounts(self):
         args,mounts=host.argv(spec(),Path('C:/own-unit/packet'))
-        self.assertEqual(len(mounts),5);self.assertEqual(args[args.index('--log-driver')+1],'none')
+        self.assertEqual(len(mounts),3);self.assertEqual(args[args.index('--log-driver')+1],'none')
         self.assertEqual(args[args.index('--network')+1],'none');self.assertNotIn('create_account',args)
         self.assertEqual([(s,d,r) for k,s,d,r in mounts if k=='volume'],[(host.VOLUME,'/data',False)])
     def test_resource_config_and_mount_changes_fail_before_supervision(self):
@@ -155,16 +155,21 @@ class AdmissionTests(unittest.TestCase):
             payload=dict(value,key=driver.KEY,cutoff_day=84,members=12,request_seconds=180,private_export_cap=16*1024*1024)
             for name in host.FILES:
                 path=packet/name;path.parent.mkdir(exist_ok=True)
-                raw=json.dumps(payload).encode() if name.endswith('submit-spec.json') else b'[]' if name.endswith('archive-config.json') else b'# inert public source\n'
+                raw=json.dumps(payload).encode() if name.endswith('submit-spec.json') else b'[]' if name.endswith('archive-config.json') else b'x'*699480 if name.endswith('support-authority.json') else b'# inert public source\n'
                 path.write_bytes(raw);value['public_inputs'].append(dict(path=name,bytes=len(raw),sha256=host.sha(raw)))
             value['submit_spec_sha256']=host.sha((packet/'payload/submit-spec.json').read_bytes())
             value['archive_configuration_sha256']=host.sha((packet/'payload/archive-config.json').read_bytes())
-            path=packet/'spec.json';path.write_text(json.dumps(value));host.checked_packet(path,host.sha(path.read_bytes()))
-            payload['owner_id']='different-owner';raw=json.dumps(payload).encode();(packet/'payload/submit-spec.json').write_bytes(raw)
-            value['submit_spec_sha256']=host.sha(raw)
-            item=next(i for i in value['public_inputs'] if i['path']=='payload/submit-spec.json');item.update(bytes=len(raw),sha256=host.sha(raw))
-            path.write_text(json.dumps(value))
-            with self.assertRaises(ValueError):host.checked_packet(path,host.sha(path.read_bytes()))
+            path=packet/'spec.json';path.write_text(json.dumps(value))
+            # Scalar transport fixture only; actual public manifest/authority
+            # bytes are separately frozen/rehashed in the operation packet.
+            with patch.object(host,'MANIFEST_SHA',host.sha((packet/'payload/support-manifest.json').read_bytes())),\
+                    patch.object(host,'AUTHORITY_SHA',host.sha((packet/'payload/support-authority.json').read_bytes())):
+                host.checked_packet(path,host.sha(path.read_bytes()))
+                payload['owner_id']='different-owner';raw=json.dumps(payload).encode();(packet/'payload/submit-spec.json').write_bytes(raw)
+                value['submit_spec_sha256']=host.sha(raw)
+                item=next(i for i in value['public_inputs'] if i['path']=='payload/submit-spec.json');item.update(bytes=len(raw),sha256=host.sha(raw))
+                path.write_text(json.dumps(value))
+                with self.assertRaises(ValueError):host.checked_packet(path,host.sha(path.read_bytes()))
     def test_discard_custody_and_fixed_receipt_after_supervise(self):
         tree=ast.parse((ROOT/'tooling/foundation/s1_genuine_once.py').read_bytes())
         execute=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='execute')
