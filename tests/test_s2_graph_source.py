@@ -18,6 +18,27 @@ from tooling.foundation import s2_graph_entry as entry
 ROOT=Path(__file__).resolve().parents[1]
 
 
+def r5_factor_call_inverse(function):
+    """Compose the accepted R5-only caller inverse before older AST proofs."""
+    function=copy.deepcopy(function)
+    calls=[n for n in ast.walk(function) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='fn']
+    assert len(calls)==1 and ast.unparse(calls[0])=='fn(point)'
+    calls[0].args[0]=ast.parse('{name:point[name]}',mode='eval').body
+    return function
+
+
+def r5_qualifier_inverse_text(source):
+    before='value=float(fn(point));factor_errors';after='value=float(fn({name:point[name]}));factor_errors'
+    assert source.count(before)==1
+    return source.replace(before,after)
+
+
+def r5_host_inverse_text(source):
+    before="NAME='remission-s2-graph-5ed3eb9-r5'";after="NAME='remission-s2-graph-5ed3eb9-r4'"
+    assert source.count(before)==1
+    return source.replace(before,after)
+
+
 @contextlib.contextmanager
 def receipt_platform():
     # Production is Linux. Windows lacks O_NOFOLLOW/geteuid and reports mode666;
@@ -358,6 +379,17 @@ class HostTests(unittest.TestCase):
 
 
 class QualificationSourceTests(unittest.TestCase):
+    def test_R5_inverse_composition_restores_exact_R4_caller_module_and_host(self):
+        source=(ROOT/'tooling/foundation/s2_model_qualification.py').read_text()
+        tree=ast.parse(source);qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
+        before=ast.dump(qualify,include_attributes=False);inverse=r5_factor_call_inverse(qualify)
+        self.assertEqual(ast.dump(qualify,include_attributes=False),before)
+        self.assertEqual(hashlib.sha256(ast.dump(inverse,include_attributes=False).encode()).hexdigest(),'5c8454b60f9ebc2a350f4dd7cab41cfbe79a10e8f0b82575ca46f27aa09ec696')
+        self.assertEqual(hashlib.sha256(r5_qualifier_inverse_text(source).encode()).hexdigest(),'983752d3c59f1807049796a9b0b24d77b4c1fcc711fe359ebeb6cc27d78c938c')
+        host_source=(ROOT/'tooling/foundation/s2_graph.py').read_text();old=r5_host_inverse_text(host_source).encode()
+        self.assertEqual(hashlib.sha1(b'blob '+str(len(old)).encode()+b'\0'+old).hexdigest(),'594f30ce0e0bdaf7b21b5d6bc5a1062261cd1d5b')
+        self.assertIn("NAME='remission-s2-graph-5ed3eb9-r5'",host_source)
+
     def test_reference_and_point_generator_unchanged_from_original_ast_freeze(self):
         after=ast.parse((ROOT/'tooling/foundation/s2_model_qualification.py').read_text())
         # AST digests measured from original accepted878, not a local ignored file.
@@ -473,7 +505,7 @@ class PriorInputDiagnosticTests(unittest.TestCase):
         self.assertIsNone(namespace['PRIOR_INPUT_FAILURE'])
 
     def test_inverse_ast_restores_entire_R1_qualification_math_and_control_flow(self):
-        _,tree=self.namespace();qualify=without_policy_exception(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify'))
+        _,tree=self.namespace();qualify=without_policy_exception(r5_factor_call_inverse(next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')))
         for node in qualify.body:
             if isinstance(node,ast.Global):node.names.remove('PRIOR_INPUT_FAILURE')
         qualify.body=[n for n in qualify.body if not (isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id=='PRIOR_INPUT_FAILURE')]
@@ -568,7 +600,7 @@ class ConstructionPolicyTests(unittest.TestCase):
 
     def test_policy_only_inverse_to_R2_and_unchanged_failure_reaping(self):
         _,tree=self.namespace();qualify=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='qualify')
-        inverse=without_policy_exception(qualify)
+        inverse=without_policy_exception(r5_factor_call_inverse(qualify))
         self.assertEqual(hashlib.sha256(ast.dump(inverse,include_attributes=False).encode()).hexdigest(),'d3cc84ad168c1c9d063b1014109b35a036a852d20928d1a9c7d1ef7062547a53')
         expected=dict(parent='2fb800e77e4a9276091fd335b0eeb12bbafc3a414aa1a4d668a1e487df417e73',
             failure='cb54c978eadbe6456b9bc8b99e083fd7a40fe8056ee327efd5d9661bc73eb502')
@@ -720,7 +752,7 @@ class DedicatedReceiptTests(unittest.TestCase):
         writes=[n for n in ast.walk(child) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='write_failure']
         self.assertEqual(len(writes),1);writes[0].func.id='emit';writes[0].args.pop()
         self.assertEqual(hashlib.sha256(ast.dump(child,include_attributes=False).encode()).hexdigest(),'823c537a38793dfafb5260710df8d2afc4c0f87579a8f89e21985423f8d22b82')
-        old_host=(ROOT/'tooling/foundation/s2_graph.py').read_text().replace("NAME='remission-s2-graph-5ed3eb9-r4'","NAME='remission-s2-graph-5ed3eb9-r3'")
+        old_host=r5_host_inverse_text((ROOT/'tooling/foundation/s2_graph.py').read_text()).replace("NAME='remission-s2-graph-5ed3eb9-r4'","NAME='remission-s2-graph-5ed3eb9-r3'")
         self.assertEqual(hashlib.sha256(old_host.encode()).hexdigest(),'2b39452c06c4fb5f6628d7e28076a706e79a4e16e58d9fc8d4f114b7a01cec2f')
         expected={'tooling/foundation/s2_model_qualification.py':'983752d3c59f1807049796a9b0b24d77b4c1fcc711fe359ebeb6cc27d78c938c',
             'methods/support/s2_data.py':'8b42e7099601334af2bd159823908b049985eac7f9e6c1e28ad07bf9c0f98505',
@@ -730,4 +762,6 @@ class DedicatedReceiptTests(unittest.TestCase):
             'tooling/foundation/pa3_monitor.py':'d3f110f0a5ba1ccfc9505db547a6828696cd0355dd802ce5f7c5aa080850553c',
             'tooling/foundation/pa3-cvm-policy.json':'bd708a70ed2f3a0df8ffc6985479e3269c8160571f8fbc97bfab364b0afd8892'}
         for path,digest in expected.items():
-            self.assertEqual(hashlib.sha256((ROOT/path).read_text().encode()).hexdigest(),digest,path)
+            source=(ROOT/path).read_text()
+            if path=='tooling/foundation/s2_model_qualification.py':source=r5_qualifier_inverse_text(source)
+            self.assertEqual(hashlib.sha256(source.encode()).hexdigest(),digest,path)
